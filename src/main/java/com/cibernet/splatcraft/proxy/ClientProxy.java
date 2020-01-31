@@ -1,19 +1,19 @@
 package com.cibernet.splatcraft.proxy;
 
+
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftModelManager;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 
 public class ClientProxy extends CommonProxy
 {
     protected static void registerRenderers()
     {
+        
         Minecraft mc = Minecraft.getMinecraft();
         
         mc.getItemColors().registerItemColorHandler((stack, tintIndex) -> {
@@ -32,6 +32,7 @@ public class ClientProxy extends CommonProxy
             return te.getColor();
             
         }, SplatCraftBlocks.inkedBlock);
+        
     }
     
     @Override
