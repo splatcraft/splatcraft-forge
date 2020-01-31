@@ -1,5 +1,7 @@
 *.ipr
 *.iml
+*.iws
 classes
 run
-run/saves
+build
+.gradle
