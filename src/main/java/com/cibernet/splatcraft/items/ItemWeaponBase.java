@@ -103,7 +103,14 @@ public class ItemWeaponBase extends Item
 		if(!state.isFullBlock() || state.isTranslucent() || state.getBlockHardness(worldIn, pos) == -1)
 			return false;
 
-		if(!(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock) && !(worldIn.getTileEntity(pos) == null))
+		if(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock)
+		{
+			TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
+			te.setColor(color);
+			return true;
+		}
+
+		if(!(worldIn.getTileEntity(pos) == null))
 			return false;
 
 		worldIn.setBlockState(pos, SplatCraftBlocks.inkedBlock.getDefaultState());
