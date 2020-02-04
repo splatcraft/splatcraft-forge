@@ -1,15 +1,12 @@
 package com.cibernet.splatcraft.tileentities;
 
-import com.cibernet.splatcraft.InkColors;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFrostedIce;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
@@ -18,7 +15,7 @@ import javax.annotation.Nullable;
 public class TileEntityInkedBlock extends TileEntity
 {
 	private IBlockState savedState = Blocks.STONE.getDefaultState();
-	private int color = 0x00FF00;
+	private int color = 0x000FFF;
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound)

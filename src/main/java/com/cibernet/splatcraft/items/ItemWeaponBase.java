@@ -1,11 +1,8 @@
 package com.cibernet.splatcraft.items;
 
-import com.cibernet.splatcraft.InkColors;
-import com.cibernet.splatcraft.blocks.BlockInked;
-import com.cibernet.splatcraft.registries.SplatCraftBlocks;
-import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
-import net.minecraft.block.BlockPumpkin;
-import net.minecraft.block.state.IBlockState;
+import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.utils.InkColors;
+import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -73,7 +70,7 @@ public class ItemWeaponBase extends Item
 		
 		ItemStack stack = playerIn.getHeldItem(hand);
 
-		inkBlock(worldIn, pos, getInkColor(stack));
+		SplatCraftUtils.inkBlock(worldIn, pos, getInkColor(stack));
 		
 		return EnumActionResult.SUCCESS;
 	}
@@ -95,32 +92,4 @@ public class ItemWeaponBase extends Item
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 
-	public static boolean inkBlock(World worldIn, BlockPos pos, int color)
-	{
-
-		IBlockState state = worldIn.getBlockState(pos);
-
-		if(!state.isFullBlock() || state.isTranslucent() || state.getBlockHardness(worldIn, pos) == -1)
-			return false;
-
-		if(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock)
-		{
-			TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
-			te.setColor(color);
-			return true;
-		}
-
-		if(!(worldIn.getTileEntity(pos) == null))
-			return false;
-
-		worldIn.setBlockState(pos, SplatCraftBlocks.inkedBlock.getDefaultState());
-		TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedBlock.createTileEntity(worldIn, SplatCraftBlocks.inkedBlock.getDefaultState());
-
-		worldIn.setTileEntity(pos, te);
-
-		te.setColor(color);
-		te.setSavedState(state);
-
-		return true;
-	}
 }

@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.registries;
 
+import com.cibernet.splatcraft.items.ItemShooterBase;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -16,7 +17,7 @@ public class SplatCraftItems
 {
     public static ArrayList<Block> itemBlocks = new ArrayList<>();
 
-    public static final Item splattershot = new ItemWeaponBase("splattershot", "splattershot");
+    public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot");
     public static final Item splatRoller = new ItemWeaponBase("splatRoller", "splat_roller");
 
     @SubscribeEvent
