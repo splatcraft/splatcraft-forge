@@ -1,6 +1,8 @@
 package com.cibernet.splatcraft.proxy;
 
 
+import com.cibernet.splatcraft.handlers.ClientEventHandler;
+import com.cibernet.splatcraft.handlers.SplatCraftKeyHandler;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
@@ -40,6 +42,7 @@ public class ClientProxy extends CommonProxy
     {
         super.preInit();
         MinecraftForge.EVENT_BUS.register(SplatCraftModelManager.class);
+        SplatCraftKeyHandler.instance.registerKeys();
 
     }
 
@@ -48,6 +51,7 @@ public class ClientProxy extends CommonProxy
     {
         super.init();
         registerRenderers();
+        MinecraftForge.EVENT_BUS.register(ClientEventHandler.instance);
     }
 
     @Override

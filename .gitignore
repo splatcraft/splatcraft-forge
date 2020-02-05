@@ -3,5 +3,6 @@
 *.iws
 classes
 run
+server
 build
 .gradle
