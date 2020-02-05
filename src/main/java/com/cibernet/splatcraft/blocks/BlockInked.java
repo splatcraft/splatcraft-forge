@@ -1,9 +1,8 @@
 package com.cibernet.splatcraft.blocks;
 
-import com.cibernet.splatcraft.InkColors;
+import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockColored;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

@@ -1,9 +1,7 @@
-package com.cibernet.splatcraft;
+package com.cibernet.splatcraft.utils;
 
 import net.minecraft.block.material.MapColor;
 import net.minecraft.item.EnumDyeColor;
-
-import java.util.Map;
 
 public enum InkColors
 {

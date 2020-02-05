@@ -6,3 +6,5 @@ run
 server
 build
 .gradle
+src/main/java/net
+src/main/java/minecraft
