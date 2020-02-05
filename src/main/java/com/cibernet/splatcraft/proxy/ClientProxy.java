@@ -23,7 +23,7 @@ public class ClientProxy extends CommonProxy
                 return ItemWeaponBase.getInkColor(stack);
             
             //return 0;
-        }, SplatCraftItems.splatRoller, SplatCraftItems.splattershot);
+        }, SplatCraftItems.splatRoller, SplatCraftItems.splattershot, SplatCraftItems.splatCharger);
         
         mc.getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
             if(!(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock))

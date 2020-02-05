@@ -20,6 +20,7 @@ public class SplatCraftItems
 
     public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot");
     public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller");
+    public static final Item splatCharger = new ItemShooterBase("splatCharger", "splat_charger");
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
@@ -28,6 +29,7 @@ public class SplatCraftItems
 
         registerItem(registry, splattershot);
         registerItem(registry, splatRoller);
+        registerItem(registry, splatCharger);
 
         registerItemBlocks(registry);
     }
