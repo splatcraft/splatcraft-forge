@@ -106,20 +106,28 @@ public class ItemRollerBase extends ItemWeaponBase
     {
         return 72000;
     }
-
+    
+    @Override
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        return EnumActionResult.PASS;
+    }
+    
     /**
      * Called when the equipped item is right clicked.
      */
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
+        if(playerIn.isSneaking())
+            return super.onItemRightClick(worldIn, playerIn, handIn);
+        
         ItemStack stack = playerIn.getHeldItem(handIn);
 
         SplatCraftUtils.inkBlock(worldIn, new BlockPos(playerIn.posX+1, playerIn.posY-1, playerIn.posZ), getInkColor(stack));
 
-        if(!playerIn.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPRINTING_SPEED_BOOST))
-            playerIn.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPRINTING_SPEED_BOOST);
-        else playerIn.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPRINTING_SPEED_BOOST);
-        playerIn.getItemInUseCount();
+        //if(!playerIn.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPRINTING_SPEED_BOOST))
+         //   playerIn.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPRINTING_SPEED_BOOST);
+        //else playerIn.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPRINTING_SPEED_BOOST);
 
         playerIn.setActiveHand(handIn);
         return new ActionResult(EnumActionResult.SUCCESS, stack);
