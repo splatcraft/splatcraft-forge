@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.items;
 
 import javax.annotation.Nullable;
 
+import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -49,7 +50,7 @@ public class ItemRollerBase extends ItemWeaponBase
     {
         return EnumActionResult.PASS;
     }
-    
+
     /**
      * Called when the equipped item is right clicked.
      */
@@ -63,6 +64,8 @@ public class ItemRollerBase extends ItemWeaponBase
         return new ActionResult(EnumActionResult.SUCCESS, stack);
 
     }
+
+
 
     @Override
     public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
@@ -93,5 +96,20 @@ public class ItemRollerBase extends ItemWeaponBase
     @Override
     public float getUseWalkSpeed() {
         return 0.4f;
+    }
+
+    @Override
+    public void onItemLeftClick(World worldIn, EntityPlayer playerIn, ItemStack stack)
+    {
+        if(playerIn.getCooledAttackStrength(0) >= 1f)
+        {
+
+            for(int i = -1; i <= 1; i++) {
+                EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack));
+                proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 20*i, 0.6f, 4f);
+                proj.setProjectileSize(0.5f);
+                worldIn.spawnEntity(proj);
+            }
+        }
     }
 }

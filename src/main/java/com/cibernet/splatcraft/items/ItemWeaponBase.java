@@ -24,7 +24,7 @@ public class ItemWeaponBase extends Item
 	public static List<ItemWeaponBase> weapons = new ArrayList<>();
 	
 	public static int colIndex = 0;
-	
+
 	public ItemWeaponBase(String unlocName, String registryName)
 	{
 		setUnlocalizedName(unlocName);
@@ -107,4 +107,7 @@ public class ItemWeaponBase extends Item
 		return 0.5f;
 	}
 
+	public void onItemLeftClick(World world, EntityPlayer player, ItemStack stack)
+	{
+	}
 }

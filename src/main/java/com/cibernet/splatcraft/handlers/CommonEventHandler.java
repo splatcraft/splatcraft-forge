@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.*;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -67,7 +68,17 @@ public class CommonEventHandler
 		//if(player.world.isRemote)
 			player.capabilities.setPlayerWalkSpeed(speed);
 	}
-	
-	
+
+
+	//TODO use packets to communicate client > server
+	@SubscribeEvent
+	public void onLeftClick(PlayerInteractEvent.LeftClickEmpty event)
+	{
+		EntityPlayer player = event.getEntityPlayer();
+		ItemStack stack = player.getHeldItem(event.getHand());
+
+		if(stack.getItem() instanceof ItemWeaponBase)
+			((ItemWeaponBase)stack.getItem()).onItemLeftClick(player.world, player, stack);
+	}
 	
 }
