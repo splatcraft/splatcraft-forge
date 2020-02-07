@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.entities;
+package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;

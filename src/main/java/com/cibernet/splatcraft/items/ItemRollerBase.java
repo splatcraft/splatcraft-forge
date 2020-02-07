@@ -25,8 +25,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRollerBase extends ItemWeaponBase
 {
-    private static final AttributeModifier SPRINTING_SPEED_BOOST = (new AttributeModifier( "Sprinting speed boost", 2D, 2)).setSaved(false);
-
     public ItemRollerBase(String unlocName, String registryName)
     {
         super(unlocName, registryName);
@@ -41,62 +39,6 @@ public class ItemRollerBase extends ItemWeaponBase
                 return entityIn != null && entityIn.isHandActive() && entityIn.getActiveItemStack() == stack ? 1.0F : 0.0F;
             }
         });
-    }
-
-    private ItemStack findAmmo(EntityPlayer player)
-    {
-        if (this.isArrow(player.getHeldItem(EnumHand.OFF_HAND)))
-        {
-            return player.getHeldItem(EnumHand.OFF_HAND);
-        }
-        else if (this.isArrow(player.getHeldItem(EnumHand.MAIN_HAND)))
-        {
-            return player.getHeldItem(EnumHand.MAIN_HAND);
-        }
-        else
-        {
-            for (int i = 0; i < player.inventory.getSizeInventory(); ++i)
-            {
-                ItemStack itemstack = player.inventory.getStackInSlot(i);
-
-                if (this.isArrow(itemstack))
-                {
-                    return itemstack;
-                }
-            }
-
-            return ItemStack.EMPTY;
-        }
-    }
-
-    protected boolean isArrow(ItemStack stack)
-    {
-        return stack.getItem() instanceof ItemArrow;
-    }
-
-    /**
-     * Called when the player stops using an Item (stops holding the right mouse button).
-     */
-    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
-    {
-        if(entityLiving.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPRINTING_SPEED_BOOST))
-            entityLiving.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPRINTING_SPEED_BOOST);
-    }
-
-    /**
-     * Gets the velocity of the arrow entity from the bow's charge
-     */
-    public static float getArrowVelocity(int charge)
-    {
-        float f = (float)charge / 20.0F;
-        f = (f * f + f * 2.0F) / 3.0F;
-
-        if (f > 1.0F)
-        {
-            f = 1.0F;
-        }
-
-        return f;
     }
 
     /**
@@ -121,15 +63,7 @@ public class ItemRollerBase extends ItemWeaponBase
         if(playerIn.isSneaking())
             return super.onItemRightClick(worldIn, playerIn, handIn);
         
-        ItemStack stack = playerIn.getHeldItem(handIn);
-
-        SplatCraftUtils.inkBlock(worldIn, new BlockPos(playerIn.posX+1, playerIn.posY-1, playerIn.posZ), getInkColor(stack));
-
-        //if(!playerIn.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).hasModifier(SPRINTING_SPEED_BOOST))
-         //   playerIn.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(SPRINTING_SPEED_BOOST);
-        //else playerIn.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPRINTING_SPEED_BOOST);
-
-        playerIn.setActiveHand(handIn);
+        ItemStack stack = playerIn.getHeldItem(handIn);playerIn.setActiveHand(handIn);
         return new ActionResult(EnumActionResult.SUCCESS, stack);
 
     }

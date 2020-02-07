@@ -10,6 +10,7 @@ import net.minecraft.block.BlockWeb;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class CommonEventHandler
 {
+	
+	private static final AttributeModifier SPRINTING_SPEED_BOOST = (new AttributeModifier( "Sprinting speed boost", 2D, 2)).setSaved(false);
+
+
 	public static final CommonEventHandler instance = new CommonEventHandler();
 	
 	@SubscribeEvent
