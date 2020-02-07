@@ -1,6 +1,5 @@
 package com.cibernet.splatcraft.handlers;
 
-import javafx.scene.input.KeyCode;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -13,7 +12,7 @@ public class SplatCraftKeyHandler
 	
 	public void registerKeys()
 	{
-		squidKey = new KeyBinding("key.squidForm", KeyCode.Z.ordinal(), "key.categories.splatcraft");
+		squidKey = new KeyBinding("key.squidForm", 0, "key.categories.splatcraft");
 		ClientRegistry.registerKeyBinding(squidKey);
 	}
 }
