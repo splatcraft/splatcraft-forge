@@ -12,7 +12,7 @@ public class ModelInkProjectile extends ModelBase
     public ModelInkProjectile()
     {
         this.cube = new ModelRenderer(this, 0, 0);
-        this.cube.addBox(-0.5f,0,-0.5f,1,1,1);
+        this.cube.addBox(-0.5f,-0.5f,-0.5f,1,1,1);
     }
 
     @Override

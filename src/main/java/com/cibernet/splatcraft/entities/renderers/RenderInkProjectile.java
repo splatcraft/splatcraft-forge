@@ -26,7 +26,7 @@ public class RenderInkProjectile extends Render<EntityInkProjectile> {
     @Override
     public void doRender(EntityInkProjectile entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        if(Minecraft.getMinecraft().gameSettings.particleSetting < 2)
+        if(Minecraft.getMinecraft().gameSettings.particleSetting < 2 || entity.ticksExisted < 3)
             return;
 
         GlStateManager.pushMatrix();

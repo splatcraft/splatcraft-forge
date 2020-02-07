@@ -94,8 +94,8 @@ public class EntityInkProjectile extends Entity implements IProjectile
         this.lastTickPosZ = this.posZ;
         super.onUpdate();
 
-        if(ticksExisted > 1)
-        for (int j = 0; j < 16; ++j)
+        if(ticksExisted > 3)
+        for (int j = 0; j < 8; ++j)
         {
             float f3 = 0.25F;
 
