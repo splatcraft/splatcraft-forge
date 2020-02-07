@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.creativetab.CreativeTabs;
@@ -90,6 +91,20 @@ public class ItemWeaponBase extends Item
 		setInkColor(stack, InkColors.values()[colIndex].getColor());
 		
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+	}
+
+	public int getMaxItemUseDuration(ItemStack stack)
+	{
+		return 72000;
+	}
+
+	public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
+	{
+	}
+
+	public float getUseWalkSpeed()
+	{
+		return 0.5f;
 	}
 
 }

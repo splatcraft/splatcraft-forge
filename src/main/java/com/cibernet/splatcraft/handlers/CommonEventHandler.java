@@ -53,36 +53,14 @@ public class CommonEventHandler
 		if(player.getItemInUseCount() > 0)
 		{
 			ItemStack weapon = player.getActiveItemStack();
-			
-			BlockPos pos = new BlockPos(player.posX + 0.5, player.posY, player.posZ + 0.5);
-			
-			
-			Vec3d fwd = Vec3d.fromPitchYawVector(new Vec2f(0, player.rotationYaw));
-			
-			
-			if(weapon.getItem().equals(SplatCraftItems.splatRoller))
+
+			if(weapon.getItem() instanceof ItemWeaponBase)
 			{
-				player.getHorizontalFacing();
-				
-				double xOff = Math.floor((player.posX + fwd.x) - Math.floor(player.posX + fwd.x)) == 0 ? -1 : 1;
-				double zOff = Math.floor((player.posZ + fwd.z) - Math.floor(player.posZ + fwd.z)) == 0 ? -1 : 1;
-				
-				if(player.getHorizontalFacing().equals(EnumFacing.NORTH) || player.getHorizontalFacing().equals(EnumFacing.SOUTH))
-					zOff = 0;
-				else xOff = 0;
-				
-				BlockPos inkPosA = pos.add(fwd.x * 2, -1, fwd.z * 2);
-				BlockPos inkPosB = pos.add(fwd.x * 2 +xOff, -1, fwd.z * 2 +zOff);
-				
-				if(player.world.getBlockState(inkPosA.up()).getBlock() != Blocks.AIR)
-					inkPosA = inkPosA.up();
-				if(player.world.getBlockState(inkPosB.up()).getBlock() != Blocks.AIR)
-					inkPosB = inkPosB.up();
-				
-				speed = 0.4f;
-				
-				SplatCraftUtils.inkBlock(player.world, inkPosA, ItemWeaponBase.getInkColor(weapon));
-				SplatCraftUtils.inkBlock(player.world, inkPosB, ItemWeaponBase.getInkColor(weapon));
+				ItemWeaponBase item = (ItemWeaponBase) weapon.getItem();
+
+				item.onItemTickUse(player.world, player, weapon, player.getItemInUseCount());
+				speed = item.getUseWalkSpeed();
+
 			}
 		}
 		
