@@ -1,10 +1,10 @@
 *.ipr
 *.iml
 *.iws
-classes
-run
-server
-build
 .gradle
-src/main/java/net
-src/main/java/minecraft
+/classes
+/run
+/server
+/build
+/src/main/java/net
+/src/main/java/minecraft
