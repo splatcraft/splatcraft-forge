@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class CommonEventHandler
 {
-	
+
 	private static final AttributeModifier SPRINTING_SPEED_BOOST = (new AttributeModifier( "Sprinting speed boost", 2D, 2)).setSaved(false);
 
 
@@ -42,7 +42,7 @@ public class CommonEventHandler
 			
 			float f = event.player.rotationYaw * 0.017453292F;
 			
-			speed = player.getEntityWorld().getBlockState(new BlockPos(player.posX, player.posY-1,player.posZ)).getBlock().equals(SplatCraftBlocks.inkedBlock) ? 0.2f : 0.075f;
+			speed = player.getEntityWorld().getBlockState(new BlockPos(player.posX, player.posY-1,player.posZ)).getBlock().equals(SplatCraftBlocks.inkedBlock) ? 0.2f : 0.05f;
 			
 			
 		}
@@ -79,7 +79,7 @@ public class CommonEventHandler
 				if(player.world.getBlockState(inkPosB.up()).getBlock() != Blocks.AIR)
 					inkPosB = inkPosB.up();
 				
-				speed = 0.8f;
+				speed = 0.4f;
 				
 				SplatCraftUtils.inkBlock(player.world, inkPosA, ItemWeaponBase.getInkColor(weapon));
 				SplatCraftUtils.inkBlock(player.world, inkPosB, ItemWeaponBase.getInkColor(weapon));

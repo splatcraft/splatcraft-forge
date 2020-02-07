@@ -6,11 +6,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -45,7 +47,21 @@ public class BlockInked extends Block
 		else return color.getMapColor();
 		
 	}
-	
+
+	@Override
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+	{
+		if(world.getTileEntity(pos) instanceof TileEntityInkedBlock)
+		{
+			TileEntityInkedBlock te = (TileEntityInkedBlock) world.getTileEntity(pos);
+			IBlockState savedState = te.getSavedState();
+			if(savedState.getBlock() == this)
+				return super.getPickBlock(state, target, world, pos, player);
+			return savedState.getBlock().getPickBlock(savedState, target, world, pos, player);
+		}
+		return super.getPickBlock(state, target, world, pos, player);
+	}
+
 	@Override
 	public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
 	{
