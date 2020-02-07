@@ -13,7 +13,7 @@ public class ParticleInk extends Particle
         this.color = color;
     }
 
-    public ParticleInk(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int color) {
+    public ParticleInk(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int color, float size) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
         this.color = color;
 
@@ -25,7 +25,7 @@ public class ParticleInk extends Particle
         this.particleGreen = (float) (g/255);
         this.particleBlue = (float) (b/255);
 
-        this.particleScale = Math.min(1, Math.max(0, rand.nextFloat()))*5;
+        this.particleScale = Math.min(1, Math.max(0, rand.nextFloat()))*5 * size;
 
         this.particleGravity = 0.1f;
     }

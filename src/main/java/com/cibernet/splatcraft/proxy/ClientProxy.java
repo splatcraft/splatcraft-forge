@@ -1,6 +1,8 @@
 package com.cibernet.splatcraft.proxy;
 
 
+import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
+import com.cibernet.splatcraft.entities.renderers.RenderInkProjectile;
 import com.cibernet.splatcraft.handlers.ClientEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftKeyHandler;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
@@ -10,6 +12,7 @@ import com.cibernet.splatcraft.registries.SplatCraftModelManager;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy
 {
@@ -43,6 +46,8 @@ public class ClientProxy extends CommonProxy
         super.preInit();
         MinecraftForge.EVENT_BUS.register(SplatCraftModelManager.class);
         SplatCraftKeyHandler.instance.registerKeys();
+
+        RenderingRegistry.registerEntityRenderingHandler(EntityInkProjectile.class, manager -> new RenderInkProjectile(manager));
 
     }
 

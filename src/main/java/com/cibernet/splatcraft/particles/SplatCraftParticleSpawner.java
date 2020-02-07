@@ -8,11 +8,16 @@ public class SplatCraftParticleSpawner
 {
     private static Minecraft mc = Minecraft.getMinecraft();
 
-    public static Particle spawnInkParticle(double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int color) {
+    public static Particle spawnInkParticle(double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int color)
+    {
+        return spawnInkParticle(xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, color, 1);
+    }
+
+    public static Particle spawnInkParticle(double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int color, float size) {
         if (mc != null && mc.getRenderViewEntity() != null && mc.effectRenderer != null) {
             int partSetting = mc.gameSettings.particleSetting;
 
-            if (partSetting <= 1 && mc.world.rand.nextInt(partSetting == 1 ? 3 : 6) == 0) {
+            if (partSetting == 1 && mc.world.rand.nextInt(3) == 0) {
                 partSetting = 2;
             }
 
@@ -28,7 +33,7 @@ public class SplatCraftParticleSpawner
                 return null;
             } else {
 
-                particle = new ParticleInk(mc.world, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, color);
+                particle = new ParticleInk(mc.world, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, color, size);
                 mc.effectRenderer.addEffect(particle);
                 return particle;
             }

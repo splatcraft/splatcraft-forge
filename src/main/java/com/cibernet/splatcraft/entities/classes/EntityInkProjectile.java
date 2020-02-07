@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,6 +31,7 @@ import java.util.UUID;
 public class EntityInkProjectile extends Entity implements IProjectile
 {
     private static final DataParameter<Float> COLOR = EntityDataManager.createKey(EntityInkProjectile.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> SIZE = EntityDataManager.createKey(EntityInkProjectile.class, DataSerializers.FLOAT);
     private int xTile;
     private int yTile;
     private int zTile;
@@ -70,7 +72,17 @@ public class EntityInkProjectile extends Entity implements IProjectile
     protected void entityInit()
     {
         dataManager.register(COLOR, (float)0x000FFF);
+        dataManager.register(SIZE, 1f);
     }
+
+    public void setProjectileSize(float size)
+    {
+        dataManager.set(SIZE, size);
+        this.setSize(0.25f*size, 0.25f*size);
+        this.setPosition(this.posX, this.posY, this.posZ);
+    }
+
+    public float getProjectileSize() {return dataManager.get(SIZE);}
 
     /**
      * Called to update the entity's position/logic.
@@ -87,7 +99,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
         {
             float f3 = 0.25F;
 
-            SplatCraftParticleSpawner.spawnInkParticle(this.posX - this.motionX * 0.25D, this.posY - this.motionY * 0.25D, this.posZ - this.motionZ * 0.25D,  this.motionX, this.motionY, this.motionZ, getColor());
+            SplatCraftParticleSpawner.spawnInkParticle(this.posX - this.motionX * 0.25D, this.posY - this.motionY * 0.25D, this.posZ - this.motionZ * 0.25D,  this.motionX, this.motionY, this.motionZ, getColor(), getProjectileSize());
             //this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * 0.25D, this.posY - this.motionY * 0.25D, this.posZ - this.motionZ * 0.25D, this.motionX, this.motionY, this.motionZ);
         }
 
@@ -276,6 +288,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
     public void writeEntityToNBT(NBTTagCompound compound)
     {
         compound.setInteger("color", getColor());
+        compound.setFloat("size", getProjectileSize());
 
         compound.setInteger("xTile", this.xTile);
         compound.setInteger("yTile", this.yTile);
@@ -299,6 +312,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
     public void readEntityFromNBT(NBTTagCompound compound)
     {
         setColor(compound.getInteger("color"));
+        setProjectileSize(compound.getInteger("size"));
         this.xTile = compound.getInteger("xTile");
         this.yTile = compound.getInteger("yTile");
         this.zTile = compound.getInteger("zTile");
@@ -406,9 +420,9 @@ public class EntityInkProjectile extends Entity implements IProjectile
     {
         if (id == 3)
         {
-            for (int i = 0; i < 8; ++i)
+            for (int i = 0; i < 16; ++i)
             {
-                SplatCraftParticleSpawner.spawnInkParticle(this.posX, this.posY, this.posZ, 0, 0, 0, getColor());
+                SplatCraftParticleSpawner.spawnInkParticle(this.posX, this.posY, this.posZ, 0, 0, 0, getColor(), getProjectileSize());
                 //this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
             }
         }
@@ -435,7 +449,8 @@ public class EntityInkProjectile extends Entity implements IProjectile
         if (!this.world.isRemote)
         {
             if(result.typeOfHit.equals(RayTraceResult.Type.BLOCK))
-                SplatCraftUtils.inkBlock(world, result.getBlockPos(), getColor());
+                SplatCraftUtils.createInkExplosion(world, this, result.getBlockPos(), 10 * getProjectileSize(), getColor());
+                //SplatCraftUtils.inkBlock(world, result.getBlockPos(), getColor());
             this.world.setEntityState(this, (byte)3);
             this.setDead();
         }
