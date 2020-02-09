@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
@@ -17,6 +19,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.*;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
@@ -29,12 +32,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRollerBase extends ItemWeaponBase
 {
-    public ItemRollerBase(String unlocName, String registryName)
+    protected double weaponSpeed;
+    protected float flingSpeed;
+    
+    public ItemRollerBase(String unlocName, String registryName, double weaponSpeed, float flingSpeed)
     {
         super(unlocName, registryName);
-        this.maxStackSize = 1;
-        this.setMaxDamage(384);
-        this.setCreativeTab(CreativeTabs.COMBAT);
+        
+        this.weaponSpeed = weaponSpeed;
+        this.flingSpeed = flingSpeed;
+        
         this.addPropertyOverride(new ResourceLocation("unfolded"), new IItemPropertyGetter()
         {
             @SideOnly(Side.CLIENT)
@@ -64,9 +71,23 @@ public class ItemRollerBase extends ItemWeaponBase
         return new ActionResult(EnumActionResult.SUCCESS, stack);
 
     }
-
-
-
+    
+    @Override
+    public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
+    {
+        Multimap<String, AttributeModifier> multimap = HashMultimap.create();
+        if(slot == EntityEquipmentSlot.MAINHAND)
+        {
+            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", getWeaponSpeed(stack), 0));
+        }
+        return multimap;
+    }
+    
+    public double getWeaponSpeed(ItemStack stack)
+    {
+        return weaponSpeed;
+    }
+    
     @Override
     public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
     {
@@ -95,7 +116,7 @@ public class ItemRollerBase extends ItemWeaponBase
 
     @Override
     public float getUseWalkSpeed() {
-        return 0.4f;
+        return 0.65f;
     }
 
     @Override
@@ -106,7 +127,7 @@ public class ItemRollerBase extends ItemWeaponBase
 
             for(int i = -1; i <= 1; i++) {
                 EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack));
-                proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 20*i, 0.6f, 4f);
+                proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 20*i, flingSpeed, 4f);
                 proj.setProjectileSize(0.5f);
                 worldIn.spawnEntity(proj);
             }

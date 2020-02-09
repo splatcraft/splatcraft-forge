@@ -8,6 +8,7 @@ import com.cibernet.splatcraft.entities.renderers.RenderInkProjectile;
 import com.cibernet.splatcraft.handlers.ClientEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftKeyHandler;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
+import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftModelManager;
@@ -21,7 +22,10 @@ import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -36,13 +40,17 @@ public class ClientProxy extends CommonProxy
     {
         
         Minecraft mc = Minecraft.getMinecraft();
+    
+        Item[] weapons = new Item[ItemWeaponBase.weapons.size()];
+        for(int i = 0; i < ItemWeaponBase.weapons.size(); i++)
+            weapons[i] = ItemWeaponBase.weapons.get(i);
         
         mc.getItemColors().registerItemColorHandler((stack, tintIndex) -> {
             //if(tintIndex == 0)
                 return ItemWeaponBase.getInkColor(stack);
             
             //return 0;
-        }, SplatCraftItems.splatRoller, SplatCraftItems.splattershot, SplatCraftItems.splatCharger);
+        }, weapons);
         
         mc.getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
             if(!(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock))
@@ -55,6 +63,16 @@ public class ClientProxy extends CommonProxy
         }, SplatCraftBlocks.inkedBlock);
         
     }
+    
+    
+    public static EntityPlayer getClientPlayer() {
+        return FMLClientHandler.instance().getClientPlayerEntity();
+    }
+    public static void addScheduledTask(Runnable runnable) {
+    Minecraft.getMinecraft().addScheduledTask(runnable);
+}
+    
+    
     
     @Override
     public void preInit()
@@ -73,6 +91,7 @@ public class ClientProxy extends CommonProxy
         super.init();
         registerRenderers();
         MinecraftForge.EVENT_BUS.register(ClientEventHandler.instance);
+        MinecraftForge.EVENT_BUS.register(SplatCraftChannelHandler.instance);
     }
 
     @Override

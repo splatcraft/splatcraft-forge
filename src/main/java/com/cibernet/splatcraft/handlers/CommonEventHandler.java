@@ -2,6 +2,8 @@ package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
+import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
+import com.cibernet.splatcraft.network.SplatCraftPacket;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
@@ -37,6 +39,7 @@ public class CommonEventHandler
 		EntityPlayer player = event.player;
 		
 		//TODO move this to clientside
+		/*
 		if(SplatCraftKeyHandler.squidKey.isKeyDown())
 		{
 			SplatCraftUtils.setEntitySize(player, 0.6f, 0.6f);
@@ -47,6 +50,7 @@ public class CommonEventHandler
 			
 			
 		}
+		*/
 		
 		//System.out.println();
 		
@@ -74,11 +78,7 @@ public class CommonEventHandler
 	@SubscribeEvent
 	public void onLeftClick(PlayerInteractEvent.LeftClickEmpty event)
 	{
-		EntityPlayer player = event.getEntityPlayer();
-		ItemStack stack = player.getHeldItem(event.getHand());
-
-		if(stack.getItem() instanceof ItemWeaponBase)
-			((ItemWeaponBase)stack.getItem()).onItemLeftClick(player.world, player, stack);
+		SplatCraftChannelHandler.sendToServer(SplatCraftPacket.makePacket(SplatCraftPacket.Type.WEAPON_LEFT_CLICK, event.getHand()));
 	}
 	
 }

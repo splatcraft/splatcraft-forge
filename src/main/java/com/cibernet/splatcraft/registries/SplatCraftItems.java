@@ -19,7 +19,7 @@ public class SplatCraftItems
     public static ArrayList<Block> itemBlocks = new ArrayList<>();
 
     public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot", 1f, 0.5f, 10f, 5);
-    public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller");
+    public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.4f);
     public static final Item splatCharger = new ItemShooterBase("splatCharger", "splat_charger", 0.5f, 5f, 2f, 50, false);
 
     @SubscribeEvent
