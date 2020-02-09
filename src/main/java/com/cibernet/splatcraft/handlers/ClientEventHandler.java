@@ -2,7 +2,9 @@ package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
+import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -22,7 +24,7 @@ public class ClientEventHandler
 	{
 		
 		EntityPlayer player = event.getEntityPlayer();
-		if(SplatCraftKeyHandler.squidKey.isKeyDown())
+		if(SplatCraftPlayerData.getIsSquid(player))
 		{
 			event.setCanceled(true);
 			
@@ -38,5 +40,9 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event)
 	{
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		if(SplatCraftKeyHandler.squidKey.isPressed())
+			SplatCraftPlayerData.setIsSquid(player, !SplatCraftPlayerData.getIsSquid(player));
 	}
+	
 }

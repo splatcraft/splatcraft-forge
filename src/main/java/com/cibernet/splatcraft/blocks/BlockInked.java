@@ -20,11 +20,11 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class BlockInked extends Block
+public class BlockInked extends BlockInkColor
 {
 	public BlockInked()
 	{
-		super(Material.CLAY, MapColor.CLAY);
+		super(Material.CLAY);
 		setUnlocalizedName("inkedBlock");
 		setRegistryName("inked_block");
 		setTickRandomly(true);

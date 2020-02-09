@@ -7,6 +7,7 @@ import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
 import com.cibernet.splatcraft.registries.SplatCraftEntities;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
+import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -21,6 +22,7 @@ public class CommonProxy
         SplatCraftEntities.registerEntities();
 
         GameRegistry.registerTileEntity(TileEntityInkedBlock.class, SplatCraft.MODID+ ":inked_block");
+        GameRegistry.registerTileEntity(TileEntityColor.class, SplatCraft.MODID+ ":ink_color");
     }
 
     public void init()

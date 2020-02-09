@@ -68,20 +68,19 @@ public class SplatCraftPlayerData
 		
 		private void readFromNBT(NBTTagCompound nbt)
 		{
-			if(nbt.hasKey("uuid"))
+			if(nbt.hasUniqueId("uuid"))
 				this.player = nbt.getUniqueId("uuid");
 			else return;
 			
 			if(nbt.hasKey("inkColor"))
 				this.inkColor = nbt.getInteger("inkColor");
 			if(nbt.hasKey("isSquid"))
-				this.inkColor = nbt.getInteger("isSquid");
+				this.isSquid = nbt.getBoolean("isSquid");
+			
 		}
 		
 		private NBTTagCompound writeToNBT(NBTTagCompound nbt)
 		{
-			nbt = nbt.copy();
-			
 			nbt.setUniqueId("uuid", player);
 			nbt.setInteger("inkColor", inkColor);
 			nbt.setBoolean("isSquid", isSquid);

@@ -2,9 +2,12 @@ package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
+import com.cibernet.splatcraft.registries.SplatCraftBlocks;
+import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
+import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -27,8 +30,6 @@ public class ItemWeaponBase extends Item
 {
 	public static List<ItemWeaponBase> weapons = new ArrayList<>();
 	
-	public static int colIndex = 0;
-
 	public ItemWeaponBase(String unlocName, String registryName)
 	{
 		setUnlocalizedName(unlocName);
@@ -41,10 +42,10 @@ public class ItemWeaponBase extends Item
 	public static int getInkColor(ItemStack stack)
 	{
 		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("color"))
-			return InkColors.ORANGE.getColor();
+			return 0xFAFAFA;
 		return stack.getTagCompound().getInteger("color");
 	}
-	public static boolean isInkLocked(ItemStack stack)
+	public static boolean isColorLocked(ItemStack stack)
 	{
 		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("colorLocked"))
 			return false;
@@ -88,24 +89,14 @@ public class ItemWeaponBase extends Item
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
 	{
-		
-		if(worldIn.isRemote || !playerIn.isSneaking()) return super.onItemRightClick(worldIn, playerIn, handIn);
-		
-		colIndex++;
-		if(colIndex >= InkColors.values().length)
-			colIndex = 0;
-		
 		ItemStack stack = playerIn.getHeldItem(handIn);
-		
-		setInkColor(stack, InkColors.values()[colIndex].getColor());
-		
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 	
 	@Override
 	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
 	{
-		if(isInkLocked(stack) || !(entityIn instanceof EntityPlayer))
+		if(isColorLocked(stack) || !(entityIn instanceof EntityPlayer))
 			return;
 		
 		setInkColor(stack, SplatCraftPlayerData.getInkColor((EntityPlayer) entityIn));
@@ -116,12 +107,26 @@ public class ItemWeaponBase extends Item
 	@Override
 	public boolean onEntityItemUpdate(EntityItem entityItem)
 	{
+		BlockPos pos = new BlockPos(entityItem.posX, entityItem.posY-1, entityItem.posZ);
 		
-		if(entityItem.world.getBlockState(new BlockPos(entityItem.posX, entityItem.posY-1, entityItem.posZ)).getBlock().equals(Blocks.ANVIL))
+		if(entityItem.world.getBlockState(pos).getBlock().equals(SplatCraftBlocks.inkwell))
 		{
 			ItemStack stack = entityItem.getItem();
-			setInkColor(stack, InkColors.BLUE.getColor());
-			setColorLocked(stack, true);
+			if(entityItem.world.getTileEntity(pos) instanceof TileEntityColor)
+			{
+				TileEntityColor te = (TileEntityColor) entityItem.world.getTileEntity(pos);
+				
+				if(getInkColor(stack) != te.getColor() || !isColorLocked(stack))
+				{
+					setInkColor(stack, te.getColor());
+					setColorLocked(stack, true);
+				}
+			}
+			else if (entityItem.world.getBlockState(pos.up()).getMaterial().equals(Material.WATER) && isColorLocked(stack))
+			{
+				setInkColor(stack, 0xFAFAFA);
+				setColorLocked(stack, false);
+			}
 		}
 		
 		return super.onEntityItemUpdate(entityItem);

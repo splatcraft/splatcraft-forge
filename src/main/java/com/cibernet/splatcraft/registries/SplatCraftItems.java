@@ -30,7 +30,7 @@ public class SplatCraftItems
         registerItem(registry, splattershot);
         registerItem(registry, splatRoller);
         registerItem(registry, splatCharger);
-
+    
         registerItemBlocks(registry);
     }
 

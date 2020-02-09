@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.proxy;
 
 
+import com.cibernet.splatcraft.blocks.BlockInkColor;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelArmorOverride;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
@@ -12,7 +13,9 @@ import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftModelManager;
+import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -44,6 +47,9 @@ public class ClientProxy extends CommonProxy
         Item[] weapons = new Item[ItemWeaponBase.weapons.size()];
         for(int i = 0; i < ItemWeaponBase.weapons.size(); i++)
             weapons[i] = ItemWeaponBase.weapons.get(i);
+        Block[] inkColorBlocks = new Block[BlockInkColor.blocks.size()];
+        for(int i = 0; i < BlockInkColor.blocks.size(); i++)
+            inkColorBlocks[i] = BlockInkColor.blocks.get(i);
         
         mc.getItemColors().registerItemColorHandler((stack, tintIndex) -> {
             //if(tintIndex == 0)
@@ -53,14 +59,14 @@ public class ClientProxy extends CommonProxy
         }, weapons);
         
         mc.getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
-            if(!(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock))
+            if(!(worldIn.getTileEntity(pos) instanceof TileEntityColor))
                 return 0;
             
-            TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
+            TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
             
             return te.getColor();
             
-        }, SplatCraftBlocks.inkedBlock);
+        }, inkColorBlocks);
         
     }
     

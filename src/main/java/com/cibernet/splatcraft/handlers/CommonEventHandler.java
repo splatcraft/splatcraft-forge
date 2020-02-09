@@ -6,6 +6,8 @@ import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
 import com.cibernet.splatcraft.network.SplatCraftPacket;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
+import com.cibernet.splatcraft.tileentities.TileEntityColor;
+import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.block.BlockSoulSand;
 import net.minecraft.block.BlockWeb;
@@ -37,20 +39,24 @@ public class CommonEventHandler
 	{
 		float speed = 0.1f;
 		EntityPlayer player = event.player;
+		BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
 		
-		//TODO move this to clientside
-		/*
-		if(SplatCraftKeyHandler.squidKey.isKeyDown())
+		if(SplatCraftPlayerData.getIsSquid(player))
 		{
 			SplatCraftUtils.setEntitySize(player, 0.6f, 0.6f);
 			
-			float f = event.player.rotationYaw * 0.017453292F;
+			speed = SplatCraftUtils.canSquidHide(player.world, player) ? 0.2f : 0.05f;
 			
-			speed = player.getEntityWorld().getBlockState(new BlockPos(player.posX, player.posY-1,player.posZ)).getBlock().equals(SplatCraftBlocks.inkedBlock) ? 0.2f : 0.05f;
-			
-			
+			if(player.world.getBlockState(pos.down()).getBlock().equals(SplatCraftBlocks.inkwell))
+				if(player.world.getTileEntity(pos.down()) instanceof TileEntityColor)
+				{
+					TileEntityColor te = (TileEntityColor) player.world.getTileEntity(pos.down());
+					
+					if(SplatCraftPlayerData.getInkColor(player) != te.getColor())
+						SplatCraftPlayerData.setInkColor(player, te.getColor());
+				}
 		}
-		*/
+		
 		
 		//System.out.println();
 		
@@ -73,8 +79,13 @@ public class CommonEventHandler
 			player.capabilities.setPlayerWalkSpeed(speed);
 	}
 
-
-	//TODO use packets to communicate client > server
+	@SubscribeEvent
+	public void onInteract(PlayerInteractEvent event)
+	{
+		if(SplatCraftPlayerData.getIsSquid(event.getEntityPlayer()) && event.isCancelable())
+			event.setCanceled(true);
+	}
+	
 	@SubscribeEvent
 	public void onLeftClick(PlayerInteractEvent.LeftClickEmpty event)
 	{

@@ -1,10 +1,12 @@
 package com.cibernet.splatcraft.utils;
 
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
+import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -38,6 +40,15 @@ public class SplatCraftUtils
 		}
 	}
 
+	public static boolean canSquidHide(World worldIn, EntityPlayer playerIn)
+	{
+		BlockPos pos = new BlockPos(playerIn.posX, playerIn.posY-1, playerIn.posZ);
+		
+		if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
+			return ((TileEntityColor)worldIn.getTileEntity(pos)).getColor() == SplatCraftPlayerData.getInkColor(playerIn);
+		return false;
+	}
+	
 	/**
 	 * Creates an explosion as determined by this creeper's power and explosion radius.
 	 */

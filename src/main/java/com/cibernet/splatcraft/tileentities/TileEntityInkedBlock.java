@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
-public class TileEntityInkedBlock extends TileEntity
+public class TileEntityInkedBlock extends TileEntityColor
 {
 	private IBlockState savedState = Blocks.STONE.getDefaultState();
 	private int color = 0x000FFF;
@@ -22,9 +22,6 @@ public class TileEntityInkedBlock extends TileEntity
 	{
 		
 		super.readFromNBT(compound);
-
-		if(compound.hasKey("color"))
-			color = compound.getInteger("color");
 		
 		Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(compound.getString("savedBlock")));
 		int meta = compound.getInteger("savedMeta");
@@ -35,7 +32,6 @@ public class TileEntityInkedBlock extends TileEntity
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound)
 	{
-		compound.setInteger("color", color);
 		
 		compound.setString("savedBlock", savedState.getBlock().getRegistryName().toString());
 		compound.setInteger("savedMeta", savedState.getBlock().getMetaFromState(savedState));
@@ -67,13 +63,6 @@ public class TileEntityInkedBlock extends TileEntity
 		return this;
 	}
 
-	public TileEntityInkedBlock setColor(int color)
-	{
-		this.color = color;
-		return this;
-	}
-
 	public IBlockState getSavedState() {return savedState;}
-	public int getColor() {return color;}
 
 }
