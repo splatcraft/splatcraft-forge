@@ -21,6 +21,7 @@ public class SplatCraftItems
     public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot", 1f, 0.5f, 10f, 5);
     public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.4f);
     public static final Item splatCharger = new ItemShooterBase("splatCharger", "splat_charger", 0.5f, 5f, 2f, 50, false);
+    public static final Item splattershotJr = new ItemShooterBase("splattershotJr", "splattershot_jr", 1f, 0.3f, 3.5f, 4);
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
@@ -30,6 +31,7 @@ public class SplatCraftItems
         registerItem(registry, splattershot);
         registerItem(registry, splatRoller);
         registerItem(registry, splatCharger);
+        registerItem(registry, splattershotJr);
     
         registerItemBlocks(registry);
     }
