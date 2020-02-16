@@ -28,7 +28,7 @@ public class ClientEventHandler
 		{
 			event.setCanceled(true);
 			
-			if(!player.getEntityWorld().getBlockState(new BlockPos(player.posX, player.posY-1, player.posZ)).getBlock().equals(SplatCraftBlocks.inkedBlock))
+			if(!SplatCraftUtils.canSquidHide(player.world, player))
 			{
 				RenderInklingSquid render = new RenderInklingSquid(event.getRenderer().getRenderManager());
 				render.doRender(player, event.getX(), event.getY(), event.getZ(), player.rotationYaw, event.getPartialRenderTick());

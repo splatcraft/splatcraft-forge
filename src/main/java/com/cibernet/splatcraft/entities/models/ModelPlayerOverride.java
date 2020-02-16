@@ -5,11 +5,13 @@ import com.cibernet.splatcraft.items.ItemShooterBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumHandSide;
 
 public class ModelPlayerOverride extends ModelPlayer
 {
@@ -44,29 +46,54 @@ public class ModelPlayerOverride extends ModelPlayer
 
 		if(player.getItemInUseCount() > 0)
 		{
-			if (player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemShooterBase) {
-				this.bipedRightArm.rotateAngleY = -0.1F + this.bipedHead.rotateAngleY;
-				this.bipedLeftArm.rotateAngleY = 0.1F + this.bipedHead.rotateAngleY + 0.4F;
-				this.bipedRightArm.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
-				this.bipedLeftArm.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
-
-				this.bipedLeftArmwear.rotateAngleX = this.bipedLeftArm.rotateAngleX;
-				this.bipedLeftArmwear.rotateAngleY = this.bipedLeftArm.rotateAngleY;
-				this.bipedRightArmwear.rotateAngleY = this.bipedRightArm.rotateAngleY;
-				this.bipedRightArmwear.rotateAngleX = this.bipedRightArm.rotateAngleX;
+			
+			EnumHandSide handSide = getMainHand(player).opposite();
+			ModelRenderer mainHand = getArmForSide(handSide);
+			ModelRenderer offHand = getArmForSide(handSide.opposite());
+			EnumAnimType type = EnumAnimType.NONE;
+			
+			if (player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemShooterBase)
+				type = EnumAnimType.SHOOTER;
+			else if (player.getHeldItem(EnumHand.OFF_HAND).getItem() instanceof ItemShooterBase)
+			{
+				type = EnumAnimType.SHOOTER;
+				handSide = handSide.opposite();
+				mainHand = getArmForSide(handSide);
+				offHand = getArmForSide(handSide.opposite());
 			}
-			if (player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemRollerBase) {
-				this.bipedRightArm.rotateAngleX = 0.1F * 0.5F - ((float)Math.PI / 10F);
-				this.bipedRightArm.rotateAngleY = 0.0F;
-				this.bipedRightArm.rotateAngleZ = 0.0F;
-				//this.bipedLeftArm.rotateAngleY = 0.1F + this.bipedHead.rotateAngleY + 0.4F;
-				//this.bipedLeftArm.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
-
-				this.bipedLeftArmwear.rotateAngleX = this.bipedLeftArm.rotateAngleX;
-				this.bipedLeftArmwear.rotateAngleY = this.bipedLeftArm.rotateAngleY;
-				this.bipedRightArmwear.rotateAngleY = this.bipedRightArm.rotateAngleY;
-				this.bipedRightArmwear.rotateAngleX = this.bipedRightArm.rotateAngleX;
+			if (player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemRollerBase)
+				type = EnumAnimType.ROLLER;
+			else if (player.getHeldItem(EnumHand.OFF_HAND).getItem() instanceof ItemRollerBase)
+			{
+				type = EnumAnimType.ROLLER;
+				handSide = handSide.opposite();
+				mainHand = getArmForSide(handSide);
+				offHand = getArmForSide(handSide.opposite());
 			}
+			
+			switch(type)
+			 {
+			 	case SHOOTER:
+					mainHand.rotateAngleY = -0.1F + this.bipedHead.rotateAngleY;
+					mainHand.rotateAngleY = 0.1F + this.bipedHead.rotateAngleY + 0.4F;
+					mainHand.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
+					mainHand.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
+				break;
+			
+			 	case ROLLER:
+					mainHand.rotateAngleX = 0.1F * 0.5F - ((float)Math.PI / 10F);
+					mainHand.rotateAngleY = 0.0F;
+					mainHand.rotateAngleZ = 0.0F;
+					//this.bipedLeftArm.rotateAngleY = 0.1F + this.bipedHead.rotateAngleY + 0.4F;
+					//this.bipedLeftArm.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
+				break;
+			}
+			
+			this.bipedLeftArmwear.rotateAngleX = this.bipedLeftArm.rotateAngleX;
+			this.bipedLeftArmwear.rotateAngleY = this.bipedLeftArm.rotateAngleY;
+			this.bipedRightArmwear.rotateAngleY = this.bipedRightArm.rotateAngleY;
+			this.bipedRightArmwear.rotateAngleX = this.bipedRightArm.rotateAngleX;
+			
 			/*
 			if (isClient) {
 				if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
@@ -82,6 +109,13 @@ public class ModelPlayerOverride extends ModelPlayer
 			}
 			*/
 		}
+	}
+	
+	private enum EnumAnimType
+	{
+		NONE,
+		SHOOTER,
+		ROLLER
 	}
 	
 }

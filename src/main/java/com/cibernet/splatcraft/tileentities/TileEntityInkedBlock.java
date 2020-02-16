@@ -43,20 +43,6 @@ public class TileEntityInkedBlock extends TileEntityColor
 		return this.writeToNBT(new NBTTagCompound());
 	}
 
-	@Nullable
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(this.getPos(), 2, this.getUpdateTag());
-	}
-
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		this.handleUpdateTag(pkt.getNbtCompound());
-		if (this.world != null) {
-			IBlockState state = this.world.getBlockState(this.pos);
-			this.world.notifyBlockUpdate(this.pos, state, state, 2);
-		}
-
-	}
-
 	public TileEntityInkedBlock setSavedState(IBlockState state)
 	{
 		this.savedState = state;

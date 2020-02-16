@@ -76,9 +76,6 @@ public class ItemWeaponBase extends Item
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
-		if(playerIn.isSneaking())
-			return EnumActionResult.FAIL;
-		
 		ItemStack stack = playerIn.getHeldItem(hand);
 
 		SplatCraftUtils.inkBlock(worldIn, pos, getInkColor(stack));
@@ -109,9 +106,9 @@ public class ItemWeaponBase extends Item
 	{
 		BlockPos pos = new BlockPos(entityItem.posX, entityItem.posY-1, entityItem.posZ);
 		
+		ItemStack stack = entityItem.getItem();
 		if(entityItem.world.getBlockState(pos).getBlock().equals(SplatCraftBlocks.inkwell))
 		{
-			ItemStack stack = entityItem.getItem();
 			if(entityItem.world.getTileEntity(pos) instanceof TileEntityColor)
 			{
 				TileEntityColor te = (TileEntityColor) entityItem.world.getTileEntity(pos);
@@ -122,11 +119,11 @@ public class ItemWeaponBase extends Item
 					setColorLocked(stack, true);
 				}
 			}
-			else if (entityItem.world.getBlockState(pos.up()).getMaterial().equals(Material.WATER) && isColorLocked(stack))
-			{
-				setInkColor(stack, 0xFAFAFA);
-				setColorLocked(stack, false);
-			}
+		}
+		else if (entityItem.world.getBlockState(pos.up()).getMaterial().equals(Material.WATER) && isColorLocked(stack))
+		{
+			setInkColor(stack, 0xFAFAFA);
+			setColorLocked(stack, false);
 		}
 		
 		return super.onEntityItemUpdate(entityItem);
