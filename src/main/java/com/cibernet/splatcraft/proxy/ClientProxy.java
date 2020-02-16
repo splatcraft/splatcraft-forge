@@ -52,14 +52,14 @@ public class ClientProxy extends CommonProxy
             inkColorBlocks[i] = BlockInkColor.blocks.get(i);
         
         mc.getItemColors().registerItemColorHandler((stack, tintIndex) -> {
-            //if(tintIndex == 0)
+            if(tintIndex == 0)
                 return ItemWeaponBase.getInkColor(stack);
             
-            //return 0;
+            return 0;
         }, weapons);
         
         mc.getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
-            if(!(worldIn.getTileEntity(pos) instanceof TileEntityColor))
+            if(tintIndex != 0 || !(worldIn.getTileEntity(pos) instanceof TileEntityColor))
                 return 0;
             
             TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);

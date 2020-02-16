@@ -1,7 +1,12 @@
 package com.cibernet.splatcraft.tileentities;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+
+import javax.annotation.Nullable;
 
 public class TileEntityColor extends TileEntity
 {
@@ -32,4 +37,25 @@ public class TileEntityColor extends TileEntity
 	}
 	
 	public int getColor() {return color;}
+	
+	
+	public NBTTagCompound getUpdateTag() {
+		return this.writeToNBT(new NBTTagCompound());
+	}
+	
+	@Nullable
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(this.getPos(), 2, this.getUpdateTag());
+	}
+	
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		this.handleUpdateTag(pkt.getNbtCompound());
+		if (this.world != null) {
+			IBlockState state = this.world.getBlockState(this.pos);
+			this.world.notifyBlockUpdate(this.pos, state, state, 2);
+		}
+		
+	}
+	
+	
 }
