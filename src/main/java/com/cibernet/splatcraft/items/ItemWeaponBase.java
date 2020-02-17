@@ -7,6 +7,7 @@ import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
+import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -34,7 +35,7 @@ public class ItemWeaponBase extends Item
 	{
 		setUnlocalizedName(unlocName);
 		setRegistryName(registryName);
-		setCreativeTab(CreativeTabs.COMBAT);
+		setCreativeTab(TabSplatCraft.main);
 		setMaxStackSize(1);
 		weapons.add(this);
 	}
