@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.proxy;
 
 
 import com.cibernet.splatcraft.blocks.BlockInkColor;
+import com.cibernet.splatcraft.blocks.BlockInkwell;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelArmorOverride;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
@@ -26,6 +27,7 @@ import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -57,7 +59,14 @@ public class ClientProxy extends CommonProxy
             
             return 0;
         }, weapons);
-        
+
+        mc.getItemColors().registerItemColorHandler((stack, tintIndex) -> {
+            if(tintIndex == 0)
+                return BlockInkwell.getInkColor(stack);
+
+            return 0;
+        }, Item.getItemFromBlock(SplatCraftBlocks.inkwell));
+
         mc.getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
             if(tintIndex != 0 || !(worldIn.getTileEntity(pos) instanceof TileEntityColor))
                 return 0;
