@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.items.ItemInkwell;
 import com.cibernet.splatcraft.items.ItemRollerBase;
 import com.cibernet.splatcraft.items.ItemShooterBase;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
+import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -19,6 +20,8 @@ public class SplatCraftItems
 {
     public static ArrayList<Block> itemBlocks = new ArrayList<>();
 
+    public static final Item powerEgg = new Item().setUnlocalizedName("powerEgg").setRegistryName("power_egg").setCreativeTab(TabSplatCraft.main);
+
     public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot", 1f, 0.5f, 10f, 5);
     public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.4f);
     public static final Item splatCharger = new ItemShooterBase("splatCharger", "splat_charger", 0.5f, 5f, 2f, 50, false);
@@ -29,6 +32,8 @@ public class SplatCraftItems
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
         IForgeRegistry<Item> registry = event.getRegistry();
+
+        registerItem(registry, powerEgg);
 
         registerItem(registry, splattershot);
         registerItem(registry, splatRoller);
