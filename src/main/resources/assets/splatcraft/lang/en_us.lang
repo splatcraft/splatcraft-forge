@@ -3,6 +3,9 @@ itemGroup.tabSplatCraft=SplatCraft
 tile.inkwell.name=Inkwell
 tile.inkedBlock.name=Inked Block
 
+tile.powerEggBlock.name=Power Egg Block
+tile.sardiniumBlock.name=Block of Sardinium
+
 tile.oreSardinium.name=Sardinium Ore
 
 item.powerEgg.name=Power Egg
