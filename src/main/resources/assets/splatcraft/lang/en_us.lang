@@ -1,0 +1,22 @@
+itemGroup.tabSplatCraft=SplatCraft
+
+tile.inkwell.name=Inkwell
+tile.inkedBlock.name=Inked Block
+
+item.splattershot.name=Splattershot
+item.splattershotJr.name=Splattershot Jr.
+item.splattershotPro.name=Splattershot Pro
+item.splattershot2.name=Splattershot 2
+item.aerosprayMg.name=Aerospray MG
+
+item.splatCharger.name=Splat Charger
+item.splatterscope.name=Splatterscope
+item.eLiter.name=E-Liter 4K
+
+item.splatRoller.name=Splat Roller
+item.splatRoller2.name=Splat Roller2
+item.inkbrush.name=Inkbrush
+item.octobrush.name=Octobrush
+
+item.splatDualies.name=Splat Dualies
+item.dualieSquelchers.name=Dualie Squelchers
