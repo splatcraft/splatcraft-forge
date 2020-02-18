@@ -21,6 +21,7 @@ public class SplatCraftItems
     public static ArrayList<Block> itemBlocks = new ArrayList<>();
 
     public static final Item powerEgg = new Item().setUnlocalizedName("powerEgg").setRegistryName("power_egg").setCreativeTab(TabSplatCraft.main);
+    public static final Item sardinium = new Item().setUnlocalizedName("sardinium").setRegistryName("sardinium").setCreativeTab(TabSplatCraft.main);
 
     public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot", 1f, 0.5f, 10f, 5);
     public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.4f);
@@ -34,6 +35,7 @@ public class SplatCraftItems
         IForgeRegistry<Item> registry = event.getRegistry();
 
         registerItem(registry, powerEgg);
+        registerItem(registry, sardinium);
 
         registerItem(registry, splattershot);
         registerItem(registry, splatRoller);
