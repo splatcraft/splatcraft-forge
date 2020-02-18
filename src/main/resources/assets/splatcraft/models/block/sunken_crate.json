@@ -1,0 +1,7 @@
+{
+	"parent": "block/cube_column",
+	"textures": {
+		"end": "splatcraft:blocks/sunken_crate_top",
+		"side": "splatcraft:blocks/sunken_crate_side"
+	}
+}

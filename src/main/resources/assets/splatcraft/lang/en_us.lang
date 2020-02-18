@@ -1,11 +1,14 @@
 itemGroup.tabSplatCraft=SplatCraft
 
-tile.inkwell.name=Inkwell
 tile.inkedBlock.name=Inked Block
+
+tile.inkwellEmpty.name=Empty Inkwell
+tile.inkwell.name=Inkwell
+
+tile.sunkenCrate.name=Sunken Crate
 
 tile.powerEggBlock.name=Power Egg Block
 tile.sardiniumBlock.name=Block of Sardinium
-
 tile.oreSardinium.name=Sardinium Ore
 
 item.powerEgg.name=Power Egg
@@ -23,7 +26,7 @@ item.splatterscope.name=Splatterscope
 item.eLiter.name=E-Liter 4K
 
 item.splatRoller.name=Splat Roller
-item.splatRoller2.name=Splat Roller2
+item.splatRoller2.name=Splat Roller 2
 item.inkbrush.name=Inkbrush
 item.octobrush.name=Octobrush
 
