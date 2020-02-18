@@ -88,6 +88,12 @@ public class BlockInkwell extends BlockInkColor
 		return EnumBlockRenderType.MODEL;
 	}
 
+	@Override
+	public boolean isFullCube(IBlockState state)
+	{
+		return false;
+	}
+
 	public static int getInkColor(ItemStack stack)
 	{
 		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("color"))
