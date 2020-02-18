@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.handlers;
 
+import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
@@ -19,8 +20,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
+import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -91,5 +96,29 @@ public class CommonEventHandler
 	{
 		SplatCraftChannelHandler.sendToServer(SplatCraftPacket.makePacket(SplatCraftPacket.Type.WEAPON_LEFT_CLICK, event.getHand()));
 	}
-	
+
+	//Loot Table Injector
+	@SubscribeEvent
+	public void onLootTableLoad(LootTableLoadEvent event)
+	{
+		ResourceLocation name = event.getName();
+
+		if(name.equals(LootTableList.GAMEPLAY_FISHING_FISH))
+		{
+			LootEntry entry = new LootEntryTable(new ResourceLocation(SplatCraft.MODID, "inject/fishing_fish"), 5, 2,
+					new LootCondition[0], "fishing_fish");
+			LootPool pool = new LootPool(new LootEntry[] {entry}, new LootCondition[0], new RandomValueRange(1), new RandomValueRange(0,2), "fishing_fish");
+
+			event.getTable().addPool(pool);
+		}
+		else if(name.equals(LootTableList.GAMEPLAY_FISHING_TREASURE))
+		{
+			LootEntry entry = new LootEntryTable(new ResourceLocation(SplatCraft.MODID, "inject/fishing_treasure"), 2, 5,
+					new LootCondition[0], "fishing_treasure");
+			LootPool pool = new LootPool(new LootEntry[] {entry}, new LootCondition[0], new RandomValueRange(1), new RandomValueRange(0,2), "fishing_treasure");
+
+			event.getTable().addPool(pool);
+		}
+
+	}
 }

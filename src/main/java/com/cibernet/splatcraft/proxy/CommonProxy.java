@@ -9,6 +9,7 @@ import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -23,6 +24,7 @@ public class CommonProxy
 
         GameRegistry.registerTileEntity(TileEntityInkedBlock.class, SplatCraft.MODID+ ":inked_block");
         GameRegistry.registerTileEntity(TileEntityColor.class, SplatCraft.MODID+ ":ink_color");
+
     }
 
     public void init()
@@ -30,6 +32,7 @@ public class CommonProxy
         MinecraftForge.EVENT_BUS.register(CommonEventHandler.instance);
         MinecraftForge.EVENT_BUS.register(new SplatCraftSaveHandler());
         SplatCraftChannelHandler.setupChannel();
+        registerSmelting();
     }
 
     public void postInit()
@@ -37,4 +40,8 @@ public class CommonProxy
 
     }
 
+    private void registerSmelting()
+    {
+        GameRegistry.addSmelting(SplatCraftBlocks.oreSardinium, new ItemStack(SplatCraftItems.sardinium), 0.6f);
+    }
 }

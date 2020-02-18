@@ -1,0 +1,15 @@
+{
+    "pools": [
+        {
+            "name": "fishing_treasure",
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "splatcraft:sunken_crate",
+                    "weight": 5
+                }
+            ]
+        }
+    ]
+}

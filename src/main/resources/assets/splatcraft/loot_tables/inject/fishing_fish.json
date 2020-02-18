@@ -1,0 +1,15 @@
+{
+    "pools": [
+        {
+            "name": "fishing_fish",
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "splatcraft:power_egg",
+                    "weight": 15
+                }
+            ]
+        }
+    ]
+}
