@@ -27,8 +27,7 @@ public class ItemPowerEggCan extends Item
     {
         ItemStack stack = playerIn.getHeldItem(handIn);
 
-        Random rand = new Random();
-        ItemStack eggs = new ItemStack(SplatCraftItems.powerEgg, (rand.nextInt(3)+10)*10);
+        ItemStack eggs = new ItemStack(SplatCraftItems.powerEgg, (worldIn.rand.nextInt(4)+1)*10);
         if(worldIn.isRemote)
         {
             if(playerIn.addItemStackToInventory(eggs))
