@@ -16,6 +16,7 @@ import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftModelManager;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
+import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -57,19 +58,26 @@ public class ClientProxy extends CommonProxy
             if(tintIndex == 0)
                 return ItemWeaponBase.getInkColor(stack);
             
-            return 0;
+            return -1;
         }, weapons);
 
         mc.getItemColors().registerItemColorHandler((stack, tintIndex) -> {
             if(tintIndex == 0)
                 return BlockInkwell.getInkColor(stack);
 
-            return 0;
+            return -1;
         }, Item.getItemFromBlock(SplatCraftBlocks.inkwell));
 
         mc.getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
             if(tintIndex != 0 || !(worldIn.getTileEntity(pos) instanceof TileEntityColor))
-                return 0;
+                return -1;
+            
+            if((worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate))
+            {
+                TileEntitySunkenCrate te = (TileEntitySunkenCrate) worldIn.getTileEntity(pos);
+                if(te.getState() == 0)
+                    return -1;
+            }
             
             TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
             
