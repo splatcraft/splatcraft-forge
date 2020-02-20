@@ -2,13 +2,14 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
+		"2": "splatcraft:blocks/inked_block",
 		"end": "splatcraft:blocks/sunken_crate_top",
 		"side": "splatcraft:blocks/sunken_crate_side",
 		"particle": "splatcraft:blocks/sunken_crate_top"
 	},
 	"elements": [
 		{
-			"from": [0, 0, 0],
+			"from": [0, 2, 0],
 			"to": [16, 16, 16],
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#side"},
@@ -17,6 +18,18 @@
 				"west": {"uv": [0, 0, 16, 16], "texture": "#side"},
 				"up": {"uv": [0, 0, 16, 16], "texture": "#end"},
 				"down": {"uv": [0, 0, 16, 16], "texture": "#end"}
+			}
+		},
+		{
+			"from": [0, 0, 0],
+			"to": [16, 2, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 2], "texture": "#2", "tintindex": 0},
+				"east": {"uv": [0, 0, 16, 2], "texture": "#2", "tintindex": 0},
+				"south": {"uv": [0, 0, 16, 2], "texture": "#2", "tintindex": 0},
+				"west": {"uv": [0, 0, 16, 2], "texture": "#2", "tintindex": 0},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#2", "tintindex": 0},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#2", "tintindex": 0}
 			}
 		}
 	]

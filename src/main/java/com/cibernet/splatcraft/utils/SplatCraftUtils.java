@@ -3,13 +3,22 @@ package com.cibernet.splatcraft.utils;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
+import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityFishHook;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootTableList;
+
+import java.util.List;
 
 public class SplatCraftUtils
 {
@@ -79,10 +88,18 @@ public class SplatCraftUtils
 
 			if(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock)
 			{
-					TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
-					te.setColor(color);
-					worldIn.notifyBlockUpdate(pos, state, state, 3);
-					return true;
+				TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
+				te.setColor(color);
+				worldIn.notifyBlockUpdate(pos, state, state, 3);
+				return true;
+			}
+
+			if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
+			{
+				TileEntitySunkenCrate te = (TileEntitySunkenCrate) worldIn.getTileEntity(pos);
+				te.ink(color);
+				worldIn.notifyBlockUpdate(pos, state, state, 3);
+				return true;
 			}
 
 			if(!(worldIn.getTileEntity(pos) == null))
@@ -97,5 +114,20 @@ public class SplatCraftUtils
 			te.setSavedState(state);
 
 			return true;
+	}
+
+	public static void dropItem(World worldIn, BlockPos pos, ItemStack stack, boolean useTileDrops)
+	{
+		boolean doTileDrops = useTileDrops ? worldIn.getGameRules().getBoolean("doTileDrops") : true;
+		if (!worldIn.isRemote && !stack.isEmpty() && doTileDrops && !worldIn.restoringBlockSnapshots) // do not drop items while restoring blockstates, prevents item dupe
+		{
+			float f = 0.5F;
+			double d0 = (double)(worldIn.rand.nextFloat() * 0.5F) + 0.25D;
+			double d1 = (double)(worldIn.rand.nextFloat() * 0.5F) + 0.25D;
+			double d2 = (double)(worldIn.rand.nextFloat() * 0.5F) + 0.25D;
+			EntityItem entityitem = new EntityItem(worldIn, (double)pos.getX() + d0, (double)pos.getY() + d1, (double)pos.getZ() + d2, stack);
+			entityitem.setDefaultPickupDelay();
+			worldIn.spawnEntity(entityitem);
+		}
 	}
 }
