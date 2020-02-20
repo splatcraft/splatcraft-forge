@@ -20,11 +20,12 @@ public class ParticleInk extends Particle
         double r = Math.floor(color / (256*256));
         double g = Math.floor(color / 256) % 256;
         double b = color % 256;
-
-        this.particleRed = (float) (r/255);
-        this.particleGreen = (float) (g/255);
-        this.particleBlue = (float) (b/255);
-
+        
+        this.particleRed = Math.max(5/255f,(float) (r/255) - 5/255f);
+        this.particleGreen = Math.max(5/255f,(float) (g/255) - 5/255f);
+        this.particleBlue = Math.max(5/255f,(float) (b/255) - 5/255f);
+        
+        
         this.particleScale = Math.min(1, Math.max(0, rand.nextFloat()))*5 * size;
 
         this.particleGravity = 0.1f;
