@@ -7,7 +7,16 @@
                 {
                     "type": "item",
                     "name": "splatcraft:power_egg",
-                    "weight": 15
+                    "weight": 30,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 10
+                            }
+                        }
+                    ]
                 }
             ]
         }

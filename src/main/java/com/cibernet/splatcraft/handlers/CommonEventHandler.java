@@ -106,18 +106,22 @@ public class CommonEventHandler
 		if(name.equals(LootTableList.GAMEPLAY_FISHING_FISH))
 		{
 			LootEntry entry = new LootEntryTable(new ResourceLocation(SplatCraft.MODID, "inject/fishing_fish"), 5, 2,
-					new LootCondition[0], "fishing_fish");
-			LootPool pool = new LootPool(new LootEntry[] {entry}, new LootCondition[0], new RandomValueRange(1), new RandomValueRange(0,2), "fishing_fish");
+					new LootCondition[0], SplatCraft.MODID+":fishing_fish");
 
-			event.getTable().addPool(pool);
+			LootPool main = event.getTable().getPool("main");
+
+			if(main != null)
+				main.addEntry(entry);
+			else System.out.println("main is null!");
 		}
 		else if(name.equals(LootTableList.GAMEPLAY_FISHING_TREASURE))
 		{
 			LootEntry entry = new LootEntryTable(new ResourceLocation(SplatCraft.MODID, "inject/fishing_treasure"), 2, 5,
-					new LootCondition[0], "fishing_treasure");
-			LootPool pool = new LootPool(new LootEntry[] {entry}, new LootCondition[0], new RandomValueRange(1), new RandomValueRange(0,2), "fishing_treasure");
+					new LootCondition[0], SplatCraft.MODID+":fishing_treasure");
+			LootPool main = event.getTable().getPool("main");
 
-			event.getTable().addPool(pool);
+			if(main != null)
+				main.addEntry(entry);
 		}
 
 	}
