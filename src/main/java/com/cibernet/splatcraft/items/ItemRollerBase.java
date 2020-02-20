@@ -34,13 +34,19 @@ public class ItemRollerBase extends ItemWeaponBase
 {
     protected double weaponSpeed;
     protected float flingSpeed;
-    
-    public ItemRollerBase(String unlocName, String registryName, double weaponSpeed, float flingSpeed)
+    protected boolean isBrush;
+    protected int rollRadius;
+    protected float rollSpeed;
+
+    public ItemRollerBase(String unlocName, String registryName, double weaponSpeed, float flingSpeed, float rollSpeed, int rollRadius, boolean isBrush)
     {
         super(unlocName, registryName);
         
         this.weaponSpeed = weaponSpeed;
         this.flingSpeed = flingSpeed;
+        this.rollRadius = rollRadius;
+        this.isBrush = isBrush;
+        this.rollSpeed = rollSpeed;
         
         this.addPropertyOverride(new ResourceLocation("unfolded"), new IItemPropertyGetter()
         {
@@ -95,28 +101,35 @@ public class ItemRollerBase extends ItemWeaponBase
         Vec3d fwd = Vec3d.fromPitchYawVector(new Vec2f(0, playerIn.rotationYaw));
         playerIn.getHorizontalFacing();
 
-        double xOff = Math.floor((playerIn.posX + fwd.x) - Math.floor(playerIn.posX + fwd.x)) == 0 ? -1 : 1;
-        double zOff = Math.floor((playerIn.posZ + fwd.z) - Math.floor(playerIn.posZ + fwd.z)) == 0 ? -1 : 1;
+        for(int i = 0; i < rollRadius; i++) {
+            double xOff = i == 0 ? 0 : (Math.ceil((playerIn.posX + fwd.x) - Math.ceil(playerIn.posX + fwd.x)) == 0 ? 1 : -1) * Math.floor(i/2);
+            double zOff = i == 0 ? 0 : (Math.ceil((playerIn.posZ + fwd.z) - Math.ceil(playerIn.posZ + fwd.z)) == 0 ? -1 : 1) * Math.floor(i/2);
 
-        if(playerIn.getHorizontalFacing().equals(EnumFacing.NORTH) || playerIn.getHorizontalFacing().equals(EnumFacing.SOUTH))
-            zOff = 0;
-        else xOff = 0;
+            if(i % 2 == 0)
+            {
+                xOff *= -1;
+                zOff *= -1;
+            }
 
-        BlockPos inkPosA = pos.add(fwd.x * 2, -1, fwd.z * 2);
-        BlockPos inkPosB = pos.add(fwd.x * 2 +xOff, -1, fwd.z * 2 +zOff);
+            if (playerIn.getHorizontalFacing().equals(EnumFacing.NORTH) || playerIn.getHorizontalFacing().equals(EnumFacing.SOUTH))
+                zOff = 0;
+            else xOff = 0;
 
-        if(worldIn.getBlockState(inkPosA.up()).getBlock() != Blocks.AIR)
-            inkPosA = inkPosA.up();
-        if(worldIn.getBlockState(inkPosB.up()).getBlock() != Blocks.AIR)
-            inkPosB = inkPosB.up();
+            BlockPos inkPos = pos.add(fwd.x * 2 + xOff, -1, fwd.z * 2 + zOff);
 
-        SplatCraftUtils.inkBlock(worldIn, inkPosA, ItemWeaponBase.getInkColor(stack));
-        SplatCraftUtils.inkBlock(worldIn, inkPosB, ItemWeaponBase.getInkColor(stack));
+            if (worldIn.getBlockState(inkPos.up()).getBlock() != Blocks.AIR)
+                inkPos = inkPos.up();
+
+            SplatCraftUtils.inkBlock(worldIn, inkPos, ItemWeaponBase.getInkColor(stack));
+
+            System.out.print(Math.ceil(i/2) + " ");
+        }
+        System.out.println();
     }
 
     @Override
     public float getUseWalkSpeed() {
-        return 0.65f;
+        return rollSpeed;
     }
 
     @Override
@@ -125,9 +138,10 @@ public class ItemRollerBase extends ItemWeaponBase
         if(playerIn.getCooledAttackStrength(0) >= 1f)
         {
 
-            for(int i = -1; i <= 1; i++) {
+            for(int i = -1; i <= 1; i++)
+            {
                 EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack));
-                proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 20*i, flingSpeed, 4f);
+                proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw + ((!isBrush) ? 0 : 20*i), isBrush ? 0 : 20*i, flingSpeed, 4f);
                 proj.setProjectileSize(0.5f);
                 worldIn.spawnEntity(proj);
             }
