@@ -1,8 +1,6 @@
 package com.cibernet.splatcraft.registries;
 
-import com.cibernet.splatcraft.blocks.BlockInkColor;
-import com.cibernet.splatcraft.blocks.BlockInked;
-import com.cibernet.splatcraft.blocks.BlockInkwell;
+import com.cibernet.splatcraft.blocks.*;
 import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGlass;
@@ -21,10 +19,10 @@ public class SplatCraftBlocks
     public static Block emptyInkwell = new BlockGlass(Material.GLASS, true).setHardness(0.5f).setCreativeTab(TabSplatCraft.main).setUnlocalizedName("inkwellEmpty").setRegistryName("inkwell_empty");
     public static Block inkwell = new BlockInkwell();
 
-    public static Block sunkenCrate = new Block(Material.WOOD).setCreativeTab(TabSplatCraft.main).setUnlocalizedName("sunkenCrate").setRegistryName("sunken_crate"); //TODO
-    public static Block oreSardinium = new Block(Material.ROCK).setCreativeTab(TabSplatCraft.main).setUnlocalizedName("oreSardinium").setRegistryName("sardinium_ore");
-    
-    public static Block PowerEggBlock = new Block(Material.CLAY, MapColor.getBlockColor(EnumDyeColor.ORANGE)).setHardness(0.2f).setRegistryName("power_egg_block").setUnlocalizedName("powerEggBlock").setCreativeTab(TabSplatCraft.main);
+    public static Block sunkenCrate = new BlockSunkenCrate();
+    public static Block oreSardinium = new BlockOre(1, "oreSardinium", "sardinium_ore");
+
+    public static Block PowerEggBlock = new BlockPowerEggStorage();
     
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
