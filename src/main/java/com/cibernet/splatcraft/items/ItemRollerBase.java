@@ -102,8 +102,8 @@ public class ItemRollerBase extends ItemWeaponBase
         playerIn.getHorizontalFacing();
 
         for(int i = 0; i < rollRadius; i++) {
-            double xOff = i == 0 ? 0 : (Math.ceil((playerIn.posX + fwd.x) - Math.ceil(playerIn.posX + fwd.x)) == 0 ? 1 : -1) * Math.floor(i/2);
-            double zOff = i == 0 ? 0 : (Math.ceil((playerIn.posZ + fwd.z) - Math.ceil(playerIn.posZ + fwd.z)) == 0 ? -1 : 1) * Math.floor(i/2);
+            double xOff = i == 0 ? 0 : (Math.floor((playerIn.posX + fwd.x) - Math.floor(playerIn.posX + fwd.x)) == 0 ? 1 : -1) * Math.ceil(i/2f);
+            double zOff = i == 0 ? 0 : (Math.floor((playerIn.posZ + fwd.z) - Math.floor(playerIn.posZ + fwd.z)) == 0 ? -1 : 1) * Math.ceil(i/2f);
 
             if(i % 2 == 0)
             {
@@ -121,10 +121,7 @@ public class ItemRollerBase extends ItemWeaponBase
                 inkPos = inkPos.up();
 
             SplatCraftUtils.inkBlock(worldIn, inkPos, ItemWeaponBase.getInkColor(stack));
-
-            System.out.print(Math.ceil(i/2) + " ");
         }
-        System.out.println();
     }
 
     @Override
