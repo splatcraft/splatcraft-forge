@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.registries.SplatCraftItems;
+import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
@@ -19,6 +20,7 @@ public class ItemPowerEggCan extends Item
     {
         setUnlocalizedName("powerEggCan");
         setRegistryName("power_egg_can");
+        setCreativeTab(TabSplatCraft.main);
         setMaxStackSize(16);
     }
 
