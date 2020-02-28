@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.tileentities;
 
+import com.cibernet.splatcraft.SplatCraft;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -11,8 +12,11 @@ import javax.annotation.Nullable;
 public class TileEntityColor extends TileEntity
 {
 	
-	private int color = 0x000FFF;
-	
+	private int color = SplatCraft.DEFAULT_INK;
+
+	public TileEntityColor() {}
+	public TileEntityColor(int color) {this.color = color;}
+
 	@Override
 	public void readFromNBT(NBTTagCompound compound)
 	{

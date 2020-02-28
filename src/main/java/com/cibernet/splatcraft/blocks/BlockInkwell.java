@@ -37,6 +37,7 @@ public class BlockInkwell extends BlockInkColor
 		setRegistryName("inkwell");
 		setCreativeTab(TabSplatCraft.main);
 		setHardness(0.5f);
+		canInk = false;
 	}
 
 

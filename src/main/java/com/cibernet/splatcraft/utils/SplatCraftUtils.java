@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.utils;
 
+import com.cibernet.splatcraft.blocks.BlockInkColor;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
@@ -86,9 +87,13 @@ public class SplatCraftUtils
 			if(!state.isFullBlock() || state.isTranslucent() || state.getBlockHardness(worldIn, pos) == -1)
 					return false;
 
-			if(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock)
+			if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
 			{
-				TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
+				if(state.getBlock() instanceof BlockInkColor)
+					if(!((BlockInkColor) state.getBlock()).canInk)
+						return false;
+
+				TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
 				te.setColor(color);
 				worldIn.notifyBlockUpdate(pos, state, state, 3);
 				return true;
@@ -102,7 +107,7 @@ public class SplatCraftUtils
 				return true;
 			}
 
-			if(!(worldIn.getTileEntity(pos) == null))
+			if(worldIn.getTileEntity(pos) != null)
 					return false;
 
 			worldIn.setBlockState(pos, SplatCraftBlocks.inkedBlock.getDefaultState());

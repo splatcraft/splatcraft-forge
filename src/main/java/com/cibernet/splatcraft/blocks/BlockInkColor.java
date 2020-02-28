@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.blocks;
 
+import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import net.minecraft.block.Block;
@@ -18,6 +19,8 @@ public class BlockInkColor extends Block
 {
 	
 	public static List<BlockInkColor> blocks = new ArrayList<>();
+	public boolean canInk = true;
+	public int defaultColor = SplatCraft.DEFAULT_INK;
 	
 	public BlockInkColor(Material materialIn)
 	{
@@ -35,7 +38,7 @@ public class BlockInkColor extends Block
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
-		return new TileEntityColor();
+		return new TileEntityColor(defaultColor);
 	}
 	
 	private static NBTTagCompound checkTagCompound(ItemStack stack) {
