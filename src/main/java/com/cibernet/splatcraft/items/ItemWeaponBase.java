@@ -43,7 +43,7 @@ public class ItemWeaponBase extends Item
 	public static int getInkColor(ItemStack stack)
 	{
 		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("color"))
-			return SplatCraft.DEFAULT_INK;
+			return 0xFAFAFA;
 		return stack.getTagCompound().getInteger("color");
 	}
 	public static boolean isColorLocked(ItemStack stack)

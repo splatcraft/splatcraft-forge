@@ -138,17 +138,12 @@ public class BlockInked extends BlockInkColor
 	@Override
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
 	{
-		//worldIn.setBlockState(pos, Blocks.SAND.getDefaultState(), 3);
-
 		if(worldIn.getBlockState(fromPos).getMaterial().equals(Material.WATER))
 			if(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock)
 			{
 				TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
 				worldIn.setBlockState(pos, te.getSavedState(), 3);
 			}
-
-
-
 	}
 
 	@Override
