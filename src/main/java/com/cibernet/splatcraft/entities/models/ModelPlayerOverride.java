@@ -46,8 +46,8 @@ public class ModelPlayerOverride extends ModelPlayer
 
 		if(player.getItemInUseCount() > 0)
 		{
-			
-			EnumHandSide handSide = getMainHand(player).opposite();
+			EnumHandSide handSide = player.getPrimaryHand();
+			System.out.println(handSide);
 			ModelRenderer mainHand = getArmForSide(handSide);
 			ModelRenderer offHand = getArmForSide(handSide.opposite());
 			EnumAnimType type = EnumAnimType.NONE;
@@ -75,8 +75,6 @@ public class ModelPlayerOverride extends ModelPlayer
 			 {
 			 	case SHOOTER:
 					mainHand.rotateAngleY = -0.1F + this.bipedHead.rotateAngleY;
-					mainHand.rotateAngleY = 0.1F + this.bipedHead.rotateAngleY + 0.4F;
-					mainHand.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
 					mainHand.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
 				break;
 			
