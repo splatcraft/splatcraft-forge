@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.blocks;
 
+import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
@@ -70,7 +71,7 @@ public class BlockInkwell extends BlockInkColor
 	@Override
 	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
-		int color = 0x000fff;
+		int color = SplatCraft.DEFAULT_INK;
 		if(world.getTileEntity(pos) instanceof TileEntityColor)
 			color = ((TileEntityColor)world.getTileEntity(pos)).getColor();
 		return ItemWeaponBase.setInkColor(super.getPickBlock(state, target, world, pos, player), color);
@@ -97,7 +98,7 @@ public class BlockInkwell extends BlockInkColor
 	public static int getInkColor(ItemStack stack)
 	{
 		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("color"))
-			return 0x000FFF;
+			return SplatCraft.DEFAULT_INK;
 		return stack.getTagCompound().getInteger("color");
 	}
 }

@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.utils;
 
+import com.cibernet.splatcraft.SplatCraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -61,7 +62,7 @@ public class SplatCraftPlayerData
 	public static class PlayerData
 	{
 		public UUID player;
-		public int inkColor = 0;
+		public int inkColor = SplatCraft.DEFAULT_INK;
 		public boolean isSquid = false;
 		
 		public PlayerData() {}
