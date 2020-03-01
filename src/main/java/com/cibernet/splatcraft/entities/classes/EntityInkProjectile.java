@@ -2,9 +2,11 @@ package com.cibernet.splatcraft.entities.classes;
 
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
 import com.cibernet.splatcraft.utils.InkColors;
+import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.monster.EntitySlime;
@@ -433,19 +435,17 @@ public class EntityInkProjectile extends Entity implements IProjectile
      */
     protected void onImpact(RayTraceResult result)
     {
-        /* TODO ink damage
+        // TODO ink damage
         if (result.entityHit != null)
         {
             int i = 0;
-
-            if (result.entityHit instanceof EntityLiving)
-            {
-                i = 3;
-            }
-
+            
+            if(result.entityHit instanceof EntityPlayer && SplatCraftPlayerData.getInkColor((EntityPlayer) result.entityHit) != getColor())
+                i = 8;
+            
             result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), (float)i);
         }
-        */
+        
         if (!this.world.isRemote)
         {
             if(result.typeOfHit.equals(RayTraceResult.Type.BLOCK))
