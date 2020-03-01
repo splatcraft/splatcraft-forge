@@ -1,12 +1,15 @@
 package com.cibernet.splatcraft;
 
 
+import com.cibernet.splatcraft.commands.CommandTurfWar;
 import com.cibernet.splatcraft.proxy.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod(name = SplatCraft.NAME, modid = SplatCraft.MODID, version = SplatCraft.VERSION)
 public class SplatCraft
@@ -42,5 +45,11 @@ public class SplatCraft
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		proxy.postInit();
+	}
+	
+	@Mod.EventHandler
+	public void serverStarting(FMLServerStartingEvent event)
+	{
+		event.registerServerCommand(new CommandTurfWar());
 	}
 }
