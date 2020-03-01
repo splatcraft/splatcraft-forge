@@ -18,6 +18,7 @@ public class SplatCraftBlocks
 
     public static Block emptyInkwell = new BlockGlass(Material.GLASS, true).setHardness(0.5f).setCreativeTab(TabSplatCraft.main).setUnlocalizedName("inkwellEmpty").setRegistryName("inkwell_empty");
     public static Block inkwell = new BlockInkwell();
+    public static Block canvas = new BlockCanvas();
 
     public static Block sunkenCrate = new BlockSunkenCrate();
     public static Block oreSardinium = new BlockOre(1, "oreSardinium", "sardinium_ore");
@@ -32,6 +33,7 @@ public class SplatCraftBlocks
         registerBlock(registry, inkedBlock);
         registerBlock(registry, emptyInkwell, true);
         registerBlock(registry, inkwell);
+        registerBlock(registry, canvas, true);
         registerBlock(registry, sunkenCrate, true);
         registerBlock(registry, oreSardinium, true);
         registerBlock(registry, PowerEggBlock, true);

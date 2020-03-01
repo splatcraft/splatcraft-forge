@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.handlers;
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
+import com.cibernet.splatcraft.network.PacketPlayerData;
 import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
 import com.cibernet.splatcraft.network.SplatCraftPacket;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
@@ -57,8 +58,10 @@ public class CommonEventHandler
 				{
 					TileEntityColor te = (TileEntityColor) player.world.getTileEntity(pos.down());
 					
-					if(SplatCraftPlayerData.getInkColor(player) != te.getColor())
+					if(SplatCraftPlayerData.getInkColor(player) != te.getColor()) {
+						SplatCraftChannelHandler.sendToServer(SplatCraftPacket.makePacket(SplatCraftPacket.Type.PLAYER_DATA, PacketPlayerData.Data.COLOR, te.getColor()));
 						SplatCraftPlayerData.setInkColor(player, te.getColor());
+					}
 				}
 		}
 		
@@ -89,12 +92,6 @@ public class CommonEventHandler
 	{
 		if(SplatCraftPlayerData.getIsSquid(event.getEntityPlayer()) && event.isCancelable())
 			event.setCanceled(true);
-	}
-	
-	@SubscribeEvent
-	public void onLeftClick(PlayerInteractEvent.LeftClickEmpty event)
-	{
-		SplatCraftChannelHandler.sendToServer(SplatCraftPacket.makePacket(SplatCraftPacket.Type.WEAPON_LEFT_CLICK, event.getHand()));
 	}
 
 	//Loot Table Injector

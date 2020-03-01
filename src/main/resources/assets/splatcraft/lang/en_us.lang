@@ -4,6 +4,7 @@ tile.inkedBlock.name=Inked Block
 
 tile.inkwellEmpty.name=Empty Inkwell
 tile.inkwell.name=Inkwell
+tile.canvas.name=Canvas
 
 tile.sunkenCrate.name=Sunken Crate
 
