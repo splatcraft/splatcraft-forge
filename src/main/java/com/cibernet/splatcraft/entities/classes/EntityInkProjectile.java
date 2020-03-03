@@ -439,11 +439,15 @@ public class EntityInkProjectile extends Entity implements IProjectile
         if (result.entityHit != null)
         {
             int i = 0;
-            
+
             if(result.entityHit instanceof EntityPlayer && SplatCraftPlayerData.getInkColor((EntityPlayer) result.entityHit) != getColor())
+            {
                 i = 8;
+            }
             
             result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), (float)i);
+
+            SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), 2 * getProjectileSize(), getColor());
         }
         
         if (!this.world.isRemote)
