@@ -11,6 +11,7 @@ import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -139,10 +140,7 @@ public class ItemWeaponBase extends Item
 	{
 	}
 
-	public float getUseWalkSpeed()
-	{
-		return 0.5f;
-	}
+	public AttributeModifier getSpeedModifier() {return null;}
 
 	public void onItemLeftClick(World world, EntityPlayer player, ItemStack stack)
 	{

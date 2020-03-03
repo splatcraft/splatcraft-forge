@@ -32,13 +32,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRollerBase extends ItemWeaponBase
 {
+    private final AttributeModifier SPEED_MODIFIER;
+
     protected double weaponSpeed;
     protected float flingSpeed;
     protected boolean isBrush;
     protected int rollRadius;
     protected float rollSpeed;
 
-    public ItemRollerBase(String unlocName, String registryName, double weaponSpeed, float flingSpeed, float rollSpeed, int rollRadius, boolean isBrush)
+    public ItemRollerBase(String unlocName, String registryName, double weaponSpeed, float flingSpeed, double rollSpeed, int rollRadius, boolean isBrush)
     {
         super(unlocName, registryName);
         
@@ -46,7 +48,8 @@ public class ItemRollerBase extends ItemWeaponBase
         this.flingSpeed = flingSpeed;
         this.rollRadius = rollRadius;
         this.isBrush = isBrush;
-        this.rollSpeed = rollSpeed;
+
+        SPEED_MODIFIER = (new AttributeModifier( "Rolling speed boost", rollSpeed-1d, 2)).setSaved(false);
         
         this.addPropertyOverride(new ResourceLocation("unfolded"), new IItemPropertyGetter()
         {
@@ -125,8 +128,8 @@ public class ItemRollerBase extends ItemWeaponBase
     }
 
     @Override
-    public float getUseWalkSpeed() {
-        return rollSpeed;
+    public AttributeModifier getSpeedModifier() {
+        return SPEED_MODIFIER;
     }
 
     @Override

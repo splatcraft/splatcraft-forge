@@ -16,7 +16,9 @@ import net.minecraft.block.BlockWeb;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -35,56 +37,76 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class CommonEventHandler
 {
 
-	private static final AttributeModifier SPRINTING_SPEED_BOOST = (new AttributeModifier( "Sprinting speed boost", 2D, 2)).setSaved(false);
+	public static final AttributeModifier IN_USE_SPEED_BOOST = (new AttributeModifier( "Weapon use speed boost", 4D, 2)).setSaved(false);
 
+	private static final AttributeModifier SQUID_LAND_SPEED = (new AttributeModifier( "Squid in land speed boost", -0.4D, 2)).setSaved(false);
+	private static final AttributeModifier SQUID_SWIM_SPEED = (new AttributeModifier( "Squid swim speed boost", 1.25D, 2)).setSaved(false);
 
 	public static final CommonEventHandler instance = new CommonEventHandler();
 	
 	@SubscribeEvent
 	public void onTick(TickEvent.PlayerTickEvent event)
 	{
-		float speed = 0.1f;
 		EntityPlayer player = event.player;
+		IAttributeInstance attributeInstance = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
 		BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
-		
+
+
+		if(attributeInstance.hasModifier(SQUID_LAND_SPEED))
+			attributeInstance.removeModifier(SQUID_LAND_SPEED);
+		if(attributeInstance.hasModifier(SQUID_SWIM_SPEED))
+			attributeInstance.removeModifier(SQUID_SWIM_SPEED);
+		if(attributeInstance.hasModifier(IN_USE_SPEED_BOOST))
+			attributeInstance.removeModifier(IN_USE_SPEED_BOOST);
+
+		AttributeModifier weaponMod = getWeaponMod(attributeInstance);
+		if(weaponMod != null)
+			attributeInstance.removeModifier(weaponMod);
+
 		if(SplatCraftPlayerData.getIsSquid(player))
 		{
 			SplatCraftUtils.setEntitySize(player, 0.6f, 0.6f);
-			
-			speed = SplatCraftUtils.canSquidHide(player.world, player) ? 0.2f : 0.05f;
-			
+
+			if(SplatCraftUtils.canSquidHide(player.world, player))
+			{
+				if(!attributeInstance.hasModifier(SQUID_SWIM_SPEED))
+					attributeInstance.applyModifier(SQUID_SWIM_SPEED);
+			}
+			else if(!attributeInstance.hasModifier(SQUID_LAND_SPEED))
+				attributeInstance.applyModifier(SQUID_LAND_SPEED);
+
 			if(player.world.getBlockState(pos.down()).getBlock().equals(SplatCraftBlocks.inkwell))
 				if(player.world.getTileEntity(pos.down()) instanceof TileEntityColor)
 				{
 					TileEntityColor te = (TileEntityColor) player.world.getTileEntity(pos.down());
-					
+
 					if(SplatCraftPlayerData.getInkColor(player) != te.getColor()) {
 						SplatCraftChannelHandler.sendToServer(SplatCraftPacket.makePacket(SplatCraftPacket.Type.PLAYER_DATA, PacketPlayerData.Data.COLOR, te.getColor()));
 						SplatCraftPlayerData.setInkColor(player, te.getColor());
 					}
 				}
 		}
-		
-		
-		//System.out.println();
-		
-		
-		if(player.getItemInUseCount() > 0)
+
+		ItemStack weapon = player.getActiveItemStack();
+		if(weapon.getItem() instanceof ItemWeaponBase)
 		{
-			ItemStack weapon = player.getActiveItemStack();
+			ItemWeaponBase item = (ItemWeaponBase) weapon.getItem();
 
-			if(weapon.getItem() instanceof ItemWeaponBase)
+
+			//if(item.getSpeedModifier() != null && attributeInstance.hasModifier(item.getSpeedModifier()))
+			//	attributeInstance.removeModifier(item.getSpeedModifier());
+
+			if(player.getItemInUseCount() > 0)
 			{
-				ItemWeaponBase item = (ItemWeaponBase) weapon.getItem();
-
 				item.onItemTickUse(player.world, player, weapon, player.getItemInUseCount());
-				speed = item.getUseWalkSpeed();
-
+				if(!attributeInstance.hasModifier(IN_USE_SPEED_BOOST))
+					attributeInstance.applyModifier(IN_USE_SPEED_BOOST);
+				if(item.getSpeedModifier() != null && !attributeInstance.hasModifier(item.getSpeedModifier()))
+					attributeInstance.applyModifier(item.getSpeedModifier());
 			}
+
 		}
-		
-		//if(player.world.isRemote)
-			player.capabilities.setPlayerWalkSpeed(speed);
+
 	}
 
 	@SubscribeEvent
@@ -121,5 +143,17 @@ public class CommonEventHandler
 				main.addEntry(entry);
 		}
 
+	}
+
+	private AttributeModifier getWeaponMod(IAttributeInstance instance)
+	{
+		for(ItemWeaponBase item : ItemWeaponBase.weapons)
+		{
+			if(item.getSpeedModifier() == null)
+				continue;
+			if(instance.hasModifier(item.getSpeedModifier()))
+				return item.getSpeedModifier();
+		}
+		return null;
 	}
 }
