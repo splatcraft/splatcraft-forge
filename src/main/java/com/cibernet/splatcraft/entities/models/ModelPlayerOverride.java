@@ -47,7 +47,6 @@ public class ModelPlayerOverride extends ModelPlayer
 		if(player.getItemInUseCount() > 0)
 		{
 			EnumHandSide handSide = player.getPrimaryHand();
-			System.out.println(handSide);
 			ModelRenderer mainHand = getArmForSide(handSide);
 			ModelRenderer offHand = getArmForSide(handSide.opposite());
 			EnumAnimType type = EnumAnimType.NONE;
