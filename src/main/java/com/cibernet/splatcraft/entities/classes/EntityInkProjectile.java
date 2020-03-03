@@ -101,6 +101,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
         {
             float f3 = 0.25F;
 
+            if(world.isRemote)
             SplatCraftParticleSpawner.spawnInkParticle(this.posX - this.motionX * 0.25D, this.posY - this.motionY * 0.25D, this.posZ - this.motionZ * 0.25D,  this.motionX, this.motionY, this.motionZ, getColor(), getProjectileSize());
             //this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX - this.motionX * 0.25D, this.posY - this.motionY * 0.25D, this.posZ - this.motionZ * 0.25D, this.motionX, this.motionY, this.motionZ);
         }

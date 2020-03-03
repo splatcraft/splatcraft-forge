@@ -84,7 +84,7 @@ public class SplatCraftUtils
 
 			IBlockState state = worldIn.getBlockState(pos);
 
-			if(!state.isFullBlock() || state.isTranslucent() || state.getBlockHardness(worldIn, pos) == -1)
+			if(!state.isFullBlock() || !state.isOpaqueCube() || state.getBlockHardness(worldIn, pos) == -1)
 					return false;
 
 			if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
