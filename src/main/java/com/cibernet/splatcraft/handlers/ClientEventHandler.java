@@ -4,6 +4,8 @@ import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
 import com.cibernet.splatcraft.network.PacketPlayerData;
 import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
 import com.cibernet.splatcraft.network.SplatCraftPacket;
+import com.cibernet.splatcraft.network.tutorial.PacketPlayerGetTransformed;
+import com.cibernet.splatcraft.network.tutorial.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
@@ -55,8 +57,7 @@ public class ClientEventHandler
 		if(SplatCraftKeyHandler.squidKey.isPressed())
 		{
 			boolean isSquid = SplatCraftPlayerData.getIsSquid(player);
-			SplatCraftChannelHandler.sendToServer(SplatCraftPacket.makePacket(SplatCraftPacket.Type.PLAYER_DATA, PacketPlayerData.Data.IS_SQUID, isSquid ? 0 : 1));
-			SplatCraftPlayerData.setIsSquid(player, !isSquid);
+			SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerGetTransformed(player.getUniqueID(), !isSquid));
 		}
 	}
 	

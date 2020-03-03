@@ -15,12 +15,14 @@ public class SplatCraftPlayerData
 	public static PlayerData getPlayerData(EntityPlayer playerIn)
 	{
 		Objects.requireNonNull(playerIn);
-		UUID uuid = playerIn.getUniqueID();
-		
+		return getPlayerData(playerIn.getUniqueID());
+	}
+
+	public static PlayerData getPlayerData(UUID uuid)
+	{
 		if(!dataMap.containsKey(uuid))
 		{
-			PlayerData data = new PlayerData();
-			data.player = uuid;
+			PlayerData data = new PlayerData(uuid);
 			dataMap.put(uuid, data);
 		}
 		return dataMap.get(uuid);
@@ -65,6 +67,7 @@ public class SplatCraftPlayerData
 		public int inkColor = SplatCraft.DEFAULT_INK;
 		public boolean isSquid = false;
 		
+		public PlayerData(UUID uuid) {player = uuid;}
 		public PlayerData() {}
 		
 		private void readFromNBT(NBTTagCompound nbt)
