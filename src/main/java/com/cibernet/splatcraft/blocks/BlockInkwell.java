@@ -46,6 +46,8 @@ public class BlockInkwell extends BlockInkColor
 	{
 		for(InkColors color : InkColors.values())
 		{
+			if(!color.isObtainable())
+				continue;
 			ItemStack stack = new ItemStack(this);
 			ItemWeaponBase.setInkColor(stack, color.getColor());
 			items.add(stack);

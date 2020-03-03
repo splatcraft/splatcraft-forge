@@ -16,7 +16,7 @@ public class SplatCraftBlocks
 
     public static Block inkedBlock = new BlockInked();
 
-    public static Block emptyInkwell = new BlockGlass(Material.GLASS, true).setHardness(0.5f).setCreativeTab(TabSplatCraft.main).setUnlocalizedName("inkwellEmpty").setRegistryName("inkwell_empty");
+    public static Block emptyInkwell = new BlockInkwellEmpty();
     public static Block inkwell = new BlockInkwell();
     public static Block canvas = new BlockCanvas();
 

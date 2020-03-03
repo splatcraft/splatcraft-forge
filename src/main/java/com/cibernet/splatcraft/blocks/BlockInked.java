@@ -76,6 +76,15 @@ public class BlockInked extends BlockInkColor
 	}
 
 	@Override
+	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World worldIn, BlockPos pos)
+	{
+		if(!(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock))
+			return super.getPlayerRelativeBlockHardness(state, player, worldIn, pos);
+		TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
+		return te.getSavedState().getBlock().getPlayerRelativeBlockHardness(te.getSavedState(), player, worldIn, pos);
+	}
+
+	@Override
 	public float getExplosionResistance(World worldIn, BlockPos pos, @Nullable Entity exploder, Explosion explosion)
 	{
 

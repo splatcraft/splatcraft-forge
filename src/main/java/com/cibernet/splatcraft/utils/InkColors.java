@@ -21,9 +21,9 @@ public enum InkColors
 		this.obtainable = obtainable;
 	}
 
-	InkColors(int color, MapColor mapColor, boolean obtainable)
+	InkColors(int color, MapColor mapColor, String name)
 	{
-		this(color, mapColor, obtainable, true);
+		this(color, mapColor, name, true);
 	}
 
 	private final int color;
@@ -36,6 +36,7 @@ public enum InkColors
 	{
 		return color;
 	}
+	public boolean isObtainable() {return obtainable;}
 
 	public static InkColors getByColor(int color)
 	{
