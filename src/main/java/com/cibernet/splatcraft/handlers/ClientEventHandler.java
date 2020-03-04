@@ -1,29 +1,21 @@
 package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
-import com.cibernet.splatcraft.items.ItemWeaponBase;
-import com.cibernet.splatcraft.network.PacketPlayerData;
 import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
 import com.cibernet.splatcraft.network.SplatCraftPacket;
-import com.cibernet.splatcraft.network.tutorial.PacketPlayerGetTransformed;
+import com.cibernet.splatcraft.network.tutorial.PacketPlayerSetTransformed;
 import com.cibernet.splatcraft.network.tutorial.SplatCraftPacketHandler;
-import com.cibernet.splatcraft.registries.SplatCraftBlocks;
-import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ClientEventHandler
 {
@@ -72,7 +64,7 @@ public class ClientEventHandler
 		if(SplatCraftKeyHandler.squidKey.isPressed())
 		{
 			boolean isSquid = SplatCraftPlayerData.getIsSquid(player);
-			SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerGetTransformed(player.getUniqueID(), !isSquid));
+			SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerSetTransformed(player.getUniqueID(), !isSquid));
 		}
 	}
 	

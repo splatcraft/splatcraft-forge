@@ -51,8 +51,7 @@ public abstract class SplatCraftPacket
 	
 	public static enum Type
 	{
-		WEAPON_LEFT_CLICK(PacketWeaponLeftClick.class),
-		PLAYER_DATA(PacketPlayerData.class)
+		WEAPON_LEFT_CLICK(PacketWeaponLeftClick.class)
 		;
 		
 		Class<? extends SplatCraftPacket> packetType;

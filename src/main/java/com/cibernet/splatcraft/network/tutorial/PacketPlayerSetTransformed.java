@@ -1,8 +1,6 @@
 package com.cibernet.splatcraft.network.tutorial;
 
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -12,7 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.UUID;
 
-public class PacketPlayerGetTransformed implements IMessage
+public class PacketPlayerSetTransformed implements IMessage
 {
 
     private boolean messageValid;
@@ -20,12 +18,12 @@ public class PacketPlayerGetTransformed implements IMessage
     private UUID player;
     private boolean isTransformed;
 
-    public PacketPlayerGetTransformed()
+    public PacketPlayerSetTransformed()
     {
         messageValid = false;
     }
 
-    public PacketPlayerGetTransformed(UUID player, boolean isTransformed)
+    public PacketPlayerSetTransformed(UUID player, boolean isTransformed)
     {
         messageValid = true;
         this.player = player;
@@ -56,18 +54,18 @@ public class PacketPlayerGetTransformed implements IMessage
         ByteBufUtils.writeUTF8String(buf, player.toString());
     }
 
-    public static class Handler implements IMessageHandler<PacketPlayerGetTransformed, IMessage>
+    public static class Handler implements IMessageHandler<PacketPlayerSetTransformed, IMessage>
     {
 
         @Override
-        public IMessage onMessage(PacketPlayerGetTransformed message, MessageContext ctx) {
+        public IMessage onMessage(PacketPlayerSetTransformed message, MessageContext ctx) {
             if(!message.messageValid && ctx.side != Side.SERVER)
                 return null;
             FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> process(message, ctx));
             return null;
         }
 
-        void process(PacketPlayerGetTransformed message, MessageContext ctx)
+        void process(PacketPlayerSetTransformed message, MessageContext ctx)
         {
             SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnTransformed(message.player, message.isTransformed), ctx.getServerHandler().player.dimension);
 

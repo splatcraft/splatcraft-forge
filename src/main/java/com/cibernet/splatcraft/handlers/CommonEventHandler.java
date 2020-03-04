@@ -6,6 +6,8 @@ import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.network.PacketPlayerData;
 import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
 import com.cibernet.splatcraft.network.SplatCraftPacket;
+import com.cibernet.splatcraft.network.tutorial.PacketPlayerSetColor;
+import com.cibernet.splatcraft.network.tutorial.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
@@ -81,8 +83,7 @@ public class CommonEventHandler
 					TileEntityColor te = (TileEntityColor) player.world.getTileEntity(pos.down());
 
 					if(SplatCraftPlayerData.getInkColor(player) != te.getColor()) {
-						SplatCraftChannelHandler.sendToServer(SplatCraftPacket.makePacket(SplatCraftPacket.Type.PLAYER_DATA, PacketPlayerData.Data.COLOR, te.getColor()));
-						SplatCraftPlayerData.setInkColor(player, te.getColor());
+						SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerSetColor(player.getUniqueID(), te.getColor()));
 					}
 				}
 		}
