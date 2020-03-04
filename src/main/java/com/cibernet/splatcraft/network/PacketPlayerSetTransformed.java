@@ -1,5 +1,6 @@
-package com.cibernet.splatcraft.network.tutorial;
+package com.cibernet.splatcraft.network;
 
+import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -67,6 +68,7 @@ public class PacketPlayerSetTransformed implements IMessage
 
         void process(PacketPlayerSetTransformed message, MessageContext ctx)
         {
+            SplatCraftPlayerData.getPlayerData(message.player).isSquid = message.isTransformed;
             SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnTransformed(message.player, message.isTransformed), ctx.getServerHandler().player.dimension);
 
         }

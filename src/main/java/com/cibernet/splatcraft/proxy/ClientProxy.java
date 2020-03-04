@@ -10,12 +10,9 @@ import com.cibernet.splatcraft.entities.renderers.RenderInkProjectile;
 import com.cibernet.splatcraft.handlers.ClientEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftKeyHandler;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
-import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
-import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftModelManager;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
-import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -28,7 +25,6 @@ import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -114,7 +110,6 @@ public class ClientProxy extends CommonProxy
         super.init();
         registerRenderers();
         MinecraftForge.EVENT_BUS.register(ClientEventHandler.instance);
-        MinecraftForge.EVENT_BUS.register(SplatCraftChannelHandler.instance);
     }
 
     @Override

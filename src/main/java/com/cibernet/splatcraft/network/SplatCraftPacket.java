@@ -1,72 +1,42 @@
 package com.cibernet.splatcraft.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.util.EnumSet;
-
-public abstract class SplatCraftPacket
+public abstract class SplatCraftPacket implements IMessage
 {
-	protected ByteBuf data = Unpooled.buffer();
+	private boolean messageValid = false;
+	
+	public abstract Side getPacketSide();
+	void process(SplatCraftPacket message, MessageContext ctx) {};
 	
 	
-	public SplatCraftPacket() {
-	}
-	
-	public static SplatCraftPacket makePacket(SplatCraftPacket.Type type, Object... dat) {
-		return type.make().generatePacket(dat);
-	}
-	
-	public static String readLine(ByteBuf data) {
-		StringBuilder str = new StringBuilder();
-		
-		while(data.readableBytes() > 0) {
-			char c = data.readChar();
-			if (c == '\n') {
-				break;
-			}
-			
-			str.append(c);
-		}
-		
-		return str.toString();
-	}
-	
-	public static void writeString(ByteBuf data, String str) {
-		for(int i = 0; i < str.length(); ++i) {
-			data.writeChar(str.charAt(i));
-		}
-		
-	}
-	
-	public abstract SplatCraftPacket generatePacket(Object... var1);
-	
-	public abstract SplatCraftPacket consumePacket(ByteBuf var1);
-	
-	public abstract void execute(EntityPlayer var1);
-	
-	public abstract EnumSet<Side> getSenderSide();
-	
-	public static enum Type
+	public static class Handler implements IMessageHandler<SplatCraftPacket, IMessage>
 	{
-		WEAPON_LEFT_CLICK(PacketWeaponLeftClick.class)
-		;
 		
-		Class<? extends SplatCraftPacket> packetType;
-		
-		private Type(Class<? extends SplatCraftPacket> packetClass) {
-			this.packetType = packetClass;
-		}
-		
-		SplatCraftPacket make() {
-			try {
-				return (SplatCraftPacket)this.packetType.newInstance();
-			} catch (Exception var2) {
-				var2.printStackTrace();
+		@Override
+		public IMessage onMessage(SplatCraftPacket message, MessageContext ctx)
+		{
+			if(!message.messageValid)
 				return null;
+			if(message.getPacketSide() == Side.CLIENT)
+			{
+				if(ctx.side != Side.CLIENT)
+					return null;
+				Minecraft.getMinecraft().addScheduledTask(() -> message.process(message, ctx));
 			}
+			else if(message.getPacketSide() == Side.SERVER)
+			{
+				if(ctx.side != Side.SERVER)
+					return null;
+				FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> message.process(message, ctx));
+			}
+			return null;
+			
 		}
 	}
 }

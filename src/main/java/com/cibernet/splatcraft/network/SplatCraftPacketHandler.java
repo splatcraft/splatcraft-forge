@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.network.tutorial;
+package com.cibernet.splatcraft.network;
 
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -18,6 +18,7 @@ public class SplatCraftPacketHandler
         //Server Packets
         instance.registerMessage(PacketPlayerSetTransformed.Handler.class, PacketPlayerSetTransformed.class, nextID(), Side.SERVER);
         instance.registerMessage(PacketPlayerSetColor.Handler.class, PacketPlayerSetColor.class, nextID(), Side.SERVER);
+        instance.registerMessage(PacketWeaponLeftClick.Handler.class, PacketWeaponLeftClick.class, nextID(), Side.SERVER);
 
         //Client Packets
         instance.registerMessage(PacketPlayerReturnTransformed.Handler.class, PacketPlayerReturnTransformed.class, nextID(), Side.CLIENT);

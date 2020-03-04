@@ -3,8 +3,7 @@ package com.cibernet.splatcraft.proxy;
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.handlers.CommonEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftSaveHandler;
-import com.cibernet.splatcraft.network.SplatCraftChannelHandler;
-import com.cibernet.splatcraft.network.tutorial.SplatCraftPacketHandler;
+import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatCraftEntities;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
@@ -36,7 +35,6 @@ public class CommonProxy
     {
         MinecraftForge.EVENT_BUS.register(CommonEventHandler.instance);
         MinecraftForge.EVENT_BUS.register(new SplatCraftSaveHandler());
-        SplatCraftChannelHandler.setupChannel();
 
         registerSmelting();
 

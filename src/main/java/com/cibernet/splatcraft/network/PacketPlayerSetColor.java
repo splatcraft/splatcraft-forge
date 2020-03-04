@@ -1,5 +1,6 @@
-package com.cibernet.splatcraft.network.tutorial;
+package com.cibernet.splatcraft.network;
 
+import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -67,6 +68,7 @@ public class PacketPlayerSetColor implements IMessage
 
         void process(PacketPlayerSetColor message, MessageContext ctx)
         {
+            SplatCraftPlayerData.getPlayerData(message.player).inkColor = message.color;
             SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnColor(message.player, message.color), ctx.getServerHandler().player.dimension);
 
         }

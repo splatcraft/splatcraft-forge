@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.network.tutorial;
+package com.cibernet.splatcraft.network;
 
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import io.netty.buffer.ByteBuf;
