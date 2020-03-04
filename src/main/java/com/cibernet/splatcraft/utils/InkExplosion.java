@@ -129,6 +129,7 @@ public class InkExplosion
 							
 							if (iblockstate.getMaterial() != Material.AIR)
 								f -= 10.3F * 0.3F;
+							else f -= 0.5;
 							if (f > 0.0F)
 								set.add(blockpos);
 							
