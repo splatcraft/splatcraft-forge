@@ -24,6 +24,7 @@ import net.minecraft.item.*;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -101,7 +102,7 @@ public class ItemRollerBase extends ItemWeaponBase
     public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
     {
         BlockPos pos = new BlockPos(playerIn.posX + 0.5, playerIn.posY, playerIn.posZ + 0.5);
-        Vec3d fwd = Vec3d.fromPitchYawVector(new Vec2f(0, playerIn.rotationYaw));
+        Vec3d fwd = getFwd(0, playerIn.rotationYaw);
         playerIn.getHorizontalFacing();
 
         for(int i = 0; i < rollRadius; i++) {
@@ -146,5 +147,14 @@ public class ItemRollerBase extends ItemWeaponBase
                 worldIn.spawnEntity(proj);
             }
         }
+    }
+    
+    private Vec3d getFwd(float pitch, float yaw)
+    {
+        float f = MathHelper.cos(-yaw * 0.017453292F - (float)Math.PI);
+        float f1 = MathHelper.sin(-yaw * 0.017453292F - (float)Math.PI);
+        float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+        float f3 = MathHelper.sin(-pitch * 0.017453292F);
+        return new Vec3d((double)(f1 * f2), (double)f3, (double)(f * f2));
     }
 }
