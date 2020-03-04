@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.commands;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.utils.InkColors;
+import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -11,6 +12,7 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -76,7 +78,7 @@ public class CommandTurfWar extends CommandBase
 				BlockPos checkPos = new BlockPos(x,y,z);
 				IBlockState checkState = world.getBlockState(checkPos);
 				
-				if(!checkState.getMaterial().blocksMovement() || checkState.getMaterial().isLiquid())
+				if(!checkState.getMaterial().blocksMovement() || checkState.getMaterial().isLiquid() || !SplatCraftUtils.canInk(world, checkPos))
 					continue;
 				
 				blockTotal++;
@@ -98,7 +100,7 @@ public class CommandTurfWar extends CommandBase
 		Map.Entry<Integer, Integer> winner = null;
 		for(Map.Entry<Integer, Integer> entry : scores.entrySet())
 		{
-			world.getMinecraftServer().getPlayerList().sendMessage(new TextComponentTranslation("commands.turfWar.score", getColorName(entry.getKey()), (entry.getValue()/(float)blockTotal)*100));
+			world.getMinecraftServer().getPlayerList().sendMessage(new TextComponentTranslation("commands.turfWar.score", SplatCraftUtils.getColorName(entry.getKey()), String.format("%.1f",(entry.getValue()/(float)blockTotal)*100)));
 			
 			if(winner == null || winner.getValue() < entry.getValue())
 				winner = entry;
@@ -106,16 +108,9 @@ public class CommandTurfWar extends CommandBase
 		}
 		
 		if(winner != null)
-			world.getMinecraftServer().getPlayerList().sendMessage(new TextComponentTranslation("commands.turfWar.winner", getColorName(winner.getKey())));
+			world.getMinecraftServer().getPlayerList().sendMessage(new TextComponentTranslation("commands.turfWar.winner", SplatCraftUtils.getColorName(winner.getKey())));
 		else
 			throw new CommandException("commands.turfWar.noInk", new Object[0]);
-	}
-	
-	public static String getColorName(int color)
-	{
-		InkColors col = InkColors.getByColor(color);
-		
-		return col == null ? String.valueOf(color) : col.getName();
 	}
 	
 	@Override

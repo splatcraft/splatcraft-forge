@@ -14,6 +14,7 @@ import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootContext;
@@ -119,6 +120,40 @@ public class SplatCraftUtils
 			te.setSavedState(state);
 
 			return true;
+	}
+
+	public static boolean canInk(World worldIn, BlockPos pos)
+	{
+
+		IBlockState state = worldIn.getBlockState(pos);
+
+		if(!state.isFullBlock() || !state.isOpaqueCube() || state.getBlockHardness(worldIn, pos) == -1)
+			return false;
+
+		if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
+		{
+			return true;
+		}
+
+		if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
+		{
+			if(state.getBlock() instanceof BlockInkColor)
+				if(!((BlockInkColor) state.getBlock()).canInk)
+					return false;
+			return true;
+		}
+
+		if(worldIn.getTileEntity(pos) != null)
+			return false;
+
+		return true;
+	}
+
+	public static String getColorName(int color)
+	{
+		InkColors col = InkColors.getByColor(color);
+
+		return col == null ? String.format("#%06X", color) : I18n.translateToLocal("color." + col.getName());
 	}
 
 	public static void dropItem(World worldIn, BlockPos pos, ItemStack stack, boolean useTileDrops)

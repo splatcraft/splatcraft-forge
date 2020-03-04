@@ -10,7 +10,8 @@ public enum InkColors
 	PINK(0xc83d79, MapColor.getBlockColor(EnumDyeColor.PINK), "pink"),
 	GREEN(0x409d3b, MapColor.getBlockColor(EnumDyeColor.GREEN), "green"),
 
-	INK_BLACK(0x1F1F2D, MapColor.CYAN_STAINED_HARDENED_CLAY, "black", false),
+	MOJANG(0xDF242F, MapColor.RED_STAINED_HARDENED_CLAY, "mojangRed", false),
+	INK_BLACK(0x1F1F2D, MapColor.CYAN_STAINED_HARDENED_CLAY, "dyeBlack", false),
 	;
 
 	InkColors(int color, MapColor mapColor, String displayName, boolean obtainable)

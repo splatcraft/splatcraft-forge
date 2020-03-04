@@ -34,9 +34,26 @@ item.octobrush.name=Octobrush
 item.splatDualies.name=Splat Dualies
 item.dualieSquelchers.name=Dualie Squelchers
 
+color.orange=Orange
+color.blue=Blue
+color.pink=Pink
+color.green=green
+color.lightBlue=Light Blue
+color.turquoise=Turquoise
+color.yellow=Yellow
+color.lilac=Lilac
+color.lemon=Lemon
+color.plum=Plum
+
+color.neonPink=Neon Pink
+color.neonGreen=Neon Green
+color.mojangRed=Red Thing
+
+color.dyeBlack=Organic Black
+
 commands.turfWar.usage=/turfWar <x1> <y1> <z1> <x2> <y2> <z2> [clearInk]
 commands.turfWar.outOfWorld=Cannot check for blocks outside of the world
-commands.turfWar.score=%s = %s points
+commands.turfWar.score=%s = %s%%
 commands.turfWar.winner=%s wins!
 commands.turfWar.noInk=No ink was found on the designated area
 
