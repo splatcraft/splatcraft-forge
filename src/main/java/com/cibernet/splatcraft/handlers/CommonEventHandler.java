@@ -2,6 +2,8 @@ package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
+import com.cibernet.splatcraft.network.PacketPlayerReturnColor;
+import com.cibernet.splatcraft.network.PacketPlayerReturnTransformed;
 import com.cibernet.splatcraft.network.PacketPlayerSetColor;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
@@ -17,8 +19,10 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class CommonEventHandler
@@ -27,7 +31,7 @@ public class CommonEventHandler
 	public static final CommonEventHandler instance = new CommonEventHandler();
 	
 	@SubscribeEvent
-	public void onTick(TickEvent.PlayerTickEvent event)
+	public void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
 		EntityPlayer player = event.player;
 		BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
@@ -43,7 +47,8 @@ public class CommonEventHandler
 					TileEntityColor te = (TileEntityColor) player.world.getTileEntity(pos.down());
 
 					if(SplatCraftPlayerData.getInkColor(player) != te.getColor()) {
-						SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerSetColor(player.getUniqueID(), te.getColor()));
+						SplatCraftPlayerData.setInkColor(player, te.getColor());
+						SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnColor(player.getUniqueID(), te.getColor()), player.dimension);
 					}
 				}
 		}
@@ -61,6 +66,21 @@ public class CommonEventHandler
 				item.onItemTickUse(player.world, player, weapon, player.getItemInUseCount());
 
 		}
+
+	}
+
+	@SubscribeEvent
+	public void onJoinWorld(EntityJoinWorldEvent event)
+	{
+		if(!(event.getEntity() instanceof EntityPlayer))
+			return;
+
+		EntityPlayer player = (EntityPlayer) event.getEntity();
+
+		SplatCraftPlayerData.PlayerData data = SplatCraftPlayerData.getPlayerData(player.getUniqueID());
+
+		SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnColor(player.getUniqueID(), data.inkColor), player.dimension);
+		SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnTransformed(player.getUniqueID(), data.isSquid), player.dimension);
 
 	}
 
