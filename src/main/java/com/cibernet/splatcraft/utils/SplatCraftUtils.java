@@ -87,6 +87,14 @@ public class SplatCraftUtils
 			if(!state.isFullBlock() || !state.isOpaqueCube() || state.getBlockHardness(worldIn, pos) == -1)
 					return false;
 
+			if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
+			{
+				TileEntitySunkenCrate te = (TileEntitySunkenCrate) worldIn.getTileEntity(pos);
+				te.ink(color);
+				worldIn.notifyBlockUpdate(pos, state, state, 3);
+				return true;
+			}
+
 			if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
 			{
 				if(state.getBlock() instanceof BlockInkColor)
@@ -95,14 +103,6 @@ public class SplatCraftUtils
 
 				TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
 				te.setColor(color);
-				worldIn.notifyBlockUpdate(pos, state, state, 3);
-				return true;
-			}
-
-			if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
-			{
-				TileEntitySunkenCrate te = (TileEntitySunkenCrate) worldIn.getTileEntity(pos);
-				te.ink(color);
 				worldIn.notifyBlockUpdate(pos, state, state, 3);
 				return true;
 			}
