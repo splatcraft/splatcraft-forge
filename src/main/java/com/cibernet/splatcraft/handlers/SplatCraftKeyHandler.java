@@ -12,7 +12,7 @@ public class SplatCraftKeyHandler
 	
 	public void registerKeys()
 	{
-		squidKey = new KeyBinding("key.squidForm", 0, "key.categories.splatcraft");
+		squidKey = new KeyBinding("key.squidForm", 44, "key.categories.splatcraft");
 		ClientRegistry.registerKeyBinding(squidKey);
 	}
 }

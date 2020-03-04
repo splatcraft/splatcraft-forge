@@ -39,3 +39,6 @@ commands.turfWar.outOfWorld=Cannot check for blocks outside of the world
 commands.turfWar.score=%s = %s points
 commands.turfWar.winner=%s wins!
 commands.turfWar.noInk=No ink was found on the designated area
+
+key.categories.splatcraft=Splatcraft
+key.squidForm=Squid
