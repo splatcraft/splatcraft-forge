@@ -9,6 +9,7 @@ import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -25,6 +26,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,18 @@ public class ItemWeaponBase extends Item
 		setCreativeTab(TabSplatCraft.main);
 		setMaxStackSize(1);
 		weapons.add(this);
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced)
+	{
+		if(isColorLocked(stack))
+		{
+			int color = getInkColor(stack);
+			tooltip.add(SplatCraftUtils.getColorName(color));
+		}
+
+		super.addInformation(stack, player, tooltip, advanced);
 	}
 	
 	public static int getInkColor(ItemStack stack)
