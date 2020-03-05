@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
+import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -85,7 +86,7 @@ public class SplatCraftUtils
 
 			IBlockState state = worldIn.getBlockState(pos);
 
-			if(!state.isFullBlock() || !state.isOpaqueCube() || state.getBlockHardness(worldIn, pos) == -1)
+			if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)) || state.getBlockHardness(worldIn, pos) == -1)
 					return false;
 
 			if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
@@ -127,7 +128,7 @@ public class SplatCraftUtils
 
 		IBlockState state = worldIn.getBlockState(pos);
 
-		if(!state.isFullBlock() || !state.isOpaqueCube() || state.getBlockHardness(worldIn, pos) == -1)
+		if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)) || state.getBlockHardness(worldIn, pos) == -1)
 			return false;
 
 		if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
