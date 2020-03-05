@@ -12,6 +12,8 @@ public enum InkColors
 
 	MOJANG(0xDF242F, MapColor.RED_STAINED_HARDENED_CLAY, "mojangRed", false),
 	INK_BLACK(0x1F1F2D, MapColor.CYAN_STAINED_HARDENED_CLAY, "dyeBlack", false),
+	DEFAULT_WHITE(0xFAFAFA, MapColor.getBlockColor(EnumDyeColor.WHITE), "defaultWhite", false),
+	COBALT(0x005682, MapColor.getBlockColor(EnumDyeColor.CYAN), "cobalt", false),
 	;
 
 	InkColors(int color, MapColor mapColor, String displayName, boolean obtainable)
