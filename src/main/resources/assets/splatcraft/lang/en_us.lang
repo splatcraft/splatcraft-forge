@@ -20,14 +20,20 @@ item.splattershot.name=Splattershot
 item.splattershotJr.name=Splattershot Jr.
 item.splattershotPro.name=Splattershot Pro
 item.splattershot2.name=Splattershot 2
-item.aerosprayMg.name=Aerospray MG
+item.aerosprayMG.name=Aerospray MG
+item.52Gal.name=.52 Gal
+item.52Gal.name=.96 Gal
 
 item.splatCharger.name=Splat Charger
+item.splatCharger2.name=Splat Charger 2
+item.squiffer.name=Squiffer
 item.splatterscope.name=Splatterscope
+item.splatterscope2.name=Splatterscope 2
 item.eLiter.name=E-Liter 4K
 
 item.splatRoller.name=Splat Roller
 item.splatRoller2.name=Splat Roller 2
+item.carbonRoller.name=Carbon Roller
 item.inkbrush.name=Inkbrush
 item.octobrush.name=Octobrush
 
@@ -37,7 +43,7 @@ item.dualieSquelchers.name=Dualie Squelchers
 color.orange=Orange
 color.blue=Blue
 color.pink=Pink
-color.green=green
+color.green=Green
 color.lightBlue=Light Blue
 color.turquoise=Turquoise
 color.yellow=Yellow
@@ -48,6 +54,8 @@ color.plum=Plum
 color.neonPink=Neon Pink
 color.neonGreen=Neon Green
 color.mojangRed=Red Thing
+color.defaultWhite=White
+color.cobalt=Cobalt
 
 color.dyeBlack=Organic Black
 
