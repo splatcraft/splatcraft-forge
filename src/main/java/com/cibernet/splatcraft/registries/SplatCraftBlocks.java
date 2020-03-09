@@ -25,6 +25,8 @@ public class SplatCraftBlocks
 
     public static Block PowerEggBlock = new BlockPowerEggStorage();
     
+    public static Block inkwellVat = new BlockInkwellVat();
+    
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
@@ -37,6 +39,8 @@ public class SplatCraftBlocks
         registerBlock(registry, sunkenCrate, true);
         registerBlock(registry, oreSardinium, true);
         registerBlock(registry, PowerEggBlock, true);
+        
+        registerBlock(registry,inkwellVat, true);
 
     }
 

@@ -1,9 +1,12 @@
 package com.cibernet.splatcraft.proxy;
 
 import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.gui.SplatCraftGuiHandler;
 import com.cibernet.splatcraft.handlers.CommonEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftSaveHandler;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
+import com.cibernet.splatcraft.recipes.RecipesInkwellVat;
+import com.cibernet.splatcraft.recipes.RecipesWeaponWorkshop;
 import com.cibernet.splatcraft.registries.SplatCraftEntities;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
@@ -13,6 +16,7 @@ import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
 import com.cibernet.splatcraft.world.gen.OreGenHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class CommonProxy
@@ -33,10 +37,14 @@ public class CommonProxy
 
     public void init()
     {
+        NetworkRegistry.INSTANCE.registerGuiHandler(SplatCraft.instance, new SplatCraftGuiHandler());
+        
         MinecraftForge.EVENT_BUS.register(CommonEventHandler.instance);
         MinecraftForge.EVENT_BUS.register(new SplatCraftSaveHandler());
 
         registerSmelting();
+        RecipesInkwellVat.registerRecipes();
+        RecipesWeaponWorkshop.registerRecipes();
 
         GameRegistry.registerWorldGenerator(new OreGenHandler(), 0);
     }
