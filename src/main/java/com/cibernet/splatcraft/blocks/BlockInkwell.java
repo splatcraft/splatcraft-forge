@@ -61,10 +61,8 @@ public class BlockInkwell extends BlockInkColor
 	@Override
 	public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items)
 	{
-		for(InkColors color : InkColors.values())
+		for(InkColors color : InkColors.creativeTabColors)
 		{
-			if(!color.isObtainable())
-				continue;
 			ItemStack stack = new ItemStack(this);
 			ItemWeaponBase.setInkColor(stack, color.getColor());
 			items.add(stack);

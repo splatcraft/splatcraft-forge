@@ -12,6 +12,7 @@ import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
+import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
 import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
 import com.cibernet.splatcraft.world.gen.OreGenHandler;
 import net.minecraft.item.ItemStack;
@@ -32,6 +33,7 @@ public class CommonProxy
         GameRegistry.registerTileEntity(TileEntityInkedBlock.class, SplatCraft.MODID+ ":inked_block");
         GameRegistry.registerTileEntity(TileEntityColor.class, SplatCraft.MODID+ ":ink_color");
         GameRegistry.registerTileEntity(TileEntitySunkenCrate.class, SplatCraft.MODID+ ":sunken_crate");
+        GameRegistry.registerTileEntity(TileEntityInkwellVat.class, SplatCraft.MODID+ ":inkwell_vat");
 
     }
 

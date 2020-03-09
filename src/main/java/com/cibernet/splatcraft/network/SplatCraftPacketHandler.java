@@ -19,6 +19,7 @@ public class SplatCraftPacketHandler
         instance.registerMessage(PacketPlayerSetTransformed.Handler.class, PacketPlayerSetTransformed.class, nextID(), Side.SERVER);
         instance.registerMessage(PacketPlayerSetColor.Handler.class, PacketPlayerSetColor.class, nextID(), Side.SERVER);
         instance.registerMessage(PacketWeaponLeftClick.Handler.class, PacketWeaponLeftClick.class, nextID(), Side.SERVER);
+        instance.registerMessage(PacketSetVatOutput.Handler.class, PacketSetVatOutput.class, nextID(), Side.SERVER);
 
         //Client Packets
         instance.registerMessage(PacketPlayerReturnTransformed.Handler.class, PacketPlayerReturnTransformed.class, nextID(), Side.CLIENT);

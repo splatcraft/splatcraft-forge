@@ -21,7 +21,7 @@ public class ItemInkwell extends ItemBlock
 {
     public ItemInkwell() {
         super(SplatCraftBlocks.inkwell);
-        setMaxStackSize(1);
+        setMaxStackSize(16);
         setCreativeTab(CreativeTabs.COMBAT);
         setRegistryName(SplatCraftBlocks.inkwell.getRegistryName());
     }

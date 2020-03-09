@@ -1,108 +1,98 @@
 package com.cibernet.splatcraft.gui.container;
 
-import com.cibernet.splatcraft.gui.inventory.InventoryInkwellVat;
+import com.cibernet.splatcraft.items.ItemWeaponBase;
+import com.cibernet.splatcraft.recipes.RecipesInkwellVat;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
+import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
+import com.cibernet.splatcraft.utils.InkColors;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContainerInkwellVat extends Container
 {
-	public InventoryInkwellVat inventory = new InventoryInkwellVat();
-	public World world;
-	public BlockPos pos;
-	
-	public ContainerInkwellVat(InventoryPlayer player, World world, BlockPos pos)
+	public TileEntityInkwellVat te;
+
+	public ContainerInkwellVat(InventoryPlayer player, TileEntityInkwellVat te)
 	{
 		super();
-		
-		this.world = world;
-		this.pos = pos;
-		
-		addSlotToContainer(new SlotInput(new ItemStack(Items.DYE, 1, 0), inventory, 0, 26, 70));
-		addSlotToContainer(new SlotInput(new ItemStack(SplatCraftItems.powerEgg), inventory, 1, 46, 70));
-		addSlotToContainer(new Slot(inventory, 2, 36, 89));
-		addSlotToContainer(new SlotInput(new ItemStack(SplatCraftBlocks.emptyInkwell), inventory, 3, 92, 82));
-		addSlotToContainer(new SlotOutput(inventory, 4, 112, 82));
-		
+		this.te = te;
+
+		addSlotToContainer(new SlotInput(new ItemStack(Items.DYE, 1, 0), te, 0, 26, 70));
+		addSlotToContainer(new SlotInput(new ItemStack(SplatCraftItems.powerEgg), te, 1, 46, 70));
+		addSlotToContainer(new SlotInput(new ItemStack(SplatCraftBlocks.emptyInkwell), te, 2, 92, 82));
+		addSlotToContainer(new Slot(te, 3, 36, 89));
+		addSlotToContainer(new SlotOutput(te, 4, 112, 82));
+
 		for(int xx = 0; xx < 9; xx++)
 			for(int yy = 0; yy < 3; yy++)
 				addSlotToContainer(new Slot(player, xx+yy*9 + 9, 8 + xx*18, 126 + yy*18));
-			
+
 		for(int xx = 0; xx < 9; xx++)
 			addSlotToContainer(new Slot(player, xx, 8 + xx*18, 184));
 	}
-	
+
+	@Override
+	public void updateProgressBar(int id, int data) {
+		super.updateProgressBar(id, data);
+	}
+
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn)
 	{
-		return playerIn.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
-		
+		return playerIn.getDistanceSq((double)te.getPos().getX() + 0.5D, (double)te.getPos().getY() + 0.5D, (double)te.getPos().getZ() + 0.5D) <= 64.0D;
 	}
-	
+
 	@Override
 	public void onContainerClosed(EntityPlayer playerIn)
 	{
 		super.onContainerClosed(playerIn);
-		
-		if (!world.isRemote)
+
+		/*
+		if (!te.getWorld().isRemote)
 		{
-			this.clearContainer(playerIn, this.world, inventory);
+			this.clearContainer(playerIn, te.getWorld(), te);
 		}
+		*/
+
 	}
-	
+
 	/**
 	 * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
-	 * inventory and the other inventory(s).
+	 * inventory and the other inventory(s). TODO
 	 */
+	@Override
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
 	{
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.inventorySlots.get(index);
-		
+
 		if (slot != null && slot.getHasStack())
 		{
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
-			
-			if (index == 0)
+
+			if (index < 5)
 			{
-				itemstack1.getItem().onCreated(itemstack1, this.world, playerIn);
-				
-				if (!this.mergeItemStack(itemstack1, 10, 46, true))
-				{
-					return ItemStack.EMPTY;
-				}
-				
-				slot.onSlotChange(itemstack1, itemstack);
-			}
-			else if (index >= 10 && index < 37)
-			{
-				if (!this.mergeItemStack(itemstack1, 37, 46, false))
+				if (!this.mergeItemStack(itemstack1, 5, this.inventorySlots.size(), true))
 				{
 					return ItemStack.EMPTY;
 				}
 			}
-			else if (index >= 37 && index < 46)
-			{
-				if (!this.mergeItemStack(itemstack1, 10, 37, false))
-				{
-					return ItemStack.EMPTY;
-				}
-			}
-			else if (!this.mergeItemStack(itemstack1, 10, 46, false))
+			else if (!this.mergeItemStack(itemstack1, 0, 5, false))
 			{
 				return ItemStack.EMPTY;
 			}
-			
+
 			if (itemstack1.isEmpty())
 			{
 				slot.putStack(ItemStack.EMPTY);
@@ -111,33 +101,20 @@ public class ContainerInkwellVat extends Container
 			{
 				slot.onSlotChanged();
 			}
-			
-			if (itemstack1.getCount() == itemstack.getCount())
-			{
-				return ItemStack.EMPTY;
-			}
-			
-			ItemStack itemstack2 = slot.onTake(playerIn, itemstack1);
-			
-			if (index == 0)
-			{
-				playerIn.dropItem(itemstack2, false);
-			}
 		}
-		
+
 		return itemstack;
 	}
-	
+
 	/**
 	 * Called to determine if the current slot is valid for the stack merging (double-click) code. The stack passed in
 	 * is null for the initial slot that was double-clicked.
 	 */
 	public boolean canMergeSlot(ItemStack stack, Slot slotIn)
 	{
-		return this.canMergeSlot(stack, slotIn);
-		//return slotIn.inventory != this.craftResult && super.canMergeSlot(stack, slotIn);
+		return slotIn.slotNumber != 4 && super.canMergeSlot(stack, slotIn);
 	}
-	
+
 	class SlotInput extends Slot
 	{
 		ItemStack validItem;
@@ -146,11 +123,11 @@ public class ContainerInkwellVat extends Container
 			super(inventoryIn, index, xPosition, yPosition);
 			this.validItem = validItem;
 		}
-		
+
 		@Override
 		public boolean isItemValid(ItemStack stack)
 		{
-			return ItemStack.areItemStacksEqual(stack, validItem);
+			return stack.isItemEqual(validItem);
 		}
 	}
 	class SlotOutput extends Slot
