@@ -29,8 +29,9 @@ public class GuiInkwellVat extends GuiContainer
 		super(new ContainerInkwellVat(player,te));
 		this.player = player;
 		this.te = te;
-		clientSelectedColor = te.selectedColor;
+		clientSelectedColor = te.getField(0);
 		ySize = 208;
+		System.out.println("selectedColor: " + clientSelectedColor);
 	}
 
 	@Override
@@ -38,6 +39,8 @@ public class GuiInkwellVat extends GuiContainer
 	{
 		super.updateScreen();
 		colorSelection = te.getColorList();
+		clientSelectedColor = te.getField(0);
+		SplatCraftPacketHandler.instance.sendToServer(new PacketSetVatOutput(te, te.getRecipeStack(), clientSelectedColor));
 
 	}
 
@@ -75,8 +78,8 @@ public class GuiInkwellVat extends GuiContainer
 			float g = (float)(color >> 8 & 255) / 255.0F;
 			float b = (float)(color & 255) / 255.0F;
 
-			int x = 12 + (i%2)*19;
-			int y = 16 + (i/2)*18;
+			int x = 12 + (i/2)*19;
+			int y = 16 + (i%2)*18;
 
 			GlStateManager.color(r,g,b);
 			drawTexturedModalRect(x,y,34,220,19,18);
@@ -98,12 +101,11 @@ public class GuiInkwellVat extends GuiContainer
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
 	{
-		super.mouseClicked(mouseX, mouseY, mouseButton);
-		int selecCol = te.selectedColor;
+		int selecCol = te.getField(0);
 		if(colorSelection != null) {
 			for (int i = 0; i < colorSelection.size(); i++) {
-				int x = guiLeft + 12 + (i % 2) * 19;
-				int y = guiTop + 16 + (i / 2) * 18;
+				int x = guiLeft + 12 + (i / 2) * 19;
+				int y = guiTop + 16 + (i % 2) * 18;
 
 				if (mouseX >= x && mouseY >= y && mouseX < x + 19 && mouseY < y + 18 && mouseButton == 0) {
 					selecCol = i;
@@ -111,8 +113,12 @@ public class GuiInkwellVat extends GuiContainer
 			}
 		}
 		else selecCol = -1;
-		SplatCraftPacketHandler.instance.sendToServer(new PacketSetVatOutput(te, te.getRecipeStack(), selecCol));
 		clientSelectedColor = selecCol;
+		te.setField(0, selecCol);
+		//System.out.println("click!");
+		super.mouseClicked(mouseX, mouseY, mouseButton);
 
 	}
+
+
 }

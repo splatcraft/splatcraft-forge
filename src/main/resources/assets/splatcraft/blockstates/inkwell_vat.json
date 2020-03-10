@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "active=false,facing=north":    { "model": "splatcraft:inkwell_vat" },
+        "active=false,facing=east":     { "model": "splatcraft:inkwell_vat", "y": 90 },
+        "active=false,facing=south":    { "model": "splatcraft:inkwell_vat", "y": 180 },
+        "active=false,facing=west":     { "model": "splatcraft:inkwell_vat", "y": 270 },
+        "active=true,facing=north":     { "model": "splatcraft:inkwell_vat_active" },
+        "active=true,facing=east":      { "model": "splatcraft:inkwell_vat_active", "y": 90 },
+        "active=true,facing=south":     { "model": "splatcraft:inkwell_vat_active", "y": 180 },
+        "active=true,facing=west":      { "model": "splatcraft:inkwell_vat_active", "y": 270 }
+    }
+}

@@ -80,14 +80,10 @@ public class PacketSetVatOutput implements IMessage
             {
                 TileEntityInkwellVat te = (TileEntityInkwellVat) ctx.getServerHandler().player.world.getTileEntity(message.pos);
 
-                if(message.selected >= 0 && message.selected < RecipesInkwellVat.getOutput(message.recipe).size())
-                    te.setOutput(RecipesInkwellVat.getOutput(message.recipe).get(message.selected));
-                else
-                {
-                    te.removeOutput();
-                    message.selected = -1;
-                }
-                te.selectedColor = message.selected;
+                //if(message.selected >= 0 && message.selected < RecipesInkwellVat.getOutput(message.recipe).size())
+                te.setOutput(message.selected);
+
+                //System.out.println(te.selectedColor);
 
             } catch (Exception e)
             {

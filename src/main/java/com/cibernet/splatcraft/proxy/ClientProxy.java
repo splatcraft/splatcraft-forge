@@ -13,6 +13,7 @@ import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftModelManager;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
+import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
 import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -80,6 +81,15 @@ public class ClientProxy extends CommonProxy
             return te.getColor();
             
         }, inkColorBlocks);
+
+        mc.getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
+            if((worldIn.getTileEntity(pos) instanceof TileEntityInkwellVat))
+            {
+                TileEntityInkwellVat te = (TileEntityInkwellVat) worldIn.getTileEntity(pos);
+                    return te.getColor();
+            }
+            return -1;
+        }, SplatCraftBlocks.inkwellVat);
         
     }
     
