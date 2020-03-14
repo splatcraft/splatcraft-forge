@@ -52,7 +52,7 @@ public class ItemShooterBase extends ItemWeaponBase
         ItemStack stack = playerIn.getHeldItem(handIn);
         playerIn.setActiveHand(handIn);
 
-        if(!automatic)
+        if(!automatic && !worldIn.isRemote)
         {
             EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack));
             proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
@@ -74,7 +74,7 @@ public class ItemShooterBase extends ItemWeaponBase
     public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
     {
 
-        if(!worldIn.isRemote && useTime % firingSpeed == 0) {
+        if(!worldIn.isRemote && useTime % firingSpeed == 0 && automatic) {
             EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack));
             proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
             proj.setProjectileSize(projectileSize);

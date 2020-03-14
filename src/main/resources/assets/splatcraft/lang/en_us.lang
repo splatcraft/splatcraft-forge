@@ -27,6 +27,13 @@ item.aerosprayMG.name=Aerospray MG
 item.52Gal.name=.52 Gal
 item.52Gal.name=.96 Gal
 
+item.blaster.name=Blaster
+item.rangelaster.name=Range Blaster
+item.clashBlaster.name=Clash Blaster
+item.rapidBlaster.name=Rapid Blaster
+item.rapidBlasterPro.name=Rapid Blaster Pro
+item.lunaBlaster.name=Luna Blaster
+
 item.splatCharger.name=Splat Charger
 item.splatCharger2.name=Splat Charger 2
 item.squiffer.name=Squiffer
