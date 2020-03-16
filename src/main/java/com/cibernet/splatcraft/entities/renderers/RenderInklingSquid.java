@@ -1,5 +1,7 @@
 package com.cibernet.splatcraft.entities.renderers;
 
+import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.entities.models.ModelInklingSquid;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelSquid;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -14,17 +16,24 @@ import javax.annotation.Nullable;
 public class RenderInklingSquid extends RenderLivingBase<EntityPlayer>
 {
 	
-	private static final ResourceLocation SQUID_TEXTURES = new ResourceLocation("textures/entity/squid.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(SplatCraft.MODID, "textures/mobs/inkling_squid_eyes.png");
 	
 	public RenderInklingSquid(RenderManager renderManagerIn)
 	{
-		super(renderManagerIn, new ModelSquid(), 0.5f);
+		super(renderManagerIn, new ModelInklingSquid(), 0.5f);
+		this.addLayer(new LayerSquidColor(this));
+	}
+	
+	@Override
+	public void doRender(EntityPlayer entity, double x, double y, double z, float entityYaw, float partialTicks)
+	{
+		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 	}
 	
 	@Nullable
 	@Override
 	protected ResourceLocation getEntityTexture(EntityPlayer entity)
 	{
-		return SQUID_TEXTURES;
+		return TEXTURE;
 	}
 }
