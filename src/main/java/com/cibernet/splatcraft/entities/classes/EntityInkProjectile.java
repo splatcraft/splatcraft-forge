@@ -46,6 +46,8 @@ public class EntityInkProjectile extends Entity implements IProjectile
     private int ticksInAir;
     public Entity ignoreEntity;
     private int ignoreTime;
+    
+    private float damage;
 
     public EntityInkProjectile(World worldIn)
     {
@@ -53,7 +55,8 @@ public class EntityInkProjectile extends Entity implements IProjectile
         this.xTile = -1;
         this.yTile = -1;
         this.zTile = -1;
-        this.setSize(0.25F, 0.25F);
+        damage = 0;
+        this.setSize(0.5F, 0.5F);
     }
 
     public EntityInkProjectile(World worldIn, double x, double y, double z)
@@ -62,10 +65,11 @@ public class EntityInkProjectile extends Entity implements IProjectile
         this.setPosition(x, y, z);
     }
 
-    public EntityInkProjectile(World worldIn, EntityLivingBase throwerIn, int color)
+    public EntityInkProjectile(World worldIn, EntityLivingBase throwerIn, int color, float damage)
     {
         this(worldIn, throwerIn.posX, throwerIn.posY + (double)throwerIn.getEyeHeight() - 0.10000000149011612D, throwerIn.posZ);
         this.thrower = throwerIn;
+        this.damage = damage;
         setColor(color);
     }
 
@@ -80,7 +84,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
     public void setProjectileSize(float size)
     {
         dataManager.set(SIZE, size);
-        this.setSize(0.25f*size, 0.25f*size);
+        this.setSize(0.5f*size, 0.5f*size);
         this.setPosition(this.posX, this.posY, this.posZ);
     }
 
@@ -292,7 +296,8 @@ public class EntityInkProjectile extends Entity implements IProjectile
     {
         compound.setInteger("color", getColor());
         compound.setFloat("size", getProjectileSize());
-
+        
+        compound.setFloat("damage", this.damage);
         compound.setInteger("xTile", this.xTile);
         compound.setInteger("yTile", this.yTile);
         compound.setInteger("zTile", this.zTile);
@@ -316,6 +321,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
     {
         setColor(compound.getInteger("color"));
         setProjectileSize(compound.getInteger("size"));
+        this.damage = compound.getFloat("damage");
         this.xTile = compound.getInteger("xTile");
         this.yTile = compound.getInteger("yTile");
         this.zTile = compound.getInteger("zTile");
@@ -439,15 +445,16 @@ public class EntityInkProjectile extends Entity implements IProjectile
         // TODO ink damage
         if (result.entityHit != null)
         {
-            int i = 0;
+            float i = 0;
 
             if(result.entityHit instanceof EntityPlayer && SplatCraftPlayerData.getInkColor((EntityPlayer) result.entityHit) != getColor())
             {
-                i = 8;
+                i = damage;
             }
             
             result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), (float)i);
 
+            if(i != 0f)
             SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), 2 * getProjectileSize(), getColor());
         }
         

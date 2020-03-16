@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.items;
 import javax.annotation.Nullable;
 
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
+import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -23,13 +24,12 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.*;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class ItemRollerBase extends ItemWeaponBase
 {
@@ -39,15 +39,18 @@ public class ItemRollerBase extends ItemWeaponBase
     protected float flingSpeed;
     protected boolean isBrush;
     protected int rollRadius;
-    protected float rollSpeed;
+    protected float rollDamage;
+    protected float flingDamage;
 
-    public ItemRollerBase(String unlocName, String registryName, double weaponSpeed, float flingSpeed, double rollSpeed, int rollRadius, boolean isBrush)
+    public ItemRollerBase(String unlocName, String registryName, double weaponSpeed, float flingSpeed, float flingDamage, double rollSpeed, int rollRadius, float rollDamage, boolean isBrush)
     {
         super(unlocName, registryName);
         
         this.weaponSpeed = weaponSpeed;
         this.flingSpeed = flingSpeed;
         this.rollRadius = rollRadius;
+        this.rollDamage = rollDamage;
+        this.flingDamage = flingDamage;
         this.isBrush = isBrush;
 
         SPEED_MODIFIER = (new AttributeModifier( "Rolling speed boost", rollSpeed-1d, 2)).setSaved(false);
@@ -101,6 +104,9 @@ public class ItemRollerBase extends ItemWeaponBase
     @Override
     public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
     {
+        if(playerIn.motionX == 0 && playerIn.motionY == 0 && playerIn.motionZ == 0)
+            return;
+        
         BlockPos pos = new BlockPos(playerIn.posX + 0.5, playerIn.posY, playerIn.posZ + 0.5);
         Vec3d fwd = getFwd(0, playerIn.rotationYaw);
         playerIn.getHorizontalFacing();
@@ -119,12 +125,24 @@ public class ItemRollerBase extends ItemWeaponBase
                 zOff = 0;
             else xOff = 0;
 
+            BlockPos checkPos = pos.add(fwd.x * 1 + xOff, -1, fwd.z * 1 + zOff);
             BlockPos inkPos = pos.add(fwd.x * 2 + xOff, -1, fwd.z * 2 + zOff);
-
+            boolean canInk = true;
+            
             if (worldIn.getBlockState(inkPos.up()).getBlock() != Blocks.AIR)
-                inkPos = inkPos.up();
-
-            SplatCraftUtils.inkBlock(worldIn, inkPos, ItemWeaponBase.getInkColor(stack));
+                inkPos = checkPos.up();
+            else if(!SplatCraftUtils.canInk(worldIn, checkPos)) canInk = false;
+            
+            if(canInk)
+                SplatCraftUtils.inkBlock(worldIn, inkPos, ItemWeaponBase.getInkColor(stack));
+            
+            List<EntityPlayer> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(inkPos.up()));
+            for(EntityPlayer target : inkedPlayers)
+            {
+                if(SplatCraftPlayerData.getInkColor(target) != getInkColor(stack))
+                    target.attackEntityFrom(DamageSource.causePlayerDamage(playerIn), rollDamage);
+            }
+            
         }
     }
 
@@ -141,7 +159,7 @@ public class ItemRollerBase extends ItemWeaponBase
 
             for(int i = -1; i <= 1; i++)
             {
-                EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack));
+                EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack), flingDamage);
                 proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw + ((!isBrush) ? 0 : 20*i), isBrush ? 0 : 20*i, flingSpeed, 4f);
                 proj.setProjectileSize(0.5f);
                 worldIn.spawnEntity(proj);

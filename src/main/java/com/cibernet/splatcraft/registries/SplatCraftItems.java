@@ -21,13 +21,13 @@ public class SplatCraftItems
     public static final Item powerEggCan = new ItemPowerEggCan();
     public static final Item sardinium = new Item().setUnlocalizedName("sardinium").setRegistryName("sardinium").setCreativeTab(TabSplatCraft.main);
 
-    public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot", 1f, 0.5f, 10f, 5);
-    public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.4f, 1.25d, 3, false);
-    public static final Item splatCharger = new ItemShooterBase("splatCharger", "splat_charger", 0.5f, 5f, 2f, 50, false); //TODO
-    public static final Item splattershotJr = new ItemShooterBase("splattershotJr", "splattershot_jr", 1f, 0.35f, 3.5f, 4);
-    public static final Item inkbrush = new ItemRollerBase("inkbrush", "inkbrush", 8D, 0.2f, 1.3d,1, true);
-    public static final Item aerosprayMG = new ItemShooterBase("aerosprayMG", "aerospray_mg", 1.2f, 0.3f, 20f, 1);
-    public static final Item clashBlaster = new ItemShooterBase("clashBlaster", "clash_blaster", 2f, 0.75f, 10f, 20, false); //TODO
+    public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot", 1f, 0.7f, 10f, 5, 7f);
+    public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.6f, 4f,1.25d, 3, 20, false);
+    public static final Item splatCharger = new ItemShooterBase("splatCharger", "splat_charger", 0.5f, 5f, 2f, 50, 20, false); //TODO
+    public static final Item splattershotJr = new ItemShooterBase("splattershotJr", "splattershot_jr", 1f, 0.55f, 3.5f, 4, 5.5f);
+    public static final Item inkbrush = new ItemRollerBase("inkbrush", "inkbrush", 8D, 0.4f, 6f, 1.3d,1, 5,true);
+    public static final Item aerosprayMG = new ItemShooterBase("aerosprayMG", "aerospray_mg", 1.2f, 0.5f, 20f, 1, 4.8f);
+    public static final Item clashBlaster = new ItemShooterBase("clashBlaster", "clash_blaster", 2f, 0.95f, 10f, 20, 12, false); //TODO
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)

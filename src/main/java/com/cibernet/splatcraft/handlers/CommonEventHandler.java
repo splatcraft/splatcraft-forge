@@ -35,11 +35,13 @@ public class CommonEventHandler
 	{
 		EntityPlayer player = event.player;
 		BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
+		ItemStack weapon = player.getActiveItemStack();
 
 
-		if(SplatCraftPlayerData.getIsSquid(player))
+		if(SplatCraftPlayerData.getIsSquid(player) && !player.isRiding())
 		{
 			SplatCraftUtils.setEntitySize(player, 0.6f, 0.6f);
+			player.eyeHeight = 0.4f;
 
 			if(player.world.getBlockState(pos.down()).getBlock().equals(SplatCraftBlocks.inkwell))
 				if(player.world.getTileEntity(pos.down()) instanceof TileEntityColor)
@@ -52,19 +54,21 @@ public class CommonEventHandler
 					}
 				}
 		}
-
-		ItemStack weapon = player.getActiveItemStack();
-		if(weapon.getItem() instanceof ItemWeaponBase)
+		else
 		{
-			ItemWeaponBase item = (ItemWeaponBase) weapon.getItem();
-
-
-			//if(item.getSpeedModifier() != null && attributeInstance.hasModifier(item.getSpeedModifier()))
-			//	attributeInstance.removeModifier(item.getSpeedModifier());
-
-			if(player.getItemInUseCount() > 0)
-				item.onItemTickUse(player.world, player, weapon, player.getItemInUseCount());
-
+			player.eyeHeight = player.getDefaultEyeHeight();
+			if(weapon.getItem() instanceof ItemWeaponBase)
+			{
+				ItemWeaponBase item = (ItemWeaponBase) weapon.getItem();
+				
+				
+				//if(item.getSpeedModifier() != null && attributeInstance.hasModifier(item.getSpeedModifier()))
+				//	attributeInstance.removeModifier(item.getSpeedModifier());
+				
+				if(player.getItemInUseCount() > 0)
+					item.onItemTickUse(player.world, player, weapon, player.getItemInUseCount());
+				
+			}
 		}
 
 	}
@@ -79,8 +83,11 @@ public class CommonEventHandler
 
 		SplatCraftPlayerData.PlayerData data = SplatCraftPlayerData.getPlayerData(player.getUniqueID());
 
+		if(!event.getWorld().isRemote)
+		{
 		SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnColor(player.getUniqueID(), data.inkColor), player.dimension);
 		SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnTransformed(player.getUniqueID(), data.isSquid), player.dimension);
+		}
 
 	}
 

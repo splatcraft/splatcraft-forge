@@ -19,8 +19,9 @@ public class ItemShooterBase extends ItemWeaponBase
     public float projectileSpeed;
     public int firingSpeed;
     public boolean automatic;
+    public float damage;
 
-    public ItemShooterBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, boolean automatic)
+    public ItemShooterBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage, boolean automatic)
     {
         super(unlocName, registryName);
         this.inaccuracy = inaccuracy;
@@ -28,11 +29,12 @@ public class ItemShooterBase extends ItemWeaponBase
         this.projectileSpeed = projectileSpeed;
         this.firingSpeed = firingSpeed;
         this.automatic = automatic;
+        this.damage = damage;
     }
 
-    public ItemShooterBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed)
+    public ItemShooterBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage)
     {
-        this(unlocName, registryName, projectileSize, projectileSpeed, inaccuracy, firingSpeed, true);
+        this(unlocName, registryName, projectileSize, projectileSpeed, inaccuracy, firingSpeed, damage, true);
     }
 
     @Override
@@ -54,7 +56,7 @@ public class ItemShooterBase extends ItemWeaponBase
 
         if(!automatic && !worldIn.isRemote)
         {
-            EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack));
+            EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack), damage);
             proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
             proj.setProjectileSize(projectileSize);
             worldIn.spawnEntity(proj);
@@ -75,7 +77,7 @@ public class ItemShooterBase extends ItemWeaponBase
     {
 
         if(!worldIn.isRemote && useTime % firingSpeed == 0 && automatic) {
-            EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack));
+            EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack), damage);
             proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
             proj.setProjectileSize(projectileSize);
             worldIn.spawnEntity(proj);
