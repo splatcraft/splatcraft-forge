@@ -17,7 +17,7 @@ public class ModelInklingSquid extends ModelBase {
 	private final ModelRenderer tentacles;
 	private final ModelRenderer LeftLimb;
 	private final ModelRenderer RightLimb;
-
+	
 	public ModelInklingSquid() {
 		textureWidth = 64;
 		textureHeight = 64;
@@ -81,7 +81,11 @@ public class ModelInklingSquid extends ModelBase {
 	{
 		super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
 		
-		squid.rotateAngleX = (float) -Math.min(Math.PI/2, Math.max(-Math.PI/2, entitylivingbaseIn.motionY+0.0784000015258789));
+		if(!entitylivingbaseIn.isRiding())
+		{
+			float yDiff = (float) (entitylivingbaseIn.posY - entitylivingbaseIn.prevPosY) * 1.1f;
+			squid.rotateAngleX = (float) -Math.min(Math.PI / 2, Math.max(-Math.PI / 2, yDiff));
+		}
 		
 		if(entitylivingbaseIn.onGround)
 		{

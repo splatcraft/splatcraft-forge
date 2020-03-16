@@ -39,6 +39,7 @@ public class ClientEventHandler
 			return;
 
 		IAttributeInstance attributeInstance = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+		ItemStack weapon = player.getActiveItemStack();
 
 		if(attributeInstance.hasModifier(SQUID_LAND_SPEED))
 			attributeInstance.removeModifier(SQUID_LAND_SPEED);
@@ -51,7 +52,8 @@ public class ClientEventHandler
 		if(weaponMod != null)
 			attributeInstance.removeModifier(weaponMod);
 
-		if(SplatCraftPlayerData.getIsSquid(player))
+		boolean isSquid = SplatCraftPlayerData.getIsSquid(player);
+		if(isSquid)
 		{
 			if(SplatCraftUtils.canSquidHide(player.world, player))
 			{
@@ -62,8 +64,6 @@ public class ClientEventHandler
 				attributeInstance.applyModifier(SQUID_LAND_SPEED);
 
 		}
-
-		ItemStack weapon = player.getActiveItemStack();
 		if(weapon.getItem() instanceof ItemWeaponBase)
 		{
 			AttributeModifier speedMod = ((ItemWeaponBase) weapon.getItem()).getSpeedModifier();
@@ -72,7 +72,7 @@ public class ClientEventHandler
 			{
 				if(!attributeInstance.hasModifier(IN_USE_SPEED_BOOST))
 					attributeInstance.applyModifier(IN_USE_SPEED_BOOST);
-				if(speedMod != null && !attributeInstance.hasModifier(speedMod))
+				if(!isSquid && speedMod != null && !attributeInstance.hasModifier(speedMod))
 					attributeInstance.applyModifier(speedMod);
 			}
 		}
