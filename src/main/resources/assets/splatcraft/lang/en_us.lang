@@ -85,3 +85,8 @@ commands.turfWar.noInk=No ink was found on the designated area
 
 key.categories.splatcraft=Splatcraft
 key.squidForm=Squid
+
+death.attack.splat=%1$s was splatted by %2$s
+death.attack.splat.item=%1$s was splatted by %2$s using %3$s
+death.attack.roll=%1$s was crushed by %2$s
+death.attack.roll.item=%1$s was crushed by %2$s using %3$s

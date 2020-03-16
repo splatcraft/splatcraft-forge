@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.items;
 import javax.annotation.Nullable;
 
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
+import com.cibernet.splatcraft.utils.SplatCraftDamageSource;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.google.common.collect.HashMultimap;
@@ -63,6 +64,12 @@ public class ItemRollerBase extends ItemWeaponBase
                 return entityIn != null && entityIn.isHandActive() && entityIn.getActiveItemStack() == stack ? 1.0F : 0.0F;
             }
         });
+    }
+    
+    @Override
+    public boolean canDestroyBlockInCreative(World world, BlockPos pos, ItemStack stack, EntityPlayer player)
+    {
+        return false;
     }
     
     @Override
@@ -140,7 +147,7 @@ public class ItemRollerBase extends ItemWeaponBase
             for(EntityPlayer target : inkedPlayers)
             {
                 if(SplatCraftPlayerData.getInkColor(target) != getInkColor(stack))
-                    target.attackEntityFrom(DamageSource.causePlayerDamage(playerIn), rollDamage);
+                    target.attackEntityFrom(new SplatCraftDamageSource("roll", playerIn, playerIn), rollDamage);
             }
             
         }
