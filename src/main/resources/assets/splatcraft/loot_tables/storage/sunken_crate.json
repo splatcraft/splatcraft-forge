@@ -39,6 +39,11 @@
                 },
                 {
                     "type": "item",
+                    "name": "splatcraft:sardinium_block",
+                    "weight": 20
+                },
+                {
+                    "type": "item",
                     "name": "minecraft:dye",
                     "weight": 30,
                     "functions": [
