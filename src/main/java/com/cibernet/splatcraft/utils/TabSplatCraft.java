@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 
 public class TabSplatCraft extends CreativeTabs
 {
-    public static final CreativeTabs main = new TabSplatCraft("tabSplatCraft");
+    public static final CreativeTabs main = new TabSplatCraft("tabSplatcraft");
 
     public TabSplatCraft(String label) {
         super(label);
