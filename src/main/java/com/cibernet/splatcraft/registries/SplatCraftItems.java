@@ -28,6 +28,7 @@ public class SplatCraftItems
     public static final Item inkbrush = new ItemRollerBase("inkbrush", "inkbrush", 8D, 0.4f, 6f, 1.3d,1, 5,true);
     public static final Item aerosprayMG = new ItemShooterBase("aerosprayMG", "aerospray_mg", 1.2f, 0.5f, 20f, 1, 4.8f);
     public static final Item clashBlaster = new ItemShooterBase("clashBlaster", "clash_blaster", 2f, 0.95f, 10f, 20, 12, false); //TODO
+    public static final Item octobrush = new ItemRollerBase("octobrush", "octobrush", 4D, 0.5f, 8f, 1.1d, 2, 4, true);
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
@@ -45,6 +46,7 @@ public class SplatCraftItems
         registerItem(registry, inkbrush);
         registerItem(registry, aerosprayMG);
         registerItem(registry, clashBlaster);
+        registerItem(registry, octobrush);
 
         registerItemBlocks(registry);
     }
