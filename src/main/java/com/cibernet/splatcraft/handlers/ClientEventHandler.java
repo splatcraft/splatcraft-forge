@@ -31,8 +31,9 @@ public class ClientEventHandler
 	public static ClientEventHandler instance = new ClientEventHandler();
 
 	public static final AttributeModifier IN_USE_SPEED_BOOST = (new AttributeModifier( "Weapon use speed boost", 4D, 2)).setSaved(false);
-	private static final AttributeModifier SQUID_LAND_SPEED = (new AttributeModifier( "Squid in land speed boost", -0.4D, 2)).setSaved(false);
+	private static final AttributeModifier SQUID_LAND_SPEED = (new AttributeModifier( "Squid in land speed penalty", -0.4D, 2)).setSaved(false);
 	private static final AttributeModifier SQUID_SWIM_SPEED = (new AttributeModifier( "Squid swim speed boost", 1.25D, 2)).setSaved(false);
+	private static final AttributeModifier ENEMY_INK_SPEED = (new AttributeModifier( "Enemy ink speed penalty", -0.3D, 2)).setSaved(false);
 
 
 	@SubscribeEvent
@@ -52,11 +53,17 @@ public class ClientEventHandler
 			attributeInstance.removeModifier(SQUID_SWIM_SPEED);
 		if(attributeInstance.hasModifier(IN_USE_SPEED_BOOST))
 			attributeInstance.removeModifier(IN_USE_SPEED_BOOST);
+		if(attributeInstance.hasModifier(ENEMY_INK_SPEED))
+			attributeInstance.removeModifier(ENEMY_INK_SPEED);
 
 		AttributeModifier weaponMod = getWeaponMod(attributeInstance);
 		if(weaponMod != null)
 			attributeInstance.removeModifier(weaponMod);
-
+		
+		
+		if(SplatCraftUtils.onEnemyInk(player.world, player) && !attributeInstance.hasModifier(ENEMY_INK_SPEED))
+			attributeInstance.applyModifier(ENEMY_INK_SPEED);
+		
 		boolean isSquid = SplatCraftPlayerData.getIsSquid(player);
 		if(isSquid)
 		{

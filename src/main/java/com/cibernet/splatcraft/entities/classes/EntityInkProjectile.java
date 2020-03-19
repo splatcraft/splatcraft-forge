@@ -440,7 +440,6 @@ public class EntityInkProjectile extends Entity implements IProjectile
      */
     protected void onImpact(RayTraceResult result)
     {
-        // TODO ink damage
         if (result.entityHit != null)
         {
             float i = 0;
@@ -449,10 +448,9 @@ public class EntityInkProjectile extends Entity implements IProjectile
             {
                 i = damage;
             }
-            
-            result.entityHit.attackEntityFrom(new SplatCraftDamageSource("splat", this, this.thrower).setProjectile(), (float)i);
-
-            if(i != 0f)
+    
+            if(i >= 0)
+                result.entityHit.attackEntityFrom(new SplatCraftDamageSource("splat", this, this.thrower).setProjectile(), (float)i);
             SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), 2 * getProjectileSize(), getColor());
         }
         

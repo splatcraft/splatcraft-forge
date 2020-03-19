@@ -75,6 +75,15 @@ public class SplatCraftUtils
 		return false;
 	}
 	
+	public static boolean onEnemyInk(World worldIn, EntityPlayer playerIn)
+	{
+		BlockPos pos = new BlockPos(playerIn.posX, playerIn.posY-.1, playerIn.posZ);
+		
+		if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
+			return ((TileEntityColor)worldIn.getTileEntity(pos)).getColor() != SplatCraftPlayerData.getInkColor(playerIn) && !playerIn.isRiding();
+		return false;
+	}
+	
 	public static void createInkExplosion(World worldIn, Entity source, BlockPos pos, float radius, int color)
 	{
 		if (!worldIn.isRemote)

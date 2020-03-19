@@ -14,9 +14,11 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -40,6 +42,12 @@ public class CommonEventHandler
 		
 		if(player.getActivePotionEffect(MobEffects.INVISIBILITY) == null)
 			player.setInvisible(false);
+		
+		if(SplatCraftUtils.onEnemyInk(player.world, player) && player.ticksExisted % 20 == 0 && player.getHealth() > 4 && player.world.getDifficulty() != EnumDifficulty.PEACEFUL)
+		{
+			player.attackEntityFrom(new DamageSource("enemyInk"), 1f);
+		}
+		
 		if(SplatCraftPlayerData.getIsSquid(player))
 		{
 			if(!player.isRiding())
@@ -47,7 +55,6 @@ public class CommonEventHandler
 				SplatCraftUtils.setEntitySize(player, 0.6f, 0.6f);
 				player.eyeHeight = 0.4f;
 				
-				boolean canClimb = SplatCraftUtils.canSquidClimb(player.world, player);
 				if(SplatCraftUtils.canSquidHide(player.world, player))
 				{
 					player.fallDistance = 0;
@@ -56,6 +63,8 @@ public class CommonEventHandler
 					if((player.posX != player.prevPosX || player.posY != player.prevPosY || player.posZ != player.prevPosZ) && player.world.isRemote)
 						SplatCraftParticleSpawner.spawnInkParticle(player.posX, player.posY, player.posZ, 0, 0, 0, SplatCraftPlayerData.getInkColor(player), 4f);
 					
+					if(player.ticksExisted % 5 == 0)
+						player.heal(0.5f);
 				}
 				
 				if(player.world.getBlockState(pos.down()).getBlock().equals(SplatCraftBlocks.inkwell) && !player.world.isRemote)
