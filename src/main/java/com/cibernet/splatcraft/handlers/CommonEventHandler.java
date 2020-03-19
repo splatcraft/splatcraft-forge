@@ -2,10 +2,8 @@ package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
-import com.cibernet.splatcraft.network.PacketPlayerReturnColor;
-import com.cibernet.splatcraft.network.PacketPlayerReturnTransformed;
-import com.cibernet.splatcraft.network.PacketPlayerSetColor;
-import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
+import com.cibernet.splatcraft.network.*;
+import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
@@ -13,6 +11,7 @@ import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
@@ -37,24 +36,37 @@ public class CommonEventHandler
 		BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
 		ItemStack weapon = player.getActiveItemStack();
 
-
-		if(SplatCraftPlayerData.getIsSquid(player) && !player.isRiding())
+		if(player.getActivePotionEffect(MobEffects.INVISIBILITY) == null)
+			player.setInvisible(false);
+		if(SplatCraftPlayerData.getIsSquid(player))
 		{
-			SplatCraftUtils.setEntitySize(player, 0.6f, 0.6f);
-			player.eyeHeight = 0.4f;
-
-			if(player.world.getBlockState(pos.down()).getBlock().equals(SplatCraftBlocks.inkwell))
-				if(player.world.getTileEntity(pos.down()) instanceof TileEntityColor)
+			if(!player.isRiding())
+			{
+				SplatCraftUtils.setEntitySize(player, 0.6f, 0.6f);
+				player.eyeHeight = 0.4f;
+				
+				if(SplatCraftUtils.canSquidHide(player.world, player))
 				{
-					TileEntityColor te = (TileEntityColor) player.world.getTileEntity(pos.down());
-
-					if(SplatCraftPlayerData.getInkColor(player) != te.getColor()) {
-						SplatCraftPlayerData.setInkColor(player, te.getColor());
-						SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnColor(player.getUniqueID(), te.getColor()), player.dimension);
-					}
+					player.setInvisible(true);
+					
+					if((player.posX != player.prevPosX || player.posY != player.prevPosY || player.posZ != player.prevPosZ) && player.world.isRemote)
+						SplatCraftParticleSpawner.spawnInkParticle(player.posX, player.posY, player.posZ, 0, 0, 0, SplatCraftPlayerData.getInkColor(player), 4f);
 				}
+				
+				if(player.world.getBlockState(pos.down()).getBlock().equals(SplatCraftBlocks.inkwell) && !player.world.isRemote)
+					if(player.world.getTileEntity(pos.down()) instanceof TileEntityColor)
+					{
+						TileEntityColor te = (TileEntityColor) player.world.getTileEntity(pos.down());
+						
+						if(SplatCraftPlayerData.getInkColor(player) != te.getColor())
+						{
+							SplatCraftPlayerData.setInkColor(player, te.getColor());
+							SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnColor(player.getUniqueID(), te.getColor()), player.dimension);
+						}
+					}
+			}
 		}
-		else
+		else if(!player.isDead)
 		{
 			player.eyeHeight = player.getDefaultEyeHeight();
 			if(weapon.getItem() instanceof ItemWeaponBase)
@@ -85,12 +97,14 @@ public class CommonEventHandler
 
 		if(!event.getWorld().isRemote)
 		{
-		SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnColor(player.getUniqueID(), data.inkColor), player.dimension);
-		SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnTransformed(player.getUniqueID(), data.isSquid), player.dimension);
+			SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnColor(player.getUniqueID(), data.inkColor), player.dimension);
+			SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnTransformed(player.getUniqueID(), data.isSquid), player.dimension);
 		}
+		else
+			SplatCraftPacketHandler.instance.sendToServer(new PacketGetPlayerData());
 
 	}
-
+	
 	@SubscribeEvent
 	public void onInteract(PlayerInteractEvent event)
 	{

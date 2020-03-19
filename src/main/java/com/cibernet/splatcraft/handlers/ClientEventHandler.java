@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
+import com.cibernet.splatcraft.network.PacketGetPlayerData;
 import com.cibernet.splatcraft.network.PacketPlayerSetTransformed;
 import com.cibernet.splatcraft.network.PacketWeaponLeftClick;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
@@ -13,6 +14,8 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -20,6 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class ClientEventHandler
 {
@@ -110,9 +114,10 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public void onLeftClick(PlayerInteractEvent.LeftClickEmpty event)
 	{
-		SplatCraftPacketHandler.instance.sendToServer(new PacketWeaponLeftClick(event.getEntityPlayer().getUniqueID()));
+		EntityPlayer player = event.getEntityPlayer();
+		if(!player.isSpectator() && !SplatCraftPlayerData.getIsSquid(event.getEntityPlayer()))
+			SplatCraftPacketHandler.instance.sendToServer(new PacketWeaponLeftClick(player.getUniqueID()));
 	}
-
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event)
@@ -121,7 +126,12 @@ public class ClientEventHandler
 		if(SplatCraftKeyHandler.squidKey.isPressed())
 		{
 			boolean isSquid = SplatCraftPlayerData.getIsSquid(player);
-			SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerSetTransformed(player.getUniqueID(), !isSquid));
+			
+			AxisAlignedBB axisalignedbb = player.getEntityBoundingBox();
+			axisalignedbb = new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ, axisalignedbb.minX + 0.6, axisalignedbb.minY + (isSquid ? 1.8 : 0.6), axisalignedbb.minZ + 0.6);
+			
+			if (!player.world.collidesWithAnyBlock(axisalignedbb))
+				SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerSetTransformed(player.getUniqueID(), !isSquid));
 		}
 	}
 

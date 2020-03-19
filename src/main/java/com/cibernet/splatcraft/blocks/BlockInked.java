@@ -116,22 +116,7 @@ public class BlockInked extends BlockInkColor
 
 	protected boolean tryTouchWater(World worldIn, BlockPos pos, IBlockState state)
 	{
-		boolean touchingWater = false;
-
-		for (EnumFacing enumfacing : EnumFacing.values())
-		{
-			if (enumfacing != EnumFacing.DOWN)
-			{
-				BlockPos blockpos = pos.offset(enumfacing);
-
-				if (worldIn.getBlockState(blockpos).getMaterial() == Material.WATER)
-				{
-					touchingWater = true;
-					break;
-				}
-			}
-		}
-
+		boolean touchingWater = touchingWater(worldIn, pos);
 		if (touchingWater)
 		{
 			if(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock)
@@ -143,7 +128,27 @@ public class BlockInked extends BlockInkColor
 
 		return touchingWater;
 	}
-
+	
+	public static boolean touchingWater(World worldIn, BlockPos pos)
+	{
+		boolean touchingWater = false;
+		
+		for (EnumFacing enumfacing : EnumFacing.values())
+		{
+			if (enumfacing != EnumFacing.DOWN)
+			{
+				BlockPos blockpos = pos.offset(enumfacing);
+				
+				if (worldIn.getBlockState(blockpos).getMaterial() == Material.WATER)
+				{
+					touchingWater = true;
+					break;
+				}
+			}
+		}
+		return touchingWater;
+	}
+	
 	@Override
 	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
 	{
@@ -158,7 +163,7 @@ public class BlockInked extends BlockInkColor
 	@Override
 	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
 	{
-		if (!this.tryTouchWater(worldIn, pos, state))
+		//if (!this.tryTouchWater(worldIn, pos, state))
 		{
 			super.onBlockAdded(worldIn, pos, state);
 		}

@@ -24,8 +24,8 @@ public enum InkColors
 	MINT(0x08B672, MapColor.LIGHT_BLUE, "mint"),
 	CHERRY(0xE24F65, MapColor.PINK_STAINED_HARDENED_CLAY, "cherry"),
 
-	NEON_PINK(0x17a80d, MapColor.getBlockColor(EnumDyeColor.PINK), "neonPink"),
-	NEON_GREEN(0xcf0466, MapColor.getBlockColor(EnumDyeColor.GREEN), "neonGreen"),
+	NEON_PINK(0xcf0466, MapColor.getBlockColor(EnumDyeColor.PINK), "neonPink"),
+	NEON_GREEN(0x17a80d, MapColor.getBlockColor(EnumDyeColor.GREEN), "neonGreen"),
 
 	MOJANG(0xDF242F, MapColor.RED_STAINED_HARDENED_CLAY, "mojangRed"),
 	INK_BLACK(0x1F1F2D, MapColor.CYAN_STAINED_HARDENED_CLAY, "dyeBlack"),

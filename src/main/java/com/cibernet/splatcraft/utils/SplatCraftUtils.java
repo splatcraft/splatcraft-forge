@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.utils;
 
 import com.cibernet.splatcraft.blocks.BlockInkColor;
+import com.cibernet.splatcraft.blocks.BlockInked;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
@@ -86,7 +87,7 @@ public class SplatCraftUtils
 
 			IBlockState state = worldIn.getBlockState(pos);
 
-			if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)) || state.getBlockHardness(worldIn, pos) == -1)
+			if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)) || state.getBlockHardness(worldIn, pos) == -1 || BlockInked.touchingWater(worldIn, pos))
 					return false;
 
 			if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
@@ -128,7 +129,7 @@ public class SplatCraftUtils
 
 		IBlockState state = worldIn.getBlockState(pos);
 
-		if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)) || state.getBlockHardness(worldIn, pos) == -1)
+		if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)) || state.getBlockHardness(worldIn, pos) == -1 || BlockInked.touchingWater(worldIn, pos))
 			return false;
 
 		if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
