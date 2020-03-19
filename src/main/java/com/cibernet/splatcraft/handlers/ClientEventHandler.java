@@ -14,6 +14,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.FOVUpdateEvent;
@@ -35,7 +36,7 @@ public class ClientEventHandler
 
 
 	@SubscribeEvent
-	public void cllientTick(TickEvent.ClientTickEvent event)
+	public void clientTick(TickEvent.ClientTickEvent event)
 	{
 		EntityPlayer player = Minecraft.getMinecraft().player;
 
@@ -63,6 +64,19 @@ public class ClientEventHandler
 			{
 				if(!attributeInstance.hasModifier(SQUID_SWIM_SPEED))
 					attributeInstance.applyModifier(SQUID_SWIM_SPEED);
+				
+				if(SplatCraftUtils.canSquidClimb(player.world, player) && player.world.isRemote)
+				{
+					
+					MovementInput input = Minecraft.getMinecraft().player.movementInput;
+					
+					player.moveRelative(0.0f,player.moveForward, 0.0f, 0.055f * (input.jump ? 1.2f : 1f));
+					if(player.motionY <= 0)
+						player.moveRelative(0.0f,1f, 0.0f, 0.035f);
+					
+					if(player.isSneaking())
+						player.motionY = Math.max(0,player.motionY);
+				}
 			}
 			else if(!attributeInstance.hasModifier(SQUID_LAND_SPEED))
 				attributeInstance.applyModifier(SQUID_LAND_SPEED);
@@ -123,6 +137,7 @@ public class ClientEventHandler
 	public void onKeyInput(InputEvent.KeyInputEvent event)
 	{
 		EntityPlayer player = Minecraft.getMinecraft().player;
+		
 		if(SplatCraftKeyHandler.squidKey.isPressed())
 		{
 			boolean isSquid = SplatCraftPlayerData.getIsSquid(player);

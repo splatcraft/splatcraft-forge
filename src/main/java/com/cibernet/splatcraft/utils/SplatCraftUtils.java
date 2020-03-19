@@ -59,12 +59,22 @@ public class SplatCraftUtils
 		
 		if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
 			return ((TileEntityColor)worldIn.getTileEntity(pos)).getColor() == SplatCraftPlayerData.getInkColor(playerIn) && !playerIn.isRiding();
+		return SplatCraftUtils.canSquidClimb(worldIn, playerIn);
+	}
+	
+	public static boolean canSquidClimb(World worldIn, EntityPlayer playerIn)
+	{
+		for(int i = 0; i < 4; i++)
+		{
+			float xOff = (i < 2 ? .7f : 0) * (i % 2 == 0 ? 1 : -1), zOff = (i < 2 ? 0 : .7f) * (i % 2 == 0 ? 1 : -1);
+			BlockPos pos = new BlockPos(playerIn.posX - xOff, playerIn.posY, playerIn.posZ - zOff);
+			if(worldIn.getTileEntity(pos) instanceof TileEntityColor &&
+					((TileEntityColor) worldIn.getTileEntity(pos)).getColor() == SplatCraftPlayerData.getInkColor(playerIn) && !playerIn.isRiding())
+				return true;
+		}
 		return false;
 	}
 	
-	/**
-	 * Creates an explosion as determined by this creeper's power and explosion radius.
-	 */
 	public static void createInkExplosion(World worldIn, Entity source, BlockPos pos, float radius, int color)
 	{
 		if (!worldIn.isRemote)

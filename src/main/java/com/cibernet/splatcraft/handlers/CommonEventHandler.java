@@ -8,11 +8,13 @@ import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
 import net.minecraft.world.storage.loot.*;
@@ -35,7 +37,7 @@ public class CommonEventHandler
 		EntityPlayer player = event.player;
 		BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
 		ItemStack weapon = player.getActiveItemStack();
-
+		
 		if(player.getActivePotionEffect(MobEffects.INVISIBILITY) == null)
 			player.setInvisible(false);
 		if(SplatCraftPlayerData.getIsSquid(player))
@@ -45,12 +47,15 @@ public class CommonEventHandler
 				SplatCraftUtils.setEntitySize(player, 0.6f, 0.6f);
 				player.eyeHeight = 0.4f;
 				
+				boolean canClimb = SplatCraftUtils.canSquidClimb(player.world, player);
 				if(SplatCraftUtils.canSquidHide(player.world, player))
 				{
+					player.fallDistance = 0;
 					player.setInvisible(true);
 					
 					if((player.posX != player.prevPosX || player.posY != player.prevPosY || player.posZ != player.prevPosZ) && player.world.isRemote)
 						SplatCraftParticleSpawner.spawnInkParticle(player.posX, player.posY, player.posZ, 0, 0, 0, SplatCraftPlayerData.getInkColor(player), 4f);
+					
 				}
 				
 				if(player.world.getBlockState(pos.down()).getBlock().equals(SplatCraftBlocks.inkwell) && !player.world.isRemote)
