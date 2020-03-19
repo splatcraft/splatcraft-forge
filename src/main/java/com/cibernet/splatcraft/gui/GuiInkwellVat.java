@@ -115,7 +115,6 @@ public class GuiInkwellVat extends GuiContainer
 		else selecCol = -1;
 		clientSelectedColor = selecCol;
 		te.setField(0, selecCol);
-		//System.out.println("click!");
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 
 	}

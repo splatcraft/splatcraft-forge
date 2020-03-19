@@ -21,8 +21,6 @@ public class SplatCraftDamageSource extends EntityDamageSourceIndirect
 	@Override
 	public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn)
 	{
-		System.out.println(this.getTrueSource());
-		System.out.println(entityLivingBaseIn);
 		ITextComponent itextcomponent = this.getTrueSource() == null ? this.damageSourceEntity.getDisplayName() : this.getTrueSource().getDisplayName();
 		ItemStack itemstack = this.getTrueSource() instanceof EntityLivingBase ? ((EntityLivingBase)this.getTrueSource()).getHeldItemMainhand() : ItemStack.EMPTY;
 		String s = "death.attack." + this.damageType;

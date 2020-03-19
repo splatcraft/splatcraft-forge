@@ -83,7 +83,6 @@ public class PacketSetVatOutput implements IMessage
                 //if(message.selected >= 0 && message.selected < RecipesInkwellVat.getOutput(message.recipe).size())
                 te.setOutput(message.selected);
 
-                //System.out.println(te.selectedColor);
 
             } catch (Exception e)
             {

@@ -68,12 +68,11 @@ public class PacketReturnPlayerData implements IMessage
         {
             try
             {
-                System.out.println("return");
                 SplatCraftPlayerData.readFromNBT(message.playerData);
 
             } catch (Exception e)
             {
-                System.out.println(e);
+                System.out.println("Something went wrong! " + e);
             }
         }
     }

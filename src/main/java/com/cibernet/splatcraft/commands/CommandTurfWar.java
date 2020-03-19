@@ -64,8 +64,6 @@ public class CommandTurfWar extends CommandBase
 			}
 		}
 		
-		System.out.println(blockpos2);
-		System.out.println(blockpos3);
 		
 		TreeMap<Integer, Integer> scores = new TreeMap<>();
 		int blockTotal = 0;
