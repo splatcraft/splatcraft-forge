@@ -18,6 +18,8 @@ public class SplatCraftBlocks
 {
 
     public static Block inkedBlock = new BlockInked();
+    public static Block inkedSlab = new BlockInkedSlab();
+    public static Block inkedStairs = new BlockInkedStairs();
 
     public static Block emptyInkwell = new BlockInkwellEmpty();
     public static Block inkwell = new BlockInkwell();
@@ -41,6 +43,8 @@ public class SplatCraftBlocks
         IForgeRegistry<Block> registry = event.getRegistry();
         
         registerBlock(registry, inkedBlock);
+        registerBlock(registry, inkedSlab);
+        registerBlock(registry, inkedStairs);
         registerBlock(registry, emptyInkwell, true);
         registerBlock(registry, inkwell);
         registerBlock(registry, canvas, true);

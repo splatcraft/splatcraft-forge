@@ -1,9 +1,12 @@
 package com.cibernet.splatcraft.commands;
 
+import com.cibernet.splatcraft.blocks.IInked;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
+import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -81,17 +84,22 @@ public class CommandTurfWar extends CommandBase
 				
 				blockTotal++;
 				
-				if(world.getTileEntity(checkPos) instanceof TileEntityInkedBlock)
+				if(world.getTileEntity(checkPos) instanceof TileEntityColor && world.getBlockState(checkPos).getBlock() instanceof IInked)
 				{
 					TileEntityInkedBlock te = (TileEntityInkedBlock) world.getTileEntity(checkPos);
+					IInked block = (IInked) world.getBlockState(checkPos).getBlock();
 					int color = te.getColor();
 					
-					if(scores.containsKey(color))
-						scores.replace(color, scores.get(color)+1);
-					else scores.put(color, 1);
+					if(block.countsTowardsScore())
+					{
+						if(scores.containsKey(color))
+							scores.replace(color, scores.get(color) + 1);
+						else scores.put(color, 1);
+						
+						if(cleanInk)
+							block.clearInk(world, checkPos);
+					}
 					
-					if(cleanInk)
-						world.setBlockState(checkPos, te.getSavedState(), 3);
 					
 				}
 			}

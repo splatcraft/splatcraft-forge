@@ -119,4 +119,10 @@ public class BlockInkwell extends BlockInkColor
 			return SplatCraft.DEFAULT_INK;
 		return stack.getTagCompound().getInteger("color");
 	}
+	
+	@Override
+	public boolean canSwim()
+	{
+		return true;
+	}
 }

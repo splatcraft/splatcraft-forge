@@ -9,16 +9,17 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockInkColor extends Block
+public class BlockInkColor extends Block implements IInked
 {
 	
-	public static List<BlockInkColor> blocks = new ArrayList<>();
+	public static List<Block> blocks = new ArrayList<>();
 	public boolean canInk = true;
 	public int defaultColor = SplatCraft.DEFAULT_INK;
 	
@@ -55,5 +56,29 @@ public class BlockInkColor extends Block
 	{
 		checkTagCompound(stack).setInteger("color", color);
 		return stack;
+	}
+	
+	@Override
+	public boolean canInk()
+	{
+		return canInk;
+	}
+	
+	@Override
+	public boolean canDamage()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean canSwim()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean countsTowardsScore()
+	{
+		return false;
 	}
 }

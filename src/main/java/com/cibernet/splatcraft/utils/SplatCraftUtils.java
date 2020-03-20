@@ -2,11 +2,15 @@ package com.cibernet.splatcraft.utils;
 
 import com.cibernet.splatcraft.blocks.BlockInkColor;
 import com.cibernet.splatcraft.blocks.BlockInked;
+import com.cibernet.splatcraft.blocks.IInked;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.BlockSlab;
+import net.minecraft.block.BlockStairs;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -56,8 +60,9 @@ public class SplatCraftUtils
 	public static boolean canSquidHide(World worldIn, EntityPlayer playerIn)
 	{
 		BlockPos pos = new BlockPos(playerIn.posX, playerIn.posY-.1, playerIn.posZ);
+		Block block = worldIn.getBlockState(pos).getBlock();
 		
-		if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
+		if((!(block instanceof IInked) || (block instanceof IInked && ((IInked) block).canSwim())) && worldIn.getTileEntity(pos) instanceof TileEntityColor)
 			return ((TileEntityColor)worldIn.getTileEntity(pos)).getColor() == SplatCraftPlayerData.getInkColor(playerIn) && !playerIn.isRiding();
 		return SplatCraftUtils.canSquidClimb(worldIn, playerIn);
 	}
@@ -68,7 +73,9 @@ public class SplatCraftUtils
 		{
 			float xOff = (i < 2 ? .7f : 0) * (i % 2 == 0 ? 1 : -1), zOff = (i < 2 ? 0 : .7f) * (i % 2 == 0 ? 1 : -1);
 			BlockPos pos = new BlockPos(playerIn.posX - xOff, playerIn.posY, playerIn.posZ - zOff);
-			if(worldIn.getTileEntity(pos) instanceof TileEntityColor &&
+			Block block = worldIn.getBlockState(pos).getBlock();
+			
+			if((!(block instanceof IInked) || (block instanceof IInked && ((IInked) block).canSwim())) && worldIn.getTileEntity(pos) instanceof TileEntityColor &&
 					((TileEntityColor) worldIn.getTileEntity(pos)).getColor() == SplatCraftPlayerData.getInkColor(playerIn) && !playerIn.isRiding())
 				return true;
 		}
@@ -78,8 +85,9 @@ public class SplatCraftUtils
 	public static boolean onEnemyInk(World worldIn, EntityPlayer playerIn)
 	{
 		BlockPos pos = new BlockPos(playerIn.posX, playerIn.posY-.1, playerIn.posZ);
+		Block block = worldIn.getBlockState(pos).getBlock();
 		
-		if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
+		if((!(block instanceof IInked) || (block instanceof IInked && ((IInked) block).canDamage())) && worldIn.getTileEntity(pos) instanceof TileEntityColor)
 			return ((TileEntityColor)worldIn.getTileEntity(pos)).getColor() != SplatCraftPlayerData.getInkColor(playerIn) && !playerIn.isRiding();
 		return false;
 	}
@@ -104,51 +112,80 @@ public class SplatCraftUtils
 	public static boolean inkBlock(World worldIn, BlockPos pos, int color)
 	{
 
-			IBlockState state = worldIn.getBlockState(pos);
-
-			if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)) || state.getBlockHardness(worldIn, pos) == -1 || BlockInked.touchingWater(worldIn, pos))
+		IBlockState state = worldIn.getBlockState(pos);
+		
+		if(state.getBlockHardness(worldIn, pos) == -1 || IInked.touchingWater(worldIn, pos))
+			return false;
+	
+		if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
+		{
+			TileEntitySunkenCrate te = (TileEntitySunkenCrate) worldIn.getTileEntity(pos);
+			te.ink(color);
+			worldIn.notifyBlockUpdate(pos, state, state, 3);
+			return true;
+		}
+		
+		if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
+		{
+			if(state.getBlock() instanceof BlockInkColor)
+				if(!((BlockInkColor) state.getBlock()).canInk)
 					return false;
-
-			if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
-			{
-				TileEntitySunkenCrate te = (TileEntitySunkenCrate) worldIn.getTileEntity(pos);
-				te.ink(color);
-				worldIn.notifyBlockUpdate(pos, state, state, 3);
-				return true;
-			}
-
-			if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
-			{
-				if(state.getBlock() instanceof BlockInkColor)
-					if(!((BlockInkColor) state.getBlock()).canInk)
-						return false;
-
-				TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
-				te.setColor(color);
-				worldIn.notifyBlockUpdate(pos, state, state, 3);
-				return true;
-			}
-
-			if(worldIn.getTileEntity(pos) != null)
-					return false;
-
-			worldIn.setBlockState(pos, SplatCraftBlocks.inkedBlock.getDefaultState());
-			TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedBlock.createTileEntity(worldIn, SplatCraftBlocks.inkedBlock.getDefaultState());
-
+			
+			TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
+			te.setColor(color);
+			worldIn.notifyBlockUpdate(pos, state, state, 3);
+			return true;
+		}
+		
+		if(state.getBlock() instanceof BlockSlab && !((BlockSlab) state.getBlock()).isDouble())
+		{
+			worldIn.setBlockState(pos, SplatCraftBlocks.inkedSlab.getDefaultState().withProperty(BlockSlab.HALF, state.getValue(BlockSlab.HALF)));
+			TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedSlab.createTileEntity(worldIn, SplatCraftBlocks.inkedSlab.getDefaultState());
+			
 			worldIn.setTileEntity(pos, te);
-
+			
 			te.setColor(color);
 			te.setSavedState(state);
-
 			return true;
+		}
+		if(state.getBlock() instanceof BlockStairs)
+		{
+			worldIn.setBlockState(pos, SplatCraftBlocks.inkedStairs.getDefaultState().withProperty(BlockStairs.HALF, state.getValue(BlockStairs.HALF)).withProperty(BlockStairs.SHAPE, state.getValue(BlockStairs.SHAPE)).withProperty(BlockStairs.FACING, state.getValue(BlockStairs.FACING)));
+			TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedStairs.createTileEntity(worldIn, SplatCraftBlocks.inkedStairs.getDefaultState());
+			
+			worldIn.setTileEntity(pos, te);
+			
+			te.setColor(color);
+			te.setSavedState(state);
+			return true;
+		}
+		
+		if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)))
+				return false;
+		
+		if(worldIn.getTileEntity(pos) != null)
+				return false;
+
+		worldIn.setBlockState(pos, SplatCraftBlocks.inkedBlock.getDefaultState());
+		TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedBlock.createTileEntity(worldIn, SplatCraftBlocks.inkedBlock.getDefaultState());
+
+		worldIn.setTileEntity(pos, te);
+
+		te.setColor(color);
+		te.setSavedState(state);
+
+		return true;
 	}
 
 	public static boolean canInk(World worldIn, BlockPos pos)
 	{
 
 		IBlockState state = worldIn.getBlockState(pos);
+		
+		if(state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
+			return true;
 
-		if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)) || state.getBlockHardness(worldIn, pos) == -1 || BlockInked.touchingWater(worldIn, pos))
+		if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)) || state.getBlockHardness(worldIn, pos) == -1 || IInked.touchingWater(worldIn, pos))
 			return false;
 
 		if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
