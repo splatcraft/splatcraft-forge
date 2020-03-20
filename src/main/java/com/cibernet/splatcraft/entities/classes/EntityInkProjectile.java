@@ -440,6 +440,9 @@ public class EntityInkProjectile extends Entity implements IProjectile
      */
     protected void onImpact(RayTraceResult result)
     {
+        if(result.typeOfHit.equals(RayTraceResult.Type.BLOCK) && world.getBlockState(result.getBlockPos()).getBlock().equals(Blocks.IRON_BARS))
+            return;
+        
         if (result.entityHit != null)
         {
             float i = 0;
