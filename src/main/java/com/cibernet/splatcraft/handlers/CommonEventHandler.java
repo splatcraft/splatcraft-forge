@@ -60,7 +60,7 @@ public class CommonEventHandler
 					player.fallDistance = 0;
 					player.setInvisible(true);
 					
-					if((player.posX != player.prevPosX || player.posY != player.prevPosY || player.posZ != player.prevPosZ) && player.world.isRemote)
+					if((Math.abs(player.posX - player.prevPosX) > 0.14 || Math.abs(player.posY - player.prevPosY) > 0.14 || Math.abs(player.posZ - player.prevPosZ) > 0.14) && player.world.isRemote)
 						SplatCraftParticleSpawner.spawnInkParticle(player.posX, player.posY, player.posZ, 0, 0, 0, SplatCraftPlayerData.getInkColor(player), 4f);
 					
 					if(player.ticksExisted % 5 == 0)
