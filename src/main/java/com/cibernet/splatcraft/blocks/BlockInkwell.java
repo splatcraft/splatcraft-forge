@@ -20,12 +20,15 @@ import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -94,11 +97,16 @@ public class BlockInkwell extends BlockInkColor
 			color = ((TileEntityColor)world.getTileEntity(pos)).getColor();
 		return ItemWeaponBase.setInkColor(super.getPickBlock(state, target, world, pos, player), color);
 	}
-
+	
 	@Override
 	public boolean isTranslucent(IBlockState state)
 	{
 		return true;
+	}
+	@Override
+	public boolean isOpaqueCube(IBlockState state)
+	{
+		return false;
 	}
 	
 	@Override
@@ -106,7 +114,6 @@ public class BlockInkwell extends BlockInkColor
 	{
 		return EnumBlockRenderType.MODEL;
 	}
-
 	@Override
 	public boolean isFullCube(IBlockState state)
 	{
