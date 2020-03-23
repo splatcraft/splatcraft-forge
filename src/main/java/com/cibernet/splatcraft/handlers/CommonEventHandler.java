@@ -95,6 +95,7 @@ public class CommonEventHandler
 					item.onItemTickUse(player.world, player, weapon, player.getItemInUseCount());
 				
 			}
+			else SplatCraftPlayerData.dischargeWeapon(player);
 		}
 
 	}

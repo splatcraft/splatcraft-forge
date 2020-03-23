@@ -24,6 +24,7 @@ public class SplatCraftItems
     public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot", 1f, 0.7f, 10f, 5, 7f);
     public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.6f, 4f,1.25d, 3, 20, false);
     public static final Item splatCharger = new ItemShooterBase("splatCharger", "splat_charger", 0.5f, 5f, 2f, 50, 20, false); //TODO
+    //public static final Item splatCharger = new ItemChargerBase("splatCharger", "splat_charger", 0.5f, 5f, 2f, 1/80, 1/80, 20f); //TODO
     public static final Item splattershotJr = new ItemShooterBase("splattershotJr", "splattershot_jr", 1f, 0.55f, 3.5f, 4, 5.5f);
     public static final Item inkbrush = new ItemRollerBase("inkbrush", "inkbrush", 8D, 0.4f, 6f, 1.3d,1, 5,true);
     public static final Item aerosprayMG = new ItemShooterBase("aerosprayMG", "aerospray_mg", 1.2f, 0.5f, 20f, 2, 4.8f);

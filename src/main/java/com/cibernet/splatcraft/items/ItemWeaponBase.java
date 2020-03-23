@@ -68,7 +68,7 @@ public class ItemWeaponBase extends Item
 		return stack.getTagCompound().getBoolean("colorLocked");
 	}
 	
-	private static NBTTagCompound checkTagCompound(ItemStack stack) {
+	protected static NBTTagCompound checkTagCompound(ItemStack stack) {
 		NBTTagCompound tagCompound = stack.getTagCompound();
 		if (tagCompound == null) {
 			tagCompound = new NBTTagCompound();
@@ -92,17 +92,14 @@ public class ItemWeaponBase extends Item
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
-		ItemStack stack = playerIn.getHeldItem(hand);
-
-		SplatCraftUtils.inkBlock(worldIn, pos, getInkColor(stack));
-		
-		return EnumActionResult.SUCCESS;
+		return EnumActionResult.PASS;
 	}
 	
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
 	{
 		ItemStack stack = playerIn.getHeldItem(handIn);
+		playerIn.setActiveHand(handIn);
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
 	

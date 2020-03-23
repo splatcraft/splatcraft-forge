@@ -99,8 +99,7 @@ public class ClientEventHandler
 
 			if(player.getItemInUseCount() > 0)
 			{
-				if(!attributeInstance.hasModifier(IN_USE_SPEED_BOOST))
-					attributeInstance.applyModifier(IN_USE_SPEED_BOOST);
+				player.moveRelative(player.moveStrafing, 0.0f, player.moveForward, 0.2f);
 				if(!isSquid && speedMod != null && !attributeInstance.hasModifier(speedMod))
 					attributeInstance.applyModifier(speedMod);
 			}

@@ -7,6 +7,7 @@ import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelArmorOverride;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.entities.renderers.RenderInkProjectile;
+import com.cibernet.splatcraft.gui.GuiOverlay;
 import com.cibernet.splatcraft.handlers.ClientEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftKeyHandler;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
@@ -108,6 +109,7 @@ public class ClientProxy extends CommonProxy
     {
         super.preInit();
         MinecraftForge.EVENT_BUS.register(SplatCraftModelManager.class);
+        MinecraftForge.EVENT_BUS.register(GuiOverlay.instance);
         SplatCraftKeyHandler.instance.registerKeys();
 
         RenderingRegistry.registerEntityRenderingHandler(EntityInkProjectile.class, manager -> new RenderInkProjectile(manager));
