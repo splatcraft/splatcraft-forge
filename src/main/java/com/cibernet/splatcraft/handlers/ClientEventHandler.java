@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
+import com.cibernet.splatcraft.items.ICharge;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.network.PacketGetPlayerData;
 import com.cibernet.splatcraft.network.PacketPlayerSetTransformed;
@@ -9,15 +10,19 @@ import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -25,6 +30,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ClientEventHandler
 {
@@ -46,10 +53,11 @@ public class ClientEventHandler
 
 		IAttributeInstance attributeInstance = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
 		ItemStack weapon = player.getActiveItemStack();
+		MovementInput input = Minecraft.getMinecraft().player.movementInput;
 
 		if(attributeInstance.hasModifier(SQUID_LAND_SPEED))
 			attributeInstance.removeModifier(SQUID_LAND_SPEED);
-		if(attributeInstance.hasModifier(SQUID_SWIM_SPEED))
+		if(attributeInstance.hasModifier(SQUID_SWIM_SPEED) && player.onGround)
 			attributeInstance.removeModifier(SQUID_SWIM_SPEED);
 		if(attributeInstance.hasModifier(IN_USE_SPEED_BOOST))
 			attributeInstance.removeModifier(IN_USE_SPEED_BOOST);
@@ -74,7 +82,6 @@ public class ClientEventHandler
 				
 				if(SplatCraftUtils.canSquidClimb(player.world, player))
 				{
-					MovementInput input = Minecraft.getMinecraft().player.movementInput;
 					double xOff = Math.signum(player.getHorizontalFacing().getFrontOffsetX() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
 					double zOff = Math.signum(player.getHorizontalFacing().getFrontOffsetZ() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
 					
@@ -93,19 +100,35 @@ public class ClientEventHandler
 				attributeInstance.applyModifier(SQUID_LAND_SPEED);
 
 		}
-		if(weapon.getItem() instanceof ItemWeaponBase)
+		if(weapon.getItem() instanceof ItemWeaponBase && player.isHandActive() && player.onGround)
 		{
 			AttributeModifier speedMod = ((ItemWeaponBase) weapon.getItem()).getSpeedModifier();
-
-			if(player.getItemInUseCount() > 0)
-			{
-				player.moveRelative(player.moveStrafing, 0.0f, player.moveForward, 0.2f);
-				if(!isSquid && speedMod != null && !attributeInstance.hasModifier(speedMod))
-					attributeInstance.applyModifier(speedMod);
-			}
+			if(!isSquid && speedMod != null && !attributeInstance.hasModifier(speedMod))
+				attributeInstance.applyModifier(speedMod);
 		}
 	}
-
+	
+	@SubscribeEvent
+	public void stopItemSlowdown(PlayerSPPushOutOfBlocksEvent event)
+	{
+		EntityPlayerSP player = (EntityPlayerSP) event.getEntityPlayer();
+		if (player.isHandActive())
+		{
+			ItemStack stack = player.getActiveItemStack();
+			if (!stack.isEmpty())
+			{
+				if (stack.getItem() instanceof ItemWeaponBase)
+				{
+					MovementInput input = player.movementInput;
+					input.moveStrafe *= 5.0F;
+					input = player.movementInput;
+					input.moveForward *= 5.0F;
+				}
+			}
+		}
+		
+	}
+	
 	@SubscribeEvent
 	public void updateFOV(FOVUpdateEvent event)
 	{
