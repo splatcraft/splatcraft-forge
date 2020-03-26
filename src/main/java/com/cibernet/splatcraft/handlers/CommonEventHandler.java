@@ -40,8 +40,8 @@ public class CommonEventHandler
 		BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
 		ItemStack weapon = player.getActiveItemStack();
 		
-		if(player.getActivePotionEffect(MobEffects.INVISIBILITY) == null)
-			player.setInvisible(false);
+		//if(player.getActivePotionEffect(MobEffects.INVISIBILITY) == null)
+		//	player.setInvisible(false);
 		
 		if(SplatCraftUtils.onEnemyInk(player.world, player) && player.ticksExisted % 20 == 0 && player.getHealth() > 4 && player.world.getDifficulty() != EnumDifficulty.PEACEFUL)
 		{
@@ -58,7 +58,7 @@ public class CommonEventHandler
 				if(SplatCraftUtils.canSquidHide(player.world, player))
 				{
 					player.fallDistance = 0;
-					player.setInvisible(true);
+					//player.setInvisible(true);
 					
 					if((Math.abs(player.posX - player.prevPosX) > 0.14 || Math.abs(player.posY - player.prevPosY) > 0.14 || Math.abs(player.posZ - player.prevPosZ) > 0.14) && player.world.isRemote)
 						SplatCraftParticleSpawner.spawnInkParticle(player.posX, player.posY, player.posZ, 0, 0, 0, SplatCraftPlayerData.getInkColor(player), 4f);

@@ -23,6 +23,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -109,6 +110,13 @@ public class ClientEventHandler
 	}
 	
 	@SubscribeEvent
+	public void renderHand(RenderHandEvent event)
+	{
+		if(SplatCraftPlayerData.getIsSquid(Minecraft.getMinecraft().player))
+			event.setCanceled(true);
+	}
+	
+	@SubscribeEvent
 	public void stopItemSlowdown(PlayerSPPushOutOfBlocksEvent event)
 	{
 		EntityPlayerSP player = (EntityPlayerSP) event.getEntityPlayer();
@@ -145,6 +153,7 @@ public class ClientEventHandler
 	{
 		
 		EntityPlayer player = event.getEntityPlayer();
+		event.getRenderer().getRenderManager().setRenderShadow(true);
 		if(SplatCraftPlayerData.getIsSquid(player))
 		{
 			event.setCanceled(true);
@@ -154,7 +163,7 @@ public class ClientEventHandler
 				RenderInklingSquid render = new RenderInklingSquid(event.getRenderer().getRenderManager());
 				render.doRender(player, event.getX(), event.getY(), event.getZ(), player.rotationYawHead, event.getPartialRenderTick());
 			}
-			
+			else event.getRenderer().getRenderManager().setRenderShadow(false);
 		}
 	}
 
