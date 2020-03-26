@@ -19,7 +19,7 @@ import java.util.List;
 public class TileEntitySunkenCrate extends TileEntityColor
 {
 
-    private final int maxHealth = 10;
+    private final int maxHealth = 20;
     private int health = maxHealth;
 
     public static final ResourceLocation STORAGE_SUNKEN_CRATE = new ResourceLocation(SplatCraft.MODID, "storage/sunken_crate");
@@ -44,12 +44,12 @@ public class TileEntitySunkenCrate extends TileEntityColor
 
     public void addHealth() {health++;}
 
-    public void ink(int color)
+    public void ink(int color, int damage)
     {
         if(world.isRemote)
             return;
         setColor(color);
-        health--;
+        health -= damage;
         if(health <= 0)
         {
             world.destroyBlock(pos, false);

@@ -123,7 +123,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
 
                 if (this.ticksInGround == 1200)
                 {
-                    SplatCraftUtils.inkBlock(world, pos, getColor());
+                    SplatCraftUtils.inkBlock(world, pos, getColor(), damage);
                     this.setDead();
                 }
 
@@ -452,9 +452,9 @@ public class EntityInkProjectile extends Entity implements IProjectile
                 i = damage;
             }
     
+            SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), 2 * getProjectileSize(), getColor());
             if(i > 0)
                 result.entityHit.attackEntityFrom(new SplatCraftDamageSource("splat", this, this.thrower).setProjectile(), (float)i);
-            SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), 2 * getProjectileSize(), getColor());
         }
         
         if (!this.world.isRemote)
@@ -469,4 +469,5 @@ public class EntityInkProjectile extends Entity implements IProjectile
     
     public int getColor() {return dataManager.get(COLOR).intValue();}
     public void setColor(int color) {dataManager.set(COLOR, (float)color);}
+    public float getDamage() {return damage;}
 }

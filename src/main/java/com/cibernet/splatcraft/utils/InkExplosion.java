@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.utils;
 
+import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -47,6 +48,7 @@ public class InkExplosion
 	/** Maps players to the knockback vector applied by the explosion, to send to the client */
 	private final Map<EntityPlayer, Vec3d> playerKnockbackMap;
 	private final Vec3d position;
+	private float damage = 0;
 	
 	@SideOnly(Side.CLIENT)
 	public InkExplosion(World worldIn, Entity entityIn, double x, double y, double z, int size, int color, List<BlockPos> affectedPositions)
@@ -74,6 +76,9 @@ public class InkExplosion
 		this.damagesTerrain = damagesTerrain;
 		this.position = new Vec3d(this.x, this.y, this.z);
 		this.color = color;
+		
+		if(entityIn instanceof EntityInkProjectile)
+			damage = ((EntityInkProjectile) entityIn).getDamage();
 	}
 	
 	public void explode()
@@ -87,7 +92,7 @@ public class InkExplosion
 					BlockPos pos = new BlockPos(this.x, this.y, this.z);
 					if(!world.getBlockState(pos).getBlock().equals(Blocks.AIR))
 					{
-						SplatCraftUtils.inkBlock(world, pos, color);
+						SplatCraftUtils.inkBlock(world, pos, color, 1);
 						break;
 					}
 				}
@@ -251,7 +256,7 @@ public class InkExplosion
 				}
 				
 				if (iblockstate.getMaterial() != Material.AIR)
-					SplatCraftUtils.inkBlock(this.world, blockpos, this.color);
+					SplatCraftUtils.inkBlock(this.world, blockpos, this.color, damage);
 				
 			}
 		}

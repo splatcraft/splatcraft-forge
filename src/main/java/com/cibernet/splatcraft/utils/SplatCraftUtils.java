@@ -69,6 +69,8 @@ public class SplatCraftUtils
 	
 	public static boolean canSquidClimb(World worldIn, EntityPlayer playerIn)
 	{
+		if(onEnemyInk(worldIn, playerIn))
+			return false;
 		for(int i = 0; i < 4; i++)
 		{
 			float xOff = (i < 2 ? .7f : 0) * (i % 2 == 0 ? 1 : -1), zOff = (i < 2 ? 0 : .7f) * (i % 2 == 0 ? 1 : -1);
@@ -109,7 +111,7 @@ public class SplatCraftUtils
 		createInkExplosion(worldIn, null, pos, radius, color);
 	}
 
-	public static boolean inkBlock(World worldIn, BlockPos pos, int color)
+	public static boolean inkBlock(World worldIn, BlockPos pos, int color, float damage)
 	{
 
 		IBlockState state = worldIn.getBlockState(pos);
@@ -120,7 +122,7 @@ public class SplatCraftUtils
 		if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
 		{
 			TileEntitySunkenCrate te = (TileEntitySunkenCrate) worldIn.getTileEntity(pos);
-			te.ink(color);
+			te.ink(color, (int) Math.floor(damage));
 			worldIn.notifyBlockUpdate(pos, state, state, 3);
 			return true;
 		}
