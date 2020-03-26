@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "splatcraft:inked_block" }
+        "normal": { "model": "splatcraft:ink_canvas" }
     }
 }
