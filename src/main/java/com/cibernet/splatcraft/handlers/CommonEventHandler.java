@@ -79,6 +79,7 @@ public class CommonEventHandler
 						}
 					}
 			}
+			SplatCraftPlayerData.dischargeWeapon(player);
 		}
 		else if(!player.isDead)
 		{

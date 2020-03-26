@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.entities.classes.EntityChargerProjectile;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -13,6 +14,7 @@ public class SplatCraftEntities
     public static void registerEntities()
     {
         registerEntity(EntityInkProjectile.class, "ink_projectile");
+        registerEntity(EntityChargerProjectile.class, "charger_projectile");
     }
 
     public static void registerEntity(Class<? extends Entity> entityClass, String name) {

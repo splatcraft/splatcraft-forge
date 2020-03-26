@@ -61,8 +61,16 @@ public class SplatCraftPlayerData
 	public static void setIsSquid(EntityPlayer playerIn, boolean isSquid) {getPlayerData(playerIn).isSquid = isSquid;}
 	
 	public static float getWeaponCharge(EntityPlayer playerIn, ItemStack stack) { return getTempPlayerData(playerIn).chargedWeapon.isItemEqual(stack) ? getTempPlayerData(playerIn).charge : 0;}
+	public static void setWeaponCharge(EntityPlayer playerIn, ItemStack stack, float charge)
+	{
+		TempPlayerData data = getTempPlayerData(playerIn);
+		data.charge = charge;
+		data.chargedWeapon = stack;
+	}
 	public static void addWeaponCharge(EntityPlayer playerIn, ItemStack stack, float add)
 	{
+		if(!playerIn.world.isRemote)
+			return;
 		TempPlayerData data = getTempPlayerData(playerIn);
 		if(data.chargedWeapon.isItemEqual(stack))
 		{
@@ -77,10 +85,14 @@ public class SplatCraftPlayerData
 	
 	public static void dischargeWeapon(EntityPlayer player)
 	{
+		if(!player.world.isRemote)
+			return;
 		TempPlayerData data = getTempPlayerData(player);
 		Item item = data.chargedWeapon.getItem();
 		if(item instanceof ICharge)
-			data.charge = Math.max(0, data.charge -  ((ICharge) item).getDischargeSpeed());
+		{
+			data.charge = Math.max(0, data.charge - ((ICharge) item).getDischargeSpeed());
+		}
 		else data.charge = 0;
 	}
 	

@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class GuiOverlay extends Gui
 {
 	public static final GuiOverlay instance = new GuiOverlay();
-	private final ResourceLocation OVERLAY = new ResourceLocation(SplatCraft.MODID, "textures/gui/charger_overlay.png");
+	private final ResourceLocation CHARGER_OVERLAY = new ResourceLocation(SplatCraft.MODID, "textures/gui/charger_overlay.png");
 	
 	
 	@SubscribeEvent
@@ -36,16 +36,17 @@ public class GuiOverlay extends Gui
 			
 			if(stack.getItem() instanceof ICharge )
 			{
-				mc.renderEngine.bindTexture(OVERLAY);
+				mc.renderEngine.bindTexture(CHARGER_OVERLAY);
 				int x = width / 2 - 9;
 				int y = height / 2 - 9;
-				int charge = (int) (SplatCraftPlayerData.getWeaponCharge(player, stack)*59);
+				int charge = (int) Math.floor(SplatCraftPlayerData.getWeaponCharge(player, stack)*59);
 				int tx = (charge % 13) * 19;
-				int ty = (charge/6) * 19;
-						
-						System.out.println(charge);
+				int ty = (charge/13) * 19;
 				
+				//GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 				GlStateManager.enableAlpha();
+				GlStateManager.disableBlend();
+				GlStateManager.color(1,1,1,1);
 				drawTexturedModalRect(x, y, tx, ty, 19, 19);
 			}
 			

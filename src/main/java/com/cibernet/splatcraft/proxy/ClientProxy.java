@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.proxy;
 
 import com.cibernet.splatcraft.blocks.BlockInkColor;
 import com.cibernet.splatcraft.blocks.BlockInkwell;
+import com.cibernet.splatcraft.entities.classes.EntityChargerProjectile;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelArmorOverride;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
@@ -113,6 +114,7 @@ public class ClientProxy extends CommonProxy
         SplatCraftKeyHandler.instance.registerKeys();
 
         RenderingRegistry.registerEntityRenderingHandler(EntityInkProjectile.class, manager -> new RenderInkProjectile(manager));
+        RenderingRegistry.registerEntityRenderingHandler(EntityChargerProjectile.class, manager -> new RenderInkProjectile(manager));
 
     }
 
