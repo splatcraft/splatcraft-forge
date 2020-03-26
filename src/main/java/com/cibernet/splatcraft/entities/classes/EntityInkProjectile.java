@@ -430,7 +430,6 @@ public class EntityInkProjectile extends Entity implements IProjectile
             for (int i = 0; i < 16; ++i)
             {
                 SplatCraftParticleSpawner.spawnInkParticle(this.posX, this.posY, this.posZ, 0, 0, 0, getColor(), getProjectileSize());
-                //this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
             }
         }
     }

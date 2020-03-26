@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.entities.renderers;
 
 import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.entities.classes.EntityBlasterProjectile;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelInkProjectile;
 import net.minecraft.client.Minecraft;
@@ -26,7 +27,7 @@ public class RenderInkProjectile extends Render<EntityInkProjectile> {
     @Override
     public void doRender(EntityInkProjectile entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        if(Minecraft.getMinecraft().gameSettings.particleSetting < 2 || entity.ticksExisted < 3)
+        if((Minecraft.getMinecraft().gameSettings.particleSetting < 2 && !(entity instanceof EntityBlasterProjectile)) || entity.ticksExisted < 3)
             return;
 
         GlStateManager.pushMatrix();

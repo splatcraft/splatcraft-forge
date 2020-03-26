@@ -78,7 +78,7 @@ public class InkExplosion
 		this.color = color;
 		
 		if(entityIn instanceof EntityInkProjectile)
-			damage = ((EntityInkProjectile) entityIn).getDamage();
+			damage = ((EntityInkProjectile) entityIn).getDamage()/2;
 	}
 	
 	public void explode()
