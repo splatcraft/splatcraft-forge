@@ -13,7 +13,9 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,13 +77,32 @@ public class ContainerInkwellVat extends Container
 	{
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.inventorySlots.get(index);
+		
+		System.out.println(index);
 
 		if (slot != null && slot.getHasStack())
 		{
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
-
-			if (index < 5)
+			
+			if(index == 4)
+			{
+				NonNullList<ItemStack> inv = getInventory();
+				int countA = inv.get(0).getCount();
+				int countB = inv.get(1).getCount();
+				int countC = inv.get(2).getCount();
+				int itemCount = Math.min(Math.max(0, Math.min(countA, Math.min(countB, countC))), Item.getItemFromBlock(SplatCraftBlocks.inkwell).getItemStackLimit());
+				itemstack1.setCount(itemCount);
+				
+				if (this.mergeItemStack(itemstack1, 5, this.inventorySlots.size(), true) && itemCount > 0)
+				{
+					te.decrStackSize(0, itemCount);
+					te.decrStackSize(1, itemCount);
+					te.decrStackSize(2, itemCount);
+				}
+				return ItemStack.EMPTY;
+			}
+			else if (index < 4)
 			{
 				if (!this.mergeItemStack(itemstack1, 5, this.inventorySlots.size(), true))
 				{

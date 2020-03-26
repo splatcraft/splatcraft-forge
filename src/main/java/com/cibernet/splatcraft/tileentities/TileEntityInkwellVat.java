@@ -84,7 +84,7 @@ public class TileEntityInkwellVat extends TileEntity implements ISidedInventory
         int countC = getStackInSlot(2).getCount();
         int itemCount = Math.min(Math.max(0, Math.min(countA, Math.min(countB, countC))), Item.getItemFromBlock(SplatCraftBlocks.inkwell).getItemStackLimit());
         if(countA > 0 && countB > 0 && countC > 0)
-            setInventorySlotContents(4, ItemWeaponBase.setInkColor(new ItemStack(SplatCraftBlocks.inkwell, itemCount), color.getColor()));
+            setInventorySlotContents(4, ItemWeaponBase.setInkColor(new ItemStack(SplatCraftBlocks.inkwell, 1), color.getColor()));
         else removeOutput();
     }
 
@@ -101,7 +101,7 @@ public class TileEntityInkwellVat extends TileEntity implements ISidedInventory
         if(colorsList == null || selectedColor < 0 || selectedColor >= colorsList.size())
         {
             removeOutput();
-            selectedColor = -1;
+            this.selectedColor = -1;
         }
         else setOutput(colorsList.get(selectedColor));
 
@@ -183,7 +183,9 @@ public class TileEntityInkwellVat extends TileEntity implements ISidedInventory
     @Override
     public ItemStack decrStackSize(int index, int count)
     {
+        ItemStack oldStack = this.inventory.get(index);
         ItemStack itemstack = ItemStackHelper.getAndSplit(this.inventory, index, count);
+        
         if(index == 4 && !itemstack.isEmpty() && count > 0)
         {
             if(getStackInSlot(0).getCount() < count || getStackInSlot(1).getCount() < count || getStackInSlot(2).getCount() < count)
@@ -191,7 +193,13 @@ public class TileEntityInkwellVat extends TileEntity implements ISidedInventory
             decrStackSize(0, count);
             decrStackSize(1, count);
             decrStackSize(2, count);
-            //decrStackSize(3, count);
+            oldStack.setCount(1);
+            int countA = getStackInSlot(0).getCount();
+            int countB = getStackInSlot(1).getCount();
+            int countC = getStackInSlot(2).getCount();
+            int itemCount = Math.min(Math.max(0, Math.min(countA, Math.min(countB, countC))), Item.getItemFromBlock(SplatCraftBlocks.inkwell).getItemStackLimit());
+            if(itemCount > 0)
+                this.inventory.set(index, oldStack);
         }
         else setOutput(selectedColor);
 

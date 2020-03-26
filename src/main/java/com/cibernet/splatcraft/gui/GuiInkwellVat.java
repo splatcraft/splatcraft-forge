@@ -39,8 +39,6 @@ public class GuiInkwellVat extends GuiContainer
 		super.updateScreen();
 		colorSelection = te.getColorList();
 		clientSelectedColor = te.getField(0);
-		SplatCraftPacketHandler.instance.sendToServer(new PacketSetVatOutput(te, te.getRecipeStack(), clientSelectedColor));
-
 	}
 
 	@Override
@@ -114,6 +112,7 @@ public class GuiInkwellVat extends GuiContainer
 		else selecCol = -1;
 		clientSelectedColor = selecCol;
 		te.setField(0, selecCol);
+		SplatCraftPacketHandler.instance.sendToServer(new PacketSetVatOutput(te, te.getRecipeStack(), clientSelectedColor));
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 
 	}
