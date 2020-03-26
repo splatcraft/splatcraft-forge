@@ -86,7 +86,7 @@ public class CommandTurfWar extends CommandBase
 				
 				if(world.getTileEntity(checkPos) instanceof TileEntityColor && world.getBlockState(checkPos).getBlock() instanceof IInked)
 				{
-					TileEntityInkedBlock te = (TileEntityInkedBlock) world.getTileEntity(checkPos);
+					TileEntityColor te = (TileEntityColor) world.getTileEntity(checkPos);
 					IInked block = (IInked) world.getBlockState(checkPos).getBlock();
 					int color = te.getColor();
 					
