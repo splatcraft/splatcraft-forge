@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.items;
 import javax.annotation.Nullable;
 
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
+import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.utils.SplatCraftDamageSource;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
@@ -141,7 +142,7 @@ public class ItemRollerBase extends ItemWeaponBase
             else if(!SplatCraftUtils.canInk(worldIn, checkPos)) canInk = false;
             
             if(canInk)
-                SplatCraftUtils.inkBlock(worldIn, inkPos, ItemWeaponBase.getInkColor(stack));
+                SplatCraftUtils.inkBlock(worldIn, inkPos, ItemWeaponBase.getInkColor(stack), rollDamage);
             
             List<EntityPlayer> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(inkPos.up()));
             for(EntityPlayer target : inkedPlayers)
@@ -172,6 +173,12 @@ public class ItemRollerBase extends ItemWeaponBase
                 worldIn.spawnEntity(proj);
             }
         }
+    }
+    
+    @Override
+    public ModelPlayerOverride.EnumAnimType getAnimType()
+    {
+        return ModelPlayerOverride.EnumAnimType.ROLLER;
     }
     
     private Vec3d getFwd(float pitch, float yaw)

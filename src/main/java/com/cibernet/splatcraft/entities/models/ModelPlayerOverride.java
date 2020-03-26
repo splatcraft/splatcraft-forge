@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.entities.models;
 
 import com.cibernet.splatcraft.items.ItemRollerBase;
 import com.cibernet.splatcraft.items.ItemShooterBase;
+import com.cibernet.splatcraft.items.ItemWeaponBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
@@ -10,6 +11,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 
@@ -47,10 +50,18 @@ public class ModelPlayerOverride extends ModelPlayer
 		if(player.getItemInUseCount() > 0)
 		{
 			EnumHandSide handSide = player.getPrimaryHand();
+			if(player.getActiveHand() == EnumHand.OFF_HAND)
+				handSide = handSide.opposite();
+			
 			ModelRenderer mainHand = getArmForSide(handSide);
 			ModelRenderer offHand = getArmForSide(handSide.opposite());
-			EnumAnimType type = EnumAnimType.NONE;
+			Item activeItem = player.getActiveItemStack().getItem();
+			if(!(activeItem instanceof ItemWeaponBase))
+				return;
+				
+			EnumAnimType type = ((ItemWeaponBase) activeItem).getAnimType();
 			
+			/*
 			if (player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemShooterBase)
 				type = EnumAnimType.SHOOTER;
 			else if (player.getHeldItem(EnumHand.OFF_HAND).getItem() instanceof ItemShooterBase)
@@ -69,6 +80,7 @@ public class ModelPlayerOverride extends ModelPlayer
 				mainHand = getArmForSide(handSide);
 				offHand = getArmForSide(handSide.opposite());
 			}
+			*/
 			
 			switch(type)
 			 {
@@ -83,6 +95,12 @@ public class ModelPlayerOverride extends ModelPlayer
 					mainHand.rotateAngleZ = 0.0F;
 					//this.bipedLeftArm.rotateAngleY = 0.1F + this.bipedHead.rotateAngleY + 0.4F;
 					//this.bipedLeftArm.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
+				break;
+				 case CHARGER:
+					 mainHand.rotateAngleY = -0.1F + this.bipedHead.rotateAngleY;
+					 mainHand.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
+					 offHand.rotateAngleX = -((float)Math.PI / 2F) + this.bipedHead.rotateAngleX;
+					 offHand.rotateAngleY = 0.1F + this.bipedHead.rotateAngleY + 0.4F;
 				break;
 			}
 			
@@ -108,11 +126,12 @@ public class ModelPlayerOverride extends ModelPlayer
 		}
 	}
 	
-	private enum EnumAnimType
+	public enum EnumAnimType
 	{
 		NONE,
 		SHOOTER,
-		ROLLER
+		ROLLER,
+		CHARGER
 	}
 	
 }

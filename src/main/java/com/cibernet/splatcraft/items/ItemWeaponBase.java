@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
+import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.InkColors;
@@ -156,4 +157,6 @@ public class ItemWeaponBase extends Item
 	public void onItemLeftClick(World world, EntityPlayer player, ItemStack stack)
 	{
 	}
+	
+	public ModelPlayerOverride.EnumAnimType getAnimType() {return ModelPlayerOverride.EnumAnimType.NONE;}
 }

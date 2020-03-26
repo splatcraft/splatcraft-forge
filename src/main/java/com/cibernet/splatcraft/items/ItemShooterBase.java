@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
+import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
@@ -82,5 +83,11 @@ public class ItemShooterBase extends ItemWeaponBase
             proj.setProjectileSize(projectileSize);
             worldIn.spawnEntity(proj);
         }
+    }
+    
+    @Override
+    public ModelPlayerOverride.EnumAnimType getAnimType()
+    {
+        return ModelPlayerOverride.EnumAnimType.SHOOTER;
     }
 }
