@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "splatcraft",
+  "name": "Splatcraft",
+  "description": "A Minecraft Splatoon Mod!.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["Cibernet"],
+  "credits": "Nintendo and Mojang, for making such great games!",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

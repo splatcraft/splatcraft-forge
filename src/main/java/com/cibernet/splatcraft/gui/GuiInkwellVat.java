@@ -31,7 +31,6 @@ public class GuiInkwellVat extends GuiContainer
 		this.te = te;
 		clientSelectedColor = te.getField(0);
 		ySize = 208;
-		System.out.println("selectedColor: " + clientSelectedColor);
 	}
 
 	@Override
