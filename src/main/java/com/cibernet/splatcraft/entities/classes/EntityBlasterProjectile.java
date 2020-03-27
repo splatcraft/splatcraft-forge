@@ -40,10 +40,13 @@ public class EntityBlasterProjectile extends EntityInkProjectile
 	{
 		if(id == 3)
 		{
+			SplatCraftParticleSpawner.spawnInksplosionParticle(this.posX, this.posY, this.posZ, 0, 0, 0, getColor(), getProjectileSize()*2);
+			/*
 			for (int i = 0; i < 32; ++i)
 			{
 				SplatCraftParticleSpawner.spawnInkParticle(this.posX, this.posY, this.posZ, 0, 0, 0, getColor(), getProjectileSize()*2);
 			}
+			*/
 		}
 	}
 	

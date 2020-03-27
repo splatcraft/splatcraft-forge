@@ -40,4 +40,29 @@ public class SplatCraftParticleSpawner
         }
         return null;
     }
+    public static Particle spawnInksplosionParticle(double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int color, float size) {
+        if (mc != null && mc.getRenderViewEntity() != null && mc.effectRenderer != null) {
+            int partSetting = mc.gameSettings.particleSetting;
+
+            if (partSetting == 1 && mc.world.rand.nextInt(3) == 0)
+                partSetting = 2;
+            
+
+            double xCheck = mc.getRenderViewEntity().posX - xCoordIn;
+            double yCheck = mc.getRenderViewEntity().posY - yCoordIn;
+            double zCheck = mc.getRenderViewEntity().posZ - zCoordIn;
+            Particle particle = null;
+            double max = 16.0D;
+
+            if (xCheck * xCheck + yCheck * yCheck + zCheck * zCheck > max * max) {
+                return null;
+            } else {
+
+                particle = new ParticleInksplosion(mc.world, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, color, size);
+                mc.effectRenderer.addEffect(particle);
+                return particle;
+            }
+        }
+        return null;
+    }
 }
