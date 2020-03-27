@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.gui.container;
 
+import com.cibernet.splatcraft.items.ItemFilter;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.recipes.RecipesInkwellVat;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
@@ -32,7 +33,7 @@ public class ContainerInkwellVat extends Container
 		addSlotToContainer(new SlotInput(new ItemStack(Items.DYE, 1, 0), te, 0, 26, 70));
 		addSlotToContainer(new SlotInput(new ItemStack(SplatCraftItems.powerEgg), te, 1, 46, 70));
 		addSlotToContainer(new SlotInput(new ItemStack(SplatCraftBlocks.emptyInkwell), te, 2, 92, 82));
-		addSlotToContainer(new Slot(te, 3, 36, 89));
+		addSlotToContainer(new SlotFilter(te, 3, 36, 89));
 		addSlotToContainer(new SlotOutput(te, 4, 112, 82));
 
 		for(int xx = 0; xx < 9; xx++)
@@ -149,6 +150,19 @@ public class ContainerInkwellVat extends Container
 		public boolean isItemValid(ItemStack stack)
 		{
 			return stack.isItemEqual(validItem);
+		}
+	}
+	class SlotFilter extends Slot
+	{
+		public SlotFilter(IInventory inventoryIn, int index, int xPosition, int yPosition)
+		{
+			super(inventoryIn, index, xPosition, yPosition);
+		}
+
+		@Override
+		public boolean isItemValid(ItemStack stack)
+		{
+			return stack.getItem() instanceof ItemFilter;
 		}
 	}
 	class SlotOutput extends Slot
