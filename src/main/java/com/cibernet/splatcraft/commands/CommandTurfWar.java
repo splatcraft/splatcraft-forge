@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -48,8 +49,8 @@ public class CommandTurfWar extends CommandBase
 		
 		BlockPos blockpos = parseBlockPos(sender, args, 0, false);
 		BlockPos blockpos1 = parseBlockPos(sender, args, 3, false);
-		BlockPos blockpos2 = new BlockPos(Math.min(blockpos.getX(), blockpos1.getX()), Math.min(blockpos.getY(), blockpos1.getY()), Math.min(blockpos.getZ(), blockpos1.getZ()));
-		BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos.getY(), blockpos1.getY()), Math.max(blockpos.getZ(), blockpos1.getZ()));
+		BlockPos blockpos2 = new BlockPos(Math.min(blockpos.getX(), blockpos1.getX()), Math.min(blockpos.getY(), Math.min(blockpos1.getY(), blockpos.getY())), Math.min(blockpos.getZ(), blockpos1.getZ()));
+		BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos.getY(), Math.max(blockpos1.getY(), blockpos.getY())), Math.max(blockpos.getZ(), blockpos1.getZ()));
 		
 		if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
 			throw new CommandException("commands.turfWar.outOfWorld", new Object[0]);
@@ -74,7 +75,7 @@ public class CommandTurfWar extends CommandBase
 		for(int x = blockpos2.getX(); x <= blockpos3.getX(); x++)
 			for(int z = blockpos2.getZ(); z <= blockpos3.getZ(); z++)
 			{
-				int y = Math.min(blockpos3.getY(), Math.max(blockpos2.getY(), world.getTopSolidOrLiquidBlock(new BlockPos(x,1, z)).down().getY()));
+				int y = Math.min(blockpos3.getY(), Math.max(blockpos2.getY(), getTopSolidOrLiquidBlock(new BlockPos(x,1, z), world, blockpos3.getY()).down().getY()));
 				
 				BlockPos checkPos = new BlockPos(x,y,z);
 				IBlockState checkState = world.getBlockState(checkPos);
@@ -140,5 +141,28 @@ public class CommandTurfWar extends CommandBase
 	public int getRequiredPermissionLevel()
 	{
 		return 0;
+	}
+	
+	/**
+	 * Finds the highest block on the x and z coordinate that is solid or liquid, and returns its y coord.
+	 */
+	public BlockPos getTopSolidOrLiquidBlock(BlockPos pos, World world, int maxY)
+	{
+		Chunk chunk = world.getChunkFromBlockCoords(pos);
+		BlockPos blockpos;
+		BlockPos blockpos1;
+		
+		for (blockpos = new BlockPos(pos.getX(), Math.min(chunk.getTopFilledSegment() + 16, maxY), pos.getZ()); blockpos.getY() >= 0; blockpos = blockpos1)
+		{
+			blockpos1 = blockpos.down();
+			IBlockState state = chunk.getBlockState(blockpos1);
+			
+			if (state.getMaterial().blocksMovement() && !state.getBlock().isLeaves(state, world, blockpos1) && !state.getBlock().isFoliage(world, blockpos1))
+			{
+				break;
+			}
+		}
+		
+		return blockpos;
 	}
 }
