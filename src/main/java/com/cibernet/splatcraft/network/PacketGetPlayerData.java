@@ -32,8 +32,7 @@ public class PacketGetPlayerData implements IMessage
         {
         } catch (IndexOutOfBoundsException e)
         {
-            //Logger goes here
-            System.out.println("something went wrong! " + e);
+            SplatCraft.logger.info(e.toString());
         }
         messageValid = true;
     }

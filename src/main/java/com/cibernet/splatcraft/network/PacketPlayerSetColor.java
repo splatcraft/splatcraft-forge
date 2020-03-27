@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.network;
 
+import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -40,8 +41,7 @@ public class PacketPlayerSetColor implements IMessage
             player = UUID.fromString(ByteBufUtils.readUTF8String(buf));
         } catch (IndexOutOfBoundsException e)
         {
-            //Logger goes here
-            System.out.println("something went wrong! " + e);
+            SplatCraft.logger.info(e.toString());
         }
         messageValid = true;
     }

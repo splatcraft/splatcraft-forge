@@ -4,6 +4,7 @@ package com.cibernet.splatcraft;
 import com.cibernet.splatcraft.commands.CommandTurfWar;
 import com.cibernet.splatcraft.proxy.CommonProxy;
 import com.cibernet.splatcraft.utils.InkColors;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -11,6 +12,8 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.logging.Logger;
 
 @Mod(name = SplatCraft.NAME, modid = SplatCraft.MODID, version = SplatCraft.VERSION)
 public class SplatCraft
@@ -22,7 +25,9 @@ public class SplatCraft
 
 	//TODO config
 	public static final int DEFAULT_INK = InkColors.INK_BLACK.getColor();
-
+	
+	public static Logger logger;
+	
 	@Mod.Instance(SplatCraft.MODID)
 	public static SplatCraft instance;
 	
@@ -36,6 +41,7 @@ public class SplatCraft
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		logger = Logger.getLogger(MODID);
 		proxy.preInit();
 	}
 	

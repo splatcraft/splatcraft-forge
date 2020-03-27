@@ -144,7 +144,7 @@ public class CommonEventHandler
 
 			if(main != null)
 				main.addEntry(entry);
-			else System.out.println("main is null!");
+			else SplatCraft.logger.info("The main fish loot pool is null, probably due to another mod, so you won't be able to get power eggs from fishing");
 		}
 		else if(name.equals(LootTableList.GAMEPLAY_FISHING_TREASURE))
 		{
@@ -154,6 +154,7 @@ public class CommonEventHandler
 
 			if(main != null)
 				main.addEntry(entry);
+			else SplatCraft.logger.info("The main fishing treasure loot pool is null, probably due to another mod, so you won't be able to get sunken crates from fishing");
 		}
 
 	}

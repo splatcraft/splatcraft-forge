@@ -92,15 +92,13 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	public void onRelease(World worldIn, EntityPlayer playerIn, ItemStack stack)
 	{
 		float charge = SplatCraftPlayerData.getWeaponCharge(playerIn, stack);
-		System.out.println(charge);
 		
-		
-			EntityInkProjectile proj = new EntityChargerProjectile(worldIn, playerIn, getInkColor(stack), charge > 0.95f ? damage : damage*charge/4f + damage/4f);
-			proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed*charge, inaccuracy);
-			proj.setProjectileSize(projectileSize);
-			worldIn.spawnEntity(proj);
-			SplatCraftPlayerData.setWeaponCharge(playerIn, stack, 0f);
-			playerIn.getCooldownTracker().setCooldown(this, 10);
+		EntityInkProjectile proj = new EntityChargerProjectile(worldIn, playerIn, getInkColor(stack), charge > 0.95f ? damage : damage*charge/4f + damage/4f);
+		proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed*charge, inaccuracy);
+		proj.setProjectileSize(projectileSize);
+		worldIn.spawnEntity(proj);
+		SplatCraftPlayerData.setWeaponCharge(playerIn, stack, 0f);
+		playerIn.getCooldownTracker().setCooldown(this, 10);
 		
 	}
 	

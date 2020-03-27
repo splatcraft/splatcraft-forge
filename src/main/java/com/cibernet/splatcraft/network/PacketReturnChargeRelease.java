@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.network;
 
+import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.ICharge;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import io.netty.buffer.ByteBuf;
@@ -43,8 +44,7 @@ public class PacketReturnChargeRelease implements IMessage
             
         } catch (IndexOutOfBoundsException e)
         {
-            //Logger goes here
-            System.out.println("something went wrong! " + e);
+            SplatCraft.logger.info(e.toString());
         }
         messageValid = true;
     }
@@ -74,8 +74,6 @@ public class PacketReturnChargeRelease implements IMessage
             EntityPlayer player = ctx.getServerHandler().player;
             ItemStack stack = message.stack;
             SplatCraftPlayerData.setWeaponCharge(player, stack, message.charge);
-            
-            System.out.println("return " + stack);
             
             if(stack.getItem() instanceof ICharge)
                 ((ICharge) stack.getItem()).onRelease(player.world, player, stack);

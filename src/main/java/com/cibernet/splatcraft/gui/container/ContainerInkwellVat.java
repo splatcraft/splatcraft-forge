@@ -79,8 +79,6 @@ public class ContainerInkwellVat extends Container
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.inventorySlots.get(index);
 		
-		System.out.println(index);
-
 		if (slot != null && slot.getHasStack())
 		{
 			ItemStack itemstack1 = slot.getStack();

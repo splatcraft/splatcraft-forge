@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.network;
 
+import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.recipes.RecipesInkwellVat;
 import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
@@ -45,8 +46,7 @@ public class PacketSetVatOutput implements IMessage
             selected = buf.readInt();
         } catch (IndexOutOfBoundsException e)
         {
-            //Logger goes here
-            System.out.println("something went wrong! " + e);
+            SplatCraft.logger.info(e.toString());
         }
         messageValid = true;
     }
@@ -86,7 +86,6 @@ public class PacketSetVatOutput implements IMessage
 
             } catch (Exception e)
             {
-                //logger goes here
             }
         }
     }

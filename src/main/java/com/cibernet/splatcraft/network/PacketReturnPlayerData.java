@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.network;
 
+import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -38,8 +39,7 @@ public class PacketReturnPlayerData implements IMessage
             playerData = ByteBufUtils.readTag(buf);
         } catch (IndexOutOfBoundsException e)
         {
-            //Logger goes here
-            System.out.println("something went wrong! " + e);
+            SplatCraft.logger.info(e.toString());
         }
         messageValid = true;
     }
@@ -72,7 +72,7 @@ public class PacketReturnPlayerData implements IMessage
 
             } catch (Exception e)
             {
-                System.out.println("Something went wrong! " + e);
+                SplatCraft.logger.info(e.toString());
             }
         }
     }
