@@ -81,7 +81,7 @@ public class CommonEventHandler
 			}
 			SplatCraftPlayerData.dischargeWeapon(player);
 		}
-		else if(!player.isDead)
+		else if(!player.isDead && !player.isSpectator())
 		{
 			player.eyeHeight = player.getDefaultEyeHeight();
 			if(weapon.getItem() instanceof ItemWeaponBase)
