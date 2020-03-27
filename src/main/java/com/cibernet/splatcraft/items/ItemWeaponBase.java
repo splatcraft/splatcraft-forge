@@ -59,7 +59,7 @@ public class ItemWeaponBase extends Item
 	public static int getInkColor(ItemStack stack)
 	{
 		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("color"))
-			return 0xFAFAFA;
+			return InkColors.DYE_WHITE.getColor();
 		return stack.getTagCompound().getInteger("color");
 	}
 	public static boolean isColorLocked(ItemStack stack)
@@ -136,7 +136,7 @@ public class ItemWeaponBase extends Item
 		}
 		else if (entityItem.world.getBlockState(pos.up()).getMaterial().equals(Material.WATER) && isColorLocked(stack))
 		{
-			setInkColor(stack, 0xFAFAFA);
+			setInkColor(stack, InkColors.DYE_WHITE.getColor());
 			setColorLocked(stack, false);
 		}
 		
