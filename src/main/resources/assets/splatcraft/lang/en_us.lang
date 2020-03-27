@@ -19,6 +19,14 @@ item.powerEgg.name=Power Egg
 item.powerEggCan.name=Can of Power Eggs
 item.sardinium.name=Sardinium
 
+item.filterEmpty.name=Filter
+item.filterDye.name=Organic Filter
+item.filterNeon.name=Neon Filter
+item.filterPastel.name=Pastel Filter
+item.filterEnchanted.name=Enchanted Filter
+item.filterCreative.name=Creative Filter
+item.filter.tooltip=Use it in an Ink Vat to get more colors!
+
 item.splattershot.name=Splattershot
 item.splattershotJr.name=Splattershot Jr.
 item.splattershotPro.name=Splattershot Pro
@@ -68,10 +76,27 @@ color.cherry=Cherry
 
 color.neonPink=Neon Pink
 color.neonGreen=Neon Green
-color.mojangRed=Red Thing
 color.defaultWhite=White
+color.default=Undyed
 color.cobalt=Cobalt
+color.mojangRed=Red Thing
+color.icearstorm=Icy Mint
 
+color.dyeWhite=Organic White
+color.dyeOrange=Organic Orange
+color.dyeMagenta=Organic Magenta
+color.dyeLightBlue=Organic Light Blue
+color.dyeYellow=Organic Yellow
+color.dyeLime=Organic Lime
+color.dyePink=Organic Pink
+color.dyeGray=Organic Gray
+color.dyeSilver=Organic Light Gray
+color.dyeCyan=Organic Cyan
+color.dyePurple=Organic Purple
+color.dyeBlue=Organic Blue
+color.dyeBrown=Organic Brown
+color.dyeGreen=Organic Green
+color.dyeRed=Organic Red
 color.dyeBlack=Organic Black
 
 container.inkwellVat=Inkwell Crafting

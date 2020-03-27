@@ -31,6 +31,13 @@ public class SplatCraftItems
     public static final Item clashBlaster = new ItemBlasterBase("clashBlaster", "clash_blaster", 2f, 1.2f, 5f, 5, 10, 12, 5);
     public static final Item octobrush = new ItemRollerBase("octobrush", "octobrush", 4D, 0.5f, 8f, 1.1d, 2, 4, true);
 
+    public static final ItemFilter filterEmpty = new ItemFilter("filterEmpty", "filter_empty", false);
+    public static final ItemFilter filterNeon = new ItemFilter("filterNeon", "filter_neon", false);
+    public static final ItemFilter filterDye = new ItemFilter("filterDye", "filter_dye", false);
+    public static final ItemFilter filterPastel = new ItemFilter("filterPastel", "filter_pastel", false);
+    public static final ItemFilter filterEnchanted = new ItemFilter("filterEnchanted", "filter_enchanted", true);
+    public static final ItemFilter filterCreative = new ItemFilter("filterCreative", "filter_creative", true);
+    
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
@@ -48,6 +55,13 @@ public class SplatCraftItems
         registerItem(registry, aerosprayMG);
         registerItem(registry, clashBlaster);
         registerItem(registry, octobrush);
+        
+        registerItem(registry, filterEmpty);
+        registerItem(registry, filterNeon);
+        registerItem(registry, filterDye);
+        registerItem(registry, filterPastel);
+        registerItem(registry, filterEnchanted);
+        registerItem(registry, filterCreative);
 
         registerItemBlocks(registry);
     }
