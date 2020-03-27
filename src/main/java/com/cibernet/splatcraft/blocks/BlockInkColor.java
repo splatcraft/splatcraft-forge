@@ -77,6 +77,12 @@ public class BlockInkColor extends Block implements IInked
 	}
 	
 	@Override
+	public boolean canClimb()
+	{
+		return false;
+	}
+	
+	@Override
 	public boolean countsTowardsScore()
 	{
 		return false;

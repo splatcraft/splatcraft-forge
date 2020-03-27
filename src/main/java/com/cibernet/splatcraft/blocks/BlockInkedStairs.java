@@ -164,6 +164,12 @@ public class BlockInkedStairs extends BlockStairs implements IInked
 	}
 	
 	@Override
+	public boolean canClimb()
+	{
+		return true;
+	}
+	
+	@Override
 	public boolean countsTowardsScore()
 	{
 		return true;

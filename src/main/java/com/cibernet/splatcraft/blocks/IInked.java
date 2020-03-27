@@ -14,6 +14,7 @@ public interface IInked
 	boolean canInk();
 	boolean canDamage();
 	boolean canSwim();
+	boolean canClimb();
 	boolean countsTowardsScore();
 	
 	default void clearInk(World worldIn, BlockPos pos) {}

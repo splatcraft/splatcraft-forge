@@ -77,7 +77,7 @@ public class SplatCraftUtils
 			BlockPos pos = new BlockPos(playerIn.posX - xOff, playerIn.posY, playerIn.posZ - zOff);
 			Block block = worldIn.getBlockState(pos).getBlock();
 			
-			if((!(block instanceof IInked) || (block instanceof IInked && ((IInked) block).canSwim())) && worldIn.getTileEntity(pos) instanceof TileEntityColor &&
+			if((!(block instanceof IInked) || (block instanceof IInked && ((IInked) block).canClimb())) && worldIn.getTileEntity(pos) instanceof TileEntityColor &&
 					((TileEntityColor) worldIn.getTileEntity(pos)).getColor() == SplatCraftPlayerData.getInkColor(playerIn) && !playerIn.isRiding())
 				return true;
 		}
@@ -129,8 +129,8 @@ public class SplatCraftUtils
 		
 		if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
 		{
-			if(state.getBlock() instanceof BlockInkColor)
-				if(!((BlockInkColor) state.getBlock()).canInk)
+			if(state.getBlock() instanceof IInked)
+				if(!((IInked) state.getBlock()).canInk())
 					return false;
 			
 			TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);

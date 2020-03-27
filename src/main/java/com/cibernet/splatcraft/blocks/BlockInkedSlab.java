@@ -230,6 +230,12 @@ public class BlockInkedSlab extends BlockSlab implements IInked
 	}
 	
 	@Override
+	public boolean canClimb()
+	{
+		return true;
+	}
+	
+	@Override
 	public boolean countsTowardsScore()
 	{
 		return true;
