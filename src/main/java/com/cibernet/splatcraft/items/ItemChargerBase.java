@@ -3,13 +3,15 @@ package com.cibernet.splatcraft.items;
 import com.cibernet.splatcraft.entities.classes.EntityChargerProjectile;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
+import com.cibernet.splatcraft.network.PacketChargeRelease;
+import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public class ItemChargerBase extends ItemWeaponBase implements ICharge
@@ -59,22 +61,18 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
 	{
 		if(!SplatCraftPlayerData.getIsSquid(playerIn))
+		{
 			SplatCraftPlayerData.addWeaponCharge(playerIn, stack, chargeSpeed);
+			SplatCraftPlayerData.setCanDischarge(playerIn.getUniqueID(), false);
+		}
 	}
 	
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
 	{
-		EntityPlayer playerIn = (EntityPlayer) entityLiving;
-		float charge = SplatCraftPlayerData.getWeaponCharge(playerIn, stack);
-		if(charge > 0.05f && !worldIn.isRemote && !SplatCraftPlayerData.getIsSquid(playerIn))
+		if(!worldIn.isRemote && !SplatCraftPlayerData.getIsSquid((EntityPlayer) entityLiving))
 		{
-			EntityInkProjectile proj = new EntityChargerProjectile(worldIn, playerIn, getInkColor(stack), charge > 0.95f ? damage : damage*charge/4f + damage/4f);
-			proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed*charge, inaccuracy);
-			proj.setProjectileSize(projectileSize);
-			worldIn.spawnEntity(proj);
-			SplatCraftPlayerData.setWeaponCharge(playerIn, stack, 0f);
-			playerIn.getCooldownTracker().setCooldown(this, 10);
+			SplatCraftPacketHandler.instance.sendTo(new PacketChargeRelease(entityLiving.getUniqueID(), stack), (EntityPlayerMP) entityLiving);
 		}
 	}
 	
@@ -88,6 +86,22 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	public float getChargeSpeed()
 	{
 		return chargeSpeed;
+	}
+	
+	@Override
+	public void onRelease(World worldIn, EntityPlayer playerIn, ItemStack stack)
+	{
+		float charge = SplatCraftPlayerData.getWeaponCharge(playerIn, stack);
+		System.out.println(charge);
+		
+		
+			EntityInkProjectile proj = new EntityChargerProjectile(worldIn, playerIn, getInkColor(stack), charge > 0.95f ? damage : damage*charge/4f + damage/4f);
+			proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed*charge, inaccuracy);
+			proj.setProjectileSize(projectileSize);
+			worldIn.spawnEntity(proj);
+			SplatCraftPlayerData.setWeaponCharge(playerIn, stack, 0f);
+			playerIn.getCooldownTracker().setCooldown(this, 10);
+		
 	}
 	
 	@Override

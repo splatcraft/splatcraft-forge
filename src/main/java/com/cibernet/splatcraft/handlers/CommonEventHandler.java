@@ -80,6 +80,7 @@ public class CommonEventHandler
 					}
 			}
 			SplatCraftPlayerData.dischargeWeapon(player);
+			SplatCraftPlayerData.setCanDischarge(player.getUniqueID(), true);
 		}
 		else if(!player.isDead && !player.isSpectator())
 		{
@@ -96,7 +97,7 @@ public class CommonEventHandler
 					item.onItemTickUse(player.world, player, weapon, player.getItemInUseCount());
 				
 			}
-			else SplatCraftPlayerData.dischargeWeapon(player);
+			else if(SplatCraftPlayerData.canDischarge(player)) SplatCraftPlayerData.dischargeWeapon(player);
 		}
 
 	}

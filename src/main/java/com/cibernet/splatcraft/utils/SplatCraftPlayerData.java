@@ -60,8 +60,12 @@ public class SplatCraftPlayerData
 	public static void setInkColor(EntityPlayer playerIn, int inkColor) {getPlayerData(playerIn).inkColor = inkColor;}
 	public static void setIsSquid(EntityPlayer playerIn, boolean isSquid) {getPlayerData(playerIn).isSquid = isSquid;}
 	
+	public static boolean canDischarge(EntityPlayer player) {return getTempPlayerData(player).canDischarge;}
+	public static void setCanDischarge(UUID player, boolean discharge) {getTempPlayerData(player).canDischarge = discharge;}
 	public static float getWeaponCharge(EntityPlayer playerIn, ItemStack stack) { return getTempPlayerData(playerIn).chargedWeapon.isItemEqual(stack) ? getTempPlayerData(playerIn).charge : 0;}
-	public static void setWeaponCharge(EntityPlayer playerIn, ItemStack stack, float charge)
+	public static float getWeaponCharge(UUID playerIn, ItemStack stack) { return getTempPlayerData(playerIn).chargedWeapon.isItemEqual(stack) ? getTempPlayerData(playerIn).charge : 0;}
+	public static void setWeaponCharge(EntityPlayer playerIn, ItemStack stack, float charge) {setWeaponCharge(playerIn.getUniqueID(), stack, charge);}
+	public static void setWeaponCharge(UUID playerIn, ItemStack stack, float charge)
 	{
 		TempPlayerData data = getTempPlayerData(playerIn);
 		data.charge = charge;
@@ -160,6 +164,7 @@ public class SplatCraftPlayerData
 		public UUID player;
 		public ItemStack chargedWeapon = ItemStack.EMPTY;
 		public float charge = 0;
+		public boolean canDischarge = false;
 		
 		public TempPlayerData(UUID uuid) {player = uuid;}
 		public TempPlayerData() {}
