@@ -44,10 +44,11 @@ item.lunaBlaster.name=Luna Blaster
 
 item.splatCharger.name=Splat Charger
 item.splatCharger2.name=Splat Charger 2
-item.squiffer.name=Squiffer
+item.squiffer.name=Classic Squiffer
 item.splatterscope.name=Splatterscope
 item.splatterscope2.name=Splatterscope 2
-item.eLiter.name=E-Liter 4K
+item.eLiter3K.name=E-Liter 3K
+item.eLiter4K.name=E-Liter 4K
 
 item.splatRoller.name=Splat Roller
 item.splatRoller2.name=Splat Roller 2
