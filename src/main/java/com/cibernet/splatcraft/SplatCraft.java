@@ -1,6 +1,8 @@
 package com.cibernet.splatcraft;
 
 
+import com.cibernet.splatcraft.commands.CommandClearInk;
+import com.cibernet.splatcraft.commands.CommandSplatCraftGamerules;
 import com.cibernet.splatcraft.commands.CommandTurfWar;
 import com.cibernet.splatcraft.proxy.CommonProxy;
 import com.cibernet.splatcraft.utils.InkColors;
@@ -61,5 +63,7 @@ public class SplatCraft
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		event.registerServerCommand(new CommandTurfWar());
+		event.registerServerCommand(new CommandClearInk());
+		event.registerServerCommand(new CommandSplatCraftGamerules());
 	}
 }

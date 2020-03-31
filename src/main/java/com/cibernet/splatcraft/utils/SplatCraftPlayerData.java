@@ -15,6 +15,8 @@ public class SplatCraftPlayerData
 	
 	static Map<UUID, PlayerData> dataMap = new HashMap();
 	static Map<UUID, TempPlayerData> tempDataMap = new HashMap();
+	static boolean inkDecay = true;
+	
 	
 	public static PlayerData getPlayerData(EntityPlayer playerIn)
 	{
@@ -100,6 +102,13 @@ public class SplatCraftPlayerData
 		else data.charge = 0;
 	}
 	
+	public static boolean getGamerule(String name) {return  inkDecay;}
+	public static void setGamerule(String name, boolean value)
+	{
+		inkDecay = value;
+	}
+	public static String[] getGameruleNames() {return new String[] {"inkDecay"};}
+	
 	public static void writeToNBT(NBTTagCompound nbt) {
 		NBTTagList list = new NBTTagList();
 		Iterator var2 = dataMap.values().iterator();
@@ -110,6 +119,20 @@ public class SplatCraftPlayerData
 		}
 		
 		nbt.setTag("playerData", list);
+		
+		list = new NBTTagList();
+		Iterator<String> ruleIter = new ArrayList<String>() {{add("inkDecay");}}.iterator();
+		
+		NBTTagCompound ruleNbt = new NBTTagCompound();
+		//while(ruleIter.hasNext())
+		{
+			String rule = "inkDecay"; //ruleIter.next();
+			setGamerule(rule, true);
+			
+			ruleNbt.setBoolean(rule, getGamerule(rule));
+		}
+		list.appendTag(ruleNbt);
+		nbt.setTag("gamerules", list);
 	}
 	
 	public static void readFromNBT(NBTTagCompound nbt) {
@@ -122,6 +145,21 @@ public class SplatCraftPlayerData
 				SplatCraftPlayerData.PlayerData data = new SplatCraftPlayerData.PlayerData();
 				data.readFromNBT(dataCompound);
 				dataMap.put(data.player, data);
+			}
+			
+			list = nbt.getTagList("rules", 10);
+			
+			for(int i = 0; i < list.tagCount(); ++i)
+			{
+				NBTTagCompound dataCompound = list.getCompoundTagAt(i);
+				
+				Iterator<String> ruleIter = new ArrayList<String>() {{add("inkDecay");}}.iterator();
+				//while(ruleIter.hasNext())
+				{
+					String rule = "inkDecay";
+					
+					setGamerule(rule, dataCompound.getBoolean(rule));
+				}
 			}
 			
 		}

@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.blocks;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.utils.InkColors;
+import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.BlockStairs;
@@ -111,7 +112,8 @@ public class BlockInkedStairs extends BlockStairs implements IInked
 	@Override
 	public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
 	{
-		clearInk(worldIn, pos);
+		if(SplatCraftPlayerData.getGamerule("inkDecay"))
+			clearInk(worldIn, pos);
 	}
 	
 	@Override

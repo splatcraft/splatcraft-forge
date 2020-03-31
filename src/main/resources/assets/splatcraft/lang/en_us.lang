@@ -134,6 +134,8 @@ commands.turfWar.outOfWorld=§cCannot check for blocks outside of the world
 commands.turfWar.score=%s = %s%%
 commands.turfWar.winner=%s wins!
 commands.turfWar.noInk=§cNo ink was found on the designated area
+commands.splatcraftRules.success=Rule %s has been updated to %s
+commands.splatcraftRules.usage=/splatcraftRules <rule name> [value]
 
 commands.clearInk.usage=/clearInk <x1> <y1> <z1> <x2> <y2> <z2>
 commands.clearInk.outOfWorld=§cCannot check for blocks outside of the world
