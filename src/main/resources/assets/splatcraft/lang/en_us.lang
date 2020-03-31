@@ -19,6 +19,11 @@ item.powerEgg.name=Power Egg
 item.powerEggCan.name=Can of Power Eggs
 item.sardinium.name=Sardinium
 
+item.inkDisruptor.name=Ink Disruptor
+item.turfScanner.name=Turf Scanner
+item.coordSet.tooltip.a=(%s,%s,%s)
+item.coordSet.tooltip.b=(%s,%s,%s) to (%s,%s,%s)
+
 item.filterEmpty.name=Filter
 item.filterDye.name=Organic Filter
 item.filterNeon.name=Neon Filter
@@ -125,10 +130,17 @@ container.inkwellVat=Inkwell Crafting
 container.weaponStation=Weapon Crafting
 
 commands.turfWar.usage=/turfWar <x1> <y1> <z1> <x2> <y2> <z2> [clearInk]
-commands.turfWar.outOfWorld=Cannot check for blocks outside of the world
+commands.turfWar.outOfWorld=§cCannot check for blocks outside of the world
 commands.turfWar.score=%s = %s%%
 commands.turfWar.winner=%s wins!
-commands.turfWar.noInk=No ink was found on the designated area
+commands.turfWar.noInk=§cNo ink was found on the designated area
+
+commands.clearInk.usage=/clearInk <x1> <y1> <z1> <x2> <y2> <z2>
+commands.clearInk.outOfWorld=§cCannot check for blocks outside of the world
+commands.clearInk.success=Successfully cleared %s blocks
+
+status.coordSet.A=Set first position to X: %s Y: %s Z: %s
+status.coordSet.B=Set second position to X: %s Y: %s Z: %s
 
 key.categories.splatcraft=Splatcraft
 key.squidForm=Squid

@@ -1,0 +1,32 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " I ",
+        "#R#",
+        "#P#"
+    ],
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "key": {
+        "R": {
+            "item": "minecraft:water_bucket"
+        }
+    },
+    "key": {
+        "P": {
+            "item": "splatcraft:power_egg_block"
+        }
+    },
+    "key": {
+        "#": {
+            "item": "splatcraft:sardinium"
+        }
+    },
+    "result": {
+        "item": "splatcraft:ink_disruptor",
+        "count": 1
+    }
+}

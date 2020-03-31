@@ -146,7 +146,7 @@ public class CommandTurfWar extends CommandBase
 	/**
 	 * Finds the highest block on the x and z coordinate that is solid or liquid, and returns its y coord.
 	 */
-	public BlockPos getTopSolidOrLiquidBlock(BlockPos pos, World world, int maxY)
+	public static BlockPos getTopSolidOrLiquidBlock(BlockPos pos, World world, int maxY)
 	{
 		Chunk chunk = world.getChunkFromBlockCoords(pos);
 		BlockPos blockpos;

@@ -39,6 +39,9 @@ public class SplatCraftItems
     public static final ItemFilter filterEnchanted = new ItemFilter("filterEnchanted", "filter_enchanted", true);
     public static final ItemFilter filterCreative = new ItemFilter("filterCreative", "filter_creative", true);
     
+    public static final Item inkDisruptor = new ItemInkDisruptor();
+    public static final Item turfScanner = new ItemTurfScanner();
+    
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
@@ -64,6 +67,9 @@ public class SplatCraftItems
         registerItem(registry, filterPastel);
         registerItem(registry, filterEnchanted);
         registerItem(registry, filterCreative);
+        
+        registerItem(registry, inkDisruptor);
+        registerItem(registry, turfScanner);
 
         registerItemBlocks(registry);
     }
