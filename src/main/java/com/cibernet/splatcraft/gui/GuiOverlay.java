@@ -30,6 +30,15 @@ public class GuiOverlay extends Gui
 			int height = res.getScaledHeight();
 			EntityPlayer player = mc.player;
 			ItemStack stack = player.getHeldItemMainhand();
+			int charge = (int) Math.floor(SplatCraftPlayerData.getWeaponCharge(player, stack)*59);
+			
+			if(SplatCraftPlayerData.getIsSquid(player))
+			{
+				event.setCanceled(true);
+				
+				if(charge <= 0)
+					return;
+			}
 			
 			if(!(stack.getItem() instanceof ICharge))
 				stack = player.getHeldItemOffhand();
@@ -39,7 +48,6 @@ public class GuiOverlay extends Gui
 				mc.renderEngine.bindTexture(CHARGER_OVERLAY);
 				int x = width / 2 - 9;
 				int y = height / 2 - 9;
-				int charge = (int) Math.floor(SplatCraftPlayerData.getWeaponCharge(player, stack)*59);
 				int tx = (charge % 13) * 19;
 				int ty = (charge/13) * 19;
 				

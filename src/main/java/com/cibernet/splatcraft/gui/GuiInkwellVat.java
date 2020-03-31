@@ -8,6 +8,7 @@ import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
 import com.cibernet.splatcraft.utils.InkColors;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
@@ -67,7 +68,7 @@ public class GuiInkwellVat extends GuiContainer
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 		String displayName = te.getDisplayName().getUnformattedComponentText();
 		fontRenderer.drawString(displayName, (xSize/2 - fontRenderer.getStringWidth(displayName)/2), 4, 4210752);
-
+		this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 
 		mc.getTextureManager().bindTexture(TEXTURES);
 		if(colorSelection != null)
