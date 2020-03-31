@@ -230,4 +230,14 @@ public class SplatCraftUtils
 			worldIn.spawnEntity(entityitem);
 		}
 	}
+	
+	public static void giveItem(EntityPlayer reciever, ItemStack stack)
+	{
+		if(!reciever.addItemStackToInventory(stack))
+		{
+			EntityItem entity = reciever.dropItem(stack, false);
+			if(entity != null)
+				entity.setNoPickupDelay();
+		} else reciever.inventoryContainer.detectAndSendChanges();
+	}
 }

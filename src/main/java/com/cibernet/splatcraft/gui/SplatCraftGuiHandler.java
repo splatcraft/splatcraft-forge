@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.gui;
 
 import com.cibernet.splatcraft.gui.container.ContainerInkwellVat;
+import com.cibernet.splatcraft.gui.container.ContainerPlayerInv;
 import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -13,6 +14,7 @@ import javax.annotation.Nullable;
 public class SplatCraftGuiHandler implements IGuiHandler
 {
 	public static final int INKWELL_VAT_GUI = 0;
+	public static final int WEAPON_STATION_GUI = 1;
 	
 	@Nullable
 	@Override
@@ -24,6 +26,8 @@ public class SplatCraftGuiHandler implements IGuiHandler
 		{
 			case INKWELL_VAT_GUI:
 				return new ContainerInkwellVat(player.inventory, (TileEntityInkwellVat) te);
+			case WEAPON_STATION_GUI:
+				return new ContainerPlayerInv(player.inventory, pos, 8, 120);
 		}
 		return null;
 	}
@@ -38,6 +42,8 @@ public class SplatCraftGuiHandler implements IGuiHandler
 		{
 			case INKWELL_VAT_GUI:
 				return new GuiInkwellVat(player.inventory, (TileEntityInkwellVat) te);
+			case WEAPON_STATION_GUI:
+				return new GuiWeaponStation(player, pos);
 		}
 		return null;
 	}

@@ -6,7 +6,7 @@ import com.cibernet.splatcraft.handlers.CommonEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftSaveHandler;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.recipes.RecipesInkwellVat;
-import com.cibernet.splatcraft.recipes.RecipesWeaponWorkshop;
+import com.cibernet.splatcraft.recipes.RecipesWeaponStation;
 import com.cibernet.splatcraft.registries.SplatCraftEntities;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
@@ -46,7 +46,7 @@ public class CommonProxy
 
         registerSmelting();
         RecipesInkwellVat.registerRecipes();
-        RecipesWeaponWorkshop.registerRecipes();
+        RecipesWeaponStation.registerRecipes();
 
         GameRegistry.registerWorldGenerator(new OreGenHandler(), 0);
     }

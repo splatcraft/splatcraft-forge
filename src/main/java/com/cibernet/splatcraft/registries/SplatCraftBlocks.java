@@ -36,6 +36,7 @@ public class SplatCraftBlocks
     }.setHardness(5.0F).setResistance(10.0F).setUnlocalizedName("sardiniumBlock").setRegistryName("sardinium_block").setCreativeTab(TabSplatCraft.main);
     
     public static Block inkwellVat = new BlockInkwellVat();
+    public static Block weaponStation = new BlockWeaponStation();
     
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
@@ -54,6 +55,7 @@ public class SplatCraftBlocks
         registerBlock(registry, sardiniumBlock, true);
         
         registerBlock(registry,inkwellVat, true);
+        registerBlock(registry,weaponStation, true);
 
     }
 

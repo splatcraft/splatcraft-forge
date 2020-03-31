@@ -13,7 +13,7 @@ tile.sardiniumBlock.name=Block of Sardinium
 tile.oreSardinium.name=Sardinium Ore
 
 tile.inkwellVat.name=Ink Vat
-tile.weaponWorkbench.name=Ammo Knights Workbench
+tile.weaponStation.name=Ammo Knights Workbench
 
 item.powerEgg.name=Power Egg
 item.powerEggCan.name=Can of Power Eggs
@@ -59,6 +59,25 @@ item.octobrush.name=Octobrush
 item.splatDualies.name=Splat Dualies
 item.dualieSquelchers.name=Dualie Squelchers
 
+stationTab.shooter=Shooters
+stationTab.roller=Rollers
+stationTab.charger=Chargers
+stationTab.blaster=Blasters
+stationTab.dualies=Dualies
+
+recipe.aerospray.name=Aerospray
+recipe.e_liter.name=E-Liter
+
+weaponType.original=Original
+weaponType.classic=Classic
+weaponType.custom=Custom
+weaponType.kensa=Kensa
+weaponType.3K=3K
+weaponType.4K=4K
+weaponType.mg=MG
+weaponType.rg=RG
+weaponType.pg=PG
+
 color.orange=Orange
 color.blue=Blue
 color.pink=Pink
@@ -100,8 +119,10 @@ color.dyeGreen=Organic Green
 color.dyeRed=Organic Red
 color.dyeBlack=Organic Black
 
+gui.weaponStation.craft=Craft
+
 container.inkwellVat=Inkwell Crafting
-container.weaponWorkbench=Weapon Crafting
+container.weaponStation=Weapon Crafting
 
 commands.turfWar.usage=/turfWar <x1> <y1> <z1> <x2> <y2> <z2> [clearInk]
 commands.turfWar.outOfWorld=Cannot check for blocks outside of the world
