@@ -8,11 +8,16 @@ import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
+import kataiser9.KeepEquipment.KeepEquipmentConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.MobEffects;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovementInput;
@@ -21,12 +26,18 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+
+import java.util.ListIterator;
 
 public class CommonEventHandler
 {
@@ -101,7 +112,56 @@ public class CommonEventHandler
 		}
 
 	}
-
+	
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onPlayerDeath(PlayerDropsEvent event) {
+		if (event.getEntityPlayer() != null && !(event.getEntityPlayer() instanceof FakePlayer) && !event.isCanceled()) {
+			if (!event.getEntityPlayer().world.getGameRules().getBoolean("keepInventory") && SplatCraftPlayerData.getGamerule("keepWeaponsOnDeath")) {
+				ListIterator iter = event.getDrops().listIterator();
+				
+				while(iter.hasNext()) 
+				{
+					EntityItem ei = (EntityItem)iter.next();
+					ItemStack item = ei.getItem();
+					if (item.getItem() instanceof ItemWeaponBase && addToPlayerInventory(event.getEntityPlayer(), item))
+						iter.remove();
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onPlayerClone(PlayerEvent.Clone event) {
+		if (event.isWasDeath() && !event.isCanceled()) {
+			if (event.getOriginal() != null && event.getEntityPlayer() != null && !(event.getEntityPlayer() instanceof FakePlayer)) {
+				if (!event.getEntityPlayer().world.getGameRules().getBoolean("keepInventory") && SplatCraftPlayerData.getGamerule("keepWeaponsOnDeath")) {
+					if (event.getOriginal() != event.getEntityPlayer() && event.getOriginal().inventory != event.getEntityPlayer().inventory && (event.getOriginal().inventory.armorInventory != event.getEntityPlayer().inventory.armorInventory || event.getOriginal().inventory.mainInventory != event.getEntityPlayer().inventory.mainInventory)) {
+						int i;
+						ItemStack item;
+						if (KeepEquipmentConfig.keepArmor)
+						{
+							for(i = 0; i < event.getOriginal().inventory.armorInventory.size(); ++i)
+							{
+								item = event.getOriginal().inventory.armorInventory.get(i);
+								if (addToPlayerInventory(event.getEntityPlayer(), item))
+									event.getOriginal().inventory.armorInventory.set(i, ItemStack.EMPTY);
+							}
+						}
+						
+						for(i = 0; i < event.getOriginal().inventory.mainInventory.size(); ++i)
+						{
+							item = event.getOriginal().inventory.mainInventory.get(i);
+							if (item.getItem() instanceof ItemWeaponBase && addToPlayerInventory(event.getEntityPlayer(), item))
+								event.getOriginal().inventory.mainInventory.set(i, ItemStack.EMPTY);
+							
+						}
+						
+					}
+				}
+			}
+		}
+	}
+	
 	@SubscribeEvent
 	public void onJoinWorld(EntityJoinWorldEvent event)
 	{
@@ -169,5 +229,37 @@ public class CommonEventHandler
 				return item.getSpeedModifier();
 		}
 		return null;
+	}
+	
+	private static boolean addToPlayerInventory(EntityPlayer entityPlayer, ItemStack item)
+	{
+		if (item != null && entityPlayer != null)
+		{
+			int i;
+			if (item.getItem() instanceof ItemArmor)
+			{
+				ItemArmor arm = (ItemArmor)item.getItem();
+				i = arm.armorType.getIndex();
+				if ((entityPlayer.inventory.armorInventory.get(i)).isEmpty())
+				{
+					entityPlayer.inventory.armorInventory.set(i, item);
+					return true;
+				}
+			}
+			
+			InventoryPlayer inv = entityPlayer.inventory;
+			
+			for(i = 0; i < inv.mainInventory.size(); ++i)
+			{
+				if ((inv.mainInventory.get(i)).isEmpty())
+				{
+					inv.mainInventory.set(i, item.copy());
+					return true;
+				}
+			}
+			
+			return false;
+		} else 	return false;
+		
 	}
 }

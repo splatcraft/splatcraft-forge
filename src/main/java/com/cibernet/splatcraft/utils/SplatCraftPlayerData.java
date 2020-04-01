@@ -16,7 +16,7 @@ public class SplatCraftPlayerData
 	static Map<UUID, PlayerData> dataMap = new HashMap();
 	static Map<UUID, TempPlayerData> tempDataMap = new HashMap();
 	static boolean inkDecay = true;
-	
+	static boolean keepWeaponsOnDeath = false;
 	
 	public static PlayerData getPlayerData(EntityPlayer playerIn)
 	{
@@ -102,12 +102,14 @@ public class SplatCraftPlayerData
 		else data.charge = 0;
 	}
 	
-	public static boolean getGamerule(String name) {return  inkDecay;}
+	public static boolean getGamerule(String name) {return name.equals("inkDecay") ? inkDecay : keepWeaponsOnDeath;}
 	public static void setGamerule(String name, boolean value)
 	{
-		inkDecay = value;
+		if(name.equals("inkDecay"))
+			inkDecay = value;
+		else keepWeaponsOnDeath = value;
 	}
-	public static String[] getGameruleNames() {return new String[] {"inkDecay"};}
+	public static String[] getGameruleNames() {return new String[] {"inkDecay", "keepWeaponsOnDeath"};}
 	
 	public static void writeToNBT(NBTTagCompound nbt) {
 		NBTTagList list = new NBTTagList();
@@ -126,10 +128,11 @@ public class SplatCraftPlayerData
 		NBTTagCompound ruleNbt = new NBTTagCompound();
 		//while(ruleIter.hasNext())
 		{
-			String rule = "inkDecay"; //ruleIter.next();
-			setGamerule(rule, true);
+			//String rule = "inkDecay"; //ruleIter.next();
+			//setGamerule(rule, true);
 			
-			ruleNbt.setBoolean(rule, getGamerule(rule));
+			ruleNbt.setBoolean("inkDecay", getGamerule("inkDecay"));
+			ruleNbt.setBoolean("keepWeaponsOnDeath", getGamerule("keepWeaponsOnDeath"));
 		}
 		list.appendTag(ruleNbt);
 		nbt.setTag("gamerules", list);
@@ -156,9 +159,8 @@ public class SplatCraftPlayerData
 				Iterator<String> ruleIter = new ArrayList<String>() {{add("inkDecay");}}.iterator();
 				//while(ruleIter.hasNext())
 				{
-					String rule = "inkDecay";
-					
-					setGamerule(rule, dataCompound.getBoolean(rule));
+					setGamerule("inkDecay", dataCompound.getBoolean("inkDecay"));
+					setGamerule("keepWeaponsOnDeath", dataCompound.getBoolean("keepWeaponsOnDeath"));
 				}
 			}
 			
