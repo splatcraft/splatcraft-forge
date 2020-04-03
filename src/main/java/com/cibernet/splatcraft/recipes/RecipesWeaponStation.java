@@ -29,12 +29,14 @@ public class RecipesWeaponStation
 	public static RecipeType recipeOctobrush = new RecipeType(octobrush, "original", new ItemStack(sardinium, 4), new ItemStack(powerEgg, 20), new ItemStack(Items.WHEAT, 5), new ItemStack(DYE, 12, 0), new ItemStack(IRON_NUGGET, 18));
 	public static RecipeType recipeSplatCharger = new RecipeType(splatCharger, "original", new ItemStack(sardinium, 6), new ItemStack(powerEgg, 20), new ItemStack(DYE, 10, 0));
 	public static RecipeType recipeELiter4K = new RecipeType(eLiter4K, "4K", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 18), new ItemStack(DYE, 10, 0), new ItemStack(IRON_INGOT, 5)).setDisplayName("e_liter");
+	public static RecipeType recipeBlaster = new RecipeType(blaster, "original", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 18), new ItemStack(DYE, 12, 0), new ItemStack(GUNPOWDER, 12));
 	
 	public static void registerRecipes()
 	{
 		register(TAB_SHOOTER, recipeSplattershot);
 		register(TAB_SHOOTER, recipeSplattershotJr);
 		register(TAB_SHOOTER, recipeAerosprayMg);
+		register(TAB_SHOOTER, recipeBlaster);
 		register(TAB_SHOOTER, recipeClashBlaster);
 		register(TAB_ROLLER, recipeSplatRoller);
 		register(TAB_ROLLER, recipeInkbrush);

@@ -31,6 +31,7 @@ public class SplatCraftItems
     public static final Item clashBlaster = new ItemBlasterBase("clashBlaster", "clash_blaster", 2f, 1.2f, 5f, 5, 10, 12, 5);
     public static final Item octobrush = new ItemRollerBase("octobrush", "octobrush", 4D, 0.5f, 8f, 1.1d, 2, 4, true);
     public static final Item eLiter4K = new ItemChargerBase("eLiter4K", "e_liter_4k", 0.75f, 3.7f, 0.85f, 110, 60, 36f, 0.15);
+    public static final Item blaster = new ItemBlasterBase("blaster", "blaster", 3f, 1.1f, 5f, 7, 16, 25, 10);
 
     public static final ItemFilter filterEmpty = new ItemFilter("filterEmpty", "filter_empty", false);
     public static final ItemFilter filterNeon = new ItemFilter("filterNeon", "filter_neon", false);
@@ -60,6 +61,7 @@ public class SplatCraftItems
         registerItem(registry, clashBlaster);
         registerItem(registry, octobrush);
         registerItem(registry, eLiter4K);
+        registerItem(registry, blaster);
         
         registerItem(registry, filterEmpty);
         registerItem(registry, filterNeon);
