@@ -21,7 +21,7 @@ public enum InkColors
 	PLUM(0x830b9c, MapColor.MAGENTA, "plum"),
 
 	CYAN(0x4ACBCB, MapColor.DIAMOND, "cyan"),
-	TANGERINE(0xEA8546, MapColor.ORANGE_STAINED_HARDENED_CLAY, "tangerine"),
+	TANGERINE(0xEA8546, MapColor.ORANGE_STAINED_HARDENED_CLAY, "peach"),
 	MINT(0x08B672, MapColor.LIGHT_BLUE, "mint"),
 	CHERRY(0xE24F65, MapColor.PINK_STAINED_HARDENED_CLAY, "cherry"),
 
@@ -33,7 +33,7 @@ public enum InkColors
 	ICEARSTORM(0x88ffc1, MapColor.LIGHT_BLUE, "icearstorm"),
 	INK_BLACK(0x1F1F2D, MapColor.CYAN_STAINED_HARDENED_CLAY, "default"),
 	
-	DYE_WHITE(16383998, MapColor.getBlockColor(EnumDyeColor.WHITE), "dyeWhite"),
+	DYE_WHITE(0xFAFAFA, MapColor.getBlockColor(EnumDyeColor.WHITE), "dyeWhite"),
 	DYE_ORANGE(16351261, MapColor.getBlockColor(EnumDyeColor.ORANGE), "dyeOrange"),
 	DYE_MAGENTA(13061821, MapColor.getBlockColor(EnumDyeColor.MAGENTA), "dyeMagenta"),
 	DYE_LIGHT_BLUE(3847130, MapColor.getBlockColor(EnumDyeColor.LIGHT_BLUE), "dyeLightBlue"),
