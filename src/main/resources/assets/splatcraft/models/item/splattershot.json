@@ -320,7 +320,7 @@
 			"scale": [0.5, 0.5, 0.5]
 		},
 		"gui": {
-			"rotation": [19, -124, 0],
+			"rotation": [3, -120.5, 0],
 			"translation": [0, 4, 0]
 		},
 		"fixed": {
