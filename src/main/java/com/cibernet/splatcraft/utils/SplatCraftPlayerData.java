@@ -57,10 +57,10 @@ public class SplatCraftPlayerData
 	public static void deleteTempData() {tempDataMap.clear();}
 	
 	public static int getInkColor(EntityPlayer playerIn) { return getPlayerData(playerIn).inkColor; }
-	public static boolean getIsSquid(EntityPlayer playerIn) { return getPlayerData(playerIn).isSquid; }
+	public static boolean getIsSquid(EntityPlayer playerIn) { return getPlayerData(playerIn).isSquid != 0; }
 	
 	public static void setInkColor(EntityPlayer playerIn, int inkColor) {getPlayerData(playerIn).inkColor = inkColor;}
-	public static void setIsSquid(EntityPlayer playerIn, boolean isSquid) {getPlayerData(playerIn).isSquid = isSquid;}
+	public static void setIsSquid(EntityPlayer playerIn, boolean isSquid) {getPlayerData(playerIn).isSquid = isSquid ? 2 : 1;}
 	
 	public static boolean canDischarge(EntityPlayer player) {return getTempPlayerData(player).canDischarge;}
 	public static void setCanDischarge(UUID player, boolean discharge) {getTempPlayerData(player).canDischarge = discharge;}
@@ -171,7 +171,7 @@ public class SplatCraftPlayerData
 	{
 		public UUID player;
 		public int inkColor = SplatCraft.DEFAULT_INK;
-		public boolean isSquid = false;
+		public int isSquid = 0;
 		
 		public PlayerData(UUID uuid) {player = uuid;}
 		public PlayerData() {}
@@ -185,7 +185,7 @@ public class SplatCraftPlayerData
 			if(nbt.hasKey("inkColor"))
 				this.inkColor = nbt.getInteger("inkColor");
 			if(nbt.hasKey("isSquid"))
-				this.isSquid = nbt.getBoolean("isSquid");
+				this.isSquid = nbt.getBoolean("isSquid") ? 2 : 1;
 			
 		}
 		
@@ -193,7 +193,7 @@ public class SplatCraftPlayerData
 		{
 			nbt.setUniqueId("uuid", player);
 			nbt.setInteger("inkColor", inkColor);
-			nbt.setBoolean("isSquid", isSquid);
+			nbt.setBoolean("isSquid", isSquid == 2);
 			
 			return nbt;
 		}

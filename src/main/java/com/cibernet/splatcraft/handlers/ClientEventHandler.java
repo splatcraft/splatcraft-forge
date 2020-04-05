@@ -153,8 +153,12 @@ public class ClientEventHandler
 	{
 		
 		EntityPlayer player = event.getEntityPlayer();
-		event.getRenderer().getRenderManager().setRenderShadow(true);
-		if(SplatCraftPlayerData.getIsSquid(player))
+		int squidPhase = SplatCraftPlayerData.getPlayerData(player).isSquid;
+		
+		if(squidPhase == 1)
+			event.getRenderer().getRenderManager().setRenderShadow(true);
+		
+		if(squidPhase != 0)
 		{
 			event.setCanceled(true);
 			
@@ -163,7 +167,7 @@ public class ClientEventHandler
 				RenderInklingSquid render = new RenderInklingSquid(event.getRenderer().getRenderManager());
 				render.doRender(player, event.getX(), event.getY(), event.getZ(), player.rotationYawHead, event.getPartialRenderTick());
 			}
-			else event.getRenderer().getRenderManager().setRenderShadow(false);
+			else if(squidPhase == 2) event.getRenderer().getRenderManager().setRenderShadow(false);
 		}
 	}
 

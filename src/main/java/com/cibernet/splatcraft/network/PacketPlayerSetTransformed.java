@@ -68,7 +68,7 @@ public class PacketPlayerSetTransformed implements IMessage
 
         void process(PacketPlayerSetTransformed message, MessageContext ctx)
         {
-            SplatCraftPlayerData.getPlayerData(message.player).isSquid = message.isTransformed;
+            SplatCraftPlayerData.getPlayerData(message.player).isSquid = message.isTransformed ? 2 : 1;
             SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnTransformed(message.player, message.isTransformed), ctx.getServerHandler().player.dimension);
 
         }

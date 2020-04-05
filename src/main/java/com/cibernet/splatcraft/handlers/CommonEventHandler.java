@@ -8,7 +8,6 @@ import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
-import kataiser9.KeepEquipment.KeepEquipmentConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -53,6 +52,10 @@ public class CommonEventHandler
 		
 		//if(player.getActivePotionEffect(MobEffects.INVISIBILITY) == null)
 		//	player.setInvisible(false);
+		
+		SplatCraftPlayerData.PlayerData data = SplatCraftPlayerData.getPlayerData(player);
+		if(data.isSquid == 1)
+			data.isSquid = 0;
 		
 		if(SplatCraftUtils.onEnemyInk(player.world, player) && player.ticksExisted % 20 == 0 && player.getHealth() > 4 && player.world.getDifficulty() != EnumDifficulty.PEACEFUL)
 		{
@@ -138,15 +141,6 @@ public class CommonEventHandler
 					if (event.getOriginal() != event.getEntityPlayer() && event.getOriginal().inventory != event.getEntityPlayer().inventory && (event.getOriginal().inventory.armorInventory != event.getEntityPlayer().inventory.armorInventory || event.getOriginal().inventory.mainInventory != event.getEntityPlayer().inventory.mainInventory)) {
 						int i;
 						ItemStack item;
-						if (KeepEquipmentConfig.keepArmor)
-						{
-							for(i = 0; i < event.getOriginal().inventory.armorInventory.size(); ++i)
-							{
-								item = event.getOriginal().inventory.armorInventory.get(i);
-								if (addToPlayerInventory(event.getEntityPlayer(), item))
-									event.getOriginal().inventory.armorInventory.set(i, ItemStack.EMPTY);
-							}
-						}
 						
 						for(i = 0; i < event.getOriginal().inventory.mainInventory.size(); ++i)
 						{
@@ -175,7 +169,7 @@ public class CommonEventHandler
 		if(!event.getWorld().isRemote)
 		{
 			SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnColor(player.getUniqueID(), data.inkColor), player.dimension);
-			SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnTransformed(player.getUniqueID(), data.isSquid), player.dimension);
+			SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnTransformed(player.getUniqueID(), data.isSquid == 2), player.dimension);
 		}
 		else
 			SplatCraftPacketHandler.instance.sendToServer(new PacketGetPlayerData());
