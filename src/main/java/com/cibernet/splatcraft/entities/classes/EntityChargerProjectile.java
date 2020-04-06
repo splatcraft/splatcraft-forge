@@ -7,6 +7,8 @@ import net.minecraft.world.World;
 
 public class EntityChargerProjectile extends EntityInkProjectile
 {
+	private int lifespan = 1;
+	
 	public EntityChargerProjectile(World worldIn)
 	{
 		super(worldIn);
@@ -17,9 +19,10 @@ public class EntityChargerProjectile extends EntityInkProjectile
 		super(worldIn, x, y, z);
 	}
 	
-	public EntityChargerProjectile(World worldIn, EntityLivingBase throwerIn, int color, float damage)
+	public EntityChargerProjectile(World worldIn, EntityLivingBase throwerIn, int color, float damage, int lifespan)
 	{
 		super(worldIn, throwerIn, color, damage);
+		this.lifespan = lifespan;
 	}
 	
 	@Override
@@ -36,6 +39,14 @@ public class EntityChargerProjectile extends EntityInkProjectile
 				break;
 			}
 		}
-		
+		lifespan--;
+		if(lifespan == 0)
+			setDead();
+	}
+	
+	@Override
+	public boolean hasNoGravity()
+	{
+		return true;
 	}
 }

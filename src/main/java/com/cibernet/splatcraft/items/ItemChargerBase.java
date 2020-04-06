@@ -20,18 +20,18 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	
 	public float projectileSize;
 	public float inaccuracy;
-	public float projectileSpeed;
+	public int projectileLifespan;
 	public float chargeSpeed;
 	public float dischargeSpeed;
 	public float damage;
 	
-	public ItemChargerBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int chargeTime, int dischargeTime , float damage, double mobility)
+	public ItemChargerBase(String unlocName, String registryName, float projectileSize, int projectileLifespan, float inaccuracy, int chargeTime, int dischargeTime , float damage, double mobility)
 	{
 		super(unlocName, registryName);
 		
 		this.projectileSize = projectileSize;
 		this.inaccuracy = inaccuracy;
-		this.projectileSpeed = projectileSpeed;
+		this.projectileLifespan = projectileLifespan;
 		this.chargeSpeed = 1f/chargeTime;
 		this.dischargeSpeed = 1f/dischargeTime;
 		this.damage = damage;
@@ -93,8 +93,8 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	{
 		float charge = SplatCraftPlayerData.getWeaponCharge(playerIn, stack);
 		
-		EntityInkProjectile proj = new EntityChargerProjectile(worldIn, playerIn, getInkColor(stack), charge > 0.95f ? damage : damage*charge/4f + damage/4f);
-		proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed*charge, inaccuracy);
+		EntityInkProjectile proj = new EntityChargerProjectile(worldIn, playerIn, getInkColor(stack), charge > 0.95f ? damage : damage*charge/4f + damage/4f, (int) (projectileLifespan*charge));
+		proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 2.4f, inaccuracy);
 		proj.setProjectileSize(projectileSize);
 		worldIn.spawnEntity(proj);
 		SplatCraftPlayerData.setWeaponCharge(playerIn, stack, 0f);
