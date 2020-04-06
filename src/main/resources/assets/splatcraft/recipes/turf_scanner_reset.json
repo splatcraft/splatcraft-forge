@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#"
+    ],
+    "key": {
+        "#": {
+            "item": "splatcraft:turf_scanner"
+        }
+    },
+    "result": {
+        "item": "splatcraft:turf_scanner"
+    }
+}
