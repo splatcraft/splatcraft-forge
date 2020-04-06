@@ -17,6 +17,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityFishHook;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -179,6 +180,22 @@ public class SplatCraftUtils
 		return true;
 	}
 
+	public static boolean canInkPassthrough(World worldIn, BlockPos pos)
+	{
+		IBlockState state = worldIn.getBlockState(pos);
+		System.out.println(state.getBlock());
+		
+		if(state.getBlock() == Blocks.AIR)
+			return true;
+		
+		if(state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
+			return false;
+		if(state.isFullBlock() || state.getBlockHardness(worldIn, pos) != -1)
+			return false;
+		
+		return true;
+	}
+	
 	public static boolean canInk(World worldIn, BlockPos pos)
 	{
 

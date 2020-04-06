@@ -94,6 +94,13 @@ public class ItemRollerBase extends ItemWeaponBase
     }
     
     @Override
+    public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
+    {
+        System.out.println(entityLiving.world.isRemote);
+        return super.onEntitySwing(entityLiving, stack);
+    }
+    
+    @Override
     public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
     {
         Multimap<String, AttributeModifier> multimap = HashMultimap.create();
@@ -112,7 +119,8 @@ public class ItemRollerBase extends ItemWeaponBase
     @Override
     public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
     {
-        if(playerIn.motionX == 0 && playerIn.motionY == 0 && playerIn.motionZ == 0)
+    
+        if(worldIn.isRemote)
             return;
         
         BlockPos pos = new BlockPos(playerIn.posX + 0.5, playerIn.posY, playerIn.posZ + 0.5);
@@ -128,18 +136,21 @@ public class ItemRollerBase extends ItemWeaponBase
                 xOff *= -1;
                 zOff *= -1;
             }
-
+            
             if (playerIn.getHorizontalFacing().equals(EnumFacing.NORTH) || playerIn.getHorizontalFacing().equals(EnumFacing.SOUTH))
                 zOff = 0;
             else xOff = 0;
 
-            BlockPos checkPos = pos.add(fwd.x * 1 + xOff, -1, fwd.z * 1 + zOff);
+            BlockPos checkPos = pos.add(fwd.x * 1 + xOff, 0, fwd.z * 1 + zOff);
             BlockPos inkPos = pos.add(fwd.x * 2 + xOff, -1, fwd.z * 2 + zOff);
             boolean canInk = true;
             
-            if (worldIn.getBlockState(inkPos.up()).getBlock() != Blocks.AIR)
-                inkPos = checkPos.up();
-            else if(!SplatCraftUtils.canInk(worldIn, checkPos)) canInk = false;
+            
+            if(!SplatCraftUtils.canInkPassthrough(worldIn, checkPos))
+                inkPos = checkPos;
+            else if (!SplatCraftUtils.canInkPassthrough(worldIn, inkPos.up()))
+                inkPos = inkPos.up();
+            canInk = SplatCraftUtils.canInk(worldIn, inkPos);
             
             if(canInk)
                 SplatCraftUtils.inkBlock(worldIn, inkPos, ItemWeaponBase.getInkColor(stack), rollDamage);
@@ -153,7 +164,7 @@ public class ItemRollerBase extends ItemWeaponBase
             
         }
     }
-
+    
     @Override
     public AttributeModifier getSpeedModifier() {
         return SPEED_MODIFIER;
@@ -162,7 +173,7 @@ public class ItemRollerBase extends ItemWeaponBase
     @Override
     public void onItemLeftClick(World worldIn, EntityPlayer playerIn, ItemStack stack)
     {
-        if(playerIn.getCooledAttackStrength(0) >= 1f)
+        if(playerIn.getCooledAttackStrength(0) >= 0.95f)
         {
 
             for(int i = -1; i <= 1; i++)
