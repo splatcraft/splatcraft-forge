@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EntityBlasterProjectile extends EntityInkProjectile
 {
-	private int lifespan;
+	private int lifespan = 1;
 	
 	public EntityBlasterProjectile(World worldIn, EntityLivingBase throwerIn, int color, float damage, int lifespan)
 	{
@@ -28,7 +28,7 @@ public class EntityBlasterProjectile extends EntityInkProjectile
 		
 		if(lifespan == 0)
 		{
-			SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()*2, getColor());
+			SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()*1.2f, getColor());
 			this.setDead();
 			this.world.setEntityState(this, (byte)3);
 		}
