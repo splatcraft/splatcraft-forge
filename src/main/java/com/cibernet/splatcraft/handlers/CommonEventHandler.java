@@ -46,6 +46,9 @@ public class CommonEventHandler
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
+		if(event.phase == TickEvent.Phase.START)
+			return;
+		
 		EntityPlayer player = event.player;
 		BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
 		ItemStack weapon = player.getActiveItemStack();
@@ -67,7 +70,8 @@ public class CommonEventHandler
 			if(!player.isRiding())
 			{
 				SplatCraftUtils.setEntitySize(player, 0.6f, 0.6f);
-				player.eyeHeight = 0.4f;
+				if(!SplatCraft.disableEyeHeight)
+					player.eyeHeight = 0.4f;
 				
 				if(SplatCraftUtils.canSquidHide(player.world, player))
 				{

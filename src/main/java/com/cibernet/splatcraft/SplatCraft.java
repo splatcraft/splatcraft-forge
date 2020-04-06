@@ -7,6 +7,7 @@ import com.cibernet.splatcraft.commands.CommandTurfWar;
 import com.cibernet.splatcraft.proxy.CommonProxy;
 import com.cibernet.splatcraft.utils.InkColors;
 import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -29,6 +30,7 @@ public class SplatCraft
 	public static final int DEFAULT_INK = InkColors.INK_BLACK.getColor();
 	
 	public static Logger logger;
+	public static boolean disableEyeHeight;
 	
 	@Mod.Instance(SplatCraft.MODID)
 	public static SplatCraft instance;
@@ -43,6 +45,8 @@ public class SplatCraft
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		disableEyeHeight = Loader.isModLoaded("moreplayermodels");
+		
 		logger = Logger.getLogger(MODID);
 		proxy.preInit();
 	}
