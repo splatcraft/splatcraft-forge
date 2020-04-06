@@ -23,14 +23,14 @@ public class SplatCraftItems
 
     public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot", 1f, 0.7f, 10f, 5, 7f);
     public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.6f, 4f,1.25d, 3, 20, false);
-    public static final Item splatCharger = new ItemChargerBase("splatCharger", "splat_charger", 0.65f, 3f, 0.9f, 90, 60, 32f, 0.4);
+    public static final Item splatCharger = new ItemChargerBase("splatCharger", "splat_charger", 0.65f, 8, 0.9f, 50, 60, 32f, 0.4);
     public static final Item splattershotJr = new ItemShooterBase("splattershotJr", "splattershot_jr", 1f, 0.55f, 3.5f, 4, 5.5f);
     public static final Item inkbrush = new ItemRollerBase("inkbrush", "inkbrush", 8D, 0.4f, 6f, 1.3d,1, 5,true);
     public static final Item aerosprayMG = new ItemShooterBase("aerosprayMG", "aerospray_mg", 1.2f, 0.5f, 20f, 2, 4.8f);
     //public static final Item clashBlaster = new ItemShooterBase("clashBlaster", "clash_blaster", 2f, 0.95f, 10f, 12, 12, false); //TODO
     public static final Item clashBlaster = new ItemBlasterBase("clashBlaster", "clash_blaster", 2f, 1.2f, 5f, 5, 10, 12, 5);
-    public static final Item octobrush = new ItemRollerBase("octobrush", "octobrush", 4D, 0.5f, 8f, 1.1d, 2, 4, true);
-    public static final Item eLiter4K = new ItemChargerBase("eLiter4K", "e_liter_4k", 0.75f, 3.7f, 0.85f, 110, 60, 36f, 0.15);
+    public static final Item octobrush = new ItemRollerBase("octobrush", "octobrush", -0.1D, 0.5f, 8f, 1.1d, 2, 4, true);
+    public static final Item eLiter4K = new ItemChargerBase("eLiter4K", "e_liter_4k", 0.75f, 16, 0.85f, 70, 60, 36f, 0.15);
     public static final Item blaster = new ItemBlasterBase("blaster", "blaster", 3f, 1.1f, 5f, 7, 16, 25, 10);
 
     public static final ItemFilter filterEmpty = new ItemFilter("filterEmpty", "filter_empty", false);
