@@ -63,9 +63,16 @@ public enum InkColors
 		return EnumHelper.addEnum(InkColors.class, name, new Class[] {Integer.class, MapColor.class, String.class}, color, mapColor, unlocalizedName);
 	}
 	
+	public static List<InkColors> getStarterColorArray() {return starterColors;}
+	
+	public static InkColors getRandomStarterColor()
+	{
+		return starterColors.get((int) (Math.random()*starterColors.size()));
+	}
+	
 	public static final List<InkColors> creativeTabColors = new ArrayList<InkColors>() {{add(ORANGE); add(BLUE); add(GREEN); add(PINK); }};
-	public static final List<InkColors> mainSelectionColors = new ArrayList<InkColors>() {{add(ORANGE); add(BLUE); add(GREEN); add(PINK); }};
-
+	public static final List<InkColors> starterColors = new ArrayList<InkColors>() {{add(ORANGE); add(BLUE); add(GREEN); add(PINK); }};
+	
 	private final int color;
 	private final MapColor mapColor;
 	private final String name;

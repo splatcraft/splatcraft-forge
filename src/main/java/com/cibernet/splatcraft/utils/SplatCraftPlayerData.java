@@ -170,7 +170,7 @@ public class SplatCraftPlayerData
 	public static class PlayerData
 	{
 		public UUID player;
-		public int inkColor = SplatCraft.DEFAULT_INK;
+		public int inkColor = InkColors.getRandomStarterColor().getColor();
 		public int isSquid = 0;
 		
 		public PlayerData(UUID uuid) {player = uuid;}
