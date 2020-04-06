@@ -172,14 +172,6 @@ public class ClientEventHandler
 	}
 
 	@SubscribeEvent
-	public void onLeftClick(PlayerInteractEvent.LeftClickEmpty event)
-	{
-		EntityPlayer player = event.getEntityPlayer();
-		if(!player.isSpectator() && !SplatCraftPlayerData.getIsSquid(event.getEntityPlayer()))
-			SplatCraftPacketHandler.instance.sendToServer(new PacketWeaponLeftClick(player.getUniqueID()));
-	}
-
-	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event)
 	{
 		EntityPlayer player = Minecraft.getMinecraft().player;

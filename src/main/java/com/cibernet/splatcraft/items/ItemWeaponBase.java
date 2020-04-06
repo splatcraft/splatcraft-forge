@@ -13,6 +13,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -113,6 +114,19 @@ public class ItemWeaponBase extends Item
 		setInkColor(stack, SplatCraftPlayerData.getInkColor((EntityPlayer) entityIn));
 		
 		super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+	}
+	
+	@Override
+	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
+	{
+		if(!entityLiving.world.isRemote)
+		{
+			boolean isSquid = false;
+			if(entityLiving instanceof EntityPlayer)
+				isSquid = SplatCraftPlayerData.getIsSquid((EntityPlayer) entityLiving);
+			onItemLeftClick(entityLiving.world, (EntityPlayer) entityLiving, stack);
+		}
+		return super.onEntitySwing(entityLiving, stack);
 	}
 	
 	@Override
