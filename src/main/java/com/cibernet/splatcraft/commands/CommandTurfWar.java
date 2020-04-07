@@ -28,7 +28,7 @@ public class CommandTurfWar extends CommandBase
 	@Override
 	public String getName()
 	{
-		return "turfWar";
+		return "turfwar";
 	}
 	
 	@Override

@@ -20,7 +20,7 @@ public class CommandSplatCraftGamerules extends CommandBase
 	@Override
 	public String getName()
 	{
-		return "splatcraftRules";
+		return "splatcraftrules";
 	}
 	
 	@Override

@@ -129,15 +129,15 @@ gui.weaponStation.craft=Craft
 container.inkwellVat=Inkwell Crafting
 container.weaponStation=Weapon Crafting
 
-commands.turfWar.usage=/turfWar <x1> <y1> <z1> <x2> <y2> <z2>
+commands.turfWar.usage=/turfwar <x1> <y1> <z1> <x2> <y2> <z2>
 commands.turfWar.outOfWorld=§cCannot check for blocks outside of the world
 commands.turfWar.score=%s = %s%%
 commands.turfWar.winner=%s wins!
 commands.turfWar.noInk=§cNo ink was found on the designated area
 commands.splatcraftRules.success=Rule %s has been updated to %s
-commands.splatcraftRules.usage=/splatcraftRules <rule name> [value]
-
-commands.clearInk.usage=/clearInk <x1> <y1> <z1> <x2> <y2> <z2>
+commands.splatcraftRules.usage=/splatcraftrules <rule name> [value]
+commands.splatcraftRules.value=%s = %s
+commands.clearInk.usage=/clearink <x1> <y1> <z1> <x2> <y2> <z2>
 commands.clearInk.outOfWorld=§cCannot check for blocks outside of the world
 commands.clearInk.success=Successfully cleared %s blocks
 
@@ -152,4 +152,3 @@ death.attack.splat.item=%1$s was splatted by %2$s using %3$s
 death.attack.roll=%1$s was crushed by %2$s
 death.attack.roll.item=%1$s was crushed by %2$s using %3$s
 death.attack.enemyInk=%1$s drowned in enemy ink
-commands.splatcraftRules.value=%s = %s

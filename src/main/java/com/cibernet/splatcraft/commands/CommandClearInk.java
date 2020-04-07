@@ -26,7 +26,7 @@ public class CommandClearInk extends CommandBase
 	@Override
 	public String getName()
 	{
-		return "clearInk";
+		return "clearink";
 	}
 	
 	@Override
