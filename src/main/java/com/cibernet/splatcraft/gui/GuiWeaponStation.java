@@ -23,6 +23,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
 import java.util.List;
@@ -145,7 +146,7 @@ public class GuiWeaponStation extends GuiContainer
 			int xPos = 107 + (j % 3)*18;
 			int yPos = 64 + (j/3)*18;
 			
-			String color = RecipesWeaponStation.getItem(player, input, false) ? "" : "§c";
+			String color = RecipesWeaponStation.getItem(player, input, false) ? "" : TextFormatting.RED + "";
 			drawRecipeItemStack(input, xPos + guiLeft, yPos + guiTop, color + input.getCount());
 			
 		}
