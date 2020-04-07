@@ -2,7 +2,7 @@ package com.cibernet.splatcraft.entities.renderers;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.entities.models.ModelInklingSquid;
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.player.EntityPlayer;

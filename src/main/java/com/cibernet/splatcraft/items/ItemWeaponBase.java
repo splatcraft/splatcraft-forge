@@ -1,23 +1,19 @@
 package com.cibernet.splatcraft.items;
 
-import com.cibernet.splatcraft.SplatCraft;
-import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.InkColors;
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

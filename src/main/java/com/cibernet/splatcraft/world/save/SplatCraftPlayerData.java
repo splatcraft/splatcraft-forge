@@ -1,7 +1,7 @@
-package com.cibernet.splatcraft.utils;
+package com.cibernet.splatcraft.world.save;
 
-import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.ICharge;
+import com.cibernet.splatcraft.utils.InkColors;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,8 +15,6 @@ public class SplatCraftPlayerData
 	
 	static Map<UUID, PlayerData> dataMap = new HashMap();
 	static Map<UUID, TempPlayerData> tempDataMap = new HashMap();
-	static boolean inkDecay = true;
-	static boolean keepWeaponsOnDeath = false;
 	
 	public static PlayerData getPlayerData(EntityPlayer playerIn)
 	{
@@ -102,15 +100,6 @@ public class SplatCraftPlayerData
 		else data.charge = 0;
 	}
 	
-	public static boolean getGamerule(String name) {return name.equals("inkDecay") ? inkDecay : keepWeaponsOnDeath;}
-	public static void setGamerule(String name, boolean value)
-	{
-		if(name.equals("inkDecay"))
-			inkDecay = value;
-		else keepWeaponsOnDeath = value;
-	}
-	public static String[] getGameruleNames() {return new String[] {"inkDecay", "keepWeaponsOnDeath"};}
-	
 	public static void writeToNBT(NBTTagCompound nbt) {
 		NBTTagList list = new NBTTagList();
 		Iterator var2 = dataMap.values().iterator();
@@ -121,21 +110,6 @@ public class SplatCraftPlayerData
 		}
 		
 		nbt.setTag("playerData", list);
-		
-		list = new NBTTagList();
-		Iterator<String> ruleIter = new ArrayList<String>() {{add("inkDecay");}}.iterator();
-		
-		NBTTagCompound ruleNbt = new NBTTagCompound();
-		//while(ruleIter.hasNext())
-		{
-			//String rule = "inkDecay"; //ruleIter.next();
-			//setGamerule(rule, true);
-			
-			ruleNbt.setBoolean("inkDecay", getGamerule("inkDecay"));
-			ruleNbt.setBoolean("keepWeaponsOnDeath", getGamerule("keepWeaponsOnDeath"));
-		}
-		list.appendTag(ruleNbt);
-		nbt.setTag("gamerules", list);
 	}
 	
 	public static void readFromNBT(NBTTagCompound nbt) {
@@ -149,21 +123,6 @@ public class SplatCraftPlayerData
 				data.readFromNBT(dataCompound);
 				dataMap.put(data.player, data);
 			}
-			
-			list = nbt.getTagList("rules", 10);
-			
-			for(int i = 0; i < list.tagCount(); ++i)
-			{
-				NBTTagCompound dataCompound = list.getCompoundTagAt(i);
-				
-				Iterator<String> ruleIter = new ArrayList<String>() {{add("inkDecay");}}.iterator();
-				//while(ruleIter.hasNext())
-				{
-					setGamerule("inkDecay", dataCompound.getBoolean("inkDecay"));
-					setGamerule("keepWeaponsOnDeath", dataCompound.getBoolean("keepWeaponsOnDeath"));
-				}
-			}
-			
 		}
 	}
 	

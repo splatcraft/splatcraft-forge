@@ -2,7 +2,7 @@ package com.cibernet.splatcraft.gui;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.ICharge;
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;

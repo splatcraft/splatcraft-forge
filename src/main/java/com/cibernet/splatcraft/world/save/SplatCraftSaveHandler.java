@@ -1,9 +1,8 @@
-package com.cibernet.splatcraft.handlers;
+package com.cibernet.splatcraft.world.save;
 
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -27,6 +26,7 @@ public class SplatCraftSaveHandler
 			NBTTagCompound nbt = new NBTTagCompound();
 			
 			SplatCraftPlayerData.writeToNBT(nbt);
+			SplatCraftGamerules.writeToNBT(nbt);
 			
 			try {
 				CompressedStreamTools.writeCompressed(nbt, new FileOutputStream(dataFile));
@@ -58,6 +58,7 @@ public class SplatCraftSaveHandler
 			if(nbt != null)
 			{
 				SplatCraftPlayerData.readFromNBT(nbt);
+				SplatCraftGamerules.readFromNBT(nbt);
 							
 				return;
 			}

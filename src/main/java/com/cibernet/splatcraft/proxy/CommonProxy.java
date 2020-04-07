@@ -3,7 +3,8 @@ package com.cibernet.splatcraft.proxy;
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.gui.SplatCraftGuiHandler;
 import com.cibernet.splatcraft.handlers.CommonEventHandler;
-import com.cibernet.splatcraft.handlers.SplatCraftSaveHandler;
+import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
+import com.cibernet.splatcraft.world.save.SplatCraftSaveHandler;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.recipes.RecipesInkwellVat;
 import com.cibernet.splatcraft.recipes.RecipesWeaponStation;
@@ -29,7 +30,8 @@ public class CommonProxy
 
         SplatCraftEntities.registerEntities();
         SplatCraftPacketHandler.registerMessages(SplatCraft.MODID);
-
+        SplatCraftGamerules.registerRules();
+        
         GameRegistry.registerTileEntity(TileEntityInkedBlock.class, SplatCraft.MODID+ ":inked_block");
         GameRegistry.registerTileEntity(TileEntityColor.class, SplatCraft.MODID+ ":ink_color");
         GameRegistry.registerTileEntity(TileEntitySunkenCrate.class, SplatCraft.MODID+ ":sunken_crate");

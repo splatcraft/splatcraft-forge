@@ -1,16 +1,13 @@
 package com.cibernet.splatcraft.entities.classes;
 
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
-import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.utils.SplatCraftDamageSource;
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;

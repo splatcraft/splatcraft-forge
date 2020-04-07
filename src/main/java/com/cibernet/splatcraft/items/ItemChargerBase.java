@@ -5,7 +5,7 @@ import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.network.PacketChargeRelease;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;

@@ -6,20 +6,17 @@ import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
+import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.MobEffects;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
 import net.minecraft.world.EnumDifficulty;
@@ -30,7 +27,6 @@ import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -123,7 +119,7 @@ public class CommonEventHandler
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(PlayerDropsEvent event) {
 		if (event.getEntityPlayer() != null && !(event.getEntityPlayer() instanceof FakePlayer) && !event.isCanceled()) {
-			if (!event.getEntityPlayer().world.getGameRules().getBoolean("keepInventory") && SplatCraftPlayerData.getGamerule("keepWeaponsOnDeath")) {
+			if (!event.getEntityPlayer().world.getGameRules().getBoolean("keepInventory") && SplatCraftGamerules.getGameruleValue("keepWeaponsOnDeath")) {
 				ListIterator iter = event.getDrops().listIterator();
 				
 				while(iter.hasNext()) 
@@ -141,7 +137,7 @@ public class CommonEventHandler
 	public void onPlayerClone(PlayerEvent.Clone event) {
 		if (event.isWasDeath() && !event.isCanceled()) {
 			if (event.getOriginal() != null && event.getEntityPlayer() != null && !(event.getEntityPlayer() instanceof FakePlayer)) {
-				if (!event.getEntityPlayer().world.getGameRules().getBoolean("keepInventory") && SplatCraftPlayerData.getGamerule("keepWeaponsOnDeath")) {
+				if (!event.getEntityPlayer().world.getGameRules().getBoolean("keepInventory") && SplatCraftGamerules.getGameruleValue("keepWeaponsOnDeath")) {
 					if (event.getOriginal() != event.getEntityPlayer() && event.getOriginal().inventory != event.getEntityPlayer().inventory && (event.getOriginal().inventory.armorInventory != event.getEntityPlayer().inventory.armorInventory || event.getOriginal().inventory.mainInventory != event.getEntityPlayer().inventory.mainInventory)) {
 						int i;
 						ItemStack item;

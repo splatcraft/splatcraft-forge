@@ -1,38 +1,28 @@
 package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
-import com.cibernet.splatcraft.items.ICharge;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
-import com.cibernet.splatcraft.network.PacketGetPlayerData;
 import com.cibernet.splatcraft.network.PacketPlayerSetTransformed;
-import com.cibernet.splatcraft.network.PacketWeaponLeftClick;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ClientEventHandler
 {

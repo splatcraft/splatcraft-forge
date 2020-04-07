@@ -1,7 +1,7 @@
 package com.cibernet.splatcraft.network;
 
 import com.cibernet.splatcraft.SplatCraft;
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.ByteBufUtils;

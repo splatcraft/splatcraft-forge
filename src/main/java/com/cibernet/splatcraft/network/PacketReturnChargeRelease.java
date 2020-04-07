@@ -2,7 +2,7 @@ package com.cibernet.splatcraft.network;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.ICharge;
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,8 +12,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-
-import java.util.UUID;
 
 public class PacketReturnChargeRelease implements IMessage
 {

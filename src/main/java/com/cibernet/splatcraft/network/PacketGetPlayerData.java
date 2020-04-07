@@ -1,18 +1,14 @@
 package com.cibernet.splatcraft.network;
 
 import com.cibernet.splatcraft.SplatCraft;
-import com.cibernet.splatcraft.utils.SplatCraftPlayerData;
-import com.cibernet.splatcraft.utils.SplatCraftUtils;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-
-import java.util.UUID;
 
 public class PacketGetPlayerData implements IMessage
 {

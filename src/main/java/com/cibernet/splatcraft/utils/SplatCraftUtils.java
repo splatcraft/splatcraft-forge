@@ -1,12 +1,12 @@
 package com.cibernet.splatcraft.utils;
 
 import com.cibernet.splatcraft.blocks.BlockInkColor;
-import com.cibernet.splatcraft.blocks.BlockInked;
 import com.cibernet.splatcraft.blocks.IInked;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockSlab;
@@ -16,18 +16,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootTableList;
-
-import java.util.List;
 
 public class SplatCraftUtils
 {
