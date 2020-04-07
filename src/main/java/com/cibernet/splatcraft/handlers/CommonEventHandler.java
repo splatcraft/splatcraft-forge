@@ -75,7 +75,7 @@ public class CommonEventHandler
 					//player.setInvisible(true);
 					
 					if((Math.abs(player.posX - player.prevPosX) > 0.14 || Math.abs(player.posY - player.prevPosY) > 0.14 || Math.abs(player.posZ - player.prevPosZ) > 0.14) && player.world.isRemote)
-						SplatCraftParticleSpawner.spawnInkParticle(player.posX, player.posY, player.posZ, 0, 0, 0, SplatCraftPlayerData.getInkColor(player), 4f);
+						SplatCraftParticleSpawner.spawnSquidSwimParticle(player.posX, player.posY, player.posZ, 0, 0, 0, SplatCraftPlayerData.getInkColor(player), 4f);
 					
 					if(player.ticksExisted % 5 == 0)
 						player.heal(0.5f);
