@@ -24,8 +24,10 @@ public class EntityBlasterProjectile extends EntityInkProjectile
 	public void onUpdate()
 	{
 		super.onUpdate();
-		lifespan--;
 		
+		if(!world.isRemote)
+			lifespan--;
+			
 		if(lifespan == 0)
 		{
 			SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()*1.2f, getColor());

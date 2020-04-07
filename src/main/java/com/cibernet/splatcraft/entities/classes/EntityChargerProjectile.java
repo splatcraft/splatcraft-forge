@@ -39,7 +39,9 @@ public class EntityChargerProjectile extends EntityInkProjectile
 				break;
 			}
 		}
-		lifespan--;
+		
+		if(!world.isRemote)
+			lifespan--;
 		if(lifespan == 0)
 			setDead();
 	}
