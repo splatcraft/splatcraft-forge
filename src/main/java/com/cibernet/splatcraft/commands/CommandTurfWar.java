@@ -45,8 +45,6 @@ public class CommandTurfWar extends CommandBase
 			throw new WrongUsageException("commands.turfWar.usage", new Object[0]);
 		}
 		
-		boolean cleanInk = args.length >= 7 && "true".equals(args[6]);
-		
 		BlockPos blockpos = parseBlockPos(sender, args, 0, false);
 		BlockPos blockpos1 = parseBlockPos(sender, args, 3, false);
 		BlockPos blockpos2 = new BlockPos(Math.min(blockpos.getX(), blockpos1.getX()), Math.min(blockpos.getY(), Math.min(blockpos1.getY(), blockpos.getY())), Math.min(blockpos.getZ(), blockpos1.getZ()));
@@ -97,8 +95,6 @@ public class CommandTurfWar extends CommandBase
 							scores.replace(color, scores.get(color) + 1);
 						else scores.put(color, 1);
 						
-						if(cleanInk)
-							block.clearInk(world, checkPos);
 					}
 					
 					
@@ -131,8 +127,6 @@ public class CommandTurfWar extends CommandBase
 		{
 			return getTabCompletionCoordinate(args, 3, targetPos);
 		}
-		else if (args.length == 7)
-			return getListOfStringsMatchingLastWord(args, new String[] {"true", "false"});
 		
 		return super.getTabCompletions(server, sender, args, targetPos);
 	}
@@ -140,7 +134,7 @@ public class CommandTurfWar extends CommandBase
 	@Override
 	public int getRequiredPermissionLevel()
 	{
-		return 0;
+		return 1;
 	}
 	
 	/**
