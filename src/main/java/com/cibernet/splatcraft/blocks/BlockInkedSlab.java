@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.blocks;
 
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.utils.InkColors;
+import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.block.Block;
@@ -13,10 +14,13 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
@@ -169,9 +173,39 @@ public class BlockInkedSlab extends BlockSlab implements IInked
 	@Override
 	public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack)
 	{
-		if(!(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock))
-			super.harvestBlock(worldIn, player, pos, state, te, stack);
-		else ((TileEntityInkedBlock)te).getSavedState().getBlock().harvestBlock(worldIn, player, pos, state, te, stack);
+		
+		if(te instanceof TileEntityInkedBlock)
+		{
+			state = ((TileEntityInkedBlock) te).getSavedState();
+			Block savedBlock = state.getBlock();
+			
+			player.addStat(StatList.getBlockStats(this));
+			player.addExhaustion(0.005F);
+			
+			
+			if(savedBlock.canSilkHarvest(worldIn, pos, state, player) && EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack) > 0)
+			{
+				java.util.List<ItemStack> items = new java.util.ArrayList<ItemStack>();
+				ItemStack itemstack = SplatCraftUtils.getSilkTouchDropFromBlock(savedBlock, state);
+				
+				if(!itemstack.isEmpty())
+				{
+					items.add(itemstack);
+				}
+				
+				net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(items, worldIn, pos, state, 0, 1.0f, true, player);
+				for(ItemStack item : items)
+				{
+					spawnAsEntity(worldIn, pos, item);
+				}
+			} else
+			{
+				harvesters.set(player);
+				int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
+				savedBlock.dropBlockAsItem(worldIn, pos, state, i);
+				harvesters.set(null);
+			}
+		}
 	}
 	
 	@Override

@@ -17,6 +17,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -250,5 +251,18 @@ public class SplatCraftUtils
 			if(entity != null)
 				entity.setNoPickupDelay();
 		} else reciever.inventoryContainer.detectAndSendChanges();
+	}
+	
+	public static ItemStack getSilkTouchDropFromBlock(Block block, IBlockState state)
+	{
+		Item item = Item.getItemFromBlock(block);
+		int i = 0;
+		
+		if (item.getHasSubtypes())
+		{
+			i = block.getMetaFromState(state);
+		}
+		
+		return new ItemStack(item, 1, i);
 	}
 }
