@@ -25,12 +25,14 @@ import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.Sys;
 
 import java.util.ListIterator;
 
@@ -183,6 +185,14 @@ public class CommonEventHandler
 			event.setCanceled(true);
 	}
 
+	@SubscribeEvent
+	public void onPlayerAttack(AttackEntityEvent event)
+	{
+		EntityPlayer player = event.getEntityPlayer();
+		if(SplatCraftPlayerData.getIsSquid(player))
+			event.setCanceled(true);
+	}
+	
 	//Loot Table Injector
 	@SubscribeEvent
 	public void onLootTableLoad(LootTableLoadEvent event)
