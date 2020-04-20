@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.utils;
 
+import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -17,10 +18,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -42,7 +40,7 @@ public class InkExplosion
 	private final double z;
 	private final int color;
 	private final Entity exploder;
-	private final int size;
+	private final float size;
 	/** A list of ChunkPositions of blocks affected by this explosion */
 	private final List<BlockPos> affectedBlockPositions;
 	/** Maps players to the knockback vector applied by the explosion, to send to the client */
@@ -63,7 +61,7 @@ public class InkExplosion
 		this.affectedBlockPositions.addAll(affectedPositions);
 	}
 	
-	public InkExplosion(World worldIn, Entity entityIn, double x, double y, double z, int size, int color, boolean damagesTerrain)
+	public InkExplosion(World worldIn, Entity entityIn, double x, double y, double z, float size, int color, boolean damagesTerrain)
 	{
 		this.affectedBlockPositions = Lists.<BlockPos>newArrayList();
 		this.playerKnockbackMap = Maps.<EntityPlayer, Vec3d>newHashMap();
@@ -81,30 +79,12 @@ public class InkExplosion
 			damage = ((EntityInkProjectile) entityIn).getDamage()/2;
 	}
 	
-	public void explode()
-	{
-		for(int x = -size; x <= size; x++)
-		{
-			int yr = (int) Math.sqrt(Math.pow(size,2) - Math.pow(x,2));
-			for(int y = -size; y <= yr; y++)
-				for(int z = -1; z <= 1; z++)
-				{
-					BlockPos pos = new BlockPos(this.x, this.y, this.z);
-					if(!world.getBlockState(pos).getBlock().equals(Blocks.AIR))
-					{
-						SplatCraftUtils.inkBlock(world, pos, color, 1);
-						break;
-					}
-				}
-		}
-	}
-	
 	/**
 	 * Does the first part of the explosion (ink blocks)
 	 */
 	public void doExplosionA()
 	{
-		Set<BlockPos> set = Sets.newHashSet();
+		Set<BlockPos> set = Sets.<BlockPos>newHashSet();
 		int i = 16;
 		
 		for (int j = 0; j < 16; ++j)
@@ -129,15 +109,29 @@ public class InkExplosion
 						
 						for (float f1 = 0.3F; f > 0.0F; f -= 0.22500001F)
 						{
+							RayTraceResult rayTrace = SplatCraftUtils.rayTraceBlocks(world, new Vec3d(x+0.5f,y+0.5f,z+0.5f), new Vec3d(d4+0.5f, d6+0.5f, d8+0.5f));
 							BlockPos blockpos = new BlockPos(d4, d6, d8);
+							if(rayTrace != null)
+								blockpos = rayTrace.getBlockPos();
+							
 							IBlockState iblockstate = this.world.getBlockState(blockpos);
 							
 							if (iblockstate.getMaterial() != Material.AIR)
-								f -= 10.3F * 0.3F;
-							else f -= 0.5;
-							if (f > 0.0F)
-								set.add(blockpos);
+							{
+								float f2 = 0;
+								f -= (f2 + 0.3F) * 0.3F;
+							}
 							
+							if (f > 0.0F)
+							{
+								if(!set.contains(blockpos))
+								{
+									//System.out.println("start: " + new BlockPos(x,y,z) + " end: " + blockpos);
+									//RayTraceResult result = world.rayTraceBlocks(new Vec3d(x,y,z), new Vec3d(d4, d6, d8));
+									//if(result.getBlockPos().equals(blockpos))
+									set.add(blockpos);
+								}
+							}
 							
 							d4 += d0 * 0.30000001192092896D;
 							d6 += d1 * 0.30000001192092896D;
@@ -156,11 +150,11 @@ public class InkExplosion
 		int i1 = MathHelper.floor(this.y + (double)f3 + 1.0D);
 		int j2 = MathHelper.floor(this.z - (double)f3 - 1.0D);
 		int j1 = MathHelper.floor(this.z + (double)f3 + 1.0D);
+		
+		
 		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this.exploder, new AxisAlignedBB((double)k1, (double)i2, (double)j2, (double)l1, (double)i1, (double)j1));
-		//net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.world, this, list, f3);
 		Vec3d vec3d = new Vec3d(this.x, this.y, this.z);
 		
-		/*
 		for (int k2 = 0; k2 < list.size(); ++k2)
 		{
 			Entity entity = list.get(k2);
@@ -176,39 +170,11 @@ public class InkExplosion
 					double d9 = entity.posZ - this.z;
 					double d13 = (double)MathHelper.sqrt(d5 * d5 + d7 * d7 + d9 * d9);
 					
-					if (d13 != 0.0D)
-					{
-						d5 = d5 / d13;
-						d7 = d7 / d13;
-						d9 = d9 / d13;
-						double d14 = (double)this.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
-						double d10 = (1.0D - d12) * d14;
-						entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), (float)((int)((d10 * d10 + d10) / 2.0D * 7.0D * (double)f3 + 1.0D)));
-						double d11 = d10;
-						
-						if (entity instanceof EntityLivingBase)
-						{
-							d11 = EnchantmentProtection.getBlastDamageReduction((EntityLivingBase)entity, d10);
-						}
-						
-						entity.motionX += d5 * d11;
-						entity.motionY += d7 * d11;
-						entity.motionZ += d9 * d11;
-						
-						if (entity instanceof EntityPlayer)
-						{
-							EntityPlayer entityplayer = (EntityPlayer)entity;
-							
-							if (!entityplayer.isSpectator() && (!entityplayer.isCreative() || !entityplayer.capabilities.isFlying))
-							{
-								this.playerKnockbackMap.put(entityplayer, new Vec3d(d5 * d10, d7 * d10, d9 * d10));
-							}
-						}
-					}
+					//if (d13 != 0.0D)
+						//TODO entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), (float)((int)((d10 * d10 + d10) / 2.0D * 7.0D * (double)f3 + 1.0D)));
 				}
 			}
 		}
-		*/
 	}
 	
 	/**

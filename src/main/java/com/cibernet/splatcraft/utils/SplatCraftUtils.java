@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.BlockStairs;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -19,10 +20,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 public class SplatCraftUtils
 {
@@ -94,7 +97,8 @@ public class SplatCraftUtils
 	{
 		if (!worldIn.isRemote)
 		{
-			InkExplosion explosion = new InkExplosion(worldIn, source, pos.getX(), pos.getY(), pos.getZ(), (int) radius, color, true);
+			System.out.println("boom");
+			InkExplosion explosion = new InkExplosion(worldIn, source, pos.getX(), pos.getY(), pos.getZ(), radius, color, true);
 			//explosion.explode();
 			explosion.doExplosionA();
 			explosion.doExplosionB(true);
@@ -178,9 +182,8 @@ public class SplatCraftUtils
 	public static boolean canInkPassthrough(World worldIn, BlockPos pos)
 	{
 		IBlockState state = worldIn.getBlockState(pos);
-		System.out.println(state.getBlock());
 		
-		if(state.getBlock() == Blocks.AIR)
+		if(state.getBlock() == Blocks.AIR || state.getBlock() == Blocks.IRON_BARS)
 			return true;
 		
 		if(state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
@@ -264,5 +267,189 @@ public class SplatCraftUtils
 		}
 		
 		return new ItemStack(item, 1, i);
+	}
+	
+	public static RayTraceResult rayTraceBlocks(World worldIn, Vec3d vecStart, Vec3d vecEnd)
+	{
+		boolean stopOnLiquid = true;
+		boolean ignoreBlockWithoutBoundingBox = true;
+		boolean returnLastUncollidableBlock = false;
+		
+		if (!Double.isNaN(vecStart.x) && !Double.isNaN(vecStart.y) && !Double.isNaN(vecStart.z))
+		{
+			if (!Double.isNaN(vecEnd.x) && !Double.isNaN(vecEnd.y) && !Double.isNaN(vecEnd.z))
+			{
+				int i = MathHelper.floor(vecEnd.x);
+				int j = MathHelper.floor(vecEnd.y);
+				int k = MathHelper.floor(vecEnd.z);
+				int l = MathHelper.floor(vecStart.x);
+				int i1 = MathHelper.floor(vecStart.y);
+				int j1 = MathHelper.floor(vecStart.z);
+				BlockPos blockpos = new BlockPos(l, i1, j1);
+				IBlockState iblockstate = worldIn.getBlockState(blockpos);
+				Block block = iblockstate.getBlock();
+				
+				if (!canInkPassthrough(worldIn, blockpos) && (!ignoreBlockWithoutBoundingBox || iblockstate.getCollisionBoundingBox(worldIn, blockpos) != Block.NULL_AABB) && block.canCollideCheck(iblockstate, stopOnLiquid))
+				{
+					RayTraceResult raytraceresult = iblockstate.collisionRayTrace(worldIn, blockpos, vecStart, vecEnd);
+					
+					if (raytraceresult != null)
+					{
+						return raytraceresult;
+					}
+				}
+				
+				RayTraceResult raytraceresult2 = null;
+				int k1 = 200;
+				
+				while (k1-- >= 0)
+				{
+					if (Double.isNaN(vecStart.x) || Double.isNaN(vecStart.y) || Double.isNaN(vecStart.z))
+					{
+						return null;
+					}
+					
+					if (l == i && i1 == j && j1 == k)
+					{
+						return returnLastUncollidableBlock ? raytraceresult2 : null;
+					}
+					
+					boolean flag2 = true;
+					boolean flag = true;
+					boolean flag1 = true;
+					double d0 = 999.0D;
+					double d1 = 999.0D;
+					double d2 = 999.0D;
+					
+					if (i > l)
+					{
+						d0 = (double)l + 1.0D;
+					}
+					else if (i < l)
+					{
+						d0 = (double)l + 0.0D;
+					}
+					else
+					{
+						flag2 = false;
+					}
+					
+					if (j > i1)
+					{
+						d1 = (double)i1 + 1.0D;
+					}
+					else if (j < i1)
+					{
+						d1 = (double)i1 + 0.0D;
+					}
+					else
+					{
+						flag = false;
+					}
+					
+					if (k > j1)
+					{
+						d2 = (double)j1 + 1.0D;
+					}
+					else if (k < j1)
+					{
+						d2 = (double)j1 + 0.0D;
+					}
+					else
+					{
+						flag1 = false;
+					}
+					
+					double d3 = 999.0D;
+					double d4 = 999.0D;
+					double d5 = 999.0D;
+					double d6 = vecEnd.x - vecStart.x;
+					double d7 = vecEnd.y - vecStart.y;
+					double d8 = vecEnd.z - vecStart.z;
+					
+					if (flag2)
+					{
+						d3 = (d0 - vecStart.x) / d6;
+					}
+					
+					if (flag)
+					{
+						d4 = (d1 - vecStart.y) / d7;
+					}
+					
+					if (flag1)
+					{
+						d5 = (d2 - vecStart.z) / d8;
+					}
+					
+					if (d3 == -0.0D)
+					{
+						d3 = -1.0E-4D;
+					}
+					
+					if (d4 == -0.0D)
+					{
+						d4 = -1.0E-4D;
+					}
+					
+					if (d5 == -0.0D)
+					{
+						d5 = -1.0E-4D;
+					}
+					
+					EnumFacing enumfacing;
+					
+					if (d3 < d4 && d3 < d5)
+					{
+						enumfacing = i > l ? EnumFacing.WEST : EnumFacing.EAST;
+						vecStart = new Vec3d(d0, vecStart.y + d7 * d3, vecStart.z + d8 * d3);
+					}
+					else if (d4 < d5)
+					{
+						enumfacing = j > i1 ? EnumFacing.DOWN : EnumFacing.UP;
+						vecStart = new Vec3d(vecStart.x + d6 * d4, d1, vecStart.z + d8 * d4);
+					}
+					else
+					{
+						enumfacing = k > j1 ? EnumFacing.NORTH : EnumFacing.SOUTH;
+						vecStart = new Vec3d(vecStart.x + d6 * d5, vecStart.y + d7 * d5, d2);
+					}
+					
+					l = MathHelper.floor(vecStart.x) - (enumfacing == EnumFacing.EAST ? 1 : 0);
+					i1 = MathHelper.floor(vecStart.y) - (enumfacing == EnumFacing.UP ? 1 : 0);
+					j1 = MathHelper.floor(vecStart.z) - (enumfacing == EnumFacing.SOUTH ? 1 : 0);
+					blockpos = new BlockPos(l, i1, j1);
+					IBlockState iblockstate1 = worldIn.getBlockState(blockpos);
+					Block block1 = iblockstate1.getBlock();
+					
+					if (!ignoreBlockWithoutBoundingBox || iblockstate1.getMaterial() == Material.PORTAL || iblockstate1.getCollisionBoundingBox(worldIn, blockpos) != Block.NULL_AABB)
+					{
+						if (block1.canCollideCheck(iblockstate1, stopOnLiquid))
+						{
+							RayTraceResult raytraceresult1 = iblockstate1.collisionRayTrace(worldIn, blockpos, vecStart, vecEnd);
+							
+							if (raytraceresult1 != null)
+							{
+								return raytraceresult1;
+							}
+						}
+						else
+						{
+							raytraceresult2 = new RayTraceResult(RayTraceResult.Type.MISS, vecStart, enumfacing, blockpos);
+						}
+					}
+				}
+				
+				return returnLastUncollidableBlock ? raytraceresult2 : null;
+			}
+			else
+			{
+				return null;
+			}
+		}
+		else
+		{
+			return null;
+		}
 	}
 }
