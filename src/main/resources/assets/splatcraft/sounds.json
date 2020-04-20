@@ -1,0 +1,16 @@
+{
+  "shooterFiring": {
+    "category": "player",
+    "subtitle": "subtitle.shooterFiring",
+    "sounds": [
+      "splatcraft:shooter_firing"
+    ]
+  },
+  "chargerCharge": {
+    "category": "player",
+    "subtitle": "subtitle.chargerCharge",
+    "sounds": [
+      "splatcraft:charger_charge"
+    ]
+  }
+}

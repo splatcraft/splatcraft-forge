@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.proxy;
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.gui.SplatCraftGuiHandler;
 import com.cibernet.splatcraft.handlers.CommonEventHandler;
+import com.cibernet.splatcraft.registries.SplatCraftSounds;
 import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftSaveHandler;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
@@ -27,7 +28,9 @@ public class CommonProxy
     {
         MinecraftForge.EVENT_BUS.register(SplatCraftItems.class);
         MinecraftForge.EVENT_BUS.register(SplatCraftBlocks.class);
-
+        MinecraftForge.EVENT_BUS.register(SplatCraftSounds.class);
+        
+        SplatCraftSounds.initSounds();
         SplatCraftEntities.registerEntities();
         SplatCraftPacketHandler.registerMessages(SplatCraft.MODID);
         SplatCraftGamerules.registerRules();
