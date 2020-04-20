@@ -2,13 +2,11 @@ package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
+import com.cibernet.splatcraft.registries.SplatCraftSounds;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -76,12 +74,16 @@ public class ItemShooterBase extends ItemWeaponBase
     @Override
     public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
     {
-
-        if(!worldIn.isRemote && useTime % firingSpeed == 0 && automatic) {
-            EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack), damage);
-            proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
-            proj.setProjectileSize(projectileSize);
-            worldIn.spawnEntity(proj);
+        if((getMaxItemUseDuration(stack)-useTime) % firingSpeed == 1 && automatic)
+        {
+            if(!worldIn.isRemote)
+            {
+                EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack), damage);
+                proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
+                proj.setProjectileSize(projectileSize);
+                worldIn.spawnEntity(proj);
+            }
+            //else worldIn.playSound(playerIn, playerIn.posX, playerIn.posY, playerIn.posZ, SplatCraftSounds.shooterShot, SoundCategory.PLAYERS, 0.8F, ((worldIn.rand.nextFloat() - worldIn.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
         }
     }
     
