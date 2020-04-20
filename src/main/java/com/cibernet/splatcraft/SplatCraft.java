@@ -46,8 +46,9 @@ public class SplatCraft
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		disableEyeHeight = Loader.isModLoaded("moreplayermodels");
-		
 		logger = Logger.getLogger(MODID);
+		
+		//SplatCraftConfig.loadConfigFile(event.getSuggestedConfigurationFile(), event.getSide());
 		proxy.preInit();
 	}
 	

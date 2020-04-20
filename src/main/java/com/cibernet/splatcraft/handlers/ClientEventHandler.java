@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.handlers;
 
+import com.cibernet.splatcraft.SplatCraftConfig;
 import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.network.PacketPlayerSetTransformed;
@@ -23,6 +24,9 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Keyboard;
+
+import static com.cibernet.splatcraft.handlers.SplatCraftKeyHandler.*;
 
 public class ClientEventHandler
 {
@@ -160,24 +164,48 @@ public class ClientEventHandler
 			else if(squidPhase == 2) event.getRenderer().getRenderManager().setRenderShadow(false);
 		}
 	}
-
+	
+	private static boolean isSquidKeyHeld = false;
+	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event)
 	{
 		EntityPlayer player = Minecraft.getMinecraft().player;
 		
-		if(SplatCraftKeyHandler.squidKey.isPressed())
+		if(Keyboard.getEventKey() == squidKey.getKeyCode())
 		{
-			boolean isSquid = SplatCraftPlayerData.getIsSquid(player);
-			
-			AxisAlignedBB axisalignedbb = player.getEntityBoundingBox();
-			axisalignedbb = new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ, axisalignedbb.minX + 0.6, axisalignedbb.minY + (isSquid ? 1.8 : 0.6), axisalignedbb.minZ + 0.6);
-			
-			if (!player.world.collidesWithAnyBlock(axisalignedbb))
-				SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerSetTransformed(player.getUniqueID(), !isSquid));
+			if(Keyboard.getEventKeyState())
+			{
+				boolean isSquid = SplatCraftPlayerData.getIsSquid(player);
+				
+				if(SplatCraftConfig.holdKeyToSquid)
+					isSquid = false;
+				else if(isSquidKeyHeld) return;
+				
+				AxisAlignedBB axisalignedbb = player.getEntityBoundingBox();
+				axisalignedbb = new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ, axisalignedbb.minX + 0.6, axisalignedbb.minY + (isSquid ? 1.8 : 0.6), axisalignedbb.minZ + 0.6);
+				
+				if(!player.world.collidesWithAnyBlock(axisalignedbb))
+					SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerSetTransformed(player.getUniqueID(), !isSquid));
+				isSquidKeyHeld = true;
+			}
+			else
+			{
+				if(!Keyboard.getEventKeyState() && SplatCraftConfig.holdKeyToSquid)
+				{
+					AxisAlignedBB axisalignedbb = player.getEntityBoundingBox();
+					axisalignedbb = new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ, axisalignedbb.minX + 0.6, axisalignedbb.minY + (1.8), axisalignedbb.minZ + 0.6);
+					
+					if(!player.world.collidesWithAnyBlock(axisalignedbb))
+						SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerSetTransformed(player.getUniqueID(), false));
+				}
+				isSquidKeyHeld = false;
+			}
 		}
 	}
-
+	
+	
+	
 	private AttributeModifier getWeaponMod(IAttributeInstance instance)
 	{
 		for(ItemWeaponBase item : ItemWeaponBase.weapons)

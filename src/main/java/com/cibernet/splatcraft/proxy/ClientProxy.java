@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.proxy;
 
 
+import com.cibernet.splatcraft.SplatCraftConfig;
 import com.cibernet.splatcraft.blocks.BlockInkColor;
 import com.cibernet.splatcraft.blocks.BlockInkwell;
 import com.cibernet.splatcraft.entities.classes.EntityBlasterProjectile;
@@ -126,6 +127,7 @@ public class ClientProxy extends CommonProxy
         super.init();
         registerRenderers();
         MinecraftForge.EVENT_BUS.register(ClientEventHandler.instance);
+        MinecraftForge.EVENT_BUS.register(new SplatCraftConfig());
     }
 
     @Override
