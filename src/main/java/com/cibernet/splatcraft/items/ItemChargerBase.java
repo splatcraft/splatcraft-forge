@@ -63,8 +63,8 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 		if(!SplatCraftPlayerData.getIsSquid(playerIn))
 		{
 			SplatCraftPlayerData.addWeaponCharge(playerIn, stack, chargeSpeed);
-			//SplatCraftPlayerData.setCanDischarge(playerIn.getUniqueID(), false);
 		}
+		
 	}
 	
 	@Override
