@@ -126,9 +126,6 @@ public class InkExplosion
 							{
 								if(!set.contains(blockpos))
 								{
-									//System.out.println("start: " + new BlockPos(x,y,z) + " end: " + blockpos);
-									//RayTraceResult result = world.rayTraceBlocks(new Vec3d(x,y,z), new Vec3d(d4, d6, d8));
-									//if(result.getBlockPos().equals(blockpos))
 									set.add(blockpos);
 								}
 							}

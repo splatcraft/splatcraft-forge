@@ -31,16 +31,18 @@ public class ItemRollerBase extends ItemWeaponBase
     protected float flingSpeed;
     protected boolean isBrush;
     protected int rollRadius;
+    protected float flingSize;
     protected float rollDamage;
     protected float flingDamage;
 
-    public ItemRollerBase(String unlocName, String registryName, double weaponSpeed, float flingSpeed, float flingDamage, double rollSpeed, int rollRadius, float rollDamage, boolean isBrush)
+    public ItemRollerBase(String unlocName, String registryName, double weaponSpeed, float flingSpeed, float flingDamage, float flingSize, double rollSpeed, int rollRadius, float rollDamage, boolean isBrush)
     {
         super(unlocName, registryName);
         
         this.weaponSpeed = weaponSpeed;
         this.flingSpeed = flingSpeed;
         this.rollRadius = rollRadius;
+        this.flingSize = flingSize;
         this.rollDamage = rollDamage;
         this.flingDamage = flingDamage;
         this.isBrush = isBrush;
@@ -86,7 +88,6 @@ public class ItemRollerBase extends ItemWeaponBase
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
     {
-        System.out.println(entityLiving.world.isRemote);
         return super.onEntitySwing(entityLiving, stack);
     }
     
@@ -170,7 +171,7 @@ public class ItemRollerBase extends ItemWeaponBase
             {
                 EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack), flingDamage);
                 proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw + ((!isBrush) ? 0 : 20*i), isBrush ? 0 : 20*i, flingSpeed, 4f);
-                proj.setProjectileSize(0.5f);
+                proj.setProjectileSize(flingSize);
                 worldIn.spawnEntity(proj);
             }
         }

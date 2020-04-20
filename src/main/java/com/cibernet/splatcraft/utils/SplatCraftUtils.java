@@ -97,7 +97,6 @@ public class SplatCraftUtils
 	{
 		if (!worldIn.isRemote)
 		{
-			System.out.println("boom");
 			InkExplosion explosion = new InkExplosion(worldIn, source, pos.getX(), pos.getY(), pos.getZ(), radius, color, true);
 			//explosion.explode();
 			explosion.doExplosionA();
