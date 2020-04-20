@@ -51,7 +51,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
         this.yTile = -1;
         this.zTile = -1;
         damage = 0;
-        this.setSize(0.5F, 0.5F);
+        this.setSize(0.2505F, 0.2505F);
     }
 
     public EntityInkProjectile(World worldIn, double x, double y, double z)
@@ -79,10 +79,21 @@ public class EntityInkProjectile extends Entity implements IProjectile
     public void setProjectileSize(float size)
     {
         dataManager.set(SIZE, size);
-        this.setSize(0.5f*size, 0.5f*size);
+        this.setSize(0.2505f*size, 0.2505f*size);
         this.setPosition(this.posX, this.posY, this.posZ);
     }
-
+    
+    public void notifyDataManagerChange(DataParameter<?> key)
+    {
+        if (SIZE.equals(key))
+        {
+            float size = this.getProjectileSize();
+            this.setSize(0.2505f * size, 0.2505f * size);
+        }
+        
+        super.notifyDataManagerChange(key);
+    }
+    
     public float getProjectileSize() {return dataManager.get(SIZE);}
 
     /**

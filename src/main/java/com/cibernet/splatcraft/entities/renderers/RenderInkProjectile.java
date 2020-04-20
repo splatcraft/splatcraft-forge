@@ -6,6 +6,7 @@ import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelInkProjectile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLlamaSpit;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -31,9 +32,11 @@ public class RenderInkProjectile extends Render<EntityInkProjectile> {
             return;
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate((float)x, (float)y + 0.15F, (float)z);
+        GlStateManager.translate((float)x, (float)y, (float)z);
+        //GlStateManager.rotate(entity.ticksExisted*10, 0, 1, 1);
         GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks - 90.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, 0.0F, 0.0F, 1.0F);
+        
         this.bindTexture(TEXTURE);
 
         if (this.renderOutlines)
@@ -46,9 +49,13 @@ public class RenderInkProjectile extends Render<EntityInkProjectile> {
         float r = (float) (Math.floor(color / (256*256))/255f);
         float g = (float) ((Math.floor(color / 256) % 256)/255f);
         float b = (color % 256)/255f;
-
+    
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.scale(entity.getProjectileSize()*0.25f, entity.getProjectileSize()*0.25f, entity.getProjectileSize()*0.25f);
+        GlStateManager.translate(0, 0.5f, 0);
         GlStateManager.color(r,g,b);
-        this.model.render(entity, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F, entity.getProjectileSize()*0.25f);
+        this.model.render(entity, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F, 1);
+        GlStateManager.resetColor();
 
         if (this.renderOutlines)
         {
@@ -59,7 +66,9 @@ public class RenderInkProjectile extends Render<EntityInkProjectile> {
         GlStateManager.popMatrix();
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
     }
-
+    
+    
+    
     @Nullable
     @Override
     protected ResourceLocation getEntityTexture(EntityInkProjectile entity) {
