@@ -19,18 +19,16 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	private final AttributeModifier SPEED_MODIFIER;
 	
 	public float projectileSize;
-	public float inaccuracy;
 	public int projectileLifespan;
 	public float chargeSpeed;
 	public float dischargeSpeed;
 	public float damage;
 	
-	public ItemChargerBase(String unlocName, String registryName, float projectileSize, int projectileLifespan, float inaccuracy, int chargeTime, int dischargeTime , float damage, double mobility)
+	public ItemChargerBase(String unlocName, String registryName, float projectileSize, int projectileLifespan, int chargeTime, int dischargeTime , float damage, double mobility)
 	{
 		super(unlocName, registryName);
 		
 		this.projectileSize = projectileSize;
-		this.inaccuracy = inaccuracy;
 		this.projectileLifespan = projectileLifespan;
 		this.chargeSpeed = 1f/chargeTime;
 		this.dischargeSpeed = 1f/dischargeTime;
@@ -94,7 +92,7 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 		float charge = SplatCraftPlayerData.getWeaponCharge(playerIn, stack);
 		
 		EntityInkProjectile proj = new EntityChargerProjectile(worldIn, playerIn, getInkColor(stack), charge > 0.95f ? damage : damage*charge/4f + damage/4f, (int) (projectileLifespan*charge));
-		proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 2.4f, inaccuracy);
+		proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 2.4f, 0.1f);
 		proj.setProjectileSize(projectileSize);
 		worldIn.spawnEntity(proj);
 		SplatCraftPlayerData.setWeaponCharge(playerIn, stack, 0f);

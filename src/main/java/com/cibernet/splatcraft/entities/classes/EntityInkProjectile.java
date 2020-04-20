@@ -463,14 +463,14 @@ public class EntityInkProjectile extends Entity implements IProjectile
             {
                 result.entityHit.attackEntityFrom(new SplatCraftDamageSource("splat", this, this.thrower).setProjectile(), (float) i);
                 if(result.entityHit.isDead)
-                    SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize(), getColor());
+                    SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, getColor());
             }
         }
         
         if (!this.world.isRemote)
         {
             if(result.typeOfHit.equals(RayTraceResult.Type.BLOCK))
-                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize(), getColor());
+                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, getColor());
                 //SplatCraftUtils.inkBlock(world, result.getBlockPos(), getColor());
             this.world.setEntityState(this, (byte)3);
             this.setDead();

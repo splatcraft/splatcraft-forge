@@ -6,7 +6,6 @@ import com.cibernet.splatcraft.commands.CommandSplatCraftGamerules;
 import com.cibernet.splatcraft.commands.CommandTurfWar;
 import com.cibernet.splatcraft.proxy.CommonProxy;
 import com.cibernet.splatcraft.utils.InkColors;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -14,7 +13,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.logging.Logger;
 
@@ -23,7 +21,7 @@ public class SplatCraft
 {
 	public static final String MODID = "splatcraft";
 	public static final String NAME = "Splatcraft";
-	public static final String VERSION = "1.0.0";
+	public static final String VERSION = "1.1.0";
 	public static final String SHORT = "SC";
 
 	//TODO config
@@ -46,9 +44,8 @@ public class SplatCraft
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		disableEyeHeight = Loader.isModLoaded("moreplayermodels");
-		logger = Logger.getLogger(MODID);
 		
-		//SplatCraftConfig.loadConfigFile(event.getSuggestedConfigurationFile(), event.getSide());
+		logger = Logger.getLogger(MODID);
 		proxy.preInit();
 	}
 	

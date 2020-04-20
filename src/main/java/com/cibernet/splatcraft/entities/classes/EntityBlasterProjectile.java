@@ -32,19 +32,19 @@ public class EntityBlasterProjectile extends EntityInkProjectile
 		
 		if(lifespan <= 0)
 		{
-			SplatCraftUtils.createInkExplosion(world, this, pos, getProjectileSize()*2f, getColor());
+			SplatCraftUtils.createInkExplosion(world, this, pos, getProjectileSize()/2, getColor());
 			this.setDead();
 			this.world.setEntityState(this, (byte)3);
 		}
 		else
 		{
-			for(double y = posY; y >= 0 && posY-y <= 16; y--)
+			for(double y = posY; y >= 0 && posY-y <= 8; y--)
 			{
 				BlockPos inkPos = new BlockPos(posX, y, posZ);
 				if(SplatCraftUtils.canInk(world, inkPos))
 				{
-					SplatCraftUtils.createInkExplosion(world, inkPos, getProjectileSize()/5f, getColor());
-					SplatCraftUtils.createInkExplosion(world, pos, getProjectileSize()/5f, getColor());
+					SplatCraftUtils.createInkExplosion(world, inkPos, getProjectileSize()/6f, getColor());
+					SplatCraftUtils.createInkExplosion(world, pos, getProjectileSize()/6f, getColor());
 					break;
 				}
 			}
