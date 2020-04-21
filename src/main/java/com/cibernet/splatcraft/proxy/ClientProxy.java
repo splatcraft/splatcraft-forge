@@ -19,6 +19,7 @@ import com.cibernet.splatcraft.registries.SplatCraftModelManager;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
 import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -57,7 +58,7 @@ public class ClientProxy extends CommonProxy
         
         mc.getItemColors().registerItemColorHandler((stack, tintIndex) -> {
             if(tintIndex == 0)
-                return ItemWeaponBase.getInkColor(stack);
+                return ColorItemUtils.getInkColor(stack);
             
             return -1;
         }, weapons);

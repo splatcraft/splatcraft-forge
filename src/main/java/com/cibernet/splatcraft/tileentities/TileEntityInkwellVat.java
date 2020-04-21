@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.recipes.RecipesInkwellVat;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.utils.InkColors;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -84,7 +85,7 @@ public class TileEntityInkwellVat extends TileEntity implements ISidedInventory
         int countC = getStackInSlot(2).getCount();
         int itemCount = Math.min(Math.max(0, Math.min(countA, Math.min(countB, countC))), Item.getItemFromBlock(SplatCraftBlocks.inkwell).getItemStackLimit());
         if(countA > 0 && countB > 0 && countC > 0)
-            setInventorySlotContents(4, ItemWeaponBase.setInkColor(new ItemStack(SplatCraftBlocks.inkwell, 1), color.getColor()));
+            setInventorySlotContents(4, ColorItemUtils.setInkColor(new ItemStack(SplatCraftBlocks.inkwell, 1), color.getColor()));
         else removeOutput();
     }
 

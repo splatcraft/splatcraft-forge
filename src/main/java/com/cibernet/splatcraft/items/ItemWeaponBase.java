@@ -16,7 +16,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -27,6 +26,8 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.cibernet.splatcraft.utils.ColorItemUtils.*;
 
 public class ItemWeaponBase extends Item
 {
@@ -51,40 +52,6 @@ public class ItemWeaponBase extends Item
 		}
 
 		super.addInformation(stack, player, tooltip, advanced);
-	}
-	
-	public static int getInkColor(ItemStack stack)
-	{
-		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("color"))
-			return InkColors.DYE_WHITE.getColor();
-		return stack.getTagCompound().getInteger("color");
-	}
-	public static boolean isColorLocked(ItemStack stack)
-	{
-		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("colorLocked"))
-			return false;
-		return stack.getTagCompound().getBoolean("colorLocked");
-	}
-	
-	protected static NBTTagCompound checkTagCompound(ItemStack stack) {
-		NBTTagCompound tagCompound = stack.getTagCompound();
-		if (tagCompound == null) {
-			tagCompound = new NBTTagCompound();
-			stack.setTagCompound(tagCompound);
-		}
-		
-		return tagCompound;
-	}
-	
-	public static ItemStack setInkColor(ItemStack stack, int color)
-	{
-		checkTagCompound(stack).setInteger("color", color);
-		return stack;
-	}
-	public static ItemStack setColorLocked(ItemStack stack, boolean colorLocked)
-	{
-		checkTagCompound(stack).setBoolean("colorLocked", colorLocked);
-		return stack;
 	}
 	
 	@Override

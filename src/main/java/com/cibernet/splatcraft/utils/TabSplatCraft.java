@@ -15,6 +15,6 @@ public class TabSplatCraft extends CreativeTabs
 
     @Override
     public ItemStack getTabIconItem() {
-        return ItemWeaponBase.setInkColor(new ItemStack(SplatCraftItems.splattershot), InkColors.ORANGE.getColor());
+        return ColorItemUtils.setInkColor(new ItemStack(SplatCraftItems.splattershot), InkColors.ORANGE.getColor());
     }
 }

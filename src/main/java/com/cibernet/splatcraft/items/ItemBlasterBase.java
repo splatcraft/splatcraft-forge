@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.entities.classes.EntityBlasterProjectile;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
@@ -34,7 +35,7 @@ public class ItemBlasterBase extends ItemShooterBase
 			}
 			else
 			{
-				EntityBlasterProjectile proj = new EntityBlasterProjectile(worldIn, playerIn, getInkColor(stack), damage, projLifespan);
+				EntityBlasterProjectile proj = new EntityBlasterProjectile(worldIn, playerIn, ColorItemUtils.getInkColor(stack), damage, projLifespan);
 				proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
 				proj.setProjectileSize(projectileSize);
 				worldIn.spawnEntity(proj);

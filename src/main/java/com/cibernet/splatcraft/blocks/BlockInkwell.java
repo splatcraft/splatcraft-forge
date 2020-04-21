@@ -1,9 +1,9 @@
 package com.cibernet.splatcraft.blocks;
 
 import com.cibernet.splatcraft.SplatCraft;
-import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.cibernet.splatcraft.utils.TabSplatCraft;
@@ -54,7 +54,7 @@ public class BlockInkwell extends BlockInkColor
 		int color = SplatCraft.DEFAULT_INK;
 
 		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("color"))
-			color = ItemWeaponBase.getInkColor(stack);
+			color = ColorItemUtils.getInkColor(stack);
 
 		tooltip.add(SplatCraftUtils.getColorName(color));
 
@@ -67,7 +67,7 @@ public class BlockInkwell extends BlockInkColor
 		for(InkColors color : InkColors.creativeTabColors)
 		{
 			ItemStack stack = new ItemStack(this);
-			ItemWeaponBase.setInkColor(stack, color.getColor());
+			ColorItemUtils.setInkColor(stack, color.getColor());
 			items.add(stack);
 		}
 	}
@@ -82,7 +82,7 @@ public class BlockInkwell extends BlockInkColor
 		ItemStack itemstack = new ItemStack(this);
 
 			if(te instanceof TileEntityColor)
-				ItemWeaponBase.setInkColor(itemstack, ((TileEntityColor)te).getColor());
+				ColorItemUtils.setInkColor(itemstack, ((TileEntityColor)te).getColor());
 
 		net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(items, worldIn, pos, state, 0, 1.0f, true, player);
 		spawnAsEntity(worldIn, pos, itemstack);
@@ -95,7 +95,7 @@ public class BlockInkwell extends BlockInkColor
 		int color = SplatCraft.DEFAULT_INK;
 		if(world.getTileEntity(pos) instanceof TileEntityColor)
 			color = ((TileEntityColor)world.getTileEntity(pos)).getColor();
-		return ItemWeaponBase.setInkColor(super.getPickBlock(state, target, world, pos, player), color);
+		return ColorItemUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), color);
 	}
 	
 	@Override

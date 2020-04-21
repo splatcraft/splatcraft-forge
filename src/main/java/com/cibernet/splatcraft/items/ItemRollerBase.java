@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.utils.SplatCraftDamageSource;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
@@ -144,12 +145,12 @@ public class ItemRollerBase extends ItemWeaponBase
             canInk = SplatCraftUtils.canInk(worldIn, inkPos);
             
             if(canInk)
-                SplatCraftUtils.inkBlock(worldIn, inkPos, ItemWeaponBase.getInkColor(stack), rollDamage);
+                SplatCraftUtils.inkBlock(worldIn, inkPos, ColorItemUtils.getInkColor(stack), rollDamage);
             
             List<EntityPlayer> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(inkPos.up()));
             for(EntityPlayer target : inkedPlayers)
             {
-                if(SplatCraftPlayerData.getInkColor(target) != getInkColor(stack))
+                if(SplatCraftPlayerData.getInkColor(target) != ColorItemUtils.getInkColor(stack))
                     target.attackEntityFrom(new SplatCraftDamageSource("roll", playerIn, playerIn), rollDamage);
             }
             
@@ -169,7 +170,7 @@ public class ItemRollerBase extends ItemWeaponBase
 
             for(int i = -1; i <= 1; i++)
             {
-                EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack), flingDamage);
+                EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, ColorItemUtils.getInkColor(stack), flingDamage);
                 proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw + ((!isBrush) ? 0 : 20*i), isBrush ? 0 : 20*i, flingSpeed, 4f);
                 proj.setProjectileSize(flingSize);
                 worldIn.spawnEntity(proj);

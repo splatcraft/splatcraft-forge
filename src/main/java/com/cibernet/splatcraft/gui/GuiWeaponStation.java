@@ -9,6 +9,7 @@ import com.cibernet.splatcraft.recipes.RecipeSubtype;
 import com.cibernet.splatcraft.recipes.RecipeType;
 import com.cibernet.splatcraft.recipes.RecipesWeaponStation;
 import com.cibernet.splatcraft.recipes.WeaponStationTabs;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -101,7 +102,7 @@ public class GuiWeaponStation extends GuiContainer
 			float scale = 38F * transitionPercent;
 			GlStateManager.scale(scale, -scale, scale);
 			RenderHelper.enableStandardItemLighting();
-			Minecraft.getMinecraft().getRenderItem().renderItem(ItemWeaponBase.setInkColor(recipe.getOutput().copy(), SplatCraftPlayerData.getInkColor(player)), ItemCameraTransforms.TransformType.GUI);
+			Minecraft.getMinecraft().getRenderItem().renderItem(ColorItemUtils.setInkColor(recipe.getOutput().copy(), SplatCraftPlayerData.getInkColor(player)), ItemCameraTransforms.TransformType.GUI);
 		}
 		GlStateManager.popMatrix();
 	}

@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.network.PacketChargeRelease;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -91,7 +92,7 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	{
 		float charge = SplatCraftPlayerData.getWeaponCharge(playerIn, stack);
 		
-		EntityInkProjectile proj = new EntityChargerProjectile(worldIn, playerIn, getInkColor(stack), charge > 0.95f ? damage : damage*charge/4f + damage/4f, (int) (projectileLifespan*charge));
+		EntityInkProjectile proj = new EntityChargerProjectile(worldIn, playerIn, ColorItemUtils.getInkColor(stack), charge > 0.95f ? damage : damage*charge/4f + damage/4f, (int) (projectileLifespan*charge));
 		proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 2.4f, 0.1f);
 		proj.setProjectileSize(projectileSize);
 		worldIn.spawnEntity(proj);

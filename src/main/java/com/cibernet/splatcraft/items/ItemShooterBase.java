@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.items;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.registries.SplatCraftSounds;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
@@ -55,7 +56,7 @@ public class ItemShooterBase extends ItemWeaponBase
 
         if(!automatic && !worldIn.isRemote)
         {
-            EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack), damage);
+            EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, ColorItemUtils.getInkColor(stack), damage);
             proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
             proj.setProjectileSize(projectileSize);
             worldIn.spawnEntity(proj);
@@ -78,7 +79,7 @@ public class ItemShooterBase extends ItemWeaponBase
         {
             if(!worldIn.isRemote)
             {
-                EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, getInkColor(stack), damage);
+                EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, ColorItemUtils.getInkColor(stack), damage);
                 proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
                 proj.setProjectileSize(projectileSize);
                 worldIn.spawnEntity(proj);
