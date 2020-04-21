@@ -30,7 +30,7 @@ public class EntityChargerProjectile extends EntityInkProjectile
 	{
 		super.onUpdate();
 		
-		for(double y = posY; y >= 0 && posY-y <= 32; y--)
+		for(double y = posY; y >= 0 && posY-y <= 16; y--)
 		{
 			BlockPos inkPos = new BlockPos(posX, y, posZ);
 			if(SplatCraftUtils.canInk(world, inkPos))
