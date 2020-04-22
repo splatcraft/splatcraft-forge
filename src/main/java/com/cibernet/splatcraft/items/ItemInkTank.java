@@ -1,11 +1,9 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.entities.models.ModelAbstractTank;
 import com.cibernet.splatcraft.entities.models.ModelInkTank;
-import com.cibernet.splatcraft.utils.ColorItemUtils;
-import com.cibernet.splatcraft.utils.InkColors;
-import com.cibernet.splatcraft.utils.SplatCraftUtils;
-import com.cibernet.splatcraft.utils.TabSplatCraft;
+import com.cibernet.splatcraft.utils.*;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.resources.I18n;
@@ -16,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.IItemPropertyGetter;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -35,6 +34,7 @@ public class ItemInkTank extends ItemArmor
 {
 	
 	public final float capacity;
+	private static Class<? extends ModelAbstractTank> modelClass;
 	
 	public ItemInkTank(String unlocalizedName, String registryName, float capacity, ArmorMaterial materialIn)
 	{
@@ -78,38 +78,10 @@ public class ItemInkTank extends ItemArmor
 	public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack stack, EntityEquipmentSlot slot,
 									ModelBiped _default)
 	{
-		//if(model == null) return super.getArmorModel(entity, stack, slot, _default);
-		
-		if(!stack.isEmpty())
-		{
-			if(stack.getItem() instanceof ItemInkTank)
-			{
-				ModelBiped model = new ModelInkTank(getInkAmount(stack)/capacity);
-				
-				model.bipedRightLeg.showModel = slot == EntityEquipmentSlot.LEGS || slot == EntityEquipmentSlot.FEET;
-				model.bipedLeftLeg.showModel = slot == EntityEquipmentSlot.LEGS || slot == EntityEquipmentSlot.FEET;
-				
-				model.bipedBody.showModel = slot == EntityEquipmentSlot.CHEST;
-				model.bipedLeftArm.showModel = slot == EntityEquipmentSlot.CHEST;
-				model.bipedRightArm.showModel = slot == EntityEquipmentSlot.CHEST;
-				
-				model.bipedHead.showModel = slot == EntityEquipmentSlot.HEAD;
-				model.bipedHeadwear.showModel = slot == EntityEquipmentSlot.HEAD;
-				
-				
-				model.isSneak = _default.isSneak;
-				model.isRiding = _default.isRiding;
-				model.isChild = _default.isChild;
-				
-				model.rightArmPose = _default.rightArmPose;
-				model.leftArmPose = _default.leftArmPose;
-				
-				return model;
-			}
-		}
-		
-		return null;
+		return (modelClass == null) ? super.getArmorModel(entity, stack, slot, _default) : ClientUtils.getInkTankModel(modelClass, entity, stack, slot, _default);
 	}
+	
+	public Item setArmorModelClass(Class<? extends ModelAbstractTank> model) {this.modelClass = model; return this;}
 	
 	@Override
 	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
@@ -147,7 +119,7 @@ public class ItemInkTank extends ItemArmor
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return getInkAmount(stack) < capacity;
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey("ink") && getInkAmount(stack) < capacity;
 	}
 	
 	@Override

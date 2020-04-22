@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.registries;
 
+import com.cibernet.splatcraft.entities.models.ModelInkTank;
 import com.cibernet.splatcraft.items.*;
 import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.Block;
@@ -10,6 +11,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.ArrayList;
@@ -36,7 +39,7 @@ public class SplatCraftItems
     public static final Item eLiter4K = new ItemChargerBase("eLiter4K", "e_liter_4k", 0.85f, 12, 35, 40, 36f, 2.25f, 25f, 0.15);
     public static final Item blaster = new ItemBlasterBase("blaster", "blaster", 3f, 1.1f, 5f, 3, 18, 25, 10f, 10);
     
-    public static final Item inkTank = new ItemInkTank("inkTank", "ink_tank", 100);
+    public static final ItemInkTank inkTank = new ItemInkTank("inkTank", "ink_tank", 100);
     
     public static final ItemFilter filterEmpty = new ItemFilter("filterEmpty", "filter_empty", false);
     public static final ItemFilter filterNeon = new ItemFilter("filterNeon", "filter_neon", false);
@@ -83,7 +86,12 @@ public class SplatCraftItems
         registerItemBlocks(registry);
     }
 
-
+    @SideOnly(Side.CLIENT)
+    public static void registerArmorModels()
+    {
+        inkTank.setArmorModelClass(ModelInkTank.class);
+    }
+    
     private static Item registerItem(IForgeRegistry<Item> registry, Item item)
     {
         registry.register(item);

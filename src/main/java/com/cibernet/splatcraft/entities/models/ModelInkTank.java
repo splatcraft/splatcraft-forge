@@ -8,7 +8,7 @@ import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
-public class ModelInkTank extends ModelBiped
+public class ModelInkTank extends ModelAbstractTank
 {
 	private final ModelRenderer Right_Leg;
 	private final ModelRenderer Head;
@@ -17,7 +17,9 @@ public class ModelInkTank extends ModelBiped
 	private final ModelRenderer Ink;
 	private final ModelRenderer Left_Arm;
 
-	public ModelInkTank(float inkPctg) {
+	public ModelInkTank(Float inkPctg)
+	{
+		super(inkPctg);
 		textureWidth = 128;
 		textureHeight = 128;
 
@@ -54,17 +56,16 @@ public class ModelInkTank extends ModelBiped
 		Ink_Tank.addChild(Ink);
 		Ink.cubeList.add(new ModelBox(Ink, 116, 30, -1.5F, -11.25F  - ((8*inkPctg) % 1f), 4.5F, 3, (int) (inkPctg*-8), 3, 0.0F, false));
 		
+		bipedBody.addChild(Torso);
+		
 		Left_Arm = new ModelRenderer(this);
 		Left_Arm.setRotationPoint(5.0F, 2.0F, 0.0F);
 		Left_Arm.cubeList.add(new ModelBox(Left_Arm, 112, 112, -1.0F, -2.0F, -2.0F, 4, 12, 4, 0.0F, false));
 	}
-
+	
 	@Override
 	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-		Right_Leg.render(f5);
-		Head.render(f5);
-		Torso.render(f5);
-		Left_Arm.render(f5);
+		super.render(entity, f, f1, f2, f3, f4, f5);
 	}
 	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;

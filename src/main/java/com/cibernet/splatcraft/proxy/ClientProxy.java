@@ -15,6 +15,7 @@ import com.cibernet.splatcraft.handlers.ClientEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftKeyHandler;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
+import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftModelManager;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
@@ -118,7 +119,8 @@ public class ClientProxy extends CommonProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityInkProjectile.class, manager -> new RenderInkProjectile(manager));
         RenderingRegistry.registerEntityRenderingHandler(EntityChargerProjectile.class, manager -> new RenderInkProjectile(manager));
         RenderingRegistry.registerEntityRenderingHandler(EntityBlasterProjectile.class, manager -> new RenderInkProjectile(manager));
-
+    
+        SplatCraftItems.registerArmorModels();
     }
 
     @Override
