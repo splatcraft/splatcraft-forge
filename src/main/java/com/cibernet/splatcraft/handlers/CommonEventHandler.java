@@ -13,9 +13,11 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
@@ -172,6 +174,9 @@ public class CommonEventHandler
 		{
 			SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnColor(player.getUniqueID(), data.inkColor), player.dimension);
 			SplatCraftPacketHandler.instance.sendToDimension(new PacketPlayerReturnTransformed(player.getUniqueID(), data.isSquid == 2), player.dimension);
+			NBTTagCompound ruleNBT = new NBTTagCompound();
+			SplatCraftGamerules.writeToNBT(ruleNBT);
+			SplatCraftPacketHandler.instance.sendTo(new PacketUpdateGamerule(ruleNBT), (EntityPlayerMP) player);
 		}
 		else
 			SplatCraftPacketHandler.instance.sendToServer(new PacketGetPlayerData());

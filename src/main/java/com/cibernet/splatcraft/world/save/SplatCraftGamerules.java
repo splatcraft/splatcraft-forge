@@ -1,5 +1,7 @@
 package com.cibernet.splatcraft.world.save;
 
+import com.cibernet.splatcraft.network.PacketUpdateGamerule;
+import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -14,6 +16,7 @@ public class SplatCraftGamerules
 	{
 		registerGamerule(new Gamerule("inkDecay", true));
 		registerGamerule(new Gamerule("keepWeaponsOnDeath", true));
+		registerGamerule(new Gamerule("requireInkTank", true));
 	}
 	
 	public static void registerGamerule(Gamerule rule)
@@ -22,7 +25,13 @@ public class SplatCraftGamerules
 	}
 	
 	public static boolean getGameruleValue(String name) {return ruleList.get(name).getValue();}
-	public static void setGameruleValue(String name, boolean value) {ruleList.get(name).setValue(value);}
+	public static void setGameruleValue(String name, boolean value)
+	{
+		ruleList.get(name).setValue(value);
+		NBTTagCompound ruleNBT = new NBTTagCompound();
+		writeToNBT(ruleNBT);
+		SplatCraftPacketHandler.instance.sendToAll(new PacketUpdateGamerule(ruleNBT));
+	}
 	
 	public static String[] getGameruleNames() {return ruleList.keySet().toArray(new String[ruleList.size()]);}
 	
@@ -54,23 +63,25 @@ public class SplatCraftGamerules
 			rule.setValue(ruleCompound.getBoolean(rule.getName()));
 		}
 	}
+	
+	public static class Gamerule
+	{
+		String name;
+		boolean defaultValue;
+		boolean value;
+		
+		public Gamerule(String name, boolean defaultValue)
+		{
+			this.name = name;
+			this.defaultValue = defaultValue;
+			this.value = defaultValue;
+		}
+		
+		public String getName() {return name;}
+		public boolean getValue() {return value;}
+		public Gamerule setValue(boolean value) {this.value = value; return this;}
+	}
 }
 
-class Gamerule
-{
-	String name;
-	boolean defaultValue;
-	boolean value;
-	
-	public Gamerule(String name, boolean defaultValue)
-	{
-		this.name = name;
-		this.defaultValue = defaultValue;
-		this.value = defaultValue;
-	}
-	
-	public String getName() {return name;}
-	public boolean getValue() {return value;}
-	public Gamerule setValue(boolean value) {this.value = value; return this;}
-}
+
 

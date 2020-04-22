@@ -29,5 +29,6 @@ public class SplatCraftPacketHandler
         instance.registerMessage(PacketPlayerReturnColor.Handler.class, PacketPlayerReturnColor.class, nextID(), Side.CLIENT);
         instance.registerMessage(PacketReturnPlayerData.Handler.class, PacketReturnPlayerData.class, nextID(), Side.CLIENT);
         instance.registerMessage(PacketChargeRelease.Handler.class, PacketChargeRelease.class, nextID(), Side.CLIENT);
+        instance.registerMessage(PacketUpdateGamerule.Handler.class, PacketUpdateGamerule.class, nextID(), Side.CLIENT);
     }
 }

@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.*;
+import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
@@ -179,6 +180,8 @@ public class ItemWeaponBase extends Item
 	
 	public static boolean hasInk(EntityPlayer player, int color, float offset)
 	{
+		if(!SplatCraftGamerules.getGameruleValue("requireInkTank"))
+			return true;
 		ItemStack chespiece = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 		
 		return chespiece.getItem() instanceof ItemInkTank && ColorItemUtils.getInkColor(chespiece) == color && ItemInkTank.getInkAmount(chespiece)-offset > 0;
@@ -186,6 +189,9 @@ public class ItemWeaponBase extends Item
 	
 	public static void reduceInk(EntityPlayer player, float amount)
 	{
+		if(!SplatCraftGamerules.getGameruleValue("requireInkTank"))
+			return;
+		
 		ItemStack chespiece = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 		if(chespiece.getItem() instanceof ItemInkTank)
 		{
