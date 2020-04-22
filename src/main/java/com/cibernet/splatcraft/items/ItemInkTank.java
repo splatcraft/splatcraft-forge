@@ -30,7 +30,7 @@ import java.util.List;
 import static com.cibernet.splatcraft.utils.ColorItemUtils.isColorLocked;
 import static com.cibernet.splatcraft.utils.ColorItemUtils.setInkColor;
 
-public class ItemInkTank extends ItemArmor
+public class ItemInkTank extends ItemArmor implements IBattleItem
 {
 	
 	public final float capacity;

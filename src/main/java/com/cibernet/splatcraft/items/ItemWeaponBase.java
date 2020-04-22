@@ -29,7 +29,7 @@ import java.util.List;
 
 import static com.cibernet.splatcraft.utils.ColorItemUtils.*;
 
-public class ItemWeaponBase extends Item
+public class ItemWeaponBase extends Item implements IBattleItem
 {
 	
 	public static List<ItemWeaponBase> weapons = new ArrayList<>();

@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.items.IBattleItem;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
@@ -149,7 +150,7 @@ public class CommonEventHandler
 						for(i = 0; i < event.getOriginal().inventory.mainInventory.size(); ++i)
 						{
 							item = event.getOriginal().inventory.mainInventory.get(i);
-							if (item.getItem() instanceof ItemWeaponBase && addToPlayerInventory(event.getEntityPlayer(), item))
+							if (item.getItem() instanceof IBattleItem && addToPlayerInventory(event.getEntityPlayer(), item))
 								event.getOriginal().inventory.mainInventory.set(i, ItemStack.EMPTY);
 							
 						}
