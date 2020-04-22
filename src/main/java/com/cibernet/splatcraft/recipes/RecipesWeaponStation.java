@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.recipes;
 
 import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -22,14 +23,18 @@ public class RecipesWeaponStation
 	
 	public static RecipeType recipeSplattershot = new RecipeType(splattershot, "original", new ItemStack(sardinium, 5), new ItemStack(powerEgg, 14), new ItemStack(DYE, 8, 0));
 	public static RecipeType recipeSplattershotJr = new RecipeType(splattershotJr, "original", new ItemStack(sardinium, 4), new ItemStack(powerEgg, 12), new ItemStack(GLASS, 4), new ItemStack(DYE, 4, 0));
+	public static RecipeType recipeBlaster = new RecipeType(blaster, "original", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 18), new ItemStack(DYE, 12, 0), new ItemStack(GUNPOWDER, 12));
 	public static RecipeType recipeAerosprayMg = new RecipeType(aerosprayMG, "mg", new ItemStack(sardinium, 5), new ItemStack(powerEgg, 20), new ItemStack(DYE, 16, 0), new ItemStack(IRON_INGOT, 5)).setDisplayName("aerospray");
 	public static RecipeType recipeClashBlaster = new RecipeType(clashBlaster, "original", new ItemStack(sardinium, 12), new ItemStack(powerEgg, 20), new ItemStack(DYE, 6, 0), new ItemStack(DYE, 2, 4), new ItemStack(GUNPOWDER, 4));
+	
 	public static RecipeType recipeSplatRoller = new RecipeType(splatRoller, "original", new ItemStack(sardinium, 5), new ItemStack(powerEgg, 14), new ItemStack(WOOL, 4), new ItemStack(DYE, 14, 0));
 	public static RecipeType recipeInkbrush = new RecipeType(inkbrush, "original", new ItemStack(sardinium, 7), new ItemStack(powerEgg, 18), new ItemStack(Items.WHEAT, 3), new ItemStack(DYE, 7, 0));
 	public static RecipeType recipeOctobrush = new RecipeType(octobrush, "original", new ItemStack(sardinium, 4), new ItemStack(powerEgg, 20), new ItemStack(Items.WHEAT, 5), new ItemStack(DYE, 12, 0), new ItemStack(IRON_NUGGET, 18));
+	
 	public static RecipeType recipeSplatCharger = new RecipeType(splatCharger, "original", new ItemStack(sardinium, 6), new ItemStack(powerEgg, 20), new ItemStack(DYE, 10, 0));
 	public static RecipeType recipeELiter4K = new RecipeType(eLiter4K, "4K", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 18), new ItemStack(DYE, 10, 0), new ItemStack(IRON_INGOT, 5)).setDisplayName("e_liter");
-	public static RecipeType recipeBlaster = new RecipeType(blaster, "original", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 18), new ItemStack(DYE, 12, 0), new ItemStack(GUNPOWDER, 12));
+	
+	public static RecipeType recipeInkTank = new RecipeType(inkTank, "original", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 10), new ItemStack(SplatCraftBlocks.emptyInkwell));
 	
 	public static void registerRecipes()
 	{
@@ -38,11 +43,15 @@ public class RecipesWeaponStation
 		register(TAB_SHOOTER, recipeAerosprayMg);
 		register(TAB_SHOOTER, recipeBlaster);
 		register(TAB_SHOOTER, recipeClashBlaster);
+		
 		register(TAB_ROLLER, recipeSplatRoller);
 		register(TAB_ROLLER, recipeInkbrush);
 		register(TAB_ROLLER, recipeOctobrush);
+		
 		register(TAB_CHARGER, recipeSplatCharger);
 		register(TAB_CHARGER, recipeELiter4K);
+		
+		register(TAB_INK_TANKS, recipeInkTank);
 		
 	}
 	

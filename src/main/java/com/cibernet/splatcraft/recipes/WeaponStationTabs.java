@@ -13,6 +13,7 @@ public enum WeaponStationTabs
 	TAB_SHOOTER("shooter"),
 	TAB_ROLLER("roller"),
 	TAB_CHARGER("charger"),
+	TAB_INK_TANKS("tank");
 	;
 	
 	String name;

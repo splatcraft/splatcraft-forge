@@ -195,7 +195,7 @@ public class GuiWeaponStation extends GuiContainer
 		WeaponStationTabs[] tabs = WeaponStationTabs.values();
 		for(int i = 0; i < tabs.length; i++)
 		{
-			int x = width/2 - (tabs.length-1)/2*22 + i*22;
+			int x = width/2 - (tabs.length-1)*11 + i*22;
 			ty = tabPos == i ? 216 : 236;
 			mc.getTextureManager().bindTexture(TEXTURES);
 			drawTexturedModalRect(x-10, guiTop-4, 34, ty, 20, 20);
@@ -263,9 +263,16 @@ public class GuiWeaponStation extends GuiContainer
 		
 		for(int i = 0; i < tabs.length; i++)
 		{
-			int x = width / 2 - (tabs.length - 1) / 2 * 22 + i * 22;
+			int x = width / 2 - (tabs.length - 1) * 11 + i * 22 +1;
 			
-			if(isPointInRegion(x-10-guiLeft, -4, 20, 20, mouseX, mouseY))
+			if(i == 0)
+			{
+				System.out.println("hover:" + (mouseX - guiLeft));
+				System.out.println(x - 10 - guiLeft);
+				System.out.println(isPointInRegion(x - 10 - guiLeft, -3, 18, 18, mouseX, mouseY));
+			}
+			
+			if(isPointInRegion(x-10-guiLeft, -3, 18, 18, mouseX, mouseY))
 				drawHoveringText(I18n.format(tabs[i].getUnlocalizedName()), mouseX, mouseY);
 		}
 		
@@ -291,8 +298,16 @@ public class GuiWeaponStation extends GuiContainer
 			WeaponStationTabs[] tabs = WeaponStationTabs.values();
 			for(int i = 0; i < tabs.length; i++)
 			{
-				int x = width / 2 - (tabs.length - 1) / 2 * 22 + i * 22;
-				if(isPointInRegion(x - 10 - guiLeft, -4, 20, 20, mouseX, mouseY))
+				int x = width / 2 - (tabs.length - 1) * 11 + i * 22 +1;;
+				
+				if(i == 0)
+				{
+					System.out.println("click:" + (mouseX - guiLeft));
+					System.out.println(x - 10 - guiLeft);
+					System.out.println(isPointInRegion(x - 10 - guiLeft, -3, 18, 18, mouseX, mouseY));
+				}
+				
+				if(isPointInRegion(x - 10 - guiLeft, -3, 18, 18, mouseX, mouseY))
 				{
 					tabPos = i;
 					sectionPos = 0;

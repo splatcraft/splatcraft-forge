@@ -75,6 +75,7 @@ stationTab.roller=Rollers
 stationTab.charger=Chargers
 stationTab.blaster=Blasters
 stationTab.dualies=Dualies
+stationTab.tank=Ink Tanks
 
 recipe.aerospray.name=Aerospray
 recipe.e_liter.name=E-Liter
