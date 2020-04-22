@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.network;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.ICharge;
+import com.cibernet.splatcraft.items.ItemChargerBase;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -74,7 +75,11 @@ public class PacketReturnChargeRelease implements IMessage
             SplatCraftPlayerData.setWeaponCharge(player, stack, message.charge);
             
             if(stack.getItem() instanceof ICharge)
+            {
                 ((ICharge) stack.getItem()).onRelease(player.world, player, stack);
+                if(stack.getItem() instanceof ItemChargerBase)
+                    ((ItemChargerBase) stack.getItem()).reduceInk(player, ((ItemChargerBase) stack.getItem()).getInkConsumption(message.charge));
+            }
             
         }
     }

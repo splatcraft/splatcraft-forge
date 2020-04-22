@@ -3,10 +3,8 @@ package com.cibernet.splatcraft.items;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
-import com.cibernet.splatcraft.utils.InkColors;
+import com.cibernet.splatcraft.utils.*;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
-import com.cibernet.splatcraft.utils.SplatCraftUtils;
-import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -14,6 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -33,13 +32,17 @@ public class ItemWeaponBase extends Item
 {
 	public static List<ItemWeaponBase> weapons = new ArrayList<>();
 	
-	public ItemWeaponBase(String unlocName, String registryName)
+	public float inkConsumption;
+	
+	public ItemWeaponBase(String unlocName, String registryName, float inkConsumption)
 	{
 		setUnlocalizedName(unlocName);
 		setRegistryName(registryName);
 		setCreativeTab(TabSplatCraft.main);
 		setMaxStackSize(1);
 		weapons.add(this);
+		
+		this.inkConsumption = inkConsumption;
 	}
 
 	@Override
@@ -120,6 +123,37 @@ public class ItemWeaponBase extends Item
 		return super.onEntityItemUpdate(entityItem);
 	}
 	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		try
+		{
+			return ClientUtils.getDurabilityForDisplay(stack);
+		}catch(NoClassDefFoundError e)
+		{
+			return 1;
+		}
+	}
+	
+	@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+	{
+		return ColorItemUtils.getInkColor(stack);
+	}
+	
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		try
+		{
+			return ClientUtils.showDurabilityBar(stack);
+		}catch(NoClassDefFoundError e)
+		{
+			return false;
+		}
+	}
+	
+	@Override
 	public int getMaxItemUseDuration(ItemStack stack)
 	{
 		return 72000;
@@ -136,4 +170,35 @@ public class ItemWeaponBase extends Item
 	}
 	
 	public ModelPlayerOverride.EnumAnimType getAnimType() {return ModelPlayerOverride.EnumAnimType.NONE;}
+	
+	public boolean hasInk(EntityPlayer player, int color)
+	{
+		return hasInk(player, color, inkConsumption);
+	}
+	
+	public static boolean hasInk(EntityPlayer player, int color, float offset)
+	{
+		ItemStack chespiece = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+		
+		return chespiece.getItem() instanceof ItemInkTank && ColorItemUtils.getInkColor(chespiece) == color && ItemInkTank.getInkAmount(chespiece)-offset > 0;
+	}
+	
+	public static void reduceInk(EntityPlayer player, float amount)
+	{
+		ItemStack chespiece = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+		if(chespiece.getItem() instanceof ItemInkTank)
+		{
+			ItemInkTank.setInkAmount(chespiece, ItemInkTank.getInkAmount(chespiece)-amount);
+		}
+	}
+	
+	public void reduceInk(EntityPlayer player)
+	{
+		reduceInk(player, inkConsumption);
+	}
+	
+	public AttributeModifier getNoInkSpeed()
+	{
+		return null;
+	}
 }

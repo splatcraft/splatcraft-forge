@@ -9,6 +9,9 @@ import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class ItemShooterBase extends ItemWeaponBase
@@ -21,9 +24,9 @@ public class ItemShooterBase extends ItemWeaponBase
     public boolean automatic;
     public float damage;
 
-    public ItemShooterBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage, boolean automatic)
+    public ItemShooterBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage, float inkConsumption, boolean automatic)
     {
-        super(unlocName, registryName);
+        super(unlocName, registryName, inkConsumption);
         this.inaccuracy = inaccuracy;
         this.projectileSize = projectileSize;
         this.projectileSpeed = projectileSpeed;
@@ -32,9 +35,9 @@ public class ItemShooterBase extends ItemWeaponBase
         this.damage = damage;
     }
 
-    public ItemShooterBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage)
+    public ItemShooterBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage,  float inkConumption)
     {
-        this(unlocName, registryName, projectileSize, projectileSpeed, inaccuracy, firingSpeed, damage, true);
+        this(unlocName, registryName, projectileSize, projectileSpeed, inaccuracy, firingSpeed, damage, inkConumption, true);
     }
 
     @Override
@@ -75,17 +78,21 @@ public class ItemShooterBase extends ItemWeaponBase
     @Override
     public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
     {
-        if((getMaxItemUseDuration(stack)-useTime) % firingSpeed == 1 && automatic)
+        if(hasInk(playerIn, ColorItemUtils.getInkColor(stack)))
         {
-            if(!worldIn.isRemote)
+            if((getMaxItemUseDuration(stack) - useTime) % firingSpeed == 1 && automatic)
             {
-                EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, ColorItemUtils.getInkColor(stack), damage);
-                proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
-                proj.setProjectileSize(projectileSize);
-                worldIn.spawnEntity(proj);
+                if(!worldIn.isRemote)
+                {
+                    reduceInk(playerIn);
+                    EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, ColorItemUtils.getInkColor(stack), damage);
+                    proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
+                    proj.setProjectileSize(projectileSize);
+                    worldIn.spawnEntity(proj);
+                }
+                //else worldIn.playSound(playerIn, playerIn.posX, playerIn.posY, playerIn.posZ, SplatCraftSounds.shooterShot, SoundCategory.PLAYERS, 0.8F, ((worldIn.rand.nextFloat() - worldIn.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }
-            //else worldIn.playSound(playerIn, playerIn.posX, playerIn.posY, playerIn.posZ, SplatCraftSounds.shooterShot, SoundCategory.PLAYERS, 0.8F, ((worldIn.rand.nextFloat() - worldIn.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
-        }
+        } else playerIn.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);
     }
     
     @Override

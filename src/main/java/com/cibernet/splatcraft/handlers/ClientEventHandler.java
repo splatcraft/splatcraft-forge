@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.network.PacketPlayerSetTransformed;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.client.Minecraft;
@@ -58,10 +59,13 @@ public class ClientEventHandler
 			attributeInstance.removeModifier(IN_USE_SPEED_BOOST);
 		if(attributeInstance.hasModifier(ENEMY_INK_SPEED))
 			attributeInstance.removeModifier(ENEMY_INK_SPEED);
-
+		
 		AttributeModifier weaponMod = getWeaponMod(attributeInstance);
 		if(weaponMod != null)
 			attributeInstance.removeModifier(weaponMod);
+		AttributeModifier noInkMod = getNoInkWeaponMod(attributeInstance);
+		if(noInkMod != null)
+			attributeInstance.removeModifier(noInkMod);
 		
 		
 		if(SplatCraftUtils.onEnemyInk(player.world, player) && !attributeInstance.hasModifier(ENEMY_INK_SPEED))
@@ -97,7 +101,13 @@ public class ClientEventHandler
 		}
 		if(weapon.getItem() instanceof ItemWeaponBase && player.isHandActive() && player.onGround)
 		{
-			AttributeModifier speedMod = ((ItemWeaponBase) weapon.getItem()).getSpeedModifier();
+			ItemWeaponBase weaponItem = ((ItemWeaponBase) weapon.getItem());
+			
+			AttributeModifier speedMod = weaponItem.getSpeedModifier();
+			
+			if(!weaponItem.hasInk(player, ColorItemUtils.getInkColor(weapon)) && weaponItem.getNoInkSpeed() != null)
+				speedMod = weaponItem.getNoInkSpeed();
+			
 			if(!isSquid && speedMod != null && !attributeInstance.hasModifier(speedMod))
 				attributeInstance.applyModifier(speedMod);
 		}
@@ -208,12 +218,27 @@ public class ClientEventHandler
 	
 	private AttributeModifier getWeaponMod(IAttributeInstance instance)
 	{
+		if(instance == null)
+			return null;
 		for(ItemWeaponBase item : ItemWeaponBase.weapons)
 		{
 			if(item.getSpeedModifier() == null)
 				continue;
 			if(instance.hasModifier(item.getSpeedModifier()))
 				return item.getSpeedModifier();
+		}
+		return null;
+	}
+	private AttributeModifier getNoInkWeaponMod(IAttributeInstance instance)
+	{
+		if(instance == null)
+			return null;
+		for(ItemWeaponBase item : ItemWeaponBase.weapons)
+		{
+			if(item.getNoInkSpeed() == null)
+				continue;
+			if(instance.hasModifier(item.getNoInkSpeed()))
+				return item.getNoInkSpeed();
 		}
 		return null;
 	}

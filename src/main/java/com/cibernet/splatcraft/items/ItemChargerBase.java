@@ -13,6 +13,9 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class ItemChargerBase extends ItemWeaponBase implements ICharge
@@ -25,9 +28,12 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	public float dischargeSpeed;
 	public float damage;
 	
-	public ItemChargerBase(String unlocName, String registryName, float projectileSize, int projectileLifespan, int chargeTime, int dischargeTime , float damage, double mobility)
+	public float minConsumption;
+	public float maxConsumption;
+	
+	public ItemChargerBase(String unlocName, String registryName, float projectileSize, int projectileLifespan, int chargeTime, int dischargeTime , float damage, float minConsumption, float maxConsumption, double mobility)
 	{
-		super(unlocName, registryName);
+		super(unlocName, registryName, maxConsumption);
 		
 		this.projectileSize = projectileSize;
 		this.projectileLifespan = projectileLifespan;
@@ -35,6 +41,9 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 		this.dischargeSpeed = 1f/dischargeTime;
 		this.damage = damage;
 		SPEED_MODIFIER = new AttributeModifier("Charger Mobility", mobility-1, 2).setSaved(false);
+		
+		this.maxConsumption = maxConsumption;
+		this.minConsumption = minConsumption;
 	}
 	
 	@Override
@@ -61,7 +70,9 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	{
 		if(!SplatCraftPlayerData.getIsSquid(playerIn))
 		{
-			SplatCraftPlayerData.addWeaponCharge(playerIn, stack, chargeSpeed);
+			if(hasInk(playerIn, ColorItemUtils.getInkColor(stack), getInkConsumption(SplatCraftPlayerData.getWeaponCharge(playerIn, stack))))
+				SplatCraftPlayerData.addWeaponCharge(playerIn, stack, chargeSpeed);
+			else playerIn.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);
 		}
 		
 	}
@@ -111,5 +122,10 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	public ModelPlayerOverride.EnumAnimType getAnimType()
 	{
 		return ModelPlayerOverride.EnumAnimType.CHARGER;
+	}
+	
+	public float getInkConsumption(float charge)
+	{
+		return minConsumption + (maxConsumption-minConsumption)*charge;
 	}
 }

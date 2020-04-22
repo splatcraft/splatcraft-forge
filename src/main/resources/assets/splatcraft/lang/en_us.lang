@@ -32,6 +32,12 @@ item.filterEnchanted.name=Enchanted Filter
 item.filterCreative.name=Creative Filter
 item.filter.tooltip=Use it in an Ink Vat to get more colors!
 
+item.inkTank.name=Ink Tank
+item.inkTank.ink=Ink: %s / %s
+item.inkTankJr.name=Ink Tank Jr.
+item.heroInkTank.name=Hero Tank
+item.armoredInkTank.name=Armored Ink Tank
+
 item.splattershot.name=Splattershot
 item.splattershotJr.name=Splattershot Jr.
 item.splattershotPro.name=Splattershot Pro
@@ -145,6 +151,7 @@ splatcraft.config.title=Splatcraft Config
 
 status.coordSet.A=Set first position to X: %s Y: %s Z: %s
 status.coordSet.B=Set second position to X: %s Y: %s Z: %s
+status.noInk=Low Ink!
 
 key.categories.splatcraft=Splatcraft
 key.squidForm=Squid
