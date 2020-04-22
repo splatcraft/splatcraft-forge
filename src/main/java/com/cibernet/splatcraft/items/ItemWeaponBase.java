@@ -30,8 +30,8 @@ import static com.cibernet.splatcraft.utils.ColorItemUtils.*;
 
 public class ItemWeaponBase extends Item
 {
-	public static List<ItemWeaponBase> weapons = new ArrayList<>();
 	
+	public static List<ItemWeaponBase> weapons = new ArrayList<>();
 	public float inkConsumption;
 	
 	public ItemWeaponBase(String unlocName, String registryName, float inkConsumption)
@@ -40,6 +40,7 @@ public class ItemWeaponBase extends Item
 		setRegistryName(registryName);
 		setCreativeTab(TabSplatCraft.main);
 		setMaxStackSize(1);
+		ColorItemUtils.inkColorItems.add(this);
 		weapons.add(this);
 		
 		this.inkConsumption = inkConsumption;

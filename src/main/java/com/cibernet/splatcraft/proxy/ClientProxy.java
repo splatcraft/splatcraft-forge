@@ -49,9 +49,8 @@ public class ClientProxy extends CommonProxy
         
         Minecraft mc = Minecraft.getMinecraft();
     
-        Item[] weapons = new Item[ItemWeaponBase.weapons.size()];
-        for(int i = 0; i < ItemWeaponBase.weapons.size(); i++)
-            weapons[i] = ItemWeaponBase.weapons.get(i);
+        Item[] inkColorItems = ColorItemUtils.inkColorItems.toArray(new Item[ColorItemUtils.inkColorItems.size()]);
+        
         Block[] inkColorBlocks = new Block[BlockInkColor.blocks.size()];
         for(int i = 0; i < BlockInkColor.blocks.size(); i++)
             inkColorBlocks[i] = BlockInkColor.blocks.get(i);
@@ -61,7 +60,7 @@ public class ClientProxy extends CommonProxy
                 return ColorItemUtils.getInkColor(stack);
             
             return -1;
-        }, weapons);
+        }, inkColorItems);
 
         mc.getItemColors().registerItemColorHandler((stack, tintIndex) -> {
             if(tintIndex == 0)

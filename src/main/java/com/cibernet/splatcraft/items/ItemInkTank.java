@@ -1,21 +1,29 @@
 package com.cibernet.splatcraft.items;
 
+import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.entities.models.ModelInkTank;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.cibernet.splatcraft.utils.TabSplatCraft;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -37,11 +45,22 @@ public class ItemInkTank extends ItemArmor
 		setRegistryName(registryName);
 		
 		this.capacity = capacity;
+		ColorItemUtils.inkColorItems.add(this);
+		
+		this.addPropertyOverride(new ResourceLocation("ink_stage"), new IItemPropertyGetter()
+		{
+			@SideOnly(Side.CLIENT)
+			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn)
+			{
+				float pctg = getInkAmount(stack)/capacity;
+				return pctg > 0.6f ? 2 : pctg <= 0.3f ? 0 : 1;
+			}
+		});
 	}
 	
 	public ItemInkTank(String unlocalizedName, String registryName, float capacity)
 	{
-		this(unlocalizedName, registryName, capacity, EnumHelper.addArmorMaterial(unlocalizedName, registryName, -1, new int[] {0,0,0,0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0));
+		this(unlocalizedName, registryName, capacity, EnumHelper.addArmorMaterial(unlocalizedName, SplatCraft.MODID+":"+registryName, -1, new int[] {0,0,0,0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0));
 	}
 	
 	@Override
@@ -53,6 +72,43 @@ public class ItemInkTank extends ItemArmor
 		{
 			tooltip.add(TextFormatting.GRAY + I18n.format("item.inkTank.ink", getInkAmount(stack), capacity));
 		}
+	}
+	
+	@Override
+	public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack stack, EntityEquipmentSlot slot,
+									ModelBiped _default)
+	{
+		//if(model == null) return super.getArmorModel(entity, stack, slot, _default);
+		
+		if(!stack.isEmpty())
+		{
+			if(stack.getItem() instanceof ItemInkTank)
+			{
+				ModelBiped model = new ModelInkTank(getInkAmount(stack)/capacity);
+				
+				model.bipedRightLeg.showModel = slot == EntityEquipmentSlot.LEGS || slot == EntityEquipmentSlot.FEET;
+				model.bipedLeftLeg.showModel = slot == EntityEquipmentSlot.LEGS || slot == EntityEquipmentSlot.FEET;
+				
+				model.bipedBody.showModel = slot == EntityEquipmentSlot.CHEST;
+				model.bipedLeftArm.showModel = slot == EntityEquipmentSlot.CHEST;
+				model.bipedRightArm.showModel = slot == EntityEquipmentSlot.CHEST;
+				
+				model.bipedHead.showModel = slot == EntityEquipmentSlot.HEAD;
+				model.bipedHeadwear.showModel = slot == EntityEquipmentSlot.HEAD;
+				
+				
+				model.isSneak = _default.isSneak;
+				model.isRiding = _default.isRiding;
+				model.isChild = _default.isChild;
+				
+				model.rightArmPose = _default.rightArmPose;
+				model.leftArmPose = _default.leftArmPose;
+				
+				return model;
+			}
+		}
+		
+		return null;
 	}
 	
 	@Override

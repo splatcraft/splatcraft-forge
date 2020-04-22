@@ -1,11 +1,17 @@
 package com.cibernet.splatcraft.utils;
 
 import com.cibernet.splatcraft.utils.InkColors;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import javax.management.AttributeList;
+import java.util.ArrayList;
+
 public class ColorItemUtils
 {
+	public static ArrayList<Item> inkColorItems = new ArrayList<>();
+	
 	public static int getInkColor(ItemStack stack)
 	{
 		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("color"))
