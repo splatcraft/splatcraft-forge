@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.entities.models;
 
+import com.cibernet.splatcraft.items.ItemDualieBase;
 import com.cibernet.splatcraft.items.ItemRollerBase;
 import com.cibernet.splatcraft.items.ItemShooterBase;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
@@ -56,6 +57,8 @@ public class ModelPlayerOverride extends ModelPlayer
 			ModelRenderer mainHand = getArmForSide(handSide);
 			ModelRenderer offHand = getArmForSide(handSide.opposite());
 			Item activeItem = player.getActiveItemStack().getItem();
+			ItemStack offhandStack = player.getHeldItem(player.getHeldItemMainhand().equals(activeItem) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND);
+			
 			if(!(activeItem instanceof ItemWeaponBase))
 				return;
 				
@@ -84,11 +87,16 @@ public class ModelPlayerOverride extends ModelPlayer
 			
 			switch(type)
 			 {
+			 	case DUALIES:
+					 if(offhandStack.getItem() instanceof ItemDualieBase)
+					 {
+						 offHand.rotateAngleY = -0.1F + this.bipedHead.rotateAngleY;
+						 offHand.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
+					 }
 			 	case SHOOTER:
 					mainHand.rotateAngleY = -0.1F + this.bipedHead.rotateAngleY;
 					mainHand.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
 				break;
-			
 			 	case ROLLER:
 					mainHand.rotateAngleX = 0.1F * 0.5F - ((float)Math.PI / 10F);
 					mainHand.rotateAngleY = 0.0F;
@@ -131,7 +139,9 @@ public class ModelPlayerOverride extends ModelPlayer
 		NONE,
 		SHOOTER,
 		ROLLER,
-		CHARGER
+		CHARGER,
+		DUALIES;
+		
 	}
 	
 }

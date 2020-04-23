@@ -23,6 +23,7 @@ public class SplatCraftPacketHandler
         instance.registerMessage(PacketGetPlayerData.Handler.class, PacketGetPlayerData.class, nextID(), Side.SERVER);
         instance.registerMessage(PacketReturnChargeRelease.Handler.class, PacketReturnChargeRelease.class, nextID(), Side.SERVER);
         instance.registerMessage(PacketCraftWeapon.Handler.class, PacketCraftWeapon.class, nextID(), Side.SERVER);
+        instance.registerMessage(PacketDodgeRoll.Handler.class, PacketDodgeRoll.class, nextID(), Side.SERVER);
 
         //Client Packets
         instance.registerMessage(PacketPlayerReturnTransformed.Handler.class, PacketPlayerReturnTransformed.class, nextID(), Side.CLIENT);

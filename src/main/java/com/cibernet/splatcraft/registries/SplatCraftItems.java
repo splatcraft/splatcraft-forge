@@ -38,6 +38,7 @@ public class SplatCraftItems
     public static final Item octobrush = new ItemRollerBase("octobrush", "octobrush", -0.1D, 0.5f, 8f, 0.95f, 3.2f, 1.2d, 2, 4, 0.18f, true);
     public static final Item eLiter4K = new ItemChargerBase("eLiter4K", "e_liter_4k", 0.85f, 12, 35, 40, 36f, 2.25f, 25f, 0.15);
     public static final Item blaster = new ItemBlasterBase("blaster", "blaster", 3f, 1.1f, 5f, 3, 18, 25, 10f, 10);
+    public static final Item splatDualie = new ItemDualieBase("splatDualies", "splat_dualies", 1f, 0.5f, 10, 10, 6, 0.75f, 1, 0.7f, 9);
     
     public static final ItemInkTank inkTank = new ItemInkTank("inkTank", "ink_tank", 100);
     
@@ -70,6 +71,7 @@ public class SplatCraftItems
         registerItem(registry, octobrush);
         registerItem(registry, eLiter4K);
         registerItem(registry, blaster);
+        registerItem(registry, splatDualie);
         
         registerItem(registry, inkTank);
         

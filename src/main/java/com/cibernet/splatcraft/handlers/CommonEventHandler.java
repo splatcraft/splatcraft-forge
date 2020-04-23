@@ -2,14 +2,17 @@ package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.IBattleItem;
+import com.cibernet.splatcraft.items.ItemDualieBase;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
@@ -19,9 +22,11 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
@@ -114,6 +119,62 @@ public class CommonEventHandler
 				
 				if(player.getItemInUseCount() > 0)
 					item.onItemTickUse(player.world, player, weapon, player.getItemInUseCount());
+				
+				if(item instanceof ItemDualieBase)
+				{
+					int maxRolls = ((ItemDualieBase) item).maxRolls;
+					
+					ItemStack offhandStack = player.getHeldItem(player.getHeldItemMainhand().equals(weapon) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND);
+					if(offhandStack.getItem() instanceof ItemDualieBase)
+					{
+						maxRolls += ((ItemDualieBase) offhandStack.getItem()).maxRolls;
+						item.onItemTickUse(player.world, player, offhandStack, player.getItemInUseCount() + ((ItemDualieBase) offhandStack.getItem()).offhandFiringOffset);
+					}
+					
+					int rollCount = ItemDualieBase.getRollString(weapon);
+					CooldownTracker cooldownTracker = player.getCooldownTracker();
+					
+					if(player.world.isRemote && cooldownTracker.getCooldown(item, 0) <= 0)
+					{
+						MovementInput input = ((EntityPlayerSP) player).movementInput;
+						if(input.jump && (input.moveStrafe != 0 || input.moveForward != 0))
+						{
+							ItemStack activeDualie = weapon;
+							
+							if(offhandStack.getItem() instanceof ItemDualieBase)
+							{
+								ItemStack dualieA = ((ItemDualieBase) item).maxRolls >= ((ItemDualieBase) offhandStack.getItem()).maxRolls ? weapon : offhandStack;
+								ItemStack dualieB = dualieA.equals(weapon) ? offhandStack : weapon;
+								activeDualie = maxRolls % 2 == 0 ? dualieA : dualieB;
+							}
+							
+							if(ItemWeaponBase.hasInk(player, ColorItemUtils.getInkColor(weapon), ((ItemDualieBase) item).rollConsumption))
+							{
+								player.motionY = 0;
+								player.moveRelative(input.moveStrafe, -0.2f, input.moveForward, ((ItemDualieBase)activeDualie.getItem()).rollSpeed);
+								
+								int cooldown = rollCount >= maxRolls-1 ? 25 : 10;
+								
+								System.out.println(player.world.isRemote + ": " + rollCount);
+								
+								SplatCraftPacketHandler.instance.sendToServer(new PacketDodgeRoll(activeDualie.equals(offhandStack)));
+								
+								
+								cooldownTracker.setCooldown(weapon.getItem(), cooldown);
+								if(offhandStack.getItem() instanceof ItemDualieBase)
+									cooldownTracker.setCooldown(offhandStack.getItem(), cooldown);
+								
+								
+								ItemDualieBase.setRollString(weapon, rollCount + 1);
+								ItemDualieBase.setRollCooldown(weapon, 20);
+								
+								ItemWeaponBase.reduceInk(player, ((ItemDualieBase) activeDualie.getItem()).rollConsumption);
+							} else player.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);
+						}
+					}
+					
+					
+				}
 				
 			}
 			else if(SplatCraftPlayerData.canDischarge(player)) SplatCraftPlayerData.dischargeWeapon(player);

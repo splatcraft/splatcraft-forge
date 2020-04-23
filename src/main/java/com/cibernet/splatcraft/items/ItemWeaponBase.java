@@ -85,6 +85,14 @@ public class ItemWeaponBase extends Item implements IBattleItem
 	}
 	
 	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
+	{
+		if(entityLiving.getActiveItemStack().equals(stack))
+			entityLiving.resetActiveHand();
+		super.onPlayerStoppedUsing(stack, worldIn, entityLiving, timeLeft);
+	}
+	
+	@Override
 	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
 	{
 		if(!entityLiving.world.isRemote)
