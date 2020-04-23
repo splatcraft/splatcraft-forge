@@ -7,13 +7,14 @@ import com.cibernet.splatcraft.blocks.BlockInkwell;
 import com.cibernet.splatcraft.entities.classes.EntityBlasterProjectile;
 import com.cibernet.splatcraft.entities.classes.EntityChargerProjectile;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
+import com.cibernet.splatcraft.entities.classes.EntityNPCSquid;
 import com.cibernet.splatcraft.entities.models.ModelArmorOverride;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.entities.renderers.RenderInkProjectile;
+import com.cibernet.splatcraft.entities.renderers.RenderNPCSquid;
 import com.cibernet.splatcraft.gui.GuiOverlay;
 import com.cibernet.splatcraft.handlers.ClientEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftKeyHandler;
-import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftModelManager;
@@ -116,6 +117,7 @@ public class ClientProxy extends CommonProxy
         MinecraftForge.EVENT_BUS.register(GuiOverlay.instance);
         SplatCraftKeyHandler.instance.registerKeys();
 
+        RenderingRegistry.registerEntityRenderingHandler(EntityNPCSquid.class, manager -> new RenderNPCSquid(manager));
         RenderingRegistry.registerEntityRenderingHandler(EntityInkProjectile.class, manager -> new RenderInkProjectile(manager));
         RenderingRegistry.registerEntityRenderingHandler(EntityChargerProjectile.class, manager -> new RenderInkProjectile(manager));
         RenderingRegistry.registerEntityRenderingHandler(EntityBlasterProjectile.class, manager -> new RenderInkProjectile(manager));

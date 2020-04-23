@@ -136,6 +136,9 @@ gui.weaponStation.craft=Craft
 container.inkwellVat=Inkwell Crafting
 container.weaponStation=Weapon Crafting
 
+entity.splatcraft.squid.name=Inkling Squid
+splatcraft.squid.name=Inkling Squid
+
 commands.turfWar.usage=/turfwar <x1> <y1> <z1> <x2> <y2> <z2>
 commands.turfWar.outOfWorld=§cCannot check for blocks outside of the world
 commands.turfWar.score=%s = %s%%

@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.entities.classes.EntityBlasterProjectile;
 import com.cibernet.splatcraft.entities.classes.EntityChargerProjectile;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
+import com.cibernet.splatcraft.entities.classes.EntityNPCSquid;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -14,6 +15,8 @@ public class SplatCraftEntities
 
     public static void registerEntities()
     {
+        registerEntity(EntityNPCSquid.class, "squid");
+        
         registerEntity(EntityInkProjectile.class, "ink_projectile");
         registerEntity(EntityChargerProjectile.class, "charger_projectile");
         registerEntity(EntityBlasterProjectile.class, "blaster_projectile");
@@ -32,7 +35,7 @@ public class SplatCraftEntities
     }
 
     public static void registerEntity(Class<? extends Entity> entityClass, String name, String registryName, int trackingRange, int updateFrequency, boolean sendsVelocityUpdates) {
-        EntityRegistry.registerModEntity(new ResourceLocation(SplatCraft.MODID, registryName), entityClass, SplatCraft.MODID + name, currentEntityIdOffset, SplatCraft.instance, trackingRange, updateFrequency, sendsVelocityUpdates);
+        EntityRegistry.registerModEntity(new ResourceLocation(SplatCraft.MODID, registryName), entityClass, SplatCraft.MODID +"."+ name, currentEntityIdOffset, SplatCraft.instance, trackingRange, updateFrequency, sendsVelocityUpdates);
         ++currentEntityIdOffset;
     }
 
