@@ -67,8 +67,8 @@ item.carbonRoller.name=Carbon Roller
 item.inkbrush.name=Inkbrush
 item.octobrush.name=Octobrush
 
-item.splatDualies.name=Splat Dualies
-item.dualieSquelchers.name=Dualie Squelchers
+item.splatDualies.name=Splat Dualie
+item.dualieSquelchers.name=Dualie Squelcher
 
 stationTab.shooter=Shooters
 stationTab.roller=Rollers
@@ -79,6 +79,8 @@ stationTab.tank=Ink Tanks
 
 recipe.aerospray.name=Aerospray
 recipe.e_liter.name=E-Liter
+recipe.splatDualies.name=Splat Dualies
+recipe.dualieSquelchers.name=Dualie Squelchers
 
 weaponType.original=Original
 weaponType.classic=Classic
