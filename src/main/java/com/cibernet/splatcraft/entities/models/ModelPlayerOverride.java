@@ -57,7 +57,7 @@ public class ModelPlayerOverride extends ModelPlayer
 			ModelRenderer mainHand = getArmForSide(handSide);
 			ModelRenderer offHand = getArmForSide(handSide.opposite());
 			Item activeItem = player.getActiveItemStack().getItem();
-			ItemStack offhandStack = player.getHeldItem(player.getHeldItemMainhand().equals(activeItem) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND);
+			ItemStack offhandStack = player.getHeldItem(player.getHeldItemMainhand().equals(player.getActiveItemStack()) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND);
 			
 			if(!(activeItem instanceof ItemWeaponBase))
 				return;
