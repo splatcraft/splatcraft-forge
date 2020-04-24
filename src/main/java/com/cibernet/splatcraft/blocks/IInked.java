@@ -17,7 +17,7 @@ public interface IInked
 	boolean canClimb();
 	boolean countsTowardsScore();
 	
-	default void clearInk(World worldIn, BlockPos pos) {}
+	default boolean clearInk(World worldIn, BlockPos pos) {return false;}
 	
 	default int getColor(World worldIn, BlockPos pos)
 	{

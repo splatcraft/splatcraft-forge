@@ -207,7 +207,7 @@ public class BlockInked extends BlockInkColor implements IInked
 	}
 	
 	@Override
-	public void clearInk(World worldIn, BlockPos pos)
+	public boolean clearInk(World worldIn, BlockPos pos)
 	{
 		if(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock)
 		{
@@ -215,6 +215,8 @@ public class BlockInked extends BlockInkColor implements IInked
 			worldIn.setBlockState(pos, te.getSavedState(), 3);
 		}
 		else worldIn.setBlockState(pos, Blocks.SAND.getDefaultState(), 3);
+		
+		return true;
 	}
 	
 	@Override

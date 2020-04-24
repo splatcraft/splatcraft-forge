@@ -79,8 +79,8 @@ public class ItemInkDisruptor extends ItemCoordSet
 					Block block = world.getBlockState(pos).getBlock();
 					if(block instanceof IInked)
 					{
-						((IInked) block).clearInk(world, pos);
-						count++;
+						if(((IInked) block).clearInk(world, pos))
+							count++;
 					}
 				}
 		playerIn.sendStatusMessage(new TextComponentString(I18n.format("commands.clearInk.success", count)), true);

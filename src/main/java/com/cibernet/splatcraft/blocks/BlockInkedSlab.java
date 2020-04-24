@@ -223,7 +223,7 @@ public class BlockInkedSlab extends BlockSlab implements IInked
 	}
 	
 	@Override
-	public void clearInk(World worldIn, BlockPos pos)
+	public boolean clearInk(World worldIn, BlockPos pos)
 	{
 		IBlockState state = worldIn.getBlockState(pos);
 		if(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock)
@@ -231,6 +231,8 @@ public class BlockInkedSlab extends BlockSlab implements IInked
 			TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
 			worldIn.setBlockState(pos, te.getSavedState().withProperty(BlockSlab.HALF, state.getValue(BlockSlab.HALF)), 3);
 		} else worldIn.setBlockState(pos, Blocks.SAND.getDefaultState(), 3);
+		
+		return true;
 	}
 	
 	@Override
