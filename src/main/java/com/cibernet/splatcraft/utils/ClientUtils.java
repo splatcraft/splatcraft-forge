@@ -92,6 +92,6 @@ public class ClientUtils
 	@SideOnly(Side.CLIENT)
 	public static boolean showDurabilityBar(ItemStack stack)
 	{
-		return SplatCraftGamerules.getGameruleValue("requireInkTank") && Minecraft.getMinecraft().player.getHeldItemMainhand().equals(stack);
+		return SplatCraftGamerules.getGameruleValue("requireInkTank") && (Minecraft.getMinecraft().player.getHeldItemMainhand().equals(stack) || Minecraft.getMinecraft().player.getHeldItemOffhand().equals(stack));
 	}
 }
