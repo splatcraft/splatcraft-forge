@@ -33,31 +33,37 @@ public enum InkColors
 	ICEARSTORM(0x88ffc1, MapColor.LIGHT_BLUE, "icearstorm"),
 	INK_BLACK(0x1F1F2D, MapColor.CYAN_STAINED_HARDENED_CLAY, "default"),
 	
-	DYE_WHITE(0xFAFAFA, MapColor.getBlockColor(EnumDyeColor.WHITE), "dyeWhite"),
-	DYE_ORANGE(16351261, MapColor.getBlockColor(EnumDyeColor.ORANGE), "dyeOrange"),
-	DYE_MAGENTA(13061821, MapColor.getBlockColor(EnumDyeColor.MAGENTA), "dyeMagenta"),
-	DYE_LIGHT_BLUE(3847130, MapColor.getBlockColor(EnumDyeColor.LIGHT_BLUE), "dyeLightBlue"),
-	DYE_YELLOW(16701501, MapColor.getBlockColor(EnumDyeColor.YELLOW), "dyeYellow"),
-	DYE_LIME(8439583, MapColor.getBlockColor(EnumDyeColor.LIME), "dyeLime"),
-	DYE_PINK(15961002, MapColor.getBlockColor(EnumDyeColor.PINK), "dyePink"),
-	DYE_GRAY(4673362, MapColor.getBlockColor(EnumDyeColor.GRAY), "dyeGray"),
-	DYE_SILVER(10329495, MapColor.getBlockColor(EnumDyeColor.SILVER), "dyeSilver"),
-	DYE_CYAN(1481884, MapColor.getBlockColor(EnumDyeColor.CYAN), "dyeCyan"),
-	DYE_PURPLE(8991416, MapColor.getBlockColor(EnumDyeColor.PURPLE), "dyePurple"),
-	DYE_BLUE(3949738, MapColor.getBlockColor(EnumDyeColor.BLUE), "dyeBlue"),
-	DYE_BROWN(8606770, MapColor.getBlockColor(EnumDyeColor.BROWN), "dyeBrown"),
-	DYE_GREEN(6192150, MapColor.getBlockColor(EnumDyeColor.GREEN), "dyeGreen"),
-	DYE_RED(11546150, MapColor.getBlockColor(EnumDyeColor.RED), "dyeRed"),
-	DYE_BLACK(1908001, MapColor.getBlockColor(EnumDyeColor.BLACK), "dyeBlack"),
+	DYE_WHITE(0xFAFAFA, MapColor.getBlockColor(EnumDyeColor.WHITE), "dyeWhite", EnumDyeColor.WHITE),
+	DYE_ORANGE(16351261, MapColor.getBlockColor(EnumDyeColor.ORANGE), "dyeOrange", EnumDyeColor.ORANGE),
+	DYE_MAGENTA(13061821, MapColor.getBlockColor(EnumDyeColor.MAGENTA), "dyeMagenta", EnumDyeColor.MAGENTA),
+	DYE_LIGHT_BLUE(3847130, MapColor.getBlockColor(EnumDyeColor.LIGHT_BLUE), "dyeLightBlue", EnumDyeColor.LIGHT_BLUE),
+	DYE_YELLOW(16701501, MapColor.getBlockColor(EnumDyeColor.YELLOW), "dyeYellow", EnumDyeColor.YELLOW),
+	DYE_LIME(8439583, MapColor.getBlockColor(EnumDyeColor.LIME), "dyeLime", EnumDyeColor.LIME),
+	DYE_PINK(15961002, MapColor.getBlockColor(EnumDyeColor.PINK), "dyePink", EnumDyeColor.PINK),
+	DYE_GRAY(4673362, MapColor.getBlockColor(EnumDyeColor.GRAY), "dyeGray", EnumDyeColor.GRAY),
+	DYE_SILVER(10329495, MapColor.getBlockColor(EnumDyeColor.SILVER), "dyeSilver", EnumDyeColor.SILVER),
+	DYE_CYAN(1481884, MapColor.getBlockColor(EnumDyeColor.CYAN), "dyeCyan", EnumDyeColor.CYAN),
+	DYE_PURPLE(8991416, MapColor.getBlockColor(EnumDyeColor.PURPLE), "dyePurple", EnumDyeColor.PURPLE),
+	DYE_BLUE(3949738, MapColor.getBlockColor(EnumDyeColor.BLUE), "dyeBlue", EnumDyeColor.BLUE),
+	DYE_BROWN(8606770, MapColor.getBlockColor(EnumDyeColor.BROWN), "dyeBrown", EnumDyeColor.BROWN),
+	DYE_GREEN(6192150, MapColor.getBlockColor(EnumDyeColor.GREEN), "dyeGreen", EnumDyeColor.GREEN),
+	DYE_RED(11546150, MapColor.getBlockColor(EnumDyeColor.RED), "dyeRed", EnumDyeColor.RED),
+	DYE_BLACK(1908001, MapColor.getBlockColor(EnumDyeColor.BLACK), "dyeBlack", EnumDyeColor.BLACK),
 	;
 
-	InkColors(Integer color, MapColor mapColor, String displayName)
+	InkColors(Integer color, MapColor mapColor, String displayName, EnumDyeColor dyeColor)
 	{
 		this.color = color;
 		this.mapColor = mapColor;
 		this.name = displayName;
+		this.dyeColor = dyeColor;
 	}
 
+	InkColors(Integer color, MapColor mapColor, String displayName)
+	{
+		this(color, mapColor, displayName, null);
+	}
+	
 	public static InkColors addColor(String name, int color, MapColor mapColor, String unlocalizedName)
 	{
 		return EnumHelper.addEnum(InkColors.class, name, new Class[] {Integer.class, MapColor.class, String.class}, color, mapColor, unlocalizedName);
@@ -76,7 +82,8 @@ public enum InkColors
 	private final int color;
 	private final MapColor mapColor;
 	private final String name;
-
+	private final EnumDyeColor dyeColor;
+	
 	public int getColor()
 	{
 		return color;
@@ -96,4 +103,5 @@ public enum InkColors
 		return mapColor;
 	}
 	public String getName() {return name;}
+	public EnumDyeColor getDyeColor() {return dyeColor;}
 }

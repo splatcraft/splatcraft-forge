@@ -12,6 +12,7 @@ import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -167,8 +168,14 @@ public class InkExplosion
 					double d9 = entity.posZ - this.z;
 					double d13 = (double)MathHelper.sqrt(d5 * d5 + d7 * d7 + d9 * d9);
 					
-					//if (d13 != 0.0D)
+					if (d13 != 0.0D)
+					{
 						//TODO entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), (float)((int)((d10 * d10 + d10) / 2.0D * 7.0D * (double)f3 + 1.0D)));
+						InkColors inkColor = InkColors.getByColor(color);
+						if(entity instanceof EntitySheep && inkColor != null && inkColor.getDyeColor() != null)
+							((EntitySheep) entity).setFleeceColor(inkColor.getDyeColor());
+							
+					}
 				}
 			}
 		}

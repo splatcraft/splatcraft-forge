@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.entities.classes;
 
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
+import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.utils.SplatCraftDamageSource;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
@@ -8,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -453,11 +455,13 @@ public class EntityInkProjectile extends Entity implements IProjectile
         if (result.entityHit != null)
         {
             float i = 0;
-
+    
+            InkColors inkColor = InkColors.getByColor(getColor());
+            if(result.entityHit instanceof EntitySheep && inkColor != null && inkColor.getDyeColor() != null)
+                ((EntitySheep) result.entityHit).setFleeceColor(inkColor.getDyeColor());
+                
             if(result.entityHit instanceof EntityPlayer && SplatCraftPlayerData.getInkColor((EntityPlayer) result.entityHit) != getColor())
-            {
                 i = damage;
-            }
     
             if(i > 0)
             {
