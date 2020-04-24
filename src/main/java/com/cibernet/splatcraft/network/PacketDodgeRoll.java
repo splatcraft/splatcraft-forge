@@ -24,12 +24,14 @@ public class PacketDodgeRoll implements IMessage
 
     private boolean messageValid;
     boolean useOffhandValues;
-
+    int cooldown;
+    
     public PacketDodgeRoll() {messageValid = false;}
-    public PacketDodgeRoll(boolean useOffhandValues)
+    public PacketDodgeRoll(boolean useOffhandValues, int cooldown)
     {
         messageValid = true;
         this.useOffhandValues = useOffhandValues;
+        this.cooldown = cooldown;
     }
 
     @Override
@@ -38,6 +40,7 @@ public class PacketDodgeRoll implements IMessage
         try
         {
             useOffhandValues = buf.readBoolean();
+            cooldown = buf.readInt();
         } catch (IndexOutOfBoundsException e)
         {
             SplatCraft.logger.info(e.toString());
@@ -51,6 +54,7 @@ public class PacketDodgeRoll implements IMessage
         if(!messageValid)
             return;
         buf.writeBoolean(useOffhandValues);
+        buf.writeInt(cooldown);
     }
 
     public static class Handler implements IMessageHandler<PacketDodgeRoll, IMessage>
@@ -78,6 +82,11 @@ public class PacketDodgeRoll implements IMessage
                 
                 if(message.useOffhandValues)
                     weapon = offhandStack;
+    
+    
+                cooldownTracker.setCooldown(weapon.getItem(), message.cooldown);
+                if(offhandStack.getItem() instanceof ItemDualieBase)
+                    cooldownTracker.setCooldown(offhandStack.getItem(), message.cooldown);
                 
                 ItemWeaponBase.reduceInk(player, ((ItemDualieBase) weapon.getItem()).rollConsumption);
                 SplatCraftUtils.createInkExplosion(player.world, new BlockPos(player.posX, player.posY, player.posZ), 0.5f, ColorItemUtils.getInkColor(weapon));

@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.SplatCraftConfig;
 import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
+import com.cibernet.splatcraft.items.ItemDualieBase;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.network.PacketPlayerSetTransformed;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
@@ -99,10 +100,10 @@ public class ClientEventHandler
 				attributeInstance.applyModifier(SQUID_LAND_SPEED);
 
 		}
+		
 		if(weapon.getItem() instanceof ItemWeaponBase && player.isHandActive() && player.onGround)
 		{
 			ItemWeaponBase weaponItem = ((ItemWeaponBase) weapon.getItem());
-			
 			AttributeModifier speedMod = weaponItem.getSpeedModifier();
 			
 			if(!weaponItem.hasInk(player, ColorItemUtils.getInkColor(weapon)) && weaponItem.getNoInkSpeed() != null)
@@ -135,6 +136,16 @@ public class ClientEventHandler
 					input.moveStrafe *= 5.0F;
 					input = player.movementInput;
 					input.moveForward *= 5.0F;
+					
+					if(stack.getItem() instanceof ItemDualieBase && player.getCooldownTracker().getCooldown(stack.getItem(), 0) > 0)
+					{
+						input.moveForward = 0;
+						input.moveStrafe = 0;
+						input.jump = false;
+						
+						if(Math.abs(player.motionX) <= 0.1 && Math.abs(player.motionZ) <= 0.1)
+							input.sneak = true;
+					}
 				}
 			}
 		}

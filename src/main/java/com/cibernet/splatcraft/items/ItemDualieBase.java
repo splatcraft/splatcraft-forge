@@ -56,7 +56,7 @@ public class ItemDualieBase extends ItemWeaponBase
 				{
 					reduceInk(playerIn);
 					EntityInkProjectile proj = new EntityInkProjectile(worldIn, playerIn, ColorItemUtils.getInkColor(stack), damage);
-					proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
+					proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, playerIn.getCooldownTracker().getCooldown(stack.getItem(), 0) > 0 ? 0 : inaccuracy);
 					proj.setProjectileSize(projectileSize);
 					worldIn.spawnEntity(proj);
 				}
