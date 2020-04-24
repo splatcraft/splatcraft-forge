@@ -153,11 +153,8 @@ public class CommonEventHandler
 								player.motionY = 0;
 								player.moveRelative(input.moveStrafe, -0.2f, input.moveForward, ((ItemDualieBase)activeDualie.getItem()).rollSpeed);
 								
-								int cooldown = rollCount >= maxRolls-1 ? 25 : 10;
-								
-								System.out.println(player.world.isRemote + ": " + rollCount);
-								
-								SplatCraftPacketHandler.instance.sendToServer(new PacketDodgeRoll(activeDualie.equals(offhandStack)));
+								int cooldown = rollCount >= maxRolls-1 ? 30 : 8;
+								SplatCraftPacketHandler.instance.sendToServer(new PacketDodgeRoll(activeDualie.equals(offhandStack), cooldown));
 								
 								
 								cooldownTracker.setCooldown(weapon.getItem(), cooldown);

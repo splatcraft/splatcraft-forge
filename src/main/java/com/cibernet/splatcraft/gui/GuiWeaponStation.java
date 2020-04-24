@@ -265,13 +265,6 @@ public class GuiWeaponStation extends GuiContainer
 		{
 			int x = width / 2 - (tabs.length - 1) * 11 + i * 22 +1;
 			
-			if(i == 0)
-			{
-				System.out.println("hover:" + (mouseX - guiLeft));
-				System.out.println(x - 10 - guiLeft);
-				System.out.println(isPointInRegion(x - 10 - guiLeft, -3, 18, 18, mouseX, mouseY));
-			}
-			
 			if(isPointInRegion(x-10-guiLeft, -3, 18, 18, mouseX, mouseY))
 				drawHoveringText(I18n.format(tabs[i].getUnlocalizedName()), mouseX, mouseY);
 		}
@@ -299,13 +292,6 @@ public class GuiWeaponStation extends GuiContainer
 			for(int i = 0; i < tabs.length; i++)
 			{
 				int x = width / 2 - (tabs.length - 1) * 11 + i * 22 +1;;
-				
-				if(i == 0)
-				{
-					System.out.println("click:" + (mouseX - guiLeft));
-					System.out.println(x - 10 - guiLeft);
-					System.out.println(isPointInRegion(x - 10 - guiLeft, -3, 18, 18, mouseX, mouseY));
-				}
 				
 				if(isPointInRegion(x - 10 - guiLeft, -3, 18, 18, mouseX, mouseY))
 				{
