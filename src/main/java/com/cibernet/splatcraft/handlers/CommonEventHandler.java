@@ -134,7 +134,7 @@ public class CommonEventHandler
 					int rollCount = ItemDualieBase.getRollString(weapon);
 					CooldownTracker cooldownTracker = player.getCooldownTracker();
 					
-					if(player.world.isRemote && cooldownTracker.getCooldown(item, 0) <= 0)
+					if(player.world.isRemote && player instanceof EntityPlayerSP && cooldownTracker.getCooldown(item, 0) <= 0)
 					{
 						MovementInput input = ((EntityPlayerSP) player).movementInput;
 						if(input.jump && (input.moveStrafe != 0 || input.moveForward != 0))
