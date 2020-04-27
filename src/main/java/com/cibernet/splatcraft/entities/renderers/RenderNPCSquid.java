@@ -25,9 +25,11 @@ public class RenderNPCSquid extends RenderLivingBase<EntityNPCSquid>
 	@Override
 	public void doRender(EntityNPCSquid entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
+		GlStateManager.pushMatrix();
 		if(entity.isRiding())
 			GlStateManager.translate(0,0.3f, 0);
 		super.doRender(entity, x, y, z, entityYaw, partialTicks);
+		GlStateManager.popMatrix();
 	}
 	
 	protected boolean canRenderName(EntityNPCSquid entity)
