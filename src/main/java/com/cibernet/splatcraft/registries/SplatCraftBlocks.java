@@ -27,7 +27,9 @@ public class SplatCraftBlocks
 
     public static Block sunkenCrate = new BlockSunkenCrate();
     public static Block oreSardinium = new BlockOre(1, "oreSardinium", "sardinium_ore");
-
+    
+    public static Block grate = new BlockGrate("grate", "grate");
+    
     public static Block PowerEggBlock = new BlockPowerEggStorage();
     public static Block sardiniumBlock = new Block(Material.IRON, MapColor.IRON){{setSoundType(SoundType.METAL);}
     
@@ -42,15 +44,21 @@ public class SplatCraftBlocks
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
         IForgeRegistry<Block> registry = event.getRegistry();
+    
+        registry.register(new BlockIronBars());
         
         registerBlock(registry, inkedBlock);
         registerBlock(registry, inkedSlab);
         registerBlock(registry, inkedStairs);
+        
         registerBlock(registry, emptyInkwell, true);
         registerBlock(registry, inkwell);
         registerBlock(registry, canvas, true);
+        registerBlock(registry, grate, true);
+        
         registerBlock(registry, sunkenCrate, true);
         registerBlock(registry, oreSardinium, true);
+        
         registerBlock(registry, PowerEggBlock, true);
         registerBlock(registry, sardiniumBlock, true);
         

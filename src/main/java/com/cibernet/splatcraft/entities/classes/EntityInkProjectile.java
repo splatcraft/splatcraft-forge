@@ -449,7 +449,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
      */
     protected void onImpact(RayTraceResult result)
     {
-        if(result.typeOfHit.equals(RayTraceResult.Type.BLOCK) && world.getBlockState(result.getBlockPos()).getBlock().equals(Blocks.IRON_BARS))
+        if(result.typeOfHit.equals(RayTraceResult.Type.BLOCK) && SplatCraftUtils.canInkPassthrough(world,result.getBlockPos()))
             return;
         
         if (result.entityHit != null)

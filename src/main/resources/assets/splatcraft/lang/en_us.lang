@@ -5,6 +5,7 @@ tile.inkedBlock.name=Inked Block
 tile.inkwellEmpty.name=Empty Inkwell
 tile.inkwell.name=Inkwell
 tile.canvas.name=Ink Canvas
+tile.grate.name=Grate
 
 tile.sunkenCrate.name=Sunken Crate
 
@@ -31,6 +32,12 @@ item.filterPastel.name=Pastel Filter
 item.filterEnchanted.name=Enchanted Filter
 item.filterCreative.name=Creative Filter
 item.filter.tooltip=Use it in an Ink Vat to get more colors!
+
+item.inkClothHelmet.name=Ink Cloth Hat
+item.inkClothChestplate.name=Ink Cloth Shirt
+item.inkClothLeggings.name=Ink Cloth Pants
+item.inkClothBoots.name=Ink Cloth Boots
+item.inkCloth.tooltip=It matches your ink color!
 
 item.inkTank.name=Ink Tank
 item.inkTank.ink=Ink: %s / %s
