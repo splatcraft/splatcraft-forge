@@ -133,7 +133,9 @@ public class EntityInkProjectile extends Entity implements IProjectile
 
                 if (this.ticksInGround == 1200)
                 {
-                    SplatCraftUtils.inkBlock(world, pos, getColor(), damage);
+                    if(thrower instanceof EntityPlayer)
+                        SplatCraftUtils.playerInkBlock((EntityPlayer) thrower, world, pos, getColor(), damage);
+                    else SplatCraftUtils.inkBlock(world, pos, getColor(), damage);
                     this.setDead();
                 }
 

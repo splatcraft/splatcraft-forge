@@ -174,3 +174,12 @@ death.attack.splat.item=%1$s was splatted by %2$s using %3$s
 death.attack.roll=%1$s was crushed by %2$s
 death.attack.roll.item=%1$s was crushed by %2$s using %3$s
 death.attack.enemyInk=%1$s drowned in enemy ink
+
+stat.sc.blocksInked=Blocks Inked
+stat.sc.subsUsed=Sub Weapons Used
+stat.sc.specialsUsed=Special Weapons Used
+stat.sc.squidTime=Time as a Squid
+stat.sc.weaponsCrafted=Weapons Crafted
+stat.sc.inkwellsCrafted=Inkwells Filled
+
+

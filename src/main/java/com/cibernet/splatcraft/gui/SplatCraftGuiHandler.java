@@ -25,7 +25,7 @@ public class SplatCraftGuiHandler implements IGuiHandler
 		switch(ID)
 		{
 			case INKWELL_VAT_GUI:
-				return new ContainerInkwellVat(player.inventory, (TileEntityInkwellVat) te);
+				return new ContainerInkwellVat(player, (TileEntityInkwellVat) te);
 			case WEAPON_STATION_GUI:
 				return new ContainerPlayerInv(player.inventory, pos, 8, 120);
 		}
@@ -41,7 +41,7 @@ public class SplatCraftGuiHandler implements IGuiHandler
 		switch(ID)
 		{
 			case INKWELL_VAT_GUI:
-				return new GuiInkwellVat(player.inventory, (TileEntityInkwellVat) te);
+				return new GuiInkwellVat(player, (TileEntityInkwellVat) te);
 			case WEAPON_STATION_GUI:
 				return new GuiWeaponStation(player, pos);
 		}

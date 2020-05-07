@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.recipes.RecipesInkwellVat;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
+import com.cibernet.splatcraft.registries.SplatCraftStats;
 import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
 import com.cibernet.splatcraft.utils.InkColors;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +26,7 @@ public class ContainerInkwellVat extends Container
 {
 	public TileEntityInkwellVat te;
 
-	public ContainerInkwellVat(InventoryPlayer player, TileEntityInkwellVat te)
+	public ContainerInkwellVat(EntityPlayer player, TileEntityInkwellVat te)
 	{
 		super();
 		this.te = te;
@@ -34,14 +35,14 @@ public class ContainerInkwellVat extends Container
 		addSlotToContainer(new SlotInput(new ItemStack(SplatCraftItems.powerEgg), te, 1, 46, 70));
 		addSlotToContainer(new SlotInput(new ItemStack(SplatCraftBlocks.emptyInkwell), te, 2, 92, 82));
 		addSlotToContainer(new SlotFilter(te, 3, 36, 89));
-		addSlotToContainer(new SlotOutput(te, 4, 112, 82));
+		addSlotToContainer(new SlotOutput(player, te, 4, 112, 82));
 
 		for(int xx = 0; xx < 9; xx++)
 			for(int yy = 0; yy < 3; yy++)
-				addSlotToContainer(new Slot(player, xx+yy*9 + 9, 8 + xx*18, 126 + yy*18));
+				addSlotToContainer(new Slot(player.inventory, xx+yy*9 + 9, 8 + xx*18, 126 + yy*18));
 
 		for(int xx = 0; xx < 9; xx++)
-			addSlotToContainer(new Slot(player, xx, 8 + xx*18, 184));
+			addSlotToContainer(new Slot(player.inventory, xx, 8 + xx*18, 184));
 	}
 
 	@Override
@@ -98,6 +99,7 @@ public class ContainerInkwellVat extends Container
 					te.decrStackSize(0, itemCount);
 					te.decrStackSize(1, itemCount);
 					te.decrStackSize(2, itemCount);
+					playerIn.addStat(SplatCraftStats.INKWELLS_CRAFTED, itemCount);
 				}
 				return ItemStack.EMPTY;
 			}
@@ -165,15 +167,24 @@ public class ContainerInkwellVat extends Container
 	}
 	class SlotOutput extends Slot
 	{
-		public SlotOutput(IInventory inventoryIn, int index, int xPosition, int yPosition)
+		EntityPlayer player;
+		public SlotOutput(EntityPlayer player, IInventory inventoryIn, int index, int xPosition, int yPosition)
 		{
 			super(inventoryIn, index, xPosition, yPosition);
+			this.player = player;
 		}
 		
 		@Override
 		public boolean isItemValid(ItemStack stack)
 		{
 			return false;
+		}
+		
+		@Override
+		public ItemStack decrStackSize(int amount)
+		{
+			player.addStat(SplatCraftStats.INKWELLS_CRAFTED, amount);
+			return super.decrStackSize(amount);
 		}
 	}
 }

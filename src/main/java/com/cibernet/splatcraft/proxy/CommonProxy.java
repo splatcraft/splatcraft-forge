@@ -3,15 +3,12 @@ package com.cibernet.splatcraft.proxy;
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.gui.SplatCraftGuiHandler;
 import com.cibernet.splatcraft.handlers.CommonEventHandler;
-import com.cibernet.splatcraft.registries.SplatCraftSounds;
+import com.cibernet.splatcraft.registries.*;
 import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftSaveHandler;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.recipes.RecipesInkwellVat;
 import com.cibernet.splatcraft.recipes.RecipesWeaponStation;
-import com.cibernet.splatcraft.registries.SplatCraftEntities;
-import com.cibernet.splatcraft.registries.SplatCraftBlocks;
-import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
@@ -34,6 +31,7 @@ public class CommonProxy
         SplatCraftEntities.registerEntities();
         SplatCraftPacketHandler.registerMessages(SplatCraft.MODID);
         SplatCraftGamerules.registerRules();
+        SplatCraftStats.registerStats();
         
         GameRegistry.registerTileEntity(TileEntityInkedBlock.class, SplatCraft.MODID+ ":inked_block");
         GameRegistry.registerTileEntity(TileEntityColor.class, SplatCraft.MODID+ ":ink_color");

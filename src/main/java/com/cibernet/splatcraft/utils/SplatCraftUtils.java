@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.blocks.BlockInkColor;
 import com.cibernet.splatcraft.blocks.BlockSquidPassable;
 import com.cibernet.splatcraft.blocks.IInked;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
+import com.cibernet.splatcraft.registries.SplatCraftStats;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
@@ -110,7 +111,18 @@ public class SplatCraftUtils
 	{
 		createInkExplosion(worldIn, null, pos, radius, color);
 	}
-
+	
+	public static boolean playerInkBlock(EntityPlayer player, World worldIn, BlockPos pos, int color, float damage)
+	{
+		if(inkBlock(worldIn, pos, color, damage))
+		{
+			player.addStat(SplatCraftStats.BLOCKS_INKED);
+			//TODO add points
+			return true;
+		}
+		return false;
+	}
+	
 	public static boolean inkBlock(World worldIn, BlockPos pos, int color, float damage)
 	{
 
@@ -134,6 +146,8 @@ public class SplatCraftUtils
 					return false;
 			
 			TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
+			if(te.getColor() == color)
+				return false;
 			te.setColor(color);
 			worldIn.notifyBlockUpdate(pos, state, state, 3);
 			return true;

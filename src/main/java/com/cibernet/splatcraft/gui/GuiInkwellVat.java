@@ -9,6 +9,7 @@ import com.cibernet.splatcraft.utils.InkColors;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
@@ -27,10 +28,10 @@ public class GuiInkwellVat extends GuiContainer
 	private int clientSelectedColor = -1;
 	private boolean scrolling = false;
 
-	public GuiInkwellVat(InventoryPlayer player, TileEntityInkwellVat te)
+	public GuiInkwellVat(EntityPlayer player, TileEntityInkwellVat te)
 	{
 		super(new ContainerInkwellVat(player,te));
-		this.player = player;
+		this.player = player.inventory;
 		this.te = te;
 		clientSelectedColor = te.getField(0);
 		ySize = 208;

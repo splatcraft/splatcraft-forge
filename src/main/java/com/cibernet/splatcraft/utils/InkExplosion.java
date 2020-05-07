@@ -226,7 +226,12 @@ public class InkExplosion
 				}
 				
 				if (iblockstate.getMaterial() != Material.AIR)
-					SplatCraftUtils.inkBlock(this.world, blockpos, this.color, damage);
+				{
+					EntityLivingBase placer = getExplosivePlacedBy();
+					if(placer instanceof EntityPlayer)
+						SplatCraftUtils.playerInkBlock((EntityPlayer) placer, this.world, blockpos, this.color, damage);
+					else SplatCraftUtils.inkBlock(this.world, blockpos, this.color, damage);
+				}
 				
 			}
 		}
@@ -259,9 +264,9 @@ public class InkExplosion
 		{
 			return null;
 		}
-		else if (this.exploder instanceof EntityTNTPrimed)
+		else if (this.exploder instanceof EntityInkProjectile)
 		{
-			return ((EntityTNTPrimed)this.exploder).getTntPlacedBy();
+			return ((EntityInkProjectile)this.exploder).getThrower();
 		}
 		else
 		{

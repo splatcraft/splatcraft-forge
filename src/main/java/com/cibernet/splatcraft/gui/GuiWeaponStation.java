@@ -9,6 +9,7 @@ import com.cibernet.splatcraft.recipes.RecipeSubtype;
 import com.cibernet.splatcraft.recipes.RecipeType;
 import com.cibernet.splatcraft.recipes.RecipesWeaponStation;
 import com.cibernet.splatcraft.recipes.WeaponStationTabs;
+import com.cibernet.splatcraft.registries.SplatCraftStats;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.client.Minecraft;

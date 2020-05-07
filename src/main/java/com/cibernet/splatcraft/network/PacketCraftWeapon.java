@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.network;
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.recipes.RecipeSubtype;
 import com.cibernet.splatcraft.recipes.RecipesWeaponStation;
+import com.cibernet.splatcraft.registries.SplatCraftStats;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -69,6 +70,7 @@ public class PacketCraftWeapon implements IMessage
             }
     
             SplatCraftUtils.giveItem(player, recipe.getOutput().copy());
+            player.addStat(SplatCraftStats.WEAPONS_CRAFTED);
         }
     }
 }

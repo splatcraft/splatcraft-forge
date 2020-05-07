@@ -158,7 +158,7 @@ public class ItemRollerBase extends ItemWeaponBase
                 canInk = SplatCraftUtils.canInk(worldIn, inkPos);
                 
                 if(canInk)
-                    SplatCraftUtils.inkBlock(worldIn, inkPos, ColorItemUtils.getInkColor(stack), rollDamage);
+                    SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, ColorItemUtils.getInkColor(stack), rollDamage);
                 
                 List<EntityPlayer> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(inkPos.up()));
                 for(EntityPlayer target : inkedPlayers)

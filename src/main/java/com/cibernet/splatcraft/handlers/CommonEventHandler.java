@@ -7,6 +7,7 @@ import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
+import com.cibernet.splatcraft.registries.SplatCraftStats;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
@@ -105,6 +106,8 @@ public class CommonEventHandler
 			}
 			SplatCraftPlayerData.dischargeWeapon(player);
 			SplatCraftPlayerData.setCanDischarge(player.getUniqueID(), true);
+			
+			player.addStat(SplatCraftStats.SQUID_TIME);
 		}
 		else if(!player.isDead && !player.isSpectator())
 		{
