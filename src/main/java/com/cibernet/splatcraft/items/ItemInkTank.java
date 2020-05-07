@@ -27,10 +27,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static com.cibernet.splatcraft.utils.ColorItemUtils.isColorLocked;
-import static com.cibernet.splatcraft.utils.ColorItemUtils.setInkColor;
+import static com.cibernet.splatcraft.utils.ColorItemUtils.*;
 
-public class ItemInkTank extends ItemArmor implements IBattleItem
+public class ItemInkTank extends ItemInkColoredArmor
 {
 	
 	public final float capacity;
@@ -38,14 +37,9 @@ public class ItemInkTank extends ItemArmor implements IBattleItem
 	
 	public ItemInkTank(String unlocalizedName, String registryName, float capacity, ArmorMaterial materialIn)
 	{
-		super(materialIn, 0, EntityEquipmentSlot.CHEST);
-		
-		setCreativeTab(TabSplatCraft.main);
-		setUnlocalizedName(unlocalizedName);
-		setRegistryName(registryName);
+		super(unlocalizedName, registryName, materialIn, 0, EntityEquipmentSlot.CHEST);
 		
 		this.capacity = capacity;
-		ColorItemUtils.inkColorItems.add(this);
 		
 		this.addPropertyOverride(new ResourceLocation("ink_stage"), new IItemPropertyGetter()
 		{
@@ -66,12 +60,17 @@ public class ItemInkTank extends ItemArmor implements IBattleItem
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag advanced)
 	{
-		super.addInformation(stack, worldIn, tooltip, advanced);
-		
 		if(advanced.isAdvanced())
 		{
 			tooltip.add(TextFormatting.GRAY + I18n.format("item.inkTank.ink", getInkAmount(stack), capacity));
 		}
+		
+		if(isColorLocked(stack))
+		{
+			int color = getInkColor(stack);
+			tooltip.add(SplatCraftUtils.getColorName(color));
+		}
+		
 	}
 	
 	@Override
@@ -91,9 +90,11 @@ public class ItemInkTank extends ItemArmor implements IBattleItem
 		
 		
 		EntityPlayer player = (EntityPlayer) entityIn;
-		setInkColor(stack, SplatCraftPlayerData.getInkColor(player));
-		
 		float ink = getInkAmount(stack);
+		
+		if(SplatCraftPlayerData.getInkColor(player) != getInkColor(stack))
+			return;
+		
 		if((player).getItemStackFromSlot(EntityEquipmentSlot.CHEST).equals(stack) &&
 				ink < capacity && ((player).getActiveItemStack().isEmpty() || ((player).getActiveItemStack().getItem() instanceof ICharge)))
 		{
@@ -126,18 +127,6 @@ public class ItemInkTank extends ItemArmor implements IBattleItem
 	public boolean isRepairable()
 	{
 		return false;
-	}
-	
-	@Override
-	public boolean hasColor(ItemStack stack)
-	{
-		return true;
-	}
-	
-	@Override
-	public int getColor(ItemStack stack)
-	{
-		return ColorItemUtils.getInkColor(stack);
 	}
 	
 	public static float getInkAmount(ItemStack stack)

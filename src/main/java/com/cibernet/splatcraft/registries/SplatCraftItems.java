@@ -1,11 +1,16 @@
 package com.cibernet.splatcraft.registries;
 
+import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.entities.models.ModelInkTank;
 import com.cibernet.splatcraft.items.*;
 import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.Block;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -13,10 +18,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SplatCraftItems
 {
+    
+    public static final ItemArmor.ArmorMaterial INK_CLOTH_MATERIAL = EnumHelper.addArmorMaterial("inkCloth", SplatCraft.MODID+":ink_cloth", -1, new int[] {0,0,0,0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
     
     public static ArrayList<Block> itemBlocks = new ArrayList<>();
 
@@ -38,6 +44,11 @@ public class SplatCraftItems
     public static final Item splatDualie = new ItemDualieBase("splatDualies", "splat_dualies", 1f, 0.5f, 10, 8, 6, 0.75f, 1, 0.7f, 9);
     
     public static final ItemInkTank inkTank = new ItemInkTank("inkTank", "ink_tank", 100);
+    
+    public static final Item inkClothHat= new ItemInkColoredArmor("inkClothHelmet", "ink_cloth_helmet", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.HEAD);
+    public static final Item inkClothShirt= new ItemInkColoredArmor("inkClothChestplate", "ink_cloth_chestplate", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.CHEST);
+    public static final Item inkClothPants= new ItemInkColoredArmor("inkClothLeggings", "ink_cloth_leggings", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.LEGS);
+    public static final Item inkClothShoes= new ItemInkColoredArmor("inkClothBoots", "ink_cloth_boots", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.FEET);
     
     public static final ItemFilter filterEmpty = new ItemFilter("filterEmpty", "filter_empty", false);
     public static final ItemFilter filterNeon = new ItemFilter("filterNeon", "filter_neon", false);
@@ -71,6 +82,11 @@ public class SplatCraftItems
         registerItem(registry, splatDualie);
         
         registerItem(registry, inkTank);
+        
+        registerItem(registry, inkClothHat);
+        registerItem(registry, inkClothShirt);
+        registerItem(registry, inkClothPants);
+        registerItem(registry, inkClothShoes);
         
         registerItem(registry, filterEmpty);
         registerItem(registry, filterNeon);
