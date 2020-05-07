@@ -92,14 +92,11 @@ public class ItemInkTank extends ItemInkColoredArmor
 		EntityPlayer player = (EntityPlayer) entityIn;
 		float ink = getInkAmount(stack);
 		
-		if(SplatCraftPlayerData.getInkColor(player) != getInkColor(stack))
-			return;
-		
-		if((player).getItemStackFromSlot(EntityEquipmentSlot.CHEST).equals(stack) &&
+		if(SplatCraftPlayerData.getInkColor(player) == getInkColor(stack) && (player).getItemStackFromSlot(EntityEquipmentSlot.CHEST).equals(stack) &&
 				ink < capacity && ((player).getActiveItemStack().isEmpty() || ((player).getActiveItemStack().getItem() instanceof ICharge)))
 		{
 			float rechargeAmnt = SplatCraftPlayerData.getIsSquid(player) && SplatCraftUtils.canSquidHide(worldIn, player) ? 1f : 0.1f;
-			setInkAmount(stack, Math.min(capacity, ink+rechargeAmnt));
+			setInkAmount(stack, Math.min(capacity, ink + rechargeAmnt));
 		}
 		
 		super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
