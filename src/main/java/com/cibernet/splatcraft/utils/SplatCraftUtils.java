@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.utils;
 
 import com.cibernet.splatcraft.blocks.BlockInkColor;
+import com.cibernet.splatcraft.blocks.BlockSquidPassable;
 import com.cibernet.splatcraft.blocks.IInked;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
@@ -13,6 +14,7 @@ import net.minecraft.block.BlockSlab;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
@@ -22,7 +24,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.*;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -182,7 +183,7 @@ public class SplatCraftUtils
 	{
 		IBlockState state = worldIn.getBlockState(pos);
 		
-		if(state.getBlock() == Blocks.AIR || state.getBlock() == Blocks.IRON_BARS)
+		if(state.getBlock() == Blocks.AIR || state.getBlock() == Blocks.IRON_BARS || state.getBlock() instanceof BlockSquidPassable)
 			return true;
 		
 		if(state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
@@ -226,8 +227,16 @@ public class SplatCraftUtils
 	public static String getColorName(int color)
 	{
 		InkColors col = InkColors.getByColor(color);
-
-		return col == null ? String.format("#%06X", color) : I18n.translateToLocal("color." + col.getName());
+		
+		if(col == null)
+		{
+			String fallbackName = "color." + String.format("%06X", color).toLowerCase();
+			String fallbackNameLocalized = I18n.format(fallbackName);
+			
+			return fallbackNameLocalized.equals(fallbackName) ? String.format("#%06X", color) : fallbackNameLocalized;
+		}
+		
+		return I18n.format("color." + col.getName());
 	}
 
 	public static void dropItem(World worldIn, BlockPos pos, ItemStack stack, boolean useTileDrops)
