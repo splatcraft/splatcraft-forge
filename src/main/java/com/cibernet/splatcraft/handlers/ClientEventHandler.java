@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -39,7 +40,9 @@ public class ClientEventHandler
 	private static final AttributeModifier SQUID_SWIM_SPEED = (new AttributeModifier( "Squid swim speed boost", 1.25D, 2)).setSaved(false);
 	private static final AttributeModifier ENEMY_INK_SPEED = (new AttributeModifier( "Enemy ink speed penalty", -0.3D, 2)).setSaved(false);
 
-
+	
+	private static int sneakTime = 0;
+	
 	@SubscribeEvent
 	public void clientTick(TickEvent.ClientTickEvent event)
 	{
@@ -75,6 +78,34 @@ public class ClientEventHandler
 		boolean isSquid = SplatCraftPlayerData.getIsSquid(player);
 		if(isSquid)
 		{
+			/* TODO super jump
+			if(player.isSneaking())
+			{
+				sneakTime++;
+				if(sneakTime >= 40)
+				{
+					BlockPos point = player.world.getSpawnPoint().add(0.5f, 0, 0.5f);
+					
+					double x = (player.posX-point.getX());
+					double z = (player.posZ-point.getZ());
+					
+					double angle = Math.toDegrees(Math.atan(x/z));
+					
+					if(z < 0)
+						angle += 180;
+					else if(x < 0)
+						angle += 360;
+					
+					System.out.println(point);
+					
+					player.setPositionAndRotation(player.posX,player.posY,player.posZ, (float) -angle+180, player.rotationPitch);
+					float velocity = (float) (Math.sqrt(Math.pow(x,2)+Math.pow(z,2))/6.95f);
+					player.moveRelative(0, 0, 1, velocity);
+					player.motionY = 5f;
+					sneakTime = 0;
+				}
+			} else sneakTime = 0;
+			*/
 			if(SplatCraftUtils.canSquidHide(player.world, player))
 			{
 				if(!attributeInstance.hasModifier(SQUID_SWIM_SPEED))
@@ -207,7 +238,10 @@ public class ClientEventHandler
 				axisalignedbb = new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ, axisalignedbb.minX + 0.6, axisalignedbb.minY + (isSquid ? 1.8 : 0.6), axisalignedbb.minZ + 0.6);
 				
 				if(!player.world.collidesWithAnyBlock(axisalignedbb))
+				{
 					SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerSetTransformed(player.getUniqueID(), !isSquid));
+					SplatCraftPlayerData.setIsSquid(player, !isSquid);
+				}
 				isSquidKeyHeld = true;
 			}
 			else
@@ -218,7 +252,10 @@ public class ClientEventHandler
 					axisalignedbb = new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY, axisalignedbb.minZ, axisalignedbb.minX + 0.6, axisalignedbb.minY + (1.8), axisalignedbb.minZ + 0.6);
 					
 					if(!player.world.collidesWithAnyBlock(axisalignedbb))
+					{
 						SplatCraftPacketHandler.instance.sendToServer(new PacketPlayerSetTransformed(player.getUniqueID(), false));
+						SplatCraftPlayerData.setIsSquid(player, false);
+					}
 				}
 				isSquidKeyHeld = false;
 			}

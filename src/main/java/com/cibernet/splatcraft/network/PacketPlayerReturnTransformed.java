@@ -68,7 +68,8 @@ public class PacketPlayerReturnTransformed implements IMessage
         {
             try
             {
-                SplatCraftPlayerData.getPlayerData(message.player).isSquid = message.isTransformed ? 2 : 1;
+               if(SplatCraftPlayerData.getPlayerData(message.player).isSquid < 1 == message.isTransformed)
+                    SplatCraftPlayerData.getPlayerData(message.player).isSquid = message.isTransformed ? 2 : 1;
 
             } catch (Exception e)
             {
