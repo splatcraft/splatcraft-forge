@@ -80,7 +80,7 @@ public class BlockGrate extends BlockSquidPassable
 	@SideOnly(Side.CLIENT)
 	public BlockRenderLayer getBlockLayer()
 	{
-		return BlockRenderLayer.TRANSLUCENT;
+		return BlockRenderLayer.CUTOUT;
 	}
 	public boolean isOpaqueCube(IBlockState state)
 	{

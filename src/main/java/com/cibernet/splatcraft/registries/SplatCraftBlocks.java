@@ -29,6 +29,7 @@ public class SplatCraftBlocks
     public static Block oreSardinium = new BlockOre(1, "oreSardinium", "sardinium_ore");
     
     public static Block grate = new BlockGrate("grate", "grate");
+    public static Block barrierBar = new BlockBarrierBar("barrierBar", "barrier_bar");
     
     public static Block PowerEggBlock = new BlockPowerEggStorage();
     public static Block sardiniumBlock = new Block(Material.IRON, MapColor.IRON){{setSoundType(SoundType.METAL);}
@@ -55,6 +56,7 @@ public class SplatCraftBlocks
         registerBlock(registry, inkwell);
         registerBlock(registry, canvas, true);
         registerBlock(registry, grate, true);
+        registerBlock(registry, barrierBar, true);
         
         registerBlock(registry, sunkenCrate, true);
         registerBlock(registry, oreSardinium, true);

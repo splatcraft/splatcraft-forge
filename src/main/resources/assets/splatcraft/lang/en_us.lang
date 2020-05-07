@@ -6,6 +6,7 @@ tile.inkwellEmpty.name=Empty Inkwell
 tile.inkwell.name=Inkwell
 tile.canvas.name=Ink Canvas
 tile.grate.name=Grate
+tile.barrierBar.name=Barrier Bar
 
 tile.sunkenCrate.name=Sunken Crate
 
