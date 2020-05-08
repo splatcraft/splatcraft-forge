@@ -50,14 +50,7 @@ public class BlockInkwell extends BlockInkColor
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced)
 	{
-
-		int color = SplatCraft.DEFAULT_INK;
-
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("color"))
-			color = ColorItemUtils.getInkColor(stack);
-
-		tooltip.add(SplatCraftUtils.getColorName(color));
-
+		tooltip.add(SplatCraftUtils.getColorName(BlockInkwell.getInkColor(stack)));
 		super.addInformation(stack, player, tooltip, advanced);
 	}
 

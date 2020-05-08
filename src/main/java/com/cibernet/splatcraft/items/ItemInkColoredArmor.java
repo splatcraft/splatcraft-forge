@@ -42,13 +42,12 @@ public class ItemInkColoredArmor extends ItemArmor implements IBattleItem
 	{
 		super.addInformation(stack, worldIn, tooltip, flagIn);
 		
-		tooltip.add(I18n.format("item.inkCloth.tooltip"));
-		
 		if(isColorLocked(stack))
 		{
 			int color = getInkColor(stack);
 			tooltip.add(SplatCraftUtils.getColorName(color));
 		}
+		else tooltip.add(I18n.format("item.inkCloth.tooltip"));
 	}
 	
 	@Override
