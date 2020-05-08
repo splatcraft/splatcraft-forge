@@ -199,7 +199,7 @@ public class CommonEventHandler
 	{
 		if(event.phase == TickEvent.Phase.START)
 		{
-			List<Entity> entityItems = new ArrayList<>(event.world.getLoadedEntityList());
+			List<Entity> entityItems = new ArrayList<>(event.world.loadedEntityList);
 			entityItems.removeIf(entity -> !(entity instanceof EntityItem));
 			for(Entity entity : entityItems)
 			{
