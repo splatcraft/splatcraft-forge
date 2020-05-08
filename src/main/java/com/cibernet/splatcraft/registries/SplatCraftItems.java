@@ -122,6 +122,7 @@ public class SplatCraftItems
             registerItem(registry, item.setRegistryName(item.getBlock().getRegistryName()));
         }
 
-        registerItem(registry, new ItemInkwell());
+        registerItem(registry, new ItemBlockInkColor(SplatCraftBlocks.inkwell).setMaxStackSize(16));
+        registerItem(registry, new ItemBlockInkColor(SplatCraftBlocks.inkedWool));
     }
 }

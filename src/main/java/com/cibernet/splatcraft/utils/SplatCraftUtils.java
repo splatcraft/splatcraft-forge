@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.utils;
 
 import com.cibernet.splatcraft.blocks.BlockInkColor;
+import com.cibernet.splatcraft.blocks.BlockInkedWool;
 import com.cibernet.splatcraft.blocks.BlockSquidPassable;
 import com.cibernet.splatcraft.blocks.IInked;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
@@ -141,11 +142,30 @@ public class SplatCraftUtils
 		
 		if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
 		{
+			
+			TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
+			if(state.getBlock() instanceof BlockInkedWool)
+			{
+				worldIn.setBlockState(pos, SplatCraftBlocks.inkedBlock.getDefaultState());
+				TileEntityInkedBlock inkTe = (TileEntityInkedBlock) SplatCraftBlocks.inkedBlock.createTileEntity(worldIn, SplatCraftBlocks.inkedBlock.getDefaultState());
+				
+				worldIn.setTileEntity(pos, inkTe);
+				
+				inkTe.setColor(color);
+				inkTe.setSavedColor(te.getColor());
+				inkTe.setSavedState(state);
+				System.out.println(state);
+				System.out.println(color);
+				System.out.println(te.getColor());
+				
+				return true;
+			}
+			
 			if(state.getBlock() instanceof IInked)
 				if(!((IInked) state.getBlock()).canInk())
 					return false;
 			
-			TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
+			
 			if(te.getColor() == color)
 				return false;
 			te.setColor(color);
@@ -223,7 +243,10 @@ public class SplatCraftUtils
 		{
 			return true;
 		}
-
+		
+		if(state.getBlock() instanceof BlockInkedWool)
+			return true;
+		
 		if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
 		{
 			if(state.getBlock() instanceof BlockInkColor)

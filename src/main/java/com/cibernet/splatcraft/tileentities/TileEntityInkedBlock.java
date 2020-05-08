@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public class TileEntityInkedBlock extends TileEntityColor
 {
 	private IBlockState savedState = Blocks.STONE.getDefaultState();
-	private int color = 0x000FFF;
+	private int savedColor = 0;
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound)
@@ -27,6 +27,9 @@ public class TileEntityInkedBlock extends TileEntityColor
 		int meta = compound.getInteger("savedMeta");
 		
 		savedState = block.getStateFromMeta(meta);
+		
+		if(compound.hasKey("savedColor"))
+			savedColor = compound.getInteger("savedColor");
 	}
 	
 	@Override
@@ -35,7 +38,10 @@ public class TileEntityInkedBlock extends TileEntityColor
 		
 		compound.setString("savedBlock", savedState.getBlock().getRegistryName().toString());
 		compound.setInteger("savedMeta", savedState.getBlock().getMetaFromState(savedState));
-
+		
+		if(savedColor != 0)
+			compound.setInteger("savedColor", savedColor);
+		
 		return super.writeToNBT(compound);
 	}
 
@@ -48,7 +54,13 @@ public class TileEntityInkedBlock extends TileEntityColor
 		this.savedState = state;
 		return this;
 	}
+	public TileEntityInkedBlock setSavedColor(int color)
+	{
+		this.savedColor = color;
+		return this;
+	}
 
 	public IBlockState getSavedState() {return savedState;}
+	public int getSavedColor() {return savedColor;}
 
 }

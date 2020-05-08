@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.blocks;
 
+import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
@@ -213,6 +214,8 @@ public class BlockInked extends BlockInkColor implements IInked
 		{
 			TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
 			worldIn.setBlockState(pos, te.getSavedState(), 3);
+			if(te.getSavedState().getBlock() instanceof BlockInkedWool)
+				worldIn.setTileEntity(pos, ((TileEntityColor) te.getSavedState().getBlock().createTileEntity(worldIn, te.getSavedState())).setColor(te.getSavedColor()));
 		}
 		else worldIn.setBlockState(pos, Blocks.SAND.getDefaultState(), 3);
 		

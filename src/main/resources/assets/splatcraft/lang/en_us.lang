@@ -5,6 +5,7 @@ tile.inkedBlock.name=Inked Block
 tile.inkwellEmpty.name=Empty Inkwell
 tile.inkwell.name=Inkwell
 tile.canvas.name=Ink Canvas
+tile.inkedWool.name=Inked Wool
 tile.grate.name=Grate
 tile.barrierBar.name=Barrier Bar
 

@@ -10,16 +10,21 @@ import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftStats;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
+import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,7 +38,9 @@ import net.minecraft.world.storage.loot.*;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -43,7 +50,12 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.Sys;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.ListIterator;
+
+import static com.cibernet.splatcraft.utils.ColorItemUtils.*;
 
 public class CommonEventHandler
 {
@@ -180,6 +192,46 @@ public class CommonEventHandler
 			else if(SplatCraftPlayerData.canDischarge(player)) SplatCraftPlayerData.dischargeWeapon(player);
 		}
 
+	}
+	
+	@SubscribeEvent
+	public void onWorldTick(TickEvent.WorldTickEvent event)
+	{
+		if(event.phase == TickEvent.Phase.START)
+		{
+			List<Entity> entityItems = new ArrayList<>(event.world.getLoadedEntityList());
+			entityItems.removeIf(entity -> !(entity instanceof EntityItem));
+			for(Entity entity : entityItems)
+			{
+				EntityItem entityItem = (EntityItem) entity;
+				
+				BlockPos pos = new BlockPos(entityItem.posX, entityItem.posY-1, entityItem.posZ);
+				
+				ItemStack stack = entityItem.getItem();
+				
+				if((stack.getItem().equals(Item.getItemFromBlock(SplatCraftBlocks.inkedWool)) || stack.isItemEqual(new ItemStack(Item.getItemFromBlock(Blocks.WOOL),1,0)))
+						&& entityItem.world.getBlockState(pos).getBlock().equals(SplatCraftBlocks.inkwell))
+				{
+					
+					if(entityItem.world.getTileEntity(pos) instanceof TileEntityColor)
+					{
+						TileEntityColor te = (TileEntityColor) entityItem.world.getTileEntity(pos);
+						
+						//if(InkColors.getByColor(te.getColor()).getDyeColor() != null)
+						//	stack = new ItemStack(Blocks.WOOL, stack.getCount(), InkColors.getByColor(te.getColor()).getDyeColor().getMetadata());
+						//else
+						stack = new ItemStack(SplatCraftBlocks.inkedWool, stack.getCount());
+						entityItem.setItem(stack);
+						setInkColor(stack, te.getColor());
+					}
+				}
+				else if (stack.getItem().equals(Item.getItemFromBlock(SplatCraftBlocks.inkedWool)) && entityItem.world.getBlockState(pos.up()).getMaterial().equals(Material.WATER))
+				{
+					entityItem.setItem(new ItemStack(Blocks.WOOL, stack.getCount()));
+				}
+			
+			}
+		}
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)

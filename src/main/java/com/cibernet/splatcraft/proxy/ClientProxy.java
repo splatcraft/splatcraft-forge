@@ -15,6 +15,7 @@ import com.cibernet.splatcraft.entities.renderers.RenderNPCSquid;
 import com.cibernet.splatcraft.gui.GuiOverlay;
 import com.cibernet.splatcraft.handlers.ClientEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftKeyHandler;
+import com.cibernet.splatcraft.items.ItemBlockInkColor;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftModelManager;
@@ -69,7 +70,7 @@ public class ClientProxy extends CommonProxy
                 return BlockInkwell.getInkColor(stack);
 
             return -1;
-        }, Item.getItemFromBlock(SplatCraftBlocks.inkwell));
+        }, ItemBlockInkColor.itemList.toArray(new Item[ItemBlockInkColor.itemList.size()]));
 
         mc.getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
             if(tintIndex != 0 || !(worldIn.getTileEntity(pos) instanceof TileEntityColor))

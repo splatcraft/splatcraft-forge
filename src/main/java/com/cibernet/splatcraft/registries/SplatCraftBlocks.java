@@ -24,6 +24,7 @@ public class SplatCraftBlocks
     public static Block emptyInkwell = new BlockInkwellEmpty();
     public static Block inkwell = new BlockInkwell();
     public static Block canvas = new BlockCanvas();
+    public static Block inkedWool = new BlockInkedWool("inkedWool", "inked_wool");
 
     public static Block sunkenCrate = new BlockSunkenCrate();
     public static Block oreSardinium = new BlockOre(1, "oreSardinium", "sardinium_ore");
@@ -55,6 +56,7 @@ public class SplatCraftBlocks
         registerBlock(registry, emptyInkwell, true);
         registerBlock(registry, inkwell);
         registerBlock(registry, canvas, true);
+        registerBlock(registry, inkedWool);
         registerBlock(registry, grate, true);
         registerBlock(registry, barrierBar, true);
         
