@@ -24,6 +24,7 @@ item.sardinium.name=Sardinium
 
 item.inkDisruptor.name=Ink Disruptor
 item.turfScanner.name=Turf Scanner
+item.colorChanger.name=Color Transmutator
 item.coordSet.tooltip.a=(%s,%s,%s)
 item.coordSet.tooltip.b=(%s,%s,%s) to (%s,%s,%s)
 
@@ -161,6 +162,7 @@ commands.splatcraftRules.value=%s = %s
 commands.clearInk.usage=/clearink <x1> <y1> <z1> <x2> <y2> <z2>
 commands.clearInk.outOfWorld=§cCannot check for blocks outside of the world
 commands.clearInk.success=Successfully cleared %s blocks
+commands.changeColor.success=Successfully recolored %s blocks to %s
 
 splatcraft.config.title=Splatcraft Config
 

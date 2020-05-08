@@ -45,10 +45,10 @@ public class SplatCraftItems
     
     public static final ItemInkTank inkTank = new ItemInkTank("inkTank", "ink_tank", 100);
     
-    public static final Item inkClothHat= new ItemInkColoredArmor("inkClothHelmet", "ink_cloth_helmet", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.HEAD);
-    public static final Item inkClothShirt= new ItemInkColoredArmor("inkClothChestplate", "ink_cloth_chestplate", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.CHEST);
-    public static final Item inkClothPants= new ItemInkColoredArmor("inkClothLeggings", "ink_cloth_leggings", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.LEGS);
-    public static final Item inkClothShoes= new ItemInkColoredArmor("inkClothBoots", "ink_cloth_boots", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.FEET);
+    public static final Item inkClothHat = new ItemInkColoredArmor("inkClothHelmet", "ink_cloth_helmet", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.HEAD);
+    public static final Item inkClothShirt = new ItemInkColoredArmor("inkClothChestplate", "ink_cloth_chestplate", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.CHEST);
+    public static final Item inkClothPants = new ItemInkColoredArmor("inkClothLeggings", "ink_cloth_leggings", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.LEGS);
+    public static final Item inkClothShoes = new ItemInkColoredArmor("inkClothBoots", "ink_cloth_boots", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.FEET);
     
     public static final ItemFilter filterEmpty = new ItemFilter("filterEmpty", "filter_empty", false);
     public static final ItemFilter filterNeon = new ItemFilter("filterNeon", "filter_neon", false);
@@ -59,6 +59,7 @@ public class SplatCraftItems
     
     public static final Item inkDisruptor = new ItemInkDisruptor();
     public static final Item turfScanner = new ItemTurfScanner();
+    public static final Item colorChanger = new ItemColorChanger();
     
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
@@ -82,7 +83,11 @@ public class SplatCraftItems
         registerItem(registry, splatDualie);
         
         registerItem(registry, inkTank);
-        
+    
+        registerItem(registry, inkDisruptor);
+        registerItem(registry, turfScanner);
+        registerItem(registry, colorChanger );
+    
         registerItem(registry, inkClothHat);
         registerItem(registry, inkClothShirt);
         registerItem(registry, inkClothPants);
@@ -94,9 +99,6 @@ public class SplatCraftItems
         registerItem(registry, filterPastel);
         registerItem(registry, filterEnchanted);
         registerItem(registry, filterCreative);
-        
-        registerItem(registry, inkDisruptor);
-        registerItem(registry, turfScanner);
         
         registerItemBlocks(registry);
     }
