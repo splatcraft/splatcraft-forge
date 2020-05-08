@@ -9,6 +9,7 @@ import net.minecraft.block.BlockStairs;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -276,4 +277,9 @@ public class BlockBarrierBar extends BlockHorizontal
 	@Override
 	public boolean isTranslucent(IBlockState state) { return true; }
 	
+	@Override
+	public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
+	{
+		return BlockFaceShape.UNDEFINED;
+	}
 }
