@@ -34,6 +34,7 @@ public class ItemInkTank extends ItemInkColoredArmor
 {
 	
 	public final float capacity;
+	@SideOnly(Side.CLIENT)
 	private static ModelAbstractTank model;
 	
 	public ItemInkTank(String unlocalizedName, String registryName, float capacity, ArmorMaterial materialIn)
@@ -78,6 +79,19 @@ public class ItemInkTank extends ItemInkColoredArmor
 	public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack stack, EntityEquipmentSlot slot,
 									ModelBiped _default)
 	{
+		if(entity.getEntityWorld().isRemote)
+		{
+			ModelBiped model = getInkTankModel(entity, stack, slot, _default);
+			return model != null ? model : super.getArmorModel(entity, stack, slot, _default);
+		}
+		
+		return super.getArmorModel(entity, stack, slot, _default);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private ModelBiped getInkTankModel(EntityLivingBase entity, ItemStack stack, EntityEquipmentSlot slot,
+									   ModelBiped _default)
+	{
 		if(!(stack.getItem() instanceof ItemInkTank))
 			return super.getArmorModel(entity, stack, slot, _default);
 		
@@ -111,10 +125,10 @@ public class ItemInkTank extends ItemInkColoredArmor
 				return model;
 			}
 		}
-		
-		return super.getArmorModel(entity, stack, slot, _default);
+		return null;
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public Item setArmorModelClass(ModelAbstractTank model)
 	{
 		this.model = model;
