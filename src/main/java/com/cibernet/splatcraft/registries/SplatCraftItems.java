@@ -104,7 +104,7 @@ public class SplatCraftItems
     @SideOnly(Side.CLIENT)
     public static void registerArmorModels()
     {
-        inkTank.setArmorModelClass(ModelInkTank.class);
+        inkTank.setArmorModelClass(new ModelInkTank());
     }
     
     private static Item registerItem(IForgeRegistry<Item> registry, Item item)

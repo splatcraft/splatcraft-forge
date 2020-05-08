@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 import static com.cibernet.splatcraft.utils.ColorItemUtils.*;
@@ -33,7 +34,7 @@ public class ItemInkTank extends ItemInkColoredArmor
 {
 	
 	public final float capacity;
-	private static Class<? extends ModelAbstractTank> modelClass;
+	private static ModelAbstractTank model;
 	
 	public ItemInkTank(String unlocalizedName, String registryName, float capacity, ArmorMaterial materialIn)
 	{
@@ -77,10 +78,48 @@ public class ItemInkTank extends ItemInkColoredArmor
 	public ModelBiped getArmorModel(EntityLivingBase entity, ItemStack stack, EntityEquipmentSlot slot,
 									ModelBiped _default)
 	{
-		return (modelClass == null) ? super.getArmorModel(entity, stack, slot, _default) : ClientUtils.getInkTankModel(modelClass, entity, stack, slot, _default);
+		if(!(stack.getItem() instanceof ItemInkTank))
+			return super.getArmorModel(entity, stack, slot, _default);
+		
+		if(model == null)
+			return super.getArmorModel(entity, stack, slot, _default);
+		
+		model.setInk(ItemInkTank.getInkAmount(stack)/ ((ItemInkTank) stack.getItem()).capacity);
+		
+		if(!stack.isEmpty())
+		{
+			if(stack.getItem() instanceof ItemInkTank)
+			{
+				model.bipedRightLeg.showModel = slot == EntityEquipmentSlot.LEGS || slot == EntityEquipmentSlot.FEET;
+				model.bipedLeftLeg.showModel = slot == EntityEquipmentSlot.LEGS || slot == EntityEquipmentSlot.FEET;
+				
+				model.bipedBody.showModel = slot == EntityEquipmentSlot.CHEST;
+				model.bipedLeftArm.showModel = slot == EntityEquipmentSlot.CHEST;
+				model.bipedRightArm.showModel = slot == EntityEquipmentSlot.CHEST;
+				
+				model.bipedHead.showModel = slot == EntityEquipmentSlot.HEAD;
+				model.bipedHeadwear.showModel = slot == EntityEquipmentSlot.HEAD;
+				
+				
+				model.isSneak = _default.isSneak;
+				model.isRiding = _default.isRiding;
+				model.isChild = _default.isChild;
+				
+				model.rightArmPose = _default.rightArmPose;
+				model.leftArmPose = _default.leftArmPose;
+				
+				return model;
+			}
+		}
+		
+		return super.getArmorModel(entity, stack, slot, _default);
 	}
 	
-	public Item setArmorModelClass(Class<? extends ModelAbstractTank> model) {this.modelClass = model; return this;}
+	public Item setArmorModelClass(ModelAbstractTank model)
+	{
+		this.model = model;
+		return this;
+	}
 	
 	@Override
 	public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)

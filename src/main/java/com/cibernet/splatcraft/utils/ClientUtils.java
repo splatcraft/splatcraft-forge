@@ -19,36 +19,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class ClientUtils
 {
-	public static ModelBiped getInkTankModel(Class<? extends ModelAbstractTank> modelClass, EntityLivingBase entity, ItemStack stack, EntityEquipmentSlot slot, ModelBiped _default)
+	public static ModelBiped getInkTankModel(ModelAbstractTank model, EntityLivingBase entity, ItemStack stack, EntityEquipmentSlot slot, ModelBiped _default)
 	{
 		if(!(stack.getItem() instanceof ItemInkTank))
 			return null;
 		
-		ModelBiped model = null;
-		
-		try
-		{
-			model =  modelClass.getConstructor(Float.class).newInstance(ItemInkTank.getInkAmount(stack)/ ((ItemInkTank) stack.getItem()).capacity);
-		} catch(InstantiationException e)
-		{
-			e.printStackTrace();
-		} catch(IllegalAccessException e)
-		{
-			e.printStackTrace();
-		} catch(InvocationTargetException e)
-		{
-			e.printStackTrace();
-		} catch(NoSuchMethodException e)
-		{
-			e.printStackTrace();
-		}
-		
 		if(model == null)
 			return null;
+		
+		//model.setInk(ItemInkTank.getInkAmount(stack)/ ((ItemInkTank) stack.getItem()).capacity);
 		
 		if(!stack.isEmpty())
 		{
