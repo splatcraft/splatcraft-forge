@@ -36,7 +36,9 @@ public class RecipesWeaponStation
 	
 	public static RecipeType recipeSplatDualies = new RecipeType(splatDualie, "original", new ItemStack(sardinium, 4), new ItemStack(powerEgg, 7), new ItemStack(GUNPOWDER, 1)).setDisplayName("splatDualies");
 	
-	public static RecipeType recipeInkTank = new RecipeType(inkTank, "original", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 10), new ItemStack(SplatCraftBlocks.emptyInkwell));
+	public static RecipeType recipeInkTank = new RecipeType(inkTank, "original", new ItemStack(sardinium, 11), new ItemStack(powerEgg, 15), new ItemStack(SplatCraftBlocks.emptyInkwell));
+	public static RecipeType recipeInkTankJr = new RecipeType(inkTankJr, "original", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 10), new ItemStack(SplatCraftBlocks.emptyInkwell));
+	public static RecipeType recipeArmoredInkTank = new RecipeType(armoredInkTank, "original", new ItemStack(sardinium, 10), new ItemStack(IRON_INGOT, 5), new ItemStack(powerEgg, 12), new ItemStack(SplatCraftBlocks.emptyInkwell));
 	
 	public static void registerRecipes()
 	{
@@ -56,6 +58,8 @@ public class RecipesWeaponStation
 		register(TAB_DUALIES, recipeSplatDualies);
 		
 		register(TAB_INK_TANKS, recipeInkTank);
+		register(TAB_INK_TANKS, recipeInkTankJr);
+		register(TAB_INK_TANKS, recipeArmoredInkTank);
 		
 	}
 	

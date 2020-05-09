@@ -26,12 +26,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.cibernet.splatcraft.utils.ColorItemUtils.*;
 
 public class ItemInkTank extends ItemInkColoredArmor
 {
+	private final List<Item> allowedWeapons = new ArrayList<>();
+	private final List<Item> unallowedWeapons = new ArrayList<>();
 	
 	public final float capacity;
 	@SideOnly(Side.CLIENT)
@@ -200,12 +204,28 @@ public class ItemInkTank extends ItemInkColoredArmor
 	
 	public float getInkAmount(ItemStack stack, ItemStack weapon)
 	{
-		return getInkAmount(stack);
+		if((allowedWeapons.isEmpty() || allowedWeapons.contains(weapon)) && !unallowedWeapons.contains(weapon))
+			return getInkAmount(stack);
+		return 0;
 	}
 	
 	public static ItemStack setInkAmount(ItemStack stack, float ink)
 	{
 		ColorItemUtils.checkTagCompound(stack).setFloat("ink", ink);
 		return stack;
+	}
+	
+	
+	public ItemInkTank addAllowedWeapons(Item... weapons)
+	{
+		allowedWeapons.addAll(Arrays.asList(weapons));
+		return this;
+	}
+	
+	
+	public ItemInkTank addUnallowedWeapons(Item... weapons)
+	{
+		unallowedWeapons.addAll(Arrays.asList(weapons));
+		return this;
 	}
 }

@@ -44,7 +44,7 @@ public class SplatCraftItems
     public static final Item splatDualie = new ItemDualieBase("splatDualies", "splat_dualies", 1f, 0.5f, 10, 8, 6, 0.75f, 1, 0.7f, 9);
     
     public static final ItemInkTank inkTank = new ItemInkTank("inkTank", "ink_tank", 100);
-    public static final ItemInkTank inkTankJr = new ItemInkTankWhtelisted("inkTankJr", "ink_tank_jr", 110).addAllowedWeapons(splattershotJr);
+    public static final ItemInkTank inkTankJr = new ItemInkTank("inkTankJr", "ink_tank_jr", 110).addAllowedWeapons(splattershotJr);
     public static final ItemInkTank armoredInkTank = new ItemInkTank("armoredInkTank", "ink_tank_armored", 85, 3);
     
     public static final Item inkClothHat = new ItemInkColoredArmor("inkClothHelmet", "ink_cloth_helmet", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.HEAD);
