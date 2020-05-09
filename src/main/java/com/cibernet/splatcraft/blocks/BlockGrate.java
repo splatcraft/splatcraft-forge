@@ -30,6 +30,7 @@ public class BlockGrate extends BlockSquidPassable
 		super(unlocName, registryName, Material.IRON);
 		setDefaultState(getDefaultState().withProperty(HALF, BlockTrapDoor.DoorHalf.BOTTOM));
 		setCreativeTab(TabSplatCraft.main);
+		setHardness(4.0f);
 	}
 	
 	

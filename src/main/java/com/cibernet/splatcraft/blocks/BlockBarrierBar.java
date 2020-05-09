@@ -42,6 +42,7 @@ public class BlockBarrierBar extends BlockHorizontal
 		super(Material.IRON, MapColor.AIR);
 		setUnlocalizedName(unlocName);
 		setRegistryName(registryName);
+		setHardness(3.0f);
 		setCreativeTab(TabSplatCraft.main);
 		setDefaultState(getDefaultState().withProperty(SHAPE, BarShape.STRAIGHT));
 	}
