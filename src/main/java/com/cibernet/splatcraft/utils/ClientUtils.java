@@ -68,7 +68,7 @@ public class ClientUtils
 	{
 			EntityPlayerSP player = Minecraft.getMinecraft().player;
 			ItemStack chestpiece = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-			if(chestpiece.getItem() instanceof ItemInkTank && ItemWeaponBase.hasInk(player, ColorItemUtils.getInkColor(stack), 0))
+			if(chestpiece.getItem() instanceof ItemInkTank && ItemWeaponBase.hasInk(player, stack, 0))
 				return 1- ItemInkTank.getInkAmount(chestpiece) / ((ItemInkTank) chestpiece.getItem()).capacity;
 			return 1;
 	}

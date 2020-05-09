@@ -181,18 +181,20 @@ public class ItemWeaponBase extends Item implements IBattleItem
 	
 	public ModelPlayerOverride.EnumAnimType getAnimType() {return ModelPlayerOverride.EnumAnimType.NONE;}
 	
-	public boolean hasInk(EntityPlayer player, int color)
+	public boolean hasInk(EntityPlayer player, ItemStack weapon)
 	{
-		return hasInk(player, color, inkConsumption);
+		return hasInk(player, weapon, inkConsumption);
 	}
 	
-	public static boolean hasInk(EntityPlayer player, int color, float offset)
+	public static boolean hasInk(EntityPlayer player, ItemStack weapon, float offset)
 	{
+		int color = ColorItemUtils.getInkColor(weapon);
+		
 		if(!SplatCraftGamerules.getGameruleValue("requireInkTank"))
 			return true;
 		ItemStack chespiece = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 		
-		return chespiece.getItem() instanceof ItemInkTank && ColorItemUtils.getInkColor(chespiece) == color && ItemInkTank.getInkAmount(chespiece)-offset > 0;
+		return chespiece.getItem() instanceof ItemInkTank && ColorItemUtils.getInkColor(chespiece) == color && ItemInkTank.getInkAmountStatic(chespiece, weapon)-offset > 0;
 	}
 	
 	public static void reduceInk(EntityPlayer player, float amount)

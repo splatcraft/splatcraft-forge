@@ -163,7 +163,7 @@ public class CommonEventHandler
 								activeDualie = maxRolls % 2 == 0 ? dualieA : dualieB;
 							}
 							
-							if(ItemWeaponBase.hasInk(player, ColorItemUtils.getInkColor(weapon), ((ItemDualieBase) item).rollConsumption))
+							if(ItemWeaponBase.hasInk(player, weapon, ((ItemDualieBase) item).rollConsumption))
 							{
 								player.motionY = 0;
 								player.moveRelative(input.moveStrafe, -0.2f, input.moveForward, ((ItemDualieBase)activeDualie.getItem()).rollSpeed);

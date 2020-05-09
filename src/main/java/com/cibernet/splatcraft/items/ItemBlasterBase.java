@@ -29,7 +29,7 @@ public class ItemBlasterBase extends ItemShooterBase
 	@Override
 	public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
 	{
-		if(hasInk(playerIn, ColorItemUtils.getInkColor(stack)))
+		if(hasInk(playerIn, stack))
 		{
 			CooldownTracker cooldownTracker = playerIn.getCooldownTracker();
 			if(!worldIn.isRemote && !cooldownTracker.hasCooldown(this))

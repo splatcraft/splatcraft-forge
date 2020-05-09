@@ -123,7 +123,7 @@ public class ItemRollerBase extends ItemWeaponBase
         if(worldIn.isRemote)
             return;
         
-        if(hasInk(playerIn, ColorItemUtils.getInkColor(stack)))
+        if(hasInk(playerIn, stack))
         {
             reduceInk(playerIn);
             
@@ -181,7 +181,7 @@ public class ItemRollerBase extends ItemWeaponBase
     @Override
     public void onItemLeftClick(World worldIn, EntityPlayer playerIn, ItemStack stack)
     {
-        if(hasInk(playerIn, ColorItemUtils.getInkColor(stack), flingConsumption))
+        if(hasInk(playerIn, stack, flingConsumption))
         {
             if(playerIn.getCooledAttackStrength(0) >= 0.95f)
             {

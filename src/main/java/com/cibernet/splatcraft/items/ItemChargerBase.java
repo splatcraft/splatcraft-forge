@@ -70,7 +70,7 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	{
 		if(!SplatCraftPlayerData.getIsSquid(playerIn))
 		{
-			if(hasInk(playerIn, ColorItemUtils.getInkColor(stack), getInkConsumption(SplatCraftPlayerData.getWeaponCharge(playerIn, stack))))
+			if(hasInk(playerIn, stack, getInkConsumption(SplatCraftPlayerData.getWeaponCharge(playerIn, stack))))
 				SplatCraftPlayerData.addWeaponCharge(playerIn, stack, chargeSpeed);
 			else playerIn.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);
 		}

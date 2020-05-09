@@ -54,9 +54,14 @@ public class ItemInkTank extends ItemInkColoredArmor
 		});
 	}
 	
+	public ItemInkTank(String unlocalizedName, String registryName, float capacity, int armorPoints)
+	{
+		this(unlocalizedName, registryName, capacity, EnumHelper.addArmorMaterial(unlocalizedName, SplatCraft.MODID+":"+registryName, -1, new int[] {armorPoints,armorPoints,armorPoints,armorPoints}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0));
+	}
+	
 	public ItemInkTank(String unlocalizedName, String registryName, float capacity)
 	{
-		this(unlocalizedName, registryName, capacity, EnumHelper.addArmorMaterial(unlocalizedName, SplatCraft.MODID+":"+registryName, -1, new int[] {0,0,0,0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0));
+		this(unlocalizedName, registryName, capacity, 0);
 	}
 	
 	@Override
@@ -184,6 +189,18 @@ public class ItemInkTank extends ItemInkColoredArmor
 		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("ink"))
 			return 0;
 		return stack.getTagCompound().getFloat("ink");
+	}
+	
+	public static float getInkAmountStatic(ItemStack stack, ItemStack weapon)
+	{
+		if(stack.getItem() instanceof ItemInkTank)
+			return ((ItemInkTank) stack.getItem()).getInkAmount(stack, weapon);
+		return getInkAmount(stack);
+	}
+	
+	public float getInkAmount(ItemStack stack, ItemStack weapon)
+	{
+		return getInkAmount(stack);
 	}
 	
 	public static ItemStack setInkAmount(ItemStack stack, float ink)

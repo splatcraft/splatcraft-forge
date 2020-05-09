@@ -48,7 +48,7 @@ public class ItemDualieBase extends ItemWeaponBase
 	@Override
 	public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
 	{
-		if(hasInk(playerIn, ColorItemUtils.getInkColor(stack)))
+		if(hasInk(playerIn, stack))
 		{
 			if((getMaxItemUseDuration(stack) - useTime) % firingSpeed == 1)
 			{

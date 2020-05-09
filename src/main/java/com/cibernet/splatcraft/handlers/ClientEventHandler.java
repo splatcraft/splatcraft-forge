@@ -137,7 +137,7 @@ public class ClientEventHandler
 			ItemWeaponBase weaponItem = ((ItemWeaponBase) weapon.getItem());
 			AttributeModifier speedMod = weaponItem.getSpeedModifier();
 			
-			if(!weaponItem.hasInk(player, ColorItemUtils.getInkColor(weapon)) && weaponItem.getNoInkSpeed() != null)
+			if(!weaponItem.hasInk(player, weapon) && weaponItem.getNoInkSpeed() != null)
 				speedMod = weaponItem.getNoInkSpeed();
 			
 			if(!isSquid && speedMod != null && !attributeInstance.hasModifier(speedMod))
