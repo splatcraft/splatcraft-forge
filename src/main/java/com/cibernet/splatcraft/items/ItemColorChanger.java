@@ -145,9 +145,13 @@ public class ItemColorChanger extends ItemCoordSet
 					Block block = state.getBlock();
 					if(block instanceof IInked)
 					{
-						((TileEntityColor)world.getTileEntity(pos)).setColor(color);
-						world.notifyBlockUpdate(pos, state, state, 3);
-						count++;
+						TileEntityColor te = ((TileEntityColor)world.getTileEntity(pos));
+						if(!((IInked) block).countsTowardsScore() && te.getColor() != color)
+						{
+							te.setColor(color);
+							world.notifyBlockUpdate(pos, state, state, 3);
+							count++;
+						}
 					}
 				}
 		playerIn.sendStatusMessage(new TextComponentString(I18n.format("commands.changeColor.success", count, SplatCraftUtils.getColorName(color))), true);
