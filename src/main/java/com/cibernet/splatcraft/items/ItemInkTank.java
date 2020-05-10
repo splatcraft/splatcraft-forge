@@ -34,12 +34,12 @@ import static com.cibernet.splatcraft.utils.ColorItemUtils.*;
 
 public class ItemInkTank extends ItemInkColoredArmor
 {
-	private final List<Item> allowedWeapons = new ArrayList<>();
-	private final List<Item> unallowedWeapons = new ArrayList<>();
+	private final List<Item> weaponWhitelist = new ArrayList<>();
+	private final List<Item> weaponBlacklist = new ArrayList<>();
 	
 	public final float capacity;
 	@SideOnly(Side.CLIENT)
-	private static ModelAbstractTank model;
+	private ModelAbstractTank model;
 	
 	public ItemInkTank(String unlocalizedName, String registryName, float capacity, ArmorMaterial materialIn)
 	{
@@ -138,7 +138,7 @@ public class ItemInkTank extends ItemInkColoredArmor
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public Item setArmorModelClass(ModelAbstractTank model)
+	public Item setArmorModel(ModelAbstractTank model)
 	{
 		this.model = model;
 		return this;
@@ -204,7 +204,7 @@ public class ItemInkTank extends ItemInkColoredArmor
 	
 	public float getInkAmount(ItemStack stack, ItemStack weapon)
 	{
-		if((allowedWeapons.isEmpty() || allowedWeapons.contains(weapon)) && !unallowedWeapons.contains(weapon))
+		if((weaponWhitelist.isEmpty() || weaponWhitelist.contains(weapon.getItem())) && !weaponBlacklist.contains(weapon))
 			return getInkAmount(stack);
 		return 0;
 	}
@@ -218,14 +218,14 @@ public class ItemInkTank extends ItemInkColoredArmor
 	
 	public ItemInkTank addAllowedWeapons(Item... weapons)
 	{
-		allowedWeapons.addAll(Arrays.asList(weapons));
+		weaponWhitelist.addAll(Arrays.asList(weapons));
 		return this;
 	}
 	
 	
 	public ItemInkTank addUnallowedWeapons(Item... weapons)
 	{
-		unallowedWeapons.addAll(Arrays.asList(weapons));
+		weaponBlacklist.addAll(Arrays.asList(weapons));
 		return this;
 	}
 }

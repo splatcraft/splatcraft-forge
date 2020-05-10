@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.entities.models.ModelInkTank;
+import com.cibernet.splatcraft.entities.models.ModelInkTankJr;
 import com.cibernet.splatcraft.items.*;
 import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.Block;
@@ -110,7 +111,8 @@ public class SplatCraftItems
     @SideOnly(Side.CLIENT)
     public static void registerArmorModels()
     {
-        inkTank.setArmorModelClass(new ModelInkTank());
+        inkTank.setArmorModel(new ModelInkTank());
+        inkTankJr.setArmorModel(new ModelInkTankJr());
     }
     
     private static Item registerItem(IForgeRegistry<Item> registry, Item item)
