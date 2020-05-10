@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.tileentities;
 
 import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.blocks.BlockSunkenCrate;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -21,8 +22,6 @@ public class TileEntitySunkenCrate extends TileEntityColor
 
     private final int maxHealth = 20;
     private int health = maxHealth;
-
-    public static final ResourceLocation STORAGE_SUNKEN_CRATE = new ResourceLocation(SplatCraft.MODID, "storage/sunken_crate");
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
@@ -53,15 +52,11 @@ public class TileEntitySunkenCrate extends TileEntityColor
         if(health <= 0)
         {
             world.destroyBlock(pos, false);
-
-            LootContext.Builder contextBuilder = new LootContext.Builder((WorldServer)world);
-            List<ItemStack> loot = world.getLootTableManager().getLootTableFromLocation(STORAGE_SUNKEN_CRATE).generateLootForPools(world.rand, contextBuilder.build());
-
-            for(ItemStack stack : loot)
-                SplatCraftUtils.dropItem(world, pos, stack, false);
+            if(world.getGameRules().getBoolean("doTileDrops"))
+                BlockSunkenCrate.dropLoot(world, pos);
         }
     }
-
+    
     public NBTTagCompound getUpdateTag() {
         return this.writeToNBT(new NBTTagCompound());
     }

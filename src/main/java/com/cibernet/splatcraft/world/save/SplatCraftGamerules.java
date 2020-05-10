@@ -15,8 +15,9 @@ public class SplatCraftGamerules
 	public static void registerRules()
 	{
 		registerGamerule(new Gamerule("inkDecay", true));
-		registerGamerule(new Gamerule("keepWeaponsOnDeath", true));
+		registerGamerule(new Gamerule("keepWeaponsOnDeath", false));
 		registerGamerule(new Gamerule("requireInkTank", true));
+		registerGamerule(new Gamerule("dropCrateLootWhenMined", false));
 	}
 	
 	public static void registerGamerule(Gamerule rule)
