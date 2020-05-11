@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.SplatCraft;
+import com.cibernet.splatcraft.entities.models.ModelArmoredInkTank;
 import com.cibernet.splatcraft.entities.models.ModelInkTank;
 import com.cibernet.splatcraft.entities.models.ModelInkTankJr;
 import com.cibernet.splatcraft.items.*;
@@ -113,6 +114,7 @@ public class SplatCraftItems
     {
         inkTank.setArmorModel(new ModelInkTank());
         inkTankJr.setArmorModel(new ModelInkTankJr());
+        armoredInkTank.setArmorModel(new ModelArmoredInkTank());
     }
     
     private static Item registerItem(IForgeRegistry<Item> registry, Item item)

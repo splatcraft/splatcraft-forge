@@ -5,11 +5,12 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ModelAbstractTank extends ModelBiped
 {
-	protected List<ModelRenderer> inkPieces;
+	protected List<ModelRenderer> inkPieces = new ArrayList<>();
 	protected float inkPctg;
 	
 	public ModelAbstractTank()
@@ -18,23 +19,6 @@ public abstract class ModelAbstractTank extends ModelBiped
 	}
 	
 	public void setInk(float inkPctg) {this.inkPctg = inkPctg;}
-	
-	@Override
-	public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
-	{
-		super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-		
-		/*
-		if(inkPctg != 0)
-		{
-			GlStateManager.scale(1, inkPctg, 1);
-			GlStateManager.translate(0, -0.18 / -inkPctg, 0);
-			ink.render(scale);
-			GlStateManager.translate(0, 0.18 / -inkPctg, 0);
-			GlStateManager.scale(1, 1/inkPctg, 1);
-		}
-		*/
-	}
 	
 	@Override
 	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
