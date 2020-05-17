@@ -4,14 +4,12 @@ package com.cibernet.splatcraft.proxy;
 import com.cibernet.splatcraft.SplatCraftConfig;
 import com.cibernet.splatcraft.blocks.BlockInkColor;
 import com.cibernet.splatcraft.blocks.BlockInkwell;
-import com.cibernet.splatcraft.entities.classes.EntityBlasterProjectile;
-import com.cibernet.splatcraft.entities.classes.EntityChargerProjectile;
-import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
-import com.cibernet.splatcraft.entities.classes.EntityNPCSquid;
+import com.cibernet.splatcraft.entities.classes.*;
 import com.cibernet.splatcraft.entities.models.ModelArmorOverride;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.entities.renderers.RenderInkProjectile;
 import com.cibernet.splatcraft.entities.renderers.RenderNPCSquid;
+import com.cibernet.splatcraft.entities.renderers.RenderSquidBumper;
 import com.cibernet.splatcraft.gui.GuiOverlay;
 import com.cibernet.splatcraft.handlers.ClientEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftKeyHandler;
@@ -119,6 +117,7 @@ public class ClientProxy extends CommonProxy
         SplatCraftKeyHandler.instance.registerKeys();
 
         RenderingRegistry.registerEntityRenderingHandler(EntityNPCSquid.class, manager -> new RenderNPCSquid(manager));
+        RenderingRegistry.registerEntityRenderingHandler(EntitySquidBumper.class, manager -> new RenderSquidBumper(manager));
         RenderingRegistry.registerEntityRenderingHandler(EntityInkProjectile.class, manager -> new RenderInkProjectile(manager));
         RenderingRegistry.registerEntityRenderingHandler(EntityChargerProjectile.class, manager -> new RenderInkProjectile(manager));
         RenderingRegistry.registerEntityRenderingHandler(EntityBlasterProjectile.class, manager -> new RenderInkProjectile(manager));

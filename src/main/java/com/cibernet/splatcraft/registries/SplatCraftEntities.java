@@ -1,10 +1,7 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.SplatCraft;
-import com.cibernet.splatcraft.entities.classes.EntityBlasterProjectile;
-import com.cibernet.splatcraft.entities.classes.EntityChargerProjectile;
-import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
-import com.cibernet.splatcraft.entities.classes.EntityNPCSquid;
+import com.cibernet.splatcraft.entities.classes.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -16,6 +13,7 @@ public class SplatCraftEntities
     public static void registerEntities()
     {
         registerEntity(EntityNPCSquid.class, "squid");
+        registerEntity(EntitySquidBumper.class, "squid_bumper");
         
         registerEntity(EntityInkProjectile.class, "ink_projectile");
         registerEntity(EntityChargerProjectile.class, "charger_projectile");

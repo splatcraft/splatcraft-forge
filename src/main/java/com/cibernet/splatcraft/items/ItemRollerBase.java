@@ -10,6 +10,7 @@ import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -127,6 +128,8 @@ public class ItemRollerBase extends ItemWeaponBase
         {
             reduceInk(playerIn);
             
+            int color = ColorItemUtils.getInkColor(stack);
+            
             BlockPos pos = new BlockPos(playerIn.posX + 0.5, playerIn.posY, playerIn.posZ + 0.5);
             Vec3d fwd = getFwd(0, playerIn.rotationYaw);
             playerIn.getHorizontalFacing();
@@ -158,13 +161,12 @@ public class ItemRollerBase extends ItemWeaponBase
                 canInk = SplatCraftUtils.canInk(worldIn, inkPos);
                 
                 if(canInk)
-                    SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, ColorItemUtils.getInkColor(stack), rollDamage);
+                    SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, color, rollDamage);
                 
-                List<EntityPlayer> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(inkPos.up()));
-                for(EntityPlayer target : inkedPlayers)
+                List<Entity> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(inkPos.up()));
+                for(Entity target : inkedPlayers)
                 {
-                    if(SplatCraftPlayerData.getInkColor(target) != ColorItemUtils.getInkColor(stack))
-                        target.attackEntityFrom(new SplatCraftDamageSource("roll", playerIn, playerIn), rollDamage);
+                    SplatCraftUtils.dealRollDamage(target, rollDamage, color, playerIn, false);
                 }
             }
         } else playerIn.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);

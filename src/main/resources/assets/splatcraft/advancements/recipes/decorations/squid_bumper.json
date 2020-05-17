@@ -1,0 +1,25 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "splatcraft:squid_bumper"
+    ]
+  },
+  "criteria": {
+  "has_sardinium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "splatcraft:sardinium"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_sardinium"
+    ]
+  ]
+}

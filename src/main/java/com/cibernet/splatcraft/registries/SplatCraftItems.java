@@ -49,6 +49,8 @@ public class SplatCraftItems
     public static final ItemInkTank inkTankJr = new ItemInkTank("inkTankJr", "ink_tank_jr", 110).addAllowedWeapons(splattershotJr);
     public static final ItemInkTank armoredInkTank = new ItemInkTank("armoredInkTank", "ink_tank_armored", 85, 3);
     
+    public static final Item squidBumper = new ItemSquidBumper("squidBumper", "squid_bumper");
+    
     public static final Item inkClothHat = new ItemInkColoredArmor("inkClothHelmet", "ink_cloth_helmet", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.HEAD);
     public static final Item inkClothShirt = new ItemInkColoredArmor("inkClothChestplate", "ink_cloth_chestplate", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.CHEST);
     public static final Item inkClothPants = new ItemInkColoredArmor("inkClothLeggings", "ink_cloth_leggings", INK_CLOTH_MATERIAL, 0, EntityEquipmentSlot.LEGS);
@@ -90,6 +92,8 @@ public class SplatCraftItems
         registerItem(registry, armoredInkTank);
         registerItem(registry, inkTankJr);
     
+        registerItem(registry, squidBumper);
+        
         registerItem(registry, inkDisruptor);
         registerItem(registry, turfScanner);
         registerItem(registry, colorChanger );

@@ -456,21 +456,23 @@ public class EntityInkProjectile extends Entity implements IProjectile
         
         if (result.entityHit != null)
         {
+            /*
             float i = 0;
     
-            InkColors inkColor = InkColors.getByColor(getColor());
-            if(result.entityHit instanceof EntitySheep && inkColor != null && inkColor.getDyeColor() != null)
-                ((EntitySheep) result.entityHit).setFleeceColor(inkColor.getDyeColor());
                 
-            if(result.entityHit instanceof EntityPlayer && SplatCraftPlayerData.getInkColor((EntityPlayer) result.entityHit) != getColor())
+            if((result.entityHit instanceof EntityPlayer && SplatCraftPlayerData.getInkColor((EntityPlayer) result.entityHit) != getColor()) ||
+                result.entityHit instanceof EntitySquidBumper && ((EntitySquidBumper)result.entityHit).getColor() != getColor())
                 i = damage;
     
             if(i > 0)
             {
                 result.entityHit.attackEntityFrom(new SplatCraftDamageSource("splat", this, this.thrower).setProjectile(), (float) i);
-                if(result.entityHit.isDead)
-                    SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, getColor());
             }
+            */
+            InkColors inkColor = InkColors.getByColor(getColor());
+            if(result.entityHit instanceof EntitySheep && inkColor != null && inkColor.getDyeColor() != null)
+                ((EntitySheep) result.entityHit).setFleeceColor(inkColor.getDyeColor());
+            SplatCraftUtils.dealInkDamage(result.entityHit, damage, getColor(), this, false);
         }
         
         if (!this.world.isRemote)

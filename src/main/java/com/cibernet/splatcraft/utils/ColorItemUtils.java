@@ -45,4 +45,9 @@ public class ColorItemUtils
 		checkTagCompound(stack).setBoolean("colorLocked", colorLocked);
 		return stack;
 	}
+	
+	public static boolean hasInkColor(ItemStack stack)
+	{
+		return stack.getTagCompound() != null && stack.getTagCompound().hasKey("color");
+	}
 }

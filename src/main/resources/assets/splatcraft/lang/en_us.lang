@@ -41,6 +41,7 @@ item.inkClothChestplate.name=Ink Cloth Shirt
 item.inkClothLeggings.name=Ink Cloth Pants
 item.inkClothBoots.name=Ink Cloth Boots
 item.inkCloth.tooltip=It matches your ink color!
+item.squidBumper.name=Squid Bumper
 
 item.inkTank.name=Ink Tank
 item.inkTank.ink=Ink: %s / %s
@@ -150,6 +151,7 @@ container.weaponStation=Weapon Crafting
 
 entity.splatcraft.squid.name=Inkling Squid
 splatcraft.squid.name=Inkling Squid
+entity.splatcraft.squid_bumper.name=Squid Bumper
 
 commands.turfWar.usage=/turfwar <x1> <y1> <z1> <x2> <y2> <z2>
 commands.turfWar.outOfWorld=§cCannot check for blocks outside of the world
