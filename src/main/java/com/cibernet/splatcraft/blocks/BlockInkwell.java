@@ -112,7 +112,13 @@ public class BlockInkwell extends BlockInkColor
 	{
 		return false;
 	}
-
+	
+	@Override
+	public boolean isTopSolid(IBlockState state)
+	{
+		return true;
+	}
+	
 	public static int getInkColor(ItemStack stack)
 	{
 		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("color"))
