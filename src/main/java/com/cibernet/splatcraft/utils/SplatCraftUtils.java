@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.blocks.BlockInkColor;
 import com.cibernet.splatcraft.blocks.BlockInkedWool;
 import com.cibernet.splatcraft.blocks.BlockSquidPassable;
 import com.cibernet.splatcraft.blocks.IInked;
+import com.cibernet.splatcraft.entities.classes.EntitySquidBumper;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftStats;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
@@ -59,6 +60,40 @@ public class SplatCraftUtils
 		}
 	}
 
+	private static boolean dealDamage(Entity target, float damage, int color, Entity source, boolean damageMobs, String type)
+	{
+		boolean doDamage = false;
+		
+		if(target instanceof EntityPlayer)
+		{
+			if(SplatCraftPlayerData.getInkColor((EntityPlayer) target) != color)
+				doDamage = true;
+		}
+		else if(target instanceof EntitySquidBumper)
+		{
+			if(((EntitySquidBumper)target).getColor() != color)
+				doDamage = true;
+		}
+		else doDamage = damageMobs;
+		
+		if(doDamage)
+			target.attackEntityFrom(new SplatCraftDamageSource(type, source, source), damage);
+		return doDamage;
+	}
+	
+	public static boolean dealRollDamage(Entity target, float damage, int color, Entity source, boolean damageMobs)
+	{
+		return dealDamage(target, damage, color, source, damageMobs, "roll");
+	}
+	
+	public static boolean dealInkDamage(Entity target, float damage, int color, Entity source, boolean damageMobs)
+	{
+		boolean damaged = dealDamage(target, damage, color, source, damageMobs, "splat");
+		if(damaged && target.isDead)
+			SplatCraftUtils.createInkExplosion(source.world, new BlockPos(target.posX, target.posY, target.posZ), 2, color);
+		return damaged;
+	}
+	
 	public static boolean canSquidHide(World worldIn, EntityPlayer playerIn)
 	{
 		BlockPos pos = new BlockPos(playerIn.posX, playerIn.posY-.1, playerIn.posZ);
@@ -154,9 +189,6 @@ public class SplatCraftUtils
 				inkTe.setColor(color);
 				inkTe.setSavedColor(te.getColor());
 				inkTe.setSavedState(state);
-				System.out.println(state);
-				System.out.println(color);
-				System.out.println(te.getColor());
 				
 				return true;
 			}
