@@ -137,14 +137,18 @@ public class GuiWeaponStation extends GuiContainer
 		RecipeSubtype recipe = subtypes.get(subTypePos);
 		String subName = I18n.format(recipe.getName());
 		
+		int ingredientTabSize = (int) Math.ceil(recipe.getIngredients().size()/6.0);
+		String ingTabLabel = (ingredientPos+1) + "/" + ingredientTabSize;
+		
 		this.fontRenderer.drawString(subName, 34+guiLeft - fontRenderer.getStringWidth(subName)/2, 54+guiTop, 4210752);
+		this.fontRenderer.drawString(ingTabLabel, 133+guiLeft - fontRenderer.getStringWidth(ingTabLabel)/2, 54+guiTop, 4210752);
 		
 		//draw ingredients
 		for(int i = ingredientPos*6; i < recipe.getIngredients().size() && i < ingredientPos*6 + 6; i++)
 		{
 			ItemStack input = recipe.getIngredients().get(i);
 			
-			int j = i - ingredientPos;
+			int j = i - ingredientPos*6;
 			int xPos = 107 + (j % 3)*18;
 			int yPos = 64 + (j/3)*18;
 			
@@ -185,11 +189,11 @@ public class GuiWeaponStation extends GuiContainer
 		
 		int ty = 220;
 		if(craftButtonStage <= 0)
-			ty = isPointInRegion(66, 75, 34, 12, mouseX, mouseY) ? 232 : 244;
+			ty = isPointInRegion(62, 87, 34, 12, mouseX, mouseY) ? 232 : 244;
 		
 		String btnText = I18n.format("gui.weaponStation.craft");
-		drawTexturedModalRect(66+guiLeft, 75+guiTop, 0, ty, 34, 12);
-		drawString(fontRenderer, btnText, guiLeft+83 - fontRenderer.getStringWidth(btnText)/2, 77+guiTop, 0xEFEFEF);
+		drawTexturedModalRect(62+guiLeft, 87+guiTop, 0, ty, 34, 12);
+		drawString(fontRenderer, btnText, guiLeft+79 - fontRenderer.getStringWidth(btnText)/2, 89+guiTop, 0xEFEFEF);
 		
 		//Tab Buttons
 		
@@ -208,15 +212,21 @@ public class GuiWeaponStation extends GuiContainer
 		mc.getTextureManager().bindTexture(TEXTURES);
 		
 		//Subtype arrows
-		ty = subtypes.size() > 1 ? (isPointInRegion(55, 75, 7, 11, mouseX, mouseY) ? 232 : 220) : 244;
-		drawTexturedModalRect(guiLeft+55, guiTop+75, 54, ty, 7, 11);
-		ty = subtypes.size() > 1 ? (isPointInRegion(6, 75, 7, 11, mouseX, mouseY) ? 232 : 220) : 244;
-		drawTexturedModalRect(guiLeft+6, guiTop+75, 62, ty, 7, 11);
+		ty = subtypes.size() > 1 ? (isPointInRegion(54, 75, 7, 11, mouseX, mouseY) ? 232 : 220) : 244;
+		drawTexturedModalRect(guiLeft+54, guiTop+75, 54, ty, 7, 11);
+		ty = subtypes.size() > 1 ? (isPointInRegion(7, 75, 7, 11, mouseX, mouseY) ? 232 : 220) : 244;
+		drawTexturedModalRect(guiLeft+7, guiTop+75, 62, ty, 7, 11);
 		
-		int maxSections = (int) Math.ceil(typeList.size()/8);
+		//Ingredient arrows
+		ty = ingredientTabSize > 1 ? (isPointInRegion(162, 75, 7, 11, mouseX, mouseY) ? 232 : 220) : 244;
+		drawTexturedModalRect(guiLeft+162, guiTop+75, 54, ty, 7, 11);
+		ty = ingredientTabSize > 1 ? (isPointInRegion(97, 75, 7, 11, mouseX, mouseY) ? 232 : 220) : 244;
+		drawTexturedModalRect(guiLeft+97, guiTop+75, 62, ty, 7, 11);
+		
 		
 		//Section arrows
 		
+		int maxSections = (int) Math.ceil(typeList.size()/8);
 		if(maxSections > 0)
 		{
 			ty = sectionPos + 1 <= maxSections ? (isPointInRegion(162, 36, 7, 11, mouseX, mouseY) ? 232 : 220) : 244;
@@ -251,7 +261,7 @@ public class GuiWeaponStation extends GuiContainer
 		{
 			ItemStack input = recipe.getIngredients().get(i);
 			
-			int j = i - ingredientPos;
+			int j = i - ingredientPos*6;
 			int xPos = 107 + (j % 3)*18;
 			int yPos = 64 + (j/3)*18;
 			
@@ -287,6 +297,7 @@ public class GuiWeaponStation extends GuiContainer
 			RecipeSubtype recipe = subtypes.get(subTypePos);
 			int maxSections = (int) Math.ceil(typeList.size() / 8);
 			int maxSubtype = subtypes.size() - 1;
+			int ingredientTabs = recipe.getIngredients().size()/6;
 			
 			//Tab Buttons
 			WeaponStationTabs[] tabs = WeaponStationTabs.values();
@@ -300,6 +311,7 @@ public class GuiWeaponStation extends GuiContainer
 					sectionPos = 0;
 					typePos = 0;
 					subTypePos = 0;
+					ingredientPos = 0;
 					playButtonSound();
 				}
 			}
@@ -315,6 +327,7 @@ public class GuiWeaponStation extends GuiContainer
 				{
 					typePos = i;
 					subTypePos = 0;
+					ingredientPos = 0;
 					playButtonSound();
 				}
 			}
@@ -336,23 +349,40 @@ public class GuiWeaponStation extends GuiContainer
 				}
 			}
 			
+			//Ingredient arrows
+			if(ingredientTabs > 0)
+			{
+				if(isPointInRegion(162, 75, 7, 11, mouseX, mouseY))
+				{
+					ingredientPos = (ingredientPos + 1) % (ingredientTabs + 1);
+					playButtonSound();
+				}
+				if(isPointInRegion(97, 75, 7, 11, mouseX, mouseY))
+				{
+					ingredientPos = ingredientPos - 1 < 0 ? ingredientTabs : ingredientPos - 1;
+					playButtonSound();
+				}
+			}
+			
 			//Subtype arrows
 			if(maxSubtype > 0)
 			{
-				if(isPointInRegion(55, 75, 7, 11, mouseX, mouseY))
+				if(isPointInRegion(54, 75, 7, 11, mouseX, mouseY))
 				{
 					subTypePos = (subTypePos + 1) % (maxSubtype + 1);
+					ingredientPos = 0;
 					playButtonSound();
 				}
-				if(isPointInRegion(6, 75, 7, 11, mouseX, mouseY))
+				if(isPointInRegion(7, 75, 7, 11, mouseX, mouseY))
 				{
 					subTypePos = subTypePos - 1 < 0 ? maxSubtype : subTypePos - 1;
+					ingredientPos = 0;
 					playButtonSound();
 				}
 			}
 			
 			//Craft Button
-			if(isPointInRegion(66, 75, 34, 12, mouseX, mouseY))
+			if(isPointInRegion(62, 87, 34, 12, mouseX, mouseY))
 			{
 				craftButtonStage = 1;
 				playButtonSound();
