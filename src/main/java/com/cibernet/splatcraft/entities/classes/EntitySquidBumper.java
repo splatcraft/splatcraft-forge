@@ -28,6 +28,7 @@ import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -217,6 +218,7 @@ public class EntitySquidBumper extends EntityLivingBase
 			this.applyEntityCollision(entityIn);
 	}
 	
+	@Override
 	public void applyEntityCollision(Entity entityIn)
 	{
 		if (!this.isRidingSameEntity(entityIn))
@@ -253,6 +255,12 @@ public class EntitySquidBumper extends EntityLivingBase
 				}
 			}
 		}
+	}
+	
+	@Override
+	public ItemStack getPickedResult(RayTraceResult target)
+	{
+		return ColorItemUtils.setInkColor(new ItemStack(SplatCraftItems.squidBumper), getColor());
 	}
 	
 	private void updateBoundingBox()
