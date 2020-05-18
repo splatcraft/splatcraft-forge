@@ -245,6 +245,8 @@ public class EntitySquidBumper extends EntityLivingBase
 					d1 = d1 * 0.05000000074505806D;
 					d0 = d0 * (double)(1.0F - this.entityCollisionReduction);
 					d1 = d1 * (double)(1.0F - this.entityCollisionReduction);
+					d0 *= 3;
+					d1 *= 3;
 					
 					if (!entityIn.isBeingRidden())
 						entityIn.addVelocity(d0, 0.0D, d1);
@@ -290,7 +292,7 @@ public class EntitySquidBumper extends EntityLivingBase
 	
 	private void dropAsItem()
 	{
-		Block.spawnAsEntity(this.world, new BlockPos(this), ColorItemUtils.setInkColor(ColorItemUtils.setColorLocked(new ItemStack(SplatCraftItems.squidBumper), true),getColor()));
+		Block.spawnAsEntity(this.world, new BlockPos(this), ColorItemUtils.setInkColor(new ItemStack(SplatCraftItems.squidBumper),getColor()));
 	}
 	
 	private void playBrokenSound()
