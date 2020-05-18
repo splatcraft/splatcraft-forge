@@ -32,7 +32,7 @@ import java.util.List;
 
 import static com.cibernet.splatcraft.utils.ColorItemUtils.*;
 
-public class ItemInkTank extends ItemInkColoredArmor
+public class ItemInkTank extends ItemInkColoredArmor implements IBattleItem
 {
 	private final List<Item> weaponWhitelist = new ArrayList<>();
 	private final List<Item> weaponBlacklist = new ArrayList<>();

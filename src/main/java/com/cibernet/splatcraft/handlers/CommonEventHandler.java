@@ -240,11 +240,11 @@ public class CommonEventHandler
 			if (!event.getEntityPlayer().world.getGameRules().getBoolean("keepInventory") && SplatCraftGamerules.getGameruleValue("keepWeaponsOnDeath")) {
 				ListIterator iter = event.getDrops().listIterator();
 				
-				while(iter.hasNext()) 
+				while(iter.hasNext())
 				{
 					EntityItem ei = (EntityItem)iter.next();
 					ItemStack item = ei.getItem();
-					if (item.getItem() instanceof ItemWeaponBase && addToPlayerInventory(event.getEntityPlayer(), item))
+					if (item.getItem() instanceof IBattleItem && addToPlayerInventory(event.getEntityPlayer(), item))
 						iter.remove();
 				}
 			}
@@ -260,14 +260,21 @@ public class CommonEventHandler
 						int i;
 						ItemStack item;
 						
-						for(i = 0; i < event.getOriginal().inventory.mainInventory.size(); ++i)
+						for(i = 0; i < event.getOriginal().inventory.armorInventory.size(); ++i)
 						{
-							item = event.getOriginal().inventory.mainInventory.get(i);
-							if (item.getItem() instanceof IBattleItem && addToPlayerInventory(event.getEntityPlayer(), item))
-								event.getOriginal().inventory.mainInventory.set(i, ItemStack.EMPTY);
-							
+							item = (ItemStack)event.getOriginal().inventory.armorInventory.get(i);
+							if (item.getItem() instanceof IBattleItem && addToPlayerInventory(event.getEntityPlayer(), item)) {
+								event.getOriginal().inventory.armorInventory.set(i, ItemStack.EMPTY);
+							}
 						}
 						
+						
+						for(i = 0; i < event.getOriginal().inventory.mainInventory.size(); ++i) {
+							item = (ItemStack)event.getOriginal().inventory.mainInventory.get(i);
+							if (item.getItem() instanceof IBattleItem && addToPlayerInventory(event.getEntityPlayer(), item)) {
+								event.getOriginal().inventory.mainInventory.set(i, ItemStack.EMPTY);
+							}
+						}
 					}
 				}
 			}
