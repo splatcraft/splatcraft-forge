@@ -5,7 +5,6 @@ import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
-import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -15,7 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
@@ -89,10 +87,10 @@ public class BlockInked extends BlockInkColor implements IInked
 			TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
 			IBlockState savedState = te.getSavedState();
 			if(savedState.getBlock() == this)
-				super.dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune);
-			savedState.getBlock().dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune);
+				super.dropBlockAsItemWithChance(worldIn, pos, savedState, chance, fortune);
+			savedState.getBlock().dropBlockAsItemWithChance(worldIn, pos, savedState, chance, fortune);
 		}
-		super.dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune);
+		else super.dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune);
 	}
 	
 	
@@ -152,7 +150,8 @@ public class BlockInked extends BlockInkColor implements IInked
 		if(!(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock))
 			return super.getExplosionResistance(worldIn, pos, exploder, explosion);
 		TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
-		return te.getSavedState().getBlock().getExplosionResistance(worldIn, pos, exploder, explosion);
+		try {return te.getSavedState().getBlock().getExplosionResistance(worldIn, pos, exploder, explosion); }
+		catch(Exception e) { return 0; }
 	}
 
 	@Override

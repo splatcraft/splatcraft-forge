@@ -167,8 +167,24 @@ public class BlockInkedSlab extends BlockSlab implements IInked
 		if(!(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock))
 			return super.getExplosionResistance(worldIn, pos, exploder, explosion);
 		TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
-		return te.getSavedState().getBlock().getExplosionResistance(worldIn, pos, exploder, explosion);
+		try {return te.getSavedState().getBlock().getExplosionResistance(worldIn, pos, exploder, explosion); }
+		catch(Exception e) { return 0; }
 	}
+	
+	@Override
+	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune)
+	{
+		if(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock)
+		{
+			TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
+			IBlockState savedState = te.getSavedState();
+			if(savedState.getBlock() == this)
+				super.dropBlockAsItemWithChance(worldIn, pos, savedState, chance, fortune);
+			savedState.getBlock().dropBlockAsItemWithChance(worldIn, pos, savedState, chance, fortune);
+		}
+		else super.dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune);
+	}
+	
 	
 	@Override
 	public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack)
