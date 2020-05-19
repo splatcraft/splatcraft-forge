@@ -43,7 +43,7 @@ public class RenderSquidBumper extends RenderLivingBase<EntitySquidBumper>
 		else
 		{
 			float health = 20-entityIn.getInkHealth();
-			this.renderLivingLabel(entityIn, (health >= 20 ? TextFormatting.DARK_RED : "") + String.valueOf(health), x, y, z, 64);
+			this.renderLivingLabel(entityIn, (health >= 20 ? TextFormatting.DARK_RED : "") + String.format("%.1f",health), x, y, z, 64);
 		}
 	}
 	
