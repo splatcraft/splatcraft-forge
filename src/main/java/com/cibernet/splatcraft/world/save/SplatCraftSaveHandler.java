@@ -63,6 +63,8 @@ public class SplatCraftSaveHandler
 				return;
 			}
 		}
+		else SplatCraftGamerules.resetGamerules();
+		
 		
 		SplatCraftPlayerData.readFromNBT(null);
 	}

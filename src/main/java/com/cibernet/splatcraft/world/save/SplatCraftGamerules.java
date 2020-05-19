@@ -60,9 +60,16 @@ public class SplatCraftGamerules
 		for(Gamerule rule : ruleList.values())
 		{
 			if(!ruleCompound.hasKey(rule.getName()))
-				continue;
-			rule.setValue(ruleCompound.getBoolean(rule.getName()));
+				rule.setValue(rule.defaultValue);
+			else rule.setValue(ruleCompound.getBoolean(rule.getName()));
 		}
+	}
+	
+	public static void resetGamerules()
+	{
+		for(Gamerule rule : ruleList.values())
+			rule.setValue(rule.defaultValue);
+			
 	}
 	
 	public static class Gamerule

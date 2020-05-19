@@ -32,7 +32,7 @@ public class CommandSplatCraftGamerules extends CommandBase
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
 	{
-		if(Arrays.asList(SplatCraftGamerules.getGameruleNames()).contains(args[0]))
+		if(args.length > 0 && Arrays.asList(SplatCraftGamerules.getGameruleNames()).contains(args[0]))
 		{
 			if(args.length >= 2 && (args[1].equals("true") || args[1].equals("false")))
 			{
