@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "splatcraft:weapons/splat_dualies",
-		"particle": "splatcraft:weapons/splat_dualies"
+		"0": "splatcraft:weapons/enperry_splat_dualies",
+		"particle": "splatcraft:weapons/enperry_splat_dualies"
 	},
 	"elements": [
 		{
@@ -546,6 +546,15 @@
 				"up": {"uv": [1, 15, 1.5, 15.5], "texture": "#0"},
 				"down": {"uv": [1, 15, 1.5, 15.5], "texture": "#0"}
 			}
+		},
+		{
+			"from": [7.169, 6.285, 8],
+			"to": [8.831, 7.905, 10.34],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7.3184, 1.44, 8]},
+			"faces": {
+				"east": {"uv": [1, 6, 7.5, 10.5], "texture": "#0"},
+				"west": {"uv": [1, 6, 7.5, 10.5], "texture": "#0"}
+			}
 		}
 	],
 	"display": {
@@ -606,6 +615,5 @@
 			"name": "Detail",
 			"origin": [8, 8, 8],
 			"children": [36, 37, 38, 39, 40, 41]
-		}
-	]
+		}, 42]
 }

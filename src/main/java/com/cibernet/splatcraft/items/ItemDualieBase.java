@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -43,6 +44,16 @@ public class ItemDualieBase extends ItemWeaponBase
 		this.rollConsumption = rollConsuption;
 		
 		offhandFiringOffset = firingSpeed/2;
+	}
+	
+	public ItemDualieBase(String unlocName, String registryName, ItemDualieBase parent)
+	{
+		this(unlocName, registryName, parent.projectileSize, parent.projectileSpeed, parent.inaccuracy, parent.firingSpeed, parent.damage, parent.inkConsumption, parent.maxRolls, parent.rollSpeed, parent.rollConsumption);
+	}
+	
+	public ItemDualieBase(String unlocName, String registryName, Item parent)
+	{
+		this(unlocName, registryName, (ItemDualieBase) parent);
 	}
 	
 	@Override

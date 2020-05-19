@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -31,6 +32,8 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	public float minConsumption;
 	public float maxConsumption;
 	
+	private final double mobility;
+	
 	public ItemChargerBase(String unlocName, String registryName, float projectileSize, int projectileLifespan, int chargeTime, int dischargeTime , float damage, float minConsumption, float maxConsumption, double mobility)
 	{
 		super(unlocName, registryName, maxConsumption);
@@ -40,10 +43,23 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 		this.chargeSpeed = 1f/chargeTime;
 		this.dischargeSpeed = 1f/dischargeTime;
 		this.damage = damage;
+		
+		this.mobility = mobility;
+		
 		SPEED_MODIFIER = new AttributeModifier("Charger Mobility", mobility-1, 2).setSaved(false);
 		
 		this.maxConsumption = maxConsumption;
 		this.minConsumption = minConsumption;
+	}
+	
+	public ItemChargerBase(String unlocName, String registryName, ItemChargerBase parent)
+	{
+		this(unlocName, registryName, parent.projectileSize, parent.projectileLifespan, (int) (1/parent.chargeSpeed), (int)(1/parent.dischargeSpeed), parent.damage, parent.minConsumption, parent.maxConsumption, parent.mobility);
+	}
+	
+	public ItemChargerBase(String unlocName, String registryName, Item parent)
+	{
+		this(unlocName, registryName, (ItemChargerBase)parent);
 	}
 	
 	@Override

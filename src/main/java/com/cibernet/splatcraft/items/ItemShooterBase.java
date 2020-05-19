@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.registries.SplatCraftSounds;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
@@ -39,7 +40,17 @@ public class ItemShooterBase extends ItemWeaponBase
     {
         this(unlocName, registryName, projectileSize, projectileSpeed, inaccuracy, firingSpeed, damage, inkConumption, true);
     }
-
+    
+    public ItemShooterBase(String unlocName, String registryName, ItemShooterBase parent)
+    {
+        this(unlocName, registryName, parent.projectileSize, parent.projectileSpeed, parent.inaccuracy, parent.firingSpeed, parent.damage, parent.inkConsumption, parent.automatic);
+    }
+    
+    public ItemShooterBase(String unlocName, String registryName, Item parent)
+    {
+        this(unlocName, registryName, (ItemShooterBase) parent);
+    }
+    
     @Override
     public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {

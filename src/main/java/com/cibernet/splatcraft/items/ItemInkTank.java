@@ -38,6 +38,7 @@ public class ItemInkTank extends ItemInkColoredArmor implements IBattleItem
 	private final List<Item> weaponBlacklist = new ArrayList<>();
 	
 	public final float capacity;
+	public final ArmorMaterial material;
 	@SideOnly(Side.CLIENT)
 	private ModelAbstractTank model;
 	
@@ -46,6 +47,7 @@ public class ItemInkTank extends ItemInkColoredArmor implements IBattleItem
 		super(unlocalizedName, registryName, materialIn, 0, EntityEquipmentSlot.CHEST);
 		
 		this.capacity = capacity;
+		this.material = materialIn;
 		
 		this.addPropertyOverride(new ResourceLocation("ink_stage"), new IItemPropertyGetter()
 		{
@@ -66,6 +68,20 @@ public class ItemInkTank extends ItemInkColoredArmor implements IBattleItem
 	public ItemInkTank(String unlocalizedName, String registryName, float capacity)
 	{
 		this(unlocalizedName, registryName, capacity, 0);
+	}
+	
+	public ItemInkTank(String unlocalizedName, String registryName, ItemInkTank parent)
+	{
+		this(unlocalizedName, registryName, parent.capacity, EnumHelper.addArmorMaterial(unlocalizedName, SplatCraft.MODID+":"+registryName,-1,new int[] {parent.material.getDamageReductionAmount(EntityEquipmentSlot.FEET),parent.material.getDamageReductionAmount(EntityEquipmentSlot.LEGS),
+				parent.material.getDamageReductionAmount(EntityEquipmentSlot.CHEST),parent.material.getDamageReductionAmount(EntityEquipmentSlot.HEAD)}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0));
+				
+		weaponBlacklist.addAll(parent.weaponBlacklist);
+		weaponWhitelist.addAll(parent.weaponWhitelist);
+	}
+	
+	public ItemInkTank(String unlocalizedName, String registryName, Item parent)
+	{
+		this(unlocalizedName, registryName, (ItemInkTank) parent);
 	}
 	
 	@Override

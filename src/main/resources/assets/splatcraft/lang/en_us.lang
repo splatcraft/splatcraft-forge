@@ -45,15 +45,19 @@ item.squidBumper.name=Squid Bumper
 
 item.inkTank.name=Ink Tank
 item.inkTank.ink=Ink: %s / %s
+item.classicInkTank.name=Classic Ink Tank
 item.inkTankJr.name=Ink Tank Jr.
 item.heroInkTank.name=Hero Tank
 item.armoredInkTank.name=Armored Ink Tank
 
 item.splattershot.name=Splattershot
+item.tentatekSplattershot.name=Tentatek Splattershot
+item.wasabiSplattershot.name=Wasabi Splattershot
 item.splattershotJr.name=Splattershot Jr.
 item.splattershotPro.name=Splattershot Pro
 item.splattershot2.name=Splattershot 2
 item.aerosprayMG.name=Aerospray MG
+item.aerosprayRG.name=Aerospray RG
 item.52Gal.name=.52 Gal
 item.52Gal.name=.96 Gal
 
@@ -65,6 +69,7 @@ item.rapidBlasterPro.name=Rapid Blaster Pro
 item.lunaBlaster.name=Luna Blaster
 
 item.splatCharger.name=Splat Charger
+item.bentoSplatCharger.name=Bento Splat Charger
 item.splatCharger2.name=Splat Charger 2
 item.squiffer.name=Classic Squiffer
 item.splatterscope.name=Splatterscope
@@ -73,12 +78,15 @@ item.eLiter3K.name=E-Liter 3K
 item.eLiter4K.name=E-Liter 4K
 
 item.splatRoller.name=Splat Roller
+item.krakOnSplatRoller.name=Krak-On Splat Roller
+item.coroCoroSplatRoller.name=CoroCoro Splat Roller
 item.splatRoller2.name=Splat Roller 2
 item.carbonRoller.name=Carbon Roller
 item.inkbrush.name=Inkbrush
 item.octobrush.name=Octobrush
 
 item.splatDualies.name=Splat Dualie
+item.enperrySplatDualies.name=Enperry Splat Dualie
 item.dualieSquelchers.name=Dualie Squelcher
 
 stationTab.shooter=Shooters
@@ -96,7 +104,20 @@ recipe.dualieSquelchers.name=Dualie Squelchers
 weaponType.original=Original
 weaponType.classic=Classic
 weaponType.custom=Custom
+weaponType.deco=Deco
 weaponType.kensa=Kensa
+weaponType.hero=Hero
+weaponType.replica=Hero Replica
+weaponType.ultimate=Ultimate
+
+weaponType.tentatek=Tentatek
+weaponType.krakOn=Krak-On
+weaponType.wasabi=Wasabi
+weaponType.coroCoro=CoroCoro
+weaponType.bento=Bento
+weaponType.grim=Grim
+weaponType.permanent=Permanent
+
 weaponType.3K=3K
 weaponType.4K=4K
 weaponType.mg=MG

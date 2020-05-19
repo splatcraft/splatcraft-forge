@@ -42,6 +42,8 @@ public class ItemRollerBase extends ItemWeaponBase
     protected float flingDamage;
     protected float flingConsumption;
 
+    private double rollSpeed;
+    
     
     public ItemRollerBase(String unlocName, String registryName, double weaponSpeed, float flingSpeed, float flingDamage, float flingSize, float flingConsumption, double rollSpeed, int rollRadius, float rollDamage, float inkConsumption, boolean isBrush)
     {
@@ -55,6 +57,8 @@ public class ItemRollerBase extends ItemWeaponBase
         this.flingDamage = flingDamage;
         this.flingConsumption = flingConsumption;
         this.isBrush = isBrush;
+        
+        this.rollSpeed = rollSpeed;
 
         SPEED_MODIFIER = (new AttributeModifier( "Rolling speed boost", rollSpeed-1d, 2)).setSaved(false);
         NO_INK_SPEED_MODIFIER = (new AttributeModifier( "Rolling speed boost", -(rollSpeed-1d)*2, 2)).setSaved(false);
@@ -67,6 +71,16 @@ public class ItemRollerBase extends ItemWeaponBase
                 return entityIn != null && entityIn.isHandActive() && entityIn.getActiveItemStack() == stack ? 1.0F : 0.0F;
             }
         });
+    }
+    
+    public ItemRollerBase(String unlocName, String registryName, ItemRollerBase parent)
+    {
+        this(unlocName, registryName, parent.weaponSpeed, parent.flingSpeed, parent.flingDamage, parent.flingSize, parent.flingConsumption, parent.rollSpeed, parent.rollRadius, parent.rollDamage, parent.inkConsumption, parent.isBrush);
+    }
+    
+    public ItemRollerBase(String unlocName, String registryName, Item parent)
+    {
+        this(unlocName, registryName, (ItemRollerBase) parent);
     }
     
     @Override
