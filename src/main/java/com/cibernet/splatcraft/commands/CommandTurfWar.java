@@ -1,6 +1,8 @@
 package com.cibernet.splatcraft.commands;
 
 import com.cibernet.splatcraft.blocks.IInked;
+import com.cibernet.splatcraft.network.PacketSendColorScores;
+import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
@@ -100,20 +102,22 @@ public class CommandTurfWar extends CommandBase
 					
 				}
 			}
-		Map.Entry<Integer, Integer> winner = null;
+		
+		Integer colors[] = new Integer[scores.size()];
+		Float colorScores[] = new Float[scores.size()];
+		
+		int i = 0;
 		for(Map.Entry<Integer, Integer> entry : scores.entrySet())
 		{
-			world.getMinecraftServer().getPlayerList().sendMessage(new TextComponentTranslation("commands.turfWar.score", SplatCraftUtils.getColorName(entry.getKey()), String.format("%.1f",(entry.getValue()/(float)blockTotal)*100)));
-			
-			if(winner == null || winner.getValue() < entry.getValue())
-				winner = entry;
-			
+			//world.getMinecraftServer().getPlayerList().sendMessage(new TextComponentTranslation("commands.turfWar.score", SplatCraftUtils.getColorName(entry.getKey()), String.format("%.1f",(entry.getValue()/(float)blockTotal)*100)));
+			colors[i] = entry.getKey();
+			colorScores[i] = (entry.getValue()/(float)blockTotal)*100;
+			i++;
 		}
 		
-		if(winner != null)
-			world.getMinecraftServer().getPlayerList().sendMessage(new TextComponentTranslation("commands.turfWar.winner", SplatCraftUtils.getColorName(winner.getKey())));
-		else
+		if(scores.isEmpty())
 			throw new CommandException("commands.turfWar.noInk", new Object[0]);
+		else SplatCraftPacketHandler.instance.sendToDimension(new PacketSendColorScores(colors, colorScores), sender.getEntityWorld().provider.getDimension());
 	}
 	
 	@Override

@@ -74,7 +74,8 @@ public class ItemCoordSet extends Item
 		compound.setInteger("point"+key+"Y", pos.getY());
 		compound.setInteger("point"+key+"Z", pos.getZ());
 		
-		playerIn.sendStatusMessage(new TextComponentString(I18n.format("status.coordSet."+key, pos.getX(), pos.getY(), pos.getZ())), true);
+		if(playerIn.world.isRemote)
+			playerIn.sendStatusMessage(new TextComponentString(I18n.format("status.coordSet."+key, pos.getX(), pos.getY(), pos.getZ())), true);
 		
 		return true;
 	}

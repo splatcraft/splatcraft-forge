@@ -2,18 +2,16 @@ package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.blocks.IInked;
 import com.cibernet.splatcraft.commands.CommandTurfWar;
+import com.cibernet.splatcraft.network.PacketSendColorScores;
+import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.command.CommandException;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -25,7 +23,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -110,22 +107,23 @@ public class ItemTurfScanner extends ItemCoordSet
 					
 				}
 			}
-		Map.Entry<Integer, Integer> winner = null;
+		
+		
+		Integer colors[] = new Integer[scores.size()];
+		Float colorScores[] = new Float[scores.size()];
+		
+		int i = 0;
 		for(Map.Entry<Integer, Integer> entry : scores.entrySet())
 		{
 			//world.getMinecraftServer().getPlayerList().sendMessage(new TextComponentTranslation("commands.turfWar.score", SplatCraftUtils.getColorName(entry.getKey()), String.format("%.1f",(entry.getValue()/(float)blockTotal)*100)));
-			for(EntityPlayer reciever : world.playerEntities)
-				reciever.sendMessage(new TextComponentTranslation("commands.turfWar.score", SplatCraftUtils.getColorName(entry.getKey()), String.format("%.1f",(entry.getValue()/(float)blockTotal)*100)));
-			
-			if(winner == null || winner.getValue() < entry.getValue())
-				winner = entry;
-			
+			colors[i] = entry.getKey();
+			colorScores[i] = (entry.getValue()/(float)blockTotal)*100;
+			i++;
 		}
 		
-		if(winner != null) for(EntityPlayer reciever : world.playerEntities)
-			reciever.sendMessage(new TextComponentTranslation("commands.turfWar.winner", SplatCraftUtils.getColorName(winner.getKey())));
-		else
+		if(scores.isEmpty())
 			playerIn.sendStatusMessage(new TextComponentTranslation("commands.turfWar.noInk"), true);
+		else SplatCraftPacketHandler.instance.sendToDimension(new PacketSendColorScores(colors, colorScores), playerIn.dimension);
 		
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}

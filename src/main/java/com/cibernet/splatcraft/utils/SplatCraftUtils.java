@@ -299,8 +299,8 @@ public class SplatCraftUtils
 		
 		if(col == null)
 		{
-			String fallbackName = "color." + String.format("%06X", color).toLowerCase();
-			String fallbackNameLocalized = I18n.format(fallbackName);
+			String fallbackName = "color." + String.format("%06X", color).toUpperCase();
+			String fallbackNameLocalized = net.minecraft.util.text.translation.I18n.translateToLocal(fallbackName);
 			
 			return fallbackNameLocalized.equals(fallbackName) ? String.format("#%06X", color) : fallbackNameLocalized;
 		}
