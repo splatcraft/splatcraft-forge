@@ -122,8 +122,7 @@ public class ItemColorChanger extends ItemCoordSet
 		
 		if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
 			playerIn.sendStatusMessage(new TextComponentTranslation("commands.clearInk.outOfWorld"), true);
-		
-		
+			
 		for(int j = blockpos2.getZ(); j <= blockpos3.getZ(); j += 16)
 		{
 			for(int k = blockpos2.getX(); k <= blockpos3.getX(); k += 16)
@@ -134,8 +133,11 @@ public class ItemColorChanger extends ItemCoordSet
 				}
 			}
 		}
+		
 		int count = 0;
 		int color = ColorItemUtils.getInkColor(stack);
+		int whitelistColor = SplatCraftPlayerData.getInkColor(playerIn);
+		
 		for(int x = blockpos2.getX(); x <= blockpos3.getX(); x++)
 			for(int y = blockpos2.getY(); y <= blockpos3.getY(); y++)
 				for(int z = blockpos2.getZ(); z <= blockpos3.getZ(); z++)
@@ -148,9 +150,13 @@ public class ItemColorChanger extends ItemCoordSet
 						TileEntityColor te = ((TileEntityColor)world.getTileEntity(pos));
 						if(!((IInked) block).countsTowardsScore() && te.getColor() != color)
 						{
-							te.setColor(color);
-							world.notifyBlockUpdate(pos, state, state, 3);
-							count++;
+							boolean doWhitelist = playerIn.isSneaking() && color != whitelistColor;
+							if((doWhitelist && te.getColor() == whitelistColor) || !doWhitelist)
+							{
+								te.setColor(color);
+								world.notifyBlockUpdate(pos, state, state, 3);
+								count++;
+							}
 						}
 					}
 				}
