@@ -6,6 +6,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class ModelArmorOverride extends ModelBiped
 {
@@ -16,12 +17,15 @@ public class ModelArmorOverride extends ModelBiped
 	{
 		super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
 		
-		RenderPlayer render = (RenderPlayer) Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(entityIn);
-		ModelPlayer modelPlayer = render.getMainModel();
-		
-		copyModelAngles(modelPlayer.bipedRightArm, this.bipedRightArm);
-		copyModelAngles(modelPlayer.bipedLeftArm, this.bipedLeftArm);
-		copyModelAngles(modelPlayer.bipedHead, this.bipedHead);
-		copyModelAngles(modelPlayer.bipedHeadwear, this.bipedHeadwear);
+		if(entityIn instanceof EntityPlayer)
+		{
+			RenderPlayer render = (RenderPlayer) Minecraft.getMinecraft().getRenderManager().<AbstractClientPlayer>getEntityRenderObject(entityIn);
+			ModelPlayer modelPlayer = render.getMainModel();
+			
+			copyModelAngles(modelPlayer.bipedRightArm, this.bipedRightArm);
+			copyModelAngles(modelPlayer.bipedLeftArm, this.bipedLeftArm);
+			copyModelAngles(modelPlayer.bipedHead, this.bipedHead);
+			copyModelAngles(modelPlayer.bipedHeadwear, this.bipedHeadwear);
+		}
 	}
 }
