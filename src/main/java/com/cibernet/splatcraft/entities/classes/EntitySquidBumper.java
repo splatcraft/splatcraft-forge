@@ -90,7 +90,7 @@ public class EntitySquidBumper extends EntityLivingBase
 			{
 				ink(amount);
 				if(getInkHealth() <= 0)
-					this.playPopParticles();
+					this.world.setEntityState(this, (byte)34);
 			}
 			
 			return false;
@@ -162,25 +162,29 @@ public class EntitySquidBumper extends EntityLivingBase
 	@SideOnly(Side.CLIENT)
 	public void handleStatusUpdate(byte id)
 	{
-		if (id == 32)
+		switch(id)
 		{
-			if (this.world.isRemote)
-			{
-				this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ARMORSTAND_HIT, this.getSoundCategory(), 0.3F, 1.0F, false);
-				this.punchCooldown = this.world.getTotalWorldTime();
-			}
-		}
-		else if (id == 31)
-		{
-			if (this.world.isRemote)
-			{
-				//this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ARMORSTAND_HIT, this.getSoundCategory(), 0.3F, 1.0F, false);
-				hurtCooldown = world.getTotalWorldTime();
-			}
-		}
-		else
-		{
-			super.handleStatusUpdate(id);
+			case 31:
+				if (this.world.isRemote)
+					hurtCooldown = world.getTotalWorldTime();
+			break;
+			case 32:
+				if (this.world.isRemote)
+				{
+					this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ARMORSTAND_HIT, this.getSoundCategory(), 0.3F, 1.0F, false);
+					this.punchCooldown = this.world.getTotalWorldTime();
+				}
+			break;
+			case 34:
+				if(this.world.isRemote)
+				{
+					this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, this.getSoundCategory(), 0.5F, 20.0F, false);
+					playPopParticles();
+				}
+			break;
+			default:
+				super.handleStatusUpdate(id);
+			break;
 		}
 	}
 	
@@ -316,11 +320,9 @@ public class EntitySquidBumper extends EntityLivingBase
 	
 	private void playPopParticles()
 	{
-		//if (this.world instanceof WorldServer)
-			for(int i = 0; i < 10; i++)
-				SplatCraftParticleSpawner.spawnInkParticle(posX, posY + height*0.5, posZ, rand.nextDouble()*0.5-0.25, rand.nextDouble()*0.5-0.25, rand.nextDouble()*0.5-0.25, getColor(), 2);
-		SplatCraftParticleSpawner.spawnInksplosionParticle(posX,posY+height*0.5,posZ,0,0,0,getColor(),2);
-		world.playSound(null, posX, posY, posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, getSoundCategory(), 1, 20);
+		for(int i = 0; i < 10; i++)
+			SplatCraftParticleSpawner.spawnInkParticle(posX, posY + height * 0.5, posZ, rand.nextDouble() * 0.5 - 0.25, rand.nextDouble() * 0.5 - 0.25, rand.nextDouble() * 0.5 - 0.25, getColor(), 2);
+		SplatCraftParticleSpawner.spawnInksplosionParticle(posX, posY + height * 0.5, posZ, 0, 0, 0, getColor(), 2);
 	}
 	
 	@Override
