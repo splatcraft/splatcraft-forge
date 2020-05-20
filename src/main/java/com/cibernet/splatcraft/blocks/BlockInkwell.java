@@ -22,10 +22,12 @@ import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -89,6 +91,13 @@ public class BlockInkwell extends BlockInkColor
 		if(world.getTileEntity(pos) instanceof TileEntityColor)
 			color = ((TileEntityColor)world.getTileEntity(pos)).getColor();
 		return ColorItemUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), color);
+	}
+	
+	
+	@Override
+	public boolean shouldCheckWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	{
+		return true;
 	}
 	
 	@Override
