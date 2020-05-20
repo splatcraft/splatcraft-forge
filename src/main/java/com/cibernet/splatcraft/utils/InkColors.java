@@ -33,6 +33,9 @@ public enum InkColors
 	ICEARSTORM(0x88ffc1, MapColor.LIGHT_BLUE, "icearstorm"),
 	INK_BLACK(0x1F1F2D, MapColor.CYAN_STAINED_HARDENED_CLAY, "default"),
 	
+	SQUID(0xBDDD00, MapColor.getBlockColor(EnumDyeColor.YELLOW), "squid"),
+	OCTO(0xE51B5E, MapColor.getBlockColor(EnumDyeColor.MAGENTA), "octo"),
+	
 	DYE_WHITE(0xFAFAFA, MapColor.getBlockColor(EnumDyeColor.WHITE), "dyeWhite", EnumDyeColor.WHITE),
 	DYE_ORANGE(16351261, MapColor.getBlockColor(EnumDyeColor.ORANGE), "dyeOrange", EnumDyeColor.ORANGE),
 	DYE_MAGENTA(13061821, MapColor.getBlockColor(EnumDyeColor.MAGENTA), "dyeMagenta", EnumDyeColor.MAGENTA),
