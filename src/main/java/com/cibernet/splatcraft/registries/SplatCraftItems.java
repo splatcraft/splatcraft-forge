@@ -52,6 +52,7 @@ public class SplatCraftItems
     public static final Item blaster = new ItemBlasterBase("blaster", "blaster", 3f, 1.1f, 5f, 3, 18, 25, 10f, 10);
     public static final Item splatDualie = new ItemDualieBase("splatDualies", "splat_dualies", 1f, 0.5f, 10, 8, 6, 0.75f, 1, 0.7f, 9);
     public static final Item enperrySplatDualie = new ItemDualieBase("enperrySplatDualies", "enperry_splat_dualies", splatDualie);
+    public static final Item carbonRoller = new ItemRollerBase("carbonRoller", "carbon_roller", -1.5d, 0.38f, 4f, 0.7f, 3.5f, 1.25d, 2, 14, 0.1f, false);
     
     public static final ItemInkTank inkTank = new ItemInkTank("inkTank", "ink_tank", 100);
     public static final ItemInkTank classicInkTank = new ItemInkTank("classicInkTank", "ink_tank_classic", inkTank);
@@ -103,6 +104,7 @@ public class SplatCraftItems
         registerItem(registry, blaster);
         registerItem(registry, splatDualie);
         registerItem(registry, enperrySplatDualie);
+        registerItem(registry, carbonRoller);
         
         registerItem(registry, inkTank);
         registerItem(registry, classicInkTank);

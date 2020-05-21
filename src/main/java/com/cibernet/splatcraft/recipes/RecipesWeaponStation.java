@@ -33,6 +33,7 @@ public class RecipesWeaponStation
 	public static RecipeType recipeSplatRoller = new RecipeType(splatRoller, "original", new ItemStack(sardinium, 5), new ItemStack(powerEgg, 14), new ItemStack(WOOL, 4), new ItemStack(DYE, 14, 0));
 	public static RecipeSubtype recipeKrakOnSplatRoller = new RecipeSubtype(recipeSplatRoller, krakOnSplatRoller, "krakOn", new ItemStack(sardinium, 4), new ItemStack(powerEgg, 12), new ItemStack(WOOL, 4), new ItemStack(DYE, 14, 0), new ItemStack(DYE, 2, 4));
 	public static RecipeSubtype recipeCoroCoroSplatRoller = new RecipeSubtype(recipeSplatRoller, coroCoroSplatRoller, "coroCoro", new ItemStack(sardinium, 7), new ItemStack(powerEgg, 12), new ItemStack(WOOL, 4), new ItemStack(DYE, 14, 0));
+	public static RecipeType recipeCarbonRoller = new RecipeType(carbonRoller, "original", new ItemStack(sardinium, 6), new ItemStack(powerEgg, 10), new ItemStack(WOOL, 2), new ItemStack(DYE, 10, 0), new ItemStack(DYE, 4, 9));
 	public static RecipeType recipeInkbrush = new RecipeType(inkbrush, "original", new ItemStack(sardinium, 7), new ItemStack(powerEgg, 18), new ItemStack(Items.WHEAT, 3), new ItemStack(DYE, 7, 0));
 	public static RecipeType recipeOctobrush = new RecipeType(octobrush, "original", new ItemStack(sardinium, 4), new ItemStack(powerEgg, 20), new ItemStack(Items.WHEAT, 5), new ItemStack(DYE, 12, 0), new ItemStack(IRON_NUGGET, 18));
 	
@@ -57,6 +58,7 @@ public class RecipesWeaponStation
 		register(TAB_SHOOTER, recipeClashBlaster);
 		
 		register(TAB_ROLLER, recipeSplatRoller);
+		register(TAB_ROLLER, recipeCarbonRoller);
 		register(TAB_ROLLER, recipeInkbrush);
 		register(TAB_ROLLER, recipeOctobrush);
 		
