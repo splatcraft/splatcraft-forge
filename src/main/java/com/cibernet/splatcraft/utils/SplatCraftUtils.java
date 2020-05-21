@@ -164,76 +164,79 @@ public class SplatCraftUtils
 
 		IBlockState state = worldIn.getBlockState(pos);
 		
-		if(state.getBlockHardness(worldIn, pos) == -1 || IInked.touchingWater(worldIn, pos))
-			return false;
-	
-		if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
-		{
-			TileEntitySunkenCrate te = (TileEntitySunkenCrate) worldIn.getTileEntity(pos);
-			te.ink(color, (int) Math.floor(damage));
-			worldIn.notifyBlockUpdate(pos, state, state, 3);
-			return true;
-		}
 		
-		if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
+		if(state.getBlock() != Blocks.BARRIER)
 		{
+			if(state.getBlockHardness(worldIn, pos) == -1 || IInked.touchingWater(worldIn, pos))
+				return false;
 			
-			TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
-			if(state.getBlock() instanceof BlockInkedWool)
+			if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
 			{
-				worldIn.setBlockState(pos, SplatCraftBlocks.inkedBlock.getDefaultState());
-				TileEntityInkedBlock inkTe = (TileEntityInkedBlock) SplatCraftBlocks.inkedBlock.createTileEntity(worldIn, SplatCraftBlocks.inkedBlock.getDefaultState());
-				
-				worldIn.setTileEntity(pos, inkTe);
-				
-				inkTe.setColor(color);
-				inkTe.setSavedColor(te.getColor());
-				inkTe.setSavedState(state);
-				
+				TileEntitySunkenCrate te = (TileEntitySunkenCrate) worldIn.getTileEntity(pos);
+				te.ink(color, (int) Math.floor(damage));
+				worldIn.notifyBlockUpdate(pos, state, state, 3);
 				return true;
 			}
 			
-			if(state.getBlock() instanceof IInked)
-				if(!((IInked) state.getBlock()).canInk())
+			if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
+			{
+				
+				TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
+				if(state.getBlock() instanceof BlockInkedWool)
+				{
+					worldIn.setBlockState(pos, SplatCraftBlocks.inkedBlock.getDefaultState());
+					TileEntityInkedBlock inkTe = (TileEntityInkedBlock) SplatCraftBlocks.inkedBlock.createTileEntity(worldIn, SplatCraftBlocks.inkedBlock.getDefaultState());
+					
+					worldIn.setTileEntity(pos, inkTe);
+					
+					inkTe.setColor(color);
+					inkTe.setSavedColor(te.getColor());
+					inkTe.setSavedState(state);
+					
+					return true;
+				}
+				
+				if(state.getBlock() instanceof IInked)
+					if(!((IInked) state.getBlock()).canInk())
+						return false;
+				
+				
+				if(te.getColor() == color)
 					return false;
+				te.setColor(color);
+				worldIn.notifyBlockUpdate(pos, state, state, 3);
+				return true;
+			}
 			
+			if(state.getBlock() instanceof BlockSlab && !((BlockSlab) state.getBlock()).isDouble())
+			{
+				worldIn.setBlockState(pos, SplatCraftBlocks.inkedSlab.getDefaultState().withProperty(BlockSlab.HALF, state.getValue(BlockSlab.HALF)));
+				TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedSlab.createTileEntity(worldIn, SplatCraftBlocks.inkedSlab.getDefaultState());
+				
+				worldIn.setTileEntity(pos, te);
+				
+				te.setColor(color);
+				te.setSavedState(state);
+				return true;
+			}
+			if(state.getBlock() instanceof BlockStairs)
+			{
+				worldIn.setBlockState(pos, SplatCraftBlocks.inkedStairs.getDefaultState().withProperty(BlockStairs.HALF, state.getValue(BlockStairs.HALF)).withProperty(BlockStairs.SHAPE, state.getValue(BlockStairs.SHAPE)).withProperty(BlockStairs.FACING, state.getValue(BlockStairs.FACING)));
+				TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedStairs.createTileEntity(worldIn, SplatCraftBlocks.inkedStairs.getDefaultState());
+				
+				worldIn.setTileEntity(pos, te);
+				
+				te.setColor(color);
+				te.setSavedState(state);
+				return true;
+			}
 			
-			if(te.getColor() == color)
+			if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)))
 				return false;
-			te.setColor(color);
-			worldIn.notifyBlockUpdate(pos, state, state, 3);
-			return true;
-		}
-		
-		if(state.getBlock() instanceof BlockSlab && !((BlockSlab) state.getBlock()).isDouble())
-		{
-			worldIn.setBlockState(pos, SplatCraftBlocks.inkedSlab.getDefaultState().withProperty(BlockSlab.HALF, state.getValue(BlockSlab.HALF)));
-			TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedSlab.createTileEntity(worldIn, SplatCraftBlocks.inkedSlab.getDefaultState());
 			
-			worldIn.setTileEntity(pos, te);
-			
-			te.setColor(color);
-			te.setSavedState(state);
-			return true;
-		}
-		if(state.getBlock() instanceof BlockStairs)
-		{
-			worldIn.setBlockState(pos, SplatCraftBlocks.inkedStairs.getDefaultState().withProperty(BlockStairs.HALF, state.getValue(BlockStairs.HALF)).withProperty(BlockStairs.SHAPE, state.getValue(BlockStairs.SHAPE)).withProperty(BlockStairs.FACING, state.getValue(BlockStairs.FACING)));
-			TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedStairs.createTileEntity(worldIn, SplatCraftBlocks.inkedStairs.getDefaultState());
-			
-			worldIn.setTileEntity(pos, te);
-			
-			te.setColor(color);
-			te.setSavedState(state);
-			return true;
-		}
-		
-		if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)))
+			if(worldIn.getTileEntity(pos) != null)
 				return false;
-		
-		if(worldIn.getTileEntity(pos) != null)
-				return false;
-
+		}
 		worldIn.setBlockState(pos, SplatCraftBlocks.inkedBlock.getDefaultState());
 		TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedBlock.createTileEntity(worldIn, SplatCraftBlocks.inkedBlock.getDefaultState());
 
@@ -252,7 +255,7 @@ public class SplatCraftUtils
 		if(state.getBlock() == Blocks.AIR || state.getBlock() == Blocks.IRON_BARS || state.getBlock() instanceof BlockSquidPassable)
 			return true;
 		
-		if(state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
+		if(state.getBlock() == Blocks.BARRIER || state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
 			return false;
 		if(state.isFullBlock() || state.getBlockHardness(worldIn, pos) != -1)
 			return false;
@@ -264,6 +267,9 @@ public class SplatCraftUtils
 	{
 
 		IBlockState state = worldIn.getBlockState(pos);
+		
+		if(state.getBlock() == Blocks.BARRIER)
+			return true;
 		
 		if(state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
 			return true;
