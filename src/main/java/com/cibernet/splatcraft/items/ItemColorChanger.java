@@ -160,7 +160,9 @@ public class ItemColorChanger extends ItemCoordSet
 						}
 					}
 				}
-		playerIn.sendStatusMessage(new TextComponentString(I18n.format("commands.changeColor.success", count, SplatCraftUtils.getColorName(color))), true);
+		
+		if(world.isRemote)
+			playerIn.sendStatusMessage(new TextComponentString(I18n.format("commands.changeColor.success", count, SplatCraftUtils.getColorName(color))), true);
 		
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
