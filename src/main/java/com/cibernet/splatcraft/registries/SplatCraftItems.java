@@ -50,9 +50,13 @@ public class SplatCraftItems
     public static final Item octobrush = new ItemRollerBase("octobrush", "octobrush", -0.1D, 0.5f, 8f, 0.95f, 3.2f, 1.2d, 2, 4, 0.18f, true);
     public static final Item eLiter4K = new ItemChargerBase("eLiter4K", "e_liter_4k", 0.85f, 12, 35, 40, 36f, 2.25f, 25f, 0.15);
     public static final Item blaster = new ItemBlasterBase("blaster", "blaster", 3f, 1.1f, 5f, 3, 18, 25, 10f, 10);
-    public static final Item splatDualie = new ItemDualieBase("splatDualies", "splat_dualies", 1f, 0.5f, 10, 8, 6, 0.75f, 1, 0.7f, 9);
+    public static final Item splatDualie = new ItemDualieBase("splatDualies", "splat_dualies", 1f, 0.5f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
     public static final Item enperrySplatDualie = new ItemDualieBase("enperrySplatDualies", "enperry_splat_dualies", splatDualie);
     public static final Item carbonRoller = new ItemRollerBase("carbonRoller", "carbon_roller", -1.5d, 0.38f, 4f, 0.7f, 3.5f, 1.25d, 2, 14, 0.1f, false);
+    public static final Item gal52 = new ItemShooterBase("52Gal", "52_gal", 1.2f, 0.68f, 16f, 9, 10.4f, 1.3f);
+    public static final Item gal96 = new ItemShooterBase("96Gal", "96_gal", 1.2f, 0.78f, 16.5f, 12, 12.4f, 2.5f);
+    public static final Item dualieSquelcher = new ItemDualieBase("dualieSquelchers", "dualie_squelchers", 0.8f, 0.62f, 14, 12, 4.4f, 1.2f, 1, 1f, 5, 6, 12);
+    
     
     public static final ItemInkTank inkTank = new ItemInkTank("inkTank", "ink_tank", 100);
     public static final ItemInkTank classicInkTank = new ItemInkTank("classicInkTank", "ink_tank_classic", inkTank);
@@ -105,6 +109,9 @@ public class SplatCraftItems
         registerItem(registry, splatDualie);
         registerItem(registry, enperrySplatDualie);
         registerItem(registry, carbonRoller);
+        registerItem(registry, gal52);
+        registerItem(registry, gal96);
+        registerItem(registry, dualieSquelcher);
         
         registerItem(registry, inkTank);
         registerItem(registry, classicInkTank);

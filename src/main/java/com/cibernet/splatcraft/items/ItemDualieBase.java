@@ -28,9 +28,12 @@ public class ItemDualieBase extends ItemWeaponBase
 	public float rollSpeed;
 	public float rollConsumption;
 	
+	public int rollCooldown;
+	public int finalRollCooldown;
+	
 	public int offhandFiringOffset;
 	
-	public ItemDualieBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage,  float inkConsumption, int rolls, float rollSpeed, float rollConsuption)
+	public ItemDualieBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage,  float inkConsumption, int rolls, float rollSpeed, float rollConsuption, int rollCooldown, int finalRollCooldown)
 	{
 		super(unlocName, registryName, inkConsumption);
 		this.inaccuracy = inaccuracy;
@@ -44,11 +47,14 @@ public class ItemDualieBase extends ItemWeaponBase
 		this.rollConsumption = rollConsuption;
 		
 		offhandFiringOffset = firingSpeed/2;
+		
+		this.rollCooldown = rollCooldown;
+		this.finalRollCooldown = finalRollCooldown;
 	}
 	
 	public ItemDualieBase(String unlocName, String registryName, ItemDualieBase parent)
 	{
-		this(unlocName, registryName, parent.projectileSize, parent.projectileSpeed, parent.inaccuracy, parent.firingSpeed, parent.damage, parent.inkConsumption, parent.maxRolls, parent.rollSpeed, parent.rollConsumption);
+		this(unlocName, registryName, parent.projectileSize, parent.projectileSpeed, parent.inaccuracy, parent.firingSpeed, parent.damage, parent.inkConsumption, parent.maxRolls, parent.rollSpeed, parent.rollConsumption, parent.rollCooldown, parent.finalRollCooldown);
 	}
 	
 	public ItemDualieBase(String unlocName, String registryName, Item parent)

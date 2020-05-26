@@ -173,6 +173,7 @@ public class ClientEventHandler
 						input.moveForward = 0;
 						input.moveStrafe = 0;
 						input.jump = false;
+						player.capabilities.isFlying = false;
 						
 						if(Math.abs(player.motionX) <= 0.1 && Math.abs(player.motionZ) <= 0.1)
 							input.sneak = true;

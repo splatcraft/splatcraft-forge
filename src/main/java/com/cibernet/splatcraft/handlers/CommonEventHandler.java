@@ -137,13 +137,14 @@ public class CommonEventHandler
 				
 				if(item instanceof ItemDualieBase)
 				{
-					int maxRolls = ((ItemDualieBase) item).maxRolls;
+					ItemDualieBase dualie = (ItemDualieBase) item;
+					int maxRolls = dualie.maxRolls;
 					
 					ItemStack offhandStack = player.getHeldItem(player.getHeldItemMainhand().equals(weapon) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND);
 					if(offhandStack.getItem() instanceof ItemDualieBase)
 					{
 						maxRolls += ((ItemDualieBase) offhandStack.getItem()).maxRolls;
-						item.onItemTickUse(player.world, player, offhandStack, player.getItemInUseCount() + ((ItemDualieBase) offhandStack.getItem()).offhandFiringOffset);
+						((ItemDualieBase) offhandStack.getItem()).onItemTickUse(player.world, player, offhandStack, player.getItemInUseCount() + ((ItemDualieBase) offhandStack.getItem()).offhandFiringOffset);
 					}
 					
 					int rollCount = ItemDualieBase.getRollString(weapon);
@@ -158,17 +159,19 @@ public class CommonEventHandler
 							
 							if(offhandStack.getItem() instanceof ItemDualieBase)
 							{
-								ItemStack dualieA = ((ItemDualieBase) item).maxRolls >= ((ItemDualieBase) offhandStack.getItem()).maxRolls ? weapon : offhandStack;
+								ItemStack dualieA = dualie.maxRolls >= ((ItemDualieBase) offhandStack.getItem()).maxRolls ? weapon : offhandStack;
 								ItemStack dualieB = dualieA.equals(weapon) ? offhandStack : weapon;
 								activeDualie = maxRolls % 2 == 0 ? dualieA : dualieB;
 							}
 							
-							if(ItemWeaponBase.hasInk(player, weapon, ((ItemDualieBase) item).rollConsumption))
+							if(ItemWeaponBase.hasInk(player, weapon, dualie.rollConsumption))
 							{
 								player.motionY = 0;
 								player.moveRelative(input.moveStrafe, -0.2f, input.moveForward, ((ItemDualieBase)activeDualie.getItem()).rollSpeed);
 								
-								int cooldown = rollCount >= maxRolls-1 ? 30 : 8;
+								dualie = (ItemDualieBase) activeDualie.getItem();
+								
+								int cooldown = rollCount >= maxRolls-1 ? dualie.finalRollCooldown : dualie.rollCooldown;
 								SplatCraftPacketHandler.instance.sendToServer(new PacketDodgeRoll(activeDualie.equals(offhandStack), cooldown));
 								
 								
@@ -178,7 +181,7 @@ public class CommonEventHandler
 								
 								
 								ItemDualieBase.setRollString(weapon, rollCount + 1);
-								ItemDualieBase.setRollCooldown(weapon, 20);
+								ItemDualieBase.setRollCooldown(weapon, (int) (dualie.finalRollCooldown *0.75));
 								
 								ItemWeaponBase.reduceInk(player, ((ItemDualieBase) activeDualie.getItem()).rollConsumption);
 							} else player.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);
