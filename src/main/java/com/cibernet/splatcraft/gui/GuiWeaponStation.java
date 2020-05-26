@@ -116,6 +116,13 @@ public class GuiWeaponStation extends GuiContainer
 		fontRenderer.drawString(displayName, (xSize/2 - fontRenderer.getStringWidth(displayName)/2), 21, 4210752);
 		this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 		
+		RecipeSubtype recipe = RecipesWeaponStation.recipeTabs.get(WeaponStationTabs.values()[tabPos]).get(typePos).getSubtypes().get(subTypePos);
+		String subName = I18n.format(recipe.getName());
+		String ingTabLabel = (ingredientPos+1) + "/" + (int) Math.ceil(recipe.getIngredients().size()/6.0);
+		
+		this.fontRenderer.drawString(subName, 34 - fontRenderer.getStringWidth(subName)/2, 54, 4210752);
+		this.fontRenderer.drawString(ingTabLabel, 133 - fontRenderer.getStringWidth(ingTabLabel)/2, 54, 4210752);
+		
 	}
 	
 	@Override
@@ -123,6 +130,14 @@ public class GuiWeaponStation extends GuiContainer
 	{
 		drawDefaultBackground();
 		super.drawScreen(mouseX, mouseY, partialTicks);
+		
+		WeaponStationTabs tab = WeaponStationTabs.values()[tabPos];
+		List<RecipeType> typeList = RecipesWeaponStation.recipeTabs.get(tab);
+		List<RecipeSubtype> subtypes = typeList.get(typePos).getSubtypes();
+		RecipeSubtype recipe = subtypes.get(subTypePos);
+		
+		int ingredientTabSize = (int) Math.ceil(recipe.getIngredients().size()/6.0);
+		
 		GlStateManager.color(1,1,1,1);
 		
 		RenderHelper.enableGUIStandardItemLighting();
@@ -130,18 +145,6 @@ public class GuiWeaponStation extends GuiContainer
 		GlStateManager.enableRescaleNormal();
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		
-		WeaponStationTabs tab = WeaponStationTabs.values()[tabPos];
-		List<RecipeType> typeList = RecipesWeaponStation.recipeTabs.get(tab);
-		List<RecipeSubtype> subtypes = typeList.get(typePos).getSubtypes();
-		RecipeSubtype recipe = subtypes.get(subTypePos);
-		String subName = I18n.format(recipe.getName());
-		
-		int ingredientTabSize = (int) Math.ceil(recipe.getIngredients().size()/6.0);
-		String ingTabLabel = (ingredientPos+1) + "/" + ingredientTabSize;
-		
-		this.fontRenderer.drawString(subName, 34+guiLeft - fontRenderer.getStringWidth(subName)/2, 54+guiTop, 4210752);
-		this.fontRenderer.drawString(ingTabLabel, 133+guiLeft - fontRenderer.getStringWidth(ingTabLabel)/2, 54+guiTop, 4210752);
 		
 		//draw ingredients
 		for(int i = ingredientPos*6; i < recipe.getIngredients().size() && i < ingredientPos*6 + 6; i++)

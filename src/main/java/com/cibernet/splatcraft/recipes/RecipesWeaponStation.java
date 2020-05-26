@@ -43,9 +43,9 @@ public class RecipesWeaponStation
 	public static RecipeSubtype recipeBentoSplatCharger = new RecipeSubtype(recipeSplatCharger, bentoSplatCharger, "bento", new ItemStack(sardinium, 5), new ItemStack(powerEgg, 17), new ItemStack(DYE, 12, 0), new ItemStack(PAPER, 1	));
 	public static RecipeType recipeELiter4K = new RecipeType(eLiter4K, "4K", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 18), new ItemStack(DYE, 10, 0), new ItemStack(IRON_INGOT, 5)).setDisplayName("e_liter");
 	
-	public static RecipeType recipeSplatDualies = new RecipeType(splatDualie, "original", new ItemStack(sardinium, 4), new ItemStack(powerEgg, 7), new ItemStack(DYE, 3, 10), new ItemStack(GUNPOWDER, 1)).setDisplayName("splatDualies");
-	public static RecipeSubtype recipeEnperrySplatDualies = new RecipeSubtype(recipeSplatDualies, enperrySplatDualie, "original", new ItemStack(sardinium, 2), new ItemStack(powerEgg, 7), new ItemStack(DYE, 3, 10), new ItemStack(GUNPOWDER, 1), new ItemStack(GOLD_INGOT, 2));
-	public static RecipeType recipeDualieSquelchers = new RecipeType(dualieSquelcher, "original", new ItemStack(sardinium, 3), new ItemStack(powerEgg, 8), new ItemStack(DYE, 2, 10), new ItemStack(GUNPOWDER, 2), new ItemStack(DYE, 2, 1)).setDisplayName("dualieSquelchers");
+	public static RecipeType recipeSplatDualies = new RecipeType(splatDualie, "original", new ItemStack(sardinium, 4), new ItemStack(powerEgg, 7), new ItemStack(DYE, 3, 0), new ItemStack(GUNPOWDER, 1)).setDisplayName("splatDualies");
+	public static RecipeSubtype recipeEnperrySplatDualies = new RecipeSubtype(recipeSplatDualies, enperrySplatDualie, "original", new ItemStack(sardinium, 2), new ItemStack(powerEgg, 7), new ItemStack(DYE, 3, 0), new ItemStack(GUNPOWDER, 1), new ItemStack(GOLD_INGOT, 2));
+	public static RecipeType recipeDualieSquelchers = new RecipeType(dualieSquelcher, "original", new ItemStack(sardinium, 3), new ItemStack(powerEgg, 8), new ItemStack(DYE, 2, 0), new ItemStack(GUNPOWDER, 2), new ItemStack(DYE, 2, 1)).setDisplayName("dualieSquelchers");
 	
 	public static RecipeType recipeInkTank = new RecipeType(inkTank, "original", new ItemStack(sardinium, 11), new ItemStack(powerEgg, 15), new ItemStack(SplatCraftBlocks.emptyInkwell));
 	public static RecipeSubtype recipeClassicInkTank = new RecipeSubtype(recipeInkTank, classicInkTank, "classic", new ItemStack(sardinium, 11), new ItemStack(powerEgg, 15), new ItemStack(SplatCraftBlocks.emptyInkwell));
