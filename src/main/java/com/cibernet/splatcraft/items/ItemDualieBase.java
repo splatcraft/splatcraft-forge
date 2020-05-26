@@ -4,16 +4,20 @@ import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
 
 public class ItemDualieBase extends ItemWeaponBase
 {
@@ -50,6 +54,18 @@ public class ItemDualieBase extends ItemWeaponBase
 		
 		this.rollCooldown = rollCooldown;
 		this.finalRollCooldown = finalRollCooldown;
+		
+		this.addPropertyOverride(new ResourceLocation("isLeft"), new IItemPropertyGetter()
+		{
+			@SideOnly(Side.CLIENT)
+			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn)
+			{
+				if(entityIn == null || entityIn.getPrimaryHand() == null)
+					return 0;
+				boolean mainLeft = entityIn.getPrimaryHand().equals(EnumHandSide.LEFT);
+				return ((mainLeft && entityIn.getHeldItemMainhand().equals(stack)) || (!mainLeft && entityIn.getHeldItemOffhand().equals(stack))) ? 1 : 0;
+			}
+		});
 	}
 	
 	public ItemDualieBase(String unlocName, String registryName, ItemDualieBase parent)
