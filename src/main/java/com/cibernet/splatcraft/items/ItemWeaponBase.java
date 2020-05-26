@@ -100,7 +100,8 @@ public class ItemWeaponBase extends Item implements IBattleItem
 			boolean isSquid = false;
 			if(entityLiving instanceof EntityPlayer)
 				isSquid = SplatCraftPlayerData.getIsSquid((EntityPlayer) entityLiving);
-			onItemLeftClick(entityLiving.world, (EntityPlayer) entityLiving, stack);
+			if(!isSquid)
+				onItemLeftClick(entityLiving.world, (EntityPlayer) entityLiving, stack);
 		}
 		return super.onEntitySwing(entityLiving, stack);
 	}
