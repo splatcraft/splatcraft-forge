@@ -480,8 +480,12 @@ public class EntityInkProjectile extends Entity implements IProjectile
             if(result.typeOfHit.equals(RayTraceResult.Type.BLOCK))
                 SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, getColor());
                 //SplatCraftUtils.inkBlock(world, result.getBlockPos(), getColor());
-            this.world.setEntityState(this, (byte)3);
-            this.setDead();
+            
+            if((result.entityHit != null && result.entityHit != thrower && (thrower.getRidingEntity() != result.entityHit) && result.entityHit instanceof EntityLivingBase) || result.entityHit == null)
+            {
+                this.world.setEntityState(this, (byte) 3);
+                this.setDead();
+            }
         }
     }
     
