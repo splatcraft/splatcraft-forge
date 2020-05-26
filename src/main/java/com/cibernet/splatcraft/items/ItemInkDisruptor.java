@@ -83,7 +83,8 @@ public class ItemInkDisruptor extends ItemCoordSet
 							count++;
 					}
 				}
-		playerIn.sendStatusMessage(new TextComponentString(I18n.format("commands.clearInk.success", count)), true);
+		if(world.isRemote)
+			playerIn.sendStatusMessage(new TextComponentString(I18n.format("commands.clearInk.success", count)), true);
 		
 		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 	}
