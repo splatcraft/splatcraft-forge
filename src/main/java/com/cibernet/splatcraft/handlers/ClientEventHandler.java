@@ -40,6 +40,7 @@ public class ClientEventHandler
 	private static final AttributeModifier SQUID_SWIM_SPEED = (new AttributeModifier( "Squid swim speed boost", 1.25D, 2)).setSaved(false);
 	private static final AttributeModifier ENEMY_INK_SPEED = (new AttributeModifier( "Enemy ink speed penalty", -0.3D, 2)).setSaved(false);
 
+	private static RenderInklingSquid squidRenderer = null;
 	
 	private static int sneakTime = 0;
 	
@@ -211,8 +212,9 @@ public class ClientEventHandler
 			
 			if(!SplatCraftUtils.canSquidHide(player.world, player))
 			{
-				RenderInklingSquid render = new RenderInklingSquid(event.getRenderer().getRenderManager());
-				render.doRender(player, event.getX(), event.getY(), event.getZ(), player.rotationYawHead, event.getPartialRenderTick());
+				if(squidRenderer == null)
+					squidRenderer = new RenderInklingSquid(event.getRenderer().getRenderManager());
+				squidRenderer.doRender(player, event.getX(), event.getY(), event.getZ(), player.rotationYawHead, event.getPartialRenderTick());
 			}
 			else if(squidPhase == 2) event.getRenderer().getRenderManager().setRenderShadow(false);
 		}
