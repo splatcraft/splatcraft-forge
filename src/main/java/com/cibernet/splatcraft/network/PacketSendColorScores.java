@@ -23,13 +23,15 @@ public class PacketSendColorScores implements IMessage
     private boolean messageValid;
     Integer[] colors;
     Float[] scores;
-
+    int length;
+    
     public PacketSendColorScores() {messageValid = false;}
     public PacketSendColorScores(Integer[] colors, Float[] scores)
     {
         messageValid = true;
         this.colors = colors;
         this.scores = scores;
+        this.length = Math.min(colors.length, scores.length);
     }
 
     @Override
@@ -39,11 +41,12 @@ public class PacketSendColorScores implements IMessage
         {
             ArrayList<Integer> colorList = new ArrayList<>();
             ArrayList<Float> scoreList = new ArrayList<>();
-            while(buf.readableBytes() > 0)
-            {
+            
+            length = buf.readInt();
+            for(int i = 0; i < this.length; i++)
                 colorList.add(buf.readInt());
+            for(int i = 0; i < this.length; i++)
                 scoreList.add(buf.readFloat());
-            }
             
             colors = colorList.toArray(new Integer[colorList.size()]);
             scores = scoreList.toArray(new Float[scoreList.size()]);
@@ -60,10 +63,12 @@ public class PacketSendColorScores implements IMessage
     {
         if(!messageValid)
             return;
-        for(int color : colors)
-            buf.writeInt(color);
-        for(float score : scores)
-            buf.writeFloat(score);
+        
+        buf.writeInt(length);
+        for(int i = 0; i < this.length; i++)
+            buf.writeInt(colors[i]);
+        for(int i = 0; i < this.length; i++)
+            buf.writeFloat(scores[i]);
     }
 
     public static class Handler implements IMessageHandler<PacketSendColorScores, IMessage>
@@ -84,13 +89,16 @@ public class PacketSendColorScores implements IMessage
                 EntityPlayerSP player = Minecraft.getMinecraft().player;
                 
                 int winner = -1;
-                int winnerScore = -1;
+                float winnerScore = -1;
                 
                 for(int i = 0; i < message.colors.length; i++)
                 {
                     player.sendMessage(new TextComponentString(I18n.format("commands.turfWar.score", SplatCraftUtils.getColorName(message.colors[i]), String.format("%.1f",message.scores[i]))));
                     if( winnerScore < message.scores[i])
+                    {
+                        winnerScore = message.scores[i];
                         winner = message.colors[i];
+                    }
                 }
     
                 
