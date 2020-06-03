@@ -104,9 +104,10 @@ public class InkExplosion
 						d1 = d1 / d3;
 						d2 = d2 / d3;
 						float f = this.size * (0.7F + this.world.rand.nextFloat() * 0.6F);
-						double d4 = this.x;
-						double d6 = this.y;
-						double d8 = this.z;
+						double d4 = this.x + 0.25f;
+						double d6 = this.y + 0.25f;
+						double d8 = this.z + 0.25f;
+						
 						
 						for (float f1 = 0.3F; f > 0.0F; f -= 0.22500001F)
 						{
