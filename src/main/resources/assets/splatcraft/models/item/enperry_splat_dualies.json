@@ -562,7 +562,7 @@
 			"translation": [0, 3.25, -0.5]
 		},
 		"thirdperson_lefthand": {
-			"translation": [0, 5, -0.5]
+			"translation": [0, 3.25, -0.5]
 		},
 		"firstperson_righthand": {
 			"translation": [-1, 6.5, 2]
