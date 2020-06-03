@@ -65,6 +65,12 @@ public class EntityNPCSquid extends EntityCreature
 	}
 	
 	@Override
+	protected boolean canDespawn()
+	{
+		return false;
+	}
+	
+	@Override
 	public void readEntityFromNBT(NBTTagCompound compound)
 	{
 		super.readEntityFromNBT(compound);
