@@ -26,7 +26,7 @@ public class RecipesInkwellVat
 		addToEmpty(ORANGE, BLUE, GREEN, PINK, LIGHT_BLUE, YELLOW, TURQUOISE, LILAC, LEMON, PLUM);
 		addRecipe(filterEmpty, INK_BLACK);
 		addRecipe(filterEnchanted, MOJANG, COBALT, ICEARSTORM);
-		addRecipe(filterNeon, NEON_GREEN, NEON_PINK);
+		addRecipe(filterNeon, NEON_GREEN, NEON_PINK, SQUID, OCTO);
 		addRecipe(filterPastel, TANGERINE, CYAN, CHERRY, MINT);
 		addRecipe(filterDye, DYE_ORANGE, DYE_BLUE, DYE_PINK, DYE_LIME, DYE_PURPLE, DYE_LIGHT_BLUE, DYE_MAGENTA, DYE_YELLOW, DYE_RED, DYE_GREEN, DYE_BROWN, DYE_CYAN, DYE_WHITE, DYE_GRAY, DYE_SILVER, DYE_BLACK);
 		

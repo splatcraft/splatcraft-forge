@@ -27,6 +27,8 @@ public enum InkColors
 
 	NEON_PINK(0xcf0466, MapColor.getBlockColor(EnumDyeColor.PINK), "neonPink"),
 	NEON_GREEN(0x17a80d, MapColor.getBlockColor(EnumDyeColor.GREEN), "neonGreen"),
+	//NEON_ORANGE(0xF46F09, MapColor.getBlockColor(EnumDyeColor.ORANGE), "neonOrange"),
+	//NEON_BLUE(0x26229F, MapColor.getBlockColor(EnumDyeColor.BLUE), "neonBlue"),
 
 	MOJANG(0xDF242F, MapColor.RED_STAINED_HARDENED_CLAY, "mojangRed"),
 	COBALT(0x005682, MapColor.getBlockColor(EnumDyeColor.CYAN), "cobalt"),
