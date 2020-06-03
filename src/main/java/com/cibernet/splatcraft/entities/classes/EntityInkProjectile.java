@@ -472,7 +472,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
             InkColors inkColor = InkColors.getByColor(getColor());
             if(result.entityHit instanceof EntitySheep && inkColor != null && inkColor.getDyeColor() != null)
                 ((EntitySheep) result.entityHit).setFleeceColor(inkColor.getDyeColor());
-            SplatCraftUtils.dealInkDamage(result.entityHit, damage, getColor(), this, false);
+            SplatCraftUtils.dealInkDamage(result.entityHit, damage, getColor(), this.thrower, false);
         }
         
         if (!this.world.isRemote)
