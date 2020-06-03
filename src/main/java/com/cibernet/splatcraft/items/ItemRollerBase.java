@@ -100,7 +100,7 @@ public class ItemRollerBase extends ItemWeaponBase
      */
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
-        if(playerIn.isSneaking())
+        if(playerIn.isSneaking() || playerIn.getCooldownTracker().getCooldown(this, 0) == 0)
             return super.onItemRightClick(worldIn, playerIn, handIn);
         
         ItemStack stack = playerIn.getHeldItem(handIn);
@@ -134,7 +134,6 @@ public class ItemRollerBase extends ItemWeaponBase
     @Override
     public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
     {
-    
         if(worldIn.isRemote)
             return;
         
@@ -177,10 +176,13 @@ public class ItemRollerBase extends ItemWeaponBase
                 if(canInk)
                     SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, color, rollDamage);
                 
-                List<Entity> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(inkPos.up()));
-                for(Entity target : inkedPlayers)
+                if(playerIn.getCooledAttackStrength(0) >= 0.95f)
                 {
-                    SplatCraftUtils.dealRollDamage(target, rollDamage, color, playerIn, false);
+                    List<Entity> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(inkPos.up()));
+                    for(Entity target : inkedPlayers)
+                    {
+                        SplatCraftUtils.dealRollDamage(target, rollDamage, color, playerIn, false);
+                    }
                 }
             }
         } else playerIn.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);
