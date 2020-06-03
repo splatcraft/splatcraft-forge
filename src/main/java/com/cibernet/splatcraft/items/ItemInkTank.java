@@ -87,6 +87,9 @@ public class ItemInkTank extends ItemInkColoredArmor implements IBattleItem
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag advanced)
 	{
+		String desc = I18n.format(getUnlocalizedName()+".tooltip");
+		if(!desc.equals(getUnlocalizedName()+".tooltip"))
+			tooltip.add(desc);
 		if(advanced.isAdvanced())
 		{
 			tooltip.add(TextFormatting.GRAY + I18n.format("item.inkTank.ink", getInkAmount(stack), capacity));

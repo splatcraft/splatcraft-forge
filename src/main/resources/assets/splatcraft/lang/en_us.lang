@@ -47,6 +47,7 @@ item.inkTank.name=Ink Tank
 item.inkTank.ink=Ink: %s / %s
 item.classicInkTank.name=Classic Ink Tank
 item.inkTankJr.name=Ink Tank Jr.
+item.inkTankJr.tooltip=Only works with Junior weapons.
 item.heroInkTank.name=Hero Tank
 item.armoredInkTank.name=Armored Ink Tank
 
