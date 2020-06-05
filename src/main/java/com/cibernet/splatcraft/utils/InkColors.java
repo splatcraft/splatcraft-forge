@@ -9,8 +9,8 @@ import java.util.List;
 
 public enum InkColors
 {
-	ORANGE(0xe85407, MapColor.getBlockColor(EnumDyeColor.ORANGE), "orange"),
-	BLUE(0x2e0cb5, MapColor.getBlockColor(EnumDyeColor.BLUE), "blue"),
+	ORANGE(0xDF641A, MapColor.getBlockColor(EnumDyeColor.ORANGE), "orange"),
+	BLUE(0x26229F, MapColor.getBlockColor(EnumDyeColor.BLUE), "blue"),
 	PINK(0xc83d79, MapColor.getBlockColor(EnumDyeColor.PINK), "pink"),
 	GREEN(0x409d3b, MapColor.getBlockColor(EnumDyeColor.GREEN), "green"),
 	LIGHT_BLUE(0x228cff, MapColor.getBlockColor(EnumDyeColor.LIGHT_BLUE), "lightBlue"),
@@ -27,17 +27,17 @@ public enum InkColors
 
 	NEON_PINK(0xcf0466, MapColor.getBlockColor(EnumDyeColor.PINK), "neonPink"),
 	NEON_GREEN(0x17a80d, MapColor.getBlockColor(EnumDyeColor.GREEN), "neonGreen"),
-	//NEON_ORANGE(0xF46F09, MapColor.getBlockColor(EnumDyeColor.ORANGE), "neonOrange"),
-	//NEON_BLUE(0x26229F, MapColor.getBlockColor(EnumDyeColor.BLUE), "neonBlue"),
-
-	MOJANG(0xDF242F, MapColor.RED_STAINED_HARDENED_CLAY, "mojangRed"),
-	COBALT(0x005682, MapColor.getBlockColor(EnumDyeColor.CYAN), "cobalt"),
-	ICEARSTORM(0x88ffc1, MapColor.LIGHT_BLUE, "icearstorm"),
-	INK_BLACK(0x1F1F2D, MapColor.CYAN_STAINED_HARDENED_CLAY, "default"),
+	NEON_ORANGE(0xe85407, MapColor.getBlockColor(EnumDyeColor.ORANGE), "neonOrange"),
+	NEON_BLUE(0x2e0cb5, MapColor.getBlockColor(EnumDyeColor.BLUE), "neonBlue"),
 	
 	SQUID(0xBDDD00, MapColor.getBlockColor(EnumDyeColor.YELLOW), "squid"),
 	OCTO(0xE51B5E, MapColor.getBlockColor(EnumDyeColor.MAGENTA), "octo"),
 	
+	MOJANG(0xDF242F, MapColor.RED_STAINED_HARDENED_CLAY, "mojangRed"),
+	COBALT(0x005682, MapColor.getBlockColor(EnumDyeColor.CYAN), "cobalt"),
+	ICEARSTORM(0x88ffc1, MapColor.LIGHT_BLUE, "icearstorm"),
+	INK_BLACK(0x1F1F2D, MapColor.CYAN_STAINED_HARDENED_CLAY, "default"),
+		
 	DYE_WHITE(0xFAFAFA, MapColor.getBlockColor(EnumDyeColor.WHITE), "dyeWhite", EnumDyeColor.WHITE),
 	DYE_ORANGE(16351261, MapColor.getBlockColor(EnumDyeColor.ORANGE), "dyeOrange", EnumDyeColor.ORANGE),
 	DYE_MAGENTA(13061821, MapColor.getBlockColor(EnumDyeColor.MAGENTA), "dyeMagenta", EnumDyeColor.MAGENTA),
