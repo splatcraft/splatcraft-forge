@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.entities.classes;
 
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -45,6 +46,20 @@ public class EntityChargerProjectile extends EntityInkProjectile
 			lifespan--;
 		if(lifespan == 0)
 			setDead();
+	}
+	
+	@Override
+	public void readEntityFromNBT(NBTTagCompound compound)
+	{
+		super.readEntityFromNBT(compound);
+		lifespan = compound.getInteger("lifespan");
+	}
+	
+	@Override
+	public void writeEntityToNBT(NBTTagCompound compound)
+	{
+		super.writeEntityToNBT(compound);
+		compound.setInteger("lifespan", lifespan);
 	}
 	
 	@Override

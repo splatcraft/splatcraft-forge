@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.entities.classes.EntityBlasterProjectile;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.text.Style;
@@ -17,13 +18,25 @@ public class ItemBlasterBase extends ItemShooterBase
 	public int projLifespan;
 	public int startupTicks;
 	public int cooldown;
+	public float splashDamage;
 	
-	public ItemBlasterBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int startupTicks, int cooldown, float damage, float inkConsumption, int projectileLifespan)
+	public ItemBlasterBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, float inaccuracy, int startupTicks, int cooldown, float damage, float splashDamage, float inkConsumption, int projectileLifespan)
 	{
 		super(unlocName, registryName, projectileSize, projectileSpeed, inaccuracy, cooldown, damage, inkConsumption, true);
 		this.projLifespan = projectileLifespan;
 		this.startupTicks = startupTicks;
 		this.cooldown = cooldown;
+		this.splashDamage = splashDamage;
+	}
+	
+	public ItemBlasterBase(String unlocName, String registryName, ItemBlasterBase parent)
+	{
+		this(unlocName, registryName, parent.projectileSize, parent.projectileSpeed, parent.inaccuracy, parent.startupTicks, parent.cooldown, parent.damage, parent.splashDamage, parent.inkConsumption, parent.projLifespan);
+	}
+	
+	public ItemBlasterBase(String unlocName, String registryName, Item parent)
+	{
+		this(unlocName, registryName, ((ItemBlasterBase) parent));
 	}
 	
 	@Override
@@ -40,7 +53,7 @@ public class ItemBlasterBase extends ItemShooterBase
 				} else
 				{
 					reduceInk(playerIn);
-					EntityBlasterProjectile proj = new EntityBlasterProjectile(worldIn, playerIn, ColorItemUtils.getInkColor(stack), damage, projLifespan);
+					EntityBlasterProjectile proj = new EntityBlasterProjectile(worldIn, playerIn, ColorItemUtils.getInkColor(stack), damage, splashDamage, projLifespan);
 					proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, inaccuracy);
 					proj.setProjectileSize(projectileSize);
 					worldIn.spawnEntity(proj);

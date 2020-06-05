@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.entities.classes;
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -11,11 +12,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class EntityBlasterProjectile extends EntityInkProjectile
 {
 	private int lifespan = 1;
+	private float splashDamage = 0;
 	
-	public EntityBlasterProjectile(World worldIn, EntityLivingBase throwerIn, int color, float damage, int lifespan)
+	public EntityBlasterProjectile(World worldIn, EntityLivingBase throwerIn, int color, float damage, float splashDamage, int lifespan)
 	{
 		super(worldIn, throwerIn, color, damage);
 		this.lifespan = lifespan;
+		this.splashDamage = splashDamage;
 	}
 	
 	public EntityBlasterProjectile(World world) {super(world);}
@@ -32,7 +35,7 @@ public class EntityBlasterProjectile extends EntityInkProjectile
 		
 		if(lifespan <= 0)
 		{
-			SplatCraftUtils.createInkExplosion(world, this, pos, getProjectileSize()/2, getColor());
+			SplatCraftUtils.createInkExplosion(world, this, pos, getProjectileSize()/2, splashDamage, getColor());
 			this.setDead();
 			this.world.setEntityState(this, (byte)3);
 		}
@@ -50,6 +53,22 @@ public class EntityBlasterProjectile extends EntityInkProjectile
 			}
 		}
 		
+	}
+	
+	@Override
+	public void readEntityFromNBT(NBTTagCompound compound)
+	{
+		super.readEntityFromNBT(compound);
+		lifespan = compound.getInteger("lifespan");
+		splashDamage = compound.getFloat("splashDamage");
+	}
+	
+	@Override
+	public void writeEntityToNBT(NBTTagCompound compound)
+	{
+		super.writeEntityToNBT(compound);
+		compound.setInteger("lifespan", lifespan);
+		compound.setFloat("splashDamage", splashDamage);
 	}
 	
 	@SideOnly(Side.CLIENT)

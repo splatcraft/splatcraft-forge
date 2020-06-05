@@ -151,9 +151,10 @@ public class InkExplosion
 		int j1 = MathHelper.floor(this.z + (double)f3 + 1.0D);
 		
 		
-		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this.exploder, new AxisAlignedBB((double)k1, (double)i2, (double)j2, (double)l1, (double)i1, (double)j1));
+		List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(getExplosivePlacedBy(), new AxisAlignedBB((double)k1, (double)i2, (double)j2, (double)l1, (double)i1, (double)j1));
 		Vec3d vec3d = new Vec3d(this.x, this.y, this.z);
 		
+		if(damage != 0)
 		for (int k2 = 0; k2 < list.size(); ++k2)
 		{
 			Entity entity = list.get(k2);
@@ -175,6 +176,7 @@ public class InkExplosion
 						InkColors inkColor = InkColors.getByColor(color);
 						if(entity instanceof EntitySheep && inkColor != null && inkColor.getDyeColor() != null)
 							((EntitySheep) entity).setFleeceColor(inkColor.getDyeColor());
+						SplatCraftUtils.dealInkDamage(entity, damage, color, getExplosivePlacedBy(), false);
 							
 					}
 				}
