@@ -8,6 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -21,7 +23,11 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class BlockCanvas extends BlockInkColor {
+public class BlockCanvas extends BlockInkColor
+{
+    
+    public static final PropertyBool INKED = PropertyBool.create("inked");
+    
     public BlockCanvas()
     {
         super(Material.CLOTH);
@@ -30,10 +36,43 @@ public class BlockCanvas extends BlockInkColor {
         setCreativeTab(TabSplatCraft.main);
         setHardness(0.8f);
         setSoundType(SoundType.CLOTH);
-        defaultColor = 0xFFFFFF;
+        
+        setDefaultState(getDefaultState().withProperty(INKED, false));
     }
-
-
+    
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, INKED);
+    }
+    
+    @Override
+    public int getMetaFromState(IBlockState state)
+    {
+        return state.getValue(INKED) ? 1 : 0;
+    }
+    
+    @Override
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return getDefaultState().withProperty(INKED, meta == 1);
+    }
+    
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        boolean isInked = false;
+        if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
+            isInked = (((TileEntityColor) worldIn.getTileEntity(pos)).getColor() != -1);
+        return getDefaultState().withProperty(INKED, isInked);
+    }
+    
+    @Override
+    public int getDefaultColor()
+    {
+        return -1;
+    }
+    
     protected boolean tryTouchWater(World worldIn, BlockPos pos, IBlockState state)
     {
         boolean touchingWater = false;
@@ -57,7 +96,7 @@ public class BlockCanvas extends BlockInkColor {
             if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
             {
                 TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
-                te.setColor(defaultColor);
+                te.setColor(getDefaultColor());
                 worldIn.notifyBlockUpdate(pos, state, state, 3);
             }
         }
@@ -72,7 +111,7 @@ public class BlockCanvas extends BlockInkColor {
             if(worldIn.getTileEntity(pos) instanceof TileEntityColor)
             {
                 TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
-                te.setColor(defaultColor);
+                te.setColor(getDefaultColor());
                 worldIn.notifyBlockUpdate(pos, state, state, 3);
             }
     }
@@ -106,5 +145,12 @@ public class BlockCanvas extends BlockInkColor {
         if(player.getHeldItemMainhand().getItem() instanceof ItemShears)
             return 0.95f;
         return super.getPlayerRelativeBlockHardness(state, player, worldIn, pos);
+    }
+    
+    
+    @Override
+    public boolean canSwim()
+    {
+        return true;
     }
 }

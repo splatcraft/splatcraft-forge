@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.blocks;
 
+import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import net.minecraft.block.material.Material;
@@ -14,10 +15,12 @@ public interface IInked
 	boolean canInk();
 	boolean canDamage();
 	boolean canSwim();
-	boolean canClimb();
 	boolean countsTowardsScore();
+	default boolean canClimb() {return canSwim();};
 	
 	default boolean clearInk(World worldIn, BlockPos pos) {return false;}
+	
+	default int getDefaultColor() {return SplatCraft.DEFAULT_INK;}
 	
 	default int getColor(World worldIn, BlockPos pos)
 	{

@@ -21,7 +21,6 @@ public class BlockInkColor extends Block implements IInked
 	
 	public static List<Block> blocks = new ArrayList<>();
 	public boolean canInk = true;
-	public int defaultColor = SplatCraft.DEFAULT_INK;
 	
 	public BlockInkColor(Material materialIn)
 	{
@@ -39,7 +38,7 @@ public class BlockInkColor extends Block implements IInked
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
-		return new TileEntityColor(defaultColor);
+		return new TileEntityColor(getDefaultColor());
 	}
 	
 	private static NBTTagCompound checkTagCompound(ItemStack stack) {
@@ -72,12 +71,6 @@ public class BlockInkColor extends Block implements IInked
 	
 	@Override
 	public boolean canSwim()
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean canClimb()
 	{
 		return false;
 	}
