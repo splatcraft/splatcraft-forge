@@ -63,8 +63,11 @@ item.52Gal.name=.52 Gal
 item.96Gal.name=.96 Gal
 
 item.blaster.name=Blaster
+item.grimBlaster.name=Grim Blaster
 item.rangelaster.name=Range Blaster
+item.grimRangelaster.name=Grim Range Blaster
 item.clashBlaster.name=Clash Blaster
+item.clashBlasterNeo.name=Clash Blaster Neo
 item.rapidBlaster.name=Rapid Blaster
 item.rapidBlasterPro.name=Rapid Blaster Pro
 item.lunaBlaster.name=Luna Blaster
@@ -95,6 +98,11 @@ stationTab.roller=Rollers
 stationTab.charger=Chargers
 stationTab.blaster=Blasters
 stationTab.dualies=Dualies
+stationTab.bucket=Sloshers
+stationTab.splatling=Splatlings
+stationTab.brella=Brellas
+stationTab.sub=Sub Weapons
+stationTab.special=Special Weapons
 stationTab.tank=Ink Tanks
 
 recipe.aerospray.name=Aerospray
@@ -114,6 +122,8 @@ weaponType.ultimate=Ultimate
 weaponType.tentatek=Tentatek
 weaponType.krakOn=Krak-On
 weaponType.wasabi=Wasabi
+weaponType.neo=Neo
+
 weaponType.coroCoro=CoroCoro
 weaponType.bento=Bento
 weaponType.grim=Grim
@@ -143,6 +153,8 @@ color.cherry=Cherry
 
 color.neonPink=Neon Pink
 color.neonGreen=Neon Green
+color.neonOrange=Neon Orange
+color.neonBlue=Neon Blue
 color.defaultWhite=White
 color.default=Undyed
 color.cobalt=Cobalt
@@ -205,6 +217,7 @@ death.attack.splat.item=%1$s was splatted by %2$s using %3$s
 death.attack.roll=%1$s was crushed by %2$s
 death.attack.roll.item=%1$s was crushed by %2$s using %3$s
 death.attack.enemyInk=%1$s drowned in enemy ink
+death.attack.water=%1$s dissolved in water
 
 stat.sc.blocksInked=Blocks Inked
 stat.sc.subsUsed=Sub Weapons Used
