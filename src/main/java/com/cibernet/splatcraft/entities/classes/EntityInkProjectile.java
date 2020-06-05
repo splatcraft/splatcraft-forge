@@ -53,7 +53,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
         this.yTile = -1;
         this.zTile = -1;
         damage = 0;
-        this.setSize(0.2505F, 0.2505F);
+        this.setProjectileSize(1);
     }
 
     public EntityInkProjectile(World worldIn, double x, double y, double z)
@@ -477,16 +477,16 @@ public class EntityInkProjectile extends Entity implements IProjectile
             
             SplatCraftUtils.dealInkDamage(result.entityHit, damage, getColor(), this.thrower, false);
             if(createInksplosion && result.entityHit instanceof EntityLivingBase && ((EntityLivingBase) result.entityHit).getHealth() == 0)
-                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(result.entityHit.posX, result.entityHit.posY, result.entityHit.posZ), 1f, getColor());
+                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(result.entityHit.posX, result.entityHit.posY, result.entityHit.posZ), 1f, 0, getColor());
         }
         
         if (!this.world.isRemote)
         {
             if(result.typeOfHit.equals(RayTraceResult.Type.BLOCK))
-                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, getColor());
+                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, 0, getColor());
                 //SplatCraftUtils.inkBlock(world, result.getBlockPos(), getColor());
             
-            if((result.entityHit != null && result.entityHit != thrower && (thrower.getRidingEntity() != result.entityHit) && result.entityHit instanceof EntityLivingBase) || result.entityHit == null)
+            if((result.entityHit != null && ((thrower != null && result.entityHit != thrower && (thrower.getRidingEntity() != result.entityHit) && result.entityHit instanceof EntityLivingBase) || result.entityHit == null) || thrower == null))
             {
                 this.world.setEntityState(this, (byte) 3);
                 this.setDead();
