@@ -3,10 +3,12 @@ package com.cibernet.splatcraft.handlers;
 import com.cibernet.splatcraft.SplatCraftConfig;
 import com.cibernet.splatcraft.entities.renderers.RenderInklingSquid;
 import com.cibernet.splatcraft.items.ItemDualieBase;
+import com.cibernet.splatcraft.items.ItemInkTank;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.network.PacketPlayerSetTransformed;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
+import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.client.Minecraft;
@@ -15,6 +17,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -229,6 +232,9 @@ public class ClientEventHandler
 		
 		if(Keyboard.getEventKey() == squidKey.getKeyCode())
 		{
+			if(SplatCraftGamerules.getGameruleValue("tankToTransform") && !(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).getItem() instanceof ItemInkTank))
+				return;
+			
 			if(Keyboard.getEventKeyState())
 			{
 				boolean isSquid = SplatCraftPlayerData.getIsSquid(player);

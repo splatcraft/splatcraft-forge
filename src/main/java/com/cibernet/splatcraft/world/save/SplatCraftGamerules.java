@@ -18,6 +18,8 @@ public class SplatCraftGamerules
 		registerGamerule(new Gamerule("keepWeaponsOnDeath", false));
 		registerGamerule(new Gamerule("requireInkTank", true));
 		registerGamerule(new Gamerule("dropCrateLootWhenMined", false));
+		registerGamerule(new Gamerule("dealWaterDamage", false));
+		registerGamerule(new Gamerule("tankToTransform", false));
 	}
 	
 	public static void registerGamerule(Gamerule rule)

@@ -75,6 +75,9 @@ public class CommonEventHandler
 		//if(player.getActivePotionEffect(MobEffects.INVISIBILITY) == null)
 		//	player.setInvisible(false);
 		
+		if(SplatCraftGamerules.getGameruleValue("dealWaterDamage") && player.isInWater() && player.ticksExisted % 10 == 0 && player.world.getDifficulty() != EnumDifficulty.PEACEFUL)
+			player.attackEntityFrom(new DamageSource("water"), 8f);
+		
 		SplatCraftPlayerData.PlayerData data = SplatCraftPlayerData.getPlayerData(player);
 		if(data.isSquid == 1)
 			data.isSquid = 0;
