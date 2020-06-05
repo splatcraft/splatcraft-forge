@@ -131,7 +131,7 @@ public class SplatCraftUtils
 		return false;
 	}
 	
-	public static void createInkExplosion(World worldIn, Entity source, BlockPos pos, float radius, int color)
+	public static void createInkExplosion(World worldIn, Entity source, BlockPos pos, float radius, float damage, int color)
 	{
 		if (!worldIn.isRemote)
 		{
@@ -143,9 +143,14 @@ public class SplatCraftUtils
 		}
 	}
 
+	public static void createInkExplosion(World worldIn, BlockPos pos, float radius, float damage, int color)
+	{
+		createInkExplosion(worldIn, null, pos, radius, damage, color);
+	}
+	
 	public static void createInkExplosion(World worldIn, BlockPos pos, float radius, int color)
 	{
-		createInkExplosion(worldIn, null, pos, radius, color);
+		createInkExplosion(worldIn, pos, radius, 0, color);
 	}
 	
 	public static boolean playerInkBlock(EntityPlayer player, World worldIn, BlockPos pos, int color, float damage)
