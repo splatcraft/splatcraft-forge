@@ -49,6 +49,8 @@ public class InkExplosion
 	private final Vec3d position;
 	private float damage = 0;
 	
+	private boolean glowingInk = false;
+	
 	@SideOnly(Side.CLIENT)
 	public InkExplosion(World worldIn, Entity entityIn, double x, double y, double z, int size, int color, List<BlockPos> affectedPositions)
 	{
@@ -78,6 +80,12 @@ public class InkExplosion
 		
 		if(entityIn instanceof EntityInkProjectile)
 			damage = ((EntityInkProjectile) entityIn).getDamage()/2;
+	}
+	
+	public InkExplosion setInkType(boolean isGlowing)
+	{
+		this.glowingInk = isGlowing;
+		return this;
 	}
 	
 	/**
@@ -176,7 +184,7 @@ public class InkExplosion
 						InkColors inkColor = InkColors.getByColor(color);
 						if(entity instanceof EntitySheep && inkColor != null && inkColor.getDyeColor() != null)
 							((EntitySheep) entity).setFleeceColor(inkColor.getDyeColor());
-						SplatCraftUtils.dealInkDamage(entity, damage, color, getExplosivePlacedBy(), false);
+						SplatCraftUtils.dealInkDamage(entity, damage, color, getExplosivePlacedBy(), false, glowingInk);
 							
 					}
 				}
@@ -232,8 +240,8 @@ public class InkExplosion
 				{
 					EntityLivingBase placer = getExplosivePlacedBy();
 					if(placer instanceof EntityPlayer)
-						SplatCraftUtils.playerInkBlock((EntityPlayer) placer, this.world, blockpos, this.color, damage);
-					else SplatCraftUtils.inkBlock(this.world, blockpos, this.color, damage);
+						SplatCraftUtils.playerInkBlock((EntityPlayer) placer, this.world, blockpos, this.color, damage, glowingInk);
+					else SplatCraftUtils.inkBlock(this.world, blockpos, this.color, damage, glowingInk);
 				}
 				
 			}

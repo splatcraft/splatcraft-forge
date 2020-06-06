@@ -44,6 +44,8 @@ public class EntityInkProjectile extends Entity implements IProjectile
     public Entity ignoreEntity;
     private int ignoreTime;
     
+    protected boolean glowingInk = false;
+    
     private float damage;
 
     public EntityInkProjectile(World worldIn)
@@ -68,6 +70,9 @@ public class EntityInkProjectile extends Entity implements IProjectile
         this.thrower = throwerIn;
         this.damage = damage;
         setColor(color);
+        
+        if(thrower instanceof EntityPlayer)
+        glowingInk = SplatCraftUtils.getPlayerGlowingInk((EntityPlayer) thrower);
     }
 
 
@@ -134,8 +139,8 @@ public class EntityInkProjectile extends Entity implements IProjectile
                 if (this.ticksInGround == 1200)
                 {
                     if(thrower instanceof EntityPlayer)
-                        SplatCraftUtils.playerInkBlock((EntityPlayer) thrower, world, pos, getColor(), damage);
-                    else SplatCraftUtils.inkBlock(world, pos, getColor(), damage);
+                        SplatCraftUtils.playerInkBlock((EntityPlayer) thrower, world, pos, getColor(), damage, glowing);
+                    else SplatCraftUtils.inkBlock(world, pos, getColor(), damage, glowing);
                     this.setDead();
                 }
 
@@ -452,7 +457,9 @@ public class EntityInkProjectile extends Entity implements IProjectile
     protected void onImpact(RayTraceResult result)
     {
         if(result.typeOfHit.equals(RayTraceResult.Type.BLOCK) && SplatCraftUtils.canInkPassthrough(world,result.getBlockPos()))
+        {
             return;
+        }
         
         if (result.entityHit != null)
         {
@@ -475,18 +482,17 @@ public class EntityInkProjectile extends Entity implements IProjectile
             
             boolean createInksplosion = result.entityHit instanceof EntityLivingBase && ((EntityLivingBase) result.entityHit).getHealth() != 0;
             
-            SplatCraftUtils.dealInkDamage(result.entityHit, damage, getColor(), this.thrower, false);
+            SplatCraftUtils.dealInkDamage(result.entityHit, damage, getColor(), this.thrower, false, glowingInk);
             if(createInksplosion && result.entityHit instanceof EntityLivingBase && ((EntityLivingBase) result.entityHit).getHealth() == 0)
-                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(result.entityHit.posX, result.entityHit.posY, result.entityHit.posZ), 1f, 0, getColor());
+                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(result.entityHit.posX, result.entityHit.posY, result.entityHit.posZ), 1f, 0, getColor(), glowingInk);
         }
-        
         if (!this.world.isRemote)
         {
             if(result.typeOfHit.equals(RayTraceResult.Type.BLOCK))
-                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, 0, getColor());
+                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, 0, getColor(), glowingInk);
                 //SplatCraftUtils.inkBlock(world, result.getBlockPos(), getColor());
             
-            if((result.entityHit != null && ((thrower != null && result.entityHit != thrower && (thrower.getRidingEntity() != result.entityHit) && result.entityHit instanceof EntityLivingBase) || result.entityHit == null) || thrower == null))
+            if((((thrower != null && result.entityHit != thrower && (thrower.getRidingEntity() != result.entityHit) && result.entityHit instanceof EntityLivingBase) || result.entityHit == null) || thrower == null))
             {
                 this.world.setEntityState(this, (byte) 3);
                 this.setDead();

@@ -30,16 +30,19 @@ public class ItemPowerEggCan extends Item
         ItemStack stack = playerIn.getHeldItem(handIn);
 
         ItemStack eggs = new ItemStack(SplatCraftItems.powerEgg, (worldIn.rand.nextInt(4)+1)*10);
-        if(worldIn.isRemote)
+        
+        if(!worldIn.isRemote)
         {
-            if(playerIn.addItemStackToInventory(eggs))
+            if(!playerIn.addItemStackToInventory(eggs))
             {
                 EntityItem entity = playerIn.dropItem(eggs, false);
                 if(entity != null)
                     entity.setNoPickupDelay();
             }
-            stack.shrink(1);
         }
+        else
+            stack.shrink(1);
+    
 
         return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }

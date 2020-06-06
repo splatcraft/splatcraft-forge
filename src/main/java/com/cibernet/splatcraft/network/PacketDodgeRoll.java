@@ -89,7 +89,7 @@ public class PacketDodgeRoll implements IMessage
                     cooldownTracker.setCooldown(offhandStack.getItem(), message.cooldown);
                 
                 ItemWeaponBase.reduceInk(player, ((ItemDualieBase) weapon.getItem()).rollConsumption);
-                SplatCraftUtils.createInkExplosion(player.world, new BlockPos(player.posX, player.posY, player.posZ), 0.5f, ColorItemUtils.getInkColor(weapon));
+                SplatCraftUtils.createInkExplosion(player.world, new BlockPos(player.posX, player.posY, player.posZ), 0.5f, ColorItemUtils.getInkColor(weapon), SplatCraftUtils.getPlayerGlowingInk(player));
             }
         }
     }

@@ -137,6 +137,8 @@ public class ItemRollerBase extends ItemWeaponBase
         if(worldIn.isRemote)
             return;
         
+        boolean glowingInk = SplatCraftUtils.getPlayerGlowingInk(playerIn);
+        
         if(hasInk(playerIn, stack))
         {
             reduceInk(playerIn);
@@ -174,7 +176,7 @@ public class ItemRollerBase extends ItemWeaponBase
                 canInk = SplatCraftUtils.canInk(worldIn, inkPos);
                 
                 if(canInk)
-                    SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, color, rollDamage);
+                    SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, color, rollDamage, glowingInk);
                 
                 if(playerIn.getCooledAttackStrength(0) >= 0.95f)
                 {

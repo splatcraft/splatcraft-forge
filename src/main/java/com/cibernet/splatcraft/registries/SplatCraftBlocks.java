@@ -20,6 +20,9 @@ public class SplatCraftBlocks
     public static Block inkedBlock = new BlockInked();
     public static Block inkedSlab = new BlockInkedSlab();
     public static Block inkedStairs = new BlockInkedStairs();
+    public static Block glowingInkedBlock = new BlockInked("glowing_inked_block", true);
+    public static Block glowingInkedSlab = new BlockInkedSlab("glowing_inked_slab", true);
+    public static Block glowingInkedStairs = new BlockInkedStairs("glowing_inked_stairs", true);
 
     public static Block emptyInkwell = new BlockInkwellEmpty();
     public static Block inkwell = new BlockInkwell();
@@ -52,6 +55,9 @@ public class SplatCraftBlocks
         registerBlock(registry, inkedBlock);
         registerBlock(registry, inkedSlab);
         registerBlock(registry, inkedStairs);
+        registerBlock(registry, glowingInkedBlock);
+        registerBlock(registry, glowingInkedSlab);
+        registerBlock(registry, glowingInkedStairs);
         
         registerBlock(registry, emptyInkwell, true);
         registerBlock(registry, inkwell);

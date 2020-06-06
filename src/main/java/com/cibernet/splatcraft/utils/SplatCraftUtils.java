@@ -6,6 +6,7 @@ import com.cibernet.splatcraft.blocks.BlockSquidPassable;
 import com.cibernet.splatcraft.blocks.IInked;
 import com.cibernet.splatcraft.entities.classes.EntitySquidBumper;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
+import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftStats;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
@@ -86,11 +87,11 @@ public class SplatCraftUtils
 		return dealDamage(target, damage, color, source, damageMobs, "roll");
 	}
 	
-	public static boolean dealInkDamage(Entity target, float damage, int color, Entity source, boolean damageMobs)
+	public static boolean dealInkDamage(Entity target, float damage, int color, Entity source, boolean damageMobs, boolean glowingInk)
 	{
 		boolean damaged = dealDamage(target, damage, color, source, damageMobs, "splat");
 		if(damaged && target.isDead)
-			SplatCraftUtils.createInkExplosion(source.world, new BlockPos(target.posX, target.posY, target.posZ), 2, color);
+			SplatCraftUtils.createInkExplosion(source.world, new BlockPos(target.posX, target.posY, target.posZ), 2, color, glowingInk);
 		return damaged;
 	}
 	
@@ -102,6 +103,11 @@ public class SplatCraftUtils
 		if((!(block instanceof IInked) || (block instanceof IInked && ((IInked) block).canSwim())) && worldIn.getTileEntity(pos) instanceof TileEntityColor)
 			return ((TileEntityColor)worldIn.getTileEntity(pos)).getColor() == SplatCraftPlayerData.getInkColor(playerIn) && !playerIn.isRiding();
 		return SplatCraftUtils.canSquidClimb(worldIn, playerIn);
+	}
+	
+	public static boolean getPlayerGlowingInk(EntityPlayer player)
+	{
+		return player.inventory.hasItemStack(new ItemStack(SplatCraftItems.splatfestBand));
 	}
 	
 	public static boolean canSquidClimb(World worldIn, EntityPlayer playerIn)
@@ -131,11 +137,11 @@ public class SplatCraftUtils
 		return false;
 	}
 	
-	public static void createInkExplosion(World worldIn, Entity source, BlockPos pos, float radius, float damage, int color)
+	public static void createInkExplosion(World worldIn, Entity source, BlockPos pos, float radius, float damage, int color, boolean isGlowing)
 	{
 		if (!worldIn.isRemote)
 		{
-			InkExplosion explosion = new InkExplosion(worldIn, source, pos.getX(), pos.getY(), pos.getZ(), radius, color, true);
+			InkExplosion explosion = new InkExplosion(worldIn, source, pos.getX(), pos.getY(), pos.getZ(), radius, color, true).setInkType(isGlowing);
 			//explosion.explode();
 			explosion.doExplosionA();
 			explosion.doExplosionB(true);
@@ -143,19 +149,19 @@ public class SplatCraftUtils
 		}
 	}
 
-	public static void createInkExplosion(World worldIn, BlockPos pos, float radius, float damage, int color)
+	public static void createInkExplosion(World worldIn, BlockPos pos, float radius, float damage, int color, boolean isGlowing)
 	{
-		createInkExplosion(worldIn, null, pos, radius, damage, color);
+		createInkExplosion(worldIn, null, pos, radius, damage, color, isGlowing);
 	}
 	
-	public static void createInkExplosion(World worldIn, BlockPos pos, float radius, int color)
+	public static void createInkExplosion(World worldIn, BlockPos pos, float radius, int color, boolean isGlowing)
 	{
-		createInkExplosion(worldIn, pos, radius, 0, color);
+		createInkExplosion(worldIn, pos, radius, 0, color, isGlowing);
 	}
 	
-	public static boolean playerInkBlock(EntityPlayer player, World worldIn, BlockPos pos, int color, float damage)
+	public static boolean playerInkBlock(EntityPlayer player, World worldIn, BlockPos pos, int color, float damage, boolean isGlowing)
 	{
-		if(inkBlock(worldIn, pos, color, damage))
+		if(inkBlock(worldIn, pos, color, damage, isGlowing))
 		{
 			player.addStat(SplatCraftStats.BLOCKS_INKED);
 			//TODO add points
@@ -166,7 +172,13 @@ public class SplatCraftUtils
 	
 	public static boolean inkBlock(World worldIn, BlockPos pos, int color, float damage)
 	{
-
+		return inkBlock(worldIn, pos, color, damage, false);
+	}
+	
+	public static boolean inkBlock(World worldIn, BlockPos pos, int color, float damage, boolean isGlowing)
+	{
+		Block inkBlock = isGlowing ? SplatCraftBlocks.glowingInkedBlock : SplatCraftBlocks.inkedBlock;
+		
 		IBlockState state = worldIn.getBlockState(pos);
 		
 		
@@ -189,8 +201,8 @@ public class SplatCraftUtils
 				TileEntityColor te = (TileEntityColor) worldIn.getTileEntity(pos);
 				if(state.getBlock() instanceof BlockInkedWool)
 				{
-					worldIn.setBlockState(pos, SplatCraftBlocks.inkedBlock.getDefaultState());
-					TileEntityInkedBlock inkTe = (TileEntityInkedBlock) SplatCraftBlocks.inkedBlock.createTileEntity(worldIn, SplatCraftBlocks.inkedBlock.getDefaultState());
+					worldIn.setBlockState(pos, inkBlock.getDefaultState());
+					TileEntityInkedBlock inkTe = (TileEntityInkedBlock) inkBlock.createTileEntity(worldIn, inkBlock.getDefaultState());
 					
 					worldIn.setTileEntity(pos, inkTe);
 					
@@ -215,8 +227,10 @@ public class SplatCraftUtils
 			
 			if(state.getBlock() instanceof BlockSlab && !((BlockSlab) state.getBlock()).isDouble())
 			{
-				worldIn.setBlockState(pos, SplatCraftBlocks.inkedSlab.getDefaultState().withProperty(BlockSlab.HALF, state.getValue(BlockSlab.HALF)));
-				TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedSlab.createTileEntity(worldIn, SplatCraftBlocks.inkedSlab.getDefaultState());
+				inkBlock = isGlowing ? SplatCraftBlocks.glowingInkedSlab : SplatCraftBlocks.inkedSlab;
+				
+				worldIn.setBlockState(pos, inkBlock.getDefaultState().withProperty(BlockSlab.HALF, state.getValue(BlockSlab.HALF)));
+				TileEntityInkedBlock te = (TileEntityInkedBlock) inkBlock.createTileEntity(worldIn, inkBlock.getDefaultState());
 				
 				worldIn.setTileEntity(pos, te);
 				
@@ -226,8 +240,10 @@ public class SplatCraftUtils
 			}
 			if(state.getBlock() instanceof BlockStairs)
 			{
-				worldIn.setBlockState(pos, SplatCraftBlocks.inkedStairs.getDefaultState().withProperty(BlockStairs.HALF, state.getValue(BlockStairs.HALF)).withProperty(BlockStairs.SHAPE, state.getValue(BlockStairs.SHAPE)).withProperty(BlockStairs.FACING, state.getValue(BlockStairs.FACING)));
-				TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedStairs.createTileEntity(worldIn, SplatCraftBlocks.inkedStairs.getDefaultState());
+				inkBlock = isGlowing ? SplatCraftBlocks.glowingInkedStairs : SplatCraftBlocks.inkedStairs;
+				
+				worldIn.setBlockState(pos, inkBlock.getDefaultState().withProperty(BlockStairs.HALF, state.getValue(BlockStairs.HALF)).withProperty(BlockStairs.SHAPE, state.getValue(BlockStairs.SHAPE)).withProperty(BlockStairs.FACING, state.getValue(BlockStairs.FACING)));
+				TileEntityInkedBlock te = (TileEntityInkedBlock) inkBlock.createTileEntity(worldIn, inkBlock.getDefaultState());
 				
 				worldIn.setTileEntity(pos, te);
 				
@@ -242,8 +258,8 @@ public class SplatCraftUtils
 			if(worldIn.getTileEntity(pos) != null)
 				return false;
 		}
-		worldIn.setBlockState(pos, SplatCraftBlocks.inkedBlock.getDefaultState());
-		TileEntityInkedBlock te = (TileEntityInkedBlock) SplatCraftBlocks.inkedBlock.createTileEntity(worldIn, SplatCraftBlocks.inkedBlock.getDefaultState());
+		worldIn.setBlockState(pos, inkBlock.getDefaultState());
+		TileEntityInkedBlock te = (TileEntityInkedBlock) inkBlock.createTileEntity(worldIn, inkBlock.getDefaultState());
 
 		worldIn.setTileEntity(pos, te);
 

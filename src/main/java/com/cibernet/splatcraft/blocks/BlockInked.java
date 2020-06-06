@@ -17,23 +17,39 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
 public class BlockInked extends BlockInkColor implements IInked
 {
-	public BlockInked()
+	private boolean isGlittery;
+	
+	public BlockInked(String registryName, boolean isGlittery)
 	{
 		super(Material.CLAY);
 		setUnlocalizedName("inkedBlock");
-		setRegistryName("inked_block");
+		setRegistryName(registryName);
 		setTickRandomly(true);
+		
+		if(isGlittery)
+			this.setLightLevel(0.4f);
+		this.isGlittery = isGlittery;
+		
+	}
+	
+	public BlockInked()
+	{
+		this("inked_block", false);
 	}
 	
 	@Override
@@ -65,6 +81,7 @@ public class BlockInked extends BlockInkColor implements IInked
 	{
 		return true;
 	}
+	
 	
 	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state)
 	{
@@ -234,6 +251,13 @@ public class BlockInked extends BlockInkColor implements IInked
 	public boolean hasTileEntity(IBlockState state)
 	{
 		return true;
+	}
+	
+	
+	@SideOnly(Side.CLIENT)
+	public BlockRenderLayer getBlockLayer()
+	{
+		return isGlittery ? BlockRenderLayer.TRANSLUCENT : BlockRenderLayer.SOLID;
 	}
 	
 	@Nullable

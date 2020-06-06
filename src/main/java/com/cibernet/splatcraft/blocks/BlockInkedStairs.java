@@ -19,24 +19,38 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
 public class BlockInkedStairs extends BlockStairs implements IInked
 {
-	public BlockInkedStairs()
+	private boolean isGlittery;
+	
+	public BlockInkedStairs(String registryName, boolean isGlittery)
 	{
 		super(SplatCraftBlocks.inkedBlock.getDefaultState());
 		setUnlocalizedName("inkedStairs");
-		setRegistryName("inked_stairs");
+		setRegistryName(registryName);
 		setTickRandomly(true);
 		BlockInkColor.blocks.add(this);
+		
+		if(isGlittery)
+			setLightLevel(0.4f);
+		this.isGlittery = isGlittery;
+	}
+	
+	public BlockInkedStairs()
+	{
+		this("inked_stairs", false);
 	}
 	
 	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state)
@@ -180,7 +194,8 @@ public class BlockInkedStairs extends BlockStairs implements IInked
 		if(worldIn.getTileEntity(pos) instanceof TileEntityInkedBlock)
 		{
 			TileEntityInkedBlock te = (TileEntityInkedBlock) worldIn.getTileEntity(pos);
-			worldIn.setBlockState(pos, te.getSavedState().withProperty(HALF, state.getValue(HALF)).withProperty(SHAPE, state.getValue(SHAPE)).withProperty(FACING, state.getValue(FACING)), 3);
+			if(te.getSavedState().getBlock() instanceof BlockStairs)
+				worldIn.setBlockState(pos, te.getSavedState().withProperty(HALF, state.getValue(HALF)).withProperty(SHAPE, state.getValue(SHAPE)).withProperty(FACING, state.getValue(FACING)), 3);
 		} else worldIn.setBlockState(pos, Blocks.SAND.getDefaultState(), 3);
 		
 		return true;
@@ -191,6 +206,26 @@ public class BlockInkedStairs extends BlockStairs implements IInked
 	{
 		return true;
 	}
+	
+	@SideOnly(Side.CLIENT)
+	public BlockRenderLayer getBlockLayer()
+	{
+		return isGlittery ? BlockRenderLayer.TRANSLUCENT : BlockRenderLayer.SOLID;
+	}
+	
+	/**
+	 * Used to determine ambient occlusion and culling when rebuilding chunks for render
+	 */
+	public boolean isOpaqueCube(IBlockState state)
+	{
+		return false;
+	}
+	
+	public boolean isFullCube(IBlockState state)
+	{
+		return false;
+	}
+	
 	
 	@Nullable
 	@Override
