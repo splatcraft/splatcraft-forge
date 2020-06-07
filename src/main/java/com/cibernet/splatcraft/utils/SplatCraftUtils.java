@@ -20,6 +20,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -82,7 +83,7 @@ public class SplatCraftUtils
 		return doDamage;
 	}
 	
-	public static boolean dealRollDamage(Entity target, float damage, int color, Entity source, boolean damageMobs)
+	public static boolean dealRollDamage(EntityLivingBase target, float damage, int color, Entity source, boolean damageMobs)
 	{
 		return dealDamage(target, damage, color, source, damageMobs, "roll");
 	}
@@ -181,6 +182,8 @@ public class SplatCraftUtils
 		
 		IBlockState state = worldIn.getBlockState(pos);
 		
+		if(state.getBlock() == Blocks.SOUL_SAND || state.getBlock() == Blocks.REDSTONE_LAMP || state.getBlock() == Blocks.LIT_REDSTONE_LAMP)
+			return false;
 		
 		if(state.getBlock() != Blocks.BARRIER)
 		{
@@ -276,6 +279,9 @@ public class SplatCraftUtils
 		if(state.getBlock() == Blocks.AIR || state.getBlock() == Blocks.IRON_BARS || state.getBlock() instanceof BlockSquidPassable)
 			return true;
 		
+		if(!state.getMaterial().blocksMovement())
+			return true;
+		
 		if(state.getBlock() == Blocks.BARRIER || state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
 			return false;
 		if(state.isFullBlock() || state.getBlockHardness(worldIn, pos) != -1)
@@ -291,6 +297,9 @@ public class SplatCraftUtils
 		
 		if(state.getBlock() == Blocks.BARRIER)
 			return true;
+		
+		if(state.getBlock() == Blocks.SOUL_SAND || state.getBlock() == Blocks.REDSTONE_LAMP || state.getBlock() == Blocks.LIT_REDSTONE_LAMP)
+			return false;
 		
 		if(state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
 			return true;
