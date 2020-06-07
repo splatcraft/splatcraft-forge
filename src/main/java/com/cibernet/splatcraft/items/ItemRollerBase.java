@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.items;
 import javax.annotation.Nullable;
 
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
+import com.cibernet.splatcraft.entities.classes.EntitySquidBumper;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.utils.SplatCraftDamageSource;
@@ -134,9 +135,11 @@ public class ItemRollerBase extends ItemWeaponBase
     @Override
     public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
     {
-        if(worldIn.isRemote)
-            return;
+        int actualUseTime = (getMaxItemUseDuration(stack) - useTime);
         
+        if(actualUseTime <= 1)
+            playerIn.resetCooldown();
+            
         boolean glowingInk = SplatCraftUtils.getPlayerGlowingInk(playerIn);
         
         if(hasInk(playerIn, stack))
@@ -168,26 +171,90 @@ public class ItemRollerBase extends ItemWeaponBase
                 BlockPos inkPos = pos.add(fwd.x * 2 + xOff, -1, fwd.z * 2 + zOff);
                 boolean canInk = true;
                 
-                
-                if(!SplatCraftUtils.canInkPassthrough(worldIn, checkPos))
-                    inkPos = checkPos;
-                else if (!SplatCraftUtils.canInkPassthrough(worldIn, inkPos.up()))
-                    inkPos = inkPos.up();
-                canInk = SplatCraftUtils.canInk(worldIn, inkPos);
-                
-                if(canInk)
-                    SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, color, rollDamage, glowingInk);
-                
-                if(playerIn.getCooledAttackStrength(0) >= 0.95f)
+                if(!worldIn.isRemote)
                 {
-                    List<Entity> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(inkPos.up()));
-                    for(Entity target : inkedPlayers)
+                    if(!SplatCraftUtils.canInkPassthrough(worldIn, checkPos))
+                        inkPos = checkPos;
+                    else if(!SplatCraftUtils.canInkPassthrough(worldIn, inkPos.up()))
+                        inkPos = inkPos.up();
+                    canInk = SplatCraftUtils.canInk(worldIn, inkPos);
+    
+                    if(canInk)
+                        SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, color, rollDamage, glowingInk);
+                }
+                Entity knockbackEntity = null;
+                
+                if(playerIn.getCooledAttackStrength(0) >= 1f)
+                {
+                    List<EntityLivingBase> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(inkPos.up()));
+                    int j = 0;
+                    
+                    for(EntityLivingBase target : inkedPlayers)
                     {
+                        boolean isTargetSameColor = false;
+                        if(target instanceof EntityPlayer)
+                            isTargetSameColor = SplatCraftPlayerData.getInkColor((EntityPlayer) target) == color;
+                        
+                        if(!isTargetSameColor && (((!(target.getHealth()-rollDamage > 0) && !(target instanceof EntitySquidBumper)) || (target instanceof EntitySquidBumper && ((EntitySquidBumper) target).getInkHealth()-rollDamage > 0))))
+                            knockbackEntity = target;
                         SplatCraftUtils.dealRollDamage(target, rollDamage, color, playerIn, false);
+                        
+                        j++;
+                        if(j >= 5)
+                        {
+                            knockbackEntity = target;
+                            break;
+                        }
+                    }
+                }
+                
+                if(knockbackEntity != null && worldIn.isRemote)
+                    applyEntityCollision(knockbackEntity, playerIn, 10);
+                
+            }
+        } else playerIn.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);
+    }
+    
+    public void applyEntityCollision(Entity source, Entity target, double power)
+    {
+        if (!target.isRidingSameEntity(source))
+        {
+            if (!source.noClip && !target.noClip)
+            {
+                double d0 = target.posX - source.posX;
+                double d1 = target.posZ - source.posZ;
+                double d2 = MathHelper.absMax(d0, d1);
+                
+                if (d2 >= 0.009999999776482582D)
+                {
+                    d2 = (double)MathHelper.sqrt(d2);
+                    d0 = d0 / d2;
+                    d1 = d1 / d2;
+                    double d3 = 1.0D / d2;
+                    
+                    if (d3 > 1.0D)
+                    {
+                        d3 = 1.0D;
+                    }
+                    
+                    d0 = d0 * d3;
+                    d1 = d1 * d3;
+                    d0 = d0 * 0.05000000074505806D;
+                    d1 = d1 * 0.05000000074505806D;
+                    d0 = d0 * (double)(1.0F - source.entityCollisionReduction);
+                    d1 = d1 * (double)(1.0F - source.entityCollisionReduction);
+                    d0 *= power;
+                    d1 *= power;
+                    
+                    if (!target.isBeingRidden())
+                    {
+                        target.motionX = 0;
+                        target.motionZ = 0;
+                        target.addVelocity(d0, 0.0D, d1);
                     }
                 }
             }
-        } else playerIn.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);
+        }
     }
     
     @Override
