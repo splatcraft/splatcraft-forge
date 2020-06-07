@@ -10,6 +10,7 @@ tile.grate.name=Grate
 tile.barrierBar.name=Barrier Bar
 
 tile.sunkenCrate.name=Sunken Crate
+tile.crate.name=Crate
 
 tile.powerEggBlock.name=Power Egg Block
 tile.sardiniumBlock.name=Block of Sardinium
@@ -42,6 +43,7 @@ item.inkClothLeggings.name=Ink Cloth Pants
 item.inkClothBoots.name=Ink Cloth Boots
 item.inkCloth.tooltip=It matches your ink color!
 item.squidBumper.name=Squid Bumper
+item.splatfestBand.name=Splatfest Band
 
 item.inkTank.name=Ink Tank
 item.inkTank.ink=Ink: %s / %s
