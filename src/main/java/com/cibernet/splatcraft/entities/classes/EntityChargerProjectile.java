@@ -44,7 +44,7 @@ public class EntityChargerProjectile extends EntityInkProjectile
 		
 		if(!world.isRemote)
 			lifespan--;
-		if(lifespan == 0)
+		if(lifespan <= 0)
 			setDead();
 	}
 	

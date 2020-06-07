@@ -89,9 +89,12 @@ public class ItemShooterBase extends ItemWeaponBase
     @Override
     public void onItemTickUse(World worldIn, EntityPlayer playerIn, ItemStack stack, int useTime)
     {
+        int actualUseTime = (getMaxItemUseDuration(stack) - useTime);
+        int startupLag = 2;
+        
         if(hasInk(playerIn, stack))
         {
-            if((getMaxItemUseDuration(stack) - useTime) % firingSpeed == 1 && automatic)
+            if(actualUseTime > startupLag && (actualUseTime-startupLag) % firingSpeed == 1 && automatic)
             {
                 if(!worldIn.isRemote)
                 {
