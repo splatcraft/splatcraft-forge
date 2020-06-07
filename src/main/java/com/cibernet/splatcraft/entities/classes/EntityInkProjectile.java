@@ -238,7 +238,19 @@ public class EntityInkProjectile extends Entity implements IProjectile
                 this.onImpact(raytraceresult);
             }
         }
-
+        
+        if(!(this instanceof EntityBlasterProjectile) && ticksExisted % 5 == 0)
+            for(double y = posY; y >= 0 && posY-y <= 8; y--)
+            {
+                BlockPos inkPos = new BlockPos(posX, y, posZ);
+                if(SplatCraftUtils.canInk(world, inkPos))
+                {
+                    SplatCraftUtils.createInkExplosion(world, inkPos, getProjectileSize()/3f, getColor(), glowingInk);
+                    SplatCraftUtils.createInkExplosion(world, pos, getProjectileSize()/3f, getColor(), glowingInk);
+                    break;
+                }
+            }
+        
         this.posX += this.motionX;
         this.posY += this.motionY;
         this.posZ += this.motionZ;
@@ -494,8 +506,11 @@ public class EntityInkProjectile extends Entity implements IProjectile
             
             if((((thrower != null && result.entityHit != thrower && (thrower.getRidingEntity() != result.entityHit) && result.entityHit instanceof EntityLivingBase) || result.entityHit == null) || thrower == null))
             {
-                this.world.setEntityState(this, (byte) 3);
-                this.setDead();
+                if(!(this instanceof EntityChargerProjectile && result.typeOfHit.equals(RayTraceResult.Type.ENTITY)))
+                {
+                    this.world.setEntityState(this, (byte) 3);
+                    this.setDead();
+                }
             }
         }
     }
