@@ -147,11 +147,13 @@ public class ItemRollerBase extends ItemWeaponBase
             reduceInk(playerIn);
             
             int color = ColorItemUtils.getInkColor(stack);
-            
-            BlockPos pos = new BlockPos(playerIn.posX + 0.5, playerIn.posY, playerIn.posZ + 0.5);
+    
+            int downReach = playerIn.posY % 1 < 0.5 ? 1 : 0;
+            BlockPos pos = new BlockPos(playerIn.posX + 0.5, playerIn.posY - downReach, playerIn.posZ + 0.5);
             Vec3d fwd = getFwd(0, playerIn.rotationYaw);
             playerIn.getHorizontalFacing();
     
+            for(int rollDepth = 0; rollDepth < 2; rollDepth++)
             for(int i = 0; i < rollRadius; i++)
             {
                 double xOff = i == 0 ? 0 : (Math.floor((playerIn.posX + fwd.x) - Math.floor(playerIn.posX + fwd.x)) == 0 ? 1 : -1) * Math.ceil(i/2f);
@@ -164,40 +166,52 @@ public class ItemRollerBase extends ItemWeaponBase
                 }
                 
                 if (playerIn.getHorizontalFacing().equals(EnumFacing.NORTH) || playerIn.getHorizontalFacing().equals(EnumFacing.SOUTH))
-                    zOff = 0;
-                else xOff = 0;
+                     zOff = (rollDepth - 1) * playerIn.getHorizontalFacing().getAxisDirection().getOffset();
+                else xOff = (rollDepth - 1) * playerIn.getHorizontalFacing().getAxisDirection().getOffset();
     
                 BlockPos checkPos = pos.add(fwd.x * 1 + xOff, 0, fwd.z * 1 + zOff);
                 BlockPos inkPos = pos.add(fwd.x * 2 + xOff, -1, fwd.z * 2 + zOff);
-                boolean canInk = true;
                 
-                if(!worldIn.isRemote)
-                {
-                    if(!SplatCraftUtils.canInkPassthrough(worldIn, checkPos))
-                        inkPos = checkPos;
-                    else if(!SplatCraftUtils.canInkPassthrough(worldIn, inkPos.up()))
-                        inkPos = inkPos.up();
-                    canInk = SplatCraftUtils.canInk(worldIn, inkPos);
-    
-                    if(canInk)
-                        SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, color, rollDamage, glowingInk);
-                }
+                boolean canInk;
+                
+                if(!SplatCraftUtils.canInkPassthrough(worldIn, checkPos))
+                    inkPos = checkPos;
+                else if(!SplatCraftUtils.canInkPassthrough(worldIn, inkPos.up()))
+                    inkPos = inkPos.up();
+                canInk = SplatCraftUtils.canInk(worldIn, inkPos);
+
+                if(canInk && !worldIn.isRemote)
+                    SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, color, rollDamage, glowingInk);
+            
                 Entity knockbackEntity = null;
                 
-                if(playerIn.getCooledAttackStrength(0) >= 1f)
                 {
                     List<EntityLivingBase> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(inkPos.up()));
                     int j = 0;
                     
                     for(EntityLivingBase target : inkedPlayers)
                     {
+                        if(target.equals(playerIn))
+                            continue;
+                        
                         boolean isTargetSameColor = false;
                         if(target instanceof EntityPlayer)
                             isTargetSameColor = SplatCraftPlayerData.getInkColor((EntityPlayer) target) == color;
                         
+                        float rollDamage = this.rollDamage;
+                        boolean damaged = true;
+                        
+                        System.out.println(worldIn.isRemote + " " + playerIn.getCooledAttackStrength(0));
+                        
+                        if(playerIn.getCooledAttackStrength(0) >= 1f)
+                            damaged = SplatCraftUtils.dealRollDamage(worldIn, target, rollDamage, color, playerIn, false, glowingInk);
+                        
+                        if((target instanceof EntitySquidBumper && (((EntitySquidBumper) target).getColor() == color) || !damaged))
+                            rollDamage = 0;
+                        
                         if(!isTargetSameColor && (((!(target.getHealth()-rollDamage > 0) && !(target instanceof EntitySquidBumper)) || (target instanceof EntitySquidBumper && ((EntitySquidBumper) target).getInkHealth()-rollDamage > 0))))
                             knockbackEntity = target;
-                        SplatCraftUtils.dealRollDamage(target, rollDamage, color, playerIn, false);
+    
                         
                         j++;
                         if(j >= 5)
@@ -207,7 +221,6 @@ public class ItemRollerBase extends ItemWeaponBase
                         }
                     }
                 }
-                
                 if(knockbackEntity != null && worldIn.isRemote)
                     applyEntityCollision(knockbackEntity, playerIn, 10);
                 
@@ -217,7 +230,7 @@ public class ItemRollerBase extends ItemWeaponBase
     
     public void applyEntityCollision(Entity source, Entity target, double power)
     {
-        if (!target.isRidingSameEntity(source))
+        if (!target.isRidingSameEntity(source) && !target.equals(source))
         {
             if (!source.noClip && !target.noClip)
             {
@@ -266,7 +279,7 @@ public class ItemRollerBase extends ItemWeaponBase
     public AttributeModifier getNoInkSpeed() { return NO_INK_SPEED_MODIFIER; }
     
     @Override
-    public void onItemLeftClick(World worldIn, EntityPlayer playerIn, ItemStack stack)
+    public boolean onItemLeftClick(World worldIn, EntityPlayer playerIn, ItemStack stack)
     {
         if(hasInk(playerIn, stack, flingConsumption))
         {
@@ -282,6 +295,8 @@ public class ItemRollerBase extends ItemWeaponBase
                 }
             }
         } else playerIn.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);
+        
+        return false;
     }
     
     @Override
