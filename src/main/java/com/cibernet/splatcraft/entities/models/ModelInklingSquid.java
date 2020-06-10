@@ -92,5 +92,12 @@ public class ModelInklingSquid extends ModelBase {
 			this.RightLimb.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / 1.5f;
 			this.LeftLimb.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount / 1.5f;
 		}
+		else
+		{
+			if(Math.abs(Math.round(RightLimb.rotateAngleY*100)) != 0)
+				this.RightLimb.rotateAngleY -= RightLimb.rotateAngleY/8f;
+			if(Math.abs(Math.round(LeftLimb.rotateAngleY*100)) != 0)
+				this.LeftLimb.rotateAngleY -= LeftLimb.rotateAngleY/8f;
+		}
 	}
 }
