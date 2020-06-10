@@ -16,7 +16,7 @@ public class ColorItemUtils
 	{
 		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("color"))
 			return InkColors.DYE_WHITE.getColor();
-		return stack.getTagCompound().getInteger("color");
+		return Math.min(0xFFFFFE,Math.max(0,stack.getTagCompound().getInteger("color")));
 	}
 	public static boolean isColorLocked(ItemStack stack)
 	{
