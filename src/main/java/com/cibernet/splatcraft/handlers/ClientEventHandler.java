@@ -13,6 +13,7 @@ import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -39,8 +40,8 @@ public class ClientEventHandler
 	public static ClientEventHandler instance = new ClientEventHandler();
 
 	public static final AttributeModifier IN_USE_SPEED_BOOST = (new AttributeModifier( "Weapon use speed boost", 4D, 2)).setSaved(false);
-	private static final AttributeModifier SQUID_LAND_SPEED = (new AttributeModifier( "Squid in land speed penalty", -0.4D, 2)).setSaved(false);
-	private static final AttributeModifier SQUID_SWIM_SPEED = (new AttributeModifier( "Squid swim speed boost", 1.25D, 2)).setSaved(false);
+	private static final AttributeModifier SQUID_LAND_SPEED = (new AttributeModifier( "Squid in land speed penalty", 0D, 0)).setSaved(false);
+	private static final AttributeModifier SQUID_SWIM_SPEED = (new AttributeModifier( "Squid swim speed boost", 0D, 0)).setSaved(false);
 	private static final AttributeModifier ENEMY_INK_SPEED = (new AttributeModifier( "Enemy ink speed penalty", -0.3D, 2)).setSaved(false);
 
 	private static RenderInklingSquid squidRenderer = null;
@@ -79,6 +80,10 @@ public class ClientEventHandler
 		if(SplatCraftUtils.onEnemyInk(player.world, player) && !attributeInstance.hasModifier(ENEMY_INK_SPEED))
 			attributeInstance.applyModifier(ENEMY_INK_SPEED);
 		
+		if(SplatCraftUtils.onEnemyInk(player.world, player, .5))
+			player.motionY = Math.min(player.motionY, 0.05);
+		
+		
 		boolean isSquid = SplatCraftPlayerData.getIsSquid(player);
 		if(isSquid)
 		{
@@ -99,8 +104,7 @@ public class ClientEventHandler
 						angle += 180;
 					else if(x < 0)
 						angle += 360;
-					
-					System.out.println(point);
+				
 					
 					player.setPositionAndRotation(player.posX,player.posY,player.posZ, (float) -angle+180, player.rotationPitch);
 					float velocity = (float) (Math.sqrt(Math.pow(x,2)+Math.pow(z,2))/6.95f);
@@ -157,9 +161,12 @@ public class ClientEventHandler
 	}
 	
 	@SubscribeEvent
-	public void stopItemSlowdown(PlayerSPPushOutOfBlocksEvent event)
+	public void playerMovement(PlayerSPPushOutOfBlocksEvent event)
 	{
 		EntityPlayerSP player = (EntityPlayerSP) event.getEntityPlayer();
+		MovementInput input = player.movementInput;
+		IAttributeInstance attributeInstance = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+		
 		if (player.isHandActive())
 		{
 			ItemStack stack = player.getActiveItemStack();
@@ -167,7 +174,6 @@ public class ClientEventHandler
 			{
 				if (stack.getItem() instanceof ItemWeaponBase)
 				{
-					MovementInput input = player.movementInput;
 					input.moveStrafe *= 5.0F;
 					input = player.movementInput;
 					input.moveForward *= 5.0F;
@@ -186,6 +192,20 @@ public class ClientEventHandler
 			}
 		}
 		
+		if(!player.capabilities.isFlying)
+		{
+			if(attributeInstance.hasModifier(SQUID_SWIM_SPEED))
+			{
+				player.moveRelative(player.moveStrafing, 0.0f, player.moveForward, 0.055f * (player.onGround ? 1 : 0.2f));
+				player.moveRelative(0, (float) Math.max(player.motionY, 0), 0, 0.06f);
+			}
+			
+			else if(attributeInstance.hasModifier(SQUID_LAND_SPEED))
+			{
+				input.moveForward *= 0.5f;
+				input.moveStrafe *= 0.5f;
+			}
+		}
 	}
 	
 	@SubscribeEvent
