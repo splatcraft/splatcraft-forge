@@ -140,4 +140,10 @@ public class BlockInkwell extends BlockInkColor
 	{
 		return true;
 	}
+	
+	@Override
+	public boolean canClimb()
+	{
+		return false;
+	}
 }
