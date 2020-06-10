@@ -83,7 +83,7 @@ public class SplatCraftItems
     public static final Item turfScanner = new ItemTurfScanner();
     public static final Item colorChanger = new ItemColorChanger();
     
-    public static final Item splatfestBand = new Item().setUnlocalizedName("splatfestBand").setRegistryName("splatfest_band").setMaxStackSize(1);
+    public static final Item splatfestBand = new BattleItemBase("splatfestBand", "splatfest_band", false).setMaxStackSize(1);
     
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
