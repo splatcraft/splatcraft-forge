@@ -201,8 +201,6 @@ public class ItemRollerBase extends ItemWeaponBase
                         float rollDamage = this.rollDamage;
                         boolean damaged = true;
                         
-                        System.out.println(worldIn.isRemote + " " + playerIn.getCooledAttackStrength(0));
-                        
                         if(playerIn.getCooledAttackStrength(0) >= 1f)
                             damaged = SplatCraftUtils.dealRollDamage(worldIn, target, rollDamage, color, playerIn, false, glowingInk);
                         

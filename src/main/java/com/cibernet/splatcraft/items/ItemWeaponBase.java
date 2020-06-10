@@ -105,7 +105,7 @@ public class ItemWeaponBase extends Item implements IBattleItem
 					return true;
 			}
 			if(!isSquid)
-				onItemLeftClick(entityLiving.world, (EntityPlayer) entityLiving, stack);
+				return onItemLeftClick(entityLiving.world, (EntityPlayer) entityLiving, stack);
 		}
 		return super.onEntitySwing(entityLiving, stack);
 	}
@@ -180,8 +180,9 @@ public class ItemWeaponBase extends Item implements IBattleItem
 
 	public AttributeModifier getSpeedModifier() {return null;}
 
-	public void onItemLeftClick(World world, EntityPlayer player, ItemStack stack)
+	public boolean onItemLeftClick(World world, EntityPlayer player, ItemStack stack)
 	{
+		return true;
 	}
 	
 	public ModelPlayerOverride.EnumAnimType getAnimType() {return ModelPlayerOverride.EnumAnimType.NONE;}
