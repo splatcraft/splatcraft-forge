@@ -55,7 +55,7 @@ public class SplatCraftPlayerData
 	public static void deleteTempData() {tempDataMap.clear();}
 	
 	public static int getInkColor(EntityPlayer playerIn) { return getPlayerData(playerIn).inkColor; }
-	public static boolean getIsSquid(EntityPlayer playerIn) { return getPlayerData(playerIn).isSquid != 0; }
+	public static boolean getIsSquid(EntityPlayer playerIn) { return getPlayerData(playerIn).isSquid == 2; }
 	
 	public static void setInkColor(EntityPlayer playerIn, int inkColor) {getPlayerData(playerIn).inkColor = inkColor;}
 	public static void setIsSquid(EntityPlayer playerIn, boolean isSquid) {getPlayerData(playerIn).isSquid = isSquid ? 2 : 1;}
