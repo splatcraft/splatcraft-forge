@@ -9,12 +9,15 @@ import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.translation.I18n;
@@ -75,10 +78,16 @@ public class CommandTurfWar extends CommandBase
 		for(int x = blockpos2.getX(); x <= blockpos3.getX(); x++)
 			for(int z = blockpos2.getZ(); z <= blockpos3.getZ(); z++)
 			{
-				int y = Math.min(blockpos3.getY(), Math.max(blockpos2.getY(), getTopSolidOrLiquidBlock(new BlockPos(x,1, z), world, blockpos3.getY()).down().getY()));
+				int y = getTopSolidOrLiquidBlock(new BlockPos(x,1, z), world, Math.min(blockpos3.getY()+2, 255)).down().getY();
 				
+				if(y < blockpos3.getY() || y < blockpos2.getY())
+					continue;
+					
 				BlockPos checkPos = new BlockPos(x,y,z);
 				IBlockState checkState = world.getBlockState(checkPos);
+				
+				if(!SplatCraftUtils.canInk(world, checkPos))
+					continue;
 				
 				if(!checkState.getMaterial().blocksMovement() || checkState.getMaterial().isLiquid() || !SplatCraftUtils.canInk(world, checkPos))
 					continue;
@@ -144,6 +153,7 @@ public class CommandTurfWar extends CommandBase
 	/**
 	 * Finds the highest block on the x and z coordinate that is solid or liquid, and returns its y coord.
 	 */
+	private static final List<Block> allowed = Arrays.asList(Blocks.CARPET, Blocks.SNOW_LAYER);
 	public static BlockPos getTopSolidOrLiquidBlock(BlockPos pos, World world, int maxY)
 	{
 		Chunk chunk = world.getChunkFromBlockCoords(pos);
@@ -155,11 +165,13 @@ public class CommandTurfWar extends CommandBase
 			blockpos1 = blockpos.down();
 			IBlockState state = chunk.getBlockState(blockpos1);
 			
-			if (state.getMaterial().blocksMovement() && !state.getBlock().isLeaves(state, world, blockpos1) && !state.getBlock().isFoliage(world, blockpos1))
-			{
+			if (allowed.contains(state.getBlock()) || !SplatCraftUtils.canInkPassthrough(world, blockpos1) ||
+					(state.getMaterial().blocksMovement() && !state.getBlock().isLeaves(state, world, blockpos1) && !state.getBlock().isFoliage(world, blockpos1)))
 				break;
-			}
+			
 		}
+		
+		System.out.println(blockpos.getY());
 		
 		return blockpos;
 	}

@@ -33,6 +33,9 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SplatCraftUtils
 {
@@ -294,6 +297,8 @@ public class SplatCraftUtils
 		return true;
 	}
 
+	private static List<Block> cantPassthrough = Arrays.asList(Blocks.BARRIER, Blocks.SNOW_LAYER, Blocks.CARPET);
+	
 	public static boolean canInkPassthrough(World worldIn, BlockPos pos)
 	{
 		IBlockState state = worldIn.getBlockState(pos);

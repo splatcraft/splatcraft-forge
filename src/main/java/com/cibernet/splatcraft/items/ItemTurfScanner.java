@@ -81,10 +81,16 @@ public class ItemTurfScanner extends ItemCoordSet
 		for(int x = blockpos2.getX(); x <= blockpos3.getX(); x++)
 			for(int z = blockpos2.getZ(); z <= blockpos3.getZ(); z++)
 			{
-				int y = Math.min(blockpos3.getY(), Math.max(blockpos2.getY(), CommandTurfWar.getTopSolidOrLiquidBlock(new BlockPos(x,1, z), world, blockpos3.getY()).down().getY()));
+				int y = CommandTurfWar.getTopSolidOrLiquidBlock(new BlockPos(x,1, z), world, Math.min(blockpos3.getY()+2, 255)).down().getY();
+				
+				if(y > blockpos3.getY() || y < blockpos2.getY())
+					continue;
 				
 				BlockPos checkPos = new BlockPos(x,y,z);
 				IBlockState checkState = world.getBlockState(checkPos);
+				
+				if(!SplatCraftUtils.canInk(world, checkPos))
+					continue;
 				
 				if(!checkState.getMaterial().blocksMovement() || checkState.getMaterial().isLiquid() || !SplatCraftUtils.canInk(world, checkPos))
 					continue;
