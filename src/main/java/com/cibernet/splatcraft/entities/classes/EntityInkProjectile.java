@@ -493,10 +493,11 @@ public class EntityInkProjectile extends Entity implements IProjectile
                 ((EntitySheep) result.entityHit).setFleeceColor(inkColor.getDyeColor());
             
             boolean createInksplosion = result.entityHit instanceof EntityLivingBase && ((EntityLivingBase) result.entityHit).getHealth() != 0;
-            
-            SplatCraftUtils.dealInkDamage(result.entityHit, damage, getColor(), this.thrower, false, glowingInk);
-            if(createInksplosion && result.entityHit instanceof EntityLivingBase && ((EntityLivingBase) result.entityHit).getHealth() == 0)
-                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(result.entityHit.posX, result.entityHit.posY, result.entityHit.posZ), 1f, 0, getColor(), glowingInk);
+    
+            if(createInksplosion && result.entityHit instanceof EntityLivingBase)
+                SplatCraftUtils.dealInkDamage(world, (EntityLivingBase) result.entityHit, damage, getColor(), this.thrower, false, glowingInk);
+            // && ((EntityLivingBase) result.entityHit).getHealth() == 0)
+                //SplatCraftUtils.createInkExplosion(world, this, new BlockPos(result.entityHit.posX, result.entityHit.posY, result.entityHit.posZ), 1f, 0, getColor(), glowingInk);
         }
         if (!this.world.isRemote)
         {

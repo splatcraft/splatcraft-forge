@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.blocks.BlockInkedWool;
 import com.cibernet.splatcraft.blocks.BlockSquidPassable;
 import com.cibernet.splatcraft.blocks.IInked;
 import com.cibernet.splatcraft.entities.classes.EntitySquidBumper;
+import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftStats;
@@ -62,13 +63,16 @@ public class SplatCraftUtils
 		}
 	}
 
-	private static boolean dealDamage(Entity target, float damage, int color, Entity source, boolean damageMobs, String type)
+	private static boolean dealDamage(World world, EntityLivingBase target, float damage, int color, Entity source, boolean damageMobs, boolean glowingInk, String type)
 	{
 		boolean doDamage = false;
+		boolean wasDead = target.getHealth() <= 0;
+		int targetColor = 0;
 		
 		if(target instanceof EntityPlayer)
 		{
-			if(SplatCraftPlayerData.getInkColor((EntityPlayer) target) != color)
+			targetColor = SplatCraftPlayerData.getInkColor((EntityPlayer) target);
+			if(targetColor != color)
 				doDamage = true;
 		}
 		else if(target instanceof EntitySquidBumper)
@@ -80,19 +84,32 @@ public class SplatCraftUtils
 		
 		if(doDamage)
 			target.attackEntityFrom(new SplatCraftDamageSource(type, source, source), damage);
+		
+		if(target instanceof EntityPlayer)
+		{
+			if(!wasDead && target.getHealth() <= 0 && doDamage)
+			{
+				SplatCraftUtils.createInkExplosion(world, new BlockPos(target.posX, target.posY, target.posZ), 2, color, glowingInk);
+				
+				if(world.isRemote)
+				{
+					for(int i = 0; i < 32; ++i)
+						SplatCraftParticleSpawner.spawnInkParticle(target.posX, target.posY, target.posZ, 0, 0, 0, color, 2);
+				}
+			}
+		}
+		
 		return doDamage;
 	}
 	
-	public static boolean dealRollDamage(EntityLivingBase target, float damage, int color, Entity source, boolean damageMobs)
+	public static boolean dealRollDamage(World worldIn, EntityLivingBase target, float damage, int color, Entity source, boolean damageMobs, boolean glowingInk)
 	{
-		return dealDamage(target, damage, color, source, damageMobs, "roll");
+		return dealDamage(worldIn, target, damage, color, source, damageMobs, glowingInk,"roll");
 	}
 	
-	public static boolean dealInkDamage(Entity target, float damage, int color, Entity source, boolean damageMobs, boolean glowingInk)
+	public static boolean dealInkDamage(World worldIn, EntityLivingBase target, float damage, int color, Entity source, boolean damageMobs, boolean glowingInk)
 	{
-		boolean damaged = dealDamage(target, damage, color, source, damageMobs, "splat");
-		if(damaged && target.isDead)
-			SplatCraftUtils.createInkExplosion(source.world, new BlockPos(target.posX, target.posY, target.posZ), 2, color, glowingInk);
+		boolean damaged = dealDamage(worldIn, target, damage, color, source, damageMobs, glowingInk, "splat");
 		return damaged;
 	}
 	
@@ -130,7 +147,12 @@ public class SplatCraftUtils
 	
 	public static boolean onEnemyInk(World worldIn, EntityPlayer playerIn)
 	{
-		BlockPos pos = new BlockPos(playerIn.posX, playerIn.posY-.1, playerIn.posZ);
+		return onEnemyInk(worldIn, playerIn, 0.1);
+	}
+	
+	public static boolean onEnemyInk(World worldIn, EntityPlayer playerIn, double offset)
+	{
+		BlockPos pos = new BlockPos(playerIn.posX, playerIn.posY-offset, playerIn.posZ);
 		Block block = worldIn.getBlockState(pos).getBlock();
 		
 		if((!(block instanceof IInked) || (block instanceof IInked && ((IInked) block).canDamage())) && worldIn.getTileEntity(pos) instanceof TileEntityColor)

@@ -184,7 +184,8 @@ public class InkExplosion
 						InkColors inkColor = InkColors.getByColor(color);
 						if(entity instanceof EntitySheep && inkColor != null && inkColor.getDyeColor() != null)
 							((EntitySheep) entity).setFleeceColor(inkColor.getDyeColor());
-						SplatCraftUtils.dealInkDamage(entity, damage, color, getExplosivePlacedBy(), false, glowingInk);
+						if(entity instanceof EntityLivingBase)
+						SplatCraftUtils.dealInkDamage(world, (EntityLivingBase) entity, damage, color, getExplosivePlacedBy(), false, glowingInk);
 							
 					}
 				}
