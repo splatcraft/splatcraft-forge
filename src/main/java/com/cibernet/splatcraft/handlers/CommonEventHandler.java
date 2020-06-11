@@ -285,7 +285,7 @@ public class CommonEventHandler
 						for(i = 0; i < originalPlayer.inventory.armorInventory.size(); ++i)
 						{
 							item = originalPlayer.inventory.armorInventory.get(i);
-							if (item.getItem() instanceof IBattleItem && addArmorToPlayerInventory(event.getEntityPlayer(), item, i)) {
+							if (item.getItem() instanceof IBattleItem && addToPlayerInventory(event.getEntityPlayer(), item)) {
 								originalPlayer.inventory.armorInventory.set(i, ItemStack.EMPTY);
 							}
 						}
@@ -293,7 +293,7 @@ public class CommonEventHandler
 						
 						for(i = 0; i < originalPlayer.inventory.mainInventory.size(); ++i) {
 							item = originalPlayer.inventory.mainInventory.get(i);
-							if (item.getItem() instanceof IBattleItem && addToPlayerInventory(event.getEntityPlayer(), item, i)) {
+							if (item.getItem() instanceof IBattleItem && addToPlayerInventory(event.getEntityPlayer(), item)) {
 								originalPlayer.inventory.mainInventory.set(i, ItemStack.EMPTY);
 							}
 						}
