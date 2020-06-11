@@ -6,13 +6,13 @@ tile.inkwellEmpty.name=Encrier Vide
 tile.inkwell.name=Encrier
 tile.canvas.name=Toile D'encre
 tile.inkedWool.name=Laine Encré
-tile.grate.name=Girlle
+tile.grate.name=Grille
 tile.barrierBar.name=Barre de Barrière
 
 tile.sunkenCrate.name=Caisse Engloutie
 tile.crate.name=Caisse
 
-tile.powerEggBlock.name=Bloc D'oeuf de Poisson
+tile.powerEggBlock.name=Bloc D'oeuf de Poisson 
 tile.sardiniumBlock.name=Bloc de Sardinuim
 tile.oreSardinium.name=Minerai de Sardinium
 
@@ -48,26 +48,26 @@ item.splatfestBand.name=Banderole du Splatfest
 item.inkTank.name=Reservoir D'encre
 item.inkTank.ink=Encre: %s / %s
 item.classicInkTank.name=Reservoir D'encre Classique
-item.inkTankJr.name=Reservoir D'encre Jr.
-item.inkTankJr.tooltip=Marche Selement avec les Armes Junior.
+item.inkTankJr.name=Reservoir D'encre Sr.
+item.inkTankJr.tooltip=Marche Selement avec les Armes Sr.
 item.heroInkTank.name=Reservoir D'encre Heroique
-item.armoredInkTank.name=Reservoir D'encre Renforcé
+item.armoredInkTank.name=Reservoir D'encre Renforcé 
 
 item.splattershot.name=Liquidateur
 item.tentatekSplattershot.name=Liquidateur Griffé
 item.wasabiSplattershot.name=Liquidateur Wasabi
-item.splattershotJr.name=Liquidateur Jr.
+item.splattershotJr.name=Liquidateur Sr.
 item.splattershotPro.name=Liquidateur Pro
 item.splattershot2.name=Liquidateur 2
-item.aerosprayMG.name=Aerogun MG
-item.aerosprayRG.name=Aerogun RG
+item.aerosprayMG.name=Aérogun
+item.aerosprayRG.name=Aérogun Premium
 item.52Gal.name=Calibre 2000
 item.96Gal.name=Calibre 3000
 
 item.blaster.name=Eclablaster
-item.grimBlaster.name=Eclablaster Grim
+item.grimBlaster.name=Eclablaster Nox
 item.rangelaster.name=Eclablaster XL
-item.grimRangelaster.name=Eclablaster Nox
+item.grimRangelaster.name=Eclablaster XL Nox
 item.clashBlaster.name=Rafablaster
 item.clashBlasterNeo.name=Rafablaster Néo
 item.rapidBlaster.name=Turboblaster
@@ -86,15 +86,15 @@ item.eLiter3KScope.name=Extraceur Zoom
 item.eLiter4KScope.name=Extraceur + Zoom
 
 item.splatRoller.name=Rouleau
-item.krakOnSplatRoller.name=Rouleau Kraken
+item.krakOnSplatRoller.name=Rouleau Griffé
 item.coroCoroSplatRoller.name=Rouleau Corocoro
 item.splatRoller2.name=Rouleau 2
 item.carbonRoller.name=Rouleau Carbone
 item.inkbrush.name=Epinceau
 item.octobrush.name=Epinceau Brosse
 
-item.splatDualies.name=Splat Double
-item.enperrySplatDualies.name=Enperry Splat Double
+item.splatDualies.name=Double Encreur
+item.enperrySplatDualies.name=Double Encreur Griffé
 item.dualieSquelchers.name=Nettoyeur Duo
 
 stationTab.shooter=Lanceurs
@@ -112,7 +112,7 @@ stationTab.tank=Réservoires
 recipe.aerospray.name=Aerogun
 recipe.e_liter.name=Extraceur
 recipe.splatDualies.name=Splat Double
-recipe.dualieSquelchers.name=Nettoyeur Duo
+recipe.dualieSquelchers.name=Double Nettoyeur
 
 weaponType.original=Originale
 weaponType.classic=Classique
@@ -120,25 +120,25 @@ weaponType.custom=Modifié
 weaponType.deco=Chic
 weaponType.kensa=Kensa
 weaponType.hero=Heroique
-weaponType.replica=Replique Heroique
-weaponType.ultimate=Ultime
+weaponType.replica=Heroique (Replique)
+weaponType.ultimate=Ultimate
 
 weaponType.tentatek=Griffé
-weaponType.krakOn=Kraken
+weaponType.krakOn=Griffé
 weaponType.wasabi=Wasabi
 weaponType.enperry=Griffé
-weaponType.neo=Neo
+weaponType.neo=Néo
 
 weaponType.coroCoro=Corocoro
 weaponType.bento=Bento
-weaponType.grim=Grim
+weaponType.grim=Nox
 weaponType.permanent=Permanent
 
 weaponType.3K=Originale
 weaponType.4K=Plus
-weaponType.mg=MG
-weaponType.rg=RG
-weaponType.pg=PG
+weaponType.mg=Originale
+weaponType.rg=Premium
+weaponType.pg=Select
 
 color.orange=Orange
 color.blue=Bleu
@@ -212,7 +212,7 @@ splatcraft.config.title=Splatcraft Config
 
 status.coordSet.A=Set first position to X: %s Y: %s Z: %s
 status.coordSet.B=Set second position to X: %s Y: %s Z: %s
-status.noInk=Peu D'encre!
+status.noInk=Plus d'encre!
 
 key.categories.splatcraft=Splatcraft
 key.squidForm=Forme Calamar
