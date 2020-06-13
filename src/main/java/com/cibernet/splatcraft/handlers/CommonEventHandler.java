@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.handlers;
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.IBattleItem;
 import com.cibernet.splatcraft.items.ItemDualieBase;
+import com.cibernet.splatcraft.items.ItemInkTank;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
@@ -17,6 +18,7 @@ import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
@@ -24,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -242,6 +245,17 @@ public class CommonEventHandler
 			
 			}
 		}
+	}
+	
+	@SubscribeEvent
+	public void onLivingDeath(LivingDeathEvent event)
+	{
+		EntityLivingBase entity = event.getEntityLiving();
+		ItemStack stack = entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+		
+		if(stack.getItem() instanceof ItemInkTank)
+			ItemInkTank.setInkAmount(stack, ((ItemInkTank) stack.getItem()).capacity);
+		
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
