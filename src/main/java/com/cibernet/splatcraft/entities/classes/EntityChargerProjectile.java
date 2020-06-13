@@ -36,10 +36,10 @@ public class EntityChargerProjectile extends EntityInkProjectile
 		for(double y = posY; y >= 0 && posY-y <= 16; y--)
 		{
 			BlockPos inkPos = new BlockPos(posX, y, posZ);
-			if(SplatCraftUtils.canInk(world, inkPos))
+			if(!SplatCraftUtils.canInkPassthrough(world, inkPos))
 			{
-				SplatCraftUtils.createInkExplosion(world, inkPos, getProjectileSize()*5, getColor(), glowingInk);
-				SplatCraftUtils.createInkExplosion(world, new BlockPos(posX, posY, posZ), getProjectileSize(), getColor(), glowingInk);
+				SplatCraftUtils.createInkExplosion(world, inkPos.up(), getProjectileSize()/3f, getColor(), glowingInk);
+				SplatCraftUtils.createInkExplosion(world, new BlockPos(posX, posY, posZ), getProjectileSize()/3f, getColor(), glowingInk);
 				break;
 			}
 		}

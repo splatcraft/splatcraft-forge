@@ -245,9 +245,9 @@ public class EntityInkProjectile extends Entity implements IProjectile
             for(double y = posY; y >= 0 && posY-y <= 8; y--)
             {
                 BlockPos inkPos = new BlockPos(posX, y, posZ);
-                if(SplatCraftUtils.canInk(world, inkPos))
+                if(!SplatCraftUtils.canInkPassthrough(world, inkPos))
                 {
-                    SplatCraftUtils.createInkExplosion(world, inkPos, getProjectileSize()/3f, getColor(), glowingInk);
+                    SplatCraftUtils.createInkExplosion(world, inkPos.up(), getProjectileSize()/3f, getColor(), glowingInk);
                     SplatCraftUtils.createInkExplosion(world, pos, getProjectileSize()/3f, getColor(), glowingInk);
                     break;
                 }
