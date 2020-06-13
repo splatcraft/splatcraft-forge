@@ -19,6 +19,8 @@ public class EntityBlasterProjectile extends EntityInkProjectile
 		super(worldIn, throwerIn, color, damage);
 		this.lifespan = lifespan;
 		this.splashDamage = splashDamage;
+		
+		setTrail(false);
 	}
 	
 	public EntityBlasterProjectile(World world) {super(world);}

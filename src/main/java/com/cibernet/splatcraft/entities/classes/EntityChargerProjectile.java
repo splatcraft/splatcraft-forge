@@ -24,6 +24,8 @@ public class EntityChargerProjectile extends EntityInkProjectile
 	{
 		super(worldIn, throwerIn, color, damage);
 		this.lifespan = lifespan;
+		
+		setTrail(false);
 	}
 	
 	@Override

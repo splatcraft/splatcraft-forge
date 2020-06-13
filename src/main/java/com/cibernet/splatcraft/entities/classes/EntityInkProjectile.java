@@ -47,7 +47,9 @@ public class EntityInkProjectile extends Entity implements IProjectile
     protected boolean glowingInk = false;
     
     private float damage;
-
+    
+    private boolean hasTrail = true;
+    
     public EntityInkProjectile(World worldIn)
     {
         super(worldIn);
@@ -239,7 +241,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
             }
         }
         
-        if(!(this instanceof EntityBlasterProjectile) && ticksExisted % 5 == 0)
+        if(hasTrail() && ticksExisted % 5 == 0)
             for(double y = posY; y >= 0 && posY-y <= 8; y--)
             {
                 BlockPos inkPos = new BlockPos(posX, y, posZ);
@@ -323,6 +325,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
     {
         compound.setInteger("color", getColor());
         compound.setFloat("size", getProjectileSize());
+        compound.setBoolean("hasTrail", hasTrail());
         
         compound.setFloat("damage", this.damage);
         compound.setInteger("xTile", this.xTile);
@@ -348,6 +351,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
     {
         setColor(compound.getInteger("color"));
         setProjectileSize(compound.getInteger("size"));
+        setTrail(compound.getBoolean("hasTrail"));
         this.damage = compound.getFloat("damage");
         this.xTile = compound.getInteger("xTile");
         this.yTile = compound.getInteger("yTile");
@@ -519,4 +523,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
     public int getColor() {return dataManager.get(COLOR).intValue();}
     public void setColor(int color) {dataManager.set(COLOR, (float)color);}
     public float getDamage() {return damage;}
+    
+    public boolean hasTrail() {return hasTrail;}
+    public void setTrail(boolean value) {hasTrail = value;}
 }
