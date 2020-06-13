@@ -74,7 +74,7 @@ item.rapidBlaster.name=Turbolanzamotas
 item.rapidBlasterPro.name=Turbolanzamotas Pro
 item.lunaBlaster.name=Lanzamotas Nova
 
-item.splatCharger.name=	Cargatintas
+item.splatCharger.name=Cargatintas
 item.bentoSplatCharger.name=Cargatintas Bento
 item.splatCharger2.name=Cargatintas 2
 item.squiffer.name=Delineador
@@ -108,7 +108,7 @@ stationTab.special=Armas Especiales
 stationTab.tank=Tanques de Tinta
 
 recipe.aerospray.name=Aerógrafo
-recipe.e_liter.name=E-Liter
+recipe.e_liter.name=Entintador
 recipe.splatDualies.name=Difusor Dual
 recipe.dualieSquelchers.name=Soplador Dual
 

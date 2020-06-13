@@ -90,12 +90,12 @@ item.krakOnSplatRoller.name=Rouleau Griffé
 item.coroCoroSplatRoller.name=Rouleau Corocoro
 item.splatRoller2.name=Rouleau 2
 item.carbonRoller.name=Rouleau Carbone
-item.inkbrush.name=Epinceau
-item.octobrush.name=Epinceau Brosse
+item.inkbrush.name=Épinceau
+item.octobrush.name=Épinceau Brosse
 
 item.splatDualies.name=Double Encreur
 item.enperrySplatDualies.name=Double Encreur Griffé
-item.dualieSquelchers.name=Nettoyeur Duo
+item.dualieSquelchers.name=Double Nettoyeur
 
 stationTab.shooter=Lanceurs
 stationTab.roller=Rouleau

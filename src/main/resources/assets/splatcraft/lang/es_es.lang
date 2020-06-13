@@ -74,7 +74,7 @@ item.rapidBlaster.name=	Devastador Exprés
 item.rapidBlasterPro.name=Superdevastador
 item.lunaBlaster.name=Ultradevastador
 
-item.splatCharger.name=	Cargatintas
+item.splatCharger.name=Cargatintas
 item.bentoSplatCharger.name=Cargatintas Picnic
 item.splatCharger2.name=Cargatintas 2
 item.squiffer.name=Kalarrapid α
@@ -108,7 +108,7 @@ stationTab.special=Armas Especiales
 stationTab.tank=Tanques de Tinta
 
 recipe.aerospray.name=Aerógrafo
-recipe.e_liter.name=E-Liter
+recipe.e_liter.name=Entintador
 recipe.splatDualies.name=Difusor Dual
 recipe.dualieSquelchers.name=Soplador Dual
 
