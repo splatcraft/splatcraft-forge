@@ -19,7 +19,6 @@ import net.minecraft.block.BlockSlab;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
@@ -30,6 +29,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.*;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -212,7 +212,7 @@ public class SplatCraftUtils
 		
 		if(state.getBlock() != Blocks.BARRIER)
 		{
-			if(state.getBlockHardness(worldIn, pos) == -1 || IInked.touchingWater(worldIn, pos))
+			if(IInked.touchingWater(worldIn, pos))
 				return false;
 			
 			if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
@@ -331,7 +331,7 @@ public class SplatCraftUtils
 		if(state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
 			return true;
 
-		if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)) || state.getBlockHardness(worldIn, pos) == -1 || IInked.touchingWater(worldIn, pos))
+		if(!state.isFullBlock() || (!state.isOpaqueCube() && !(state.getBlock() instanceof BlockLeaves)) || IInked.touchingWater(worldIn, pos))
 			return false;
 
 		if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
@@ -368,7 +368,7 @@ public class SplatCraftUtils
 			return fallbackNameLocalized.equals(fallbackName) ? String.format("#%06X", color) : fallbackNameLocalized;
 		}
 		
-		return I18n.format("color." + col.getName());
+		return I18n.translateToLocal("color." + col.getName());
 	}
 
 	public static void dropItem(World worldIn, BlockPos pos, ItemStack stack, boolean useTileDrops)
