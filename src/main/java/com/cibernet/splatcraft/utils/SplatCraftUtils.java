@@ -12,6 +12,7 @@ import com.cibernet.splatcraft.registries.SplatCraftStats;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
+import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
@@ -122,7 +123,8 @@ public class SplatCraftUtils
 		Block block = worldIn.getBlockState(pos).getBlock();
 		
 		if((!(block instanceof IInked) || (block instanceof IInked && ((IInked) block).canSwim())) && worldIn.getTileEntity(pos) instanceof TileEntityColor)
-			return ((TileEntityColor)worldIn.getTileEntity(pos)).getColor() == SplatCraftPlayerData.getInkColor(playerIn) && !playerIn.isRiding();
+			return (SplatCraftGamerules.getGameruleValue("universalInk")
+					|| ((TileEntityColor)worldIn.getTileEntity(pos)).getColor() == SplatCraftPlayerData.getInkColor(playerIn)) && !playerIn.isRiding();
 		return SplatCraftUtils.canSquidClimb(worldIn, playerIn);
 	}
 	
@@ -142,7 +144,8 @@ public class SplatCraftUtils
 			Block block = worldIn.getBlockState(pos).getBlock();
 			
 			if((!(block instanceof IInked) || (block instanceof IInked && ((IInked) block).canClimb())) && worldIn.getTileEntity(pos) instanceof TileEntityColor &&
-					((TileEntityColor) worldIn.getTileEntity(pos)).getColor() == SplatCraftPlayerData.getInkColor(playerIn) && !playerIn.isRiding())
+					(SplatCraftGamerules.getGameruleValue("universalInk")
+							|| ((TileEntityColor) worldIn.getTileEntity(pos)).getColor() == SplatCraftPlayerData.getInkColor(playerIn)) && !playerIn.isRiding())
 				return true;
 		}
 		return false;
@@ -159,7 +162,8 @@ public class SplatCraftUtils
 		Block block = worldIn.getBlockState(pos).getBlock();
 		
 		if((!(block instanceof IInked) || (block instanceof IInked && ((IInked) block).canDamage())) && worldIn.getTileEntity(pos) instanceof TileEntityColor)
-			return ((TileEntityColor)worldIn.getTileEntity(pos)).getColor() != SplatCraftPlayerData.getInkColor(playerIn) && !playerIn.isRiding();
+			return (!SplatCraftGamerules.getGameruleValue("universalInk")
+					&& ((TileEntityColor)worldIn.getTileEntity(pos)).getColor() != SplatCraftPlayerData.getInkColor(playerIn)) && !playerIn.isRiding();
 		return false;
 	}
 	

@@ -20,6 +20,7 @@ public class SplatCraftGamerules
 		registerGamerule(new Gamerule("dropCrateLootWhenMined", false));
 		registerGamerule(new Gamerule("dealWaterDamage", false));
 		registerGamerule(new Gamerule("tankToTransform", false));
+		registerGamerule(new Gamerule("universalInk", false));
 	}
 	
 	public static void registerGamerule(Gamerule rule)
