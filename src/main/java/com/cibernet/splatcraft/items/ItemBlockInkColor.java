@@ -6,9 +6,11 @@ import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -31,7 +33,16 @@ public class ItemBlockInkColor extends ItemBlock
         setRegistryName(block.getRegistryName());
         itemList.add(this);
     }
-
+    
+    @Override
+    public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
+    {
+        super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+        
+        if(entityIn instanceof EntityPlayer && !ColorItemUtils.hasInkColor(stack))
+            ColorItemUtils.setInkColor(stack, SplatCraftPlayerData.getInkColor((EntityPlayer) entityIn));
+    }
+    
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState)
     {
