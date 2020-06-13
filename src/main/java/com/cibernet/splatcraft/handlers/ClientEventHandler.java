@@ -119,14 +119,15 @@ public class ClientEventHandler
 				if(!attributeInstance.hasModifier(SQUID_SWIM_SPEED))
 					attributeInstance.applyModifier(SQUID_SWIM_SPEED);
 				
-				if(SplatCraftUtils.canSquidClimb(player.world, player))
+				if(SplatCraftUtils.canSquidClimb(player.world, player) && !player.capabilities.isFlying)
 				{
 					double xOff = Math.signum(player.getHorizontalFacing().getFrontOffsetX() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
 					double zOff = Math.signum(player.getHorizontalFacing().getFrontOffsetZ() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
 					
 					if((player.onGround && !player.world.getCollisionBoxes(player, player.getEntityBoundingBox().offset(xOff, (double)(player.stepHeight), zOff)).isEmpty()) || !player.onGround)
 					{
-						player.moveRelative(0.0f,player.moveForward, 0.0f, 0.055f * (input.jump ? 1.2f : 1f));
+						if(player.motionY < (input.jump ? 0.46f : 0.4f))
+							player.moveRelative(0.0f, player.moveForward, 0.0f, 0.055f * (input.jump ? 1.2f : 1f));
 						if(player.motionY <= 0 && !player.isSneaking())
 							player.moveRelative(0.0f,1f, 0.0f, 0.035f);
 						
@@ -196,8 +197,8 @@ public class ClientEventHandler
 		{
 			if(attributeInstance.hasModifier(SQUID_SWIM_SPEED))
 			{
-				player.moveRelative(player.moveStrafing, 0.0f, player.moveForward, 0.055f * (player.onGround ? 1 : 0.2f));
-				player.moveRelative(0, (float) Math.max(player.motionY, 0), 0, 0.06f);
+				player.moveRelative(player.moveStrafing, 0.0f, player.moveForward, 0.075f * (player.onGround ? 1 : 0.2f));
+				//player.moveRelative(0, (float) Math.max(player.motionY, 0), 0, 0.06f);
 			}
 			
 			else if(attributeInstance.hasModifier(SQUID_LAND_SPEED))
