@@ -2,6 +2,7 @@ package com.cibernet.splatcraft;
 
 
 import com.cibernet.splatcraft.commands.CommandClearInk;
+import com.cibernet.splatcraft.commands.CommandSetInkColor;
 import com.cibernet.splatcraft.commands.CommandSplatCraftGamerules;
 import com.cibernet.splatcraft.commands.CommandTurfWar;
 import com.cibernet.splatcraft.proxy.CommonProxy;
@@ -67,5 +68,6 @@ public class SplatCraft
 		event.registerServerCommand(new CommandTurfWar());
 		event.registerServerCommand(new CommandClearInk());
 		event.registerServerCommand(new CommandSplatCraftGamerules());
+		event.registerServerCommand(new CommandSetInkColor());
 	}
 }

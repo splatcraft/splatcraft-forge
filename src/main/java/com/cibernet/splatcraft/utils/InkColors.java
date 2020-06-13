@@ -1,11 +1,14 @@
 package com.cibernet.splatcraft.utils;
 
+import com.google.common.collect.Maps;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraftforge.common.util.EnumHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public enum InkColors
 {
@@ -93,20 +96,34 @@ public enum InkColors
 	{
 		return color;
 	}
-
+	
 	public static InkColors getByColor(int color)
 	{
-		for(int i = 0; i < InkColors.values().length; i++)
-			if(InkColors.values()[i].getColor() == color)
-				return InkColors.values()[i];
-
-		return null;
+		return BY_INT.get(color);
 	}
-
+	
+	public static InkColors getByName(String name)
+	{
+		return BY_NAME.get(name);
+	}
+	
+	public static Set<String> getNameSet() {return BY_NAME.keySet();}
+	
 	public MapColor getMapColor()
 	{
 		return mapColor;
 	}
 	public String getName() {return name;}
 	public EnumDyeColor getDyeColor() {return dyeColor;}
+	
+	private static final Map<String, InkColors> BY_NAME = Maps.<String, InkColors>newHashMap();
+	private static final Map<Integer, InkColors> BY_INT = Maps.<Integer, InkColors>newHashMap();
+	static
+	{
+		for (InkColors color : values())
+		{
+			BY_NAME.put(color.getName(), color);
+			BY_INT.put(color.getColor(), color);
+		}
+	}
 }
