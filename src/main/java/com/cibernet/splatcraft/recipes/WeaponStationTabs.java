@@ -14,7 +14,7 @@ public enum WeaponStationTabs
 	TAB_ROLLER("roller"),
 	TAB_CHARGER("charger"),
 	TAB_DUALIES("dualies"),
-	TAB_BUCKET("bucket"),
+	//TAB_BUCKET("bucket"),
 	//TAB_SPLATLING("splatling"),
 	//TAB_BRELLA("brella"),
 	//TAB_SUB("sub"),
