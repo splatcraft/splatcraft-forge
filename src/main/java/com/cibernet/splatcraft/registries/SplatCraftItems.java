@@ -46,11 +46,11 @@ public class SplatCraftItems
     public static final Item aerosprayMG = new ItemShooterBase("aerosprayMG", "aerospray_mg", 1.3f, 0.35f, 26f, 2, 4.8f, 0.5f);
     public static final Item aerosprayRG = new ItemShooterBase("aerosprayRG", "aerospray_rg", aerosprayMG);
     //public static final Item clashBlaster = new ItemShooterBase("clashBlaster", "clash_blaster", 2f, 0.95f, 10f, 12, 12, false);
-    public static final Item clashBlaster = new ItemBlasterBase("clashBlaster", "clash_blaster", 2f, 1.2f, 5f, 1, 10, 12f, 6f, 4, 5);
+    public static final Item clashBlaster = new ItemBlasterBase("clashBlaster", "clash_blaster", 1.8f, 1.2f, 5f, 1, 10, 12f, 6f, 4, 4);
     public static final Item clashBlasterNeo = new ItemBlasterBase("clashBlasterNeo", "clash_blaster_neo", clashBlaster);
     public static final Item octobrush = new ItemRollerBase("octobrush", "octobrush", -0.1D, 0.5f, 8f, 0.95f, 3.2f, 1.2d, 2, 4, 0.18f, true);
     public static final Item eLiter4K = new ItemChargerBase("eLiter4K", "e_liter_4k", 0.85f, 14, 35, 40, 36f, 2.25f, 25f, 0.15);
-    public static final Item blaster = new ItemBlasterBase("blaster", "blaster", 3f, 1.1f, 5f, 3, 18, 25f, 10f, 10f, 10);
+    public static final Item blaster = new ItemBlasterBase("blaster", "blaster", 2.3f, 1f, 5f, 4, 20, 25f, 10f, 10f, 6);
     public static final Item grimBlaster = new ItemBlasterBase("grimBlaster", "grim_blaster", blaster);
     public static final Item splatDualie = new ItemDualieBase("splatDualies", "splat_dualies", 1f, 0.55f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
     public static final Item enperrySplatDualie = new ItemDualieBase("enperrySplatDualies", "enperry_splat_dualies", splatDualie);
