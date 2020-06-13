@@ -171,8 +171,6 @@ public class CommandTurfWar extends CommandBase
 			
 		}
 		
-		System.out.println(blockpos.getY());
-		
 		return blockpos;
 	}
 }
