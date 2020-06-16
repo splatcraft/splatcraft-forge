@@ -28,7 +28,9 @@ public class RecipesWeaponStation
 	public static RecipeType recipeAerosprayMg = new RecipeType(aerosprayMG, "mg", new ItemStack(sardinium, 5), new ItemStack(powerEgg, 20), new ItemStack(DYE, 16, 0), new ItemStack(IRON_INGOT, 5)).setDisplayName("aerospray");
 	public static RecipeSubtype recipeAerosprayRg = new RecipeSubtype(recipeAerosprayMg, aerosprayRG, "rg", new ItemStack(sardinium, 5), new ItemStack(powerEgg, 20), new ItemStack(DYE, 16, 0), new ItemStack(GOLD_INGOT, 5));
 	public static RecipeType recipe52Gal = new RecipeType(gal52, "original", new ItemStack(sardinium, 9), new ItemStack(powerEgg, 15), new ItemStack(DYE, 17, 0), new ItemStack(BUCKET));
-	public static RecipeType recipe96Gal = new RecipeType(gal96, "original", new ItemStack(sardinium, 9), new ItemStack(powerEgg, 16), new ItemStack(DYE, 20, 0), new ItemStack(BUCKET));
+	public static RecipeSubtype recipe52GalDeco = new RecipeSubtype(recipe52Gal, gal52Deco, "deco", new ItemStack(sardinium, 7), new ItemStack(powerEgg, 15), new ItemStack(DYE, 17, 0), new ItemStack(BUCKET), new ItemStack(DIAMOND));
+	public static RecipeType recipe96Gal = new RecipeType(gal96, "original", new ItemStack(sardinium, 9), new ItemStack(powerEgg, 18), new ItemStack(DYE, 21, 0), new ItemStack(BUCKET));
+	public static RecipeSubtype recipe96GalDeco = new RecipeSubtype(recipe96Gal, gal96Deco, "deco", new ItemStack(sardinium, 7), new ItemStack(powerEgg, 18), new ItemStack(DYE, 21, 0), new ItemStack(BUCKET), new ItemStack(DIAMOND));
 	public static RecipeType recipeBlaster = new RecipeType(blaster, "original", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 18), new ItemStack(DYE, 12, 0), new ItemStack(GUNPOWDER, 12));
 	public static RecipeSubtype recipeGrimBlaster = new RecipeSubtype(recipeBlaster, grimBlaster, "grim", new ItemStack(sardinium, 6), new ItemStack(powerEgg, 22), new ItemStack(DYE, 12, 0), new ItemStack(GUNPOWDER, 13), new ItemStack(DYE, 4, 10));
 	public static RecipeType recipeClashBlaster = new RecipeType(clashBlaster, "original", new ItemStack(sardinium, 12), new ItemStack(powerEgg, 20), new ItemStack(DYE, 6, 0), new ItemStack(DYE, 2, 4), new ItemStack(GUNPOWDER, 4));

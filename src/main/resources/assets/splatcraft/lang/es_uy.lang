@@ -62,7 +62,9 @@ item.splattershot2.name=Rociador 2
 item.aerosprayMG.name=Aerógrafo GP
 item.aerosprayRG.name=Aerógrafo GN
 item.52Gal.name=Salpicadora 2000
+item.52GalDeco.name=Salpicadora 2000 Chic
 item.96Gal.name=Salpicadora 3000
+item.96GalDeco.name=Salpicadora 3000 Chic
 
 item.blaster.name=Lanzamotas
 item.grimBlaster.name=Lanzamotas Funesto

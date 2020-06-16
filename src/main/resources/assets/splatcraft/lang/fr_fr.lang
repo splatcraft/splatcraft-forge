@@ -62,7 +62,9 @@ item.splattershot2.name=Liquidateur 2
 item.aerosprayMG.name=Aérogun
 item.aerosprayRG.name=Aérogun Premium
 item.52Gal.name=Calibre 2000
+item.52GalDeco.name=Calibre 2000 Chic
 item.96Gal.name=Calibre 3000
+item.96GalDeco.name=Calibre 3000 Chic
 
 item.blaster.name=Eclablaster
 item.grimBlaster.name=Eclablaster Nox
