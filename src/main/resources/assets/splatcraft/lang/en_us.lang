@@ -28,7 +28,12 @@ item.sardinium.name=Sardinium
 
 item.inkDisruptor.name=Ink Disruptor
 item.turfScanner.name=Turf Scanner
+item.turfScanner.mode.0=Top-Down
+item.turfScanner.mode.1=Multi-Layered
 item.colorChanger.name=Color Transmutator
+item.colorChanger.mode.0=All
+item.colorChanger.mode.1=Whitelist Player Color
+item.colorChanger.mode.2=Blacklist Player Color
 item.coordSet.tooltip.a=(%s,%s,%s)
 item.coordSet.tooltip.b=(%s,%s,%s) to (%s,%s,%s)
 
@@ -218,6 +223,7 @@ splatcraft.config.title=Splatcraft Config
 status.coordSet.A=Set first position to X: %s Y: %s Z: %s
 status.coordSet.B=Set second position to X: %s Y: %s Z: %s
 status.noInk=Low Ink!
+status.remoteMode=Set Remote Mode to %s
 
 key.categories.splatcraft=Splatcraft
 key.squidForm=Squid

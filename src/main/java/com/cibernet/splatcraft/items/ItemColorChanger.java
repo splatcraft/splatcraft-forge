@@ -36,24 +36,19 @@ import java.util.List;
 
 import static com.cibernet.splatcraft.utils.ColorItemUtils.*;
 
-public class ItemColorChanger extends ItemCoordSet
+public class ItemColorChanger extends ItemRemote
 {
 	public ItemColorChanger()
 	{
+		super();
+		
 		setUnlocalizedName("colorChanger");
 		setRegistryName("color_changer");
 		setMaxStackSize(1);
 		setCreativeTab(TabSplatCraft.main);
 		ColorItemUtils.inkColorItems.add(this);
 		
-		this.addPropertyOverride(new ResourceLocation("active"), new IItemPropertyGetter()
-		{
-			@SideOnly(Side.CLIENT)
-			public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn)
-			{
-				return hasCoordSet(stack) ? 1.0F : 0.0F;
-			}
-		});
+		totalModes = 3;
 	}
 	
 	@Override
@@ -108,12 +103,8 @@ public class ItemColorChanger extends ItemCoordSet
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer playerIn, EnumHand handIn)
+	public RemoteResult onRemoteUse(World world, ItemStack stack, int colorIn, int mode)
 	{
-		ItemStack stack = playerIn.getHeldItem(handIn);
-		if(!hasCoordSet(stack))
-			return new ActionResult<>(EnumActionResult.FAIL, stack);
-		
 		BlockPos[] coordSet = getCoordSet(stack);
 		BlockPos blockpos = coordSet[0];
 		BlockPos blockpos1 = coordSet[1];
@@ -121,22 +112,21 @@ public class ItemColorChanger extends ItemCoordSet
 		BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos.getY(), Math.max(blockpos1.getY(), blockpos.getY())), Math.max(blockpos.getZ(), blockpos1.getZ()));
 		
 		if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
-			playerIn.sendStatusMessage(new TextComponentTranslation("commands.clearInk.outOfWorld"), true);
-			
+			return createResult(false, new TextComponentTranslation("commands.clearInk.outOfWorld"));
+		
 		for(int j = blockpos2.getZ(); j <= blockpos3.getZ(); j += 16)
 		{
 			for(int k = blockpos2.getX(); k <= blockpos3.getX(); k += 16)
 			{
 				if(!world.isBlockLoaded(new BlockPos(k, blockpos3.getY() - blockpos2.getY(), j)))
 				{
-					playerIn.sendStatusMessage(new TextComponentTranslation("commands.clearInk.outOfWorld"), true);
+					return createResult(false, new TextComponentTranslation("commands.clearInk.outOfWorld"));
 				}
 			}
 		}
 		
 		int count = 0;
 		int color = ColorItemUtils.getInkColor(stack);
-		int whitelistColor = SplatCraftPlayerData.getInkColor(playerIn);
 		
 		for(int x = blockpos2.getX(); x <= blockpos3.getX(); x++)
 			for(int y = blockpos2.getY(); y <= blockpos3.getY(); y++)
@@ -150,8 +140,7 @@ public class ItemColorChanger extends ItemCoordSet
 						TileEntityColor te = ((TileEntityColor)world.getTileEntity(pos));
 						if(!((IInked) block).countsTowardsScore() && te.getColor() != color)
 						{
-							boolean doWhitelist = playerIn.isSneaking() && color != whitelistColor;
-							if((doWhitelist && te.getColor() == whitelistColor) || !doWhitelist)
+							if((mode == 0 || (mode == 1 && te.getColor() == colorIn) || (mode == 2 && te.getColor() != colorIn)) && te.getColor() != color)
 							{
 								te.setColor(color);
 								world.notifyBlockUpdate(pos, state, state, 3);
@@ -160,10 +149,6 @@ public class ItemColorChanger extends ItemCoordSet
 						}
 					}
 				}
-		
-		if(world.isRemote)
-			playerIn.sendStatusMessage(new TextComponentString(I18n.format("commands.changeColor.success", count, SplatCraftUtils.getColorName(color))), true);
-		
-		return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+		return createResult(true, new TextComponentTranslation("commands.changeColor.success", count, SplatCraftUtils.getColorName(color)));
 	}
 }
