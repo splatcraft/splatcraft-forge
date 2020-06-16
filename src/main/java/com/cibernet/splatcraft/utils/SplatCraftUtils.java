@@ -1,9 +1,6 @@
 package com.cibernet.splatcraft.utils;
 
-import com.cibernet.splatcraft.blocks.BlockInkColor;
-import com.cibernet.splatcraft.blocks.BlockInkedWool;
-import com.cibernet.splatcraft.blocks.BlockSquidPassable;
-import com.cibernet.splatcraft.blocks.IInked;
+import com.cibernet.splatcraft.blocks.*;
 import com.cibernet.splatcraft.entities.classes.EntitySquidBumper;
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
@@ -11,6 +8,7 @@ import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftStats;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
+import com.cibernet.splatcraft.tileentities.TileEntityStageBarrier;
 import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
 import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
@@ -219,6 +217,13 @@ public class SplatCraftUtils
 			if(IInked.touchingWater(worldIn, pos))
 				return false;
 			
+			if(worldIn.getTileEntity(pos) instanceof TileEntityStageBarrier)
+			{
+				TileEntityStageBarrier te = (TileEntityStageBarrier) worldIn.getTileEntity(pos);
+				te.resetActiveTime();
+				return false;
+			}
+			
 			if(worldIn.getTileEntity(pos) instanceof TileEntitySunkenCrate)
 			{
 				TileEntitySunkenCrate te = (TileEntitySunkenCrate) worldIn.getTileEntity(pos);
@@ -313,7 +318,8 @@ public class SplatCraftUtils
 		if(!state.getMaterial().blocksMovement())
 			return true;
 		
-		if(state.getBlock() == Blocks.BARRIER || state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
+		if(state.getBlock() instanceof BlockSCBarrier ||
+				state.getBlock() == Blocks.BARRIER || state.getBlock() instanceof BlockSlab || state.getBlock() instanceof BlockStairs)
 			return false;
 		if(state.isFullBlock() || state.getBlockHardness(worldIn, pos) != -1)
 			return false;

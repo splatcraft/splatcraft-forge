@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.entities.classes;
 
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
+import com.cibernet.splatcraft.tileentities.TileEntityStageBarrier;
 import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.utils.SplatCraftDamageSource;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
@@ -479,19 +480,6 @@ public class EntityInkProjectile extends Entity implements IProjectile
         
         if (result.entityHit != null)
         {
-            /*
-            float i = 0;
-    
-                
-            if((result.entityHit instanceof EntityPlayer && SplatCraftPlayerData.getInkColor((EntityPlayer) result.entityHit) != getColor()) ||
-                result.entityHit instanceof EntitySquidBumper && ((EntitySquidBumper)result.entityHit).getColor() != getColor())
-                i = damage;
-    
-            if(i > 0)
-            {
-                result.entityHit.attackEntityFrom(new SplatCraftDamageSource("splat", this, this.thrower).setProjectile(), (float) i);
-            }
-            */
             InkColors inkColor = InkColors.getByColor(getColor());
             if(result.entityHit instanceof EntitySheep && inkColor != null && inkColor.getDyeColor() != null)
                 ((EntitySheep) result.entityHit).setFleeceColor(inkColor.getDyeColor());
@@ -500,13 +488,16 @@ public class EntityInkProjectile extends Entity implements IProjectile
     
             if(createInksplosion && result.entityHit instanceof EntityLivingBase)
                 SplatCraftUtils.dealInkDamage(world, (EntityLivingBase) result.entityHit, damage, getColor(), this.thrower, false, glowingInk);
-            // && ((EntityLivingBase) result.entityHit).getHealth() == 0)
-                //SplatCraftUtils.createInkExplosion(world, this, new BlockPos(result.entityHit.posX, result.entityHit.posY, result.entityHit.posZ), 1f, 0, getColor(), glowingInk);
+            
         }
         if (!this.world.isRemote)
         {
             if(result.typeOfHit.equals(RayTraceResult.Type.BLOCK))
+            {
+                if(world.getTileEntity(result.getBlockPos()) instanceof TileEntityStageBarrier)
+                    ((TileEntityStageBarrier) world.getTileEntity(result.getBlockPos())).resetActiveTime();
                 SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, 0, getColor(), glowingInk);
+            }
                 //SplatCraftUtils.inkBlock(world, result.getBlockPos(), getColor());
             
             if((((thrower != null && result.entityHit != thrower && (thrower.getRidingEntity() != result.entityHit) && result.entityHit instanceof EntityLivingBase) || result.entityHit == null) || thrower == null))

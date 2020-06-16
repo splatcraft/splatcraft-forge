@@ -19,6 +19,9 @@ tile.oreSardinium.name=Sardinium Ore
 tile.inkwellVat.name=Ink Vat
 tile.weaponStation.name=Ammo Knights Workbench
 
+tile.stageBarrier.name=Stage Barrier
+tile.stageVoid.name=Stage Void
+
 item.powerEgg.name=Power Egg
 item.powerEggCan.name=Can of Power Eggs
 item.sardinium.name=Sardinium

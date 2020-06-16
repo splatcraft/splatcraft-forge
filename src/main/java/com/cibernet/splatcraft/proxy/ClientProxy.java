@@ -10,6 +10,7 @@ import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.entities.renderers.RenderInkProjectile;
 import com.cibernet.splatcraft.entities.renderers.RenderNPCSquid;
 import com.cibernet.splatcraft.entities.renderers.RenderSquidBumper;
+import com.cibernet.splatcraft.entities.renderers.RenderStageBarrier;
 import com.cibernet.splatcraft.gui.GuiOverlay;
 import com.cibernet.splatcraft.handlers.ClientEventHandler;
 import com.cibernet.splatcraft.handlers.SplatCraftKeyHandler;
@@ -19,6 +20,7 @@ import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.registries.SplatCraftModelManager;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
+import com.cibernet.splatcraft.tileentities.TileEntityStageBarrier;
 import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
 import net.minecraft.block.Block;
@@ -35,6 +37,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -122,6 +125,8 @@ public class ClientProxy extends CommonProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityChargerProjectile.class, manager -> new RenderInkProjectile(manager));
         RenderingRegistry.registerEntityRenderingHandler(EntityBlasterProjectile.class, manager -> new RenderInkProjectile(manager));
     
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityStageBarrier.class, new RenderStageBarrier());
+        
         SplatCraftItems.registerArmorModels();
     }
 

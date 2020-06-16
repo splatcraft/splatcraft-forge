@@ -13,6 +13,9 @@ import javax.annotation.Nullable;
 
 public class SplatCraftDamageSource extends EntityDamageSourceIndirect
 {
+	
+	public static final DamageSource VOID_DAMAGE = (new DamageSource("outOfWorld")).setDamageBypassesArmor();
+	
 	public SplatCraftDamageSource(String damageTypeIn, Entity source, @Nullable Entity indirectEntityIn)
 	{
 		super(damageTypeIn, source, indirectEntityIn);

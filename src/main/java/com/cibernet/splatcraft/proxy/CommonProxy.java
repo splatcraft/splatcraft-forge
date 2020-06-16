@@ -4,15 +4,12 @@ import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.gui.SplatCraftGuiHandler;
 import com.cibernet.splatcraft.handlers.CommonEventHandler;
 import com.cibernet.splatcraft.registries.*;
+import com.cibernet.splatcraft.tileentities.*;
 import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftSaveHandler;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.recipes.RecipesInkwellVat;
 import com.cibernet.splatcraft.recipes.RecipesWeaponStation;
-import com.cibernet.splatcraft.tileentities.TileEntityColor;
-import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
-import com.cibernet.splatcraft.tileentities.TileEntityInkwellVat;
-import com.cibernet.splatcraft.tileentities.TileEntitySunkenCrate;
 import com.cibernet.splatcraft.world.gen.OreGenHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,6 +34,7 @@ public class CommonProxy
         GameRegistry.registerTileEntity(TileEntityColor.class, SplatCraft.MODID+ ":ink_color");
         GameRegistry.registerTileEntity(TileEntitySunkenCrate.class, SplatCraft.MODID+ ":sunken_crate");
         GameRegistry.registerTileEntity(TileEntityInkwellVat.class, SplatCraft.MODID+ ":inkwell_vat");
+        GameRegistry.registerTileEntity(TileEntityStageBarrier.class, SplatCraft.MODID+ ":stage_barrier");
 
     }
 

@@ -45,6 +45,9 @@ public class SplatCraftBlocks
     public static Block inkwellVat = new BlockInkwellVat();
     public static Block weaponStation = new BlockWeaponStation();
     
+    public static Block stageBarrier = new BlockSCBarrier("stageBarrier", "stage_barrier", false);
+    public static Block stageVoid = new BlockSCBarrier("stageVoid", "stage_void", true);
+    
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
@@ -74,6 +77,9 @@ public class SplatCraftBlocks
         
         registerBlock(registry,inkwellVat, true);
         registerBlock(registry,weaponStation, true);
+        
+        registerBlock(registry, stageBarrier, true);
+        registerBlock(registry, stageVoid, true);
 
     }
 
