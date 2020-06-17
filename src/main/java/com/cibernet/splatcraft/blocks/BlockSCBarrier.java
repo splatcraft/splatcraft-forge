@@ -8,12 +8,15 @@ import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBarrier;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -27,10 +30,15 @@ import javax.annotation.Nullable;
 public class BlockSCBarrier extends Block
 {
 	boolean damagesPlayer;
+	boolean fancy;
+	final ResourceLocation FANCY_TEXTURE;
 	final ResourceLocation MODEL_TEXTURE;
 	
 	private static final AxisAlignedBB COLLISION_BOX = new AxisAlignedBB(0.05, 0.05, 0.05, 0.95, 0.95, 0.95);
+	private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(-0.05, -0.05, -0.05, 1.05, 1.05, 1.05);
 	private static final AxisAlignedBB EMPTY_AABB = new AxisAlignedBB(0,0,0,0,0,0);
+	private static final AxisAlignedBB DEFAULT_AABB = new AxisAlignedBB(0,0,0,1,1,1);
+	
 	
 	public BlockSCBarrier(String unlocName, String registryName, boolean damagesPlayer)
 	{
@@ -46,6 +54,7 @@ public class BlockSCBarrier extends Block
 		
 		this.damagesPlayer = damagesPlayer;
 		MODEL_TEXTURE = new ResourceLocation(SplatCraft.MODID, "textures/models/" + registryName + ".png");
+		FANCY_TEXTURE = new ResourceLocation(SplatCraft.MODID, "textures/models/" + registryName + "_fancy.png");
 	}
 	
 	@Override
@@ -65,7 +74,7 @@ public class BlockSCBarrier extends Block
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos)
 	{
-		return COLLISION_BOX;
+		return damagesPlayer ? COLLISION_BOX : DEFAULT_AABB;
 	}
 	
 	@Override
@@ -81,15 +90,15 @@ public class BlockSCBarrier extends Block
 	{
 		super.onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
 		
-		
-		if(worldIn.getTileEntity(pos) instanceof TileEntityStageBarrier)
-		{
-			((TileEntityStageBarrier)worldIn.getTileEntity(pos)).resetActiveTime();
-			
-		}
-		
-		if(damagesPlayer && entityIn instanceof EntityPlayer)
+		if(entityIn instanceof EntityPlayer && damagesPlayer)
 			entityIn.attackEntityFrom(SplatCraftDamageSource.VOID_DAMAGE, Float.MAX_VALUE);
+		
+	}
+	
+	@Override
+	public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
+	{
+		return BlockFaceShape.UNDEFINED;
 	}
 	
 	@Override
@@ -100,8 +109,15 @@ public class BlockSCBarrier extends Block
 	
 	public ResourceLocation getModelTexture()
 	{
-		return MODEL_TEXTURE;
+		return ClientUtils.getFancyGraphics() ? FANCY_TEXTURE : MODEL_TEXTURE;
 	}
+	
+	@SideOnly(Side.CLIENT)
+	public void setGraphicsLevel(boolean fancy)
+	{
+		this.fancy = fancy;
+	}
+	
 	
 	public boolean isOpaqueCube(IBlockState state)
 	{

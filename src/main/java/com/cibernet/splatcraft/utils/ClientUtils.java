@@ -85,4 +85,10 @@ public class ClientUtils
 	{
 		return Minecraft.getMinecraft().player;
 	}
+	
+	@SideOnly(Side.CLIENT)
+	public static boolean getFancyGraphics()
+	{
+		return Minecraft.getMinecraft().gameSettings.fancyGraphics;
+	}
 }
