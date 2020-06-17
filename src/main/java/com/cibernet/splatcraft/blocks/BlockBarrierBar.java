@@ -1,6 +1,8 @@
 package com.cibernet.splatcraft.blocks;
 
+import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.cibernet.splatcraft.utils.TabSplatCraft;
+import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
@@ -14,6 +16,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -35,7 +38,7 @@ public class BlockBarrierBar extends BlockHorizontal
 	protected static final AxisAlignedBB STRAIGHT_AABB = new AxisAlignedBB(0,13/16f,13/16f,1,1,1);
 	protected static final AxisAlignedBB EDGE_AABB = new AxisAlignedBB(0,13/16f,13/16f,3/16f,1,1);
 	protected static final AxisAlignedBB ROTATED_STRAIGHT_AABB = modifyAABBForDirection(EnumFacing.EAST, STRAIGHT_AABB);
-	protected static final AxisAlignedBB CORNER_AABB = new AxisAlignedBB(0,13/16f,0,1,1,1);
+	protected static final AxisAlignedBB TOP_AABB = new AxisAlignedBB(0,13/16f,0,1,1,1);
 	
 	public BlockBarrierBar(String unlocName, String registryName)
 	{
@@ -61,6 +64,12 @@ public class BlockBarrierBar extends BlockHorizontal
 	
 	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
 	{
+		if(entityIn instanceof EntityPlayer && SplatCraftPlayerData.getIsSquid((EntityPlayer) entityIn) && SplatCraftUtils.canSquidClimb(worldIn, (EntityPlayer) entityIn))
+		{
+			addCollisionBoxToList(pos, entityBox, collidingBoxes, TOP_AABB);
+			return;
+		}
+		
 		if (!isActualState)
 		{
 			state = this.getActualState(state, worldIn, pos);
@@ -117,9 +126,9 @@ public class BlockBarrierBar extends BlockHorizontal
 			case INNER_RIGHT:
 				return modifyAABBForDirection(facing, EDGE_AABB);
 			case OUTER_LEFT:
-				return CORNER_AABB;
+				return TOP_AABB;
 			case OUTER_RIGHT:
-				return CORNER_AABB;
+				return TOP_AABB;
 			
 		}
 		
