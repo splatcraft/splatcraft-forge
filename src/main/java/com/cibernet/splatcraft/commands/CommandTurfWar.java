@@ -1,9 +1,12 @@
 package com.cibernet.splatcraft.commands;
 
 import com.cibernet.splatcraft.blocks.IInked;
+import com.cibernet.splatcraft.items.ItemRemote;
+import com.cibernet.splatcraft.items.ItemTurfScanner;
 import com.cibernet.splatcraft.network.PacketSendColorScores;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
+import com.cibernet.splatcraft.registries.SplatCraftItems;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.utils.InkColors;
@@ -49,16 +52,21 @@ public class CommandTurfWar extends CommandBase
 		{
 			throw new WrongUsageException("commands.turfWar.usage", new Object[0]);
 		}
-		
 		BlockPos blockpos = parseBlockPos(sender, args, 0, false);
 		BlockPos blockpos1 = parseBlockPos(sender, args, 3, false);
+		World world = sender.getEntityWorld();
+		ItemRemote.RemoteResult result = ((ItemTurfScanner)SplatCraftItems.turfScanner).onRemoteUse(world, blockpos, blockpos1, null, -1, 0);
+		
+		if(!result.wasSuccessful())
+			throw new CommandException(result.getOutput().getUnformattedComponentText());
+		
+		/*
 		BlockPos blockpos2 = new BlockPos(Math.min(blockpos.getX(), blockpos1.getX()), Math.min(blockpos.getY(), Math.min(blockpos1.getY(), blockpos.getY())), Math.min(blockpos.getZ(), blockpos1.getZ()));
 		BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos.getY(), Math.max(blockpos1.getY(), blockpos.getY())), Math.max(blockpos.getZ(), blockpos1.getZ()));
 		
 		if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
 			throw new CommandException("commands.turfWar.outOfWorld", new Object[0]);
 		
-		World world = sender.getEntityWorld();
 		
 		for(int j = blockpos2.getZ(); j <= blockpos3.getZ(); j += 16)
 		{
@@ -127,6 +135,7 @@ public class CommandTurfWar extends CommandBase
 		if(scores.isEmpty())
 			throw new CommandException("commands.turfWar.noInk", new Object[0]);
 		else SplatCraftPacketHandler.instance.sendToDimension(new PacketSendColorScores(colors, colorScores), sender.getEntityWorld().provider.getDimension());
+		*/
 	}
 	
 	@Override

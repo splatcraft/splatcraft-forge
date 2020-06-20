@@ -103,11 +103,8 @@ public class ItemColorChanger extends ItemRemote
 	}
 	
 	@Override
-	public RemoteResult onRemoteUse(World world, ItemStack stack, int colorIn, int mode)
+	public RemoteResult onRemoteUse(World world, BlockPos blockpos, BlockPos blockpos1, ItemStack stack, int colorIn, int mode)
 	{
-		BlockPos[] coordSet = getCoordSet(stack);
-		BlockPos blockpos = coordSet[0];
-		BlockPos blockpos1 = coordSet[1];
 		BlockPos blockpos2 = new BlockPos(Math.min(blockpos.getX(), blockpos1.getX()), Math.min(blockpos.getY(), Math.min(blockpos1.getY(), blockpos.getY())), Math.min(blockpos.getZ(), blockpos1.getZ()));
 		BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos.getY(), Math.max(blockpos1.getY(), blockpos.getY())), Math.max(blockpos.getZ(), blockpos1.getZ()));
 		

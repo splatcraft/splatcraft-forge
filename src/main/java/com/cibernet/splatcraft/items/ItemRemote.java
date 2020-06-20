@@ -167,9 +167,18 @@ public class ItemRemote extends Item
 		return super.onItemRightClick(worldIn, playerIn, handIn);
 	}
 	
-	public RemoteResult onRemoteUse(World world, ItemStack stack, int colorIn, int mode)
+	public RemoteResult onRemoteUse(World world, BlockPos posA, BlockPos posB, @Nullable ItemStack stack, int colorIn, int mode)
 	{
 		return createResult(false, null);
+	}
+	
+	public RemoteResult onRemoteUse(World world, ItemStack stack, int colorIn, int mode)
+	{
+		BlockPos[] coordSet = getCoordSet(stack);
+		BlockPos blockpos = coordSet[0];
+		BlockPos blockpos1 = coordSet[1];
+		
+		return onRemoteUse(world, blockpos, blockpos1, stack, colorIn, mode);
 	}
 	
 	public static RemoteResult createResult(boolean success, TextComponentBase output)
@@ -177,7 +186,7 @@ public class ItemRemote extends Item
 		return new RemoteResult(success, output);
 	}
 	
-	static class RemoteResult
+	public static class RemoteResult
 	{
 		boolean success;
 		TextComponentBase output;
