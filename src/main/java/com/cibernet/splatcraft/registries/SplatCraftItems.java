@@ -60,7 +60,10 @@ public class SplatCraftItems
     public static final Item gal96 = new ItemShooterBase("96Gal", "96_gal", 1.3f, 0.75f, 12.5f, 11, 12.4f, 2.5f);
     public static final Item gal96Deco = new ItemShooterBase("96GalDeco", "96_gal_deco", gal52);
     public static final Item dualieSquelcher = new ItemDualieBase("dualieSquelchers", "dualie_squelchers", 0.9f, 0.64f, 11.5f, 12, 4.4f, 1.2f, 1, 1f, 5, 6, 12);
-    
+    public static final Item slosher = new ItemSlosherBase("slosher", "slosher", 1.6f, 0.4f, 2, 8,14, 4, 7f);
+    public static final Item classicSlosher = new ItemSlosherBase("classicSlosher", "classic_slosher", slosher);
+    public static final Item sodaSlosher = new ItemSlosherBase("sodaSlosher", "soda_slosher", slosher);
+    public static final Item triSlosher = new ItemSlosherBase("triSlosher", "tri_slosher", 1.65f, 0.37f, 3, 20,12.4f, 3, 6f);
     
     public static final ItemInkTank inkTank = new ItemInkTank("inkTank", "ink_tank", 100);
     public static final ItemInkTank classicInkTank = new ItemInkTank("classicInkTank", "ink_tank_classic", inkTank);
@@ -122,6 +125,10 @@ public class SplatCraftItems
         registerItem(registry, gal96);
         registerItem(registry, gal96Deco);
         registerItem(registry, dualieSquelcher);
+        registerItem(registry, slosher);
+        registerItem(registry, classicSlosher);
+        registerItem(registry, sodaSlosher);
+        registerItem(registry, triSlosher);
         
         registerItem(registry, inkTank);
         registerItem(registry, classicInkTank);

@@ -1,9 +1,6 @@
 package com.cibernet.splatcraft.entities.models;
 
-import com.cibernet.splatcraft.items.ItemDualieBase;
-import com.cibernet.splatcraft.items.ItemRollerBase;
-import com.cibernet.splatcraft.items.ItemShooterBase;
-import com.cibernet.splatcraft.items.ItemWeaponBase;
+import com.cibernet.splatcraft.items.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
@@ -16,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.math.MathHelper;
 
 public class ModelPlayerOverride extends ModelPlayer
 {
@@ -47,8 +45,12 @@ public class ModelPlayerOverride extends ModelPlayer
 		
 		boolean isClient = player.getEntityId() == Minecraft.getMinecraft().player.getEntityId();
 		//EnumHand hand = player.getActiveHand();
-
-		if(player.getItemInUseCount() > 0)
+		
+		ItemStack stack = player.getActiveItemStack();
+		Item activeItem = stack.getItem();
+		int useTime = activeItem.getMaxItemUseDuration(stack) - player.getItemInUseCount();
+		
+		if(useTime > 0)
 		{
 			EnumHandSide handSide = player.getPrimaryHand();
 			if(player.getActiveHand() == EnumHand.OFF_HAND)
@@ -56,7 +58,6 @@ public class ModelPlayerOverride extends ModelPlayer
 			
 			ModelRenderer mainHand = getArmForSide(handSide);
 			ModelRenderer offHand = getArmForSide(handSide.opposite());
-			Item activeItem = player.getActiveItemStack().getItem();
 			ItemStack offhandStack = player.getHeldItem(player.getHeldItemMainhand().equals(player.getActiveItemStack()) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND);
 			
 			if(!(activeItem instanceof ItemWeaponBase))
@@ -110,6 +111,17 @@ public class ModelPlayerOverride extends ModelPlayer
 					 offHand.rotateAngleX = -((float)Math.PI / 2F) + this.bipedHead.rotateAngleX;
 					 offHand.rotateAngleY = 0.1F + this.bipedHead.rotateAngleY + 0.4F;
 				break;
+				case BUCKET:
+					float animTime = ((ItemSlosherBase)activeItem).startupTicks*2;
+					mainHand.rotateAngleY = 0;
+					mainHand.rotateAngleX = 0;
+					
+					
+					float angle = (useTime/1.5f) * (animTime/6f);
+					
+					if(angle < 7)
+					this.bipedRightArm.rotateAngleX = MathHelper.cos(angle * 0.6662F) * 2.0F * 0.5F;
+				break;
 			}
 			
 			this.bipedLeftArmwear.rotateAngleX = this.bipedLeftArm.rotateAngleX;
@@ -140,7 +152,8 @@ public class ModelPlayerOverride extends ModelPlayer
 		SHOOTER,
 		ROLLER,
 		CHARGER,
-		DUALIES;
+		DUALIES,
+		BUCKET;
 		
 	}
 	

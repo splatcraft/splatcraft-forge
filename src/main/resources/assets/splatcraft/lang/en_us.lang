@@ -105,6 +105,11 @@ item.splatDualies.name=Splat Dualie
 item.enperrySplatDualies.name=Enperry Splat Dualie
 item.dualieSquelchers.name=Dualie Squelcher
 
+item.slosher.name=Slosher
+item.classicSlosher.name=Classic Slosher
+item.sodaSlosher.name=Soda Slosher
+item.triSlosher.name=Tri-Slosher
+
 stationTab.shooter=Shooters
 stationTab.roller=Rollers
 stationTab.charger=Chargers
@@ -133,14 +138,15 @@ weaponType.ultimate=Ultimate
 
 weaponType.tentatek=Tentatek
 weaponType.krakOn=Krak-On
-weaponType.wasabi=Wasabi
 weaponType.enperry=Enperry
 weaponType.neo=Neo
 
+weaponType.wasabi=Wasabi
 weaponType.coroCoro=CoroCoro
 weaponType.bento=Bento
 weaponType.grim=Grim
 weaponType.permanent=Permanent
+weaponType.soda=Soda
 
 weaponType.3K=3K
 weaponType.4K=4K
