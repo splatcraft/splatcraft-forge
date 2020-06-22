@@ -114,13 +114,12 @@ public class ModelPlayerOverride extends ModelPlayer
 				case BUCKET:
 					float animTime = ((ItemSlosherBase)activeItem).startupTicks*2;
 					mainHand.rotateAngleY = 0;
-					mainHand.rotateAngleX = 0;
-					
+					mainHand.rotateAngleX = -0.36f;
 					
 					float angle = (useTime/1.5f) * (animTime/6f);
 					
-					if(angle < 7)
-					this.bipedRightArm.rotateAngleX = MathHelper.cos(angle * 0.6662F) * 2.0F * 0.5F;
+					if(angle < 6.5f)
+						mainHand.rotateAngleX = MathHelper.cos(angle * 0.6662F) * 2.0F * 0.5F;
 				break;
 			}
 			
