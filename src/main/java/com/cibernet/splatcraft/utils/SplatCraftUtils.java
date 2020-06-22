@@ -254,9 +254,23 @@ public class SplatCraftUtils
 					if(!((IInked) state.getBlock()).canInk())
 						return false;
 				
+					
+				if(te instanceof TileEntityInkedBlock && state.getBlock() != inkBlock)
+				{
+					worldIn.setBlockState(pos, inkBlock.getDefaultState());
+					TileEntityInkedBlock inkTe = (TileEntityInkedBlock) inkBlock.createTileEntity(worldIn, inkBlock.getDefaultState());
+					
+					worldIn.setTileEntity(pos, inkTe);
+					
+					inkTe.setColor(color);
+					inkTe.setSavedState(((TileEntityInkedBlock) te).getSavedState());
+					
+					return true;
+				}
 				
 				if(te.getColor() == color)
 					return false;
+				
 				te.setColor(color);
 				worldIn.notifyBlockUpdate(pos, state, state, 3);
 				return true;
