@@ -1,5 +1,7 @@
 package com.cibernet.splatcraft.blocks;
 
+import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
+import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.tileentities.TileEntityInkedBlock;
 import com.cibernet.splatcraft.utils.InkColors;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
@@ -16,6 +18,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
@@ -29,6 +32,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -135,6 +139,38 @@ public class BlockInkedSlab extends BlockSlab implements IInked
 			return super.getMapColor(state, worldIn, pos);
 		else return color.getMapColor();
 		
+	}
+	@Override
+	public boolean addRunningEffects(IBlockState state, World world, BlockPos pos, Entity entity)
+	{
+		int color = InkColors.INK_BLACK.getColor();
+		
+		if(world.getTileEntity(pos) instanceof TileEntityColor)
+			color = ((TileEntityColor) world.getTileEntity(pos)).getColor();
+		
+		SplatCraftParticleSpawner.spawnInkParticle(entity.posX + ((double)entity.world.rand.nextFloat() - 0.5D) * (double)entity.width, entity.getEntityBoundingBox().minY + 0.1D,
+				entity.posZ + ((double)entity.world.rand.nextFloat() - 0.5D) * (double)entity.width, -entity.motionX * 4.0D, 1.5D, -entity.motionZ * 4.0D, color, 1.5f);
+		
+		return true;
+	}
+	
+	@Override
+	public boolean addLandingEffects(IBlockState state, WorldServer worldObj, BlockPos pos, IBlockState iblockstate, EntityLivingBase entity, int numberOfParticles)
+	{
+		double speed = 0.15000000596046448D;
+		
+		int color = InkColors.INK_BLACK.getColor();
+		
+		if(worldObj.getTileEntity(pos) instanceof TileEntityColor)
+			color = ((TileEntityColor) worldObj.getTileEntity(pos)).getColor();
+		
+		
+		for(int i = 0; i < numberOfParticles; i++)
+		{
+			double angle = entity.world.rand.nextDouble() * Math.PI;
+			SplatCraftParticleSpawner.spawnInkParticle(entity.posX, entity.posY, entity.posZ, Math.sin(angle) * speed, speed/2.0, Math.cos(angle) * speed, color, 1.8f);
+		}
+		return true;
 	}
 	
 	@Override
