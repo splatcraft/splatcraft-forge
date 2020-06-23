@@ -17,6 +17,8 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -78,6 +80,12 @@ public class ClientUtils
 	public static boolean showDurabilityBar(ItemStack stack)
 	{
 		return SplatCraftGamerules.getGameruleValue("requireInkTank") && (Minecraft.getMinecraft().player.getHeldItemMainhand().equals(stack) || Minecraft.getMinecraft().player.getHeldItemOffhand().equals(stack));
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public static World getClientWorld()
+	{
+		return Minecraft.getMinecraft().player.world;
 	}
 	
 	@SideOnly(Side.CLIENT)

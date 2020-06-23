@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.network;
 
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
+import com.cibernet.splatcraft.utils.ClientUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -76,10 +77,7 @@ public class PacketInkLandParticles implements IMessage
         {
             try
             {
-                World world;
-                if(ctx.netHandler instanceof NetHandlerPlayClient)
-                    world = Minecraft.getMinecraft().world;
-                else world = ctx.getServerHandler().player.world;
+                World world = ClientUtils.getClientWorld();
                 
                 Entity entity = world.getEntityByID(message.source);
                 
