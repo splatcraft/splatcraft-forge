@@ -1,5 +1,7 @@
 package com.cibernet.splatcraft.blocks;
 
+import com.cibernet.splatcraft.network.PacketInkLandParticles;
+import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
@@ -29,6 +31,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -65,6 +68,9 @@ public class BlockInkedStairs extends BlockStairs implements IInked
 	@Override
 	public boolean addRunningEffects(IBlockState state, World world, BlockPos pos, Entity entity)
 	{
+		if(!world.isRemote)
+			return true;
+		
 		int color = InkColors.INK_BLACK.getColor();
 		
 		if(world.getTileEntity(pos) instanceof TileEntityColor)
@@ -79,21 +85,15 @@ public class BlockInkedStairs extends BlockStairs implements IInked
 	@Override
 	public boolean addLandingEffects(IBlockState state, WorldServer worldObj, BlockPos pos, IBlockState iblockstate, EntityLivingBase entity, int numberOfParticles)
 	{
-		double speed = 0.15000000596046448D;
-		
 		int color = InkColors.INK_BLACK.getColor();
 		
 		if(worldObj.getTileEntity(pos) instanceof TileEntityColor)
 			color = ((TileEntityColor) worldObj.getTileEntity(pos)).getColor();
 		
-		
-		for(int i = 0; i < numberOfParticles; i++)
-		{
-			double angle = entity.world.rand.nextDouble() * Math.PI;
-			SplatCraftParticleSpawner.spawnInkParticle(entity.posX, entity.posY, entity.posZ, Math.sin(angle) * speed, speed/2.0, Math.cos(angle) * speed, color, 1.8f);
-		}
+		SplatCraftPacketHandler.instance.sendToAllAround(new PacketInkLandParticles(color, numberOfParticles, entity.posY, entity), new NetworkRegistry.TargetPoint(worldObj.provider.getDimension(), entity.posX, entity.posY, entity.posZ, 1024.0D));
 		return true;
 	}
+	
 	
 	@Override
 	public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos)
