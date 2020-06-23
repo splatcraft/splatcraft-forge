@@ -99,6 +99,11 @@ item.splatDualies.name=Double Encreur
 item.enperrySplatDualies.name=Double Encreur Griffé
 item.dualieSquelchers.name=Double Nettoyeur
 
+item.slosher.name=Seauceur
+item.classicSlosher.name=Seauceur Classique
+item.sodaSlosher.name=Seauceur Pétillant
+item.triSlosher.name=Seauceur Trio
+
 stationTab.shooter=Lanceurs
 stationTab.roller=Rouleau
 stationTab.charger=Sniper
@@ -135,6 +140,7 @@ weaponType.coroCoro=Corocoro
 weaponType.bento=Bento
 weaponType.grim=Nox
 weaponType.permanent=Permanent
+weaponType.soda=Pétillant
 
 weaponType.3K=Originale
 weaponType.4K=Plus

@@ -19,6 +19,9 @@ tile.oreSardinium.name=Minério de Sardinha
 tile.inkwellVat.name=Criador de Tinta
 tile.weaponStation.name=Criador de Armas
 
+tile.stageBarrier.name=Barreira invisível
+tile.stageVoid.name=Barreira de vácuo
+
 item.powerEgg.name=OvoPoderoso
 item.powerEggCan.name=Lata de OvosPoderosos
 item.sardinium.name=Sardinha
@@ -52,65 +55,6 @@ item.inkTankJr.name=tanque de tinta Jr.
 item.inkTankJr.tooltip=Só funciona com armas Junior.
 item.heroInkTank.name=tanque herói
 item.armoredInkTank.name=Tanque de tinta blindado
-
-item.splattershot.name=Splattershot
-item.tentatekSplattershot.name=Tentatek Splattershot
-item.wasabiSplattershot.name=Wasabi Splattershot
-item.splattershotJr.name=Splattershot Jr.
-item.splattershotPro.name=Splattershot Pro
-item.splattershot2.name=Splattershot 2
-item.aerosprayMG.name=Aerospray MG
-item.aerosprayRG.name=Aerospray RG
-item.52Gal.name=.52 Gal
-item.96Gal.name=.96 Gal
-
-item.blaster.name=Blaster
-item.grimBlaster.name=Grim Blaster
-item.rangelaster.name=Range Blaster
-item.grimRangelaster.name=Grim Range Blaster
-item.clashBlaster.name=Clash Blaster
-item.clashBlasterNeo.name=Clash Blaster Neo
-item.rapidBlaster.name=Rapid Blaster
-item.rapidBlasterPro.name=Rapid Blaster Pro
-item.lunaBlaster.name=Luna Blaster
-
-item.splatCharger.name=Splat Charger
-item.bentoSplatCharger.name=Bento Splat Charger
-item.splatCharger2.name=Splat Charger 2
-item.squiffer.name=Classic Squiffer
-item.splatterscope.name=Splatterscope
-item.splatterscope2.name=Splatterscope 2
-item.eLiter3K.name=E-Liter 3K
-item.eLiter4K.name=E-Liter 4K
-
-item.splatRoller.name=Splat Roller
-item.krakOnSplatRoller.name=Krak-On Splat Roller
-item.coroCoroSplatRoller.name=CoroCoro Splat Roller
-item.splatRoller2.name=Splat Roller 2
-item.carbonRoller.name=Carbon Roller
-item.inkbrush.name=Inkbrush
-item.octobrush.name=Octobrush
-
-item.splatDualies.name=Splat Dualie
-item.enperrySplatDualies.name=Enperry Splat Dualie
-item.dualieSquelchers.name=Dualie Squelcher
-
-stationTab.shooter=Shooters
-stationTab.roller=Rollers
-stationTab.charger=Chargers
-stationTab.blaster=Blasters
-stationTab.dualies=Dualies
-stationTab.bucket=Sloshers
-stationTab.splatling=Splatlings
-stationTab.brella=Brellas
-stationTab.sub=Sub Weapons
-stationTab.special=Special Weapons
-stationTab.tank=Ink Tanks
-
-recipe.aerospray.name=Aerospray
-recipe.e_liter.name=E-Liter
-recipe.splatDualies.name=Splat Dualies
-recipe.dualieSquelchers.name=Dualie Squelchers
 
 weaponType.original=Original
 weaponType.classic=Clasica
@@ -185,8 +129,8 @@ color.dyeBlack=Preto Orgânico
 
 gui.weaponStation.craft=Construir
 
-container.inkwellVat=Fabricação de tinteiros
-container.weaponStation=Fabricação de armas
+container.inkwellVat=Fabricação de Tinteiros
+container.weaponStation=Fabricação de Armas
 
 entity.splatcraft.squid.name=Inkling Squid
 splatcraft.squid.name=Inkling Squid

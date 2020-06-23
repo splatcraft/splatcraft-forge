@@ -19,6 +19,9 @@ tile.oreSardinium.name=Minerai de Sardinium
 tile.inkwellVat.name=Cuve D'encre
 tile.weaponStation.name=Etabli De Cartouche
 
+tile.stageBarrier.name=Barrière de Scène
+tile.stageBarrier.name=Barrière du vide
+
 item.powerEgg.name=Oeuf de Poisson
 item.powerEggCan.name=Boite D'oeuf De Poisson
 item.sardinium.name=Sardinium
@@ -51,7 +54,7 @@ item.classicInkTank.name=Reservoir D'encre Classique
 item.inkTankJr.name=Reservoir D'encre Sr.
 item.inkTankJr.tooltip=Marche Selement avec les Armes Sr.
 item.heroInkTank.name=Reservoir D'encre Heroique
-item.armoredInkTank.name=Reservoir D'encre Renforcé 
+item.armoredInkTank.name=Reservoir D'encre Renforcé
 
 item.splattershot.name=Liquidateur
 item.tentatekSplattershot.name=Liquidateur Griffé
@@ -99,6 +102,11 @@ item.splatDualies.name=Double Encreur
 item.enperrySplatDualies.name=Double Encreur Griffé
 item.dualieSquelchers.name=Double Nettoyeur
 
+item.slosher.name=Seauceur
+item.classicSlosher.name=Seauceur Classique
+item.sodaSlosher.name=Seauceur Diabolo
+item.triSlosher.name=Dépoteur
+
 stationTab.shooter=Lanceurs
 stationTab.roller=Rouleau
 stationTab.charger=Sniper
@@ -135,6 +143,7 @@ weaponType.coroCoro=Corocoro
 weaponType.bento=Bento
 weaponType.grim=Nox
 weaponType.permanent=Permanent
+weaponType.soda=Diabolo
 
 weaponType.3K=Originale
 weaponType.4K=Plus

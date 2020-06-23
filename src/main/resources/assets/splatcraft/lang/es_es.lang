@@ -19,6 +19,9 @@ tile.oreSardinium.name=Mineral de Anchovio
 tile.inkwellVat.name=Mezclador de tinta
 tile.weaponStation.name=Estación de Armas
 
+tile.stageBarrier.name=Barrera Invisible
+tile.stageVoid.name=Barrera del Vacío
+
 item.powerEgg.name=Caviar Rojo
 item.powerEggCan.name=Lata de Caviar Rojo
 item.sardinium.name=Anchovio
@@ -62,9 +65,9 @@ item.splattershot2.name=Rociador 2
 item.aerosprayMG.name=Aerógrafo GP
 item.aerosprayRG.name=Aerógrafo GN
 item.52Gal.name=Salpicadora 2000
-item.52GalDeco.name=Salpicadora 2000 DX
+item.52GalDeco.name=Salpicadora 2000 Chic
 item.96Gal.name=Salpicadora 3000
-item.96GalDeco.name=Salpicadora 3000 DX
+item.96GalDeco.name=Salpicadora 3000 Chic
 
 item.blaster.name=Lanzamotas
 item.grimBlaster.name=Lanzamotas Funesto
@@ -97,6 +100,11 @@ item.splatDualies.name=Difusor Dual
 item.enperrySplatDualies.name=Difusor Dual Emperi
 item.dualieSquelchers.name=Soplador Dual
 
+item.slosher.name=Derramatic
+item.classicSlosher.name=Derramatic Clasico
+item.sodaSlosher.name=Derramatic Centella
+item.triSlosher.name=Derramatic Triple
+
 stationTab.shooter=Lanzatintas
 stationTab.roller=Rodillos
 stationTab.charger=Cargatintas
@@ -117,7 +125,7 @@ recipe.dualieSquelchers.name=Soplador Dual
 weaponType.original=Original
 weaponType.classic=Clasico
 weaponType.custom=Adaptado
-weaponType.deco=DX
+weaponType.deco=Chic
 weaponType.kensa=Tonken
 weaponType.hero=Élite
 weaponType.replica=Élite Replica
@@ -133,6 +141,7 @@ weaponType.coroCoro=CoroCoro
 weaponType.bento=Bento
 weaponType.grim=Funesto
 weaponType.permanent=Permanente
+weaponType.soda=Centella
 
 weaponType.3K=3K
 weaponType.4K=4K

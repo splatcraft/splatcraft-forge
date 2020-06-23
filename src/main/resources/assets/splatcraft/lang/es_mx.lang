@@ -19,6 +19,9 @@ tile.oreSardinium.name=Mineral de Anchovio
 tile.inkwellVat.name=Mezclador de tinta
 tile.weaponStation.name=Estación de Armas
 
+tile.stageBarrier.name=Barrera Invisible
+tile.stageVoid.name=Barrera del Vacío
+
 item.powerEgg.name=Caviar Rojo
 item.powerEggCan.name=Lata de Caviar Rojo
 item.sardinium.name=Anchovio
@@ -97,6 +100,11 @@ item.splatDualies.name=Difusor Dual
 item.enperrySplatDualies.name=Difusor Dual Emperi
 item.dualieSquelchers.name=Soplador Dual
 
+item.slosher.name=Derramatic
+item.classicSlosher.name=Derramatic Clasico
+item.sodaSlosher.name=Derramatic Burbujeante
+item.triSlosher.name=Derramatic Triple
+
 stationTab.shooter=Lanzatintas
 stationTab.roller=Rodillos
 stationTab.charger=Cargatintas
@@ -133,6 +141,7 @@ weaponType.coroCoro=CoroCoro
 weaponType.bento=Bento
 weaponType.grim=Funesto
 weaponType.permanent=Permanente
+weaponType.soda=Burbujeante
 
 weaponType.3K=3K
 weaponType.4K=4K
