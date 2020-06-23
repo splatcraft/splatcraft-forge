@@ -254,7 +254,11 @@ public class SplatCraftUtils
 					if(!((IInked) state.getBlock()).canInk())
 						return false;
 				
-					
+				if(state.getBlock() instanceof BlockInkedStairs)
+					inkBlock = isGlowing ? SplatCraftBlocks.glowingInkedStairs : SplatCraftBlocks.inkedStairs;
+				if(state.getBlock() instanceof BlockInkedSlab)
+					inkBlock = isGlowing ? SplatCraftBlocks.glowingInkedSlab : SplatCraftBlocks.inkedSlab;
+				
 				if(te instanceof TileEntityInkedBlock && state.getBlock() != inkBlock)
 				{
 					worldIn.setBlockState(pos, inkBlock.getDefaultState());
