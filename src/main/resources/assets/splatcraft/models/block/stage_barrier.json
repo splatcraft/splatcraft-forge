@@ -2,6 +2,6 @@
 	"parent": "block/cube_all",
 	"textures": {
 		"all": "splatcraft:blocks/stage_barrier",
-		"particle": "splatcraft:blocks/barrier_particles"
+		"particle": "splatcraft:blocks/stage_barrier"
 	}
 }
