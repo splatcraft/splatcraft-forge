@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.entities.classes.EntityChargerProjectile;
 import com.cibernet.splatcraft.entities.classes.EntityInkProjectile;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.network.PacketChargeRelease;
+import com.cibernet.splatcraft.network.PacketReturnChargeRelease;
 import com.cibernet.splatcraft.network.SplatCraftPacketHandler;
 import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
@@ -18,6 +19,8 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+
+import java.util.UUID;
 
 public class ItemChargerBase extends ItemWeaponBase implements ICharge
 {
@@ -98,9 +101,16 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
 	{
-		if(!worldIn.isRemote && !SplatCraftPlayerData.getIsSquid((EntityPlayer) entityLiving))
+		if(worldIn.isRemote && !SplatCraftPlayerData.getIsSquid((EntityPlayer) entityLiving))
 		{
-			SplatCraftPacketHandler.instance.sendTo(new PacketChargeRelease(entityLiving.getUniqueID(), stack), (EntityPlayerMP) entityLiving);
+			UUID player = entityLiving.getUniqueID();
+			float charge = SplatCraftPlayerData.getWeaponCharge(player, stack);
+			if(charge > 0.05f)
+			{
+				SplatCraftPacketHandler.instance.sendToServer(new PacketReturnChargeRelease(charge, stack));
+				SplatCraftPlayerData.setWeaponCharge(player, stack, 0);
+			}
+			SplatCraftPlayerData.setCanDischarge(player, true);
 		}
 	}
 	
