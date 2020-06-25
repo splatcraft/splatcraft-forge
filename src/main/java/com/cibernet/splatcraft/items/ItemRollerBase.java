@@ -147,82 +147,90 @@ public class ItemRollerBase extends ItemWeaponBase
             reduceInk(playerIn);
             
             int color = ColorItemUtils.getInkColor(stack);
-    
             int downReach = playerIn.posY % 1 < 0.5 ? 1 : 0;
-            BlockPos pos = new BlockPos(playerIn.posX + 0.5, playerIn.posY - downReach, playerIn.posZ + 0.5);
-            Vec3d fwd = getFwd(0, playerIn.rotationYaw);
-            playerIn.getHorizontalFacing();
+            Vec3d fwd = getFwd(0, playerIn.rotationYaw).normalize();
+            fwd = new Vec3d(Math.round(fwd.x), Math.round(fwd.y), Math.round(fwd.z));
     
-            for(int rollDepth = 0; rollDepth < 2; rollDepth++)
+            BlockPos pos = new BlockPos(Math.floor(playerIn.posX) + 0.5, playerIn.posY - downReach, Math.floor(playerIn.posZ) + 0.5);
+    
             for(int i = 0; i < rollRadius; i++)
-            {
-                double xOff = i == 0 ? 0 : (Math.floor((playerIn.posX + fwd.x) - Math.floor(playerIn.posX + fwd.x)) == 0 ? 1 : -1) * Math.ceil(i/2f);
-                double zOff = i == 0 ? 0 : (Math.floor((playerIn.posZ + fwd.z) - Math.floor(playerIn.posZ + fwd.z)) == 0 ? -1 : 1) * Math.ceil(i/2f);
-    
-                if(i % 2 == 0)
+                for(int rollDepth = 0; rollDepth < 2; rollDepth++)
                 {
-                    xOff *= -1;
-                    zOff *= -1;
-                }
-                
-                if (playerIn.getHorizontalFacing().equals(EnumFacing.NORTH) || playerIn.getHorizontalFacing().equals(EnumFacing.SOUTH))
-                     zOff = (rollDepth - 1) * playerIn.getHorizontalFacing().getAxisDirection().getOffset();
-                else xOff = (rollDepth - 1) * playerIn.getHorizontalFacing().getAxisDirection().getOffset();
-    
-                BlockPos checkPos = pos.add(fwd.x * 1 + xOff, 0, fwd.z * 1 + zOff);
-                BlockPos inkPos = pos.add(fwd.x * 2 + xOff, -1, fwd.z * 2 + zOff);
-                
-                boolean canInk;
-                
-                if(!SplatCraftUtils.canInkPassthrough(worldIn, checkPos))
-                    inkPos = checkPos;
-                else if(!SplatCraftUtils.canInkPassthrough(worldIn, inkPos.up()))
-                    inkPos = inkPos.up();
-                canInk = SplatCraftUtils.canInk(worldIn, inkPos);
-
-                if(canInk && !worldIn.isRemote)
-                    SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, color, rollDamage, glowingInk);
-            
-                Entity knockbackEntity = null;
-                
-                {
-                    List<EntityLivingBase> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(inkPos.up()));
-                    int j = 0;
+                    double xOff = i == 0 ? 0 : Math.round(fwd.z) * Math.ceil(i/2.0);
+                    double zOff = i == 0 ? 0 : Math.round(fwd.x) * Math.ceil(i/2.0);
                     
-                    for(EntityLivingBase target : inkedPlayers)
+                    if(i % 2 == 0)
                     {
-                        if(target.equals(playerIn))
-                            continue;
-                        
-                        boolean isTargetSameColor = false;
-                        if(target instanceof EntityPlayer)
-                            isTargetSameColor = SplatCraftPlayerData.getInkColor((EntityPlayer) target) == color;
-                        
-                        float rollDamage = this.rollDamage;
-                        boolean damaged = true;
-                        
-                        if(playerIn.getCooledAttackStrength(0) >= 1f)
-                            damaged = SplatCraftUtils.dealRollDamage(worldIn, target, rollDamage, color, playerIn, false, glowingInk);
-                        
-                        if((target instanceof EntitySquidBumper && (((EntitySquidBumper) target).getColor() == color) || !damaged))
-                            rollDamage = 0;
-                        
-                        if(!isTargetSameColor && (((!(target.getHealth()-rollDamage > 0) && !(target instanceof EntitySquidBumper)) || (target instanceof EntitySquidBumper && ((EntitySquidBumper) target).getInkHealth()-rollDamage > 0))))
-                            knockbackEntity = target;
-    
-                        
-                        j++;
-                        if(j >= 5)
-                        {
-                            knockbackEntity = target;
+                        xOff *= -1;
+                        zOff *= -1;
+                    }
+                    
+                    if (playerIn.getHorizontalFacing().equals(EnumFacing.NORTH) || playerIn.getHorizontalFacing().equals(EnumFacing.SOUTH))
+                         zOff = (rollDepth - 1) * playerIn.getHorizontalFacing().getAxisDirection().getOffset();
+                    else xOff = (rollDepth - 1) * playerIn.getHorizontalFacing().getAxisDirection().getOffset();
+                    
+                
+                        BlockPos checkPos = pos.add(fwd.x * 1 + xOff, 0, fwd.z * 1 + zOff);
+                        BlockPos inkPos = pos.add(fwd.x * 2 + xOff, -1, fwd.z * 2 + zOff);
+                
+                        boolean canInk;
+                    
+                    int h = 0;
+                    while(h <= downReach)
+                    {
+                        if(SplatCraftUtils.canInkPassthrough(worldIn, inkPos.up()))
                             break;
+                        else inkPos = inkPos.up();
+                        h++;
+                    }
+    
+                    canInk = SplatCraftUtils.canInk(worldIn, inkPos);
+            
+                    if(canInk && !worldIn.isRemote)
+                        SplatCraftUtils.playerInkBlock(playerIn, worldIn, inkPos, color, rollDamage, glowingInk);
+            
+                    Entity knockbackEntity = null;
+                    {
+                        List<EntityLivingBase> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(inkPos.up()));
+                        int j = 0;
+                
+                        for(EntityLivingBase target : inkedPlayers)
+                        {
+                            if(target.equals(playerIn))
+                                continue;
+                    
+                            boolean isTargetSameColor = false;
+                            if(target instanceof EntityPlayer)
+                                isTargetSameColor = SplatCraftPlayerData.getInkColor((EntityPlayer) target) == color;
+                    
+                            float rollDamage = this.rollDamage;
+                            boolean damaged = true;
+                    
+                            if(playerIn.getCooledAttackStrength(0) >= 1f)
+                                damaged = SplatCraftUtils.dealRollDamage(worldIn, target, rollDamage, color, playerIn, false, glowingInk);
+                    
+                            if((target instanceof EntitySquidBumper && (((EntitySquidBumper) target).getColor() == color) || !damaged))
+                                rollDamage = 0;
+                    
+                            if(!isTargetSameColor && (((!(target.getHealth()-rollDamage > 0) && !(target instanceof EntitySquidBumper)) || (target instanceof EntitySquidBumper && ((EntitySquidBumper) target).getInkHealth()-rollDamage > 0))))
+                                knockbackEntity = target;
+                    
+                    
+                            j++;
+                            if(j >= 5)
+                            {
+                                knockbackEntity = target;
+                                break;
+                            }
                         }
                     }
+                    if(knockbackEntity != null && worldIn.isRemote)
+                        applyEntityCollision(knockbackEntity, playerIn, 10);
+    
+                    if(h > downReach)
+                        break;
                 }
-                if(knockbackEntity != null && worldIn.isRemote)
-                    applyEntityCollision(knockbackEntity, playerIn, 10);
-                
-            }
+            
         } else playerIn.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);
     }
     
