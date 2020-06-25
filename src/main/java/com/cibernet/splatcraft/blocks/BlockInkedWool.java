@@ -35,6 +35,7 @@ public class BlockInkedWool extends BlockInkColor
 		setHardness(0.8f);
 		
 		canInk = true;
+		dropColored = true;
 	}
 	
 	@Override

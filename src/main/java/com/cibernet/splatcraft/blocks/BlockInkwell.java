@@ -47,6 +47,7 @@ public class BlockInkwell extends BlockInkColor
 		setCreativeTab(TabSplatCraft.main);
 		setHardness(0.5f);
 		canInk = false;
+		dropColored = true;
 	}
 
 	@Override
@@ -93,6 +94,11 @@ public class BlockInkwell extends BlockInkColor
 		return ColorItemUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), color);
 	}
 	
+	@Override
+	public Item getItemDropped(IBlockState state, Random rand, int fortune)
+	{
+		return super.getItemDropped(state, rand, fortune);
+	}
 	
 	@Override
 	public boolean shouldCheckWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)

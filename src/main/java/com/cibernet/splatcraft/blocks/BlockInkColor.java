@@ -3,13 +3,16 @@ package com.cibernet.splatcraft.blocks;
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.items.ItemWeaponBase;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -21,6 +24,7 @@ public class BlockInkColor extends Block implements IInked
 	
 	public static List<Block> blocks = new ArrayList<>();
 	public boolean canInk = true;
+	public boolean dropColored = false;
 	
 	public BlockInkColor(Material materialIn)
 	{
@@ -55,6 +59,24 @@ public class BlockInkColor extends Block implements IInked
 	{
 		checkTagCompound(stack).setInteger("color", color);
 		return stack;
+	}
+	
+	@Override
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	{
+		NonNullList<ItemStack> oldDrops = NonNullList.create();
+		super.getDrops(oldDrops, world, pos, state, fortune);
+		
+		int color = SplatCraft.DEFAULT_INK;
+		if(world.getTileEntity(pos) instanceof TileEntityColor)
+			color = ((TileEntityColor)world.getTileEntity(pos)).getColor();
+		
+		if(dropColored)
+			for(ItemStack stack : oldDrops)
+			{
+				drops.add(ColorItemUtils.setInkColor(stack, color));
+			}
+		else drops.addAll(oldDrops);
 	}
 	
 	@Override
