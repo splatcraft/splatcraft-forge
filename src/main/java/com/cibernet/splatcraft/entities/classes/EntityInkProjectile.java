@@ -50,6 +50,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
     private float damage;
     
     private boolean hasTrail = true;
+    private boolean canPierce = false;
     
     public EntityInkProjectile(World worldIn)
     {
@@ -500,12 +501,18 @@ public class EntityInkProjectile extends Entity implements IProjectile
             }
                 //SplatCraftUtils.inkBlock(world, result.getBlockPos(), getColor());
             
-            if((((thrower != null && result.entityHit != thrower && (thrower.getRidingEntity() != result.entityHit) && result.entityHit instanceof EntityLivingBase) || result.entityHit == null) || thrower == null))
+            if(result.typeOfHit.equals(RayTraceResult.Type.ENTITY) && (((thrower != null && result.entityHit != thrower && (thrower.getRidingEntity() != result.entityHit) && result.entityHit instanceof EntityLivingBase) || result.entityHit == null) || thrower == null))
             {
-                if(!(this instanceof EntityChargerProjectile && result.typeOfHit.equals(RayTraceResult.Type.ENTITY)))
+                if(!canPierce)
                 {
                     this.world.setEntityState(this, (byte) 3);
                     this.setDead();
+                }
+                else
+                {
+                    List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, getEntityBoundingBox().grow(0.5*getProjectileSize()));
+                        for(EntityLivingBase entity : entities)
+                            SplatCraftUtils.dealInkDamage(world, entity, damage, getColor(), this.thrower, false, glowingInk);
                 }
             }
         }
@@ -517,4 +524,6 @@ public class EntityInkProjectile extends Entity implements IProjectile
     
     public boolean hasTrail() {return hasTrail;}
     public void setTrail(boolean value) {hasTrail = value;}
+    public boolean canPierce() {return canPierce;}
+    public void setPierce(boolean value) {canPierce = value;}
 }

@@ -39,7 +39,7 @@ public class SplatCraftItems
     public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.4f, 4f, 0.8f, 9f,1.15d, 3, 20, 0.25f, false); //TODO revert ic to 0.1 when the roller overhaul hits
     public static final Item krakOnSplatRoller = new ItemRollerBase("krakOnSplatRoller", "krak_on_splat_roller", splatRoller);
     public static final Item coroCoroSplatRoller = new ItemRollerBase("coroCoroSplatRoller", "corocoro_splat_roller", splatRoller);
-    public static final Item splatCharger = new ItemChargerBase("splatCharger", "splat_charger", 0.75f, 9, 20, 40, 32f, 2.25f, 18f, 0.4);
+    public static final Item splatCharger = new ItemChargerBase("splatCharger", "splat_charger", 0.85f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4);
     public static final Item bentoSplatCharger = new ItemChargerBase("bentoSplatCharger", "bento_splat_charger", splatCharger);
     public static final Item splattershotJr = new ItemShooterBase("splattershotJr", "splattershot_jr", 1f, 0.35f, 13.5f, 4, 6.5f, 0.5f);
     public static final Item inkbrush = new ItemRollerBase("inkbrush", "inkbrush", 8D, 0.35f, 6f, 0.85f, 2f, 1.3d,1, 5, 0.135f,true);
@@ -49,7 +49,7 @@ public class SplatCraftItems
     public static final Item clashBlaster = new ItemBlasterBase("clashBlaster", "clash_blaster", 1.8f, 1.2f, 5f, 1, 10, 12f, 6f, 4, 4);
     public static final Item clashBlasterNeo = new ItemBlasterBase("clashBlasterNeo", "clash_blaster_neo", clashBlaster);
     public static final Item octobrush = new ItemRollerBase("octobrush", "octobrush", -0.1D, 0.5f, 8f, 0.95f, 3.2f, 1.2d, 2, 4, 0.18f, true);
-    public static final Item eLiter4K = new ItemChargerBase("eLiter4K", "e_liter_4k", 0.85f, 14, 35, 40, 36f, 2.25f, 25f, 0.15);
+    public static final Item eLiter4K = new ItemChargerBase("eLiter4K", "e_liter_4k", 0.95f, 2.4f, 16, 35, 40, 36f, 2.25f, 25f, 0.15);
     public static final Item blaster = new ItemBlasterBase("blaster", "blaster", 2.3f, 1f, 5f, 4, 20, 25f, 10f, 10f, 6);
     public static final Item grimBlaster = new ItemBlasterBase("grimBlaster", "grim_blaster", blaster);
     public static final Item splatDualie = new ItemDualieBase("splatDualies", "splat_dualies", 1f, 0.55f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);

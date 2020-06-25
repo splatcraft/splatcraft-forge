@@ -24,6 +24,7 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	private final AttributeModifier SPEED_MODIFIER;
 	
 	public float projectileSize;
+	public float projectileSpeed;
 	public int projectileLifespan;
 	public float chargeSpeed;
 	public float dischargeSpeed;
@@ -34,7 +35,7 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	
 	private final double mobility;
 	
-	public ItemChargerBase(String unlocName, String registryName, float projectileSize, int projectileLifespan, int chargeTime, int dischargeTime , float damage, float minConsumption, float maxConsumption, double mobility)
+	public ItemChargerBase(String unlocName, String registryName, float projectileSize, float projectileSpeed, int projectileLifespan, int chargeTime, int dischargeTime , float damage, float minConsumption, float maxConsumption, double mobility)
 	{
 		super(unlocName, registryName, maxConsumption);
 		
@@ -43,6 +44,7 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 		this.chargeSpeed = 1f/chargeTime;
 		this.dischargeSpeed = 1f/dischargeTime;
 		this.damage = damage;
+		this.projectileSpeed = projectileSpeed;
 		
 		this.mobility = mobility;
 		
@@ -54,7 +56,7 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 	
 	public ItemChargerBase(String unlocName, String registryName, ItemChargerBase parent)
 	{
-		this(unlocName, registryName, parent.projectileSize, parent.projectileLifespan, (int) (1/parent.chargeSpeed), (int)(1/parent.dischargeSpeed), parent.damage, parent.minConsumption, parent.maxConsumption, parent.mobility);
+		this(unlocName, registryName, parent.projectileSize, parent.projectileSpeed, parent.projectileLifespan, (int) (1/parent.chargeSpeed), (int)(1/parent.dischargeSpeed), parent.damage, parent.minConsumption, parent.maxConsumption, parent.mobility);
 	}
 	
 	public ItemChargerBase(String unlocName, String registryName, Item parent)
@@ -120,7 +122,7 @@ public class ItemChargerBase extends ItemWeaponBase implements ICharge
 		float charge = SplatCraftPlayerData.getWeaponCharge(playerIn, stack);
 		
 		EntityInkProjectile proj = new EntityChargerProjectile(worldIn, playerIn, ColorItemUtils.getInkColor(stack), charge > 0.95f ? damage : damage*charge/4f + damage/4f, (int) (projectileLifespan*charge));
-		proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 2.4f, 0.1f);
+		proj.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, projectileSpeed, 0.1f);
 		proj.setProjectileSize(projectileSize);
 		worldIn.spawnEntity(proj);
 		SplatCraftPlayerData.setWeaponCharge(playerIn, stack, 0f);

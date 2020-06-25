@@ -26,6 +26,7 @@ public class EntityChargerProjectile extends EntityInkProjectile
 		this.lifespan = lifespan;
 		
 		setTrail(false);
+		setPierce(true);
 	}
 	
 	@Override
