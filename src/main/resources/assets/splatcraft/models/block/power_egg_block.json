@@ -1,6 +1,0 @@
-{
-	"parent": "block/cube_all",
-	"textures": {
-		"all": "splatcraft:blocks/power_egg_block"
-	}
-}
