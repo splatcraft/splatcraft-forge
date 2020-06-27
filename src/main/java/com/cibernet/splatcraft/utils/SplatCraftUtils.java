@@ -261,7 +261,11 @@ public class SplatCraftUtils
 				
 				if(te instanceof TileEntityInkedBlock && state.getBlock() != inkBlock)
 				{
-					worldIn.setBlockState(pos, inkBlock.getDefaultState());
+					if(state.getBlock() instanceof BlockInkedStairs)
+						worldIn.setBlockState(pos, inkBlock.getDefaultState().withProperty(BlockStairs.HALF, state.getValue(BlockStairs.HALF)).withProperty(BlockStairs.SHAPE, state.getValue(BlockStairs.SHAPE)).withProperty(BlockStairs.FACING, state.getValue(BlockStairs.FACING)));
+					else if(state.getBlock() instanceof BlockInkedSlab)
+						worldIn.setBlockState(pos, inkBlock.getDefaultState().withProperty(BlockSlab.HALF, state.getValue(BlockSlab.HALF)));
+					else worldIn.setBlockState(pos, inkBlock.getDefaultState());
 					TileEntityInkedBlock inkTe = (TileEntityInkedBlock) inkBlock.createTileEntity(worldIn, inkBlock.getDefaultState());
 					
 					worldIn.setTileEntity(pos, inkTe);
