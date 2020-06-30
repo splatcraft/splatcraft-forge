@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north":    { "model": "splatcraft:weapon_station" },
+        "facing=east":     { "model": "splatcraft:weapon_station", "y": 90 },
+        "facing=south":    { "model": "splatcraft:weapon_station", "y": 180 },
+        "facing=west":     { "model": "splatcraft:weapon_station", "y": 270 }
+    }
+}

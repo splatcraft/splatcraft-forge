@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "splatcraft:sardinium_block"
+    ]
+  },
+  "criteria": {
+    "has_at_least_9_sardinium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "splatcraft:sardinium",
+            "count": {
+              "min": 9
+            }
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "splatcraft:sardinium_block"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_at_least_9_sardinium",
+      "has_the_recipe"
+    ]
+  ]
+}

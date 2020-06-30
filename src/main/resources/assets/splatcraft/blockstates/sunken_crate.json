@@ -1,0 +1,9 @@
+{
+    "variants": {
+    	"state=0":  { "model": "splatcraft:sunken_crate" },
+    	"state=1":  { "model": "splatcraft:sunken_crate_inked_1" },
+        "state=2":  { "model": "splatcraft:sunken_crate_inked_2" },
+        "state=3":  { "model": "splatcraft:sunken_crate_inked_3" },
+        "state=4":  { "model": "splatcraft:sunken_crate_inked_4" }
+    }
+}

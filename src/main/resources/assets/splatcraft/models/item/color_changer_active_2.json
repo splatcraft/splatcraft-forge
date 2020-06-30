@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "splatcraft:items/color_changer_overlay",
+        "layer1": "splatcraft:items/color_changer_active_2"
+    }
+}

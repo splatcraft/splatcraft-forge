@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "EIE",
+        "#S#",
+        "###"
+    ],
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "S": {
+            "item": "minecraft:string"
+        },
+        "#": {
+            "item": "minecraft:stick"
+        },
+        "E": {
+            "item": "splatcraft:power_egg"
+        }
+    },
+    "result": {
+        "item": "splatcraft:filter_empty"
+    }
+}

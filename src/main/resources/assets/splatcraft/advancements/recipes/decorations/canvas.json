@@ -1,0 +1,25 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "splatcraft:canvas"
+    ]
+  },
+  "criteria": {
+  "has_power_egg": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "splatcraft:power_egg"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_power_egg"
+    ]
+  ]
+}

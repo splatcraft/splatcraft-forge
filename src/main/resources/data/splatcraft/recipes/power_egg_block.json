@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "splatcraft:power_egg"
+        }
+    },
+    "result": {
+        "item": "splatcraft:power_egg_block",
+        "count": 1
+    }
+}

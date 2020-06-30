@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "splatcraft:power_egg_block"
+    ]
+  },
+  "criteria": {
+    "has_at_least_9_power_egg": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "splatcraft:power_egg",
+            "count": {
+              "min": 9
+            }
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "splatcraft:power_egg_block"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_at_least_9_power_egg",
+      "has_the_recipe"
+    ]
+  ]
+}

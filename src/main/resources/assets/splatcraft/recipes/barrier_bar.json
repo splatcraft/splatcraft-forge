@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SIS"
+  ],
+  "key": {
+    "I": [
+      {
+        "item": "minecraft:iron_ingot"
+      }
+    ],
+    "S": [
+      {
+        "item": "splatcraft:sardinium"
+      }
+    ]
+  },
+  "result": {
+    "item": "splatcraft:barrier_bar",
+    "count": 8
+  }
+}

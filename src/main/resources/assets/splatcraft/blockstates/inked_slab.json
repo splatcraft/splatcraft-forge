@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "half=bottom,variant=default": { "model": "splatcraft:half_slab_inked" },
+        "half=top,variant=default": { "model": "splatcraft:upper_slab_inked" }
+    }
+}
