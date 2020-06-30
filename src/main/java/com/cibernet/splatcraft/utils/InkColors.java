@@ -39,7 +39,7 @@ public enum InkColors
 	MOJANG(0xDF242F, MapColor.RED_STAINED_HARDENED_CLAY, "mojangRed"),
 	COBALT(0x005682, MapColor.getBlockColor(EnumDyeColor.CYAN), "cobalt"),
 	ICEARSTORM(0x88ffc1, MapColor.LIGHT_BLUE, "icearstorm"),
-	INK_BLACK(0x1F1F2D, MapColor.CYAN_STAINED_HARDENED_CLAY, "default"),
+	FLORAL(0xFF9BEE, MapColor.PINK, "floral"),
 		
 	DYE_WHITE(0xFAFAFA, MapColor.getBlockColor(EnumDyeColor.WHITE), "dyeWhite", EnumDyeColor.WHITE),
 	DYE_ORANGE(16351261, MapColor.getBlockColor(EnumDyeColor.ORANGE), "dyeOrange", EnumDyeColor.ORANGE),
@@ -57,6 +57,8 @@ public enum InkColors
 	DYE_GREEN(6192150, MapColor.getBlockColor(EnumDyeColor.GREEN), "dyeGreen", EnumDyeColor.GREEN),
 	DYE_RED(11546150, MapColor.getBlockColor(EnumDyeColor.RED), "dyeRed", EnumDyeColor.RED),
 	DYE_BLACK(1908001, MapColor.getBlockColor(EnumDyeColor.BLACK), "dyeBlack", EnumDyeColor.BLACK),
+	
+	INK_BLACK(0x1F1F2D, MapColor.CYAN_STAINED_HARDENED_CLAY, "default"),
 	;
 
 	InkColors(Integer color, MapColor mapColor, String displayName, EnumDyeColor dyeColor)
