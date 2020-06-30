@@ -1,6 +1,7 @@
 *.ipr
 *.iml
 *.iws
+*.xml
 .gradle
 /classes
 /run
@@ -8,3 +9,4 @@
 /build
 /src/main/java/net
 /src/main/java/minecraft
+/out
