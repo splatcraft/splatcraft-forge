@@ -215,15 +215,28 @@ commands.turfWar.outOfWorld=§cCannot check for blocks outside of the world
 commands.turfWar.score=%s = %s%%
 commands.turfWar.winner=%s wins!
 commands.turfWar.noInk=§cNo ink was found on the designated area
+
 commands.splatcraftRules.success=Rule %s has been updated to %s
 commands.splatcraftRules.usage=/splatcraftrules <rule name> [value]
 commands.splatcraftRules.value=%s = %s
+
 commands.clearInk.usage=/clearink <x1> <y1> <z1> <x2> <y2> <z2>
 commands.clearInk.outOfWorld=§cCannot check for blocks outside of the world
 commands.clearInk.success=Successfully cleared %s blocks
+
 commands.changeColor.success=Successfully recolored %s blocks to %s
+
 commands.inkcolor.usage=/inkcolor <player> <color>
 commands.inkcolor.success=Changed %s's ink color to %s
+
+commands.colorscores.usage=/colorscores <add|remove|list> <color>
+commands.colorscores.colorExists=A goal with the color %s already exists
+commands.colorscores.colorDoesntExist=No goal was found by the color '%s'
+commands.colorscores.add=Added new goal '%s' successfully
+commands.colorscores.remove=Removed goal '%s' successfully
+commands.colorscores.list.empty=There are no registered color goals
+commands.colorscores.list.count=Showing %s registered goal(s):
+commands.colorscores.list.entry=%s: displays as '%s'
 
 splatcraft.config.title=Splatcraft Config
 
@@ -250,3 +263,5 @@ stat.sc.weaponsCrafted=Weapons Crafted
 stat.sc.inkwellsCrafted=Inkwells Filled
 
 
+
+commands.colorscores.cantRemove=Failed to remove goal %s, as it's being used in the following objectives: %s

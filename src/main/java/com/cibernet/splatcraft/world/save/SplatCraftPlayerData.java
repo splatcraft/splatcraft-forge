@@ -1,6 +1,8 @@
 package com.cibernet.splatcraft.world.save;
 
+import com.cibernet.splatcraft.scoreboard.CommandColorScores;
 import com.cibernet.splatcraft.items.ICharge;
+import com.cibernet.splatcraft.scoreboard.SplatcraftScoreboardHandler;
 import com.cibernet.splatcraft.utils.InkColors;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -57,7 +59,11 @@ public class SplatCraftPlayerData
 	public static int getInkColor(EntityPlayer playerIn) { return getPlayerData(playerIn).inkColor; }
 	public static boolean getIsSquid(EntityPlayer playerIn) { return getPlayerData(playerIn).isSquid == 2; }
 	
-	public static void setInkColor(EntityPlayer playerIn, int inkColor) {getPlayerData(playerIn).inkColor = inkColor;}
+	public static void setInkColor(EntityPlayer playerIn, int inkColor)
+	{
+		getPlayerData(playerIn).inkColor = inkColor;
+		SplatcraftScoreboardHandler.updatePlayerColorScore(playerIn, inkColor);
+	}
 	public static void setIsSquid(EntityPlayer playerIn, boolean isSquid) {getPlayerData(playerIn).isSquid = isSquid ? 2 : 1;}
 	
 	public static boolean canDischarge(EntityPlayer player) {return getTempPlayerData(player).canDischarge;}

@@ -244,3 +244,5 @@ stat.sc.weaponsCrafted=Weapons Crafted
 stat.sc.inkwellsCrafted=Inkwells Filled
 
 
+
+commands.colorscores.cantRemove=Failed to remove goal %s, as it's being used in the following objectives: %s

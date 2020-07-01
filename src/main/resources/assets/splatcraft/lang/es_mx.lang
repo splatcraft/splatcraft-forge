@@ -242,3 +242,5 @@ stat.sc.weaponsCrafted=Armas Creadas
 stat.sc.inkwellsCrafted=Tinteros LLenados
 
 
+
+commands.colorscores.cantRemove=Failed to remove goal %s, as it's being used in the following objectives: %s

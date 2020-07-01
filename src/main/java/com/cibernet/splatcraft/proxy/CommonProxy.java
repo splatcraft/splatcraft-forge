@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.gui.SplatCraftGuiHandler;
 import com.cibernet.splatcraft.handlers.CommonEventHandler;
 import com.cibernet.splatcraft.registries.*;
+import com.cibernet.splatcraft.scoreboard.SplatcraftScoreboardHandler;
 import com.cibernet.splatcraft.tileentities.*;
 import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftSaveHandler;
@@ -44,6 +45,7 @@ public class CommonProxy
         
         MinecraftForge.EVENT_BUS.register(CommonEventHandler.instance);
         MinecraftForge.EVENT_BUS.register(new SplatCraftSaveHandler());
+        MinecraftForge.EVENT_BUS.register(new SplatcraftScoreboardHandler());
 
         registerSmelting();
         RecipesInkwellVat.registerRecipes();

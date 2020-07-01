@@ -173,3 +173,5 @@ stat.sc.squidTime=O tempo como uma squid
 stat.sc.weaponsCrafted=Armas feitas
 stat.sc.inkwellsCrafted=Tinteiros preenchidos
 
+
+commands.colorscores.cantRemove=Failed to remove goal %s, as it's being used in the following objectives: %s

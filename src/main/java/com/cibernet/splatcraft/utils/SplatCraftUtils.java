@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.utils;
 
 import com.cibernet.splatcraft.blocks.*;
+import com.cibernet.splatcraft.scoreboard.SplatcraftScoreboardHandler;
 import com.cibernet.splatcraft.entities.classes.EntitySquidBumper;
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
@@ -26,13 +27,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -92,6 +93,28 @@ public class SplatCraftUtils
 			if(!wasDead && target.getHealth() <= 0 && doDamage)
 			{
 				SplatCraftUtils.createInkExplosion(world, new BlockPos(target.posX, target.posY, target.posZ), 2, color, glowingInk);
+				
+				if(SplatcraftScoreboardHandler.hasGoal(color))
+				{
+					for (ScoreObjective scoreobjective : world.getScoreboard().getObjectivesFromCriteria(SplatcraftScoreboardHandler.getKillsAsColor(color)))
+					{
+						Score score = world.getScoreboard().getOrCreateScore(source.getName(), scoreobjective);
+						score.incrementScore();
+					}
+				}
+				if(SplatcraftScoreboardHandler.hasGoal(targetColor))
+				{
+					for (ScoreObjective scoreobjective : world.getScoreboard().getObjectivesFromCriteria(SplatcraftScoreboardHandler.getColorKills(targetColor)))
+					{
+						Score score = world.getScoreboard().getOrCreateScore(source.getName(), scoreobjective);
+						score.incrementScore();
+					}
+					for (ScoreObjective scoreobjective : world.getScoreboard().getObjectivesFromCriteria(SplatcraftScoreboardHandler.getDeathsAsColor(targetColor)))
+					{
+						Score score = world.getScoreboard().getOrCreateScore(target.getName(), scoreobjective);
+						score.incrementScore();
+					}
+				}
 				
 				if(world.isRemote)
 				{
@@ -402,7 +425,21 @@ public class SplatCraftUtils
 		
 		return I18n.translateToLocal("color." + col.getName());
 	}
-
+	
+	public static String getUnlocColorName(int color, boolean useHash)
+	{
+		InkColors col = InkColors.getByColor(color);
+		
+		if(col == null)
+			return String.format((useHash ? "#" : "") + "%06X", color).toLowerCase();
+		return col.getName();
+	}
+	
+	public static String getUnlocColorName(int color)
+	{
+		return getUnlocColorName(color, false);
+	}
+	
 	public static void dropItem(World worldIn, BlockPos pos, ItemStack stack, boolean useTileDrops)
 	{
 		boolean doTileDrops = useTileDrops ? worldIn.getGameRules().getBoolean("doTileDrops") : true;

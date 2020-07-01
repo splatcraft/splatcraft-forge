@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.world.save;
 
-import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
+import com.cibernet.splatcraft.scoreboard.CommandColorScores;
+import com.cibernet.splatcraft.scoreboard.SplatcraftScoreboardHandler;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.ISaveHandler;
@@ -27,6 +28,7 @@ public class SplatCraftSaveHandler
 			
 			SplatCraftPlayerData.writeToNBT(nbt);
 			SplatCraftGamerules.writeToNBT(nbt);
+			SplatcraftScoreboardHandler.writeToNBT(nbt);
 			
 			try {
 				CompressedStreamTools.writeCompressed(nbt, new FileOutputStream(dataFile));
@@ -59,6 +61,7 @@ public class SplatCraftSaveHandler
 			{
 				SplatCraftPlayerData.readFromNBT(nbt);
 				SplatCraftGamerules.readFromNBT(nbt);
+				SplatcraftScoreboardHandler.readFromNBT(nbt);
 							
 				return;
 			}
