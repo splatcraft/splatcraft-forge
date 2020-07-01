@@ -36,7 +36,7 @@ public class SplatCraftItems
     public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot", 1.05f, 0.65f, 12f, 4, 8f, 0.9f);
     public static final Item tentatekSplattershot = new ItemShooterBase("tentatekSplattershot", "tentatek_splattershot", splattershot);
     public static final Item wasabiSplattershot = new ItemShooterBase("wasabiSplattershot", "wasabi_splattershot", splattershot);
-    public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.4f, 4f, 0.8f, 9f,1.15d, 3, 20, 0.25f, false); //TODO revert ic to 0.1 when the roller overhaul hits
+    public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.4f, 12f, 0.8f, 9f,1.15d, 3, 20, 0.25f, false); //TODO revert ic to 0.1 when the roller overhaul hits
     public static final Item krakOnSplatRoller = new ItemRollerBase("krakOnSplatRoller", "krak_on_splat_roller", splatRoller);
     public static final Item coroCoroSplatRoller = new ItemRollerBase("coroCoroSplatRoller", "corocoro_splat_roller", splatRoller);
     public static final Item splatCharger = new ItemChargerBase("splatCharger", "splat_charger", 0.85f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4);
@@ -54,7 +54,7 @@ public class SplatCraftItems
     public static final Item grimBlaster = new ItemBlasterBase("grimBlaster", "grim_blaster", blaster);
     public static final Item splatDualie = new ItemDualieBase("splatDualies", "splat_dualies", 1f, 0.55f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
     public static final Item enperrySplatDualie = new ItemDualieBase("enperrySplatDualies", "enperry_splat_dualies", splatDualie);
-    public static final Item carbonRoller = new ItemRollerBase("carbonRoller", "carbon_roller", -1.5d, 0.38f, 4f, 0.7f, 3.5f, 1.25d, 2, 14, 0.1f, false);
+    public static final Item carbonRoller = new ItemRollerBase("carbonRoller", "carbon_roller", -1.5d, 0.38f, 8f, 0.7f, 3.5f, 1.25d, 2, 14, 0.1f, false);
     public static final Item gal52 = new ItemShooterBase("52Gal", "52_gal", 1.2f, 0.68f, 16f, 9, 10.4f, 1.3f);
     public static final Item gal52Deco = new ItemShooterBase("52GalDeco", "52_gal_deco", gal52);
     public static final Item gal96 = new ItemShooterBase("96Gal", "96_gal", 1.3f, 0.75f, 12.5f, 11, 12.4f, 2.5f);
