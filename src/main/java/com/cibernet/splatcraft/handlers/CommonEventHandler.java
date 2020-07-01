@@ -136,7 +136,16 @@ public class CommonEventHandler
 				//if(item.getSpeedModifier() != null && attributeInstance.hasModifier(item.getSpeedModifier()))
 				//	attributeInstance.removeModifier(item.getSpeedModifier());
 				
-				if(player.getItemInUseCount() > 0)
+				boolean canFire = true;
+				
+				if(player.getActiveHand().equals(EnumHand.OFF_HAND) && (player.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemWeaponBase))
+					canFire = false;
+				
+				ItemStack offhandStack = player.getHeldItem(player.getHeldItemMainhand().equals(weapon) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND);
+				if(item instanceof ItemDualieBase && (!(offhandStack.getItem() instanceof ItemWeaponBase) || offhandStack.getItem() instanceof ItemDualieBase))
+					canFire = true;
+					
+				if(canFire && player.getItemInUseCount() > 0)
 					item.onItemTickUse(player.world, player, weapon, player.getItemInUseCount());
 				
 				if(item instanceof ItemDualieBase)
@@ -144,7 +153,6 @@ public class CommonEventHandler
 					ItemDualieBase dualie = (ItemDualieBase) item;
 					int maxRolls = dualie.maxRolls;
 					
-					ItemStack offhandStack = player.getHeldItem(player.getHeldItemMainhand().equals(weapon) ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND);
 					if(offhandStack.getItem() instanceof ItemDualieBase)
 					{
 						maxRolls += ((ItemDualieBase) offhandStack.getItem()).maxRolls;
