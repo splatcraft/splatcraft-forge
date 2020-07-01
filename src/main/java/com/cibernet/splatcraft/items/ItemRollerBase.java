@@ -299,6 +299,8 @@ public class ItemRollerBase extends ItemWeaponBase
                     proj.setProjectileSize(flingSize);
                     worldIn.spawnEntity(proj);
                 }
+                
+                return true;
             }
         } else playerIn.sendStatusMessage(new TextComponentTranslation("status.noInk").setStyle(new Style().setColor(TextFormatting.RED)), true);
         

@@ -214,6 +214,17 @@ public class CommonEventHandler
 	}
 	
 	@SubscribeEvent
+	public void onPlayerAttackEntity(AttackEntityEvent event)
+	{
+		if(event.getEntityPlayer().getHeldItemMainhand().getItem() instanceof ItemWeaponBase &&
+				((ItemWeaponBase) ((EntityLivingBase) event.getEntity()).getHeldItemMainhand().getItem()).onItemLeftClick(event.getEntityPlayer().getEntityWorld(),
+						event.getEntityPlayer(), event.getEntityPlayer().getHeldItemMainhand()))
+		{
+			event.setCanceled(true);
+		}
+	}
+	
+	@SubscribeEvent
 	public void onWorldTick(TickEvent.WorldTickEvent event)
 	{
 		if(event.phase == TickEvent.Phase.START)
