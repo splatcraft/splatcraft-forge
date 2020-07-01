@@ -169,6 +169,10 @@ public class CommonEventHandler
 						{
 							ItemStack activeDualie = weapon;
 							
+							
+							int cooldownA = dualie.finalRollCooldown;
+							int cooldownB = (offhandStack.getItem() instanceof ItemDualieBase) ? ((ItemDualieBase) offhandStack.getItem()).finalRollCooldown : 0;
+							
 							if(offhandStack.getItem() instanceof ItemDualieBase)
 							{
 								ItemStack dualieA = dualie.maxRolls >= ((ItemDualieBase) offhandStack.getItem()).maxRolls ? weapon : offhandStack;
@@ -183,7 +187,7 @@ public class CommonEventHandler
 								
 								dualie = (ItemDualieBase) activeDualie.getItem();
 								
-								int cooldown = rollCount >= maxRolls-1 ? dualie.finalRollCooldown : dualie.rollCooldown;
+								int cooldown = rollCount >= maxRolls-1 ? Math.max(cooldownA, cooldownB) : dualie.rollCooldown;
 								SplatCraftPacketHandler.instance.sendToServer(new PacketDodgeRoll(activeDualie.equals(offhandStack), cooldown));
 								
 								
