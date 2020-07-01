@@ -132,6 +132,7 @@ public class CommonEventHandler
 			{
 				ItemWeaponBase item = (ItemWeaponBase) weapon.getItem();
 				
+				player.setSprinting(false);
 				
 				//if(item.getSpeedModifier() != null && attributeInstance.hasModifier(item.getSpeedModifier()))
 				//	attributeInstance.removeModifier(item.getSpeedModifier());
