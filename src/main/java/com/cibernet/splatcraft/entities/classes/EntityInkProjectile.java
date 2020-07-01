@@ -244,6 +244,13 @@ public class EntityInkProjectile extends Entity implements IProjectile
             }
         }
         
+        if(canPierce)
+        {
+            for(EntityLivingBase target : world.getEntitiesWithinAABB(EntityLivingBase.class, getEntityBoundingBox().grow(0.5*getProjectileSize())))
+                SplatCraftUtils.dealInkDamage(world, target, damage, getColor(), this.thrower, false, glowingInk);
+        }
+        
+        
         if(hasTrail() && ticksExisted % 4 == 0)
             for(double y = posY; y >= 0 && posY-y <= 8; y--)
             {
@@ -508,12 +515,6 @@ public class EntityInkProjectile extends Entity implements IProjectile
                 {
                     this.world.setEntityState(this, (byte) 3);
                     this.setDead();
-                }
-                else
-                {
-                    List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, getEntityBoundingBox().grow(0.5*getProjectileSize()));
-                        for(EntityLivingBase entity : entities)
-                            SplatCraftUtils.dealInkDamage(world, entity, damage, getColor(), this.thrower, false, glowingInk);
                 }
             }
         }
