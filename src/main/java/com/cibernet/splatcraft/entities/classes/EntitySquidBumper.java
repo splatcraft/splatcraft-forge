@@ -43,6 +43,7 @@ public class EntitySquidBumper extends EntityLivingBase
 {
 	private static final float maxInkHealth = 20.0F;
 	public static final int maxRespawnTime = 60;
+	public boolean inkproof = false;
 	private static final Iterable<ItemStack> armorInv = NonNullList.<ItemStack>withSize(0, ItemStack.EMPTY);
 	private static final Predicate<Entity> IS_RIDEABLE_MINECART = entity -> entity instanceof EntityMinecart && ((EntityMinecart)entity).canBeRidden();
 	
@@ -283,13 +284,15 @@ public class EntitySquidBumper extends EntityLivingBase
 	
 	private void ink(float damage)
 	{
-		setInkHealth(getInkHealth()-damage);
-		setRespawnTime(maxRespawnTime);
-		this.world.setEntityState(this, (byte)31);
-		hurtCooldown = world.getTotalWorldTime();
-		hurtResistantTime = maxHurtResistantTime;
-		
-		//updateBoundingBox();
+		if(!inkproof)
+		{
+			setInkHealth(getInkHealth() - damage);
+			setRespawnTime(maxRespawnTime);
+			this.world.setEntityState(this, (byte) 31);
+			hurtCooldown = world.getTotalWorldTime();
+			hurtResistantTime = maxHurtResistantTime;
+			//updateBoundingBox();
+		}
 	}
 	
 	private void respawn()
@@ -336,6 +339,8 @@ public class EntitySquidBumper extends EntityLivingBase
 			setInkHealth(compound.getFloat("InkHealth"));
 		if(compound.hasKey("RespawnTime"))
 			setRespawnTime(compound.getInteger("RespawnTime"));
+		if(compound.hasKey("Inkproof"))
+			inkproof = compound.getBoolean("Inkproof");
 	}
 	
 	@Override
@@ -346,6 +351,7 @@ public class EntitySquidBumper extends EntityLivingBase
 		compound.setInteger("Color", getColor());
 		compound.setInteger("RespawnTime", getRespawnTime());
 		compound.setFloat("InkHealth", getInkHealth());
+		compound.setBoolean("Inkproof", inkproof);
 	}
 	
 	@Override
