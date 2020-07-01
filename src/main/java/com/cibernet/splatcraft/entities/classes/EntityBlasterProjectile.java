@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -12,7 +13,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class EntityBlasterProjectile extends EntityInkProjectile
 {
 	private int lifespan = 1;
-	private float splashDamage = 0;
 	
 	public EntityBlasterProjectile(World worldIn, EntityLivingBase throwerIn, int color, float damage, float splashDamage, int lifespan)
 	{
@@ -87,6 +87,15 @@ public class EntityBlasterProjectile extends EntityInkProjectile
 			}
 			*/
 		}
+	}
+	
+	@Override
+	protected void onImpact(RayTraceResult result)
+	{
+		super.onImpact(result);
+		if(result.typeOfHit.equals(RayTraceResult.Type.ENTITY) && (((thrower != null && result.entityHit != thrower && (thrower.getRidingEntity() != result.entityHit) && result.entityHit instanceof EntityLivingBase) || result.entityHit == null) || thrower == null))
+			SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, splashDamage, getColor(), glowingInk);
+		
 	}
 	
 	@Override

@@ -192,7 +192,7 @@ public class SplatCraftUtils
 	{
 		if (!worldIn.isRemote)
 		{
-			InkExplosion explosion = new InkExplosion(worldIn, source, pos.getX(), pos.getY(), pos.getZ(), radius, color, true).setInkType(isGlowing);
+			InkExplosion explosion = new InkExplosion(worldIn, source, pos.getX(), pos.getY(), pos.getZ(), radius, color, damage, true).setInkType(isGlowing);
 			//explosion.explode();
 			explosion.doExplosionA();
 			explosion.doExplosionB(true);

@@ -64,7 +64,7 @@ public class InkExplosion
 		this.affectedBlockPositions.addAll(affectedPositions);
 	}
 	
-	public InkExplosion(World worldIn, Entity entityIn, double x, double y, double z, float size, int color, boolean damagesTerrain)
+	public InkExplosion(World worldIn, Entity entityIn, double x, double y, double z, float size, int color, float damage, boolean damagesTerrain)
 	{
 		this.affectedBlockPositions = Lists.<BlockPos>newArrayList();
 		this.playerKnockbackMap = Maps.<EntityPlayer, Vec3d>newHashMap();
@@ -78,8 +78,12 @@ public class InkExplosion
 		this.position = new Vec3d(this.x, this.y, this.z);
 		this.color = color;
 		
-		if(entityIn instanceof EntityInkProjectile)
-			damage = ((EntityInkProjectile) entityIn).getDamage()/2;
+		this.damage = damage;
+	}
+	
+	public InkExplosion(World worldIn, Entity entityIn, double x, double y, double z, float size, int color, boolean damagesTerrain)
+	{
+		this(worldIn, entityIn, x, y, z, size, color, 0, damagesTerrain);
 	}
 	
 	public InkExplosion setInkType(boolean isGlowing)

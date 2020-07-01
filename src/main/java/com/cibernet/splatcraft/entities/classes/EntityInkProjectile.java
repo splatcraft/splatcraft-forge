@@ -48,6 +48,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
     protected boolean glowingInk = false;
     
     private float damage;
+    protected float splashDamage = 0;
     
     private boolean hasTrail = true;
     private boolean canPierce = false;
@@ -497,7 +498,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
             {
                 if(world.getTileEntity(result.getBlockPos()) instanceof TileEntityStageBarrier)
                     ((TileEntityStageBarrier) world.getTileEntity(result.getBlockPos())).resetActiveTime();
-                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, 0, getColor(), glowingInk);
+                SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, splashDamage, getColor(), glowingInk);
             }
                 //SplatCraftUtils.inkBlock(world, result.getBlockPos(), getColor());
             
