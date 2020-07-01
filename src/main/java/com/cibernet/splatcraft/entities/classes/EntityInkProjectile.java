@@ -506,6 +506,7 @@ public class EntityInkProjectile extends Entity implements IProjectile
                 if(world.getTileEntity(result.getBlockPos()) instanceof TileEntityStageBarrier)
                     ((TileEntityStageBarrier) world.getTileEntity(result.getBlockPos())).resetActiveTime();
                 SplatCraftUtils.createInkExplosion(world, this, new BlockPos(posX, posY, posZ), getProjectileSize()/2f, splashDamage, getColor(), glowingInk);
+                this.setDead();
             }
                 //SplatCraftUtils.inkBlock(world, result.getBlockPos(), getColor());
             
