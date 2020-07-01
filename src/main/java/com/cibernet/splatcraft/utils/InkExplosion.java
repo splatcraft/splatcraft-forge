@@ -47,7 +47,8 @@ public class InkExplosion
 	/** Maps players to the knockback vector applied by the explosion, to send to the client */
 	private final Map<EntityPlayer, Vec3d> playerKnockbackMap;
 	private final Vec3d position;
-	private float damage = 0;
+	private float damage;
+	private float terrainDamage = 0;
 	
 	private boolean glowingInk = false;
 	
@@ -79,6 +80,9 @@ public class InkExplosion
 		this.color = color;
 		
 		this.damage = damage;
+		
+		if(entityIn instanceof EntityInkProjectile)
+			terrainDamage = ((EntityInkProjectile) entityIn).getDamage();
 	}
 	
 	public InkExplosion(World worldIn, Entity entityIn, double x, double y, double z, float size, int color, boolean damagesTerrain)
@@ -245,8 +249,8 @@ public class InkExplosion
 				{
 					EntityLivingBase placer = getExplosivePlacedBy();
 					if(placer instanceof EntityPlayer)
-						SplatCraftUtils.playerInkBlock((EntityPlayer) placer, this.world, blockpos, this.color, damage, glowingInk);
-					else SplatCraftUtils.inkBlock(this.world, blockpos, this.color, damage, glowingInk);
+						SplatCraftUtils.playerInkBlock((EntityPlayer) placer, this.world, blockpos, this.color, terrainDamage, glowingInk);
+					else SplatCraftUtils.inkBlock(this.world, blockpos, this.color, terrainDamage, glowingInk);
 				}
 				
 			}

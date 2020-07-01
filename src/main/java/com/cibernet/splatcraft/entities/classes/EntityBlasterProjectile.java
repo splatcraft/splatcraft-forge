@@ -48,8 +48,8 @@ public class EntityBlasterProjectile extends EntityInkProjectile
 				BlockPos inkPos = new BlockPos(posX, y, posZ);
 				if(!SplatCraftUtils.canInkPassthrough(world, inkPos))
 				{
-					SplatCraftUtils.createInkExplosion(world, inkPos.up(), getProjectileSize()/3f, getColor(), glowingInk);
-					SplatCraftUtils.createInkExplosion(world, pos, getProjectileSize()/3f, getColor(), glowingInk);
+					SplatCraftUtils.createInkExplosion(world, this, inkPos.up(), getProjectileSize()/3f, 0, getColor(), glowingInk);
+					SplatCraftUtils.createInkExplosion(world, this, pos, getProjectileSize()/3f, 0, getColor(),  glowingInk);
 					break;
 				}
 			}

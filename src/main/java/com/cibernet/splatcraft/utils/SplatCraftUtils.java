@@ -92,7 +92,7 @@ public class SplatCraftUtils
 		{
 			if(!wasDead && target.getHealth() <= 0 && doDamage)
 			{
-				SplatCraftUtils.createInkExplosion(world, new BlockPos(target.posX, target.posY, target.posZ), 2, color, glowingInk);
+				SplatCraftUtils.createInkExplosion(world, target, new BlockPos(target.posX, target.posY, target.posZ), 2, 0, color, glowingInk);
 				
 				if(SplatcraftScoreboardHandler.hasGoal(color))
 				{
@@ -200,16 +200,6 @@ public class SplatCraftUtils
 		}
 	}
 
-	public static void createInkExplosion(World worldIn, BlockPos pos, float radius, float damage, int color, boolean isGlowing)
-	{
-		createInkExplosion(worldIn, null, pos, radius, damage, color, isGlowing);
-	}
-	
-	public static void createInkExplosion(World worldIn, BlockPos pos, float radius, int color, boolean isGlowing)
-	{
-		createInkExplosion(worldIn, pos, radius, 0, color, isGlowing);
-	}
-	
 	public static boolean playerInkBlock(EntityPlayer player, World worldIn, BlockPos pos, int color, float damage, boolean isGlowing)
 	{
 		if(inkBlock(worldIn, pos, color, damage, isGlowing))
