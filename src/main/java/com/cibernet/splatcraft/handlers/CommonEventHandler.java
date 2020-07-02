@@ -226,6 +226,15 @@ public class CommonEventHandler
 	}
 	
 	@SubscribeEvent
+	public void onPlayerVisibility(PlayerEvent.Visibility event)
+	{
+		EntityPlayer player = event.getEntityPlayer();
+		
+		if(SplatCraftPlayerData.getIsSquid(player) && SplatCraftUtils.canSquidHide(player.world, player))
+			event.modifyVisibility(0);
+	}
+	
+	@SubscribeEvent
 	public void onWorldTick(TickEvent.WorldTickEvent event)
 	{
 		if(event.phase == TickEvent.Phase.START)
