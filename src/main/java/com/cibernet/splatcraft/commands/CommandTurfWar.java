@@ -14,10 +14,13 @@ import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
@@ -48,6 +51,8 @@ public class CommandTurfWar extends CommandBase
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
 	{
+		System.out.println("E");
+		
 		if (args.length < 6)
 		{
 			throw new WrongUsageException("commands.turfWar.usage", new Object[0]);
@@ -61,10 +66,13 @@ public class CommandTurfWar extends CommandBase
 		if(args.length > 6)
 			multiLayered = args[6].equals("true");
 		
-		ItemRemote.RemoteResult result = ((ItemTurfScanner)SplatCraftItems.turfScanner).onRemoteUse(world, blockpos, blockpos1, null, -1, multiLayered ? 1 : 0);
-		
-		if(!result.wasSuccessful())
-			throw new CommandException(result.getOutput().getUnformattedComponentText());
+		if(sender.getCommandSenderEntity() == null || sender.getCommandSenderEntity() instanceof EntityPlayerMP)
+		{
+			ItemRemote.RemoteResult result = ItemTurfScanner.scanTurf(world, blockpos, blockpos1, null, -1, multiLayered ? 1 : 0, (EntityPlayerMP) sender.getCommandSenderEntity());
+			
+			if(!result.wasSuccessful())
+				throw new CommandException(result.getOutput().getUnformattedComponentText());
+		}
 		
 	}
 	

@@ -10,6 +10,9 @@ import com.cibernet.splatcraft.tileentities.TileEntityColor;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
 import com.cibernet.splatcraft.utils.TabSplatCraft;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
@@ -37,6 +40,11 @@ public class ItemTurfScanner extends ItemRemote
 	
 	@Override
 	public RemoteResult onRemoteUse(World world, BlockPos blockpos, BlockPos blockpos1, ItemStack stack, int colorIn, int mode)
+	{
+		return scanTurf(world, blockpos, blockpos1, stack, colorIn, mode, null);
+	}
+	
+	public static RemoteResult scanTurf(World world, BlockPos blockpos, BlockPos blockpos1, ItemStack stack, int colorIn, int mode, EntityPlayerMP target)
 	{
 		BlockPos blockpos2 = new BlockPos(Math.min(blockpos.getX(), blockpos1.getX()), Math.min(blockpos.getY(), Math.min(blockpos1.getY(), blockpos.getY())), Math.min(blockpos.getZ(), blockpos1.getZ()));
 		BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos.getY(), Math.max(blockpos1.getY(), blockpos.getY())), Math.max(blockpos.getZ(), blockpos1.getZ()));
@@ -193,7 +201,14 @@ public class ItemTurfScanner extends ItemRemote
 		
 		if(scores.isEmpty())
 			return createResult(false, new TextComponentTranslation("commands.turfWar.noInk"));
-		else SplatCraftPacketHandler.instance.sendToDimension(new PacketSendColorScores(colors, colorScores), world.provider.getDimension());
+		else
+		{
+			PacketSendColorScores packet = new PacketSendColorScores(colors, colorScores);
+			if(target == null)
+				SplatCraftPacketHandler.instance.sendToDimension(packet, world.provider.getDimension());
+			else SplatCraftPacketHandler.instance.sendTo(packet, target);
+		}
 		return createResult(true, null);
 	}
+
 }
