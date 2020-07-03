@@ -196,8 +196,6 @@ color.dyeGreen=Verde Organico
 color.dyeRed=Rojo Organico
 color.dyeBlack=Negro Organico
 
-gui.weaponStation.craft=Craft
-
 container.inkwellVat=Creación de Tinteros
 container.weaponStation=Creación de Armas
 
@@ -240,7 +238,3 @@ stat.sc.specialsUsed=Armas Especiales Usadas
 stat.sc.squidTime=Tiempo como Calamar
 stat.sc.weaponsCrafted=Armas Creadas
 stat.sc.inkwellsCrafted=Tinteros LLenados
-
-
-
-commands.colorscores.cantRemove=Failed to remove goal %s, as it's being used in the following objectives: %s

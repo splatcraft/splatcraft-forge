@@ -195,8 +195,6 @@ color.dyeGreen=Vert Organique
 color.dyeRed=Rouge Organique
 color.dyeBlack=Noir Organique
 
-gui.weaponStation.craft=Craft
-
 container.inkwellVat=Crafting Encrier
 container.weaponStation=Crafting Arme
 
@@ -232,14 +230,3 @@ death.attack.roll=%1$s A été écrasé par %2$s
 death.attack.roll.item=%1$s A été écrasé par %2$s Avec %3$s
 death.attack.enemyInk=%1$s C'est noyé dans l'encre Ennemie
 death.attack.water=%1$s C'est Dissoue Dans L'eau
-
-stat.sc.blocksInked=Blocks Inked
-stat.sc.subsUsed=Sub Weapons Used
-stat.sc.specialsUsed=Special Weapons Used
-stat.sc.squidTime=Time as a Squid
-stat.sc.weaponsCrafted=Weapons Crafted
-stat.sc.inkwellsCrafted=Inkwells Filled
-
-
-
-commands.colorscores.cantRemove=Failed to remove goal %s, as it's being used in the following objectives: %s
