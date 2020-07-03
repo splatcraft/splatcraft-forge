@@ -117,11 +117,12 @@ public class BlockInkwell extends BlockInkColor
 		return false;
 	}
 	
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state)
+	@SideOnly(Side.CLIENT)
+	public BlockRenderLayer getBlockLayer()
 	{
-		return EnumBlockRenderType.MODEL;
+		return BlockRenderLayer.CUTOUT;
 	}
+	
 	@Override
 	public boolean isFullCube(IBlockState state)
 	{
