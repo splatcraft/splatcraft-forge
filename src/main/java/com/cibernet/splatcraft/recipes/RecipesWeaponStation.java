@@ -21,10 +21,10 @@ public class RecipesWeaponStation
 	public static Hashtable<WeaponStationTabs, List<RecipeType>> recipeTabs = new Hashtable<>();
 	private static List<RecipeSubtype> recipeList = new ArrayList<>();
 	
+	public static RecipeType recipeSplattershotJr = new RecipeType(splattershotJr, "original", new ItemStack(sardinium, 4), new ItemStack(powerEgg, 10), new ItemStack(GLASS, 4), new ItemStack(DYE, 4, 0));
 	public static RecipeType recipeSplattershot = new RecipeType(splattershot, "original", new ItemStack(sardinium, 5), new ItemStack(powerEgg, 14), new ItemStack(DYE, 8, 0));
 	public static RecipeSubtype recipeTentatekSplattershot = new RecipeSubtype(recipeSplattershot, tentatekSplattershot, "tentatek", new ItemStack(sardinium, 7), new ItemStack(powerEgg, 10), new ItemStack(DYE, 10, 0));
 	public static RecipeSubtype recipeWasabiSplattershot = new RecipeSubtype(recipeSplattershot, wasabiSplattershot, "wasabi", new ItemStack(sardinium, 5), new ItemStack(powerEgg, 14), new ItemStack(DYE, 4, 0), new ItemStack(DYE, 4, 2));
-	public static RecipeType recipeSplattershotJr = new RecipeType(splattershotJr, "original", new ItemStack(sardinium, 4), new ItemStack(powerEgg, 12), new ItemStack(GLASS, 4), new ItemStack(DYE, 4, 0));
 	public static RecipeType recipeAerosprayMg = new RecipeType(aerosprayMG, "mg", new ItemStack(sardinium, 5), new ItemStack(powerEgg, 20), new ItemStack(DYE, 16, 0), new ItemStack(IRON_INGOT, 5)).setDisplayName("aerospray");
 	public static RecipeSubtype recipeAerosprayRg = new RecipeSubtype(recipeAerosprayMg, aerosprayRG, "rg", new ItemStack(sardinium, 5), new ItemStack(powerEgg, 20), new ItemStack(DYE, 16, 0), new ItemStack(GOLD_INGOT, 5));
 	public static RecipeType recipe52Gal = new RecipeType(gal52, "original", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 15), new ItemStack(DYE, 17, 0));
@@ -51,20 +51,20 @@ public class RecipesWeaponStation
 	public static RecipeSubtype recipeEnperrySplatDualies = new RecipeSubtype(recipeSplatDualies, enperrySplatDualie, "enperry", new ItemStack(sardinium, 2), new ItemStack(powerEgg, 7), new ItemStack(DYE, 3, 0), new ItemStack(GUNPOWDER, 1), new ItemStack(GOLD_INGOT, 2));
 	public static RecipeType recipeDualieSquelchers = new RecipeType(dualieSquelcher, "original", new ItemStack(sardinium, 3), new ItemStack(powerEgg, 8), new ItemStack(DYE, 2, 0), new ItemStack(GUNPOWDER, 2), new ItemStack(DYE, 2, 1)).setDisplayName("dualieSquelchers");
 	
-	public static RecipeType recipeSlosher = new RecipeType(slosher, "original", new ItemStack(sardinium, 8), new ItemStack(powerEgg, 6), new ItemStack(DYE, 10, 0), new ItemStack(BUCKET));
-	public static RecipeSubtype recipeClassicSlosher = new RecipeSubtype(recipeSlosher, classicSlosher, "classic", new ItemStack(sardinium, 8), new ItemStack(powerEgg, 6), new ItemStack(DYE, 10, 0), new ItemStack(BUCKET));
-	public static RecipeSubtype recipeSodaSlosher = new RecipeSubtype(recipeSlosher, sodaSlosher, "soda", new ItemStack(sardinium, 6), new ItemStack(powerEgg, 6), new ItemStack(DYE, 10, 0), new ItemStack(BUCKET), new ItemStack(DYE, 4, 11), new ItemStack(DYE, 2, 12));
-	public static RecipeType recipeTriSlosher = new RecipeType(triSlosher, "original", new ItemStack(sardinium, 9), new ItemStack(powerEgg, 9), new ItemStack(DYE, 9, 0), new ItemStack(BUCKET));
+	public static RecipeType recipeSlosher = new RecipeType(slosher, "original", new ItemStack(sardinium, 8), new ItemStack(powerEgg, 16), new ItemStack(DYE, 10, 0), new ItemStack(BUCKET));
+	public static RecipeSubtype recipeClassicSlosher = new RecipeSubtype(recipeSlosher, classicSlosher, "classic", new ItemStack(sardinium, 8), new ItemStack(powerEgg, 16), new ItemStack(DYE, 10, 0), new ItemStack(BUCKET));
+	public static RecipeSubtype recipeSodaSlosher = new RecipeSubtype(recipeSlosher, sodaSlosher, "soda", new ItemStack(sardinium, 6), new ItemStack(powerEgg, 16), new ItemStack(DYE, 10, 0), new ItemStack(BUCKET), new ItemStack(DYE, 4, 11), new ItemStack(DYE, 2, 12));
+	public static RecipeType recipeTriSlosher = new RecipeType(triSlosher, "original", new ItemStack(sardinium, 9), new ItemStack(powerEgg, 18), new ItemStack(DYE, 12, 0), new ItemStack(BUCKET));
 	
 	public static RecipeType recipeInkTank = new RecipeType(inkTank, "original", new ItemStack(sardinium, 11), new ItemStack(powerEgg, 14), new ItemStack(SplatCraftBlocks.emptyInkwell));
 	public static RecipeSubtype recipeClassicInkTank = new RecipeSubtype(recipeInkTank, classicInkTank, "classic", new ItemStack(sardinium, 11), new ItemStack(powerEgg, 15), new ItemStack(SplatCraftBlocks.emptyInkwell));
-	public static RecipeType recipeInkTankJr = new RecipeType(inkTankJr, "original", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 10), new ItemStack(SplatCraftBlocks.emptyInkwell));
+	public static RecipeType recipeInkTankJr = new RecipeType(inkTankJr, "original", new ItemStack(sardinium, 10), new ItemStack(powerEgg, 8), new ItemStack(SplatCraftBlocks.emptyInkwell));
 	public static RecipeType recipeArmoredInkTank = new RecipeType(armoredInkTank, "original", new ItemStack(sardinium, 10), new ItemStack(IRON_INGOT, 5), new ItemStack(powerEgg, 18), new ItemStack(SplatCraftBlocks.emptyInkwell));
 	
 	public static void registerRecipes()
 	{
-		register(TAB_SHOOTER, recipeSplattershot);
 		register(TAB_SHOOTER, recipeSplattershotJr);
+		register(TAB_SHOOTER, recipeSplattershot);
 		register(TAB_SHOOTER, recipeAerosprayMg);
 		register(TAB_SHOOTER, recipe52Gal);
 		register(TAB_SHOOTER, recipe96Gal);

@@ -36,7 +36,7 @@ public class SplatCraftItems
     public static final Item splattershot = new ItemShooterBase("splattershot", "splattershot", 1.05f, 0.65f, 12f, 4, 8f, 0.9f);
     public static final Item tentatekSplattershot = new ItemShooterBase("tentatekSplattershot", "tentatek_splattershot", splattershot);
     public static final Item wasabiSplattershot = new ItemShooterBase("wasabiSplattershot", "wasabi_splattershot", splattershot);
-    public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.4f, 12f, 0.8f, 9f,1.15d, 3, 20, 0.25f, false); //TODO revert ic to 0.1 when the roller overhaul hits
+    public static final Item splatRoller = new ItemRollerBase("splatRoller", "splat_roller", -3d, 0.4f, 12f, 0.8f, 9f,1.15d, 3, 20, 0.1f, false);
     public static final Item krakOnSplatRoller = new ItemRollerBase("krakOnSplatRoller", "krak_on_splat_roller", splatRoller);
     public static final Item coroCoroSplatRoller = new ItemRollerBase("coroCoroSplatRoller", "corocoro_splat_roller", splatRoller);
     public static final Item splatCharger = new ItemChargerBase("splatCharger", "splat_charger", 0.85f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4);
