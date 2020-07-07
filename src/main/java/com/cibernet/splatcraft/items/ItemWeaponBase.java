@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.items;
 
+import com.cibernet.splatcraft.SplatCraftConfig;
 import com.cibernet.splatcraft.entities.models.ModelPlayerOverride;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
@@ -158,7 +159,7 @@ public class ItemWeaponBase extends Item implements IBattleItem
 	@Override
 	public int getRGBDurabilityForDisplay(ItemStack stack)
 	{
-		return ColorItemUtils.getInkColor(stack);
+		return SplatCraftConfig.dynamicInkDurabilityColor ? ColorItemUtils.getInkColor(stack) : super.getRGBDurabilityForDisplay(stack);
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.items;
 import com.cibernet.splatcraft.SplatCraft;
 import com.cibernet.splatcraft.entities.models.ModelAbstractTank;
 import com.cibernet.splatcraft.entities.models.ModelInkTank;
+import com.cibernet.splatcraft.scoreboard.SplatcraftScoreboardHandler;
 import com.cibernet.splatcraft.utils.*;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import net.minecraft.client.model.ModelBiped;
@@ -17,6 +18,7 @@ import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -92,7 +94,7 @@ public class ItemInkTank extends ItemInkColoredArmor implements IBattleItem
 			tooltip.add(desc);
 		if(advanced.isAdvanced())
 		{
-			tooltip.add(TextFormatting.GRAY + I18n.format("item.inkTank.ink", getInkAmount(stack), capacity));
+			tooltip.add(TextFormatting.GRAY + I18n.format("item.inkTank.ink", String.format("%.1f",getInkAmount(stack)), capacity));
 		}
 		
 		if(isColorLocked(stack))
@@ -173,11 +175,17 @@ public class ItemInkTank extends ItemInkColoredArmor implements IBattleItem
 		EntityPlayer player = (EntityPlayer) entityIn;
 		float ink = getInkAmount(stack);
 		
-		if(SplatCraftPlayerData.getInkColor(player) == getInkColor(stack) && (player).getItemStackFromSlot(EntityEquipmentSlot.CHEST).equals(stack) &&
-				ink < capacity && ((player).getActiveItemStack().isEmpty() || ((player).getActiveItemStack().getItem() instanceof ICharge)))
+		if(player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).equals(stack))
 		{
-			float rechargeAmnt = SplatCraftPlayerData.getIsSquid(player) && SplatCraftUtils.canSquidHide(worldIn, player) ? 1f : 0.1f;
-			setInkAmount(stack, Math.min(capacity, ink + rechargeAmnt));
+			if(SplatCraftPlayerData.getInkColor(player) == getInkColor(stack) &&
+					ink < capacity && ((player).getActiveItemStack().isEmpty() || ((player).getActiveItemStack().getItem() instanceof ICharge)))
+			{
+				float rechargeAmnt = SplatCraftPlayerData.getIsSquid(player) && SplatCraftUtils.canSquidHide(worldIn, player) ? 1f : 0.1f;
+				setInkAmount(stack, Math.min(capacity, ink + rechargeAmnt));
+			}
+			
+			for(ScoreObjective objective : player.getWorldScoreboard().getObjectivesFromCriteria(SplatcraftScoreboardHandler.INK))
+				player.getWorldScoreboard().getOrCreateScore(player.getName(), objective).setScorePoints((int) getInkAmount(stack));
 		}
 		
 		super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);

@@ -17,6 +17,8 @@ public class SplatCraftConfig {
 	
 	@Config.Comment("Setting this to false makes it so that you don't have to hold the quid button to turn into a squid.")
 	public static boolean holdKeyToSquid = true;
+	@Config.Comment("Determines whether the durability bar on Splatcraft weapons that determines how much ink you have left matches its ink color or not")
+	public static boolean dynamicInkDurabilityColor = true;
 	
 	
 	@Mod.EventBusSubscriber(modid = SplatCraft.MODID)
