@@ -160,7 +160,7 @@ public class SplatCraftUtils
 			return false;
 		for(int i = 0; i < 4; i++)
 		{
-			float xOff = (i < 2 ? .7f : 0) * (i % 2 == 0 ? 1 : -1), zOff = (i < 2 ? 0 : .7f) * (i % 2 == 0 ? 1 : -1);
+			float xOff = (i < 2 ? .32f : 0) * (i % 2 == 0 ? 1 : -1), zOff = (i < 2 ? 0 : .32f) * (i % 2 == 0 ? 1 : -1);
 			BlockPos pos = new BlockPos(playerIn.posX - xOff, playerIn.posY, playerIn.posZ - zOff);
 			Block block = worldIn.getBlockState(pos).getBlock();
 			
