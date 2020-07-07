@@ -26,6 +26,7 @@ public class SplatcraftScoreboardHandler
 {
 	
 	public static final IScoreCriteria COLOR = new ScoreCriteria(SplatCraft.SHORT.toLowerCase() + ".inkColor");
+	public static final IScoreCriteria INK = new ScoreCriteria(SplatCraft.SHORT.toLowerCase() + ".playerInk");
 	
 	public static void updatePlayerColorScore(EntityPlayer player, int color)
 	{
