@@ -106,10 +106,15 @@ public class ModelPlayerOverride extends ModelPlayer
 					//this.bipedLeftArm.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
 				break;
 				 case CHARGER:
+				 	/*
 					 mainHand.rotateAngleY = -0.1F + this.bipedHead.rotateAngleY;
 					 mainHand.rotateAngleX = -((float) Math.PI / 2F) + this.bipedHead.rotateAngleX;
 					 offHand.rotateAngleX = -((float)Math.PI / 2F) + this.bipedHead.rotateAngleX;
 					 offHand.rotateAngleY = 0.1F + this.bipedHead.rotateAngleY + 0.4F;
+					 */
+				 	if(handSide == EnumHandSide.LEFT)
+				 		leftArmPose = ArmPose.BOW_AND_ARROW;
+				 	else rightArmPose = ArmPose.BOW_AND_ARROW;
 				break;
 				case BUCKET:
 					float animTime = ((ItemSlosherBase)activeItem).startupTicks*2;
