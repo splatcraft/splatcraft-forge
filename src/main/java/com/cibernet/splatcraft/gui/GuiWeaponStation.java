@@ -99,11 +99,10 @@ public class GuiWeaponStation extends GuiContainer
 			
 			GlStateManager.rotate(player.ticksExisted - partialTicks, 0, 1, 0);
 			
-			float transitionPercent = 1;
-			float scale = 38F * transitionPercent;
+			float scale = recipe.getOutput().getItem() instanceof ItemWeaponBase ? 38F : 34F;
 			GlStateManager.scale(scale, -scale, scale);
 			RenderHelper.enableStandardItemLighting();
-			Minecraft.getMinecraft().getRenderItem().renderItem(ColorItemUtils.setInkColor(recipe.getOutput().copy(), SplatCraftPlayerData.getInkColor(player)), ItemCameraTransforms.TransformType.GUI);
+			Minecraft.getMinecraft().getRenderItem().renderItem(ColorItemUtils.setInkColor(recipe.getOutput().copy(), SplatCraftPlayerData.getInkColor(player)), recipe.getOutput().getItem() instanceof ItemWeaponBase ? ItemCameraTransforms.TransformType.GUI : ItemCameraTransforms.TransformType.FIXED);
 		}
 		GlStateManager.popMatrix();
 	}
