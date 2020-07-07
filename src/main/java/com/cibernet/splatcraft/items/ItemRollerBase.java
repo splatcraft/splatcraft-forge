@@ -193,7 +193,8 @@ public class ItemRollerBase extends ItemWeaponBase
                     {
                         List<EntityLivingBase> inkedPlayers = worldIn.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(inkPos.up()));
                         int j = 0;
-                
+    
+                        if(playerIn.getCooledAttackStrength(0) >= 1f)
                         for(EntityLivingBase target : inkedPlayers)
                         {
                             if(target.equals(playerIn))
@@ -204,10 +205,7 @@ public class ItemRollerBase extends ItemWeaponBase
                                 isTargetSameColor = SplatCraftPlayerData.getInkColor((EntityPlayer) target) == color;
                     
                             float rollDamage = this.rollDamage;
-                            boolean damaged = true;
-                    
-                            if(playerIn.getCooledAttackStrength(0) >= 1f)
-                                damaged = SplatCraftUtils.dealRollDamage(worldIn, target, rollDamage, color, playerIn, false, glowingInk);
+                            boolean damaged = SplatCraftUtils.dealRollDamage(worldIn, target, rollDamage, color, playerIn, false, glowingInk);
                     
                             if((target instanceof EntitySquidBumper && (((EntitySquidBumper) target).getColor() == color) || !damaged))
                                 rollDamage = 0;
