@@ -183,9 +183,6 @@ public class ItemInkTank extends ItemInkColoredArmor implements IBattleItem
 				float rechargeAmnt = SplatCraftPlayerData.getIsSquid(player) && SplatCraftUtils.canSquidHide(worldIn, player) ? 1f : 0.1f;
 				setInkAmount(stack, Math.min(capacity, ink + rechargeAmnt));
 			}
-			
-			for(ScoreObjective objective : player.getWorldScoreboard().getObjectivesFromCriteria(SplatcraftScoreboardHandler.INK))
-				player.getWorldScoreboard().getOrCreateScore(player.getName(), objective).setScorePoints((int) getInkAmount(stack));
 		}
 		
 		super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);

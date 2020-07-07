@@ -9,7 +9,9 @@ import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.particles.SplatCraftParticleSpawner;
 import com.cibernet.splatcraft.registries.SplatCraftBlocks;
 import com.cibernet.splatcraft.registries.SplatCraftStats;
+import com.cibernet.splatcraft.scoreboard.SplatcraftScoreboardHandler;
 import com.cibernet.splatcraft.tileentities.TileEntityColor;
+import com.cibernet.splatcraft.utils.ColorItemUtils;
 import com.cibernet.splatcraft.world.save.SplatCraftGamerules;
 import com.cibernet.splatcraft.world.save.SplatCraftPlayerData;
 import com.cibernet.splatcraft.utils.SplatCraftUtils;
@@ -29,6 +31,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.text.Style;
@@ -82,6 +85,15 @@ public class CommonEventHandler
 		SplatCraftPlayerData.PlayerData data = SplatCraftPlayerData.getPlayerData(player);
 		if(data.isSquid == 1)
 			data.isSquid = 0;
+		
+		int inkUnitScore = 0;
+		ItemStack chestStack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+		
+		if(chestStack.getItem() instanceof ItemInkTank && ColorItemUtils.getInkColor(chestStack) == SplatCraftPlayerData.getInkColor(player))
+			inkUnitScore = (int) ItemInkTank.getInkAmount(chestStack);
+		for(ScoreObjective objective : player.getWorldScoreboard().getObjectivesFromCriteria(SplatcraftScoreboardHandler.INK))
+			player.getWorldScoreboard().getOrCreateScore(player.getName(), objective).setScorePoints(inkUnitScore);
+		
 		
 		if(SplatCraftUtils.onEnemyInk(player.world, player) && player.ticksExisted % 20 == 0 && player.getHealth() > 4 && player.world.getDifficulty() != EnumDifficulty.PEACEFUL)
 		{
