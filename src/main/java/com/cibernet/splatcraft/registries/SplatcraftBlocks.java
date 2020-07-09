@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.blocks.InkedBlock;
 import com.cibernet.splatcraft.blocks.LightBlock;
 import com.cibernet.splatcraft.blocks.MetalBlock;
 import com.cibernet.splatcraft.blocks.OreBlock;
@@ -12,21 +13,41 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 
+@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftBlocks
 {
 	public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, Splatcraft.MODID);
 	
-	public static final RegistryObject<Block> sardiniumBlock = REGISTRY.register("sardinium_block", () -> new MetalBlock(Material.IRON, MaterialColor.WHITE_TERRACOTTA));
-	public static final RegistryObject<Block> sardiniumOre = REGISTRY.register("sardinium_ore", () -> new OreBlock(1));
-	public static final RegistryObject<Block> powerEggBlock = REGISTRY.register("power_egg_block", () -> new LightBlock(9, AbstractBlock.Properties.create(Material.IRON, DyeColor.ORANGE).harvestTool(ToolType.SHOVEL).sound(SoundType.SLIME).hardnessAndResistance(0.2f, 0)));
+	public static final Block inkedBlock = new InkedBlock().setRegistryName("inked_block");
+	
+	public static final Block sardiniumBlock = new MetalBlock(Material.IRON, MaterialColor.WHITE_TERRACOTTA).setRegistryName("sardinium_block");
+	public static final Block sardiniumOre = new OreBlock(0).setRegistryName("sardinium_ore");
+	public static final Block powerEggBlock = new LightBlock(9, AbstractBlock.Properties.create(Material.GOURD, DyeColor.ORANGE).harvestTool(ToolType.SHOVEL).sound(SoundType.SLIME).hardnessAndResistance(0.2f, 0)).setRegistryName("power_egg_block");
+	
+	
+	
+	@SubscribeEvent
+	public static void blockInit(final RegistryEvent.Register<Block> event)
+	{
+		IForgeRegistry<Block> registry = event.getRegistry();
+		
+		registry.register(inkedBlock);
+		registry.register(sardiniumBlock);
+		registry.register(sardiniumOre);
+		registry.register(powerEggBlock);
+	}
 	
 	public static void init()
 	{
-		REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
+		//REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 }
