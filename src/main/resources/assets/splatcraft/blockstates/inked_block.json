@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "splatcraft:inked_block" }
+        "": { "model": "splatcraft:block/inked_block" }
     }
 }
