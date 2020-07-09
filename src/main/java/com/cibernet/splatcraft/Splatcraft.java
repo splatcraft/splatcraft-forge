@@ -1,11 +1,13 @@
 package com.cibernet.splatcraft;
 
-import com.cibernet.splatcraft.registries.SplatcraftBlocks;
-import com.cibernet.splatcraft.registries.SplatcraftEntities;
-import com.cibernet.splatcraft.registries.SplatcraftItems;
-import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
+import com.cibernet.splatcraft.capabilities.PlayerColorCapability;
+import com.cibernet.splatcraft.registries.*;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -38,11 +40,13 @@ public class Splatcraft
 		SplatcraftEntities.init();
 		
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(new SplatcraftCapabilities());
 		MinecraftForge.EVENT_BUS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 	
 	private void commonSetup(final FMLCommonSetupEvent event)
 	{
+		SplatcraftCapabilities.registerCapabilities();
 	}
 	
 	private void clientSetup(final FMLClientSetupEvent event)

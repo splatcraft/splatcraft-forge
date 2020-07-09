@@ -1,6 +1,8 @@
 package com.cibernet.splatcraft.util;
 
+import com.cibernet.splatcraft.capabilities.PlayerColorCapability;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -9,6 +11,27 @@ import net.minecraft.world.World;
 
 public class ColorUtils
 {
+	public static final int ORANGE = 0xDF641A;
+	public static final int BLUE = 0x26229F;
+	public static final int GREEN = 0xc83d79;
+	public static final int PINK = 0x409d3b;
+	
+	public static int getPlayerColor(PlayerEntity player)
+	{
+		try
+		{
+			return player.getCapability(PlayerColorCapability.CAPABILITY).orElseThrow(() -> new NullPointerException("player color is null")).getColor();
+		}
+		catch(NullPointerException e)
+		{
+			return 0;
+		}
+	}
+	public static void setPlayerColor(PlayerEntity player, int color)
+	{
+		player.getCapability(PlayerColorCapability.CAPABILITY).orElseThrow(() -> new NullPointerException("Player Color cannot be null!")).setColor(color);
+	}
+	
 	public static int getInkColor(ItemStack stack)
 	{
 		CompoundNBT nbt = stack.getTag();
@@ -40,5 +63,11 @@ public class ColorUtils
 		
 		((InkColorTileEntity) te).setColor(color);
 		return true;
+	}
+	
+	public static int getRandomStarterColor()
+	{
+		int[] colors = new int[] {ORANGE, BLUE, GREEN, PINK};
+		return colors[(int) (Math.random()*(colors.length-1))];
 	}
 }
