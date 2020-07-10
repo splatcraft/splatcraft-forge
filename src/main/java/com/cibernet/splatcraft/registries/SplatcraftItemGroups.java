@@ -13,7 +13,7 @@ public class SplatcraftItemGroups
 		@Override
 		public ItemStack createIcon()
 		{
-			return new ItemStack(sardiniumBlock.get());
+			return new ItemStack(sardiniumBlock);
 		}
 	};
 	
@@ -22,7 +22,7 @@ public class SplatcraftItemGroups
 		@Override
 		public ItemStack createIcon()
 		{
-			return ColorUtils.setInkColor(new ItemStack(splattershot.get()), ColorUtils.ORANGE);
+			return ColorUtils.setInkColor(new ItemStack(splattershot), ColorUtils.ORANGE);
 		}
 	};
 }

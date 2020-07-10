@@ -31,8 +31,6 @@ public class Splatcraft
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		
-		SplatcraftItems.init();
-		SplatcraftBlocks.init();
 		SplatcraftTileEntitites.init();
 		SplatcraftEntities.init();
 		
