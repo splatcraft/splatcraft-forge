@@ -20,6 +20,7 @@ public class SplatcraftTileEntitites
 {
 	public static final DeferredRegister<TileEntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Splatcraft.MODID);
 	
+	public static final RegistryObject<TileEntityType<InkColorTileEntity>> colorTileEntity = registerTileEntity("color", InkColorTileEntity::new, inkwell);
 	public static final RegistryObject<TileEntityType<InkedBlockTileEntity>> inkedTileEntity = registerTileEntity("inked_block", InkedBlockTileEntity::new, inkedBlock);
 	
 	public static void init()

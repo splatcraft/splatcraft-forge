@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.items.BlockItem;
+import com.cibernet.splatcraft.items.InkwellItem;
 import com.cibernet.splatcraft.items.ShooterItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -37,6 +38,8 @@ public class SplatcraftItems
 	public static final RegistryObject<Item> sardiniumOre = REGISTRY.register("sardinium_ore", () -> new BlockItem(SplatcraftBlocks.sardiniumOre));
 	public static final RegistryObject<Item> powerEgg = REGISTRY.register("power_egg", () -> new Item(new Item.Properties().group(GROUP_GENERAL)));
 	public static final RegistryObject<Item> powerEggBlock = REGISTRY.register("power_egg_block", () -> new BlockItem(SplatcraftBlocks.powerEggBlock));
+	
+	public static final RegistryObject<Item> inkwell = REGISTRY.register("inkwell", InkwellItem::new);
 	
 	//Vanity
 	

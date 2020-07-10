@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.tileentities;
 
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
+import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -13,7 +14,12 @@ import javax.annotation.Nullable;
 public class InkColorTileEntity extends TileEntity
 {
 	
-	private int color = 0xDF641A;
+	private int color = ColorUtils.DEFAULT;
+	
+	public InkColorTileEntity()
+	{
+		super(SplatcraftTileEntitites.colorTileEntity.get());
+	}
 	
 	public InkColorTileEntity(TileEntityType type)
 	{

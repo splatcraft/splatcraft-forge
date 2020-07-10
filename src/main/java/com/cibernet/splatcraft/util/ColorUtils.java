@@ -19,6 +19,10 @@ public class ColorUtils
 	public static final int GREEN = 0xc83d79;
 	public static final int PINK = 0x409d3b;
 	
+	public static final int DEFAULT = 0x1F1F2D;
+	
+	public static final int[] STARTER_COLORS = new int[] {ORANGE, BLUE, GREEN, PINK};
+	
 	public static int getPlayerColor(PlayerEntity player)
 	{
 		try
@@ -79,7 +83,6 @@ public class ColorUtils
 	
 	public static int getRandomStarterColor()
 	{
-		int[] colors = new int[] {ORANGE, BLUE, GREEN, PINK};
-		return colors[(int) (Math.random()*(colors.length-1))];
+		return STARTER_COLORS[(int) (Math.random()*(STARTER_COLORS.length))];
 	}
 }

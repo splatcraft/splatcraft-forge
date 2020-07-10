@@ -1,10 +1,7 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.blocks.InkedBlock;
-import com.cibernet.splatcraft.blocks.LightBlock;
-import com.cibernet.splatcraft.blocks.MetalBlock;
-import com.cibernet.splatcraft.blocks.OreBlock;
+import com.cibernet.splatcraft.blocks.*;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -33,6 +30,7 @@ public class SplatcraftBlocks
 	public static final Block sardiniumOre = new OreBlock(0).setRegistryName("sardinium_ore");
 	public static final Block powerEggBlock = new LightBlock(9, AbstractBlock.Properties.create(Material.GOURD, DyeColor.ORANGE).harvestTool(ToolType.SHOVEL).sound(SoundType.SLIME).hardnessAndResistance(0.2f, 0)).setRegistryName("power_egg_block");
 	
+	public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
 	
 	
 	@SubscribeEvent
@@ -44,6 +42,8 @@ public class SplatcraftBlocks
 		registry.register(sardiniumBlock);
 		registry.register(sardiniumOre);
 		registry.register(powerEggBlock);
+		
+		registry.register(inkwell);
 	}
 	
 	public static void init()

@@ -11,8 +11,8 @@ public class BlockItem extends net.minecraft.item.BlockItem
 		super(block, new Properties().group(SplatcraftItemGroups.GROUP_GENERAL));
 	}
 	
-	public BlockItem(RegistryObject<Block> blockObj)
+	public BlockItem(Block block, Properties properties)
 	{
-		this(blockObj.get());
+		super(block, properties);
 	}
 }

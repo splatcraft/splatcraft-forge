@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.registries;
 
+import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
@@ -21,7 +22,7 @@ public class SplatcraftItemGroups
 		@Override
 		public ItemStack createIcon()
 		{
-			return new ItemStack(splattershot.get());
+			return ColorUtils.setInkColor(new ItemStack(splattershot.get()), ColorUtils.ORANGE);
 		}
 	};
 }
