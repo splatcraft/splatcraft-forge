@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft;
 
 import com.cibernet.splatcraft.capabilities.PlayerColorCapability;
+import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -47,6 +48,7 @@ public class Splatcraft
 	private void commonSetup(final FMLCommonSetupEvent event)
 	{
 		SplatcraftCapabilities.registerCapabilities();
+		SplatcraftPacketHandler.registerMessages(MODID);
 	}
 	
 	private void clientSetup(final FMLClientSetupEvent event)
