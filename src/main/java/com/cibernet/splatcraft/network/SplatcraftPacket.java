@@ -11,18 +11,17 @@ import java.util.function.Supplier;
 
 public abstract class SplatcraftPacket
 {
-	public EnumDirection direction = EnumDirection.NONE;
 	abstract void encode(PacketBuffer buffer);
 	
 	void consume(Supplier<NetworkEvent.Context> ctx)
 	{
-		if(direction == EnumDirection.PLAY_TO_CLIENT || direction == EnumDirection.BOTH)
+		if(getDirection() == EnumDirection.PLAY_TO_CLIENT || getDirection() == EnumDirection.BOTH)
 		{
 			if(ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT)
 				ctx.get().enqueueWork(() -> this.execute(Minecraft.getInstance().player));
 			
 		}
-		if(direction == EnumDirection.PLAY_TO_SERVER || direction == EnumDirection.BOTH)
+		if(getDirection() == EnumDirection.PLAY_TO_SERVER || getDirection() == EnumDirection.BOTH)
 			if(ctx.get().getDirection() == NetworkDirection.PLAY_TO_SERVER)
 				ctx.get().enqueueWork(() -> this.execute(ctx.get().getSender()));
 		
@@ -30,6 +29,8 @@ public abstract class SplatcraftPacket
 	}
 	
 	abstract void execute(PlayerEntity player);
+	
+	abstract EnumDirection getDirection();
 	
 	enum EnumDirection
 	{

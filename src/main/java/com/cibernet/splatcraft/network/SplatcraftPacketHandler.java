@@ -28,6 +28,7 @@ public class SplatcraftPacketHandler
 	public static void registerMessages(String modId)
 	{
 		registerMessage(PlayerColorPacket.class, PlayerColorPacket::decode);
+		registerMessage(UpdatePlayerInfoPacket.class, UpdatePlayerInfoPacket::decode);
 	}
 	
 	private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, Function<PacketBuffer, MSG> decoder)

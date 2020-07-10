@@ -1,6 +1,6 @@
 package com.cibernet.splatcraft.util;
 
-import com.cibernet.splatcraft.capabilities.PlayerColorCapability;
+import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
 import com.cibernet.splatcraft.network.PlayerColorPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
@@ -8,9 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 public class ColorUtils
 {
@@ -27,7 +25,7 @@ public class ColorUtils
 	{
 		try
 		{
-			return player.getCapability(PlayerColorCapability.CAPABILITY).orElseThrow(() -> new NullPointerException("player color is null")).getColor();
+			return player.getCapability(PlayerInfoCapability.CAPABILITY).orElseThrow(() -> new NullPointerException("player color is null")).getColor();
 		}
 		catch(NullPointerException e)
 		{
@@ -36,11 +34,11 @@ public class ColorUtils
 	}
 	public static void setPlayerColor(PlayerEntity player, int color, boolean updateClient)
 	{
-		player.getCapability(PlayerColorCapability.CAPABILITY).orElseThrow(() -> new NullPointerException("Player Color cannot be null!")).setColor(color);
+		player.getCapability(PlayerInfoCapability.CAPABILITY).orElseThrow(() -> new NullPointerException("Player Color cannot be null!")).setColor(color);
 		
 		World world = player.world;
 		if(!world.isRemote && updateClient)
-			SplatcraftPacketHandler.sendToDim(new PlayerColorPacket(color), world);
+			SplatcraftPacketHandler.sendToDim(new PlayerColorPacket(player, color), world);
 	}
 	
 	public static void setPlayerColor(PlayerEntity player, int color)

@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.capabilities;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.IntNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -11,15 +12,15 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class PlayerColorCapability implements ICapabilitySerializable<IntNBT>
+public class PlayerInfoCapability implements ICapabilitySerializable<CompoundNBT>
 {
-	@CapabilityInject(IPlayerColor.class)
-	public static final Capability<IPlayerColor> CAPABILITY = null;
-	private LazyOptional<IPlayerColor> instance = LazyOptional.of(CAPABILITY::getDefaultInstance);
+	@CapabilityInject(IPlayerInfo.class)
+	public static final Capability<IPlayerInfo> CAPABILITY = null;
+	private LazyOptional<IPlayerInfo> instance = LazyOptional.of(CAPABILITY::getDefaultInstance);
 	
 	public static void register()
 	{
-		CapabilityManager.INSTANCE.register(IPlayerColor.class, new PlayerColorStorage(), PlayerColor::new);
+		CapabilityManager.INSTANCE.register(IPlayerInfo.class, new PlayerInfoStorage(), PlayerInfo::new);
 	}
 	
 	@Nonnull
@@ -30,13 +31,13 @@ public class PlayerColorCapability implements ICapabilitySerializable<IntNBT>
 	}
 	
 	@Override
-	public IntNBT serializeNBT()
+	public CompoundNBT serializeNBT()
 	{
-		return (IntNBT) CAPABILITY.getStorage().writeNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null);
+		return (CompoundNBT) CAPABILITY.getStorage().writeNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null);
 	}
 	
 	@Override
-	public void deserializeNBT(IntNBT nbt)
+	public void deserializeNBT(CompoundNBT nbt)
 	{
 		CAPABILITY.getStorage().readNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null, nbt);
 	}
