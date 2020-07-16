@@ -1,6 +1,9 @@
 package com.cibernet.splatcraft;
 
+import com.cibernet.splatcraft.data.SplatcraftData;
 import com.cibernet.splatcraft.handlers.SplatcraftCommonHandler;
+import com.cibernet.splatcraft.handlers.WeaponHandler;
+import com.cibernet.splatcraft.handlers.client.PlayerMovementHandler;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.*;
 import net.minecraft.block.Block;
@@ -32,11 +35,13 @@ public class Splatcraft
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		
 		SplatcraftTileEntitites.init();
-		SplatcraftEntities.init();
 		
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(new SplatcraftData());
 		MinecraftForge.EVENT_BUS.register(new SplatcraftCapabilities());
 		MinecraftForge.EVENT_BUS.register(new SplatcraftCommonHandler());
+		MinecraftForge.EVENT_BUS.register(new WeaponHandler());
+		MinecraftForge.EVENT_BUS.register(new PlayerMovementHandler());
 		MinecraftForge.EVENT_BUS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 	
@@ -48,6 +53,7 @@ public class Splatcraft
 	
 	private void clientSetup(final FMLClientSetupEvent event)
 	{
+		SplatcraftEntities.bindRenderers();
 	}
 	
 	@SubscribeEvent

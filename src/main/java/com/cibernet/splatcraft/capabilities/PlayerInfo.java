@@ -1,7 +1,11 @@
 package com.cibernet.splatcraft.capabilities;
 
 import com.cibernet.splatcraft.util.ColorUtils;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.DoubleNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class PlayerInfo implements IPlayerInfo
 {
@@ -36,6 +40,7 @@ public class PlayerInfo implements IPlayerInfo
 	public CompoundNBT writeNBT(CompoundNBT nbt)
 	{
 		nbt.putInt("Color",getColor());
+		nbt.putBoolean("IsSquid", isSquid());
 		return nbt;
 	}
 	
@@ -43,5 +48,6 @@ public class PlayerInfo implements IPlayerInfo
 	public void readNBT(CompoundNBT nbt)
 	{
 		setColor(nbt.getInt("Color"));
+		setIsSquid(nbt.getBoolean("IsSquid"));
 	}
 }

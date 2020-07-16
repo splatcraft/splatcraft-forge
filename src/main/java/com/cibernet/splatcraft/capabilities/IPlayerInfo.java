@@ -1,11 +1,12 @@
 package com.cibernet.splatcraft.capabilities;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.vector.Vector3d;
 
 public interface IPlayerInfo
 {
-	public int getColor();
-	public void setColor(int color);
+	int getColor();
+	void setColor(int color);
 	
 	boolean isSquid();
 	void setIsSquid(boolean isSquid);

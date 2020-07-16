@@ -1,13 +1,17 @@
 package com.cibernet.splatcraft.items;
 
+import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.handlers.client.ColorHandler;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
+import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.ColorUtils;
+import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
@@ -17,6 +21,7 @@ public class WeaponBaseItem extends Item
 	{
 		super(new Properties().maxStackSize(1).group(SplatcraftItemGroups.GROUP_WEAPONS));
 		ColorHandler.inkColoredItems.add(this);
+		SplatcraftItems.weapons.add(this);
 	}
 	
 	@Override
@@ -29,9 +34,26 @@ public class WeaponBaseItem extends Item
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World p_77659_1_, PlayerEntity player, Hand p_77659_3_)
+	public int getUseDuration(ItemStack stack) {
+		return 72000;
+	}
+	
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
 	{
-		ColorUtils.setPlayerColor(player, ColorUtils.getRandomStarterColor());
-		return super.onItemRightClick(p_77659_1_, player, p_77659_3_);
+		player.setActiveHand(hand);
+		return super.onItemRightClick(world, player, hand);
+	}
+	
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft)
+	{
+		entity.resetActiveHand();
+		super.onPlayerStoppedUsing(stack, world, entity, timeLeft);
+	}
+	
+	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
+	{
+	
 	}
 }

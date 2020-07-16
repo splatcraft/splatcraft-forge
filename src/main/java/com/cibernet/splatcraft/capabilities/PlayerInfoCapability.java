@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.capabilities;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.IntNBT;
 import net.minecraft.util.Direction;
@@ -40,5 +41,10 @@ public class PlayerInfoCapability implements ICapabilitySerializable<CompoundNBT
 	public void deserializeNBT(CompoundNBT nbt)
 	{
 		CAPABILITY.getStorage().readNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null, nbt);
+	}
+	
+	public static IPlayerInfo get(LivingEntity entity) throws NullPointerException
+	{
+		return entity.getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find PlayerData capability!"));
 	}
 }

@@ -25,7 +25,7 @@ public class ColorUtils
 	{
 		try
 		{
-			return player.getCapability(PlayerInfoCapability.CAPABILITY).orElseThrow(() -> new NullPointerException("player color is null")).getColor();
+			return PlayerInfoCapability.get(player).getColor();
 		}
 		catch(NullPointerException e)
 		{
@@ -34,7 +34,7 @@ public class ColorUtils
 	}
 	public static void setPlayerColor(PlayerEntity player, int color, boolean updateClient)
 	{
-		player.getCapability(PlayerInfoCapability.CAPABILITY).orElseThrow(() -> new NullPointerException("Player Color cannot be null!")).setColor(color);
+		PlayerInfoCapability.get(player).setColor(color);
 		
 		World world = player.world;
 		if(!world.isRemote && updateClient)
