@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"gui_light": "front",
 	"textures": {
 		"0": "splatcraft:weapons/splattershot_1",
 		"1": "splatcraft:weapons/ink_color",

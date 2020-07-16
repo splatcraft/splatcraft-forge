@@ -17,14 +17,20 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.cibernet.splatcraft.registries.SplatcraftItemGroups.*;
 
 @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftItems
 {
+	public static final List<Item> weapons = new ArrayList<>();
 	
 	//Shooters
-	public static final Item splattershot = new ShooterItem().setRegistryName("splattershot");
+	public static final Item splattershot = new ShooterItem("splattershot", 1.05f, 0.65f, 12f, 4, 8f, 0.9f);
+	public static final Item splattershotJr = new ShooterItem("splattershot_jr", 1f, 0.35f, 13.5f, 4, 6.5f, 0.5f);
+	public static final Item aerosprayMg = new ShooterItem("aerospray_mg", 1.3f, 0.35f, 26f, 2, 4.8f, 0.5f);
 	
 	//Rollers
 	
@@ -58,7 +64,8 @@ public class SplatcraftItems
 	{
 		IForgeRegistry<Item> registry = event.getRegistry();
 		
-		registry.register(splattershot);
+		for(Item item : weapons)
+			registry.register(item);
 		
 		registry.register(sardinium);
 		registry.register(sardiniumBlock);
