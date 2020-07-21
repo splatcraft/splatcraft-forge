@@ -12,7 +12,7 @@ import net.minecraftforge.common.Tags;
 
 public class SplatcraftBlockTags extends BlockTagsProvider
 {
-	
+
 	public SplatcraftBlockTags(DataGenerator generator)
 	{
 		super(generator);
@@ -21,9 +21,9 @@ public class SplatcraftBlockTags extends BlockTagsProvider
 	@Override
 	protected void registerTags()
 	{
-		addToTag(BlockTags.field_232875_ap_, SplatcraftBlocks.sardiniumBlock.get());
-		addToTag(Tags.Blocks.ORES, SplatcraftBlocks.sardiniumOre.get());
-		addToTag(Tags.Blocks.STORAGE_BLOCKS, SplatcraftBlocks.sardiniumBlock.get(), SplatcraftBlocks.powerEggBlock.get());
+		addToTag(BlockTags.field_232875_ap_, SplatcraftBlocks.sardiniumBlock.getBlock());
+		addToTag(Tags.Blocks.ORES, SplatcraftBlocks.sardiniumOre.getBlock());
+		addToTag(Tags.Blocks.STORAGE_BLOCKS, SplatcraftBlocks.sardiniumBlock.getBlock(), SplatcraftBlocks.powerEggBlock.getBlock());
 	}
 	
 	protected TagsProvider.Builder<Block> addToTag(ITag.INamedTag<Block> tag, Block... entries)
