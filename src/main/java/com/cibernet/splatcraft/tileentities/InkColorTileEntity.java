@@ -36,9 +36,9 @@ public class InkColorTileEntity extends TileEntity
 	
 	//Nbt Read
 	@Override
-	public void func_230337_a_(BlockState state, CompoundNBT nbt)
+	public void read(BlockState state, CompoundNBT nbt)
 	{
-		super.func_230337_a_(state, nbt);
+		super.read(state, nbt);
 		color = nbt.getInt("Color");
 	}
 	
@@ -51,7 +51,7 @@ public class InkColorTileEntity extends TileEntity
 	@Override
 	public void handleUpdateTag(BlockState state, CompoundNBT tag)
 	{
-		this.func_230337_a_(state, tag);
+		this.read(state, tag);
 	}
 	
 	@Nullable

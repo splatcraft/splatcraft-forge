@@ -21,7 +21,7 @@ public class UpdatePlayerInfoPacket extends SplatcraftPacket
 	
 	public UpdatePlayerInfoPacket(PlayerEntity target)
 	{
-		this(target.getUniqueID(), target.getCapability(PlayerInfoCapability.CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find PlayerInfo Capability for player " + target.getName())).writeNBT(new CompoundNBT()));
+		this(target.getUniqueID(), PlayerInfoCapability.get(target).writeNBT(new CompoundNBT()));
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class UpdatePlayerInfoPacket extends SplatcraftPacket
 	{
 		PlayerEntity target = player.world.getPlayerByUuid(this.target);
 		
-		target.getCapability(PlayerInfoCapability.CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find PlayerInfo Capability for player " + target.getName())).readNBT(nbt);
+		PlayerInfoCapability.get(target).readNBT(nbt);
 	}
 	
 	@Override

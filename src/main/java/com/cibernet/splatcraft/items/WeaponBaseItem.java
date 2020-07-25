@@ -20,7 +20,7 @@ public class WeaponBaseItem extends Item
 	public WeaponBaseItem()
 	{
 		super(new Properties().maxStackSize(1).group(SplatcraftItemGroups.GROUP_WEAPONS));
-		ColorHandler.inkColoredItems.add(this);
+		SplatcraftItems.inkColoredItems.add(this);
 		SplatcraftItems.weapons.add(this);
 	}
 	

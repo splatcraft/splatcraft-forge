@@ -18,9 +18,9 @@ public class InkedBlockTileEntity extends InkColorTileEntity
 	
 	//Read NBT
 	@Override
-	public void func_230337_a_(BlockState state, CompoundNBT nbt)
+	public void read(BlockState state, CompoundNBT nbt)
 	{
-		super.func_230337_a_(state, nbt);
+		super.read(state, nbt);
 		savedState = NBTUtil.readBlockState(nbt.getCompound("SavedState"));
 		savedColor = nbt.getInt("SavedColor");
 	}

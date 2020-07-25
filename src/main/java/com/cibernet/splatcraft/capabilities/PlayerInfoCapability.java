@@ -18,6 +18,8 @@ public class PlayerInfoCapability implements ICapabilitySerializable<CompoundNBT
 	@CapabilityInject(IPlayerInfo.class)
 	public static final Capability<IPlayerInfo> CAPABILITY = null;
 	private LazyOptional<IPlayerInfo> instance = LazyOptional.of(CAPABILITY::getDefaultInstance);
+	private static final IPlayerInfo DEFAULT = new PlayerInfo();
+	
 	
 	public static void register()
 	{
@@ -46,5 +48,11 @@ public class PlayerInfoCapability implements ICapabilitySerializable<CompoundNBT
 	public static IPlayerInfo get(LivingEntity entity) throws NullPointerException
 	{
 		return entity.getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find PlayerData capability!"));
+	}
+	
+	public static boolean isSquid(LivingEntity entity)
+	{
+		try{ return get(entity).isSquid(); }
+		catch(NullPointerException e) { return false; }
 	}
 }

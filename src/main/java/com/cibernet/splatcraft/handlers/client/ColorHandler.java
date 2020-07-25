@@ -17,14 +17,15 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import static com.cibernet.splatcraft.registries.SplatcraftBlocks.inkColoredBlocks;
+import static com.cibernet.splatcraft.registries.SplatcraftItems.inkColoredItems;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ColorHandler
 {
-	public static final ArrayList<Item> inkColoredItems = new ArrayList<>();
-	public static final ArrayList<Block> inkColoredBlocks = new ArrayList<>();
 	
 	@SubscribeEvent
 	public static void initItemColors(ColorHandlerEvent.Item event)

@@ -8,7 +8,7 @@ import static com.cibernet.splatcraft.registries.SplatcraftItems.*;
 
 public class SplatcraftItemGroups
 {
-	public static final ItemGroup GROUP_GENERAL = new ItemGroup("splatcraftGeneral")
+	public static final ItemGroup GROUP_GENERAL = new ItemGroup("splatcraft_general")
 	{
 		@Override
 		public ItemStack createIcon()
@@ -17,7 +17,7 @@ public class SplatcraftItemGroups
 		}
 	};
 	
-	public static final ItemGroup GROUP_WEAPONS = new ItemGroup("splatcraftWeapons")
+	public static final ItemGroup GROUP_WEAPONS = new ItemGroup("splatcraft_weapons")
 	{
 		@Override
 		public ItemStack createIcon()

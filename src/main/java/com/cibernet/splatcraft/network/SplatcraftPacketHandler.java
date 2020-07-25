@@ -1,7 +1,6 @@
 package com.cibernet.splatcraft.network;
 
 import com.cibernet.splatcraft.Splatcraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.RegistryKey;
@@ -25,10 +24,11 @@ public class SplatcraftPacketHandler
 			PROTOCOL_VERSION::equals);
 	private static int ID = 0;
 	
-	public static void registerMessages(String modId)
+	public static void registerMessages()
 	{
 		registerMessage(PlayerColorPacket.class, PlayerColorPacket::decode);
 		registerMessage(UpdatePlayerInfoPacket.class, UpdatePlayerInfoPacket::decode);
+		registerMessage(PlayerSetSquidPacket.class, PlayerSetSquidPacket::decode);
 	}
 	
 	private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, Function<PacketBuffer, MSG> decoder)

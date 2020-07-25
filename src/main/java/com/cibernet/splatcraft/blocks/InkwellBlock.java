@@ -1,12 +1,16 @@
 package com.cibernet.splatcraft.blocks;
 
+import com.cibernet.splatcraft.crafting.InkColor;
+import com.cibernet.splatcraft.crafting.InkColorManager;
 import com.cibernet.splatcraft.handlers.client.ColorHandler;
+import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,7 +31,7 @@ public class InkwellBlock extends Block
 	{
 		super(Properties.create(Material.GLASS));
 		
-		ColorHandler.inkColoredBlocks.add(this);
+		SplatcraftBlocks.inkColoredBlocks.add(this);
 	}
 	
 	public PushReaction getPushReaction(BlockState state) {

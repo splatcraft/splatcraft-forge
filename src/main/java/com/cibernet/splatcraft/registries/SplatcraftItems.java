@@ -26,6 +26,7 @@ import static com.cibernet.splatcraft.registries.SplatcraftItemGroups.*;
 public class SplatcraftItems
 {
 	public static final List<Item> weapons = new ArrayList<>();
+	public static final ArrayList<Item> inkColoredItems = new ArrayList<>();
 	
 	//Shooters
 	public static final Item splattershot = new ShooterItem("splattershot", 1.05f, 0.65f, 12f, 4, 8f, 0.9f);

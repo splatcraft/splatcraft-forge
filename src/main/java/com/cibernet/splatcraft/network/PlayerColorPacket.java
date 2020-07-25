@@ -3,11 +3,8 @@ package com.cibernet.splatcraft.network;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 import static com.cibernet.splatcraft.network.SplatcraftPacket.EnumDirection.PLAY_TO_CLIENT;
 

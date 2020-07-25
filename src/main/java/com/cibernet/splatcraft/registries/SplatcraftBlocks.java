@@ -19,9 +19,13 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import java.util.ArrayList;
+
 @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftBlocks
 {
+	public static final ArrayList<Block> inkColoredBlocks = new ArrayList<>();
+	
 	public static final Block inkedBlock = new InkedBlock().setRegistryName("inked_block");
 	
 	public static final Block sardiniumBlock = new MetalBlock(Material.IRON, MaterialColor.WHITE_TERRACOTTA).setRegistryName("sardinium_block");

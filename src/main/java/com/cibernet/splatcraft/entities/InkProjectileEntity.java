@@ -25,7 +25,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class InkProjectileEntity extends ProjectileItemEntity
+public class InkProjectileEntity extends ProjectileItemEntity implements IColoredEntity
 {
 	
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(SlimeEntity.class, DataSerializers.VARINT);

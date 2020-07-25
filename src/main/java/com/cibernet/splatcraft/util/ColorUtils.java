@@ -1,9 +1,14 @@
 package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
+import com.cibernet.splatcraft.crafting.InkColor;
+import com.cibernet.splatcraft.crafting.InkColorManager;
+import com.cibernet.splatcraft.entities.IColoredEntity;
 import com.cibernet.splatcraft.network.PlayerColorPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -20,6 +25,15 @@ public class ColorUtils
 	public static final int DEFAULT = 0x1F1F2D;
 	
 	public static final int[] STARTER_COLORS = new int[] {ORANGE, BLUE, GREEN, PINK};
+	
+	public static int getEntityColor(LivingEntity entity)
+	{
+		if(entity instanceof PlayerEntity)
+			return getPlayerColor((PlayerEntity) entity);
+		else if(entity instanceof IColoredEntity)
+			return ((IColoredEntity) entity).getColor();
+		else return -1;
+	}
 	
 	public static int getPlayerColor(PlayerEntity player)
 	{
@@ -77,6 +91,32 @@ public class ColorUtils
 		
 		((InkColorTileEntity) te).setColor(color);
 		return true;
+	}
+	
+	public static String getColorName(int color)
+	{
+		InkColor colorObj = InkColorManager.instance.getColorByHex(color);
+		
+		if(colorObj != null)
+			return colorObj.getLocalizedName();
+		
+		String fallbackUnloc = "ink_color."+String.format("%06X", color).toLowerCase();
+		String fallbackName = I18n.format(fallbackUnloc);
+		
+		if(!fallbackName.equals(fallbackUnloc))
+			return fallbackUnloc;
+		return "#"+String.format("%06X", color).toUpperCase();
+		
+	}
+	
+	public static boolean colorEquals(LivingEntity entity, TileEntity te)
+	{
+		int a = getEntityColor(entity);
+		int b = getInkColor(te);
+		
+		if(a == -1 || b == -1)
+			return false;
+		return a == b;
 	}
 	
 	public static int getRandomStarterColor()
