@@ -12,6 +12,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -20,7 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 public class RendererHandler
 {
 	private static InkSquidRenderer squidRenderer = null;
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void playerRender(RenderPlayerEvent.Pre event)
 	{
 		PlayerEntity player = event.getPlayer();
@@ -31,8 +32,13 @@ public class RendererHandler
 			if(squidRenderer == null)
 				squidRenderer = new InkSquidRenderer(event.getRenderer().getRenderManager());
 			if(!InkBlockUtils.canSquidHide(player))
-			squidRenderer.render(player, player.rotationYawHead, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
+			{
+				squidRenderer.getRenderManager().setRenderShadow(true);
+				squidRenderer.render(player, player.rotationYawHead, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
+			}
+			else squidRenderer.getRenderManager().setRenderShadow(false);
 		}
+		else event.getRenderer().getRenderManager().setRenderShadow(true);
 	}
 	
 	@SubscribeEvent

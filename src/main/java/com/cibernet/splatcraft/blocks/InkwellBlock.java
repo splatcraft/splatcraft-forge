@@ -25,7 +25,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class InkwellBlock extends Block
+public class InkwellBlock extends Block implements IColoredBlock
 {
 	public InkwellBlock()
 	{
@@ -78,4 +78,29 @@ public class InkwellBlock extends Block
 		return SplatcraftTileEntitites.colorTileEntity.get().create();
 	}
 	
+	@Override
+	public boolean canClimb()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean canSwim()
+	{
+		return true;
+	}
+	
+	@Override
+	public boolean canDamage()
+	{
+		return false;
+	}
+	
+	@Override
+	public int getColor(World world, BlockPos pos)
+	{
+		if(world.getTileEntity(pos) instanceof InkColorTileEntity)
+			return ((InkColorTileEntity) world.getTileEntity(pos)).getColor();
+		return -1;
+	}
 }

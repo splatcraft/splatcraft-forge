@@ -25,6 +25,7 @@ public class InkBlockUtils
 			if(((InkedBlockTileEntity) te).getColor() == color)
 				return false;
 			((InkedBlockTileEntity) te).setColor(color);
+			world.notifyBlockUpdate(pos, state, state, 2);
 			return true;
 		}
 		else if(te != null) return false;
@@ -51,7 +52,9 @@ public class InkBlockUtils
 		if(entity.world.getBlockState(entity.getPosition().down()).getBlock() instanceof IColoredBlock)
 			canSwim = ((IColoredBlock) entity.world.getBlockState(entity.getPosition().down()).getBlock()).canSwim();
 		
-		return ColorUtils.colorEquals(entity, entity.world.getTileEntity(entity.getPosition().down()));
+		if(canSwim)
+			return ColorUtils.colorEquals(entity, entity.world.getTileEntity(entity.getPosition().down()));
+		return false;
 	}
 	
 	public static boolean onEnemyInk(LivingEntity entity)

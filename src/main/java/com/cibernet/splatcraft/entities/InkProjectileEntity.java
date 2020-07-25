@@ -122,7 +122,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		this.func_230299_a_(result);
 		//InkBlockUtils.inkBlock(world, result.getPos(), getColor(), InkBlockUtils.InkType.NORMAL);
 		
-		InkExplosion.createInkExplosion(world, this, new DamageSource(""), getPosition(), getProjectileSize(), splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+		InkExplosion.createInkExplosion(world, this, new DamageSource(""), getPosition(), getProjectileSize()*0.85f, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
 		
 		this.remove();
 	}
