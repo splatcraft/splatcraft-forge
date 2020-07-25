@@ -31,6 +31,11 @@ public class ShooterItem extends WeaponBaseItem
 		this.inkConsumption = inkConsumption;
 	}
 	
+	public ShooterItem(String name, ShooterItem parent)
+	{
+		this(name, parent.projectileSize, parent.projectileSpeed, parent.inaccuracy, parent.firingSpeed, parent.damage, parent.inkConsumption);
+	}
+	
 	@Override
 	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
