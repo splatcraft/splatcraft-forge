@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.ColorUtils;
+import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,7 +36,7 @@ public class ShooterItem extends WeaponBaseItem
 	{
 		if(!world.isRemote && (getUseDuration(stack)-timeLeft-1) % firingSpeed == 0)
 		{
-			InkProjectileEntity proj = new InkProjectileEntity(world, entity, ColorUtils.getInkColor(stack), projectileSize);
+			InkProjectileEntity proj = new InkProjectileEntity(world, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage);
 			proj.shoot(entity, entity.rotationPitch, entity.rotationYaw, 0.0f, projectileSpeed, inaccuracy);
 			world.addEntity(proj);
 		}

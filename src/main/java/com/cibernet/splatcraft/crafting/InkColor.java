@@ -2,21 +2,24 @@ package com.cibernet.splatcraft.crafting;
 
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
+
+import javax.annotation.Nullable;
 
 public class InkColor
 {
 	private final int hexCode;
 	private final String name;
-	private final Item filter;
 	private final MaterialColor materialColor;
+	private final DyeColor dyeColor;
 	
-	public InkColor(String registryName, int color, int mapColor, Item filter)
+	public InkColor(String registryName, int color, int mapColor, @Nullable DyeColor dyeColor)
 	{
 		hexCode = color;
 		name = registryName;
 		materialColor = MaterialColor.COLORS[mapColor];
-		this.filter = filter;
+		this.dyeColor = dyeColor;
 	}
 	
 	public String getLocalizedName()
@@ -30,7 +33,7 @@ public class InkColor
 	
 	public int getColor() {return hexCode;}
 	public MaterialColor getMaterialColor() {return materialColor;}
-	public Item getFilter() {return filter;}
+	public @Nullable DyeColor getDyeColor() {return dyeColor;}
 	public String getName() {return name;}
 	
 	@Override

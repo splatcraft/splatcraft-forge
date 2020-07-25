@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.*;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.client.resources.JsonReloadListener;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -87,19 +88,19 @@ public class InkColorManager extends JsonReloadListener
 		
 		String name = JSONUtils.getString(json, "name");
 		int code;
-		Item filter = null;
+		DyeColor dye = null;
 		int mapColor = MaterialColor.CLAY.colorIndex;
 		
 		
 		code = Integer.parseInt(JSONUtils.getString(json, "hex"),16);
 		
-		try { filter = JSONUtils.getItem(json, "filter");}
+		try { dye = DyeColor.byTranslationKey(JSONUtils.getString(json, "dye"), null);}
 		catch(JsonSyntaxException e) {}
 		
 		try { mapColor = JSONUtils.getInt(json, "map_color"); }
 		catch(JsonSyntaxException e) {}
 		
-		return new InkColor(name, code, mapColor, filter);
+		return new InkColor(name, code, mapColor, dye);
 	}
 	
 	public InkColor getColorByHex(int hex)

@@ -38,6 +38,7 @@ public class InkBlockUtils
 	}
 	
 	
+	
 	public static boolean canSquidHide(LivingEntity entity)
 	{
 		return canSquidSwim(entity) || canSquidClimb(entity);
@@ -78,6 +79,11 @@ public class InkBlockUtils
 				return true;
 		}
 		return false;
+	}
+	
+	public static InkBlockUtils.InkType getInkType(LivingEntity entity) //TODO
+	{
+		return InkBlockUtils.InkType.NORMAL;
 	}
 	
 	public enum InkType
