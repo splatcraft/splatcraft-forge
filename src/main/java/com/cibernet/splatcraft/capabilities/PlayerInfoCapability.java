@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.capabilities;
 
+import com.cibernet.splatcraft.entities.InkSquidEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.IntNBT;
@@ -52,6 +53,9 @@ public class PlayerInfoCapability implements ICapabilitySerializable<CompoundNBT
 	
 	public static boolean isSquid(LivingEntity entity)
 	{
+		if(entity instanceof InkSquidEntity)
+			return true;
+		
 		try{ return get(entity).isSquid(); }
 		catch(NullPointerException e) { return false; }
 	}

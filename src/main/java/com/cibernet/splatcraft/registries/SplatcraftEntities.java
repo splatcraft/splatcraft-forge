@@ -17,6 +17,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -73,5 +74,10 @@ public class SplatcraftEntities
 	{
 		RenderingRegistry.registerEntityRenderingHandler(INK_PROJECTILE, InkProjectileRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(INK_SQUID, InkSquidRenderer::new);
+	}
+	
+	public static void setEntityAttributes()
+	{
+		GlobalEntityTypeAttributes.put(SplatcraftEntities.INK_SQUID, InkSquidEntity.setCustomAttributes().create());
 	}
 }

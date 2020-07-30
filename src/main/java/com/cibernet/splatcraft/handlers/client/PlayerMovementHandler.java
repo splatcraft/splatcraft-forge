@@ -23,24 +23,32 @@ import net.minecraftforge.fml.common.Mod;
 public class PlayerMovementHandler
 {
 	private static final AttributeModifier SQUID_SWIM_SPEED = (new AttributeModifier( "Squid swim speed boost", 0D, AttributeModifier.Operation.ADDITION));
+	private static final AttributeModifier ENEMY_INK_SPEED = (new AttributeModifier( "Enemy ink speed penalty", -0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL));
 	
 	@SubscribeEvent
 	public static void playerMovement(PlayerSPPushOutOfBlocksEvent event)
 	{
 		ClientPlayerEntity player = (ClientPlayerEntity) event.getPlayer();
 		MovementInput input = player.movementInput;
-		ModifiableAttributeInstance attributeInstance = player.getAttribute(Attributes.MOVEMENT_SPEED);
+		ModifiableAttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		
-		if(attributeInstance.hasModifier(SQUID_SWIM_SPEED) && player.isOnGround())
-			attributeInstance.removeModifier(SQUID_SWIM_SPEED);
+		if(speedAttribute.hasModifier(SQUID_SWIM_SPEED) && player.isOnGround())
+			speedAttribute.removeModifier(SQUID_SWIM_SPEED);
+		if(speedAttribute.hasModifier(ENEMY_INK_SPEED))
+			speedAttribute.removeModifier(ENEMY_INK_SPEED);
 		
-		
+		if(InkBlockUtils.onEnemyInk(player))
+		{
+			player.setMotion(player.getMotion().x, Math.min(player.getMotion().y, 0.05f), player.getMotion().z);
+			if(!speedAttribute.hasModifier(ENEMY_INK_SPEED))
+				speedAttribute.applyNonPersistentModifier(ENEMY_INK_SPEED);
+		}
 		
 		if(PlayerInfoCapability.isSquid(player))
 		{
 			
-			if(InkBlockUtils.canSquidSwim(player) && !attributeInstance.hasModifier(SQUID_SWIM_SPEED))
-				attributeInstance.applyNonPersistentModifier(SQUID_SWIM_SPEED);
+			if(InkBlockUtils.canSquidSwim(player) && !speedAttribute.hasModifier(SQUID_SWIM_SPEED))
+				speedAttribute.applyNonPersistentModifier(SQUID_SWIM_SPEED);
 			
 			float speedMod = InkBlockUtils.canSquidHide(player) ? 20f : 2f;
 			
@@ -98,7 +106,7 @@ public class PlayerMovementHandler
 		
 		if(!player.abilities.isFlying)
 		{
-			if(attributeInstance.hasModifier(SQUID_SWIM_SPEED))
+			if(speedAttribute.hasModifier(SQUID_SWIM_SPEED))
 			{
 				player.moveRelative(0.075f * (player.isOnGround() ? 1 : 0.2f), new Vector3d(player.moveStrafing, 0.0f, player.moveForward));
 				//player.moveRelative(0, (float) Math.max(player.motionY, 0), 0, 0.06f);

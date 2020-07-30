@@ -10,6 +10,7 @@ import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,6 +18,7 @@ import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -41,12 +43,6 @@ public class Splatcraft
 		SplatcraftTileEntitites.init();
 		
 		MinecraftForge.EVENT_BUS.register(this);
-		//MinecraftForge.EVENT_BUS.register(new SplatcraftData());
-		MinecraftForge.EVENT_BUS.register(new SplatcraftCapabilities());
-		MinecraftForge.EVENT_BUS.register(new SplatcraftCommonHandler());
-		MinecraftForge.EVENT_BUS.register(new WeaponHandler());
-		//MinecraftForge.EVENT_BUS.register(new PlayerMovementHandler());
-		//MinecraftForge.EVENT_BUS.register(new SplatcraftKeyHandler());
 		MinecraftForge.EVENT_BUS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 	
@@ -55,21 +51,30 @@ public class Splatcraft
 		SplatcraftCapabilities.registerCapabilities();
 		SplatcraftPacketHandler.registerMessages();
 		
-		DeferredWorkQueue.runLater(() -> {
-			GlobalEntityTypeAttributes.put(SplatcraftEntities.INK_SQUID, InkSquidEntity.setCustomAttributes().create());
+		DeferredWorkQueue.runLater(() ->
+		{
+			SplatcraftEntities.setEntityAttributes();
+			SplatcraftGameRules.registerGamerules();
 		});
+		
 	}
 	
 	private void clientSetup(final FMLClientSetupEvent event)
 	{
 		SplatcraftEntities.bindRenderers();
 		SplatcraftKeyHandler.registerKeys();
+		SplatcraftBlocks.setRenderLayers();
 	}
 	
 	@SubscribeEvent
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
 	
+	}
+	
+	@SubscribeEvent
+	public void onServerStarted(FMLServerStartedEvent event)
+	{
 	}
 	
 	@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)

@@ -15,13 +15,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Splatcraft.MODID)
 public class WeaponHandler
 {
 	private static Map<PlayerEntity, Vector3d> prevPosMap = new LinkedHashMap<>();
 	
 	@SubscribeEvent
-	public void onPlayerTick(TickEvent.PlayerTickEvent event)
+	public static void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
 		if(event.phase == TickEvent.Phase.END)
 			return;

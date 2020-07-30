@@ -11,7 +11,9 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -49,5 +51,26 @@ public class SquidFormHandler
 	{
 		if(PlayerInfoCapability.get(event.getPlayer()).isSquid() && InkBlockUtils.canSquidHide(event.getPlayer()))
 			event.modifyVisibility(0);
+	}
+	
+	@SubscribeEvent
+	public static void playerBreakSpeed(PlayerEvent.BreakSpeed event)
+	{
+		if(PlayerInfoCapability.isSquid(event.getPlayer()))
+			event.setNewSpeed(0);
+	}
+	
+	@SubscribeEvent
+	public static void onPlayerAttackEntity(AttackEntityEvent event)
+	{
+		if(PlayerInfoCapability.isSquid(event.getPlayer()))
+			event.setCanceled(true);
+	}
+	
+	@SubscribeEvent
+	public static void onPlayerInteract(PlayerInteractEvent event)
+	{
+		if(PlayerInfoCapability.isSquid(event.getPlayer()) && event.isCancelable())
+			event.setCanceled(true);
 	}
 }
