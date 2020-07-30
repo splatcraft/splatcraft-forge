@@ -186,5 +186,17 @@
     
     "entity.splatcraft.ink_projectile": "Ink Projectile",
     "entity.splatcraft.ink_squid": "Squid",
-    "entity.splatcraft.squid_bumper": "Squid Bumper"
+    "entity.splatcraft.squid_bumper": "Squid Bumper",
+    
+    "gamerule.splatcraft.inkDecay": "Ink decay",
+    "gamerule.splatcraft.coloredNameplates": "Ink-colored nameplates",
+    "gamerule.splatcraft.coloredNameplates.description": "If enabled, the color of each player's nameplate will match their ink.",
+    "gamerule.splatcraft.keepSplatcraftWeapons": "Keep Splatcraft weapons after death",
+    "gamerule.splatcraft.waterDamage": "Deal water damage",
+    "gamerule.splatcraft.dropCrateLoot": "Drop Sunken Crate loot when mined",
+    "gamerule.splatcraft.requireInkTank": "Require ink when using Splatcraft Weapons",
+    "gamerule.splatcraft.universalInk": "Universal Ink",
+    "gamerule.splatcraft.universalInk.description": "Allows players to swim on enemy ink."
+    
+    
 }
