@@ -1,13 +1,15 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.items.BlockItem;
-import com.cibernet.splatcraft.items.InkwellItem;
-import com.cibernet.splatcraft.items.ShooterItem;
+import com.cibernet.splatcraft.items.*;
+import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
 import net.minecraft.block.Block;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
@@ -27,6 +29,9 @@ public class SplatcraftItems
 {
 	public static final List<Item> weapons = new ArrayList<>();
 	public static final ArrayList<Item> inkColoredItems = new ArrayList<>();
+	
+	//Armor Materials
+	public static final IArmorMaterial INK_CLOTH = new SplatcraftArmorMaterial("ink_cloth", SoundEvents.ITEM_ARMOR_EQUIP_LEATHER);
 	
 	//Shooters
 	public static final ShooterItem splattershot = new ShooterItem("splattershot", 1.05f, 0.65f, 12f, 4, 8f, 0.9f);
@@ -51,17 +56,24 @@ public class SplatcraftItems
 	//Ink Tanks
 	
 	//Vanity
+	public static final Item inkClothHelmet = new ColoredArmorItem("ink_cloth_helmet", INK_CLOTH, EquipmentSlotType.HEAD);
+	public static final Item inkClothChestplate = new ColoredArmorItem("ink_cloth_chestplate", INK_CLOTH, EquipmentSlotType.CHEST);
+	public static final Item inkClothLeggings = new ColoredArmorItem("ink_cloth_leggings", INK_CLOTH, EquipmentSlotType.LEGS);
+	public static final Item inkClothBoots = new ColoredArmorItem("ink_cloth_boots", INK_CLOTH, EquipmentSlotType.FEET);
 	
 	//Materials
 	public static final Item sardinium = new Item(new Item.Properties().group(GROUP_GENERAL)).setRegistryName("sardinium");
 	public static final Item sardiniumBlock = new BlockItem(SplatcraftBlocks.sardiniumBlock).setRegistryName("sardinium_block");
 	public static final Item sardiniumOre = new BlockItem(SplatcraftBlocks.sardiniumOre).setRegistryName("sardinium_ore");
 	public static final Item powerEgg = new Item(new Item.Properties().group(GROUP_GENERAL)).setRegistryName("power_egg");
+	public static final Item powerEggCan = new PowerEggCanItem("power_egg_can");
 	public static final Item powerEggBlock = new BlockItem(SplatcraftBlocks.powerEggBlock).setRegistryName("power_egg_block");
+	public static final Item emptyInkwell = new BlockItem(SplatcraftBlocks.emptyInkwell).setRegistryName("empty_inkwell");
 	
 	//Remotes
 	
 	//Map Items
+	public static final Item grate = new BlockItem(SplatcraftBlocks.grate).setRegistryName("grate");
 	public static final Item inkwell = new InkwellItem().setRegistryName("inkwell");
 	
 	//Misc
@@ -74,11 +86,21 @@ public class SplatcraftItems
 		for(Item item : weapons)
 			registry.register(item);
 		
+		registry.register(inkClothHelmet);
+		registry.register(inkClothChestplate);
+		registry.register(inkClothLeggings);
+		registry.register(inkClothBoots);
+		
 		registry.register(sardinium);
 		registry.register(sardiniumBlock);
 		registry.register(sardiniumOre);
 		registry.register(powerEgg);
+		registry.register(powerEggCan);
 		registry.register(powerEggBlock);
+		registry.register(emptyInkwell);
+		
+		registry.register(grate);
 		registry.register(inkwell);
+		
 	}
 }

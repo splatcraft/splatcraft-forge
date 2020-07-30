@@ -1,22 +1,18 @@
 package com.cibernet.splatcraft.registries;
 
-import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.blocks.*;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.ArrayList;
@@ -32,8 +28,10 @@ public class SplatcraftBlocks
 	public static final Block sardiniumOre = new OreBlock(0).setRegistryName("sardinium_ore");
 	public static final Block powerEggBlock = new LightBlock(9, AbstractBlock.Properties.create(Material.GOURD, DyeColor.ORANGE).harvestTool(ToolType.SHOVEL).sound(SoundType.SLIME).hardnessAndResistance(0.2f, 0)).setRegistryName("power_egg_block");
 	
+	public static final Block emptyInkwell = new EmptyInkwellBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS)).setRegistryName("empty_inkwell");
 	public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
 	
+	public static final Block grate = new GrateBlock("grate");
 	
 	@SubscribeEvent
 	public static void blockInit(final RegistryEvent.Register<Block> event)
@@ -45,11 +43,15 @@ public class SplatcraftBlocks
 		registry.register(sardiniumOre);
 		registry.register(powerEggBlock);
 		
+		registry.register(emptyInkwell);
 		registry.register(inkwell);
+		
+		registry.register(grate);
 	}
 	
-	public static void init()
+	public static void setRenderLayers()
 	{
-		//REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
+		RenderTypeLookup.setRenderLayer(emptyInkwell, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(grate, RenderType.getCutout());
 	}
 }

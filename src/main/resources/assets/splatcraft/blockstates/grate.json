@@ -1,6 +1,6 @@
 {
     "variants": {
-        "half=bottom": { "model": "splatcraft:grate_bottom" },
-        "half=top": { "model": "splatcraft:grate_top" }
+        "half=bottom": { "model": "splatcraft:block/grate_bottom" },
+        "half=top": { "model": "splatcraft:block/grate_top" }
     }
 }
