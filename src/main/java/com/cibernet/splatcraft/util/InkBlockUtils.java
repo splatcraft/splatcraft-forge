@@ -33,6 +33,8 @@ public class InkBlockUtils
 		world.setBlockState(pos, SplatcraftBlocks.inkedBlock.getDefaultState(), 3);
 		world.setTileEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(SplatcraftBlocks.inkedBlock.getDefaultState(), world));
 		InkedBlockTileEntity inkte = (InkedBlockTileEntity) world.getTileEntity(pos);
+		if(inkte == null)
+			return false;
 		inkte.setColor(color);
 		inkte.setSavedState(state);
 		return true;

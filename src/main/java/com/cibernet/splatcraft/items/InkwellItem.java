@@ -9,15 +9,18 @@ import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -35,8 +38,22 @@ public class InkwellItem extends BlockItem
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
 		super.addInformation(stack, world, tooltip, flag);
-		tooltip.add(new StringTextComponent(TextFormatting.GRAY + ColorUtils.getColorName(ColorUtils.getInkColor(stack))));
+		tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
 		
+	}
+	@Override
+	protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state)
+	{
+		MinecraftServer server = worldIn.getServer();
+		if (server == null)
+			return false;
+		
+		int color = ColorUtils.getInkColor(stack);
+		
+		if(color != -1 && worldIn.getTileEntity(pos) instanceof InkColorTileEntity)
+			((InkColorTileEntity) worldIn.getTileEntity(pos)).setColor(color);
+		
+		return super.onBlockPlaced(pos, worldIn, player, stack, state);
 	}
 	
 	@Override
@@ -47,4 +64,12 @@ public class InkwellItem extends BlockItem
 				items.add(ColorUtils.setInkColor(new ItemStack(this), color));
 	}
 	
+	@Override
+	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
+	{
+		super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
+		
+		if(ColorUtils.getInkColor(stack) == -1)
+			ColorUtils.setInkColor(stack, ColorUtils.DEFAULT);
+	}
 }

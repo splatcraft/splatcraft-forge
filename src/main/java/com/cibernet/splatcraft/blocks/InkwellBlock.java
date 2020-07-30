@@ -20,6 +20,9 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -27,11 +30,23 @@ import javax.annotation.Nullable;
 
 public class InkwellBlock extends Block implements IColoredBlock
 {
+	private static final VoxelShape SHAPE = VoxelShapes.or(
+			makeCuboidShape(0, 0, 0, 16, 12, 16),
+			makeCuboidShape(1, 12, 1, 14/16f, 13, 14),
+			makeCuboidShape(0, 13, 0, 16, 16, 16));
+	
+	
 	public InkwellBlock()
 	{
 		super(Properties.create(Material.GLASS));
 		
 		SplatcraftBlocks.inkColoredBlocks.add(this);
+	}
+	
+	@Override
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+	{
+		return SHAPE;
 	}
 	
 	public PushReaction getPushReaction(BlockState state) {
@@ -102,5 +117,26 @@ public class InkwellBlock extends Block implements IColoredBlock
 		if(world.getTileEntity(pos) instanceof InkColorTileEntity)
 			return ((InkColorTileEntity) world.getTileEntity(pos)).getColor();
 		return -1;
+	}
+	
+	@Override
+	public void remoteColorChange(World world, BlockPos pos, int newColor)
+	{
+		BlockState state = world.getBlockState(pos);
+		if(world.getTileEntity(pos) instanceof InkColorTileEntity)
+			((InkColorTileEntity) world.getTileEntity(pos)).setColor(newColor);
+		world.notifyBlockUpdate(pos, state, state, 2);
+	}
+	
+	@Override
+	public void remoteInkClear(World world, BlockPos pos)
+	{
+	
+	}
+	
+	@Override
+	public boolean countsTowardsTurf(World world, BlockPos pos)
+	{
+		return false;
 	}
 }

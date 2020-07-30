@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
 public class ColorUtils
@@ -97,6 +98,8 @@ public class ColorUtils
 	{
 		InkColor colorObj = InkColorManager.instance.getColorByHex(color);
 		
+		String colorFormatting = "";//TextFormatting.fromColorIndex(color).toString();
+		
 		if(colorObj != null)
 			return colorObj.getLocalizedName();
 		
@@ -109,6 +112,13 @@ public class ColorUtils
 		
 	}
 	
+	public static ITextComponent getFormatedColorName(int color, boolean isTooltip)
+	{
+		if(color == ColorUtils.DEFAULT)
+			return new StringTextComponent( (isTooltip ? TextFormatting.GRAY : "") + getColorName(color));
+		return new StringTextComponent(getColorName(color)).setStyle(Style.EMPTY.setColor(Color.func_240743_a_(color)));
+	}
+	
 	public static boolean colorEquals(LivingEntity entity, TileEntity te)
 	{
 		int a = getEntityColor(entity);
@@ -117,6 +127,22 @@ public class ColorUtils
 		if(a == -1 || b == -1)
 			return false;
 		return a == b;
+	}
+	
+	public static ItemStack setColorLocked(ItemStack stack, boolean isLocked)
+	{
+		stack.getOrCreateTag().putBoolean("ColorLocked", isLocked);
+		return stack;
+	}
+	
+	public static boolean isColorLocked(ItemStack stack)
+	{
+		CompoundNBT nbt = stack.getTag();
+		
+		if(nbt == null || !nbt.contains("ColorLocked"))
+			return false;
+		
+		return nbt.getBoolean("ColorLocked");
 	}
 	
 	public static int getRandomStarterColor()
