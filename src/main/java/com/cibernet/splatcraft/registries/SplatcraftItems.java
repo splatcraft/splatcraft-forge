@@ -74,6 +74,7 @@ public class SplatcraftItems
 	
 	//Map Items
 	public static final Item grate = new BlockItem(SplatcraftBlocks.grate).setRegistryName("grate");
+	public static final Item barrierBar = new BlockItem(SplatcraftBlocks.barrierBar).setRegistryName("barrier_bar");
 	public static final Item inkwell = new InkwellItem().setRegistryName("inkwell");
 	
 	//Misc
@@ -100,6 +101,7 @@ public class SplatcraftItems
 		registry.register(emptyInkwell);
 		
 		registry.register(grate);
+		registry.register(barrierBar);
 		registry.register(inkwell);
 		
 	}

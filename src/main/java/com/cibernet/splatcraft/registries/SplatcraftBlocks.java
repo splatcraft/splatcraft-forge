@@ -32,6 +32,7 @@ public class SplatcraftBlocks
 	public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
 	
 	public static final Block grate = new GrateBlock("grate");
+	public static final Block barrierBar = new BarrierBarBlock("barrier_bar");
 	
 	@SubscribeEvent
 	public static void blockInit(final RegistryEvent.Register<Block> event)
@@ -47,6 +48,7 @@ public class SplatcraftBlocks
 		registry.register(inkwell);
 		
 		registry.register(grate);
+		registry.register(barrierBar);
 	}
 	
 	public static void setRenderLayers()

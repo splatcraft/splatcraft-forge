@@ -1,24 +1,174 @@
 {
     "variants": {
-        "facing=north,shape=straight":  { "model": "splatcraft:barrier_bar" },
-        "facing=south,shape=straight":  { "model": "splatcraft:barrier_bar", "y": 180},
-        "facing=east,shape=straight": { "model": "splatcraft:barrier_bar", "y": 90},
-        "facing=west,shape=straight": { "model": "splatcraft:barrier_bar", "y": 270},
-        "facing=north,shape=outer_right":  { "model": "splatcraft:barrier_bar_corner" },
-        "facing=south,shape=outer_right":  { "model": "splatcraft:barrier_bar_corner", "y": 180},
-        "facing=east,shape=outer_right": { "model": "splatcraft:barrier_bar_corner", "y": 90},
-        "facing=west,shape=outer_right": { "model": "splatcraft:barrier_bar_corner", "y": 270},
-        "facing=north,shape=outer_left":  { "model": "splatcraft:barrier_bar_corner", "y": 270},
-        "facing=south,shape=outer_left":  { "model": "splatcraft:barrier_bar_corner", "y": 90},
-        "facing=east,shape=outer_left": { "model": "splatcraft:barrier_bar_corner" },
-        "facing=west,shape=outer_left": { "model": "splatcraft:barrier_bar_corner", "y": 180},
-        "facing=north,shape=inner_right":  { "model": "splatcraft:barrier_bar_edge" },
-        "facing=south,shape=inner_right":  { "model": "splatcraft:barrier_bar_edge", "y": 180},
-        "facing=east,shape=inner_right": { "model": "splatcraft:barrier_bar_edge", "y": 90},
-        "facing=west,shape=inner_right": { "model": "splatcraft:barrier_bar_edge", "y": 270},
-        "facing=north,shape=inner_left":  { "model": "splatcraft:barrier_bar_edge", "y": 270},
-        "facing=south,shape=inner_left":  { "model": "splatcraft:barrier_bar_edge", "y": 90},
-        "facing=east,shape=inner_left": { "model": "splatcraft:barrier_bar_edge" },
-        "facing=west,shape=inner_left": { "model": "splatcraft:barrier_bar_edge", "y": 180}
+        "facing=east,half=bottom,shape=inner_left": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "y": 270
+        },
+        "facing=east,half=bottom,shape=inner_right": {
+            "model": "splatcraft:block/barrier_bar_inner"
+        },
+        "facing=east,half=bottom,shape=outer_left": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "y": 270
+        },
+        "facing=east,half=bottom,shape=outer_right": {
+            "model": "splatcraft:block/barrier_bar_outer"
+        },
+        "facing=east,half=bottom,shape=straight": {
+            "model": "splatcraft:block/barrier_bar"
+        },
+        "facing=east,half=top,shape=inner_left": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "x": 180
+        },
+        "facing=east,half=top,shape=inner_right": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "x": 180,
+            "y": 90
+        },
+        "facing=east,half=top,shape=outer_left": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "x": 180
+        },
+        "facing=east,half=top,shape=outer_right": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "x": 180,
+            "y": 90
+        },
+        "facing=east,half=top,shape=straight": {
+            "model": "splatcraft:block/barrier_bar",
+            "x": 180
+        },
+        "facing=north,half=bottom,shape=inner_left": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "y": 180
+        },
+        "facing=north,half=bottom,shape=inner_right": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "y": 270
+        },
+        "facing=north,half=bottom,shape=outer_left": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "y": 180
+        },
+        "facing=north,half=bottom,shape=outer_right": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "y": 270
+        },
+        "facing=north,half=bottom,shape=straight": {
+            "model": "splatcraft:block/barrier_bar",
+            "y": 270
+        },
+        "facing=north,half=top,shape=inner_left": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "x": 180,
+            "y": 270
+        },
+        "facing=north,half=top,shape=inner_right": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "x": 180
+        },
+        "facing=north,half=top,shape=outer_left": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "x": 180,
+            "y": 270
+        },
+        "facing=north,half=top,shape=outer_right": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "x": 180
+        },
+        "facing=north,half=top,shape=straight": {
+            "model": "splatcraft:block/barrier_bar",
+            "x": 180,
+            "y": 270
+        },
+        "facing=south,half=bottom,shape=inner_left": {
+            "model": "splatcraft:block/barrier_bar_inner"
+        },
+        "facing=south,half=bottom,shape=inner_right": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "y": 90
+        },
+        "facing=south,half=bottom,shape=outer_left": {
+            "model": "splatcraft:block/barrier_bar_outer"
+        },
+        "facing=south,half=bottom,shape=outer_right": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "y": 90
+        },
+        "facing=south,half=bottom,shape=straight": {
+            "model": "splatcraft:block/barrier_bar",
+            "y": 90
+        },
+        "facing=south,half=top,shape=inner_left": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "x": 180,
+            "y": 90
+        },
+        "facing=south,half=top,shape=inner_right": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "x": 180,
+            "y": 180
+        },
+        "facing=south,half=top,shape=outer_left": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "x": 180,
+            "y": 90
+        },
+        "facing=south,half=top,shape=outer_right": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "x": 180,
+            "y": 180
+        },
+        "facing=south,half=top,shape=straight": {
+            "model": "splatcraft:block/barrier_bar",
+            "x": 180,
+            "y": 90
+        },
+        "facing=west,half=bottom,shape=inner_left": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "y": 90
+        },
+        "facing=west,half=bottom,shape=inner_right": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "y": 180
+        },
+        "facing=west,half=bottom,shape=outer_left": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "y": 90
+        },
+        "facing=west,half=bottom,shape=outer_right": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "y": 180
+        },
+        "facing=west,half=bottom,shape=straight": {
+            "model": "splatcraft:block/barrier_bar",
+            "y": 180
+        },
+        "facing=west,half=top,shape=inner_left": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "x": 180,
+            "y": 180
+        },
+        "facing=west,half=top,shape=inner_right": {
+            "model": "splatcraft:block/barrier_bar_inner",
+            "x": 180,
+            "y": 270
+        },
+        "facing=west,half=top,shape=outer_left": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "x": 180,
+            "y": 180
+        },
+        "facing=west,half=top,shape=outer_right": {
+            "model": "splatcraft:block/barrier_bar_outer",
+            "x": 180,
+            "y": 270
+        },
+        "facing=west,half=top,shape=straight": {
+            "model": "splatcraft:block/barrier_bar",
+            "x": 180,
+            "y": 180
+        }
     }
 }
