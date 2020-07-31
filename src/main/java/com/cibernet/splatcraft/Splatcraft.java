@@ -11,6 +11,7 @@ import com.cibernet.splatcraft.registries.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,6 +24,8 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Map;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Splatcraft.MODID)
@@ -75,6 +78,8 @@ public class Splatcraft
 	@SubscribeEvent
 	public void onServerStarted(FMLServerStartedEvent event)
 	{
+		for(Map.Entry<Integer, Boolean> rule : SplatcraftGameRules.booleanRules.entrySet())
+			SplatcraftGameRules.booleanRules.put(rule.getKey(), event.getServer().getGameRules().getBoolean(SplatcraftGameRules.getRuleFromIndex(rule.getKey())));
 	}
 	
 	@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)

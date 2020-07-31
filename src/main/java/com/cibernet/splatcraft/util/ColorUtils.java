@@ -6,6 +6,7 @@ import com.cibernet.splatcraft.crafting.InkColorManager;
 import com.cibernet.splatcraft.entities.IColoredEntity;
 import com.cibernet.splatcraft.network.PlayerColorPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
+import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
@@ -126,7 +127,7 @@ public class ColorUtils
 		
 		if(a == -1 || b == -1)
 			return false;
-		return a == b;
+		return SplatcraftGameRules.getBooleanRuleValue(entity.world, SplatcraftGameRules.UNIVERSAL_INK) ? true : a == b;
 	}
 	
 	public static ItemStack setColorLocked(ItemStack stack, boolean isLocked)

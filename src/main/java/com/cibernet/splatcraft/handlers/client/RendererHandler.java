@@ -66,7 +66,7 @@ public class RendererHandler
 	@SubscribeEvent
 	public static void renderNameplate(RenderNameplateEvent event)
 	{
-		if(event.getEntity().world.getGameRules().getBoolean(SplatcraftGameRules.COLORED_NAMEPLATES) && event.getEntity() instanceof LivingEntity)
+		if(SplatcraftGameRules.getBooleanRuleValue(event.getEntity().world, SplatcraftGameRules.COLORED_NAMEPLATES) && event.getEntity() instanceof LivingEntity)
 		{
 			int color = ColorUtils.getEntityColor((LivingEntity) event.getEntity());
 			if(color != -1)
