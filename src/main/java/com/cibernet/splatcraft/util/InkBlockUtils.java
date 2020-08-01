@@ -1,12 +1,13 @@
 package com.cibernet.splatcraft.util;
 
+import com.cibernet.splatcraft.blocks.AbstractSquidPassthroughBlock;
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.InkedBlock;
+import com.cibernet.splatcraft.data.tags.SplatcraftTags;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -20,15 +21,11 @@ public class InkBlockUtils
 		BlockState state = world.getBlockState(pos);
 		TileEntity te = world.getTileEntity(pos);
 		
-		if(te instanceof InkedBlockTileEntity)
-		{
-			if(((InkedBlockTileEntity) te).getColor() == color)
-				return false;
-			((InkedBlockTileEntity) te).setColor(color);
-			world.notifyBlockUpdate(pos, state, state, 2);
-			return true;
-		}
-		else if(te != null) return false;
+		if(state.getBlock() instanceof IColoredBlock)
+			return ((IColoredBlock) state.getBlock()).inkBlock(world, pos, color, inkType);
+			
+		if(!canInk(world, pos))
+			return false;
 		
 		world.setBlockState(pos, SplatcraftBlocks.inkedBlock.getDefaultState(), 3);
 		world.setTileEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(SplatcraftBlocks.inkedBlock.getDefaultState(), world));
@@ -40,7 +37,47 @@ public class InkBlockUtils
 		return true;
 	}
 	
+	public static boolean canInk(World world, BlockPos pos)
+	{
+		Block block = world.getBlockState(pos).getBlock();
+		
+		if(SplatcraftTags.Blocks.UNINKABLE_BLOCKS.contains(block))
+			return false;
+		
+		if(block instanceof StairsBlock || block instanceof SlabBlock || block instanceof BarrierBlock)
+			return true;
+		
+		if(world.getTileEntity(pos) != null)
+			return false;
+		
+		
+		if(SplatcraftTags.Blocks.INKABLE_BLOCKS.contains(block))
+			return true;
+		
+		if(canInkPassthrough(world, pos))
+			return false;
+		
+		if(!world.getBlockState(pos).isOpaqueCube(world, pos))
+			return false;
+		
+		if(block.isTransparent(world.getBlockState(pos)))
+			return false;
+			
+		return true;
+	}
 	
+	public static boolean canInkPassthrough(World world, BlockPos pos)
+	{
+		BlockState state = world.getBlockState(pos);
+		
+		if(state.getBlock() instanceof AbstractSquidPassthroughBlock)
+			return true;
+		
+		if(state.getCollisionShape(world, pos).isEmpty())
+			return true;
+		
+		return false;
+	}
 	
 	public static boolean canSquidHide(LivingEntity entity)
 	{

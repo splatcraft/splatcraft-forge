@@ -119,9 +119,10 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	
 	protected void onBlockHit(BlockRayTraceResult result)
 	{
+		if(InkBlockUtils.canInkPassthrough(world, result.getPos()))
+			return;
+			
 		this.func_230299_a_(result);
-		//InkBlockUtils.inkBlock(world, result.getPos(), getColor(), InkBlockUtils.InkType.NORMAL);
-		
 		InkExplosion.createInkExplosion(world, this, new DamageSource(""), getPosition(), getProjectileSize()*0.85f, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
 		
 		this.remove();

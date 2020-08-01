@@ -18,6 +18,12 @@ public class InkSquidRenderer extends LivingRenderer<LivingEntity, InkSquidModel
 	}
 	
 	@Override
+	protected boolean canRenderName(LivingEntity entity)
+	{
+		return super.canRenderName(entity) && (entity.getAlwaysRenderNameTagForRender() || entity.hasCustomName() && entity == this.renderManager.pointedEntity);
+	}
+	
+	@Override
 	public ResourceLocation getEntityTexture(LivingEntity entity)
 	{
 		return TEXTURE;

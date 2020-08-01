@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft;
 
 import com.cibernet.splatcraft.data.SplatcraftData;
+import com.cibernet.splatcraft.data.tags.SplatcraftTags;
 import com.cibernet.splatcraft.entities.InkSquidEntity;
 import com.cibernet.splatcraft.handlers.SplatcraftCommonHandler;
 import com.cibernet.splatcraft.handlers.WeaponHandler;
@@ -60,6 +61,7 @@ public class Splatcraft
 			SplatcraftGameRules.registerGamerules();
 		});
 		
+		SplatcraftTags.register();
 	}
 	
 	private void clientSetup(final FMLClientSetupEvent event)

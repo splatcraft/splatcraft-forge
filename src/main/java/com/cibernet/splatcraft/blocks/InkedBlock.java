@@ -9,6 +9,7 @@ import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
+import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ConcretePowderBlock;
@@ -157,6 +158,22 @@ public class InkedBlock extends Block implements IColoredBlock
 	@Override
 	public boolean countsTowardsTurf(World world, BlockPos pos)
 	{
+		return true;
+	}
+	
+	@Override
+	public boolean inkBlock(World world, BlockPos pos, int color, InkBlockUtils.InkType inkType)
+	{
+		if(!(world.getTileEntity(pos) instanceof InkedBlockTileEntity))
+			return false;
+		
+		InkedBlockTileEntity te = (InkedBlockTileEntity) world.getTileEntity(pos);
+		BlockState state = world.getBlockState(pos);
+		
+		if(te.getColor() == color)
+			return false;
+		te.setColor(color);
+		world.notifyBlockUpdate(pos, state, state, 2);
 		return true;
 	}
 }

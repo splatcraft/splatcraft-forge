@@ -9,7 +9,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.Effects;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.Difficulty;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -25,6 +28,9 @@ public class SquidFormHandler
 	{
 		PlayerEntity player = event.player;
 		
+		if(InkBlockUtils.onEnemyInk(player) && player.ticksExisted % 20 == 0 && player.getHealth() > 4 && player.world.getDifficulty() != Difficulty.PEACEFUL)
+			player.attackEntityFrom(new DamageSource("enemyInk"), 2f);
+		
 		if(PlayerInfoCapability.isSquid(player))
 		{
 			player.setPose(Pose.FALL_FLYING);
@@ -33,7 +39,7 @@ public class SquidFormHandler
 			if(InkBlockUtils.canSquidSwim(player))
 			{
 				player.fallDistance = 0;
-				if(player.ticksExisted % 5 == 0)
+				if(player.ticksExisted % 5 == 0 && player.getActivePotionEffect(Effects.POISON) == null && player.getActivePotionEffect(Effects.WITHER) == null)
 					player.heal(0.5f);
 			}
 			
@@ -45,6 +51,9 @@ public class SquidFormHandler
 			}
 		}
 	}
+	
+	
+	
 	
 	@SubscribeEvent
 	public static void playerVisibility(PlayerEvent.Visibility event)
