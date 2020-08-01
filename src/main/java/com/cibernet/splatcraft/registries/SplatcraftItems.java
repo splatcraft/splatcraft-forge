@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.items.*;
 import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
@@ -103,6 +104,8 @@ public class SplatcraftItems
 		registry.register(grate);
 		registry.register(barrierBar);
 		registry.register(inkwell);
+		
+		registry.register(new net.minecraft.item.BlockItem(Blocks.IRON_BARS, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("minecraft","iron_bars"));
 		
 	}
 }

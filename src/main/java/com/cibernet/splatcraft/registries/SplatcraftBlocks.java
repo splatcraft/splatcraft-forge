@@ -49,6 +49,8 @@ public class SplatcraftBlocks
 		
 		registry.register(grate);
 		registry.register(barrierBar);
+		
+		registry.register(new IronBarsBlockOverride());
 	}
 	
 	public static void setRenderLayers()
