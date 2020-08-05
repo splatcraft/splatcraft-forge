@@ -6,6 +6,7 @@ import com.cibernet.splatcraft.registries.SplatcraftEntities;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
+import com.cibernet.splatcraft.util.InkDamageUtils;
 import com.cibernet.splatcraft.util.InkExplosion;
 import net.minecraft.entity.*;
 import net.minecraft.entity.monster.SlimeEntity;
@@ -113,9 +114,18 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	}
 	
 	@Override
-	protected void onEntityHit(EntityRayTraceResult p_213868_1_)
+	protected void onEntityHit(EntityRayTraceResult result)
 	{
-		super.onEntityHit(p_213868_1_);
+		super.onEntityHit(result);
+		
+		Entity target = result.getEntity();
+		
+		if(!canPierce)
+		{
+			if(target instanceof LivingEntity)
+				InkDamageUtils.doSplatDamage(world, (LivingEntity) target, damage, getColor(),  func_234616_v_(), sourceWeapon, damageMobs, inkType);
+			remove();
+		}
 	}
 	
 	protected void onBlockHit(BlockRayTraceResult result)
