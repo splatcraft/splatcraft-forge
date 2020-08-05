@@ -27,13 +27,7 @@ public class SplatcraftCommonHandler
 	public static void onPlayerClone(final PlayerEvent.Clone event)
 	{
 		PlayerEntity player = event.getPlayer();
-		
-		System.out.println(ColorUtils.getColorName(ColorUtils.getPlayerColor(player)) + " old:" + ColorUtils.getColorName(ColorUtils.getPlayerColor(event.getOriginal())));
-		
 		PlayerInfoCapability.get(player).readNBT(PlayerInfoCapability.get(event.getOriginal()).writeNBT(new CompoundNBT()));
-		SplatcraftPacketHandler.sendToDim(new UpdatePlayerInfoPacket(player), event.getPlayer().world);
-		
-		System.out.println(ColorUtils.getColorName(ColorUtils.getPlayerColor(player)) + " old:" + ColorUtils.getColorName(ColorUtils.getPlayerColor(event.getOriginal())) + "\n-");
 	}
 	
 	@SubscribeEvent
@@ -42,9 +36,22 @@ public class SplatcraftCommonHandler
 		if(event.getEntity() instanceof ServerPlayerEntity)
 		{
 			ServerPlayerEntity player = (ServerPlayerEntity) event.getEntity();
-			SplatcraftPacketHandler.sendToDim(new UpdatePlayerInfoPacket(player), event.getWorld());
 			SplatcraftPacketHandler.sendToPlayer(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.booleanRules), player);
 		}
+	}
+	
+	@SubscribeEvent
+	public static void capabilityUpdateEvent(TickEvent.PlayerTickEvent event)
+	{
+		try
+		{
+			if(event.player.deathTime <= 0 && !PlayerInfoCapability.get(event.player).isInitialized())
+			{
+				if(event.player.world.isRemote)
+					SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
+				PlayerInfoCapability.get(event.player).setInitialized(true);
+			}
+		} catch(NullPointerException e) {}
 	}
 	
 	@SubscribeEvent

@@ -5,6 +5,9 @@ import net.minecraft.util.math.vector.Vector3d;
 
 public interface IPlayerInfo
 {
+	boolean isInitialized();
+	void setInitialized(boolean init);
+	
 	int getColor();
 	void setColor(int color);
 	

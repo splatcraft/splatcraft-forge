@@ -11,6 +11,19 @@ public class PlayerInfo implements IPlayerInfo
 {
 	private int color = ColorUtils.getRandomStarterColor();
 	private boolean isSquid = false;
+	private boolean initialized = false;
+	
+	@Override
+	public boolean isInitialized()
+	{
+		return initialized;
+	}
+	
+	@Override
+	public void setInitialized(boolean init)
+	{
+		initialized = init;
+	}
 	
 	@Override
 	public int getColor()
@@ -41,6 +54,7 @@ public class PlayerInfo implements IPlayerInfo
 	{
 		nbt.putInt("Color",getColor());
 		nbt.putBoolean("IsSquid", isSquid());
+		nbt.putBoolean("Initialized", initialized);
 		return nbt;
 	}
 	
@@ -49,5 +63,6 @@ public class PlayerInfo implements IPlayerInfo
 	{
 		setColor(nbt.getInt("Color"));
 		setIsSquid(nbt.getBoolean("IsSquid"));
+		setInitialized(nbt.getBoolean("Initialized"));
 	}
 }
