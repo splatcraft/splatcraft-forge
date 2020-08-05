@@ -1,7 +1,5 @@
 package com.cibernet.splatcraft.items;
 
-import com.cibernet.splatcraft.handlers.client.ColorHandler;
-import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
@@ -11,13 +9,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
@@ -26,12 +20,23 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class InkwellItem extends BlockItem
+public class ColoredBlockItem extends BlockItem
 {
-	public InkwellItem()
+	public ColoredBlockItem(Block block, String name, Properties properties)
 	{
-		super(SplatcraftBlocks.inkwell, new Properties().maxStackSize(16).group(SplatcraftItemGroups.GROUP_GENERAL));
+		super(block, properties);
 		SplatcraftItems.inkColoredItems.add(this);
+		setRegistryName(name);
+	}
+	
+	public ColoredBlockItem(Block block, String name, int stackSize)
+	{
+		this(block, name, new Properties().maxStackSize(stackSize).group(SplatcraftItemGroups.GROUP_GENERAL));
+	}
+	
+	public ColoredBlockItem(Block block, String name)
+	{
+		this(block, name, 64);
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.registries;
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
+import com.cibernet.splatcraft.tileentities.InkwellTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -20,7 +21,8 @@ public class SplatcraftTileEntitites
 {
 	public static final DeferredRegister<TileEntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Splatcraft.MODID);
 	
-	public static final RegistryObject<TileEntityType<InkColorTileEntity>> colorTileEntity = registerTileEntity("color", InkColorTileEntity::new, inkwell);
+	public static final RegistryObject<TileEntityType<InkColorTileEntity>> colorTileEntity = registerTileEntity("color", InkColorTileEntity::new, inkedWool, canvas);
+	public static final RegistryObject<TileEntityType<InkwellTileEntity>> inkwellTileEntity = registerTileEntity("inkwell", InkwellTileEntity::new, inkwell);
 	public static final RegistryObject<TileEntityType<InkedBlockTileEntity>> inkedTileEntity = registerTileEntity("inked_block", InkedBlockTileEntity::new, inkedBlock);
 	
 	public static void init()

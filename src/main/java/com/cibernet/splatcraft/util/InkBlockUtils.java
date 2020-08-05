@@ -9,17 +9,30 @@ import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.*;
+
 public class InkBlockUtils
 {
+	
+	public static TreeMap<InkType, InkBlocks> inkTypeMap = new TreeMap<InkType, InkBlocks>()
+	{{
+		put(InkType.NORMAL, new InkBlocks(SplatcraftBlocks.inkedBlock).put(StairsBlock.class, SplatcraftBlocks.inkedStairs).put(SlabBlock.class, SplatcraftBlocks.inkedSlab));
+	}};
+	
+	
 	
 	public static boolean inkBlock(World world, BlockPos pos, int color, InkType inkType)
 	{
 		BlockState state = world.getBlockState(pos);
 		TileEntity te = world.getTileEntity(pos);
+		
+		if(InkedBlock.isTouchingLiquid(world, pos))
+			return false;
 		
 		if(state.getBlock() instanceof IColoredBlock)
 			return ((IColoredBlock) state.getBlock()).inkBlock(world, pos, color, inkType);
@@ -27,7 +40,8 @@ public class InkBlockUtils
 		if(!canInk(world, pos))
 			return false;
 		
-		world.setBlockState(pos, SplatcraftBlocks.inkedBlock.getDefaultState(), 3);
+		world.setBlockState(pos, getInkState(inkType, state), 3);
+		
 		world.setTileEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(SplatcraftBlocks.inkedBlock.getDefaultState(), world));
 		InkedBlockTileEntity inkte = (InkedBlockTileEntity) world.getTileEntity(pos);
 		if(inkte == null)
@@ -37,8 +51,36 @@ public class InkBlockUtils
 		return true;
 	}
 	
+	public static BlockState getInkState(InkType type, BlockState baseState)
+	{
+		BlockState inkState = getInkBlock(type, baseState.getBlock()).getDefaultState();
+		Iterator<Property<?>> properties = baseState.getProperties().iterator();
+		
+		while(properties.hasNext())
+		{
+			Property<?> property = properties.next();
+			
+			if(inkState.hasProperty(property))
+				inkState = mergeProperty(inkState, baseState, property);
+			
+		}
+		
+		return inkState;
+	}
+	
+	private static <T extends Comparable<T>> BlockState mergeProperty(BlockState state, BlockState baseState, Property<T> property)
+	{
+		T value = baseState.get(property);
+		return state.with(property, value);
+	}
+	
+	
 	public static boolean canInk(World world, BlockPos pos)
 	{
+		
+		if(InkedBlock.isTouchingLiquid(world, pos))
+			return false;
+		
 		Block block = world.getBlockState(pos).getBlock();
 		
 		if(SplatcraftTags.Blocks.UNINKABLE_BLOCKS.contains(block))
@@ -128,9 +170,59 @@ public class InkBlockUtils
 		return InkBlockUtils.InkType.NORMAL;
 	}
 	
-	public enum InkType
+	public static Block getInkBlock(InkType inkType, Block baseBlock)
 	{
-		NORMAL,
-		GLOWING
+		return inkTypeMap.get(inkType).get(baseBlock);
+	}
+	
+	public static class InkType implements Comparable<InkType>
+	{
+		
+		public static final ArrayList<InkType> values = new ArrayList<>();
+		
+		public static final InkType NORMAL = new InkType();
+		public static final InkType GLOWING = new InkType();
+		
+		public InkType()
+		{
+			values.add(this);
+		}
+		
+		@Override
+		public int compareTo(InkType o)
+		{
+			return values.indexOf(this) - values.indexOf(o);
+		}
+		
+		public int getIndex() {return values.indexOf(this);}
+	}
+	
+	public static class InkBlocks
+	{
+		Block defaultBlock;
+		final List<Map.Entry<Class<? extends Block>, Block>> blockMap = new ArrayList<>();
+		
+		public InkBlocks(Block defaultBlock)
+		{
+			this.defaultBlock = defaultBlock;
+		}
+		
+		public Block get(Block block)
+		{
+			if(blockMap.isEmpty())
+				return defaultBlock;
+			
+			for(Map.Entry<Class<? extends Block>, Block> entry : blockMap)
+				if(entry.getKey().isInstance(block))
+					return entry.getValue();
+			
+			return defaultBlock ;
+		}
+		
+		public InkBlocks put(Class<? extends Block> blockClass, Block block)
+		{
+			blockMap.add(new AbstractMap.SimpleEntry<>(blockClass, block));
+			return this;
+		}
 	}
 }

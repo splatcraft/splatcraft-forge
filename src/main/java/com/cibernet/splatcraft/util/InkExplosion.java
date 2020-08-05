@@ -61,6 +61,10 @@ public class InkExplosion
 	
 	public static void createInkExplosion(World world, Entity source, DamageSource damageSource, BlockPos pos, float size, float damage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon)
 	{
+		
+		if(world.isRemote)
+			return;
+		
 		InkExplosion inksplosion = new InkExplosion(world, source, damageSource, pos.getX(), pos.getY(), pos.getZ(), damage, damageMobs, size, color, type, weapon);
 		
 		inksplosion.doExplosionA();
@@ -87,6 +91,7 @@ public class InkExplosion
 		this.z = z;
 		this.damageSource = damageSource;
 		this.position = new Vector3d(this.x, this.y, this.z);
+		
 		
 		this.color = color;
 		this.inkType = inkType;

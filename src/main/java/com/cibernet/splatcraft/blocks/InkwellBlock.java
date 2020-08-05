@@ -28,6 +28,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -53,6 +54,12 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
 		this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, Boolean.valueOf(false)));
 		
 		SplatcraftBlocks.inkColoredBlocks.add(this);
+	}
+	
+	@Override
+	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+	{
+		return ColorUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), getColor((World) world, pos));
 	}
 	
 	@Nullable
@@ -118,7 +125,7 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world)
 	{
-		return SplatcraftTileEntitites.colorTileEntity.get().create();
+		return SplatcraftTileEntitites.inkwellTileEntity.get().create();
 	}
 	
 	@Override

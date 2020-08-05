@@ -60,7 +60,12 @@ public class ColorHandler
 		@Override
 		public int getColor(BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int i)
 		{
-			return ColorUtils.getInkColor(iBlockDisplayReader.getTileEntity(blockPos));
+			int color = ColorUtils.getInkColor(iBlockDisplayReader.getTileEntity(blockPos));
+			
+			if(color == -1)
+				return 0xFFFFFF;
+			
+			return color;
 		}
 	}
 }

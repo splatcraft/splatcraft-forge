@@ -1,6 +1,13 @@
 {
     "variants": {
-        "half=bottom,variant=default": { "model": "splatcraft:half_slab_inked" },
-        "half=top,variant=default": { "model": "splatcraft:upper_slab_inked" }
+        "type=bottom": {
+            "model": "splatcraft:block/inked_slab"
+        },
+        "type=double": {
+            "model": "splatcraft:block/inked_block"
+        },
+        "type=top": {
+            "model": "splatcraft:block/inked_slab_top"
+        }
     }
 }

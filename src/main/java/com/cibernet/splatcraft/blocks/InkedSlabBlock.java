@@ -1,22 +1,16 @@
 package com.cibernet.splatcraft.blocks;
 
-import com.cibernet.splatcraft.crafting.InkColor;
-import com.cibernet.splatcraft.crafting.InkColorManager;
-import com.cibernet.splatcraft.handlers.client.ColorHandler;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
-import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ConcretePowderBlock;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -30,12 +24,13 @@ import net.minecraftforge.common.ToolType;
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class InkedBlock extends Block implements IColoredBlock
+public class InkedSlabBlock extends SlabBlock implements IColoredBlock
 {
-	public InkedBlock()
+	public InkedSlabBlock(String name)
 	{
-		super(Properties.create(Material.CLAY, MaterialColor.BLACK_TERRACOTTA).tickRandomly().harvestTool(ToolType.PICKAXE).setRequiresTool());
+		super( Properties.create(Material.CLAY, MaterialColor.BLACK_TERRACOTTA).tickRandomly().harvestTool(ToolType.PICKAXE).setRequiresTool());
 		SplatcraftBlocks.inkColoredBlocks.add(this);
+		setRegistryName(name);
 	}
 	
 	@Override
@@ -47,7 +42,7 @@ public class InkedBlock extends Block implements IColoredBlock
 		
 		if(te.getSavedState().getBlock() instanceof InkedBlock)
 			return super.getPlayerRelativeBlockHardness(state, player, worldIn, pos);
-			
+		
 		
 		return te.getSavedState().getBlock().getPlayerRelativeBlockHardness(te.getSavedState(), player, worldIn, pos);
 	}
@@ -74,28 +69,15 @@ public class InkedBlock extends Block implements IColoredBlock
 		}
 	}
 	
-	public static boolean isTouchingLiquid(IBlockReader reader, BlockPos pos) {
-		boolean flag = false;
-		BlockPos.Mutable blockpos$mutable = pos.toMutable();
-		
-		BlockState currentState = reader.getBlockState(pos);
-		
-		if(currentState.hasProperty(BlockStateProperties.WATERLOGGED) && currentState.get(BlockStateProperties.WATERLOGGED))
-			return true;
-		
-		for(Direction direction : Direction.values()) {
-			BlockState blockstate = reader.getBlockState(blockpos$mutable);
-			if (direction != Direction.DOWN || causesClear(blockstate)) {
-				blockpos$mutable.func_239622_a_(pos, direction);
-				blockstate = reader.getBlockState(blockpos$mutable);
-				if (causesClear(blockstate) && !blockstate.isSolidSide(reader, pos, direction.getOpposite())) {
-					flag = true;
-					break;
-				}
-			}
+	
+	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+	{
+		if(InkedBlock.isTouchingLiquid(worldIn, currentPos))
+		{
+			if(worldIn.getTileEntity(currentPos) instanceof InkedBlockTileEntity)
+				return clearInk(worldIn, currentPos);
 		}
-		
-		return flag;
+		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 	
 	private static boolean causesClear(BlockState state) {
@@ -125,15 +107,6 @@ public class InkedBlock extends Block implements IColoredBlock
 		return world.getBlockState(pos);
 	}
 	
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
-	{
-		if(isTouchingLiquid(worldIn, currentPos))
-		{
-			if(worldIn.getTileEntity(currentPos) instanceof InkedBlockTileEntity)
-				return clearInk(worldIn, currentPos);
-		}
-		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
-	}
 	
 	@Nullable
 	@Override

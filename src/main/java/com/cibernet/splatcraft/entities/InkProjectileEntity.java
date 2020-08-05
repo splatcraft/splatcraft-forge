@@ -57,6 +57,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		setProjectileSize(size);
 		this.damage = damage;
 		this.inkType = inkType;
+		this.sourceWeapon = sourceWeapon;
 		
 		trailSize = size*0.7f;
 	}
@@ -123,7 +124,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 			return;
 			
 		this.func_230299_a_(result);
-		InkExplosion.createInkExplosion(world, this, new DamageSource(""), getPosition(), getProjectileSize()*0.85f, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+			InkExplosion.createInkExplosion(world, this, new DamageSource(""), getPosition(), getProjectileSize()*0.85f, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
 		
 		this.remove();
 	}
@@ -165,7 +166,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		canPierce = nbt.getBoolean("CanPierce");
 		
 		
-		inkType = InkBlockUtils.InkType.values()[nbt.getInt("InkType")];
+		inkType = InkBlockUtils.InkType.values.get(nbt.getInt("InkType"));
+		
 		sourceWeapon = ItemStack.read(nbt.getCompound("SourceWeapon"));
 	}
 	
@@ -182,7 +184,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		nbt.putBoolean("DamageMobs", damageMobs);
 		nbt.putBoolean("CanPierce", canPierce);
 		
-		nbt.putInt("InkType", inkType.ordinal());
+		nbt.putInt("InkType", inkType.getIndex());
 		nbt.put("SourceWeapon",sourceWeapon.write(new CompoundNBT()));
 	}
 	

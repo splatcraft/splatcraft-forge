@@ -38,6 +38,6 @@ public class InkedBlockTileEntity extends InkColorTileEntity
 	public boolean hasSavedState() {return savedState.getBlock() != Blocks.AIR;}
 	
 	public int getSavedColor() {return savedColor;}
-	public void setSavedColor(int color) {this.savedColor = savedColor;}
+	public void setSavedColor(int color) {this.savedColor = color;}
 	public boolean hasSavedColor() {return savedColor != -1;}
 }

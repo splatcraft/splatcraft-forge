@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"0": "minecraft:blocks/wool_colored_white",
-		"particle": "minecraft:blocks/wool_colored_white"
+		"0": "minecraft:block/white_wool",
+		"particle": "minecraft:block/white_wool"
 	},
 	"elements": [
 		{

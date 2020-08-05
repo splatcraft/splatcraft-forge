@@ -1,23 +1,16 @@
 package com.cibernet.splatcraft.registries;
 
-import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.items.*;
 import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.ArrayList;
@@ -76,7 +69,9 @@ public class SplatcraftItems
 	//Map Items
 	public static final Item grate = new BlockItem(SplatcraftBlocks.grate).setRegistryName("grate");
 	public static final Item barrierBar = new BlockItem(SplatcraftBlocks.barrierBar).setRegistryName("barrier_bar");
-	public static final Item inkwell = new InkwellItem().setRegistryName("inkwell");
+	public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "inked_wool", new Item.Properties());
+	public static final Item canvas = new BlockItem(SplatcraftBlocks.canvas).setRegistryName("canvas");
+	public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16);
 	
 	//Misc
 	
@@ -103,6 +98,8 @@ public class SplatcraftItems
 		
 		registry.register(grate);
 		registry.register(barrierBar);
+		registry.register(inkedWool);
+		registry.register(canvas);
 		registry.register(inkwell);
 		
 		registry.register(new net.minecraft.item.BlockItem(Blocks.IRON_BARS, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("minecraft","iron_bars"));

@@ -14,6 +14,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
 
@@ -26,7 +27,7 @@ public class SplatcraftKeyHandler
 	
 	public static void registerKeys()
 	{
-		squidKey = new KeyBinding("key.squidForm", 44, "key.categories.splatcraft");
+		squidKey = new KeyBinding("key.squidForm", GLFW.GLFW_KEY_Z, "key.categories.splatcraft");
 		pressState.put(squidKey, 0);
 		ClientRegistry.registerKeyBinding(squidKey);
 	}
