@@ -39,8 +39,6 @@ public class InkDamageUtils
 		if(targetColor > -1)
 			doDamage = (targetColor != color);
 		
-		System.out.println("source: " + ColorUtils.getColorName(color) + " target:" + ColorUtils.getColorName(targetColor));
-		
 		if(doDamage)
 			target.attackEntityFrom(new InkDamageSource(name, source, source, sourceItem), damage);
 		
@@ -61,11 +59,9 @@ public class InkDamageUtils
 		public ITextComponent getDeathMessage(LivingEntity entityLivingBaseIn)
 		{
 			ITextComponent itextcomponent = this.getTrueSource() == null ? this.damageSourceEntity.getDisplayName() : this.getTrueSource().getDisplayName();
-			//ItemStack itemstack = this.getTrueSource() instanceof LivingEntity ? ((LivingEntity)this.getTrueSource()).getHeldItemMainhand() : ItemStack.EMPTY;
 			String s = "death.attack." + this.damageType;
 			String s1 = s + ".item";
-			return !weapon.isEmpty() && I18n.hasKey(s1) ? new TranslationTextComponent(s1, new Object[] {entityLivingBaseIn.getDisplayName(), itextcomponent, weapon.getTextComponent()}) :
-					new TranslationTextComponent(s, new Object[] {entityLivingBaseIn.getDisplayName(), itextcomponent});
+			return !weapon.isEmpty() && weapon.hasDisplayName() ? new TranslationTextComponent(s1, entityLivingBaseIn.getDisplayName(), itextcomponent, weapon.getTextComponent()) : new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName(), itextcomponent);
 		}
 	}
 }

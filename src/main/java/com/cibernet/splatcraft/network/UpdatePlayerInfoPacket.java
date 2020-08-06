@@ -1,13 +1,16 @@
 package com.cibernet.splatcraft.network;
 
 import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
+import com.cibernet.splatcraft.network.base.PlayToClientPacket;
+import com.cibernet.splatcraft.network.base.SplatcraftPacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
 import java.util.UUID;
 
-public class UpdatePlayerInfoPacket extends SplatcraftPacket
+public class UpdatePlayerInfoPacket extends PlayToClientPacket
 {
 	UUID target;
 	CompoundNBT nbt;
@@ -25,7 +28,7 @@ public class UpdatePlayerInfoPacket extends SplatcraftPacket
 	}
 	
 	@Override
-	void encode(PacketBuffer buffer)
+	public void encode(PacketBuffer buffer)
 	{
 		buffer.writeString(target.toString());
 		buffer.writeCompoundTag(nbt);
@@ -37,16 +40,11 @@ public class UpdatePlayerInfoPacket extends SplatcraftPacket
 	}
 	
 	@Override
-	void execute(PlayerEntity player)
+	public void execute()
 	{
-		PlayerEntity target = player.world.getPlayerByUuid(this.target);
+		PlayerEntity target = Minecraft.getInstance().world.getPlayerByUuid(this.target);
 		
 		PlayerInfoCapability.get(target).readNBT(nbt);
 	}
 	
-	@Override
-	EnumDirection getDirection()
-	{
-		return EnumDirection.PLAY_TO_CLIENT;
-	}
 }

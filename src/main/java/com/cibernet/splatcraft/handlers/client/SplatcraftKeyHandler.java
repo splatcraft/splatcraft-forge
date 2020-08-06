@@ -1,15 +1,13 @@
 package com.cibernet.splatcraft.handlers.client;
 
-import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.capabilities.IPlayerInfo;
 import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
-import com.cibernet.splatcraft.network.PlayerSetSquidPacket;
+import com.cibernet.splatcraft.network.PlayerSetSquidServerPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -47,7 +45,7 @@ public class SplatcraftKeyHandler
 	{
 		PlayerEntity player = Minecraft.getInstance().player;
 		IPlayerInfo capability = PlayerInfoCapability.get(player);
-		SplatcraftPacketHandler.sendToServer(new PlayerSetSquidPacket(player));
+		SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player));
 		capability.setIsSquid(!capability.isSquid());
 	}
 }

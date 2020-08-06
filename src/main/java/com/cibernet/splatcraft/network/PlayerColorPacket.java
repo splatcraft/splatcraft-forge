@@ -1,14 +1,15 @@
 package com.cibernet.splatcraft.network;
 
+import com.cibernet.splatcraft.network.base.PlayToClientPacket;
+import com.cibernet.splatcraft.network.base.SplatcraftPacket;
 import com.cibernet.splatcraft.util.ColorUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 
 import java.util.UUID;
 
-import static com.cibernet.splatcraft.network.SplatcraftPacket.EnumDirection.PLAY_TO_CLIENT;
-
-public class PlayerColorPacket extends SplatcraftPacket
+public class PlayerColorPacket extends PlayToClientPacket
 {
 	private int color;
 	UUID target;
@@ -36,14 +37,9 @@ public class PlayerColorPacket extends SplatcraftPacket
 	}
 	
 	@Override
-	public void execute(PlayerEntity player)
+	public void execute()
 	{
-		ColorUtils.setPlayerColor(player.world.getPlayerByUuid(target), color, false);
+		ColorUtils.setPlayerColor(Minecraft.getInstance().world.getPlayerByUuid(target), color, false);
 	}
 	
-	@Override
-	EnumDirection getDirection()
-	{
-		return PLAY_TO_CLIENT;
-	}
 }

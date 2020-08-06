@@ -1,5 +1,7 @@
 package com.cibernet.splatcraft.network;
 
+import com.cibernet.splatcraft.network.base.PlayToClientPacket;
+import com.cibernet.splatcraft.network.base.SplatcraftPacket;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -9,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class UpdateBooleanGamerulesPacket extends SplatcraftPacket
+public class UpdateBooleanGamerulesPacket extends PlayToClientPacket
 {
 	public TreeMap<Integer, Boolean> booleanRules;
 	
@@ -24,7 +26,7 @@ public class UpdateBooleanGamerulesPacket extends SplatcraftPacket
 	}
 	
 	@Override
-	void encode(PacketBuffer buffer)
+	public void encode(PacketBuffer buffer)
 	{
 		Set<Map.Entry<Integer, Boolean>> entrySet = booleanRules.entrySet();
 		
@@ -42,6 +44,8 @@ public class UpdateBooleanGamerulesPacket extends SplatcraftPacket
 		TreeMap<Integer, Boolean> booleanRules = new TreeMap<>();
 		int entrySize = buffer.readInt();
 		
+		System.out.println("registeredSize: " + entrySize + "actualSize: " + buffer.readableBytes()	);
+		
 		for(int i = 0; i < entrySize; i++)
 			booleanRules.put(buffer.readInt(), buffer.readBoolean());
 			
@@ -49,15 +53,10 @@ public class UpdateBooleanGamerulesPacket extends SplatcraftPacket
 	}
 	
 	@Override
-	void execute(PlayerEntity player)
+	public void execute()
 	{
 		for(Map.Entry<Integer, Boolean> rule : booleanRules.entrySet())
 			SplatcraftGameRules.booleanRules.put(rule.getKey(), rule.getValue());
 	}
 	
-	@Override
-	EnumDirection getDirection()
-	{
-		return EnumDirection.PLAY_TO_CLIENT;
-	}
 }

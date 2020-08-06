@@ -1,14 +1,14 @@
 package com.cibernet.splatcraft.network;
 
-import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
+import com.cibernet.splatcraft.network.base.PlayToServerPacket;
+import com.cibernet.splatcraft.network.base.SplatcraftPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
 import java.util.UUID;
 
-public class RequestPlayerInfoPacket extends SplatcraftPacket
+public class RequestPlayerInfoPacket extends PlayToServerPacket
 {
 	UUID target;
 	
@@ -28,21 +28,16 @@ public class RequestPlayerInfoPacket extends SplatcraftPacket
 	}
 	
 	@Override
-	void encode(PacketBuffer buffer)
+	public void encode(PacketBuffer buffer)
 	{
 		buffer.writeUniqueId(target);
 	}
 	
 	@Override
-	void execute(PlayerEntity player)
+	public void execute(PlayerEntity player)
 	{
 		ServerPlayerEntity target = (ServerPlayerEntity) player.world.getPlayerByUuid(this.target);
 		SplatcraftPacketHandler.sendToPlayer(new UpdatePlayerInfoPacket(target), (ServerPlayerEntity) player);
 	}
 	
-	@Override
-	EnumDirection getDirection()
-	{
-		return EnumDirection.PLAY_TO_SERVER;
-	}
 }
