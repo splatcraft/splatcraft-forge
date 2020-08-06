@@ -11,20 +11,20 @@ public class InkColor
 {
 	private final int hexCode;
 	private final String name;
-	private final MaterialColor materialColor;
+	private final String displayName;
 	private final DyeColor dyeColor;
 	
-	public InkColor(String registryName, int color, int mapColor, @Nullable DyeColor dyeColor)
+	public InkColor(String registryName, String displayName, int color, @Nullable DyeColor dyeColor)
 	{
 		hexCode = color;
 		name = registryName;
-		materialColor = MaterialColor.COLORS[mapColor];
 		this.dyeColor = dyeColor;
+		this.displayName = displayName;
 	}
 	
 	public String getLocalizedName()
 	{
-		return I18n.format(getUnlocalizedName());
+		return (!I18n.hasKey(getUnlocalizedName()) && !displayName.isEmpty()) ? displayName : I18n.format(getUnlocalizedName());
 	}
 	
 	public String getUnlocalizedName() { return "ink_color."+name;}
@@ -32,7 +32,6 @@ public class InkColor
 	public String getHexCode() {return String.format("%06X", hexCode);}
 	
 	public int getColor() {return hexCode;}
-	public MaterialColor getMaterialColor() {return materialColor;}
 	public @Nullable DyeColor getDyeColor() {return dyeColor;}
 	public String getName() {return name;}
 	

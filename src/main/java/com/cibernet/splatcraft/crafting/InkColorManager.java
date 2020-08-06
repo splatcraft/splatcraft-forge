@@ -87,9 +87,9 @@ public class InkColorManager extends JsonReloadListener
 	{
 		
 		String name = JSONUtils.getString(json, "name");
+		String displayName = "";
 		int code;
 		DyeColor dye = null;
-		int mapColor = MaterialColor.CLAY.colorIndex;
 		
 		
 		code = Integer.parseInt(JSONUtils.getString(json, "hex"),16);
@@ -97,10 +97,10 @@ public class InkColorManager extends JsonReloadListener
 		try { dye = DyeColor.byTranslationKey(JSONUtils.getString(json, "dye"), null);}
 		catch(JsonSyntaxException e) {}
 		
-		try { mapColor = JSONUtils.getInt(json, "map_color"); }
+		try { displayName = JSONUtils.getString(json, "display_name"); }
 		catch(JsonSyntaxException e) {}
 		
-		return new InkColor(name, code, mapColor, dye);
+		return new InkColor(name, displayName, code, dye);
 	}
 	
 	public InkColor getColorByHex(int hex)
