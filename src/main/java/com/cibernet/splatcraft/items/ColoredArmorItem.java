@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
+import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.client.resources.I18n;
@@ -29,6 +30,7 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem
 	public ColoredArmorItem(String name, IArmorMaterial material, EquipmentSlotType slot, Properties properties)
 	{
 		super(material, slot, properties);
+		SplatcraftItems.inkColoredItems.add(this);
 		setRegistryName(name);
 	}
 	

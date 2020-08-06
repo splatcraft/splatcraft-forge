@@ -68,8 +68,6 @@ public class CanvasBlock extends Block implements IColoredBlock
 			}
 		}
 		
-		System.out.println(color);
-		
 		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos).with(INKED, color != -1);
 	}
 	
