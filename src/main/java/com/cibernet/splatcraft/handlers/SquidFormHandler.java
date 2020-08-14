@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
 import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
+import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
@@ -30,6 +31,9 @@ public class SquidFormHandler
 		
 		if(InkBlockUtils.onEnemyInk(player) && player.ticksExisted % 20 == 0 && player.getHealth() > 4 && player.world.getDifficulty() != Difficulty.PEACEFUL)
 			player.attackEntityFrom(new DamageSource("enemyInk"), 2f);
+		
+		if(player.world.getGameRules().getBoolean(SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.ticksExisted %10 == 0)
+			player.attackEntityFrom(new DamageSource("water"), 8f);
 		
 		if(PlayerInfoCapability.isSquid(player))
 		{

@@ -20,12 +20,14 @@ public class SplatcraftGameRules
 	public static GameRules.RuleKey<GameRules.BooleanValue> INK_DECAY;
 	public static GameRules.RuleKey<GameRules.BooleanValue> COLORED_NAMEPLATES;
 	public static GameRules.RuleKey<GameRules.BooleanValue> UNIVERSAL_INK;
+	public static GameRules.RuleKey<GameRules.BooleanValue> WATER_DAMAGE;
 	
 	public static void registerGamerules()
 	{
 		INK_DECAY = createBooleanRule("inkDecay", Category.UPDATES, true);
 		COLORED_NAMEPLATES = createBooleanRule("coloredNameplates", Category.PLAYER, false);
 		UNIVERSAL_INK = createBooleanRule("universalInk", Category.PLAYER, false);
+		WATER_DAMAGE = createBooleanRule("waterDamage", Category.PLAYER, false);
 	}
 	
 	public static GameRules.RuleKey<GameRules.BooleanValue> createBooleanRule(String name, GameRules.Category category, boolean defaultValue)
