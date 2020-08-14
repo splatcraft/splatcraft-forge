@@ -30,7 +30,7 @@ public class SplatcraftBlocks
 	public static final Block sardiniumOre = new OreBlock(0).setRegistryName("sardinium_ore");
 	public static final Block powerEggBlock = new LightBlock(9, AbstractBlock.Properties.create(Material.GOURD, DyeColor.ORANGE).harvestTool(ToolType.SHOVEL).sound(SoundType.SLIME).hardnessAndResistance(0.2f, 0)).setRegistryName("power_egg_block");
 	
-	public static final Block emptyInkwell = new EmptyInkwellBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS)).setRegistryName("empty_inkwell");
+	public static final Block emptyInkwell = new EmptyInkwellBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS).harvestTool(ToolType.PICKAXE)).setRegistryName("empty_inkwell");
 	public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
 	public static final Block inkedWool = new InkedWoolBlock("inked_wool");
 	public static final Block canvas = new CanvasBlock("canvas");

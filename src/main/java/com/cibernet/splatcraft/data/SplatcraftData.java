@@ -3,6 +3,8 @@ package com.cibernet.splatcraft.data;
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.data.recipes.SplatcraftCraftingRecipes;
 import com.cibernet.splatcraft.data.tags.SplatcraftBlockTags;
+import com.cibernet.splatcraft.data.tags.SplatcraftItemTags;
+import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,7 +20,9 @@ public class SplatcraftData
 			DataGenerator generator = event.getGenerator();
 			if (event.includeServer())
 			{
-				generator.addProvider(new SplatcraftBlockTags(generator));
+				BlockTagsProvider blockTagsProvider = new SplatcraftBlockTags(generator);
+				generator.addProvider(blockTagsProvider);
+				generator.addProvider(new SplatcraftItemTags(generator, blockTagsProvider));
 				generator.addProvider(new SplatcraftCraftingRecipes(generator));
 			}
 		}

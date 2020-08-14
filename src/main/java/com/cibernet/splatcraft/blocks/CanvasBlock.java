@@ -27,7 +27,7 @@ public class CanvasBlock extends Block implements IColoredBlock
 	
 	public CanvasBlock(String name)
 	{
-		super(Properties.create(Material.WOOL).hardnessAndResistance(0.8f).setRequiresTool().sound(SoundType.CLOTH));
+		super(Properties.create(Material.WOOL).hardnessAndResistance(0.8f).sound(SoundType.CLOTH));
 		SplatcraftBlocks.inkColoredBlocks.add(this);
 		setRegistryName(name);
 		setDefaultState(getDefaultState().with(INKED, false));

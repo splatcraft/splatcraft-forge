@@ -59,6 +59,8 @@ public class SplatcraftTags
 		public static final ITag<Block> UNINKABLE_BLOCKS = createTag("uninkable_blocks");
 		public static final ITag<Block> INKABLE_BLOCKS = createTag("inkable_blocks");
 		
+		public static final ITag<Block> INKED_BLOCKS = createTag("inked_blocks");
+		
 		private static ITag<Block> createTag(String name)
 		{
 			return BlockTags.getCollection().getOrCreate(new ResourceLocation(Splatcraft.MODID, name));

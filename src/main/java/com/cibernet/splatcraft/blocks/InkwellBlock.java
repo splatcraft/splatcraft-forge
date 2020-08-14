@@ -29,6 +29,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 
@@ -44,7 +45,7 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
 	
 	public InkwellBlock()
 	{
-		super(Properties.create(Material.GLASS));
+		super(Properties.create(Material.GLASS).hardnessAndResistance(0.35f).harvestTool(ToolType.PICKAXE));
 		this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, Boolean.valueOf(false)));
 		
 		SplatcraftBlocks.inkColoredBlocks.add(this);

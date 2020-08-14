@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "Color",
+                  "target": "Color",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
+          "name": "splatcraft:inkwell"
+        }
+      ]
+    }
+  ]
+}

@@ -1,8 +1,10 @@
 package com.cibernet.splatcraft.registries;
 
+import com.cibernet.splatcraft.dispenser.PlaceBlockDispenseBehavior;
 import com.cibernet.splatcraft.items.*;
 import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
@@ -108,5 +110,8 @@ public class SplatcraftItems
 		
 		registry.register(new net.minecraft.item.BlockItem(Blocks.IRON_BARS, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("minecraft","iron_bars"));
 		
+		
+		DispenserBlock.registerDispenseBehavior(inkwell, new PlaceBlockDispenseBehavior());
+		DispenserBlock.registerDispenseBehavior(emptyInkwell, new PlaceBlockDispenseBehavior());
 	}
 }

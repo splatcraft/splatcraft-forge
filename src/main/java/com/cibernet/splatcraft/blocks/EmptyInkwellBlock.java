@@ -4,6 +4,7 @@ import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.GlassBlock;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
@@ -45,6 +46,12 @@ public class EmptyInkwellBlock extends AbstractGlassBlock
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
 	{
 		return SHAPE;
+	}
+	
+	@Override
+	public PushReaction getPushReaction(BlockState state)
+	{
+		return PushReaction.DESTROY;
 	}
 	
 	

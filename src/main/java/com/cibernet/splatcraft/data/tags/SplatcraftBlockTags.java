@@ -25,6 +25,9 @@ public class SplatcraftBlockTags extends BlockTagsProvider
 		addToTag(BlockTags.BEACON_BASE_BLOCKS, SplatcraftBlocks.sardiniumBlock);
 		addToTag(Tags.Blocks.ORES, SplatcraftBlocks.sardiniumOre);
 		addToTag(Tags.Blocks.STORAGE_BLOCKS, SplatcraftBlocks.sardiniumBlock, SplatcraftBlocks.powerEggBlock);
+		addToTag(BlockTags.WOOL, SplatcraftBlocks.inkedWool, SplatcraftBlocks.canvas);
+		addToTag(BlockTags.SLABS, SplatcraftBlocks.inkedSlab);
+		addToTag(BlockTags.STAIRS, SplatcraftBlocks.inkedStairs);
 		
 	}
 	
