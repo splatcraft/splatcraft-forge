@@ -69,6 +69,7 @@ public class Splatcraft
 		SplatcraftEntities.bindRenderers();
 		SplatcraftKeyHandler.registerKeys();
 		SplatcraftBlocks.setRenderLayers();
+		SplatcraftTileEntitites.bindTESR();
 	}
 	
 	@SubscribeEvent

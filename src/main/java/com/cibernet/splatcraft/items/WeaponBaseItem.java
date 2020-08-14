@@ -1,13 +1,10 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
-import com.cibernet.splatcraft.entities.InkProjectileEntity;
-import com.cibernet.splatcraft.handlers.client.ColorHandler;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
-import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -15,7 +12,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;

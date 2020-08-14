@@ -37,6 +37,8 @@ public class SplatcraftBlocks
 	
 	public static final Block grate = new GrateBlock("grate");
 	public static final Block barrierBar = new BarrierBarBlock("barrier_bar");
+	public static final Block stageBarrier = new StageBarrierBlock("stage_barrier", false);
+	public static final Block stageVoid = new StageBarrierBlock("stage_void", true);
 	
 	@SubscribeEvent
 	public static void blockInit(final RegistryEvent.Register<Block> event)
@@ -58,6 +60,9 @@ public class SplatcraftBlocks
 		
 		registry.register(grate);
 		registry.register(barrierBar);
+		
+		registry.register(stageBarrier);
+		registry.register(stageVoid);
 		
 		registry.register(new IronBarsBlockOverride());
 	}

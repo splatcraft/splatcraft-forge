@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "splatcraft:stage_barrier" }
+        "normal": { "model": "splatcraft:stage_barrier_fancy" }
     }
 }

@@ -146,6 +146,15 @@ public class ColorUtils
 		return nbt.getBoolean("ColorLocked");
 	}
 	
+	public static float[] hexToRGB(int color)
+	{
+		float r = ((color & 16711680) >> 16) / 255.0f;
+		float g = ((color & '\uff00') >> 8) / 255.0f;
+		float b = ((color & 255) >> 0) / 255.0f;
+		
+		return new float[] {r, g, b};
+	}
+	
 	public static int getRandomStarterColor()
 	{
 		return STARTER_COLORS[(int) (Math.random()*(STARTER_COLORS.length))];

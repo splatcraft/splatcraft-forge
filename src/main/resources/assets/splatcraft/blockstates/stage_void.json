@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "splatcraft:stage_void" }
+        "normal": { "model": "splatcraft:stage_void_fancy" }
     }
 }

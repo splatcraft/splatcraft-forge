@@ -67,11 +67,13 @@ public class SplatcraftItems
 	//Remotes
 	
 	//Map Items
+	public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16);
 	public static final Item grate = new BlockItem(SplatcraftBlocks.grate).setRegistryName("grate");
 	public static final Item barrierBar = new BlockItem(SplatcraftBlocks.barrierBar).setRegistryName("barrier_bar");
 	public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "inked_wool", new Item.Properties());
 	public static final Item canvas = new BlockItem(SplatcraftBlocks.canvas).setRegistryName("canvas");
-	public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16);
+	public static final Item stageBarrier = new BlockItem(SplatcraftBlocks.stageBarrier).setRegistryName("stage_barrier");
+	public static final Item stageVoid = new BlockItem(SplatcraftBlocks.stageVoid).setRegistryName("stage_void");
 	
 	//Misc
 	
@@ -96,11 +98,13 @@ public class SplatcraftItems
 		registry.register(powerEggBlock);
 		registry.register(emptyInkwell);
 		
+		registry.register(inkwell);
 		registry.register(grate);
 		registry.register(barrierBar);
 		registry.register(inkedWool);
 		registry.register(canvas);
-		registry.register(inkwell);
+		registry.register(stageBarrier);
+		registry.register(stageVoid);
 		
 		registry.register(new net.minecraft.item.BlockItem(Blocks.IRON_BARS, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("minecraft","iron_bars"));
 		

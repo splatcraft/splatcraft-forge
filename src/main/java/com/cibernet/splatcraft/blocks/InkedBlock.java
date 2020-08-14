@@ -1,18 +1,13 @@
 package com.cibernet.splatcraft.blocks;
 
-import com.cibernet.splatcraft.crafting.InkColor;
-import com.cibernet.splatcraft.crafting.InkColorManager;
-import com.cibernet.splatcraft.handlers.client.ColorHandler;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
-import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ConcretePowderBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
@@ -51,6 +46,61 @@ public class InkedBlock extends Block implements IColoredBlock
 		
 		return te.getSavedState().getBlock().getPlayerRelativeBlockHardness(te.getSavedState(), player, worldIn, pos);
 	}
+	
+	/* TODO modular ink
+	
+	@Override
+	public BlockRenderType getRenderType(BlockState state)
+	{
+		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+	
+	@Override
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+	{
+		//return VoxelShapes.empty();
+		
+		if(!(worldIn.getTileEntity(pos) instanceof InkedBlockTileEntity))
+			//return super.getShape(state, worldIn, pos, context);
+			return VoxelShapes.empty();
+		BlockState savedState = ((InkedBlockTileEntity) worldIn.getTileEntity(pos)).getSavedState();
+		
+		if(savedState == null || savedState.getBlock().equals(this))
+			return super.getShape(state, worldIn, pos, context);
+		return savedState.getBlock().getShape(savedState, worldIn, pos, context);
+		
+	}
+	
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+	{
+		if(!(worldIn.getTileEntity(pos) instanceof InkedBlockTileEntity))
+			return super.getCollisionShape(state, worldIn, pos, context);
+		BlockState savedState = ((InkedBlockTileEntity) worldIn.getTileEntity(pos)).getSavedState();
+		
+		if(savedState == null || savedState.getBlock().equals(this))
+			return super.getCollisionShape(state, worldIn, pos, context);
+		return savedState.getBlock().getCollisionShape(savedState, worldIn, pos, context);
+		
+		
+	}
+	
+	@Override
+	public boolean collisionExtendsVertically(BlockState state, IBlockReader world, BlockPos pos, Entity collidingEntity)
+	{
+		return true;
+		/*
+		if(!(world.getTileEntity(pos) instanceof InkedBlockTileEntity))
+		return super.collisionExtendsVertically(state, world, pos, collidingEntity);
+		BlockState savedState = ((InkedBlockTileEntity) world.getTileEntity(pos)).getSavedState();
+		
+		if(savedState == null || savedState.getBlock().equals(this))
+			return super.collisionExtendsVertically(state, world, pos, collidingEntity);
+		return savedState.getBlock().collisionExtendsVertically(savedState, world, pos, collidingEntity);
+		//
+	}
+	
+	*/
 	
 	@Override
 	public boolean hasTileEntity(BlockState state)
@@ -132,6 +182,15 @@ public class InkedBlock extends Block implements IColoredBlock
 			if(worldIn.getTileEntity(currentPos) instanceof InkedBlockTileEntity)
 				return clearInk(worldIn, currentPos);
 		}
+		
+		if(worldIn.getTileEntity(currentPos) instanceof InkedBlockTileEntity)
+		{
+			BlockState savedState = ((InkedBlockTileEntity) worldIn.getTileEntity(currentPos)).getSavedState();
+			
+			if(savedState != null && !savedState.getBlock().equals(this))
+				((InkedBlockTileEntity) worldIn.getTileEntity(currentPos)).setSavedState(savedState.getBlock().updatePostPlacement(savedState, facing, facingState, worldIn, currentPos, facingPos));
+		}
+		
 		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 	

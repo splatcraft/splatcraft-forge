@@ -8,12 +8,15 @@ import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -24,8 +27,22 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class ColorHandler
+public class ClientSetupHandler
 {
+	
+	@SubscribeEvent
+	public static void onTextureStitch(TextureStitchEvent.Pre event) {
+		System.out.println("oh boy");
+		
+		if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+			return;
+		}
+		
+		System.out.println("TEXTURE STITCH!");
+		event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/stage_barrier_fancy"));
+		event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/stage_void_fancy"));
+	}
+	
 	
 	@SubscribeEvent
 	public static void initItemColors(ColorHandlerEvent.Item event)
@@ -60,6 +77,9 @@ public class ColorHandler
 		@Override
 		public int getColor(BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int i)
 		{
+			if(iBlockDisplayReader == null)
+				return -1;
+			
 			int color = ColorUtils.getInkColor(iBlockDisplayReader.getTileEntity(blockPos));
 			
 			if(color == -1)

@@ -1,0 +1,7 @@
+{
+	"parent": "block/cube_all",
+	"textures": {
+		"all": "splatcraft:blocks/stage_void_fancy",
+		"particle": "splatcraft:blocks/stage_void"
+	}
+}
