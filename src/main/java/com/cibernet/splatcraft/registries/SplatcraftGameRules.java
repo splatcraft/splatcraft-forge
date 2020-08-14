@@ -20,6 +20,7 @@ public class SplatcraftGameRules
 	public static GameRules.RuleKey<GameRules.BooleanValue> INK_DECAY;
 	public static GameRules.RuleKey<GameRules.BooleanValue> COLORED_NAMEPLATES;
 	public static GameRules.RuleKey<GameRules.BooleanValue> UNIVERSAL_INK;
+	public static GameRules.RuleKey<GameRules.BooleanValue> DROP_CRATE_LOOT;
 	public static GameRules.RuleKey<GameRules.BooleanValue> WATER_DAMAGE;
 	
 	public static void registerGamerules()
@@ -27,6 +28,7 @@ public class SplatcraftGameRules
 		INK_DECAY = createBooleanRule("inkDecay", Category.UPDATES, true);
 		COLORED_NAMEPLATES = createBooleanRule("coloredNameplates", Category.PLAYER, false);
 		UNIVERSAL_INK = createBooleanRule("universalInk", Category.PLAYER, false);
+		DROP_CRATE_LOOT = createBooleanRule("dropCrateLoot", Category.DROPS, false);
 		WATER_DAMAGE = createBooleanRule("waterDamage", Category.PLAYER, false);
 	}
 	

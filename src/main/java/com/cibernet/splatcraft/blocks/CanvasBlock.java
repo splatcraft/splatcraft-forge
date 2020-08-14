@@ -95,7 +95,7 @@ public class CanvasBlock extends Block implements IColoredBlock
 	}
 	
 	@Override
-	public boolean inkBlock(World world, BlockPos pos, int color, InkBlockUtils.InkType inkType)
+	public boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
 	{
 		if(InkedBlock.isTouchingLiquid(world, pos))
 			return false;

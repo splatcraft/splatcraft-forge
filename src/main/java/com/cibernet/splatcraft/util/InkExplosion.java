@@ -57,32 +57,27 @@ public class InkExplosion
 	private final InkBlockUtils.InkType inkType;
 	private final boolean damageMobs;
 	private final float damage;
+	private final float blockDamage;
 	private final ItemStack weapon;
 	
-	public static void createInkExplosion(World world, Entity source, DamageSource damageSource, BlockPos pos, float size, float damage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon)
+	public static void createInkExplosion(World world, Entity source, DamageSource damageSource, BlockPos pos, float size, float blockDamage, float damage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon)
 	{
 		
 		if(world.isRemote)
 			return;
 		
-		InkExplosion inksplosion = new InkExplosion(world, source, damageSource, pos.getX(), pos.getY(), pos.getZ(), damage, damageMobs, size, color, type, weapon);
+		InkExplosion inksplosion = new InkExplosion(world, source, damageSource, pos.getX(), pos.getY(), pos.getZ(), blockDamage, damage, damageMobs, size, color, type, weapon);
 		
 		inksplosion.doExplosionA();
 		inksplosion.doExplosionB(false);
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public InkExplosion(World worldIn, @Nullable Entity exploderIn, double xIn, double yIn, double zIn, float sizeIn, List<BlockPos> affectedBlockPositionsIn, float damage, boolean damageMobs, int color, InkBlockUtils.InkType inkType, ItemStack weapon) {
-		this(worldIn, exploderIn, xIn, yIn, zIn, damage, damageMobs, sizeIn, color, inkType, weapon);
-		this.affectedBlockPositions.addAll(affectedBlockPositionsIn);
+	public InkExplosion(World worldIn, @Nullable Entity exploderIn, double xIn, double yIn, double zIn, float blockDamage, float damage, boolean damageMobs, float sizeIn, int color, InkBlockUtils.InkType inkType, ItemStack weapon) {
+		this(worldIn, exploderIn, (DamageSource)null, xIn, yIn, zIn, blockDamage, damage, damageMobs, sizeIn, color, inkType, weapon);
 	}
 	
-	@OnlyIn(Dist.CLIENT)
-	public InkExplosion(World worldIn, @Nullable Entity exploderIn, double xIn, double yIn, double zIn, float damage, boolean damageMobs, float sizeIn, int color, InkBlockUtils.InkType inkType, ItemStack weapon) {
-		this(worldIn, exploderIn, (DamageSource)null, xIn, yIn, zIn,damage, damageMobs, sizeIn, color, inkType, weapon);
-	}
-	
-	public InkExplosion(World world, @Nullable Entity source, @Nullable DamageSource damageSource, double x, double y, double z, float damage, boolean damageMobs, float size, int color, InkBlockUtils.InkType inkType, ItemStack weapon) {
+	public InkExplosion(World world, @Nullable Entity source, @Nullable DamageSource damageSource, double x, double y, double z, float blockDamage, float damage, boolean damageMobs, float size, int color, InkBlockUtils.InkType inkType, ItemStack weapon) {
 		this.world = world;
 		this.exploder = source;
 		this.size = size;
@@ -97,6 +92,7 @@ public class InkExplosion
 		this.inkType = inkType;
 		this.damageMobs = damageMobs;
 		this.damage = damage;
+		this.blockDamage = blockDamage;
 		this.weapon = weapon;
 	}
 	
@@ -270,7 +266,7 @@ public class InkExplosion
 				Block block = blockstate.getBlock();
 				if (!blockstate.isAir(this.world, blockpos))
 				{
-					InkBlockUtils.inkBlock(world, blockpos, color, inkType);
+					InkBlockUtils.inkBlock(world, blockpos, color, blockDamage, inkType);
 					/*
 					BlockPos blockpos1 = blockpos.toImmutable();
 					this.world.getProfiler().startSection("explosion_blocks");

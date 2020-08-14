@@ -2,9 +2,9 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"textures": {
-		"2": "splatcraft:blocks/sunken_crate_ink_1",
-		"particle": "splatcraft:blocks/sunken_crate_top",
-		"end": "splatcraft:blocks/sunken_crate_top",
+		"2": "splatcraft:blocks/crate_ink_1",
+		"particle": "splatcraft:blocks/crate_top",
+		"end": "splatcraft:blocks/crate_top",
 		"side": "splatcraft:blocks/sunken_crate_side"
 	},
 	"elements": [

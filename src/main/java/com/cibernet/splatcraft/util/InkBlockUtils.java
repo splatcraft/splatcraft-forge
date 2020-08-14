@@ -26,7 +26,7 @@ public class InkBlockUtils
 	
 	
 	
-	public static boolean inkBlock(World world, BlockPos pos, int color, InkType inkType)
+	public static boolean inkBlock(World world, BlockPos pos, int color, float damage, InkType inkType)
 	{
 		BlockState state = world.getBlockState(pos);
 		TileEntity te = world.getTileEntity(pos);
@@ -35,7 +35,7 @@ public class InkBlockUtils
 			return false;
 		
 		if(state.getBlock() instanceof IColoredBlock)
-			return ((IColoredBlock) state.getBlock()).inkBlock(world, pos, color, inkType);
+			return ((IColoredBlock) state.getBlock()).inkBlock(world, pos, color, damage, inkType);
 			
 		if(!canInk(world, pos))
 			return false;

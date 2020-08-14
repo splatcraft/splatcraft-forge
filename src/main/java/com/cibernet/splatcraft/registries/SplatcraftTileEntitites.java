@@ -3,10 +3,7 @@ package com.cibernet.splatcraft.registries;
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.client.renderer.InkedBlockTileEntityRenderer;
 import com.cibernet.splatcraft.client.renderer.StageBarrierTileEntityRenderer;
-import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
-import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
-import com.cibernet.splatcraft.tileentities.InkwellTileEntity;
-import com.cibernet.splatcraft.tileentities.StageBarrierTileEntity;
+import com.cibernet.splatcraft.tileentities.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -28,6 +25,7 @@ public class SplatcraftTileEntitites
 	public static final RegistryObject<TileEntityType<InkColorTileEntity>> colorTileEntity = registerTileEntity("color", InkColorTileEntity::new, inkedWool, canvas);
 	public static final RegistryObject<TileEntityType<InkwellTileEntity>> inkwellTileEntity = registerTileEntity("inkwell", InkwellTileEntity::new, inkwell);
 	public static final RegistryObject<TileEntityType<InkedBlockTileEntity>> inkedTileEntity = registerTileEntity("inked_block", InkedBlockTileEntity::new, inkedBlock);
+	public static final RegistryObject<TileEntityType<CrateTileEntity>> crateTileEntity = registerTileEntity("crate", CrateTileEntity::new, crate, sunkenCrate);
 	public static final RegistryObject<TileEntityType<StageBarrierTileEntity>> stageBarrierTileEntity = registerTileEntity("stage_barrier", StageBarrierTileEntity::new, stageBarrier, stageVoid);
 	
 	public static void init()

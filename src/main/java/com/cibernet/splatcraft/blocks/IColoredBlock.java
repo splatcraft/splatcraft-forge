@@ -21,7 +21,7 @@ public interface IColoredBlock
 	void remoteInkClear(World world, BlockPos pos);
 	boolean countsTowardsTurf(World world, BlockPos pos);
 	
-	default boolean inkBlock(World world, BlockPos pos, int color, InkBlockUtils.InkType inkType)
+	default boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
 	{
 		return false;
 	}

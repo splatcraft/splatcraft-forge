@@ -74,6 +74,8 @@ public class SplatcraftItems
 	public static final Item barrierBar = new BlockItem(SplatcraftBlocks.barrierBar).setRegistryName("barrier_bar");
 	public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "inked_wool", new Item.Properties());
 	public static final Item canvas = new BlockItem(SplatcraftBlocks.canvas).setRegistryName("canvas");
+	public static final Item sunkenCrate = new BlockItem(SplatcraftBlocks.sunkenCrate).setRegistryName("sunken_crate");
+	public static final Item crate = new BlockItem(SplatcraftBlocks.crate).setRegistryName("crate");
 	public static final Item stageBarrier = new BlockItem(SplatcraftBlocks.stageBarrier).setRegistryName("stage_barrier");
 	public static final Item stageVoid = new BlockItem(SplatcraftBlocks.stageVoid).setRegistryName("stage_void");
 	
@@ -105,6 +107,8 @@ public class SplatcraftItems
 		registry.register(barrierBar);
 		registry.register(inkedWool);
 		registry.register(canvas);
+		registry.register(sunkenCrate);
+		registry.register(crate);
 		registry.register(stageBarrier);
 		registry.register(stageVoid);
 		

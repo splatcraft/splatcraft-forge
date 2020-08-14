@@ -44,8 +44,6 @@ public class UpdateBooleanGamerulesPacket extends PlayToClientPacket
 		TreeMap<Integer, Boolean> booleanRules = new TreeMap<>();
 		int entrySize = buffer.readInt();
 		
-		System.out.println("registeredSize: " + entrySize + "actualSize: " + buffer.readableBytes()	);
-		
 		for(int i = 0; i < entrySize; i++)
 			booleanRules.put(buffer.readInt(), buffer.readBoolean());
 			

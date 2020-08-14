@@ -29,6 +29,8 @@ public class SplatcraftBlocks
 	public static final Block sardiniumBlock = new MetalBlock(Material.IRON, MaterialColor.WHITE_TERRACOTTA).setRegistryName("sardinium_block");
 	public static final Block sardiniumOre = new OreBlock(0).setRegistryName("sardinium_ore");
 	public static final Block powerEggBlock = new LightBlock(9, AbstractBlock.Properties.create(Material.GOURD, DyeColor.ORANGE).harvestTool(ToolType.SHOVEL).sound(SoundType.SLIME).hardnessAndResistance(0.2f, 0)).setRegistryName("power_egg_block");
+	public static final Block crate = new CrateBlock("crate", false);
+	public static final Block sunkenCrate = new CrateBlock("sunken_crate", true);
 	
 	public static final Block emptyInkwell = new EmptyInkwellBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS).harvestTool(ToolType.PICKAXE)).setRegistryName("empty_inkwell");
 	public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
@@ -52,6 +54,8 @@ public class SplatcraftBlocks
 		registry.register(sardiniumBlock);
 		registry.register(sardiniumOre);
 		registry.register(powerEggBlock);
+		registry.register(sunkenCrate);
+		registry.register(crate);
 		
 		registry.register(emptyInkwell);
 		registry.register(inkwell);
@@ -71,5 +75,7 @@ public class SplatcraftBlocks
 	{
 		RenderTypeLookup.setRenderLayer(emptyInkwell, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(grate, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(crate, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(sunkenCrate, RenderType.getCutout());
 	}
 }

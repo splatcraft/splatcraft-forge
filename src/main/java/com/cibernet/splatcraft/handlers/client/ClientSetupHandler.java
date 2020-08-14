@@ -31,14 +31,11 @@ public class ClientSetupHandler
 {
 	
 	@SubscribeEvent
-	public static void onTextureStitch(TextureStitchEvent.Pre event) {
-		System.out.println("oh boy");
-		
-		if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+	public static void onTextureStitch(TextureStitchEvent.Pre event)
+	{
+		if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE))
 			return;
-		}
 		
-		System.out.println("TEXTURE STITCH!");
 		event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/stage_barrier_fancy"));
 		event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/stage_void_fancy"));
 	}
