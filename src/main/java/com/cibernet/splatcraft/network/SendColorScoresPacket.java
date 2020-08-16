@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.network;
 
 import com.cibernet.splatcraft.network.base.PlayToClientPacket;
+import com.cibernet.splatcraft.util.ClientUtils;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -51,7 +52,7 @@ public class SendColorScoresPacket extends PlayToClientPacket
 	@Override
 	public void execute()
 	{
-		PlayerEntity player = Minecraft.getInstance().player;
+		PlayerEntity player = ClientUtils.getClientPlayer();
 		int winner = -1;
 		float winnerScore = -1;
 		

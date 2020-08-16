@@ -1,8 +1,6 @@
 package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
-import com.cibernet.splatcraft.crafting.InkColor;
-import com.cibernet.splatcraft.crafting.InkColorManager;
 import com.cibernet.splatcraft.entities.IColoredEntity;
 import com.cibernet.splatcraft.network.PlayerColorPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
@@ -97,7 +95,7 @@ public class ColorUtils
 	
 	public static String getColorName(int color)
 	{
-		InkColor colorObj = InkColorManager.instance.getColorByHex(color);
+		InkColor colorObj = InkColor.getByHex(color);
 		
 		String colorFormatting = "";//TextFormatting.fromColorIndex(color).toString();
 		

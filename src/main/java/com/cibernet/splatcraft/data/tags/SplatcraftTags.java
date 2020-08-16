@@ -1,7 +1,7 @@
 package com.cibernet.splatcraft.data.tags;
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.crafting.InkColor;
+import com.cibernet.splatcraft.util.InkColor;
 import com.cibernet.splatcraft.items.InkTankItem;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

@@ -1,16 +1,12 @@
 package com.cibernet.splatcraft.util;
 
-import com.cibernet.splatcraft.crafting.InkColor;
-import com.cibernet.splatcraft.crafting.InkColorManager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.ProtectionEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -18,20 +14,13 @@ import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.*;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -202,8 +191,8 @@ public class InkExplosion
 			
 			DyeColor dyeColor = null;
 			
-			if(InkColorManager.instance.getColorByHex(color) != null)
-				dyeColor = InkColorManager.instance.getColorByHex(color).getDyeColor();
+			if(InkColor.getByHex(color) != null)
+				dyeColor = InkColor.getByHex(color).getDyeColor();
 			
 			if(dyeColor != null && entity instanceof SheepEntity)
 				((SheepEntity) entity).setFleeceColor(dyeColor);
