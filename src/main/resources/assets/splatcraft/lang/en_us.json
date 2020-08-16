@@ -213,5 +213,7 @@
     "status.clear_ink.success": "Successfully cleared %s blocks",
     
     "status.change_color.out_of_world": "§cCannot clear ink outside of the world",
-    "status.change_color.success": "Successfully recolored %s blocks to %s"
+    "status.change_color.success": "Successfully recolored %s blocks to %s",
+    
+    "arg.inkColor.colorNotFound": "Unknown color %s"
 }

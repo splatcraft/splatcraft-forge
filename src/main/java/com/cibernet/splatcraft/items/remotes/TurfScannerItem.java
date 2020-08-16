@@ -34,11 +34,11 @@ public class TurfScannerItem extends RemoteItem
 	@Override
 	public RemoteResult onRemoteUse(World world, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode)
 	{
-		return scanTurf(world, posA, posB, stack, colorIn, mode, null);
+		return scanTurf(world, posA, posB, mode, null);
 	}
 	
 	
-	public static RemoteResult scanTurf(World world, BlockPos blockpos, BlockPos blockpos1, ItemStack stack, int colorIn, int mode, ServerPlayerEntity target)
+	public static RemoteResult scanTurf(World world, BlockPos blockpos, BlockPos blockpos1, int mode, ServerPlayerEntity target)
 	{
 		BlockPos blockpos2 = new BlockPos(Math.min(blockpos.getX(), blockpos1.getX()), Math.min(blockpos.getY(), Math.min(blockpos1.getY(), blockpos.getY())), Math.min(blockpos.getZ(), blockpos1.getZ()));
 		BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos.getY(), Math.max(blockpos1.getY(), blockpos.getY())), Math.max(blockpos.getZ(), blockpos1.getZ()));

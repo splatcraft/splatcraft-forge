@@ -69,12 +69,15 @@ public class ColorChangerItem extends RemoteItem
 	
 	
 	@Override
-	public RemoteResult onRemoteUse(World world, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode)
+	public RemoteResult onRemoteUse(World world, BlockPos from, BlockPos to, ItemStack stack, int colorIn, int mode)
 	{
-		BlockPos blockpos2 = new BlockPos(Math.min(posA.getX(), posB.getX()), Math.min(posA.getY(), Math.min(posB.getY(), posA.getY())), Math.min(posA.getZ(), posB.getZ()));
-		BlockPos blockpos3 = new BlockPos(Math.max(posA.getX(), posB.getX()), Math.max(posA.getY(), Math.max(posB.getY(), posA.getY())), Math.max(posA.getZ(), posB.getZ()));
-		
-		int remoteColor = ColorUtils.getInkColor(stack);
+		return replaceColor(world, from, to, colorIn, mode, ColorUtils.getInkColor(stack));
+	}
+	
+	public static RemoteResult replaceColor(World world, BlockPos from, BlockPos to, int affectedColor, int mode, int color)
+	{
+		BlockPos blockpos2 = new BlockPos(Math.min(from.getX(), to.getX()), Math.min(from.getY(), Math.min(to.getY(), from.getY())), Math.min(from.getZ(), to.getZ()));
+		BlockPos blockpos3 = new BlockPos(Math.max(from.getX(), to.getX()), Math.max(from.getY(), Math.max(to.getY(), from.getY())), Math.max(from.getZ(), to.getZ()));
 		
 		if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
 			return createResult(false, new TranslationTextComponent("status.change_color.out_of_world"));
@@ -102,12 +105,12 @@ public class ColorChangerItem extends RemoteItem
 					{
 						int teColor = ((InkColorTileEntity) world.getTileEntity(pos)).getColor();
 						
-						if(teColor != remoteColor && ((mode == 0) || (mode == 1 && teColor == colorIn) || (mode == 2 && teColor != colorIn)) && ((IColoredBlock) block).remoteColorChange(world, pos, remoteColor))
+						if(teColor != affectedColor && ((mode == 0) || (mode == 1 && teColor == color) || (mode == 2 && teColor != color)) && ((IColoredBlock) block).remoteColorChange(world, pos, affectedColor))
 							count++;
 					}
 					blockTotal++;
 				}
 		
-		return createResult(true, new TranslationTextComponent("status.change_color.success", count, ColorUtils.getFormatedColorName(remoteColor, false))).setIntResults(count, (count*15)/blockTotal);
+		return createResult(true, new TranslationTextComponent("status.change_color.success", count, ColorUtils.getFormatedColorName(affectedColor, false))).setIntResults(count, (count*15)/blockTotal);
 	}
 }
