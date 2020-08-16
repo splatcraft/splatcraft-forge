@@ -44,10 +44,10 @@
     "item.splatcraft.turf_scanner": "Turf Scanner",
     "item.splatcraft.turf_scanner.mode.0": "Top-Down",
     "item.splatcraft.turf_scanner.mode.1": "Multi-Layered",
-    "item.splatcraft.color_transmutator": "Color Transmutator",
-    "item.splatcraft.color_transmutator.mode.0": "All",
-    "item.splatcraft.color_transmutator.mode.1": "Whitelist Player Color",
-    "item.splatcraft.color_transmutator.mode.2": "Blacklist Player Color",
+    "item.splatcraft.color_changer": "Color Transmutator",
+    "item.splatcraft.color_changer.mode.0": "All",
+    "item.splatcraft.color_changer.mode.1": "Whitelist Player Color",
+    "item.splatcraft.color_changer.mode.2": "Blacklist Player Color",
     "item.remote.coords.a": "(%s,%s,%s)",
     "item.remote.coords.b": "(%s,%s,%s) to (%s,%s,%s)",
     
@@ -196,7 +196,22 @@
     "gamerule.splatcraft.dropCrateLoot": "Drop Sunken Crate loot when mined",
     "gamerule.splatcraft.requireInkTank": "Require ink when using Splatcraft Weapons",
     "gamerule.splatcraft.universalInk": "Universal Ink",
-    "gamerule.splatcraft.universalInk.description": "Allows players to swim on enemy ink."
+    "gamerule.splatcraft.universalInk.description": "Allows players to swim on enemy ink.",
     
+    "status.coord_set.a": "first position to X: %s Y: %s Z: %s",
+    "status.coord_set.b": "Set second position to X: %s Y: %s Z: %s",
+    "status.no_ink": "Low Ink!",
+    "status.remote_mode": "Set Remote Mode to %s",
     
+    "status.scan_turf.out_of_world": "§cCannot check for blocks outside of the world",
+    "status.scan_turf.score": "%s = %s%%",
+    "status.scan_turf.winner": "%s §ewins!",
+    "status.scan_turf.no_ink": "§cNo ink was found on the designated area",
+    
+    "status.clear_ink.out_of_world": "§cCannot clear ink outside of the world",
+    "status.clear_ink.no_ink": "No clearable ink was found on the designated area",
+    "status.clear_ink.success": "Successfully cleared %s blocks",
+    
+    "status.change_color.out_of_world": "§cCannot clear ink outside of the world",
+    "status.change_color.success": "Successfully recolored %s blocks to %s"
 }

@@ -11,7 +11,6 @@ import net.minecraft.block.SlabBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -80,10 +79,6 @@ public class InkedSlabBlock extends SlabBlock implements IColoredBlock
 		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 	
-	private static boolean causesClear(BlockState state) {
-		return state.getFluidState().isTagged(FluidTags.WATER);
-	}
-	
 	private static BlockState clearInk(IWorld world, BlockPos pos)
 	{
 		InkedBlockTileEntity te = (InkedBlockTileEntity) world.getTileEntity(pos);
@@ -142,16 +137,19 @@ public class InkedSlabBlock extends SlabBlock implements IColoredBlock
 	}
 	
 	@Override
-	public void remoteColorChange(World world, BlockPos pos, int newColor)
+	public boolean remoteColorChange(World world, BlockPos pos, int newColor)
 	{
-	
+		
+		return false;
 	}
 	
 	@Override
-	public void remoteInkClear(World world, BlockPos pos)
+	public boolean remoteInkClear(World world, BlockPos pos)
 	{
+		BlockState oldState = world.getBlockState(pos);
 		if(world.getTileEntity(pos) instanceof InkedBlockTileEntity)
-			clearInk(world, pos);
+			return !clearInk(world, pos).equals(oldState);
+		return false;
 	}
 	
 	@Override

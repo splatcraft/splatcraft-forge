@@ -142,16 +142,19 @@ public class InkedStairsBlock extends StairsBlock implements IColoredBlock
 	}
 	
 	@Override
-	public void remoteColorChange(World world, BlockPos pos, int newColor)
+	public boolean remoteColorChange(World world, BlockPos pos, int newColor)
 	{
-	
+		
+		return false;
 	}
 	
 	@Override
-	public void remoteInkClear(World world, BlockPos pos)
+	public boolean remoteInkClear(World world, BlockPos pos)
 	{
+		BlockState oldState = world.getBlockState(pos);
 		if(world.getTileEntity(pos) instanceof InkedBlockTileEntity)
-			clearInk(world, pos);
+			return !clearInk(world, pos).equals(oldState);
+		return false;
 	}
 	
 	@Override

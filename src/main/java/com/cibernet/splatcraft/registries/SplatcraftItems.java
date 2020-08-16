@@ -1,7 +1,12 @@
 package com.cibernet.splatcraft.registries;
 
+import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.dispenser.PlaceBlockDispenseBehavior;
 import com.cibernet.splatcraft.items.*;
+import com.cibernet.splatcraft.items.remotes.ColorChangerItem;
+import com.cibernet.splatcraft.items.remotes.InkDisruptorItem;
+import com.cibernet.splatcraft.items.remotes.RemoteItem;
+import com.cibernet.splatcraft.items.remotes.TurfScannerItem;
 import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
@@ -9,6 +14,8 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -67,6 +74,9 @@ public class SplatcraftItems
 	public static final Item emptyInkwell = new BlockItem(SplatcraftBlocks.emptyInkwell).setRegistryName("empty_inkwell");
 	
 	//Remotes
+	public static final RemoteItem turfScanner = new TurfScannerItem("turf_scanner");
+	public static final RemoteItem inkDisruptor = new InkDisruptorItem("ink_disruptor");
+	public static final RemoteItem colorChanger = new ColorChangerItem("color_changer");
 	
 	//Map Items
 	public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16);
@@ -100,8 +110,12 @@ public class SplatcraftItems
 		registry.register(powerEgg);
 		registry.register(powerEggCan);
 		registry.register(powerEggBlock);
-		registry.register(emptyInkwell);
 		
+		registry.register(turfScanner);
+		registry.register(inkDisruptor);
+		registry.register(colorChanger);
+		
+		registry.register(emptyInkwell);
 		registry.register(inkwell);
 		registry.register(grate);
 		registry.register(barrierBar);
@@ -117,5 +131,17 @@ public class SplatcraftItems
 		
 		DispenserBlock.registerDispenseBehavior(inkwell, new PlaceBlockDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(emptyInkwell, new PlaceBlockDispenseBehavior());
+	}
+	
+	public static void registerModelProperties()
+	{
+		ResourceLocation activeProperty = new ResourceLocation(Splatcraft.MODID,"active");
+		ResourceLocation modeProperty = new ResourceLocation(Splatcraft.MODID,"mode");
+		
+		for(RemoteItem remote : RemoteItem.remotes)
+		{
+			ItemModelsProperties.func_239418_a_(remote, activeProperty, remote.getActiveProperty());
+			ItemModelsProperties.func_239418_a_(remote, modeProperty, remote.getModeProperty());
+		}
 	}
 }

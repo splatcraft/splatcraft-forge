@@ -89,7 +89,7 @@ public class InkBlockUtils
 		if(block instanceof StairsBlock || block instanceof SlabBlock || block instanceof BarrierBlock)
 			return true;
 		
-		if(world.getTileEntity(pos) != null)
+		if(!(world.getTileEntity(pos) instanceof InkColorTileEntity) && world.getTileEntity(pos) != null)
 			return false;
 		
 		

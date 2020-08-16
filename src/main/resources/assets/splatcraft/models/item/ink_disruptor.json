@@ -6,7 +6,7 @@
     "overrides": [
         {
             "predicate": {
-                "active": 1
+                "splatcraft:active": 1
             },
             "model": "splatcraft:item/ink_disruptor_active"
         }

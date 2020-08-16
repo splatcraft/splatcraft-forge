@@ -11,15 +11,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameter;
 import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,7 +32,6 @@ import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -123,6 +119,7 @@ public class CrateBlock extends Block implements IColoredBlock
 		te.setMaxHealth(hasLoot ? 25 : 20);
 		te.resetHealth();
 		te.setHasLoot(hasLoot);
+		te.setColor(-1);
 		
 		return te;
 	}
@@ -207,15 +204,23 @@ public class CrateBlock extends Block implements IColoredBlock
 	}
 	
 	@Override
-	public void remoteColorChange(World world, BlockPos pos, int newColor)
+	public boolean remoteColorChange(World world, BlockPos pos, int newColor)
 	{
-	
+		return false;
 	}
 	
 	@Override
-	public void remoteInkClear(World world, BlockPos pos)
+	public boolean remoteInkClear(World world, BlockPos pos)
 	{
-	
+		if(world.getTileEntity(pos) instanceof CrateTileEntity)
+		{
+			CrateTileEntity crate = (CrateTileEntity) world.getTileEntity(pos);
+			if(crate.getHealth() == crate.getMaxHealth())
+				return false;
+			crate.resetHealth();
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

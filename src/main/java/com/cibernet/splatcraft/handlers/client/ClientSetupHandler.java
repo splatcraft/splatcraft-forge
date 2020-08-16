@@ -64,7 +64,7 @@ public class ClientSetupHandler
 		@Override
 		public int getColor(ItemStack stack, int i)
 		{
-			return ColorUtils.getInkColor(stack);
+			return (i == 0) ? ColorUtils.getInkColor(stack) : -1;
 		}
 	}
 	

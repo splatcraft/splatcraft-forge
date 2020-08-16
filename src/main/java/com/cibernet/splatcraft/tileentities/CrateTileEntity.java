@@ -152,14 +152,23 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
 	
 	public float getHealth() {return health;}
 	public void setHealth(float value) {health = value;}
-	public  void resetHealth() {health = maxHealth;}
+	public  void resetHealth()
+	{
+		setHealth(maxHealth);
+		setColor(-1);
+	}
 	
 	public float getMaxHealth() {return maxHealth;}
 	public void setMaxHealth(float value) {maxHealth = value;}
 	
 	public NonNullList<ItemStack> getInventory() { return inventory; }
 	
-	public int getState() {return 4 - Math.round(health*4/maxHealth);}
+	public int getState()
+	{
+		if(health == maxHealth)
+			setColor(-1);
+		return 4 - Math.round(health*4/maxHealth);
+	}
 	
 	public void setHasLoot(boolean hasLoot)
 	{

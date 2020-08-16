@@ -70,6 +70,11 @@ public class Splatcraft
 		SplatcraftKeyHandler.registerKeys();
 		SplatcraftBlocks.setRenderLayers();
 		SplatcraftTileEntitites.bindTESR();
+		
+		DeferredWorkQueue.runLater(() ->
+		{
+			SplatcraftItems.registerModelProperties();
+		});
 	}
 	
 	@SubscribeEvent

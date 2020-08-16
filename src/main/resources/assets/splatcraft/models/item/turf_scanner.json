@@ -6,15 +6,14 @@
     "overrides": [
         {
             "predicate": {
-                "active": 1,
-                "mode": 0
+                "splatcraft:active": 1
             },
             "model": "splatcraft:item/turf_scanner_active"
         },
         {
             "predicate": {
-                "active": 1,
-                "mode": 1
+                "splatcraft:active": 1,
+                "splatcraft:mode": 1
             },
             "model": "splatcraft:item/turf_scanner_active_1"
         }

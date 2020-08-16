@@ -133,18 +133,22 @@ public class CanvasBlock extends Block implements IColoredBlock
 	}
 	
 	@Override
-	public void remoteColorChange(World world, BlockPos pos, int newColor)
+	public boolean remoteColorChange(World world, BlockPos pos, int newColor)
 	{
 		BlockState state = world.getBlockState(pos);
-		if(world.getTileEntity(pos) instanceof InkColorTileEntity)
+		if(world.getTileEntity(pos) instanceof InkColorTileEntity && ((InkColorTileEntity) world.getTileEntity(pos)).getColor() != newColor)
+		{
 			((InkColorTileEntity) world.getTileEntity(pos)).setColor(newColor);
-		world.notifyBlockUpdate(pos, state, state, 2);
+			world.notifyBlockUpdate(pos, state, state, 2);
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
-	public void remoteInkClear(World world, BlockPos pos)
+	public boolean remoteInkClear(World world, BlockPos pos)
 	{
-	
+		return false;
 	}
 	
 	@Override

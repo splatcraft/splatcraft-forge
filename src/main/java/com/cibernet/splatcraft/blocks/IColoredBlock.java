@@ -17,8 +17,8 @@ public interface IColoredBlock
 		return -1;
 	}
 	
-	void remoteColorChange(World world, BlockPos pos, int newColor);
-	void remoteInkClear(World world, BlockPos pos);
+	boolean remoteColorChange(World world, BlockPos pos, int newColor);
+	boolean remoteInkClear(World world, BlockPos pos);
 	boolean countsTowardsTurf(World world, BlockPos pos);
 	
 	default boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
