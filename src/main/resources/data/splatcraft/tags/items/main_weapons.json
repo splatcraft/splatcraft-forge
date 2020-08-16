@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#splatcraft:shooters",
+    "#splatcraft:rollers",
+    "#splatcraft:chargers",
+    "#splatcraft:dualies",
+    "#splatcraft:sloshers"
+  ]
+}
