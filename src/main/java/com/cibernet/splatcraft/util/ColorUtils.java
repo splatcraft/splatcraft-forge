@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.tags.SplatcraftTags;
 import com.cibernet.splatcraft.entities.IColoredEntity;
 import com.cibernet.splatcraft.network.PlayerColorPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
@@ -14,6 +15,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class ColorUtils
 {
@@ -155,6 +158,8 @@ public class ColorUtils
 	
 	public static int getRandomStarterColor()
 	{
-		return STARTER_COLORS[(int) (Math.random()*(STARTER_COLORS.length))];
+		
+		return SplatcraftTags.InkColors.STARTER_COLORS.getAllElements().isEmpty() ?
+				STARTER_COLORS[(int) (Math.random()*(STARTER_COLORS.length))] : SplatcraftTags.InkColors.STARTER_COLORS.getRandomElement(new Random()).getColor();
 	}
 }

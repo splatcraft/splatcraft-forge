@@ -73,6 +73,8 @@ public class SplatcraftTags
 	{
 		private static final TagRegistry<InkColor> collection = new TagRegistry();
 		
+		public static final ITag<InkColor> STARTER_COLORS = createTag("starter_colors");
+		
 		private static ITag<InkColor> createTag(String name)
 		{
 			return collection.func_232939_b_().getOrCreate(new ResourceLocation(Splatcraft.MODID, name));

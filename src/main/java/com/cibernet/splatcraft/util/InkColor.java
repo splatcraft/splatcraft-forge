@@ -48,7 +48,7 @@ public class InkColor extends ForgeRegistryEntry<InkColor> implements Comparable
 		return (I18n.format(getUnlocalizedName()));
 	}
 	
-	public String getUnlocalizedName() { return "ink_color."+name;}
+	public String getUnlocalizedName() { return "ink_color." + getRegistryName().getNamespace() + "." + getRegistryName().getPath();}
 	
 	public String getHexCode() {return String.format("%06X", hexCode);}
 	
