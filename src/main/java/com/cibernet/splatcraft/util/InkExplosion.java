@@ -255,7 +255,9 @@ public class InkExplosion
 				Block block = blockstate.getBlock();
 				if (!blockstate.isAir(this.world, blockpos))
 				{
-					InkBlockUtils.inkBlock(world, blockpos, color, blockDamage, inkType);
+					if(exploder instanceof PlayerEntity)
+						InkBlockUtils.playerInkBlock((PlayerEntity) exploder, world, blockpos, color, blockDamage, inkType);
+					else InkBlockUtils.inkBlock(world, blockpos, color, blockDamage, inkType);
 					/*
 					BlockPos blockpos1 = blockpos.toImmutable();
 					this.world.getProfiler().startSection("explosion_blocks");

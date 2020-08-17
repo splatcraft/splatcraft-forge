@@ -5,10 +5,12 @@ import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.InkedBlock;
 import com.cibernet.splatcraft.data.tags.SplatcraftTags;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
+import com.cibernet.splatcraft.registries.SplatcraftStats;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -24,7 +26,15 @@ public class InkBlockUtils
 		put(InkType.NORMAL, new InkBlocks(SplatcraftBlocks.inkedBlock).put(StairsBlock.class, SplatcraftBlocks.inkedStairs).put(SlabBlock.class, SplatcraftBlocks.inkedSlab));
 	}};
 	
-	
+	public static boolean playerInkBlock(PlayerEntity player, World world, BlockPos pos, int color, float damage, InkType inkType)
+	{
+		boolean inked = inkBlock(world, pos, color, damage, inkType);
+		
+		if(inked)
+			player.addStat(SplatcraftStats.BLOCKS_INKED);
+		
+		return inked;
+	}
 	
 	public static boolean inkBlock(World world, BlockPos pos, int color, float damage, InkType inkType)
 	{

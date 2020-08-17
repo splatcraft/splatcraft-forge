@@ -39,6 +39,7 @@ public class SquidFormHandler
 			player.stopActiveHand();
 			
 			player.addStat(SplatcraftStats.SQUID_TIME);
+			
 			if(InkBlockUtils.canSquidSwim(player))
 			{
 				player.fallDistance = 0;

@@ -215,5 +215,16 @@
     "status.change_color.out_of_world": "§cCannot clear ink outside of the world",
     "status.change_color.success": "Successfully recolored %s blocks to %s",
     
-    "arg.inkColor.colorNotFound": "Unknown color %s"
+    "arg.inkColor.colorNotFound": "Unknown color %s",
+    
+    "stat.splatcraft.squid_time": "Time as Squid",
+    "stat.splatcraft.blocks_inked": "Blocks Inked",
+    "stat.splatcraft.weapons_crafted": "Weapons Crafted",
+    "stat.splatcraft.inkwells_crafted": "Inkwells Filled",
+    "stat.splatcraft.subs_used": "Sub Weapons Used",
+    "stat.splatcraft.specials_used": "Special Weapons Used",
+    
+    "key.categories.splatcraft": "Splatcraft",
+    "key.squidForm": "Squid"
+    
 }

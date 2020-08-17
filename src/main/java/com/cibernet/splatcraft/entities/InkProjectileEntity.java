@@ -10,9 +10,7 @@ import com.cibernet.splatcraft.util.InkExplosion;
 import net.minecraft.entity.*;
 import net.minecraft.entity.monster.SlimeEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -133,7 +131,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 			return;
 			
 		this.func_230299_a_(result);
-			InkExplosion.createInkExplosion(world, this, new DamageSource("ink"), getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+			InkExplosion.createInkExplosion(world, func_234616_v_(), new DamageSource("ink"), getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
 		
 		this.remove();
 	}
