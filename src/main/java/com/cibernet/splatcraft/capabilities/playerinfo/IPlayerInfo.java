@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.capabilities;
+package com.cibernet.splatcraft.capabilities.playerinfo;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.vector.Vector3d;

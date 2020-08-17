@@ -1,14 +1,11 @@
 package com.cibernet.splatcraft.handlers.client;
 
-import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.capabilities.PlayerInfo;
-import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.client.renderer.InkSquidRenderer;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;

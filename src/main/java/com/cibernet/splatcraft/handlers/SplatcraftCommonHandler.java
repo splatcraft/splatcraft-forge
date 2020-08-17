@@ -1,17 +1,12 @@
 package com.cibernet.splatcraft.handlers;
 
-import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
-import com.cibernet.splatcraft.client.renderer.InkSquidRenderer;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
-import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;

@@ -1,8 +1,7 @@
-package com.cibernet.splatcraft.capabilities;
+package com.cibernet.splatcraft.capabilities.playerinfo;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.IntNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 

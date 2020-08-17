@@ -1,7 +1,7 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;

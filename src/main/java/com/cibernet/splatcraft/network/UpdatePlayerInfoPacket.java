@@ -1,8 +1,7 @@
 package com.cibernet.splatcraft.network;
 
-import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.network.base.PlayToClientPacket;
-import com.cibernet.splatcraft.network.base.SplatcraftPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;

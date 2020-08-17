@@ -1,6 +1,5 @@
 package com.cibernet.splatcraft.entities;
 
-import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
 import com.cibernet.splatcraft.handlers.WeaponHandler;
 import com.cibernet.splatcraft.registries.SplatcraftEntities;
 import com.cibernet.splatcraft.registries.SplatcraftItems;

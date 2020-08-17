@@ -1,18 +1,16 @@
 package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
-import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
+import com.cibernet.splatcraft.registries.SplatcraftStats;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.Difficulty;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -40,6 +38,7 @@ public class SquidFormHandler
 			player.setPose(Pose.FALL_FLYING);
 			player.stopActiveHand();
 			
+			player.addStat(SplatcraftStats.SQUID_TIME);
 			if(InkBlockUtils.canSquidSwim(player))
 			{
 				player.fallDistance = 0;

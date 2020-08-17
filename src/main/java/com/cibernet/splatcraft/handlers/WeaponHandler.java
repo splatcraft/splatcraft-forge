@@ -2,7 +2,6 @@ package com.cibernet.splatcraft.handlers;
 
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.WeaponBaseItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -11,7 +10,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

@@ -1,9 +1,8 @@
-package com.cibernet.splatcraft.capabilities;
+package com.cibernet.splatcraft.capabilities.playerinfo;
 
 import com.cibernet.splatcraft.entities.InkSquidEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;

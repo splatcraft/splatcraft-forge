@@ -1,6 +1,6 @@
 package com.cibernet.splatcraft.blocks;
 
-import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PaneBlock;

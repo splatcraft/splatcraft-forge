@@ -62,6 +62,7 @@ public class Splatcraft
 		});
 		
 		SplatcraftTags.register();
+		SplatcraftStats.register();
 	}
 	
 	private void clientSetup(final FMLClientSetupEvent event)

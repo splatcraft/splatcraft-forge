@@ -1,9 +1,8 @@
 package com.cibernet.splatcraft.network;
 
-import com.cibernet.splatcraft.capabilities.IPlayerInfo;
-import com.cibernet.splatcraft.capabilities.PlayerInfoCapability;
+import com.cibernet.splatcraft.capabilities.playerinfo.IPlayerInfo;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.network.base.PlayToClientPacket;
-import com.cibernet.splatcraft.network.base.PlayToServerPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
