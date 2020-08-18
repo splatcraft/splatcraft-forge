@@ -2,16 +2,19 @@ package com.cibernet.splatcraft.items.remotes;
 
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.data.tags.SplatcraftTags;
+import com.cibernet.splatcraft.handlers.ScoreboardHandler;
 import com.cibernet.splatcraft.network.SendColorScoresPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
+import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreCriteria;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
@@ -176,9 +179,18 @@ public class TurfScannerItem extends RemoteItem
 			i++;
 		}
 		
-		/* TODO
-		for(Map.Entry<Integer, Integer> entry : scores.entrySet())
+		
+		for(PlayerEntity player : world.getPlayers())
 		{
+			int color = ColorUtils.getPlayerColor(player);
+			if(!ScoreboardHandler.hasColorCriterion(color))
+				continue;
+			
+			ScoreCriteria criterion = color == winner ? ScoreboardHandler.getColorWins(color) : ScoreboardHandler.getColorLosses(color);
+			world.getScoreboard().forAllObjectives(criterion, player.getScoreboardName(), score -> score.increaseScore(1));
+		}
+		
+			/*
 			if(SplatcraftScoreboardHandler.hasGoal(entry.getKey()))
 			{
 				Iterator<ScoreObjective> iter;
@@ -195,8 +207,8 @@ public class TurfScannerItem extends RemoteItem
 					
 				}
 			}
-		}
-		*/
+			*/
+		
 		if(scores.isEmpty())
 			return createResult(false, new TranslationTextComponent("status.scan_turf.no_ink"));
 		else

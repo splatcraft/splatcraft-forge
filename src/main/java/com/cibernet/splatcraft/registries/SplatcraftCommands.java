@@ -1,10 +1,7 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.commands.ClearInkCommand;
-import com.cibernet.splatcraft.commands.InkColorCommand;
-import com.cibernet.splatcraft.commands.ReplaceColorCommand;
-import com.cibernet.splatcraft.commands.ScanTurfCommand;
+import com.cibernet.splatcraft.commands.*;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,5 +20,6 @@ public class SplatcraftCommands
 		ScanTurfCommand.register(dispatcher);
 		ClearInkCommand.register(dispatcher);
 		ReplaceColorCommand.register(dispatcher);
+		ColorScoresCommand.register(dispatcher);
 	}
 }

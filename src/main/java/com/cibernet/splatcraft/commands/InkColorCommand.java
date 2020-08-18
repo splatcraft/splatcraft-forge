@@ -31,7 +31,7 @@ public class InkColorCommand
 	{
 		ColorUtils.setPlayerColor(source.asPlayer(), color);
 		
-		source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", color, source.asPlayer().getDisplayName()), true);
+		source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", source.asPlayer().getDisplayName(), ColorUtils.getFormatedColorName(color, false)), true);
 		
 		return 1;
 	}
@@ -41,9 +41,9 @@ public class InkColorCommand
 		targets.forEach((player) -> ColorUtils.setPlayerColor(player, color));
 		
 		if (targets.size() == 1) {
-			source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", color, targets.iterator().next().getDisplayName()), true);
+			source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", ColorUtils.getFormatedColorName(color, false), targets.iterator().next().getDisplayName()), true);
 		} else {
-			source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", color, targets.size()), true);
+			source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.multiple", ColorUtils.getFormatedColorName(color, false), targets.size()), true);
 		}
 		
 		return targets.size();

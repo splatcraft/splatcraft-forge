@@ -25,7 +25,7 @@ public class InkColorArgument implements ArgumentType<Integer>
 {
 	
 	private static final Collection<String> EXAMPLES = Arrays.asList("splatcraft:orange", "blue", "#C83D79", "4234555");
-	public static final DynamicCommandExceptionType COLOR_NOT_FOUND = new DynamicCommandExceptionType((p_208663_0_) -> new TranslationTextComponent("arg.inkColor.colorNotFound", p_208663_0_));
+	public static final DynamicCommandExceptionType COLOR_NOT_FOUND = new DynamicCommandExceptionType((p_208663_0_) -> new TranslationTextComponent("arg.inkColor.notFound", p_208663_0_));
 	
 	private static final int max = 0xFFFFFF;
 	

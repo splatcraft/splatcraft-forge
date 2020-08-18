@@ -184,6 +184,9 @@
     
     "ink_color.splatcraft.default": "Undyed",
     
+    "death.attack.splat": "%s was splatted by %s",
+    "death.attack.splat.item": "%s was splatted by %s using %s",
+    
     "entity.splatcraft.ink_projectile": "Ink Projectile",
     "entity.splatcraft.ink_squid": "Squid",
     "entity.splatcraft.squid_bumper": "Squid Bumper",
@@ -215,7 +218,17 @@
     "status.change_color.out_of_world": "§cCannot clear ink outside of the world",
     "status.change_color.success": "Successfully recolored %s blocks to %s",
     
-    "arg.inkColor.colorNotFound": "Unknown color %s",
+    "commands.inkcolor.success.single": "Changed %s's ink color to %s",
+    "commands.inkcolor.success.multiple": "Changed the ink color of %s players to %s",
+    "commands.colorscores.add.success": "Successfully added new criteria for the color %s",
+    "commands.colorscores.add.duplicate": "Criteria with the color %s already exists",
+    "commands.colorscores.remove.success": "Successfully removed criteria for the color %s",
+    "commands.colorscores.list.empty": "There are no registered color criteria",
+    "commands.colorscores.list.count": "Showing %s registered color criteria:",
+    "commands.colorscores.list.entry": "%s: displays as '%s'",
+    
+    "arg.colorCriterion.notFound": "No criteria were found by the color %s",
+    "arg.inkColor.notFound": "Unknown color %s",
     
     "stat.splatcraft.squid_time": "Time as Squid",
     "stat.splatcraft.blocks_inked": "Blocks Inked",

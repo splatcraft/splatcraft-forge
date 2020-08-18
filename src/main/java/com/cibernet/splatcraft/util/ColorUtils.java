@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.util;
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.data.tags.SplatcraftTags;
 import com.cibernet.splatcraft.entities.IColoredEntity;
+import com.cibernet.splatcraft.handlers.ScoreboardHandler;
 import com.cibernet.splatcraft.network.PlayerColorPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
@@ -52,6 +53,7 @@ public class ColorUtils
 	public static void setPlayerColor(PlayerEntity player, int color, boolean updateClient)
 	{
 		PlayerInfoCapability.get(player).setColor(color);
+		ScoreboardHandler.updatePlayerColorScore(player, color);
 		
 		World world = player.world;
 		if(!world.isRemote && updateClient)
@@ -114,10 +116,10 @@ public class ColorUtils
 		
 	}
 	
-	public static ITextComponent getFormatedColorName(int color, boolean isTooltip)
+	public static ITextComponent getFormatedColorName(int color, boolean colorless)
 	{
 		if(color == ColorUtils.DEFAULT)
-			return new StringTextComponent( (isTooltip ? TextFormatting.GRAY : "") + getColorName(color));
+			return new StringTextComponent( (colorless ? TextFormatting.GRAY : "") + getColorName(color));
 		return new StringTextComponent(getColorName(color)).setStyle(Style.EMPTY.setColor(Color.func_240743_a_(color)));
 	}
 	

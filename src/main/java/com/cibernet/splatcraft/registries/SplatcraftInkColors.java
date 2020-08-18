@@ -117,10 +117,12 @@ public class SplatcraftInkColors
 		registry.register(dyeLime);
 		registry.register(dyePink);
 		registry.register(dyeGray);
+		registry.register(dyeLightGray);
 		registry.register(dyeCyan);
 		registry.register(dyePurple);
 		registry.register(dyeBlue);
 		registry.register(dyeBrown);
+		registry.register(dyeGreen);
 		registry.register(dyeRed);
 		registry.register(dyeBlack);
 	}

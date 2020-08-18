@@ -3,6 +3,7 @@ package com.cibernet.splatcraft;
 import com.cibernet.splatcraft.data.SplatcraftData;
 import com.cibernet.splatcraft.data.tags.SplatcraftTags;
 import com.cibernet.splatcraft.entities.InkSquidEntity;
+import com.cibernet.splatcraft.handlers.ScoreboardHandler;
 import com.cibernet.splatcraft.handlers.SplatcraftCommonHandler;
 import com.cibernet.splatcraft.handlers.WeaponHandler;
 import com.cibernet.splatcraft.handlers.client.PlayerMovementHandler;
@@ -20,8 +21,7 @@ import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,6 +63,7 @@ public class Splatcraft
 		
 		SplatcraftTags.register();
 		SplatcraftStats.register();
+		ScoreboardHandler.register();
 	}
 	
 	private void clientSetup(final FMLClientSetupEvent event)
@@ -79,9 +80,10 @@ public class Splatcraft
 	}
 	
 	@SubscribeEvent
-	public void onServerStarting(FMLServerStartingEvent event)
+	public void onServerAboutToStart(FMLServerAboutToStartEvent event)
 	{
-	
+		System.out.println("hello!");
+		ScoreboardHandler.clearColorCriteria();
 	}
 	
 	@SubscribeEvent
