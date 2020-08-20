@@ -5,12 +5,14 @@ import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.InkedBlock;
 import com.cibernet.splatcraft.data.tags.SplatcraftTags;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
+import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftStats;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -24,6 +26,7 @@ public class InkBlockUtils
 	public static TreeMap<InkType, InkBlocks> inkTypeMap = new TreeMap<InkType, InkBlocks>()
 	{{
 		put(InkType.NORMAL, new InkBlocks(SplatcraftBlocks.inkedBlock).put(StairsBlock.class, SplatcraftBlocks.inkedStairs).put(SlabBlock.class, SplatcraftBlocks.inkedSlab));
+		put(InkType.GLOWING, new InkBlocks(SplatcraftBlocks.glowingInkedBlock).put(StairsBlock.class, SplatcraftBlocks.glowingInkedStairs).put(SlabBlock.class, SplatcraftBlocks.glowingInkedSlab));
 	}};
 	
 	public static boolean playerInkBlock(PlayerEntity player, World world, BlockPos pos, int color, float damage, InkType inkType)
@@ -175,9 +178,11 @@ public class InkBlockUtils
 		return false;
 	}
 	
-	public static InkBlockUtils.InkType getInkType(LivingEntity entity) //TODO
+	public static InkBlockUtils.InkType getInkType(LivingEntity entity)
 	{
-		return InkBlockUtils.InkType.NORMAL;
+		if(entity instanceof PlayerEntity && ((PlayerEntity) entity).inventory.hasItemStack(new ItemStack(SplatcraftItems.splatfestBand)))
+			return InkType.GLOWING;
+		return InkType.NORMAL;
 	}
 	
 	public static Block getInkBlock(InkType inkType, Block baseBlock)

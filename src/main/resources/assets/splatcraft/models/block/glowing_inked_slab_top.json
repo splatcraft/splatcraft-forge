@@ -1,0 +1,31 @@
+{   "parent": "block/block",
+	"textures": {
+		"particle": "splatcraft:blocks/inked_block",
+		"base": "splatcraft:blocks/inked_block",
+		"overlay": "splatcraft:blocks/glitter"
+	},
+	"elements": [
+		{   "from": [ 0, 8, 0 ],
+			"to": [ 16, 16, 16 ],
+			"faces": {
+				"down":  { "uv": [ 0, 0, 16, 16 ], "texture": "#base", "cullface": "down", "tintindex": 0  },
+				"up":    { "uv": [ 0, 0, 16, 16 ], "texture": "#base",    "cullface": "up", "tintindex": 0 },
+				"north": { "uv": [ 0, 8, 16, 16 ], "texture": "#base",   "cullface": "north", "tintindex": 0  },
+				"south": { "uv": [ 0, 8, 16, 16 ], "texture": "#base",   "cullface": "south", "tintindex": 0  },
+				"west":  { "uv": [ 0, 8, 16, 16 ], "texture": "#base",   "cullface": "west", "tintindex": 0  },
+				"east":  { "uv": [ 0, 8, 16, 16 ], "texture": "#base",   "cullface": "east", "tintindex": 0  }
+			}
+		},
+		{   "from": [ 0, 8, 0 ],
+			"to": [ 16, 16, 16 ],
+			"faces": {
+				"up": { "uv": [ 0, 0, 16, 16 ], "texture": "#overlay", "cullface": "up" },
+				"down": { "uv": [ 0, 0, 16, 16 ], "texture": "#overlay", "cullface": "down" },
+				"north": { "uv": [ 0, 8, 16, 16 ], "texture": "#overlay", "cullface": "north" },
+				"south": { "uv": [ 0, 8, 16, 16 ], "texture": "#overlay", "cullface": "south" },
+				"west":  { "uv": [ 0, 8, 16, 16 ], "texture": "#overlay", "cullface": "west" },
+				"east":  { "uv": [ 0, 8, 16, 16 ], "texture": "#overlay", "cullface": "east" }
+			}
+		}
+	]
+}

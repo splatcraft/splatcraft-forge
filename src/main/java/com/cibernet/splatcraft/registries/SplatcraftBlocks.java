@@ -22,9 +22,13 @@ public class SplatcraftBlocks
 {
 	public static final ArrayList<Block> inkColoredBlocks = new ArrayList<>();
 	
-	public static final Block inkedBlock = new InkedBlock().setRegistryName("inked_block");
+	public static final Block inkedBlock = new InkedBlock("inked_block");
 	public static final Block inkedStairs = new InkedStairsBlock("inked_stairs");
 	public static final Block inkedSlab = new InkedSlabBlock("inked_slab");
+	
+	public static final Block glowingInkedBlock = InkedBlock.glowing("glowing_inked_block");
+	public static final Block glowingInkedStairs = InkedStairsBlock.glowing("glowing_inked_stairs");
+	public static final Block glowingInkedSlab = InkedSlabBlock.glowing("glowing_inked_slab");
 	
 	public static final Block sardiniumBlock = new MetalBlock(Material.IRON, MaterialColor.WHITE_TERRACOTTA).setRegistryName("sardinium_block");
 	public static final Block sardiniumOre = new OreBlock(0).setRegistryName("sardinium_ore");
@@ -50,6 +54,9 @@ public class SplatcraftBlocks
 		registry.register(inkedBlock);
 		registry.register(inkedStairs);
 		registry.register(inkedSlab);
+		registry.register(glowingInkedBlock);
+		registry.register(glowingInkedStairs);
+		registry.register(glowingInkedSlab);
 		
 		registry.register(sardiniumBlock);
 		registry.register(sardiniumOre);
@@ -73,6 +80,10 @@ public class SplatcraftBlocks
 	
 	public static void setRenderLayers()
 	{
+		RenderTypeLookup.setRenderLayer(glowingInkedBlock, RenderType.getTranslucent());
+		RenderTypeLookup.setRenderLayer(glowingInkedStairs, RenderType.getTranslucent());
+		RenderTypeLookup.setRenderLayer(glowingInkedSlab, RenderType.getTranslucent());
+		
 		RenderTypeLookup.setRenderLayer(emptyInkwell, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(grate, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(crate, RenderType.getCutout());

@@ -57,17 +57,27 @@ public class InkColorArgument implements ArgumentType<Integer>
 		
 		try
 		{
-			result = reader.readInt();
+			result = Integer.parseInt(reader.readString());
 			hasInt = true;
 			
-		} catch(CommandSyntaxException e) {}
+			if (result < 0) {
+				reader.setCursor(start);
+				throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.integerTooLow().createWithContext(reader, result, 0);
+			}
+			if (result > max) {
+				reader.setCursor(start);
+				throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.integerTooHigh().createWithContext(reader, result, max);
+			}
+			return result;
+			
+		} catch(NumberFormatException e) {}
 		
 		reader.setCursor(start);
 		
 		if(!hasInt)
 		{
 			if(reader.read() == '#')
-				return parseHex(reader.readString().substring(1).toLowerCase(), reader);
+				return parseHex(reader.readString().toLowerCase(), reader);
 				
 			reader.setCursor(start);
 			ResourceLocation resourceLocation = ResourceLocation.read(reader);

@@ -64,6 +64,8 @@ public class SplatcraftItems
 	public static final Item inkClothLeggings = new ColoredArmorItem("ink_cloth_leggings", INK_CLOTH, EquipmentSlotType.LEGS);
 	public static final Item inkClothBoots = new ColoredArmorItem("ink_cloth_boots", INK_CLOTH, EquipmentSlotType.FEET);
 	
+	public static final Item splatfestBand = new Item(new Item.Properties().maxStackSize(1)).setRegistryName("splatfest_band");
+	
 	//Materials
 	public static final Item sardinium = new Item(new Item.Properties().group(GROUP_GENERAL)).setRegistryName("sardinium");
 	public static final Item sardiniumBlock = new BlockItem(SplatcraftBlocks.sardiniumBlock).setRegistryName("sardinium_block");
@@ -103,6 +105,7 @@ public class SplatcraftItems
 		registry.register(inkClothChestplate);
 		registry.register(inkClothLeggings);
 		registry.register(inkClothBoots);
+		registry.register(splatfestBand);
 		
 		registry.register(sardinium);
 		registry.register(sardiniumBlock);

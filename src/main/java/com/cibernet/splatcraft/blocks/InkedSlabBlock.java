@@ -11,9 +11,11 @@ import net.minecraft.block.SlabBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -27,9 +29,31 @@ public class InkedSlabBlock extends SlabBlock implements IColoredBlock
 {
 	public InkedSlabBlock(String name)
 	{
-		super( Properties.create(Material.CLAY, MaterialColor.BLACK_TERRACOTTA).tickRandomly().harvestTool(ToolType.PICKAXE).setRequiresTool());
+		this(name, InkedBlock.DEFAULT_PROPERTIES);
+	}
+	
+	public InkedSlabBlock(String name, Properties properties)
+	{
+		super(properties);
 		SplatcraftBlocks.inkColoredBlocks.add(this);
 		setRegistryName(name);
+	}
+	
+	public static InkedSlabBlock glowing(String name)
+	{
+		return new InkedSlabBlock(name, InkedBlock.DEFAULT_PROPERTIES.setLightLevel(state -> InkedBlock.GLOWING_LIGHT_LEVEL));
+	}
+	
+	@Override
+	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+	{
+		if(world.getTileEntity(pos) instanceof InkedBlockTileEntity)
+		{
+			BlockState savedState = ((InkedBlockTileEntity) world.getTileEntity(pos)).getSavedState();
+			return savedState.getBlock().getPickBlock(savedState, target, world, pos, player);
+		}
+		
+		return ItemStack.EMPTY;
 	}
 	
 	@Override
@@ -159,18 +183,28 @@ public class InkedSlabBlock extends SlabBlock implements IColoredBlock
 	}
 	
 	@Override
-	public boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+	public boolean inkBlock(World world, BlockPos pos, int color,float damage,  InkBlockUtils.InkType inkType)
 	{
 		if(!(world.getTileEntity(pos) instanceof InkedBlockTileEntity))
 			return false;
 		
 		InkedBlockTileEntity te = (InkedBlockTileEntity) world.getTileEntity(pos);
+		BlockState oldState = world.getBlockState(pos);
 		BlockState state = world.getBlockState(pos);
 		
-		if(te.getColor() == color)
-			return false;
-		te.setColor(color);
-		world.notifyBlockUpdate(pos, state, state, 2);
-		return true;
+		if(te.getColor() != color)
+			te.setColor(color);
+		if(InkBlockUtils.getInkBlock(inkType, state.getBlock()) != state.getBlock())
+		{
+			state = InkBlockUtils.getInkState(inkType, state);
+			world.setBlockState(pos, state, 2);
+			InkedBlockTileEntity newTe = (InkedBlockTileEntity) world.getTileEntity(pos);
+			newTe.setSavedState(te.getSavedState());
+			newTe.setColor(te.getColor());
+			
+			world.setTileEntity(pos, newTe);
+		}
+		else world.notifyBlockUpdate(pos, oldState, state, 2);
+		return !(te.getColor() == color && InkBlockUtils.getInkBlock(inkType, state.getBlock()) == state.getBlock());
 	}
 }
