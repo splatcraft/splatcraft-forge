@@ -218,6 +218,7 @@ public class CrateBlock extends Block implements IColoredBlock
 			if(crate.getHealth() == crate.getMaxHealth())
 				return false;
 			crate.resetHealth();
+			world.setBlockState(pos, crate.getBlockState().with(STATE, crate.getState()), 2);
 			return true;
 		}
 		return false;

@@ -107,7 +107,7 @@ public class CanvasBlock extends Block implements IColoredBlock
 		{
 			BlockState state = world.getBlockState(pos);
 			((InkColorTileEntity) world.getTileEntity(pos)).setColor(color);
-			world.notifyBlockUpdate(pos, state, state, 2);
+			world.notifyBlockUpdate(pos, state, state.with(INKED, true), 2);
 			return true;
 		}
 		
@@ -139,7 +139,7 @@ public class CanvasBlock extends Block implements IColoredBlock
 		if(world.getTileEntity(pos) instanceof InkColorTileEntity && ((InkColorTileEntity) world.getTileEntity(pos)).getColor() != newColor)
 		{
 			((InkColorTileEntity) world.getTileEntity(pos)).setColor(newColor);
-			world.notifyBlockUpdate(pos, state, state, 2);
+			world.setBlockState(pos, state.with(INKED, true), 2);
 			return true;
 		}
 		return false;
