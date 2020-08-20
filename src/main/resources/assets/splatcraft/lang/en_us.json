@@ -218,6 +218,7 @@
     "status.change_color.out_of_world": "§cCannot clear ink outside of the world",
     "status.change_color.success": "Successfully recolored %s blocks to %s",
     
+    "commands.scanturf.success": "Successfully scanned %s blocks of turf",
     "commands.inkcolor.success.single": "Changed %s's ink color to %s",
     "commands.inkcolor.success.multiple": "Changed the ink color of %s players to %s",
     "commands.colorscores.add.success": "Successfully added new criteria for the color %s",

@@ -27,13 +27,17 @@ public class SplatcraftCommonHandler
 	}
 	
 	@SubscribeEvent
-	public static void onEntityJoinWorld(final EntityJoinWorldEvent event)
+	public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
 	{
-		if(event.getEntity() instanceof ServerPlayerEntity)
-		{
-			ServerPlayerEntity player = (ServerPlayerEntity) event.getEntity();
-			SplatcraftPacketHandler.sendToPlayer(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.booleanRules), player);
-		}
+		PlayerEntity player = event.getPlayer();
+		SplatcraftPacketHandler.sendToPlayer(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.booleanRules), (ServerPlayerEntity) player);
+		
+		int[] colors = new int[ScoreboardHandler.getCriteriaKeySet().size()];
+		int i = 0;
+		for(int c : ScoreboardHandler.getCriteriaKeySet())
+			colors[i++] = c;
+		
+		SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, colors), (ServerPlayerEntity) player);
 	}
 	
 	@SubscribeEvent

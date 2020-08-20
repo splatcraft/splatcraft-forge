@@ -2,8 +2,12 @@ package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.commands.*;
+import com.cibernet.splatcraft.commands.arguments.ColorCriterionArgument;
+import com.cibernet.splatcraft.commands.arguments.InkColorArgument;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.arguments.ArgumentSerializer;
+import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -21,5 +25,11 @@ public class SplatcraftCommands
 		ClearInkCommand.register(dispatcher);
 		ReplaceColorCommand.register(dispatcher);
 		ColorScoresCommand.register(dispatcher);
+	}
+	
+	public static void registerArguments()
+	{
+		ArgumentTypes.register(Splatcraft.MODID+":ink_color", InkColorArgument.class, new ArgumentSerializer<InkColorArgument>(InkColorArgument::inkColor));
+		ArgumentTypes.register(Splatcraft.MODID+":color_criterion", ColorCriterionArgument.class, new ArgumentSerializer<ColorCriterionArgument>(ColorCriterionArgument::colorCriterion));
 	}
 }

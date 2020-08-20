@@ -3,7 +3,7 @@ package com.cibernet.splatcraft.items.remotes;
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.data.tags.SplatcraftTags;
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
-import com.cibernet.splatcraft.network.SendColorScoresPacket;
+import com.cibernet.splatcraft.network.SendScanTurfResultsPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
@@ -13,17 +13,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreCriteria;
-import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.spawner.WorldEntitySpawner;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -213,7 +208,7 @@ public class TurfScannerItem extends RemoteItem
 			return createResult(false, new TranslationTextComponent("status.scan_turf.no_ink"));
 		else
 		{
-			SendColorScoresPacket packet = new SendColorScoresPacket(colors, colorScores);
+			SendScanTurfResultsPacket packet = new SendScanTurfResultsPacket(colors, colorScores);
 			if(target == null)
 				SplatcraftPacketHandler.sendToDim(packet, world);
 			else SplatcraftPacketHandler.sendToPlayer(packet, target);

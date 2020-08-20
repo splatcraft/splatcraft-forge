@@ -3,21 +3,19 @@ package com.cibernet.splatcraft.network;
 import com.cibernet.splatcraft.network.base.PlayToClientPacket;
 import com.cibernet.splatcraft.util.ClientUtils;
 import com.cibernet.splatcraft.util.ColorUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 
-public class SendColorScoresPacket extends PlayToClientPacket
+public class SendScanTurfResultsPacket extends PlayToClientPacket
 {
 	Integer[] colors;
 	Float[] scores;
 	int length;
 	
-	public SendColorScoresPacket(Integer[] colors, Float[] scores)
+	public SendScanTurfResultsPacket(Integer[] colors, Float[] scores)
 	{
 		this.colors = colors;
 		this.scores = scores;
@@ -35,7 +33,7 @@ public class SendColorScoresPacket extends PlayToClientPacket
 		}
 	}
 	
-	public static SendColorScoresPacket decode(PacketBuffer buffer)
+	public static SendScanTurfResultsPacket decode(PacketBuffer buffer)
 	{
 		ArrayList<Integer> colorList = new ArrayList<>();
 		ArrayList<Float> scoreList = new ArrayList<>();
@@ -46,7 +44,7 @@ public class SendColorScoresPacket extends PlayToClientPacket
 			scoreList.add(buffer.readFloat());
 		}
 		
-		return new SendColorScoresPacket(colorList.toArray(new Integer[colorList.size()]), scoreList.toArray(new Float[scoreList.size()]));
+		return new SendScanTurfResultsPacket(colorList.toArray(new Integer[colorList.size()]), scoreList.toArray(new Float[scoreList.size()]));
 	}
 	
 	@Override

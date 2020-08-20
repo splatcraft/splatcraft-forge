@@ -25,6 +25,13 @@ public class ColorCriterionArgument extends InkColorArgument
 	
 	public static final DynamicCommandExceptionType CRITERION_NOT_FOUND = new DynamicCommandExceptionType((p_208663_0_) -> new TranslationTextComponent("arg.colorCriterion.notFound", p_208663_0_));
 	
+	private ColorCriterionArgument() {super();}
+	
+	public static ColorCriterionArgument colorCriterion()
+	{
+		return new ColorCriterionArgument();
+	}
+	
 	@Override
 	public Integer parse(StringReader reader) throws CommandSyntaxException
 	{

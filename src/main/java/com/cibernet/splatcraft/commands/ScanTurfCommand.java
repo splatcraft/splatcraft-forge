@@ -12,6 +12,7 @@ import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class ScanTurfCommand
 {
@@ -34,7 +35,7 @@ public class ScanTurfCommand
 	{
 		RemoteItem.RemoteResult result = TurfScannerItem.scanTurf(source.getWorld(), from, to, mode, source.asPlayer());
 		
-		source.sendFeedback(result.getOutput(), true);
+		source.sendFeedback(result.getOutput() == null ? new TranslationTextComponent("commands.scanturf.success", result.getCommandResult()) : result.getOutput(), true);
 		
 		return result.getCommandResult();
 	}

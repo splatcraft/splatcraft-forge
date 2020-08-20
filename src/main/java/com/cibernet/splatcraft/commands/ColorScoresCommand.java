@@ -23,8 +23,8 @@ public class ColorScoresCommand
 	public static void register(CommandDispatcher<CommandSource> dispatcher)
 	{
 		dispatcher.register(Commands.literal("colorscores")
-		.then(Commands.literal("add").then(Commands.argument("color", new InkColorArgument()).executes(context -> add(context))))
-		.then(Commands.literal("remove").then(Commands.argument("color", new ColorCriterionArgument()).executes(context -> remove(context))))
+		.then(Commands.literal("add").then(Commands.argument("color", InkColorArgument.inkColor()).executes(context -> add(context))))
+		.then(Commands.literal("remove").then(Commands.argument("color", ColorCriterionArgument.colorCriterion()).executes(context -> remove(context))))
 		.then(Commands.literal("list").executes(context -> list(context)))
 		);
 	}

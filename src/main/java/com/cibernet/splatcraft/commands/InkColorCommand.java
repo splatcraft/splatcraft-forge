@@ -20,7 +20,7 @@ public class InkColorCommand
 	{
 		
 		dispatcher.register(Commands.literal("inkcolor").requires((commandSource -> commandSource.hasPermissionLevel(2)))
-		.then(Commands.argument("color", new InkColorArgument()).executes(
+		.then(Commands.argument("color", InkColorArgument.inkColor()).executes(
 				(context -> setColor(context.getSource(), InkColorArgument.getInkColor(context, "color")))
 		).then(Commands.argument("targets", EntityArgument.players()).executes(
 						(context) -> setColor(context.getSource(), InkColorArgument.getInkColor(context, "color"), EntityArgument.getPlayers(context, "targets"))

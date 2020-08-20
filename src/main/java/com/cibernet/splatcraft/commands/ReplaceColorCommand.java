@@ -19,10 +19,10 @@ public class ReplaceColorCommand
 		dispatcher.register(Commands.literal("replacecolor")
 		.then(Commands.argument("from", BlockPosArgument.blockPos())
 		.then(Commands.argument("to", BlockPosArgument.blockPos())
-		.then(Commands.argument("color", new InkColorArgument())
+		.then(Commands.argument("color", InkColorArgument.inkColor())
 		.executes(context -> execute(context, 0))
-		.then(Commands.literal("only").then(Commands.argument("affectedColor", new InkColorArgument()).executes(context -> execute(context, 1))))
-		.then(Commands.literal("keep").then(Commands.argument("affectedColor", new InkColorArgument()).executes(context -> execute(context, 2))))
+		.then(Commands.literal("only").then(Commands.argument("affectedColor", InkColorArgument.inkColor()).executes(context -> execute(context, 1))))
+		.then(Commands.literal("keep").then(Commands.argument("affectedColor", InkColorArgument.inkColor()).executes(context -> execute(context, 2))))
 		)))
 		);
 	}

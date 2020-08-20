@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.commands.arguments;
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.registries.SplatcraftInkColors;
 import com.cibernet.splatcraft.util.InkColor;
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -12,6 +13,9 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.ArgumentSerializer;
+import net.minecraft.command.arguments.IArgumentSerializer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -28,6 +32,16 @@ public class InkColorArgument implements ArgumentType<Integer>
 	public static final DynamicCommandExceptionType COLOR_NOT_FOUND = new DynamicCommandExceptionType((p_208663_0_) -> new TranslationTextComponent("arg.inkColor.notFound", p_208663_0_));
 	
 	private static final int max = 0xFFFFFF;
+	
+	protected InkColorArgument()
+	{
+		super();
+	}
+	
+	public static InkColorArgument inkColor()
+	{
+		return new InkColorArgument();
+	}
 	
 	public static int getInkColor(CommandContext<CommandSource> context, String name)
 	{
@@ -106,6 +120,28 @@ public class InkColorArgument implements ArgumentType<Integer>
 		catch (NumberFormatException var2)
 		{
 			throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.readerInvalidInt().createWithContext(reader, input);
+		}
+	}
+	
+	public static class Serializer implements IArgumentSerializer<InkColorArgument>
+	{
+		
+		@Override
+		public void write(InkColorArgument argument, PacketBuffer buffer)
+		{
+		
+		}
+		
+		@Override
+		public InkColorArgument read(PacketBuffer buffer)
+		{
+			return null;
+		}
+		
+		@Override
+		public void write(InkColorArgument p_212244_1_, JsonObject p_212244_2_)
+		{
+		
 		}
 	}
 }

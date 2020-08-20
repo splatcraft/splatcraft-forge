@@ -64,6 +64,7 @@ public class Splatcraft
 		SplatcraftTags.register();
 		SplatcraftStats.register();
 		ScoreboardHandler.register();
+		SplatcraftCommands.registerArguments();
 	}
 	
 	private void clientSetup(final FMLClientSetupEvent event)
@@ -82,8 +83,7 @@ public class Splatcraft
 	@SubscribeEvent
 	public void onServerAboutToStart(FMLServerAboutToStartEvent event)
 	{
-		System.out.println("hello!");
-		ScoreboardHandler.clearColorCriteria();
+	
 	}
 	
 	@SubscribeEvent
