@@ -112,7 +112,6 @@ public class InkColorArgument implements ArgumentType<Integer>
 	
 	private static int parseHex(String input, StringReader reader) throws CommandSyntaxException
 	{
-		System.out.println(input);
 		try
 		{
 			return Integer.parseInt(input, 16);

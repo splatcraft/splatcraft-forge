@@ -30,7 +30,6 @@ public class ScoreboardHandler
 	
 	public static void createColorCriterion(int color)
 	{
-		System.out.println(ColorUtils.getColorName(color));
 		COLOR_CRITERIA.put(color, new CriteriaInkColor[]
 				{
 						new CriteriaInkColor("colorKills", color),
@@ -115,7 +114,6 @@ public class ScoreboardHandler
 		
 		public void remove()
 		{
-			System.out.println("Removing " + ColorUtils.getColorName(color));
 			INSTANCES.remove(name);
 		}
 	}

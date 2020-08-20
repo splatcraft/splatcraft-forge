@@ -23,8 +23,6 @@ public class SaveInfo implements ISaveInfo
 		for(Integer color : colors)
 			if(!colorScores.contains(color))
 				colorScores.add(color);
-			
-		System.out.println(colorScores);
 	}
 	
 	@Override
@@ -43,8 +41,6 @@ public class SaveInfo implements ISaveInfo
 		
 		nbt.putIntArray("StoredCriteria", arr);
 		
-		System.out.println(nbt.getIntArray("StoredCriteria"));
-		
 		return nbt;
 	}
 	
@@ -53,8 +49,6 @@ public class SaveInfo implements ISaveInfo
 	{
 		colorScores = new ArrayList<>();
 		ScoreboardHandler.clearColorCriteria();
-		
-		System.out.println(nbt.getIntArray("StoredCriteria"));
 		
 		for(int i : nbt.getIntArray("StoredCriteria"))
 		{
