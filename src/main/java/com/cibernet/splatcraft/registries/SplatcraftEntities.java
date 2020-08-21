@@ -3,8 +3,10 @@ package com.cibernet.splatcraft.registries;
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.client.renderer.InkProjectileRenderer;
 import com.cibernet.splatcraft.client.renderer.InkSquidRenderer;
+import com.cibernet.splatcraft.client.renderer.SquidBumperRenderer;
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.entities.InkSquidEntity;
+import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -35,6 +37,7 @@ public class SplatcraftEntities
 	
 	public static final EntityType<InkProjectileEntity> INK_PROJECTILE = create("ink_projectile", InkProjectileEntity::new, EntityClassification.MISC);
 	public static final EntityType<InkSquidEntity> INK_SQUID = create("ink_squid", InkSquidEntity::new, EntityClassification.AMBIENT, 0.6f, 0.6f);
+	public static final EntityType<SquidBumperEntity> SQUID_BUMPER = create("squid_bumper", SquidBumperEntity::new, EntityClassification.MISC, 0.6f, 1.8f);
 	
 	@SubscribeEvent
 	public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event)
@@ -43,6 +46,7 @@ public class SplatcraftEntities
 		
 		registry.register(INK_PROJECTILE);
 		registry.register(INK_SQUID);
+		registry.register(SQUID_BUMPER);
 	}
 	
 	private static <T extends Entity> EntityType<T> create(String name, EntityType.IFactory<T> supplier, EntityClassification classification, float width, float height)
@@ -74,10 +78,12 @@ public class SplatcraftEntities
 	{
 		RenderingRegistry.registerEntityRenderingHandler(INK_PROJECTILE, InkProjectileRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(INK_SQUID, InkSquidRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(SQUID_BUMPER, SquidBumperRenderer::new);
 	}
 	
 	public static void setEntityAttributes()
 	{
 		GlobalEntityTypeAttributes.put(SplatcraftEntities.INK_SQUID, InkSquidEntity.setCustomAttributes().create());
+		GlobalEntityTypeAttributes.put(SplatcraftEntities.SQUID_BUMPER, SquidBumperEntity.setCustomAttributes().create());
 	}
 }

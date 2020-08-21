@@ -75,6 +75,6 @@ public class ColoredBlockItem extends BlockItem
 		super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
 		
 		if(ColorUtils.getInkColor(stack) == -1)
-			ColorUtils.setInkColor(stack, ColorUtils.DEFAULT);
+			ColorUtils.setInkColor(stack, entityIn instanceof PlayerEntity ? ColorUtils.getPlayerColor((PlayerEntity) entityIn) : ColorUtils.DEFAULT);
 	}
 }

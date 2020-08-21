@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.util;
 
+import com.cibernet.splatcraft.entities.IColoredEntity;
 import com.cibernet.splatcraft.entities.InkSquidEntity;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -42,8 +43,13 @@ public class InkDamageUtils
 		if(targetColor > -1)
 			doDamage = (targetColor != color);
 		
+		InkDamageSource damageSource = new InkDamageSource(name, source, source, sourceItem);
+		
+		if(target instanceof IColoredEntity)
+			doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage);
+			
 		if(doDamage)
-			target.attackEntityFrom(new InkDamageSource(name, source, source, sourceItem), damage);
+			target.attackEntityFrom(damageSource, damage);
 		
 		return doDamage;
 	}
