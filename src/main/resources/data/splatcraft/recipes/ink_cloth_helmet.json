@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "W W"
+    ],
+    "key": {
+        "#": {
+            "item": "splatcraft:canvas"
+        },
+        "W": {
+            "tag": "minecraft:wool"
+        }
+    },
+    "result": {
+        "item": "splatcraft:ink_cloth_helmet",
+        "count": 8
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "R"
+    ],
+    "key": {
+        "R": {
+            "item": "splatcraft:ink_disruptor"
+        }
+    },
+    "result": {
+        "item": "splatcraft:ink_disruptor",
+        "count": 1
+    }
+}
