@@ -263,13 +263,13 @@
     "overrides": [
         {
             "predicate": {
-                "ink_stage": 1
+                "splatcraft:ink": 0.3
             },
             "model": "splatcraft:item/ink_tank_half"
         },
         {
             "predicate": {
-                "ink_stage": 2
+                "splatcraft:ink": 0.6
             },
             "model": "splatcraft:item/ink_tank_full"
         }

@@ -45,12 +45,12 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem
 		super.addInformation(stack, world, tooltip, flag);
 		
 		if(I18n.hasKey(getTranslationKey()+".tooltip"))
-			tooltip.add(new TranslationTextComponent(getTranslationKey()+".tooltip"));
+			tooltip.add(new TranslationTextComponent(getTranslationKey()+".tooltip").mergeStyle(TextFormatting.GRAY));
 		
 		if(ColorUtils.isColorLocked(stack))
 			tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack),true));
-		else if(I18n.hasKey(getTranslationKey()+".colorlessTooltip"))
-			tooltip.add(new TranslationTextComponent(getTranslationKey()+".colorlessTooltip"));
+		else if(I18n.hasKey(getTranslationKey()+".colorless_tooltip"))
+			tooltip.add(new TranslationTextComponent(getTranslationKey()+".colorless_tooltip").mergeStyle(TextFormatting.GRAY));
 	}
 	
 	@Override
@@ -96,12 +96,13 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem
 	@Override
 	public void setColor(ItemStack stack, int color)
 	{
-	
+		ColorUtils.setInkColor(stack, color);
 	}
 	
 	@Override
 	public void removeColor(ItemStack stack)
 	{
-	
+		ColorUtils.setInkColor(stack, -1);
+		ColorUtils.setColorLocked(stack, false);
 	}
 }

@@ -2,9 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"1": "splatcraft:models/armor/ink_tank_classic_layer_1",
-		"2": "splatcraft:models/armor/ink_tank_classic_layer_1_overlay",
-		"particle": "splatcraft:models/armor/ink_tank_classic_layer_1"
+		"2": "splatcraft:models/armor/classic_ink_tank_layer_1_overlay",
+		"particle": "splatcraft:models/armor/classic_ink_tank_layer_1"
 	},
 	"elements": [
 		{
@@ -177,20 +176,6 @@
 			}
 		},
 		{
-			"name": "Ink Color",
-			"from": [6.7625, 1.25, 7.225],
-			"to": [9.7625, 4.75, 10.225],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8.2625, 0.25, 2.725]},
-			"faces": {
-				"north": {"uv": [13.75, 0.75, 14.5, 1], "texture": "#1", "tintindex": 0},
-				"east": {"uv": [13, 0.75, 13.75, 1], "texture": "#1", "tintindex": 0},
-				"south": {"uv": [15.25, 0.75, 16, 1], "texture": "#1", "tintindex": 0},
-				"west": {"uv": [14.5, 0.75, 15.25, 1], "texture": "#1", "tintindex": 0},
-				"up": {"uv": [14.5, 0.75, 13.75, 0], "texture": "#1", "tintindex": 0},
-				"down": {"uv": [15.25, 0, 14.5, 0.75], "texture": "#1", "tintindex": 0}
-			}
-		},
-		{
 			"from": [7.2625, 9.75, 7.725],
 			"to": [9.2625, 11.75, 9.725],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8.2625, 0.25, 2.725]},
@@ -292,9 +277,23 @@
 						{
 							"name": "Ink",
 							"origin": [0, 0.25, -0.5],
-							"children": [13]
-						}, 14, 15]
-				}, 16, 17]
+							"children": []
+						}, 13, 14]
+				}, 15, 16]
 		}
-	]
+	],
+    "overrides": [
+        {
+            "predicate": {
+                "splatcraft:ink": 0.3
+            },
+            "model": "splatcraft:item/classic_ink_tank_half"
+        },
+        {
+            "predicate": {
+                "splatcraft:ink": 0.6
+            },
+            "model": "splatcraft:item/classic_ink_tank_full"
+        }
+    ]
 }

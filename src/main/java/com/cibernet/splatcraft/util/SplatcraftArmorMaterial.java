@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.items.InkTankItem;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.crafting.Ingredient;
@@ -30,9 +31,14 @@ public class SplatcraftArmorMaterial implements IArmorMaterial
 		this.repairMaterial = repairMaterial;
 	}
 	
-	public SplatcraftArmorMaterial(String name, SoundEvent equipSound)
+	public SplatcraftArmorMaterial(String name, SoundEvent equipSound, int armor, float toughness, float knockbackResistance)
 	{
-		this(name, -1, 0, 0, 0, 0, equipSound, null);
+		this(name, -1, armor, toughness, knockbackResistance, 0, equipSound, null);
+	}
+	
+	public SplatcraftArmorMaterial(String name, SplatcraftArmorMaterial parent)
+	{
+		this(name, parent.soundEvent, parent.damageReduction, parent.toughness, parent.knockbackResistance);
 	}
 	
 	@Override

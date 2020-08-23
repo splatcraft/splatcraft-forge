@@ -133,6 +133,16 @@ public class ColorUtils
 		return SplatcraftGameRules.getBooleanRuleValue(entity.world, SplatcraftGameRules.UNIVERSAL_INK) ? true : a == b;
 	}
 	
+	public static boolean colorEquals(LivingEntity entity, ItemStack te)
+	{
+		int a = getEntityColor(entity);
+		int b = getInkColor(te);
+		
+		if(a == -1 || b == -1)
+			return false;
+		return SplatcraftGameRules.getBooleanRuleValue(entity.world, SplatcraftGameRules.UNIVERSAL_INK) ? true : a == b;
+	}
+	
 	public static ItemStack setColorLocked(ItemStack stack, boolean isLocked)
 	{
 		stack.getOrCreateTag().putBoolean("ColorLocked", isLocked);

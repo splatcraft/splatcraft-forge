@@ -3,9 +3,9 @@
 	"ambientocclusion": false,
 	"texture_size": [128, 128],
 	"textures": {
-		"1": "splatcraft:models/armor/ink_tank_armored_layer_1",
-		"2": "splatcraft:models/armor/ink_tank_armored_layer_1_overlay",
-		"particle": "splatcraft:models/armor/ink_tank_armored_layer_1"
+		"1": "splatcraft:models/armor/armored_ink_tank_layer_1",
+		"2": "splatcraft:models/armor/armored_ink_tank_layer_1_overlay",
+		"particle": "splatcraft:models/armor/armored_ink_tank_layer_1"
 	},
 	"elements": [
 		{
@@ -271,15 +271,15 @@
     "overrides": [
         {
             "predicate": {
-                "ink_stage": 1
+                "splatcraft:ink": 0.3
             },
-            "model": "splatcraft:item/ink_tank_armored_half"
+            "model": "splatcraft:item/armored_ink_tank_half"
         },
         {
             "predicate": {
-                "ink_stage": 2
+                "splatcraft:ink": 0.6
             },
-            "model": "splatcraft:item/ink_tank_armored_full"
+            "model": "splatcraft:item/armored_ink_tank_full"
         }
     ]
 }

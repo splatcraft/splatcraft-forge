@@ -22,6 +22,7 @@ public class SplatcraftGameRules
 	public static GameRules.RuleKey<GameRules.BooleanValue> UNIVERSAL_INK;
 	public static GameRules.RuleKey<GameRules.BooleanValue> DROP_CRATE_LOOT;
 	public static GameRules.RuleKey<GameRules.BooleanValue> WATER_DAMAGE;
+	public static GameRules.RuleKey<GameRules.BooleanValue> REQUIRE_INK_TANK;
 	
 	public static void registerGamerules()
 	{
@@ -30,6 +31,7 @@ public class SplatcraftGameRules
 		UNIVERSAL_INK = createBooleanRule("universalInk", Category.PLAYER, false);
 		DROP_CRATE_LOOT = createBooleanRule("dropCrateLoot", Category.DROPS, false);
 		WATER_DAMAGE = createBooleanRule("waterDamage", Category.PLAYER, false);
+		REQUIRE_INK_TANK = createBooleanRule("requireInkTank", Category.PLAYER, true);
 	}
 	
 	public static GameRules.RuleKey<GameRules.BooleanValue> createBooleanRule(String name, GameRules.Category category, boolean defaultValue)

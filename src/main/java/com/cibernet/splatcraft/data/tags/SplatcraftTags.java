@@ -21,36 +21,42 @@ public class SplatcraftTags
 	
 	public static class Items
 	{
-		public static final HashMap<InkTankItem, ITag<Item>> INK_TANK_WHITELIST = new HashMap<>();
-		public static final HashMap<InkTankItem, ITag<Item>> INK_TANK_BLACKLIST = new HashMap<>();
+		public static final HashMap<InkTankItem, ResourceLocation> INK_TANK_WHITELIST = new HashMap<>();
+		public static final HashMap<InkTankItem, ResourceLocation> INK_TANK_BLACKLIST = new HashMap<>();
 		
-		public static final ITag<Item> SHOOTERS = createTag("shooters");
-		public static final ITag<Item> ROLLERS = createTag("rollers");
-		public static final ITag<Item> CHARGERS = createTag("chargers");
-		public static final ITag<Item> DUALIES = createTag("dualies");
-		public static final ITag<Item> SPLATLINGS = createTag("splatlings");
-		public static final ITag<Item> BRELLAS = createTag("brellas");
+		public static final ResourceLocation SHOOTERS = createTag("shooters");
+		public static final ResourceLocation ROLLERS = createTag("rollers");
+		public static final ResourceLocation CHARGERS = createTag("chargers");
+		public static final ResourceLocation DUALIES = createTag("dualies");
+		public static final ResourceLocation SPLATLINGS = createTag("splatlings");
+		public static final ResourceLocation BRELLAS = createTag("brellas");
 		
-		public static final ITag<Item> MAIN_WEAPONS = createTag("main_weapons");
-		public static final ITag<Item> SUB_WEAPONS = createTag("sub_weapons");
-		public static final ITag<Item> SPECIAL_WEAPONS = createTag("special_weapons");
-		public static final ITag<Item> INK_TANKS = createTag("ink_tanks");
+		public static final ResourceLocation MAIN_WEAPONS = createTag("main_weapons");
+		public static final ResourceLocation SUB_WEAPONS = createTag("sub_weapons");
+		public static final ResourceLocation SPECIAL_WEAPONS = createTag("special_weapons");
+		public static final ResourceLocation INK_TANKS = createTag("ink_tanks");
 		
-		public static final ITag<Item> FILTERS = createTag("filters");
-		public static final ITag<Item> REMOTES = createTag("remotes");
+		public static final ResourceLocation FILTERS = createTag("filters");
+		public static final ResourceLocation REMOTES = createTag("remotes");
 		
 		public static void putInkTankTags(InkTankItem tank, String name)
 		{
+			System.out.println(name+"_whitelist");
+			
 			if(!INK_TANK_WHITELIST.containsKey(tank))
-				INK_TANK_WHITELIST.put(tank, createTag(name+"whitelist"));
+				INK_TANK_WHITELIST.put(tank, createTag(name+"_whitelist"));
 			if(!INK_TANK_BLACKLIST.containsKey(tank))
 				INK_TANK_BLACKLIST.put(tank, createTag(name+"_blacklist"));
 		}
 		
-		private static ITag<Item> createTag(String name)
+		public static ITag<Item> getTag(ResourceLocation location)
 		{
-			return ItemTags.getCollection().getOrCreate(new ResourceLocation(Splatcraft.MODID, name));
-			//return ItemTags.makeWrapperTag(Splatcraft.MODID+":"+name);
+			return ItemTags.getCollection().getOrCreate(location);
+		}
+		
+		private static ResourceLocation createTag(String name)
+		{
+			return new ResourceLocation(Splatcraft.MODID, name);
 		}
 	}
 	

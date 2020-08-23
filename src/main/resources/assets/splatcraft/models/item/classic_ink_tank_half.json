@@ -2,9 +2,9 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"1": "splatcraft:models/armor/ink_tank_classic_layer_1",
-		"2": "splatcraft:models/armor/ink_tank_classic_layer_1_overlay",
-		"particle": "splatcraft:models/armor/ink_tank_classic_layer_1"
+		"1": "splatcraft:models/armor/classic_ink_tank_layer_1",
+		"2": "splatcraft:models/armor/classic_ink_tank_layer_1_overlay",
+		"particle": "splatcraft:models/armor/classic_ink_tank_layer_1"
 	},
 	"elements": [
 		{
@@ -179,7 +179,7 @@
 		{
 			"name": "Ink Color",
 			"from": [6.7625, 1.25, 7.225],
-			"to": [9.7625, 8.25, 10.225],
+			"to": [9.7625, 4.75, 10.225],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8.2625, 0.25, 2.725]},
 			"faces": {
 				"north": {"uv": [13.75, 0.75, 14.5, 1], "texture": "#1", "tintindex": 0},

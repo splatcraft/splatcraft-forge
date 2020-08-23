@@ -1,6 +1,10 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.client.model.ArmoredInkTankModel;
+import com.cibernet.splatcraft.client.model.ClassicInkTankModel;
+import com.cibernet.splatcraft.client.model.InkTankJrModel;
+import com.cibernet.splatcraft.client.model.InkTankModel;
 import com.cibernet.splatcraft.dispenser.PlaceBlockDispenseBehavior;
 import com.cibernet.splatcraft.items.*;
 import com.cibernet.splatcraft.items.remotes.ColorChangerItem;
@@ -17,6 +21,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -34,7 +40,8 @@ public class SplatcraftItems
 	public static final ArrayList<Item> inkColoredItems = new ArrayList<>();
 	
 	//Armor Materials
-	public static final IArmorMaterial INK_CLOTH = new SplatcraftArmorMaterial("ink_cloth", SoundEvents.ITEM_ARMOR_EQUIP_LEATHER);
+	public static final IArmorMaterial INK_CLOTH = new SplatcraftArmorMaterial("ink_cloth", SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0, 0, 0);
+	public static final IArmorMaterial ARMORED_INK_TANK = new SplatcraftArmorMaterial("armored_ink_tank", SoundEvents.ITEM_ARMOR_EQUIP_IRON, 3, 0, 0.05f);
 	
 	//Shooters
 	public static final ShooterItem splattershot = new ShooterItem("splattershot", 1.05f, 0.65f, 12f, 4, 8f, 0.9f);
@@ -57,6 +64,10 @@ public class SplatcraftItems
 	//Sloshers
 	
 	//Ink Tanks
+	public static final InkTankItem inkTank = new InkTankItem("ink_tank", 100);
+	public static final InkTankItem classicInkTank = new InkTankItem("classic_ink_tank", inkTank);
+	public static final InkTankItem inkTankJr = new InkTankItem("ink_tank_jr", 110);
+	public static final InkTankItem armoredInkTank = new InkTankItem("armored_ink_tank", 85, ARMORED_INK_TANK);
 	
 	//Vanity
 	public static final Item inkClothHelmet = new ColoredArmorItem("ink_cloth_helmet", INK_CLOTH, EquipmentSlotType.HEAD);
@@ -142,11 +153,26 @@ public class SplatcraftItems
 	{
 		ResourceLocation activeProperty = new ResourceLocation(Splatcraft.MODID,"active");
 		ResourceLocation modeProperty = new ResourceLocation(Splatcraft.MODID,"mode");
+		ResourceLocation inkProperty = new ResourceLocation(Splatcraft.MODID,"ink");
 		
 		for(RemoteItem remote : RemoteItem.remotes)
 		{
 			ItemModelsProperties.func_239418_a_(remote, activeProperty, remote.getActiveProperty());
 			ItemModelsProperties.func_239418_a_(remote, modeProperty, remote.getModeProperty());
 		}
+		
+		for(InkTankItem tank : InkTankItem.inkTanks)
+		{
+			ItemModelsProperties.func_239418_a_(tank, inkProperty, (stack, world, entity) -> (InkTankItem.getInkAmount(stack) / tank.capacity));
+		}
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public static void registerArmorModels()
+	{
+		inkTank.setArmorModel(new InkTankModel());
+		classicInkTank.setArmorModel(new ClassicInkTankModel());
+		inkTankJr.setArmorModel(new InkTankJrModel());
+		armoredInkTank.setArmorModel(new ArmoredInkTankModel());
 	}
 }

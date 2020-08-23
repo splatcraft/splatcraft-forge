@@ -1,15 +1,18 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
+import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
+import com.cibernet.splatcraft.util.ClientUtils;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -67,6 +70,36 @@ public class WeaponBaseItem extends Item
 	}
 	
 	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		try
+		{
+			return ClientUtils.getDurabilityForDisplay(stack);
+		}catch(NoClassDefFoundError e)
+		{
+			return 1;
+		}
+	}
+	
+	@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+	{
+		return ColorUtils.getInkColor(stack);
+	}
+	
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		try
+		{
+			return ClientUtils.showDurabilityBar(stack);
+		}catch(NoClassDefFoundError e)
+		{
+			return false;
+		}
+	}
+	
+	@Override
 	public int getUseDuration(ItemStack stack) {
 		return 72000;
 	}
@@ -88,5 +121,32 @@ public class WeaponBaseItem extends Item
 	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
 	
+	}
+	
+	public static float getInkAmount(LivingEntity player, ItemStack weapon)
+	{
+		ItemStack tank = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+		if(!(tank.getItem() instanceof InkTankItem))
+			return 0;
+		
+		if(SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK))
+			return InkTankItem.getInkAmount(tank, weapon);
+		return ((InkTankItem) tank.getItem()).capacity;
+	}
+	
+	public static boolean hasInk(LivingEntity player, ItemStack weapon)
+	{
+		return getInkAmount(player, weapon) > 0;
+	}
+	
+	public static void reduceInk(LivingEntity player, float amount)
+	{
+		ItemStack tank = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+		if(!(tank.getItem() instanceof InkTankItem))
+			return;
+		if(!SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK))
+			return;
+		
+		InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);
 	}
 }

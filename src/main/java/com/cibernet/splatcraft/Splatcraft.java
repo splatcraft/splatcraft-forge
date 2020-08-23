@@ -77,6 +77,7 @@ public class Splatcraft
 		DeferredWorkQueue.runLater(() ->
 		{
 			SplatcraftItems.registerModelProperties();
+			SplatcraftItems.registerArmorModels();
 		});
 	}
 	

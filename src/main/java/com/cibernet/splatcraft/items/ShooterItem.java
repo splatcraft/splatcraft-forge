@@ -6,8 +6,11 @@ import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 public class ShooterItem extends WeaponBaseItem
@@ -39,11 +42,17 @@ public class ShooterItem extends WeaponBaseItem
 	@Override
 	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
-		if(!world.isRemote && (getUseDuration(stack)-timeLeft-1) % firingSpeed == 0)
+		if(hasInk(entity, stack))
 		{
-			InkProjectileEntity proj = new InkProjectileEntity(world, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage);
-			proj.shoot(entity, entity.rotationPitch, entity.rotationYaw, 0.0f, projectileSpeed, inaccuracy);
-			world.addEntity(proj);
+			if(!world.isRemote && (getUseDuration(stack) - timeLeft - 1) % firingSpeed == 0)
+			{
+				InkProjectileEntity proj = new InkProjectileEntity(world, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage);
+				proj.shoot(entity, entity.rotationPitch, entity.rotationYaw, 0.0f, projectileSpeed, inaccuracy);
+				world.addEntity(proj);
+				reduceInk(entity, inkConsumption);
+			}
 		}
+		else if(entity instanceof PlayerEntity)
+			((PlayerEntity) entity).sendStatusMessage(new TranslationTextComponent("status.no_ink").mergeStyle(TextFormatting.RED), true);
 	}
 }

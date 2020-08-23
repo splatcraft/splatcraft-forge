@@ -3,9 +3,9 @@
 	"ambientocclusion": false,
 	"texture_size": [128, 128],
 	"textures": {
-		"1": "splatcraft:models/armor/ink_tank_armored_layer_1",
-		"2": "splatcraft:models/armor/ink_tank_armored_layer_1_overlay",
-		"particle": "splatcraft:models/armor/ink_tank_armored_layer_1"
+		"1": "splatcraft:models/armor/armored_ink_tank_layer_1",
+		"2": "splatcraft:models/armor/armored_ink_tank_layer_1_overlay",
+		"particle": "splatcraft:models/armor/armored_ink_tank_layer_1"
 	},
 	"elements": [
 		{
