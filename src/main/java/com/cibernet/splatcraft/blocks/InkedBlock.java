@@ -8,6 +8,7 @@ import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,7 +30,7 @@ import java.util.Random;
 
 public class InkedBlock extends Block implements IColoredBlock
 {
-	public static final Properties DEFAULT_PROPERTIES = Properties.create(Material.CLAY, MaterialColor.BLACK_TERRACOTTA).tickRandomly().harvestTool(ToolType.PICKAXE).setRequiresTool();
+	public static final Properties DEFAULT_PROPERTIES = Properties.create(Material.CLAY, MaterialColor.BLACK_TERRACOTTA).tickRandomly().harvestTool(ToolType.PICKAXE).setRequiresTool().sound(SoundType.SLIME);
 	public static final int GLOWING_LIGHT_LEVEL = 6;
 	
 	

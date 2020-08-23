@@ -8,7 +8,7 @@
 		"3": "splatcraft:blocks/inkwell_bottom_ink",
 		"4": "splatcraft:blocks/inkwell_top_ink",
 		"5": "splatcraft:blocks/inkwell_top",
-		"particle": "splatcraft:blocks/inkwell_side"
+		"particle": "splatcraft:blocks/inked_block"
 	},
 	"elements": [
 		{

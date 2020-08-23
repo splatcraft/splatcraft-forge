@@ -7,6 +7,7 @@ import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.LivingEntity;
@@ -20,6 +21,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -43,9 +45,11 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
 	
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	
+	public static final SoundType SOUND_TYPE = new SoundType(1.0F, 1.0F, SoundEvents.BLOCK_STONE_BREAK, SoundEvents.BLOCK_SLIME_BLOCK_STEP, SoundEvents.BLOCK_GLASS_PLACE, SoundEvents.BLOCK_GLASS_HIT, SoundEvents.BLOCK_SLIME_BLOCK_FALL);
+	
 	public InkwellBlock()
 	{
-		super(Properties.create(Material.GLASS).hardnessAndResistance(0.35f).harvestTool(ToolType.PICKAXE));
+		super(Properties.create(Material.GLASS).hardnessAndResistance(0.35f).harvestTool(ToolType.PICKAXE).sound(SOUND_TYPE));
 		this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, Boolean.valueOf(false)));
 		
 		SplatcraftBlocks.inkColoredBlocks.add(this);
