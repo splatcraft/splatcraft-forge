@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.util;
 
+import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.data.tags.SplatcraftTags;
 import com.cibernet.splatcraft.entities.IColoredEntity;
@@ -83,19 +84,28 @@ public class ColorUtils
 	
 	public static int getInkColor(TileEntity te)
 	{
-		if(!(te instanceof InkColorTileEntity))
+		if(te == null)
 			return -1;
 		
-		return ((InkColorTileEntity) te).getColor();
+		if((te instanceof InkColorTileEntity))
+			return ((InkColorTileEntity) te).getColor();
+		
+		if(te.getBlockState() != null && (te.getBlockState().getBlock() instanceof IColoredBlock))
+			return ((IColoredBlock) te.getBlockState().getBlock()).getColor(te.getWorld(), te.getPos());
+		return -1;
 	}
 	
 	public static boolean setInkColor(TileEntity te, int color)
 	{
-		if(!(te instanceof InkColorTileEntity))
-			return false;
+		if(te instanceof InkColorTileEntity)
+		{
+			((InkColorTileEntity) te).setColor(color);
+			return true;
+		}
 		
-		((InkColorTileEntity) te).setColor(color);
-		return true;
+		if(te.getBlockState() != null && (te.getBlockState().getBlock() instanceof IColoredBlock))
+			return ((IColoredBlock) te.getBlockState().getBlock()).setColor(te.getWorld(), te.getPos(), color);
+		return false;
 	}
 	
 	public static String getColorName(int color)

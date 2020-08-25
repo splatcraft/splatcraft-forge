@@ -36,6 +36,8 @@ public class SplatcraftBlocks
 	public static final Block crate = new CrateBlock("crate", false);
 	public static final Block sunkenCrate = new CrateBlock("sunken_crate", true);
 	
+	public static final Block inkVat = new InkVatBlock("ink_vat");
+	
 	public static final Block emptyInkwell = new EmptyInkwellBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS).harvestTool(ToolType.PICKAXE)).setRegistryName("empty_inkwell");
 	public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
 	public static final Block inkedWool = new InkedWoolBlock("inked_wool");
@@ -63,6 +65,8 @@ public class SplatcraftBlocks
 		registry.register(powerEggBlock);
 		registry.register(sunkenCrate);
 		registry.register(crate);
+		
+		registry.register(inkVat );
 		
 		registry.register(emptyInkwell);
 		registry.register(inkwell);

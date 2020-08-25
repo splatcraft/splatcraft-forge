@@ -74,7 +74,6 @@ public class SplatcraftItems
 	public static final Item inkClothChestplate = new ColoredArmorItem("ink_cloth_chestplate", INK_CLOTH, EquipmentSlotType.CHEST);
 	public static final Item inkClothLeggings = new ColoredArmorItem("ink_cloth_leggings", INK_CLOTH, EquipmentSlotType.LEGS);
 	public static final Item inkClothBoots = new ColoredArmorItem("ink_cloth_boots", INK_CLOTH, EquipmentSlotType.FEET);
-	
 	public static final Item splatfestBand = new Item(new Item.Properties().maxStackSize(1)).setRegistryName("splatfest_band");
 	
 	//Materials
@@ -90,6 +89,17 @@ public class SplatcraftItems
 	public static final RemoteItem turfScanner = new TurfScannerItem("turf_scanner");
 	public static final RemoteItem inkDisruptor = new InkDisruptorItem("ink_disruptor");
 	public static final RemoteItem colorChanger = new ColorChangerItem("color_changer");
+	
+	//Filters
+	public static final FilterItem emptyFilter = new FilterItem("filter");
+	public static final FilterItem pastelFilter = new FilterItem("pastel_filter");
+	public static final FilterItem organicFilter = new FilterItem("organic_filter");
+	public static final FilterItem neonFilter = new FilterItem("neon_filter");
+	public static final FilterItem enchantedFilter = new FilterItem("enchanted_filter", true, false);
+	public static final FilterItem creativeFilter = new FilterItem("creative_filter", true, true);
+	
+	//Crafting Stations
+	public static final Item inkVat = new BlockItem(SplatcraftBlocks.inkVat).setRegistryName("ink_vat");
 	
 	//Map Items
 	public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16);
@@ -129,6 +139,11 @@ public class SplatcraftItems
 		registry.register(turfScanner);
 		registry.register(inkDisruptor);
 		registry.register(colorChanger);
+		
+		for(Item item : FilterItem.filters)
+			registry.register(item);
+		
+		registry.register(inkVat);
 		
 		registry.register(emptyInkwell);
 		registry.register(inkwell);

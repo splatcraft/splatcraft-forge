@@ -82,7 +82,7 @@ public class StageBarrierBlock extends Block
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world)
 	{
-		return SplatcraftTileEntitites.stageBarrierTileEntity.get().create();
+		return SplatcraftTileEntitites.stageBarrierTileEntity.create();
 	}
 	
 	@Override

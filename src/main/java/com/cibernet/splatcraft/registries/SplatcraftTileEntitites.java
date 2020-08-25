@@ -5,42 +5,80 @@ import com.cibernet.splatcraft.client.renderer.InkedBlockTileEntityRenderer;
 import com.cibernet.splatcraft.client.renderer.StageBarrierTileEntityRenderer;
 import com.cibernet.splatcraft.tileentities.*;
 import net.minecraft.block.Block;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import com.cibernet.splatcraft.tileentities.container.*;
+import net.minecraftforge.registries.IForgeRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static com.cibernet.splatcraft.registries.SplatcraftBlocks.*;
 
+@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftTileEntitites
 {
-	public static final DeferredRegister<TileEntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Splatcraft.MODID);
 	
-	public static final RegistryObject<TileEntityType<InkColorTileEntity>> colorTileEntity = registerTileEntity("color", InkColorTileEntity::new, inkedWool, canvas);
-	public static final RegistryObject<TileEntityType<InkwellTileEntity>> inkwellTileEntity = registerTileEntity("inkwell", InkwellTileEntity::new, inkwell);
-	public static final RegistryObject<TileEntityType<InkedBlockTileEntity>> inkedTileEntity = registerTileEntity("inked_block", InkedBlockTileEntity::new, inkedBlock);
-	public static final RegistryObject<TileEntityType<CrateTileEntity>> crateTileEntity = registerTileEntity("crate", CrateTileEntity::new, crate, sunkenCrate);
-	public static final RegistryObject<TileEntityType<StageBarrierTileEntity>> stageBarrierTileEntity = registerTileEntity("stage_barrier", StageBarrierTileEntity::new, stageBarrier, stageVoid);
+	private static final List<TileEntityType> te_registry = new ArrayList<>();
+	private static final List<ContainerType> c_registry = new ArrayList<>();
 	
-	public static void init()
+	public static final TileEntityType<InkColorTileEntity> colorTileEntity = registerTileEntity("color", InkColorTileEntity::new, inkedWool, canvas);
+	public static final TileEntityType<InkwellTileEntity> inkwellTileEntity = registerTileEntity("inkwell", InkwellTileEntity::new, inkwell);
+	public static final TileEntityType<InkedBlockTileEntity> inkedTileEntity = registerTileEntity("inked_block", InkedBlockTileEntity::new, inkedBlock);
+	public static final TileEntityType<CrateTileEntity> crateTileEntity = registerTileEntity("crate", CrateTileEntity::new, crate, sunkenCrate);
+	public static final TileEntityType<StageBarrierTileEntity> stageBarrierTileEntity = registerTileEntity("stage_barrier", StageBarrierTileEntity::new, stageBarrier, stageVoid);
+	public static final TileEntityType<InkVatTileEntity> inkVatTileEntity = registerTileEntity("ink_vat", InkVatTileEntity::new, inkVat);
+	
+	public static final ContainerType<InkVatContainer> inkVatContainer = registerContainer("ink_vat", InkVatContainer::new);
+	
+	private static <T extends TileEntity> TileEntityType<T> registerTileEntity(String name, Supplier<T> factoryIn, Block... allowedBlocks)
 	{
-		REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
+		TileEntityType<T> te = TileEntityType.Builder.create(factoryIn, allowedBlocks).build(null);
+		te.setRegistryName(name);
+		te_registry.add(te);
+		return te;
 	}
 	
-	private static <T extends TileEntity> RegistryObject<TileEntityType<T>> registerTileEntity(String name, Supplier<T> factoryIn, Block... allowedBlocks)
+	private static <T extends Container> ContainerType<T> registerContainer(String name, IContainerFactory<T> factoryIn)
 	{
-		return REGISTRY.register(name, () -> TileEntityType.Builder.create(factoryIn, allowedBlocks).build(null));
+		ContainerType<T> container = IForgeContainerType.create(factoryIn);
+		container.setRegistryName(name);
+		c_registry.add(container);
+		return container;
+	}
+	
+	@SubscribeEvent
+	public static void tileEntityInit(final RegistryEvent.Register<TileEntityType<?>> event)
+	{
+		IForgeRegistry<TileEntityType<?>> registry = event.getRegistry();
+		
+		te_registry.forEach(te -> registry.register(te));
+	}
+	@SubscribeEvent
+	public static void containerInit(final RegistryEvent.Register<ContainerType<?>> event)
+	{
+		IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
+		
+		c_registry.forEach(c -> registry.register(c));
 	}
 	
 	public static void bindTESR()
 	{
 		//ClientRegistry.bindTileEntityRenderer(inkedTileEntity.get(), InkedBlockTileEntityRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(stageBarrierTileEntity.get(), StageBarrierTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(stageBarrierTileEntity, StageBarrierTileEntityRenderer::new);
 	}
 }

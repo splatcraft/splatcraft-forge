@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "splatcraft:power_egg",
+    "splatcraft:empty_inkwell",
+    "minecraft:ink_sac",
+    "#splatcraft:filters"
+  ]
+}

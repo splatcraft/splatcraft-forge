@@ -115,7 +115,7 @@ public class CrateBlock extends Block implements IColoredBlock
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world)
 	{
-		CrateTileEntity te = SplatcraftTileEntitites.crateTileEntity.get().create();
+		CrateTileEntity te = SplatcraftTileEntitites.crateTileEntity.create();
 		te.setMaxHealth(hasLoot ? 25 : 20);
 		te.resetHealth();
 		te.setHasLoot(hasLoot);

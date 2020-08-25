@@ -200,8 +200,6 @@ public class InkTankItem extends ColoredArmorItem implements IDyeableArmorItem
 		boolean inWhitelist = SplatcraftTags.Items.getTag(SplatcraftTags.Items.INK_TANK_WHITELIST.get(this)).contains(item);
 		boolean inBlacklist = SplatcraftTags.Items.getTag(SplatcraftTags.Items.INK_TANK_BLACKLIST.get(this)).contains(item);
 		
-		System.out.println(SplatcraftTags.Items.INK_TANK_WHITELIST.get(this).toString() + " " + hasWhitelist + " " + inWhitelist);
-		
 		return !inBlacklist && ((hasWhitelist && inWhitelist) || !hasWhitelist);
 	}
 	

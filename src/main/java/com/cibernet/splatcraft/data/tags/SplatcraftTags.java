@@ -41,8 +41,6 @@ public class SplatcraftTags
 		
 		public static void putInkTankTags(InkTankItem tank, String name)
 		{
-			System.out.println(name+"_whitelist");
-			
 			if(!INK_TANK_WHITELIST.containsKey(tank))
 				INK_TANK_WHITELIST.put(tank, createTag(name+"_whitelist"));
 			if(!INK_TANK_BLACKLIST.containsKey(tank))

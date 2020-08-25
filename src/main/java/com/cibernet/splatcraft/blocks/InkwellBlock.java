@@ -131,7 +131,7 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world)
 	{
-		return SplatcraftTileEntitites.inkwellTileEntity.get().create();
+		return SplatcraftTileEntitites.inkwellTileEntity.create();
 	}
 	
 	@Override

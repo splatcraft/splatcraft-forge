@@ -6,6 +6,7 @@ import com.cibernet.splatcraft.entities.InkSquidEntity;
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
 import com.cibernet.splatcraft.handlers.SplatcraftCommonHandler;
 import com.cibernet.splatcraft.handlers.WeaponHandler;
+import com.cibernet.splatcraft.handlers.client.ClientSetupHandler;
 import com.cibernet.splatcraft.handlers.client.PlayerMovementHandler;
 import com.cibernet.splatcraft.handlers.client.SplatcraftKeyHandler;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
@@ -44,8 +45,6 @@ public class Splatcraft
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		
-		SplatcraftTileEntitites.init();
-		
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
@@ -74,10 +73,12 @@ public class Splatcraft
 		SplatcraftBlocks.setRenderLayers();
 		SplatcraftTileEntitites.bindTESR();
 		
+		
 		DeferredWorkQueue.runLater(() ->
 		{
 			SplatcraftItems.registerModelProperties();
 			SplatcraftItems.registerArmorModels();
+			ClientSetupHandler.bindScreenContainers();
 		});
 	}
 	

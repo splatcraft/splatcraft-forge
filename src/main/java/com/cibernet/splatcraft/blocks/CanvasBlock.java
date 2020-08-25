@@ -44,7 +44,7 @@ public class CanvasBlock extends Block implements IColoredBlock
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world)
 	{
-		InkColorTileEntity te = SplatcraftTileEntitites.colorTileEntity.get().create();
+		InkColorTileEntity te = SplatcraftTileEntitites.colorTileEntity.create();
 		te.setColor(-1);
 		return te;
 	}

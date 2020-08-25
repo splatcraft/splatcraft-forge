@@ -125,6 +125,8 @@ public class SplatcraftInkColors
 		registry.register(dyeGreen);
 		registry.register(dyeRed);
 		registry.register(dyeBlack);
+		
+		registry.register(undyed);
 	}
 	
 	@SubscribeEvent

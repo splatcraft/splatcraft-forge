@@ -25,7 +25,7 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
 	
 	public StageBarrierTileEntity()
 	{
-		super(SplatcraftTileEntitites.stageBarrierTileEntity.get());
+		super(SplatcraftTileEntitites.stageBarrierTileEntity);
 	}
 	
 	

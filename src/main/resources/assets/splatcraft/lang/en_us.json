@@ -32,7 +32,7 @@
     "item.splatcraft.power_egg": "Power Egg",
     "item.splatcraft.power_egg_can": "Can of Power Eggs",
     
-    "item.splatcraft.basic_filter": "Filter",
+    "item.splatcraft.filter": "Filter",
     "item.splatcraft.organic_filter": "Organic Filter",
     "item.splatcraft.pastel_filter": "Pastel Filter",
     "item.splatcraft.neon_filter": "Neon Filter",
@@ -136,6 +136,9 @@
     "item.splatcraft.ink_tank_jr.tooltip": "Only works with Junior weapons.",
     "item.splatcraft.armored_ink_tank": "Armored Ink Tank",
     "item.splatcraft.hero_ink_tank": "Hero Tank",
+    
+    "container.ink_vat": "Inkwell Crafting",
+    "container.ammo_knights_workbench": "Weapon Crafting",
     
     "ink_color.splatcraft.orange": "Orange",
     "ink_color.splatcraft.blue": "Blue",

@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "splatcraft:filter",
+    "splatcraft:neon_filter",
+    "splatcraft:pastel_filter",
+    "splatcraft:organic_filter",
+    "splatcraft:enchanted_filter",
+    "splatcraft:creative_filter"
+  ]
+}

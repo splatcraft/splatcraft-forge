@@ -29,7 +29,7 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
 	
 	public CrateTileEntity()
 	{
-		super(SplatcraftTileEntitites.crateTileEntity.get());
+		super(SplatcraftTileEntitites.crateTileEntity);
 	}
 	
 	public void ink(int color, float damage)

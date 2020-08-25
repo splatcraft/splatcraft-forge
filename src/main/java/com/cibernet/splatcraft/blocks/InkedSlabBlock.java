@@ -131,7 +131,7 @@ public class InkedSlabBlock extends SlabBlock implements IColoredBlock
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world)
 	{
-		return SplatcraftTileEntitites.inkedTileEntity.get().create();
+		return SplatcraftTileEntitites.inkedTileEntity.create();
 	}
 	
 	@Override

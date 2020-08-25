@@ -1,9 +1,12 @@
 package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.client.gui.InkVatScreen;
+import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -38,6 +41,11 @@ public class ClientSetupHandler
 		
 		event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/stage_barrier_fancy"));
 		event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/stage_void_fancy"));
+	}
+	
+	public static void bindScreenContainers()
+	{
+		ScreenManager.registerFactory(SplatcraftTileEntitites.inkVatContainer, InkVatScreen::new);
 	}
 	
 	

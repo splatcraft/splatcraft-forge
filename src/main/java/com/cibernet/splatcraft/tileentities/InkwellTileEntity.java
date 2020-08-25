@@ -12,7 +12,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 public class InkwellTileEntity extends InkColorTileEntity implements ITickableTileEntity
 {
 	
-	public InkwellTileEntity() {super(SplatcraftTileEntitites.inkwellTileEntity.get());}
+	public InkwellTileEntity() {super(SplatcraftTileEntitites.inkwellTileEntity);}
 	
 	@Override
 	public void tick()

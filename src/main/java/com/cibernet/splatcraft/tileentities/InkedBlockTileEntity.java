@@ -13,7 +13,7 @@ public class InkedBlockTileEntity extends InkColorTileEntity
 	
 	public InkedBlockTileEntity()
 	{
-		super(SplatcraftTileEntitites.inkedTileEntity.get());
+		super(SplatcraftTileEntitites.inkedTileEntity);
 	}
 	
 	//Read NBT

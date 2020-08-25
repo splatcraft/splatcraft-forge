@@ -18,7 +18,7 @@ public class InkColorTileEntity extends TileEntity
 	
 	public InkColorTileEntity()
 	{
-		super(SplatcraftTileEntitites.colorTileEntity.get());
+		super(SplatcraftTileEntitites.colorTileEntity);
 	}
 	
 	public InkColorTileEntity(TileEntityType type)
@@ -32,7 +32,6 @@ public class InkColorTileEntity extends TileEntity
 		nbt.putInt("Color", color);
 		return super.write(nbt);
 	}
-	
 	
 	//Nbt Read
 	@Override

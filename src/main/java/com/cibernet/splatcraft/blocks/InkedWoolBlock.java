@@ -54,7 +54,7 @@ public class InkedWoolBlock extends Block implements IColoredBlock
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world)
 	{
-		return SplatcraftTileEntitites.colorTileEntity.get().create();
+		return SplatcraftTileEntitites.colorTileEntity.create();
 	}
 	
 	@Override
