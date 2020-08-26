@@ -68,8 +68,9 @@ public class InkSquidModel extends EntityModel<LivingEntity>
 	}
 
 	@Override
-	public void setRotationAngles(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
-		//previously the render function, render code was moved to a method below
+	public void setRotationAngles(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+	{
+	
 	}
 
 	@Override
@@ -88,17 +89,18 @@ public class InkSquidModel extends EntityModel<LivingEntity>
 	public void setLivingAnimations(LivingEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime)
 	{
 		super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
+		boolean isSwimming = entitylivingbaseIn.isSwimming();
 		
 		if(!entitylivingbaseIn.isPassenger())
 		{
-			float yDiff = (float) (entitylivingbaseIn.getPosY() - entitylivingbaseIn.prevPosY) * 1.1f;
-			squid.rotateAngleX = (float) -Math.min(Math.PI / 2, Math.max(-Math.PI / 2, yDiff));
+			float angle = isSwimming ? (float) -((entitylivingbaseIn.rotationPitch * Math.PI) / 180F) : (float) (entitylivingbaseIn.getPosY() - entitylivingbaseIn.prevPosY) * 1.1f;
+			squid.rotateAngleX = (float) -Math.min(Math.PI / 2, Math.max(-Math.PI / 2, angle));
 		}
 		
-		if(entitylivingbaseIn.isOnGround())
+		if(entitylivingbaseIn.isOnGround() || isSwimming)
 		{
-			this.RightLimb.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / 1.5f;
-			this.LeftLimb.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount / 1.5f;
+			this.RightLimb.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / (isSwimming ? 2.2f : 1.5f);
+			this.LeftLimb.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount / (isSwimming ? 2.2f : 1.5f);
 		}
 		else
 		{
