@@ -7,6 +7,7 @@ import com.cibernet.splatcraft.client.model.InkTankJrModel;
 import com.cibernet.splatcraft.client.model.InkTankModel;
 import com.cibernet.splatcraft.dispenser.PlaceBlockDispenseBehavior;
 import com.cibernet.splatcraft.items.*;
+import com.cibernet.splatcraft.items.BlockItem;
 import com.cibernet.splatcraft.items.remotes.ColorChangerItem;
 import com.cibernet.splatcraft.items.remotes.InkDisruptorItem;
 import com.cibernet.splatcraft.items.remotes.RemoteItem;
@@ -15,10 +16,7 @@ import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
@@ -102,10 +100,10 @@ public class SplatcraftItems
 	public static final Item inkVat = new BlockItem(SplatcraftBlocks.inkVat).setRegistryName("ink_vat");
 	
 	//Map Items
-	public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16);
+	public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16, emptyInkwell);
 	public static final Item grate = new BlockItem(SplatcraftBlocks.grate).setRegistryName("grate");
 	public static final Item barrierBar = new BlockItem(SplatcraftBlocks.barrierBar).setRegistryName("barrier_bar");
-	public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "inked_wool", new Item.Properties());
+	public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "inked_wool", new Item.Properties(), Items.WHITE_WOOL);
 	public static final Item canvas = new BlockItem(SplatcraftBlocks.canvas).setRegistryName("canvas");
 	public static final Item squidBumper = new SquidBumperItem("squid_bumper");
 	public static final Item sunkenCrate = new BlockItem(SplatcraftBlocks.sunkenCrate).setRegistryName("sunken_crate");

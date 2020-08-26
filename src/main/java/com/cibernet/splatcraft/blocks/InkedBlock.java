@@ -178,7 +178,7 @@ public class InkedBlock extends Block implements IColoredBlock
 		return flag;
 	}
 	
-	private static boolean causesClear(BlockState state) {
+	public static boolean causesClear(BlockState state) {
 		return state.getFluidState().isTagged(FluidTags.WATER);
 	}
 	
