@@ -1,0 +1,7 @@
+{
+    "type": "splatcraft:ink_vat_color",
+    "color": "FAFAFA",
+    "filter": {
+        "item": "splatcraft:organic_filter"
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "type": "splatcraft:ink_vat_color",
+    "color": "E24F65",
+    "filter": {
+        "item": "splatcraft:pastel_filter"
+    }
+}

@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.network;
 
+import com.cibernet.splatcraft.crafting.InkVatColorRecipe;
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
 import com.cibernet.splatcraft.network.base.PlayToClientPacket;
 import net.minecraft.network.PacketBuffer;
@@ -21,7 +22,10 @@ public class UpdateColorScoresPacket extends PlayToClientPacket
 	public void execute()
 	{
 		if(clear)
+		{
 			ScoreboardHandler.clearColorCriteria();
+			InkVatColorRecipe.getOmniList().clear();
+		}
 		
 		if(add)
 		{

@@ -1,0 +1,7 @@
+{
+    "type": "splatcraft:ink_vat_color",
+    "color": "E51B5E",
+    "filter": {
+        "item": "splatcraft:neon_filter"
+    }
+}

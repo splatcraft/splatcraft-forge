@@ -1,0 +1,7 @@
+{
+    "type": "splatcraft:ink_vat_color",
+    "color": 8439583,
+    "filter": {
+        "item": "splatcraft:organic_filter"
+    }
+}

@@ -1,9 +1,11 @@
 package com.cibernet.splatcraft.crafting;
 
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
+import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -93,6 +95,12 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
 		return SplatcraftRecipeTypes.INK_VAT_COLOR_CRAFTING_TYPE;
 	}
 	
+	@Override
+	public ItemStack getIcon()
+	{
+		return new ItemStack(SplatcraftItems.inkVat);
+	}
+	
 	public static class InkVatColorSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<InkVatColorRecipe>
 	{
 		
@@ -111,10 +119,10 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
 			
 			try
 			{
-				color = Integer.parseInt(JSONUtils.getString(json, "color"), 16);
-			} catch(NumberFormatException e)
-			{
 				color = JSONUtils.getInt(json, "color");
+			} catch(JsonSyntaxException e)
+			{
+				color = Integer.parseInt(JSONUtils.getString(json, "color"), 16);
 			}
 			
 			

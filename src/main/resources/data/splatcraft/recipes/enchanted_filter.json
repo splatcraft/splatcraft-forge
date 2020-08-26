@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "splatcraft:filter_empty"
+      "item": "splatcraft:filter"
     },
     {
       "item": "minecraft:golden_apple",
@@ -10,6 +10,6 @@
     }
   ],
   "result": {
-    "item": "splatcraft:filter_enchanted"
+    "item": "splatcraft:enchanted_filter"
   }
 }
