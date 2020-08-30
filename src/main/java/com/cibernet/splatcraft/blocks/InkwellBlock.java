@@ -122,6 +122,12 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
 	}
 	
 	@Override
+	public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+	{
+		return true;
+	}
+	
+	@Override
 	public boolean hasTileEntity(BlockState state)
 	{
 		return true;

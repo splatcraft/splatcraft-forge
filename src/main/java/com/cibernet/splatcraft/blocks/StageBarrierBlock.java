@@ -29,6 +29,8 @@ public class StageBarrierBlock extends Block
 {
 	public final boolean damagesPlayer;
 	
+	public static final VoxelShape COLLISION = makeCuboidShape(0.0, 0.01, 0.0, 16, 15.99, 16);
+	
 	public StageBarrierBlock(String name, boolean damagesPlayer)
 	{
 		super(Properties.create(Material.BARRIER, MaterialColor.AIR).hardnessAndResistance(-1.0F, 3600000.8F).noDrops().notSolid());
@@ -59,17 +61,18 @@ public class StageBarrierBlock extends Block
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
 	{
 		if(!(worldIn.getTileEntity(pos) instanceof StageBarrierTileEntity))
-			return super.getShape(state, worldIn, pos, context);
+			return VoxelShapes.fullCube();
 		
 		StageBarrierTileEntity te = (StageBarrierTileEntity) worldIn.getTileEntity(pos);
 		
 		return (te.getActiveTime() > 5) ? super.getShape(state, worldIn, pos, context) : VoxelShapes.empty();
 	}
 	
+	
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
 	{
-		return super.getShape(state, worldIn, pos, context);
+		return COLLISION;
 	}
 	
 	@Override
