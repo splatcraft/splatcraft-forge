@@ -5,9 +5,14 @@ import com.cibernet.splatcraft.client.renderer.InkSquidRenderer;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.gui.PlayerListComponent;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,6 +22,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 //@Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -61,6 +68,27 @@ public class RendererHandler
 		PlayerEntity player = Minecraft.getInstance().player;
 		if(PlayerInfoCapability.isSquid(player))
 			event.setCanceled(true);
+	}
+	
+	@SubscribeEvent
+	public static void onChatMessage(ClientChatReceivedEvent event)
+	{
+		if(SplatcraftGameRules.getBooleanRuleValue(Minecraft.getInstance().world, SplatcraftGameRules.COLORED_NAMEPLATES) && event.getMessage() instanceof TranslationTextComponent)
+		{
+			TranslationTextComponent component = (TranslationTextComponent) event.getMessage();
+			TreeMap<String, AbstractClientPlayerEntity> players = Maps.newTreeMap();
+			Minecraft.getInstance().world.getPlayers().forEach(player -> players.put(player.getDisplayName().getUnformattedComponentText(), player));
+			
+			for(Object obj : component.getFormatArgs())
+			{
+				if(!(obj instanceof TextComponent))
+					continue;
+				TextComponent msgChildren = (TextComponent) obj;
+				
+				if(players.keySet().contains(msgChildren.getUnformattedComponentText()))
+					msgChildren.setStyle(Style.EMPTY.setColor(Color.func_240743_a_(ColorUtils.getPlayerColor(players.get(msgChildren.getUnformattedComponentText())))));
+			}
+		}
 	}
 	
 	@SubscribeEvent
