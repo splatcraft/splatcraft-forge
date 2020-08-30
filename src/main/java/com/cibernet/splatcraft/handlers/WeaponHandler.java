@@ -31,13 +31,17 @@ public class WeaponHandler
 			
 			if(target.getHealth() > 0 && target.getHealth() - event.getAmount() <= 0)
 			{
-				target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getDeathsAsColor(ColorUtils.getPlayerColor(target)), target.getScoreboardName(), score -> score.increaseScore(1));
+				if(ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(target)))
+					target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getDeathsAsColor(ColorUtils.getPlayerColor(target)), target.getScoreboardName(), score -> score.increaseScore(1));
 				
 				if(event.getSource().getImmediateSource() instanceof PlayerEntity)
 				{
 					PlayerEntity source = (PlayerEntity) event.getSource().getTrueSource();
-					target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getColorKills(ColorUtils.getPlayerColor(target)), source.getScoreboardName(), score -> score.increaseScore(1));
-					target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getKillsAsColor(ColorUtils.getPlayerColor(source)), source.getScoreboardName(), score -> score.increaseScore(1));
+					if(ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(source)))
+					{
+						target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getColorKills(ColorUtils.getPlayerColor(target)), source.getScoreboardName(), score -> score.increaseScore(1));
+						target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getKillsAsColor(ColorUtils.getPlayerColor(source)), source.getScoreboardName(), score -> score.increaseScore(1));
+					}
 				}
 			}
 		
