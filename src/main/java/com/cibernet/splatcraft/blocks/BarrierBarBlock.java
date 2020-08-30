@@ -94,7 +94,7 @@ public class BarrierBarBlock extends Block implements IWaterLoggable
 		return true;
 	}
 	
-	public static VoxelShape modifyShapeForDirection(Direction facing, VoxelShape shape)
+	protected static VoxelShape modifyShapeForDirection(Direction facing, VoxelShape shape)
 	{
 		AxisAlignedBB bb = shape.getBoundingBox();
 		

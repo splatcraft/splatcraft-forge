@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north":    { "model": "splatcraft:block/grate_ramp", "y": 90  },
+        "facing=east":     { "model": "splatcraft:block/grate_ramp", "y": 180 },
+        "facing=south":    { "model": "splatcraft:block/grate_ramp", "y": 270 },
+        "facing=west":     { "model": "splatcraft:block/grate_ramp"}
+    }
+}

@@ -30,9 +30,11 @@ public class GrateBlock extends AbstractSquidPassthroughBlock implements IWaterL
 	protected static final VoxelShape BOTTOM_AABB = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 3.0D, 16.0D);
 	protected static final VoxelShape TOP_AABB = Block.makeCuboidShape(0.0D, 13.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 	
+	public static final Properties PROPERTIES = Properties.create(Material.IRON).notSolid().setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(4.0f).sound(SoundType.METAL);
+	
 	public GrateBlock(String name)
 	{
-		super(Properties.create(Material.IRON).notSolid().setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(4.0f).sound(SoundType.METAL));
+		super(PROPERTIES);
 		this.setDefaultState(this.stateContainer.getBaseState().with(HALF, Half.BOTTOM).with(WATERLOGGED, Boolean.valueOf(false)));
 		setRegistryName(name);
 	}
