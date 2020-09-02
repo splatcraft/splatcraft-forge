@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.WeaponBaseItem;
+import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -12,6 +13,7 @@ import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -19,7 +21,8 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class PlayerMovementHandler
 {
-	private static final AttributeModifier SQUID_SWIM_SPEED = (new AttributeModifier( "Squid swim speed boost", 0D, AttributeModifier.Operation.ADDITION));
+	private static final AttributeModifier INK_SWIM_SPEED = (new AttributeModifier( "Ink swimming speed boost", 0D, AttributeModifier.Operation.ADDITION));
+	private static final AttributeModifier SQUID_SWIM_SPEED = (new AttributeModifier( "Squid swim speed boost", 0.3D, AttributeModifier.Operation.MULTIPLY_TOTAL));
 	private static final AttributeModifier ENEMY_INK_SPEED = (new AttributeModifier( "Enemy ink speed penalty", -0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL));
 	
 	@SubscribeEvent
@@ -28,11 +31,14 @@ public class PlayerMovementHandler
 		ClientPlayerEntity player = (ClientPlayerEntity) event.getPlayer();
 		MovementInput input = player.movementInput;
 		ModifiableAttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
+		ModifiableAttributeInstance swimAttribute = player.getAttribute(ForgeMod.SWIM_SPEED.get());
 		
-		if(speedAttribute.hasModifier(SQUID_SWIM_SPEED) && player.isOnGround())
-			speedAttribute.removeModifier(SQUID_SWIM_SPEED);
+		if(speedAttribute.hasModifier(INK_SWIM_SPEED) && player.isOnGround())
+			speedAttribute.removeModifier(INK_SWIM_SPEED);
 		if(speedAttribute.hasModifier(ENEMY_INK_SPEED))
 			speedAttribute.removeModifier(ENEMY_INK_SPEED);
+		if(swimAttribute.hasModifier(SQUID_SWIM_SPEED))
+			swimAttribute.removeModifier(SQUID_SWIM_SPEED);
 		
 		if(InkBlockUtils.onEnemyInk(player))
 		{
@@ -44,8 +50,10 @@ public class PlayerMovementHandler
 		if(PlayerInfoCapability.isSquid(player))
 		{
 			
-			if(InkBlockUtils.canSquidSwim(player) && !speedAttribute.hasModifier(SQUID_SWIM_SPEED))
-				speedAttribute.applyNonPersistentModifier(SQUID_SWIM_SPEED);
+			if(InkBlockUtils.canSquidSwim(player) && !speedAttribute.hasModifier(INK_SWIM_SPEED))
+				speedAttribute.applyNonPersistentModifier(INK_SWIM_SPEED);
+			if(!swimAttribute.hasModifier(SQUID_SWIM_SPEED))
+				swimAttribute.applyNonPersistentModifier(SQUID_SWIM_SPEED);
 			
 			float speedMod = InkBlockUtils.canSquidHide(player) ? 20f : 2f;
 			
@@ -103,9 +111,9 @@ public class PlayerMovementHandler
 		
 		if(!player.abilities.isFlying)
 		{
-			if(speedAttribute.hasModifier(SQUID_SWIM_SPEED))
+			if(speedAttribute.hasModifier(INK_SWIM_SPEED))
 			{
-				player.moveRelative(0.075f * (player.isOnGround() ? 1 : 0.2f), new Vector3d(player.moveStrafing, 0.0f, player.moveForward));
+				player.moveRelative(((float)player.getAttributeValue(SplatcraftItems.INK_SWIM_SPEED)) * (player.isOnGround() ? 1 : 0.2f), new Vector3d(player.moveStrafing, 0.0f, player.moveForward));
 				//player.moveRelative(0, (float) Math.max(player.motionY, 0), 0, 0.06f);
 			}
 			
