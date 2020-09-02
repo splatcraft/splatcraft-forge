@@ -24,6 +24,8 @@ public class SplatcraftTags
 		public static final HashMap<InkTankItem, ResourceLocation> INK_TANK_WHITELIST = new HashMap<>();
 		public static final HashMap<InkTankItem, ResourceLocation> INK_TANK_BLACKLIST = new HashMap<>();
 		
+		public static final ResourceLocation MATCH_ITEMS = createTag("match_items");
+		
 		public static final ResourceLocation SHOOTERS = createTag("shooters");
 		public static final ResourceLocation ROLLERS = createTag("rollers");
 		public static final ResourceLocation CHARGERS = createTag("chargers");

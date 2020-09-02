@@ -1,6 +1,8 @@
 package com.cibernet.splatcraft.capabilities.playerinfo;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.vector.Vector3d;
 
 public interface IPlayerInfo
@@ -13,6 +15,9 @@ public interface IPlayerInfo
 	
 	boolean isSquid();
 	void setIsSquid(boolean isSquid);
+	
+	NonNullList<ItemStack> getMatchInventory();
+	void setMatchInventory(NonNullList<ItemStack> inventory);
 	
 	CompoundNBT writeNBT(CompoundNBT nbt);
 	void readNBT(CompoundNBT nbt);

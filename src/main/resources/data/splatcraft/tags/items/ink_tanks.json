@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "splatcraft:ink_tank",
+    "splatcraft:classic_ink_tank",
+    "splatcraft:ink_tank_jr",
+    "splatcraft:armored_ink_tank"
+  ]
+}

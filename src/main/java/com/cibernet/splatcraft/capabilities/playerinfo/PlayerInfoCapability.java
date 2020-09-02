@@ -50,6 +50,12 @@ public class PlayerInfoCapability implements ICapabilitySerializable<CompoundNBT
 		return entity.getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find PlayerData capability!"));
 	}
 	
+	public static boolean hasCapability(LivingEntity entity)
+	{
+		try { return get(entity) != null;}
+		catch(NullPointerException e) { return false;}
+	}
+	
 	public static boolean isSquid(LivingEntity entity)
 	{
 		if(entity instanceof InkSquidEntity)
