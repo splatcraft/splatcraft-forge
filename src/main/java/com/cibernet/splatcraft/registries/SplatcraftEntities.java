@@ -8,12 +8,8 @@ import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.entities.InkSquidEntity;
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.*;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -23,11 +19,13 @@ import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -85,5 +83,24 @@ public class SplatcraftEntities
 	{
 		GlobalEntityTypeAttributes.put(SplatcraftEntities.INK_SQUID, InkSquidEntity.setCustomAttributes().create());
 		GlobalEntityTypeAttributes.put(SplatcraftEntities.SQUID_BUMPER, SquidBumperEntity.setCustomAttributes().create());
+		
+		GlobalEntityTypeAttributes.put(EntityType.PLAYER, getAttributeMutableMap(EntityType.PLAYER).createMutableAttribute(SplatcraftItems.INK_SWIM_SPEED, 0.075).create());
+	}
+	
+	protected static AttributeModifierMap.MutableAttribute getAttributeMutableMap(EntityType<? extends LivingEntity> entityType)
+	{
+		AttributeModifierMap.MutableAttribute result = new AttributeModifierMap.MutableAttribute();
+		
+		Object obj = ObfuscationReflectionHelper.getPrivateValue(AttributeModifierMap.class, GlobalEntityTypeAttributes.getAttributesForEntity(entityType), "field_233777_d_");
+		
+		if(obj instanceof Map)
+		{
+			Map<Attribute, ModifiableAttributeInstance> map = (Map<Attribute, ModifiableAttributeInstance>) obj;
+			for(Map.Entry<Attribute, ModifiableAttributeInstance> entry : map.entrySet())
+				result.createMutableAttribute(entry.getKey(), entry.getValue().getValue());
+		}
+		else System.out.println("obj is not map");
+		
+		return result;
 	}
 }

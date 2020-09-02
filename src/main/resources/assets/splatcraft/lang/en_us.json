@@ -247,6 +247,8 @@
     "stat.splatcraft.specials_used": "Special Weapons Used",
     
     "key.categories.splatcraft": "Splatcraft",
-    "key.squidForm": "Squid"
+    "key.squidForm": "Squid",
+    
+    "attribute.splatcraft.ink_swim_speed": "Ink Swim Speed Bonus"
     
 }

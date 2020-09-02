@@ -15,10 +15,13 @@ import com.cibernet.splatcraft.items.remotes.TurfScannerItem;
 import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
@@ -36,6 +39,9 @@ public class SplatcraftItems
 {
 	public static final List<Item> weapons = new ArrayList<>();
 	public static final ArrayList<Item> inkColoredItems = new ArrayList<>();
+	
+	//Attributes
+	public static final Attribute INK_SWIM_SPEED = createAttribute("ink_swim_speed", (new RangedAttribute("attribute.splatcraft.ink_swim_speed", (double)0.7F, 0.0D, 1024.0D)).func_233753_a_(true));
 	
 	//Armor Materials
 	public static final IArmorMaterial INK_CLOTH = new SplatcraftArmorMaterial("ink_cloth", SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0, 0, 0);
@@ -191,5 +197,19 @@ public class SplatcraftItems
 		classicInkTank.setArmorModel(new ClassicInkTankModel());
 		inkTankJr.setArmorModel(new InkTankJrModel());
 		armoredInkTank.setArmorModel(new ArmoredInkTankModel());
+	}
+	
+	@SubscribeEvent
+	public static void registerAttributes(final RegistryEvent.Register<Attribute> event)
+	{
+		IForgeRegistry<Attribute> registry = event.getRegistry();
+		registry.register(INK_SWIM_SPEED);
+		
+	}
+	
+	private static Attribute createAttribute(String id, Attribute attribute)
+	{
+		attribute.setRegistryName(id);
+		return attribute;
 	}
 }
