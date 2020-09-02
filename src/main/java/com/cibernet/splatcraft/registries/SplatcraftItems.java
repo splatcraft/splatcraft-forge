@@ -66,6 +66,11 @@ public class SplatcraftItems
 	//Dualies
 	
 	//Sloshers
+	public static final SlosherItem slosher = new SlosherItem("slosher", 1.6f, 0.4f, 2, 8,14, 6, 7f);
+	public static final SlosherItem classicSlosher = new SlosherItem("classic_slosher", slosher);
+	public static final SlosherItem sodaSlosher = new SlosherItem("soda_slosher", slosher);
+	public static final SlosherItem triSlosher = new SlosherItem("tri_slosher", 1.65f, 0.37f, 3, 20,12.4f, 8, 6f);
+	
 	
 	//Ink Tanks
 	public static final InkTankItem inkTank = new InkTankItem("ink_tank", 100);

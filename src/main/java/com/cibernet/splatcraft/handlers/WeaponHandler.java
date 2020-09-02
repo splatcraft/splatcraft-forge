@@ -2,8 +2,10 @@ package com.cibernet.splatcraft.handlers;
 
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.WeaponBaseItem;
 import com.cibernet.splatcraft.util.ColorUtils;
+import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
@@ -54,19 +56,35 @@ public class WeaponHandler
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
-		if(event.phase == TickEvent.Phase.END)
+		PlayerEntity player = event.player;
+		if(PlayerCooldown.hasPlayerCooldown(player))
+			player.inventory.currentItem = PlayerCooldown.getPlayerCooldown(player).getSlotIndex();
+		
+		if(event.phase != TickEvent.Phase.START)
 			return;
 		
-		PlayerEntity player = event.player;
+		boolean canUseWeapon = true;
 		//Vector3d prevPos = PlayerInfoCapability.get(player).getPrevPos();
 		
-		if(player.getActiveHand() != null && player.getItemInUseCount() > 0)
+		if(PlayerCooldown.shrinkCooldownTime(player, 1) != null)
+		{
+			PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
+			PlayerInfoCapability.get(player).setIsSquid(false);
+			canUseWeapon = !cooldown.preventWeaponUse();
+			
+			if(cooldown.getTime() == 1)
+			{
+				ItemStack stack = player.getHeldItem(player.getActiveHand());
+				if(stack.getItem() instanceof WeaponBaseItem)
+					((WeaponBaseItem) stack.getItem()).onPlayerCooldownEnd(player.world, player, stack);
+			}
+			
+		}
+		if(canUseWeapon && player.getActiveHand() != null && player.getItemInUseCount() > 0)
 		{
 			ItemStack stack = player.getHeldItem(player.getActiveHand());
 			if(stack.getItem() instanceof WeaponBaseItem)
-			{
 				((WeaponBaseItem) stack.getItem()).weaponUseTick(player.world, player, stack, player.getItemInUseCount());
-			}
 		}
 		
 		prevPosMap.put(player, player.getPositionVec());

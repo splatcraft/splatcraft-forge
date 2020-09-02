@@ -24,6 +24,7 @@ public class ShooterItem extends WeaponBaseItem
 	
 	public ShooterItem(String name, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage, float inkConsumption)
 	{
+		super();
 		setRegistryName(name);
 		
 		this.projectileSize = projectileSize;
@@ -46,13 +47,12 @@ public class ShooterItem extends WeaponBaseItem
 		{
 			if(!world.isRemote && (getUseDuration(stack) - timeLeft - 1) % firingSpeed == 0)
 			{
-				InkProjectileEntity proj = new InkProjectileEntity(world, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage);
+				InkProjectileEntity proj = new InkProjectileEntity(world, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage).setShooterTrail();
 				proj.shoot(entity, entity.rotationPitch, entity.rotationYaw, 0.0f, projectileSpeed, inaccuracy);
 				world.addEntity(proj);
 				reduceInk(entity, inkConsumption);
 			}
 		}
-		else if(entity instanceof PlayerEntity)
-			((PlayerEntity) entity).sendStatusMessage(new TranslationTextComponent("status.no_ink").mergeStyle(TextFormatting.RED), true);
+		else sendNoInkMessage(entity);
 	}
 }

@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.capabilities.playerinfo;
 
 import com.cibernet.splatcraft.util.ColorUtils;
+import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -14,6 +15,7 @@ public class PlayerInfo implements IPlayerInfo
 	private boolean isSquid = false;
 	private boolean initialized = false;
 	private NonNullList<ItemStack> matchInventory = NonNullList.create();
+	private PlayerCooldown playerCooldown = null;
 	
 	@Override
 	public boolean isInitialized()
@@ -66,6 +68,18 @@ public class PlayerInfo implements IPlayerInfo
 	}
 	
 	@Override
+	public PlayerCooldown getPlayerCooldown()
+	{
+		return playerCooldown;
+	}
+	
+	@Override
+	public void setPlayerCooldown(PlayerCooldown cooldown)
+	{
+		this.playerCooldown = cooldown;
+	}
+	
+	@Override
 	public CompoundNBT writeNBT(CompoundNBT nbt)
 	{
 		nbt.putInt("Color",getColor());
@@ -77,6 +91,13 @@ public class PlayerInfo implements IPlayerInfo
 			CompoundNBT invNBT = new CompoundNBT();
 			ItemStackHelper.saveAllItems(invNBT, matchInventory);
 			nbt.put("MatchInventory", invNBT);
+		}
+		
+		if(playerCooldown != null)
+		{
+			CompoundNBT cooldownNBT = new CompoundNBT();
+			playerCooldown.writeNBT(cooldownNBT);
+			nbt.put("PlayerCooldown", cooldownNBT);
 		}
 		
 		return nbt;
@@ -95,5 +116,8 @@ public class PlayerInfo implements IPlayerInfo
 			ItemStackHelper.loadAllItems(nbt.getCompound("MatchInventory"), nbtInv);
 			setMatchInventory(nbtInv);
 		}
+		
+		if(nbt.contains("PlayerCooldown"))
+			setPlayerCooldown(PlayerCooldown.readNBT(nbt.getCompound("PlayerCooldown")));
 	}
 }

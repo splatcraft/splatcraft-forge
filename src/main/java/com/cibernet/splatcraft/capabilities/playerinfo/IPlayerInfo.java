@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.capabilities.playerinfo;
 
+import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
@@ -18,6 +19,9 @@ public interface IPlayerInfo
 	
 	NonNullList<ItemStack> getMatchInventory();
 	void setMatchInventory(NonNullList<ItemStack> inventory);
+	
+	PlayerCooldown getPlayerCooldown();
+	void setPlayerCooldown(PlayerCooldown cooldown);
 	
 	CompoundNBT writeNBT(CompoundNBT nbt);
 	void readNBT(CompoundNBT nbt);

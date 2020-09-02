@@ -56,8 +56,6 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		this.damage = damage;
 		this.inkType = inkType;
 		this.sourceWeapon = sourceWeapon;
-		
-		trailSize = size*0.7f;
 	}
 	
 	public InkProjectileEntity(World world, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float size, float damage)
@@ -68,6 +66,12 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	public InkProjectileEntity(World world, LivingEntity thrower, ItemStack sourceWeapon, InkBlockUtils.InkType inkType, float size, float damage)
 	{
 		this(world, thrower, ColorUtils.getInkColor(sourceWeapon), inkType, size, damage, sourceWeapon);
+	}
+	
+	public InkProjectileEntity setShooterTrail()
+	{
+		trailSize = getProjectileSize()*0.7f;
+		return this;
 	}
 	
 	public InkProjectileEntity setChargerStats(int lifespan)

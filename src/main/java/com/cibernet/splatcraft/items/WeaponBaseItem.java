@@ -125,6 +125,11 @@ public class WeaponBaseItem extends Item
 	
 	}
 	
+	public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack)
+	{
+	
+	}
+	
 	public static float getInkAmount(LivingEntity player, ItemStack weapon)
 	{
 		if(!SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK))
@@ -151,5 +156,11 @@ public class WeaponBaseItem extends Item
 			return;
 		
 		InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);
+	}
+	
+	public static void sendNoInkMessage(LivingEntity entity)
+	{
+		if(entity instanceof PlayerEntity)
+			((PlayerEntity) entity).sendStatusMessage(new TranslationTextComponent("status.no_ink").mergeStyle(TextFormatting.RED), true);
 	}
 }

@@ -4,6 +4,8 @@ import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.InkBlockUtils;
+import com.cibernet.splatcraft.util.PlayerCooldown;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -12,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -108,6 +111,20 @@ public class PlayerMovementHandler
 			}
 		}
 		
+		if(PlayerCooldown.hasPlayerCooldown(player))
+		{
+			PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
+			if(!cooldown.canMove())
+			{
+				input.moveForward = 0;
+				input.moveStrafe = 0;
+				input.jump = false;
+			}
+			if(cooldown.forceCrouch())
+				input.sneaking = !player.abilities.isFlying;
+			
+			player.inventory.currentItem = cooldown.getSlotIndex();
+		}
 		
 		if(!player.abilities.isFlying)
 		{
