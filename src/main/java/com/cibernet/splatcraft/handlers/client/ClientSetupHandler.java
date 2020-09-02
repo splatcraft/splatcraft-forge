@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.client.gui.InkVatScreen;
+import com.cibernet.splatcraft.client.gui.WeaponWorkbenchScreen;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
@@ -46,6 +47,7 @@ public class ClientSetupHandler
 	public static void bindScreenContainers()
 	{
 		ScreenManager.registerFactory(SplatcraftTileEntitites.inkVatContainer, InkVatScreen::new);
+		ScreenManager.registerFactory(SplatcraftTileEntitites.weaponWorkbenchContainer, WeaponWorkbenchScreen::new);
 	}
 	
 	

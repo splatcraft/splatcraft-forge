@@ -42,7 +42,7 @@ public class ShooterItem extends WeaponBaseItem
 	@Override
 	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
-		if(hasInk(entity, stack))
+		if(getInkAmount(entity, stack) >= inkConsumption)
 		{
 			if(!world.isRemote && (getUseDuration(stack) - timeLeft - 1) % firingSpeed == 0)
 			{

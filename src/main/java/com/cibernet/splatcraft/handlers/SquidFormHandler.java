@@ -7,6 +7,7 @@ import com.cibernet.splatcraft.registries.SplatcraftStats;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
+import com.cibernet.splatcraft.util.InkDamageUtils;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effects;
@@ -28,10 +29,10 @@ public class SquidFormHandler
 		PlayerEntity player = event.player;
 		
 		if(InkBlockUtils.onEnemyInk(player) && player.ticksExisted % 20 == 0 && player.getHealth() > 4 && player.world.getDifficulty() != Difficulty.PEACEFUL)
-			player.attackEntityFrom(new DamageSource("enemyInk"), 2f);
+			player.attackEntityFrom(InkDamageUtils.ENEMY_INK, 2f);
 		
 		if(player.world.getGameRules().getBoolean(SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.ticksExisted %10 == 0)
-			player.attackEntityFrom(new DamageSource("water"), 8f);
+			player.attackEntityFrom(InkDamageUtils.WATER, 8f);
 		
 		if(PlayerInfoCapability.isSquid(player))
 		{

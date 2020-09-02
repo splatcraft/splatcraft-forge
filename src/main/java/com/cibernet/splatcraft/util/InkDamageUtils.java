@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.entities.IColoredEntity;
 import com.cibernet.splatcraft.entities.InkSquidEntity;
+import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -18,6 +19,8 @@ public class InkDamageUtils
 {
 	
 	public static final DamageSource VOID_DAMAGE = (new DamageSource("outOfWorld")).setDamageBypassesArmor();;
+	public static final DamageSource ENEMY_INK = new DamageSource("enemyInk");
+	public static final DamageSource WATER = new DamageSource("water");
 	
 	public static boolean doSplatDamage(World world, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType)
 	{
@@ -31,17 +34,15 @@ public class InkDamageUtils
 	
 	public static boolean doDamage(World world, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType, String name)
 	{
-		//if(target instanceof InkSquidEntity)
-			//return false;
 		
 		if(damage == 0)
 			return false;
 		
-		boolean doDamage = false;
+		boolean doDamage = damageMobs || SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_MOB_DAMAGE);
 		int targetColor = ColorUtils.getEntityColor(target);
 		
 		if(targetColor > -1)
-			doDamage = (targetColor != color);
+			doDamage = (targetColor != color || SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_FRIENDLY_FIRE));
 		
 		InkDamageSource damageSource = new InkDamageSource(name, source, source, sourceItem);
 		

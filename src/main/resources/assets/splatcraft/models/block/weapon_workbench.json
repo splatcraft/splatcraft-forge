@@ -3,8 +3,8 @@
 	"parent": "block/block",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "splatcraft:blocks/weapon_station",
-		"particle": "splatcraft:blocks/weapon_station"
+		"0": "splatcraft:blocks/weapon_workbench",
+		"particle": "splatcraft:blocks/weapon_workbench"
 	},
 	"elements": [
 		{

@@ -98,6 +98,7 @@ public class SplatcraftItems
 	
 	//Crafting Stations
 	public static final Item inkVat = new BlockItem(SplatcraftBlocks.inkVat).setRegistryName("ink_vat");
+	public static final Item weaponWorkbench = new BlockItem(SplatcraftBlocks.weaponWorkbench).setRegistryName("weapon_workbench");
 	
 	//Map Items
 	public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16, emptyInkwell);
@@ -143,6 +144,7 @@ public class SplatcraftItems
 			registry.register(item);
 		
 		registry.register(inkVat);
+		registry.register(weaponWorkbench);
 		
 		registry.register(emptyInkwell);
 		registry.register(inkwell);

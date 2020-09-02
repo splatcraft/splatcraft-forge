@@ -44,6 +44,7 @@ public class SplatcraftTileEntitites
 	public static final TileEntityType<InkVatTileEntity> inkVatTileEntity = registerTileEntity("ink_vat", InkVatTileEntity::new, inkVat);
 	
 	public static final ContainerType<InkVatContainer> inkVatContainer = registerContainer("ink_vat", InkVatContainer::new);
+	public static final ContainerType<WeaponWorkbenchContainer> weaponWorkbenchContainer = registerContainer("weapon_workbench", WeaponWorkbenchContainer::new);
 	
 	private static <T extends TileEntity> TileEntityType<T> registerTileEntity(String name, Supplier<T> factoryIn, Block... allowedBlocks)
 	{

@@ -44,7 +44,7 @@ public class InkVatScreen extends ContainerScreen<InkVatContainer>
 		super(screenContainer, inv, titleIn);
 		this.ySize = 208;
 		this.playerInventoryTitleX = 8;
-		this.playerInventoryTitleY = this.ySize - 96 + 2;
+		this.playerInventoryTitleY = this.ySize - 98;
 		
 		
 	}

@@ -40,6 +40,7 @@ public class SplatcraftBlocks
 	
 	public static final Block emptyInkwell = new EmptyInkwellBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS).harvestTool(ToolType.PICKAXE)).setRegistryName("empty_inkwell");
 	public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
+	public static final Block weaponWorkbench = new WeaponWorkbenchBlock("weapon_workbench");
 	public static final Block inkedWool = new InkedWoolBlock("inked_wool");
 	public static final Block canvas = new CanvasBlock("canvas");
 	
@@ -71,6 +72,7 @@ public class SplatcraftBlocks
 		
 		registry.register(emptyInkwell);
 		registry.register(inkwell);
+		registry.register(weaponWorkbench);
 		registry.register(inkedWool);
 		registry.register(canvas);
 		
@@ -92,6 +94,7 @@ public class SplatcraftBlocks
 		
 		RenderTypeLookup.setRenderLayer(emptyInkwell, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(grate, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(grateRamp, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(crate, RenderType.getCutout());
 		RenderTypeLookup.setRenderLayer(sunkenCrate, RenderType.getCutout());
 	}
