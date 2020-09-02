@@ -7,18 +7,19 @@ import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.tileentities.StageBarrierTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.ChestTileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -31,7 +32,19 @@ import java.util.Random;
 
 public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarrierTileEntity>
 {
-	private static final StageBarrierModel model = new StageBarrierModel();
+	/*
+	protected static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency", () -> {
+		RenderSystem.enableBlend();
+		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+	}, () -> {
+		RenderSystem.disableBlend();
+		RenderSystem.defaultBlendFunc();
+	});
+	
+	private static final RenderType BARRIER_RENDER = RenderType.makeType("splatcraft:stage_barriers", DefaultVertexFormats.BLOCK, 7, 131072, true, false, RenderType.State.getBuilder()
+			.shadeModel(new RenderState.ShadeModelState(true)).lightmap(new RenderState.LightmapState(true)).texture(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true))
+			.alpha(new RenderState.AlphaState(0.003921569F)).transparency(TRANSLUCENT_TRANSPARENCY).build(true));
+	*/
 	
 	public StageBarrierTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -48,25 +61,11 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
 				.endVertex();
 	}
 	
-	private void addVertex(IVertexBuilder builder, MatrixStack matrixStack, float x, float y, float z, TextureAtlasSprite sprite, float alpha)
-	{
-		addVertex(builder, matrixStack, x, y, z, sprite.getMinU(), sprite.getMinV(), 1, 1, 1, alpha);
-	}
-	
-	
-	private static float diffFunction(long time, long delta, float scale) {
-		long dt = time % (delta * 2);
-		if (dt > delta) {
-			dt = 2*delta - dt;
-		}
-		return dt * scale;
-	}
-	
 	@Override
 	public void render(StageBarrierTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay)
 	{
 		
-		float activeTime = false/*Minecraft.getInstance().player.isCreative()*/ ? tileEntity.getMaxActiveTime() : tileEntity.getActiveTime();
+		float activeTime = tileEntity.getActiveTime();
 		Block block = tileEntity.getBlockState().getBlock();
 		
 		if(activeTime <= 0 || !(block instanceof StageBarrierBlock))
@@ -134,6 +133,7 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
 	private static boolean canRenderSide(TileEntity te, Direction side)
 	{
 		BlockPos pos = te.getPos().offset(side);
-		return !te.getWorld().getBlockState(pos).isSolidSide(te.getWorld(), pos, side.getOpposite());
+		BlockState state = te.getWorld().getBlockState(pos);
+		return !(state.getBlock() instanceof StageBarrierBlock);
 	}
 }

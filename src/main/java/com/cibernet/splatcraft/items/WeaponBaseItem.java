@@ -125,12 +125,13 @@ public class WeaponBaseItem extends Item
 	
 	public static float getInkAmount(LivingEntity player, ItemStack weapon)
 	{
+		if(!SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK))
+			return Float.MAX_VALUE;
+		
 		ItemStack tank = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 		if(!(tank.getItem() instanceof InkTankItem))
 			return 0;
 		
-		if(SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK))
-			return InkTankItem.getInkAmount(tank, weapon);
 		return ((InkTankItem) tank.getItem()).capacity;
 	}
 	
@@ -142,9 +143,9 @@ public class WeaponBaseItem extends Item
 	public static void reduceInk(LivingEntity player, float amount)
 	{
 		ItemStack tank = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-		if(!(tank.getItem() instanceof InkTankItem))
-			return;
 		if(!SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK))
+			return;
+		if(!(tank.getItem() instanceof InkTankItem))
 			return;
 		
 		InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);

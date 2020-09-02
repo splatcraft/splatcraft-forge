@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.items.WeaponBaseItem;
+import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -23,6 +24,10 @@ public class ClientUtils
 	public static double getDurabilityForDisplay(ItemStack stack)
 	{
 		PlayerEntity player = getClientPlayer();
+		
+		if(!SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK))
+			return 0;
+			
 		ItemStack chestpiece = player.getItemStackFromSlot(EquipmentSlotType.CHEST.CHEST);
 		if(chestpiece.getItem() instanceof InkTankItem)
 			return 1- WeaponBaseItem.getInkAmount(player, stack) / ((InkTankItem) chestpiece.getItem()).capacity;
