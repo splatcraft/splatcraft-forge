@@ -32,7 +32,7 @@ import java.util.Random;
 
 public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarrierTileEntity>
 {
-	/*
+	
 	protected static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency", () -> {
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -44,7 +44,7 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
 	private static final RenderType BARRIER_RENDER = RenderType.makeType("splatcraft:stage_barriers", DefaultVertexFormats.BLOCK, 7, 131072, true, false, RenderType.State.getBuilder()
 			.shadeModel(new RenderState.ShadeModelState(true)).lightmap(new RenderState.LightmapState(true)).texture(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true))
 			.alpha(new RenderState.AlphaState(0.003921569F)).transparency(TRANSLUCENT_TRANSPARENCY).build(true));
-	*/
+	
 	
 	public StageBarrierTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -74,7 +74,7 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
 		ResourceLocation textureLoc = new ResourceLocation(Splatcraft.MODID, "blocks/" + block.getRegistryName().getPath() + (Minecraft.getInstance().gameSettings.field_238330_f_.func_238162_a_() > 0 ? "_fancy" : ""));
 		
 		TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(textureLoc);
-		IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucent());
+		IVertexBuilder builder = buffer.getBuffer(BARRIER_RENDER);
 		
 		float alpha = (activeTime / tileEntity.getMaxActiveTime());
 		

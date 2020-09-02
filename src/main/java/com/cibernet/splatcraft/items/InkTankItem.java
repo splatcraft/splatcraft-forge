@@ -203,4 +203,13 @@ public class InkTankItem extends ColoredArmorItem implements IDyeableArmorItem
 		return !inBlacklist && ((hasWhitelist && inWhitelist) || !hasWhitelist);
 	}
 	
+	public void refill(ItemStack stack)
+	{
+		setInkAmount(stack, capacity);
+	}
+	
+	public static void deplete(ItemStack stack)
+	{
+		setInkAmount(stack, 0);
+	}
 }

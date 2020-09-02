@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
@@ -46,7 +47,8 @@ public class WeaponBaseItem extends Item
 	{
 		super.inventoryTick(stack, world, entity, itemSlot, isSelected);
 		
-		if(entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity))
+		if(entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity)
+		&& PlayerInfoCapability.hasCapability((LivingEntity) entity))
 			ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor((PlayerEntity) entity));
 	}
 	

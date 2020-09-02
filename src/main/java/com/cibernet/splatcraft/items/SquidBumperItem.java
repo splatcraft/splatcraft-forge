@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.registries.SplatcraftEntities;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
@@ -10,6 +11,7 @@ import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.item.ArmorStandEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -53,7 +55,8 @@ public class SquidBumperItem extends Item
 	{
 		super.inventoryTick(stack, world, entity, itemSlot, isSelected);
 		
-		if(entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity))
+		if(entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity)
+				&& PlayerInfoCapability.hasCapability((LivingEntity) entity))
 			ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor((PlayerEntity) entity));
 	}
 	

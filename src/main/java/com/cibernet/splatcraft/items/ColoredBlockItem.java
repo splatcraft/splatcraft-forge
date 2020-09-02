@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.blocks.InkedBlock;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
@@ -11,6 +12,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -94,7 +96,8 @@ public class ColoredBlockItem extends BlockItem
 		super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
 		
 		if(ColorUtils.getInkColor(stack) == -1)
-			ColorUtils.setInkColor(stack, entityIn instanceof PlayerEntity ? ColorUtils.getPlayerColor((PlayerEntity) entityIn) : ColorUtils.DEFAULT);
+			ColorUtils.setInkColor(stack, entityIn instanceof PlayerEntity && PlayerInfoCapability.hasCapability((LivingEntity) entityIn) ?
+					ColorUtils.getPlayerColor((PlayerEntity) entityIn) : ColorUtils.DEFAULT);
 	}
 	
 	@Override
