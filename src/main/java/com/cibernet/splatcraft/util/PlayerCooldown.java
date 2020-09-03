@@ -8,14 +8,16 @@ import net.minecraft.nbt.CompoundNBT;
 public class PlayerCooldown
 {
 	int time;
+	final int maxTime;
 	final int slotIndex;
 	final boolean canMove;
 	final boolean forceCrouch;
 	final boolean preventWeaponUse;
 	
-	public PlayerCooldown(int time, int slotIndex, boolean canMove, boolean forceCrouch, boolean preventWeaponUse)
+	public PlayerCooldown(int time, int maxTime, int slotIndex, boolean canMove, boolean forceCrouch, boolean preventWeaponUse)
 	{
-		this.time = time;
+		this.time = ++time;
+		this.maxTime = maxTime;
 		this.slotIndex = slotIndex;
 		this.canMove = canMove;
 		this.forceCrouch = forceCrouch;
@@ -23,22 +25,29 @@ public class PlayerCooldown
 		System.out.println(preventWeaponUse);
 	}
 	
+	public PlayerCooldown(int time, int slotIndex, boolean canMove, boolean forceCrouch, boolean preventWeaponUse)
+	{
+		this(time, time, slotIndex, canMove, forceCrouch, preventWeaponUse);
+	}
+	
 	public boolean canMove() {return canMove;}
 	public boolean forceCrouch() {return forceCrouch;}
 	public boolean preventWeaponUse() {return preventWeaponUse;}
 	public int getTime() {return time;}
+	public int getMaxTime() {return maxTime;}
 	public int getSlotIndex() {return slotIndex;}
 	public PlayerCooldown setTime(int v) {time = v; return this;}
 	public PlayerCooldown shrinkTime(int v) {time -= v; return this;}
 	
 	public static PlayerCooldown readNBT(CompoundNBT nbt)
 	{
-		return new PlayerCooldown(nbt.getInt("Time"), nbt.getInt("SlotIndex"), nbt.getBoolean("CanMove"), nbt.getBoolean("ForceCrouch"), nbt.getBoolean("PreventWeaponUse"));
+		return new PlayerCooldown(nbt.getInt("Time"), nbt.getInt("MaxTime"), nbt.getInt("SlotIndex"), nbt.getBoolean("CanMove"), nbt.getBoolean("ForceCrouch"), nbt.getBoolean("PreventWeaponUse"));
 	}
 	
 	public CompoundNBT writeNBT(CompoundNBT nbt)
 	{
 		nbt.putInt("Time", time);
+		nbt.putInt("MaxTime", maxTime);
 		nbt.putInt("SlotIndex", slotIndex);
 		nbt.putBoolean("CanMove", canMove);
 		nbt.putBoolean("ForceCrouch", forceCrouch);

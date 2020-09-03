@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.client.renderer.InkSquidRenderer;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
+import com.cibernet.splatcraft.util.PlayerCooldown;
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -60,12 +61,35 @@ public class RendererHandler
 		event.getPlayer().setInvisible(wasInvisible);
 	}
 	
+	private static float tickTime = 0;
+	private static float oldCooldown = 0;
+	
 	@SubscribeEvent
 	public static void renderHand(RenderHandEvent event)
 	{
 		PlayerEntity player = Minecraft.getInstance().player;
 		if(PlayerInfoCapability.isSquid(player))
+		{
 			event.setCanceled(true);
+			return;
+		}
+		
+		if(PlayerCooldown.hasPlayerCooldown(player))
+		{
+			PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
+			float time = (float)cooldown.getTime();
+			float maxTime = (float)cooldown.getMaxTime();
+			if(time != oldCooldown)
+			{
+				oldCooldown = time;
+				tickTime = 0;
+			}
+			tickTime = (tickTime+1) % 10;
+			float yOff = -0.5f*((time/maxTime) - (tickTime/20f));
+			System.out.println((time/maxTime) + " " + (tickTime/20f));
+			event.getMatrixStack().translate(0, 0, 0);
+		}
+		else tickTime = 0;
 	}
 	
 	@SubscribeEvent
