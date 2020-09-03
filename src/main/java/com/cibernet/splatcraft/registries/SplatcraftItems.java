@@ -59,6 +59,12 @@ public class SplatcraftItems
 	public static final ShooterItem gal96 = new ShooterItem("96_gal", 1.3f, 0.75f, 12.5f, 11, 12.4f, 2.5f);
 	public static final ShooterItem gal96Deco = new ShooterItem("96_gal_deco", gal96);
 	
+	//Blasters
+	public static final BlasterItem blaster = new BlasterItem("blaster", 2.3f, 1f, 5f, 4, 20, 25f, 10f, 10f, 6);
+	public static final BlasterItem grimBlaster = new BlasterItem("grim_blaster", blaster);
+	public static final BlasterItem clashBlaster = new BlasterItem("clash_blaster", 1.8f, 1.2f, 5f, 1, 10, 12f, 6f, 4, 4);
+	public static final BlasterItem clashBlasterNeo = new BlasterItem("clash_blaster_neo", clashBlaster);
+	
 	//Rollers
 	
 	//Chargers

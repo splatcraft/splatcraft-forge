@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "#splatcraft:blasters",
     "splatcraft:splattershot",
     "splatcraft:tentatek_splattershot",
     "splatcraft:wasabi_splattershot",

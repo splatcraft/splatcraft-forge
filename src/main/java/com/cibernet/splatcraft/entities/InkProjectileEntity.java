@@ -115,6 +115,18 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	}
 	
 	@Override
+	public void tick()
+	{
+		super.tick();
+		if(lifespan-- <= 0)
+		{
+			InkExplosion.createInkExplosion(world, func_234616_v_(), new DamageSource("ink"), getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+			//TODO particle
+			remove();
+		}
+	}
+	
+	@Override
 	protected void onEntityHit(EntityRayTraceResult result)
 	{
 		super.onEntityHit(result);
@@ -135,7 +147,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 			return;
 			
 		this.func_230299_a_(result);
-			InkExplosion.createInkExplosion(world, func_234616_v_(), new DamageSource("ink"), getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+		InkExplosion.createInkExplosion(world, func_234616_v_(), new DamageSource("ink"), getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
 		
 		this.remove();
 	}

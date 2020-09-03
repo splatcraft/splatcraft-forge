@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "splatcraft:blaster",
+    "splatcraft:grim_blaster",
+    "splatcraft:clash_blaster",
+    "splatcraft:clash_blaster_neo"
+  ]
+}
