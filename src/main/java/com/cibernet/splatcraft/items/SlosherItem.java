@@ -42,11 +42,6 @@ public class SlosherItem extends WeaponBaseItem
 		this(name, parent.projectileSize, parent.projectileSpeed, parent.projectileCount, parent.diffAngle, parent.damage, parent.startupTicks, parent.inkConsumption);
 	}
 	
-	public SlosherItem(String name, Item parent)
-	{
-		this(name, (SlosherItem) parent);
-	}
-	
 	@Override
 	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
@@ -64,7 +59,6 @@ public class SlosherItem extends WeaponBaseItem
 		{
 			if(!world.isRemote)
 			{
-				reduceInk(player, inkConsumption);
 				for(int i = 0; i < projectileCount; i++)
 				{
 					boolean hasTrail = i == Math.floor((projectileCount - 1) / 2f) || i == Math.ceil((projectileCount - 1) / 2f);
@@ -76,6 +70,7 @@ public class SlosherItem extends WeaponBaseItem
 					proj.shoot(player, player.rotationPitch, player.rotationYaw + angle, 0.0f, projectileSpeed, 2);
 					world.addEntity(proj);
 				}
+				reduceInk(player, inkConsumption);
 			}
 		} else sendNoInkMessage(player);
 	}

@@ -1,5 +1,9 @@
 {
   "replace": false,
   "values": [
+    "splatcraft:slosher",
+    "splatcraft:classic_slosher",
+    "splatcraft:soda_slosher",
+    "splatcraft:tri_slosher"
   ]
 }
