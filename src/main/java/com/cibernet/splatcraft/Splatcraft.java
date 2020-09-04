@@ -60,6 +60,7 @@ public class Splatcraft
 			SplatcraftGameRules.registerGamerules();
 		});
 		
+		SplatcraftSounds.initSounds();
 		SplatcraftTags.register();
 		SplatcraftStats.register();
 		ScoreboardHandler.register();

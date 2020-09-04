@@ -1,12 +1,14 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
+import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
 public class BlasterItem extends ShooterItem
@@ -63,6 +65,7 @@ public class BlasterItem extends ShooterItem
 				proj.setBlasterStats(projLifespan, splashDamage);
 				proj.shoot(player, player.rotationPitch, player.rotationYaw, 0.0f, projectileSpeed, inaccuracy);
 				world.addEntity(proj);
+				world.playSound(null, player.getPosition(), SplatcraftSounds.blasterShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 				reduceInk(player, inkConsumption);
 				
 			}

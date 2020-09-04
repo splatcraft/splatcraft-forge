@@ -1,0 +1,149 @@
+{
+  "shooter_firing": {
+    "category": "player",
+    "subtitle": "subtitle.shooter_firing",
+    "sounds": [
+      "splatcraft:shooter_firing"
+    ]
+  },
+  "blaster_firing": {
+    "category": "player",
+    "subtitle": "subtitle.blaster_firing",
+    "sounds": [
+      "splatcraft:blaster_firing"
+    ]
+  },
+  "blaster_explosion": {
+    "category": "player",
+    "subtitle": "subtitle.blaster_explosion",
+    "sounds": [
+      "splatcraft:blaster_explosion"
+    ]
+  },
+  "roller_fling": {
+    "category": "player",
+    "subtitle": "subtitle.roller_fling",
+    "sounds": [
+      "splatcraft:roller_fling"
+    ]
+  },
+  "roller_roll": {
+    "category": "player",
+    "subtitle": "subtitle.roller_roll",
+    "sounds": [
+      "splatcraft:roller_roll"
+    ]
+  },
+  "charger_charge": {
+    "category": "player",
+    "subtitle": "subtitle.charger_charge",
+    "sounds": [
+      "splatcraft:charger_charge"
+    ]
+  },
+  "charger_ready": {
+    "category": "player",
+    "subtitle": "subtitle.charger_ready",
+    "sounds": [
+      "splatcraft:charger_ready"
+    ]
+  },
+  "charger_shot": {
+    "category": "player",
+    "subtitle": "subtitle.charger_shot",
+    "sounds": [
+      "splatcraft:charger_shot"
+    ]
+  },
+  "dualie_firing": {
+    "category": "player",
+    "subtitle": "subtitle.dualie_firing",
+    "sounds": [
+      "splatcraft:shooter_firing"
+    ]
+  },
+  "dualie_dodge": {
+    "category": "player",
+    "subtitle": "subtitle.dualie_dodge",
+    "sounds": [
+      "splatcraft:dualie_dodge"
+    ]
+  },
+  "slosher_shot": {
+    "category": "player",
+    "subtitle": "subtitle.slosher_shot",
+    "sounds": [
+      "splatcraft:slosher_shot"
+    ]
+  },
+  "sub_throw": {
+    "category": "player",
+    "subtitle": "subtitle.slosher_shot",
+    "sounds": [
+      "splatcraft:slosher_shot"
+    ]
+  },
+  "sub_detonating": {
+    "category": "player",
+    "subtitle": "subtitle.sub_detonating",
+    "sounds": [
+      "splatcraft:sub_detonating"
+    ]
+  },
+  "sub_detonate": {
+    "category": "player",
+    "subtitle": "subtitle.sub_detonate",
+    "sounds": [
+      "splatcraft:sub_detonate"
+    ]
+  },
+  "remote_use": {
+    "category": "player",
+    "subtitle": "subtitle.remote_use",
+    "sounds": [
+      "splatcraft:remote_use"
+    ]
+  },
+  "no_ink": {
+    "category": "player",
+    "subtitle": "subtitle.no_ink",
+    "sounds": [
+      "splatcraft:no_ink"
+    ]
+  },
+  "no_ink_sub": {
+    "category": "player",
+    "subtitle": "subtitle.no_ink_sub",
+    "sounds": [
+      "splatcraft:no_ink_sub"
+    ]
+  },
+  "squid_transform": {
+    "category": "player",
+    "subtitle": "subtitle.squid_transform",
+    "sounds": [
+      "splatcraft:squid_transform"
+    ]
+  },
+  "squid_revert": {
+    "category": "player",
+    "subtitle": "subtitle.squid_revert",
+    "sounds": [
+      "splatcraft:squid_revert"
+    ]
+  },
+  "ink_submerge": {
+    "category": "player",
+    "subtitle": "subtitle.ink_submerge",
+    "sounds": [
+      "splatcraft:ink_submerge"
+    ]
+  },
+  "ink_surface": {
+    "category": "player",
+    "subtitle": "subtitle.ink_surface",
+    "sounds": [
+      "splatcraft:ink_surface"
+    ]
+  }
+}

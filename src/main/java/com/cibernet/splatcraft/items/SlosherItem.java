@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
+import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.entity.LivingEntity;
@@ -9,6 +10,7 @@ import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -70,6 +72,7 @@ public class SlosherItem extends WeaponBaseItem
 					proj.shoot(player, player.rotationPitch, player.rotationYaw + angle, 0.0f, projectileSpeed, 2);
 					world.addEntity(proj);
 				}
+				world.playSound(null, player.getPosition(), SplatcraftSounds.slosherShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 				reduceInk(player, inkConsumption);
 			}
 		} else sendNoInkMessage(player);

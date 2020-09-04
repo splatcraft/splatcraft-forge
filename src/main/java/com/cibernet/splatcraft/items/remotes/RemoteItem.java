@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.items.remotes;
 
+import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -9,6 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
@@ -101,7 +103,7 @@ public abstract class RemoteItem extends Item
 			
 			if(remoteResult.getOutput() != null)
 				playerIn.sendStatusMessage(remoteResult.getOutput(), true);
-			
+			worldIn.playSound(playerIn, playerIn.getPosition(), SplatcraftSounds.remoteUse, SoundCategory.BLOCKS, 0.8f, 1);
 			return new ActionResult<>(remoteResult.wasSuccessful() ? ActionResultType.SUCCESS : ActionResultType.FAIL, stack);
 		}
 		

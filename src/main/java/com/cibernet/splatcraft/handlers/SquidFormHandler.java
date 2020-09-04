@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.handlers;
 import com.cibernet.splatcraft.blocks.InkwellBlock;
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
+import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.registries.SplatcraftStats;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
@@ -12,6 +13,8 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Difficulty;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -20,9 +23,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Mod.EventBusSubscriber
 public class SquidFormHandler
 {
+	private static Map<PlayerEntity, Integer> squidSubmergeMode = new LinkedHashMap<>();
+	
 	@SubscribeEvent
 	public static void playerTick(TickEvent.PlayerTickEvent event)
 	{
@@ -33,6 +41,22 @@ public class SquidFormHandler
 		
 		if(player.world.getGameRules().getBoolean(SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.ticksExisted %10 == 0)
 			player.attackEntityFrom(InkDamageUtils.WATER, 8f);
+		
+		
+		if(event.phase == TickEvent.Phase.START)
+		{
+			if(!squidSubmergeMode.containsKey(player))
+				squidSubmergeMode.put(player, 0);
+			
+			if(InkBlockUtils.canSquidSwim(player) && PlayerInfoCapability.isSquid(player))
+				squidSubmergeMode.put(player, Math.min(2,Math.max(squidSubmergeMode.get(player)+1, 1)));
+			else squidSubmergeMode.put(player, Math.max(-2,Math.min(squidSubmergeMode.get(player)-1, -1)));
+			
+			if(squidSubmergeMode.get(player) == 1)
+				player.world.playSound(null, player.getPosition(), SplatcraftSounds.inkSubmerge, SoundCategory.PLAYERS, 0.75F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+			else if(squidSubmergeMode.get(player) == -1)
+				player.world.playSound(null, player.getPosition(), SplatcraftSounds.inkSurface, SoundCategory.PLAYERS, 0.75F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+		}
 		
 		if(PlayerInfoCapability.isSquid(player))
 		{
