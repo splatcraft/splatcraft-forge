@@ -15,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -55,6 +56,14 @@ public class RendererHandler
 		//else event.getRenderer().getRenderManager().setRenderShadow(true);
 	}
 	
+	@SubscribeEvent
+	public static void onRenderTick(TickEvent.RenderTickEvent event)
+	{
+		PlayerEntity player = Minecraft.getInstance().player;
+		if(player != null && PlayerCooldown.hasPlayerCooldown(player))
+			player.inventory.currentItem = PlayerCooldown.getPlayerCooldown(player).getSlotIndex();
+	}
+	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void playerRenderPost(RenderPlayerEvent.Post event)
 	{
@@ -85,9 +94,9 @@ public class RendererHandler
 				tickTime = 0;
 			}
 			tickTime = (tickTime+1) % 10;
-			float yOff = -0.5f*((time/maxTime) - (tickTime/20f));
+			float yOff = -0.5f*((time/maxTime));// - (tickTime/20f));
 			System.out.println((time/maxTime) + " " + (tickTime/20f));
-			event.getMatrixStack().translate(0, 0, 0);
+			event.getMatrixStack().translate(0, yOff, 0);
 		}
 		else tickTime = 0;
 	}

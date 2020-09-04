@@ -6,6 +6,7 @@ import com.cibernet.splatcraft.data.tags.SplatcraftTags;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
+import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -55,6 +56,7 @@ public class SplatcraftCommonHandler
 			
 			PlayerInfoCapability.get(player).setMatchInventory(NonNullList.create());
 		}
+		PlayerCooldown.setPlayerCooldown(player, null);
 	}
 	
 	private static boolean putStackInSlot(PlayerInventory inventory, ItemStack stack, int i)

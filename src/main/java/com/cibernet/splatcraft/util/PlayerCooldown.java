@@ -85,6 +85,7 @@ public class PlayerCooldown
 	
 	public static boolean hasPlayerCooldown(PlayerEntity player)
 	{
+		if(PlayerInfoCapability.get(player) == null) return false;
 		PlayerCooldown cooldown = PlayerInfoCapability.get(player).getPlayerCooldown();
 		return cooldown != null && cooldown.getTime() > 0;
 	}

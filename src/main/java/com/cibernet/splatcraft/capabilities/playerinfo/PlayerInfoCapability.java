@@ -47,7 +47,7 @@ public class PlayerInfoCapability implements ICapabilitySerializable<CompoundNBT
 	
 	public static IPlayerInfo get(LivingEntity entity) throws NullPointerException
 	{
-		return entity.getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find PlayerData capability!"));
+		return entity.getCapability(CAPABILITY).orElse(null);
 	}
 	
 	public static boolean hasCapability(LivingEntity entity)
