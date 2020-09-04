@@ -56,7 +56,6 @@ public class PlayerInfo implements IPlayerInfo
 	@Override
 	public NonNullList<ItemStack> getMatchInventory()
 	{
-		System.out.println("get: " + matchInventory);
 		return matchInventory;
 	}
 	
@@ -64,7 +63,6 @@ public class PlayerInfo implements IPlayerInfo
 	public void setMatchInventory(NonNullList<ItemStack> inventory)
 	{
 		this.matchInventory = inventory;
-		System.out.println("set: " + matchInventory);
 	}
 	
 	@Override

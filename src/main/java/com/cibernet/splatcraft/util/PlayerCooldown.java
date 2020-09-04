@@ -22,7 +22,6 @@ public class PlayerCooldown
 		this.canMove = canMove;
 		this.forceCrouch = forceCrouch;
 		this.preventWeaponUse = preventWeaponUse;
-		System.out.println(preventWeaponUse);
 	}
 	
 	public PlayerCooldown(int time, int slotIndex, boolean canMove, boolean forceCrouch, boolean preventWeaponUse)

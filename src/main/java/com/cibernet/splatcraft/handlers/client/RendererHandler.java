@@ -95,7 +95,6 @@ public class RendererHandler
 			}
 			tickTime = (tickTime+1) % 10;
 			float yOff = -0.5f*((time/maxTime));// - (tickTime/20f));
-			System.out.println((time/maxTime) + " " + (tickTime/20f));
 			event.getMatrixStack().translate(0, yOff, 0);
 		}
 		else tickTime = 0;

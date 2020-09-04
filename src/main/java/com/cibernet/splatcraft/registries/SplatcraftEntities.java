@@ -99,7 +99,6 @@ public class SplatcraftEntities
 			for(Map.Entry<Attribute, ModifiableAttributeInstance> entry : map.entrySet())
 				result.createMutableAttribute(entry.getKey(), entry.getValue().getValue());
 		}
-		else System.out.println("obj is not map");
 		
 		return result;
 	}
