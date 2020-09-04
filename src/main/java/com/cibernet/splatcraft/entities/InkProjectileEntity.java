@@ -21,6 +21,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -33,6 +34,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	
 	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(SlimeEntity.class, DataSerializers.VARINT);
 	private static final DataParameter<Float> PROJ_SIZE = EntityDataManager.createKey(SlimeEntity.class, DataSerializers.FLOAT);
+	private static final DamageSource DAMAGE_SOURCE = new DamageSource("ink");
 	
 	public float gravityVelocity = 0.03f;
 	public int lifespan = 600;
@@ -43,6 +45,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	public boolean canPierce = false;
 	public ItemStack sourceWeapon = ItemStack.EMPTY;
 	public float trailSize;
+	public float trailCooldown = 0;
 	public InkBlockUtils.InkType inkType;
 	
 	
@@ -73,6 +76,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	
 	public InkProjectileEntity setShooterTrail()
 	{
+		trailCooldown = 4;
 		trailSize = getProjectileSize()*0.7f;
 		return this;
 	}
@@ -122,9 +126,10 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	public void tick()
 	{
 		super.tick();
+		
 		if(lifespan-- <= 0)
 		{
-			InkExplosion.createInkExplosion(world, func_234616_v_(), new DamageSource("ink"), getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+			InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
 			if(explodes)
 			{
 				//TODO particles
@@ -132,6 +137,19 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 			}
 			remove();
 		}
+		
+		if(trailSize > 0 && ticksExisted % trailCooldown == 0)
+			for(double y = getPosY(); y >= 0 && getPosY()-y <= 8; y--)
+			{
+				BlockPos inkPos = new BlockPos(getPosX(), y, getPosZ());
+				if(!InkBlockUtils.canInkPassthrough(world, inkPos))
+				{
+					InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, inkPos.up(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
+					InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
+					break;
+				}
+			}
+		
 	}
 	
 	@Override
@@ -156,7 +174,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 			
 		this.func_230299_a_(result);
 		
-		InkExplosion.createInkExplosion(world, func_234616_v_(), new DamageSource("ink"), getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+		InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
 		if(explodes)
 		{
 			//TODO particles
