@@ -9,6 +9,7 @@ import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ClientUtils;
 import com.cibernet.splatcraft.util.ColorUtils;
+import com.cibernet.splatcraft.util.WeaponStat;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -24,10 +25,13 @@ import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WeaponBaseItem extends Item
 {
+	protected final List<WeaponStat> stats = new ArrayList<>();
+	
 	public WeaponBaseItem()
 	{
 		super(new Properties().maxStackSize(1).group(SplatcraftItemGroups.GROUP_WEAPONS));
@@ -42,6 +46,15 @@ public class WeaponBaseItem extends Item
 		
 		if(ColorUtils.isColorLocked(stack))
 			tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
+		else tooltip.add(new StringTextComponent(""));
+		
+		for(WeaponStat stat : stats)
+			tooltip.add(stat.getTextComponent(stack, world).setStyle(Style.EMPTY.setFormatting(TextFormatting.DARK_GREEN)));
+	}
+	
+	public void addStat(WeaponStat stat)
+	{
+		stats.add(stat);
 	}
 	
 	@Override

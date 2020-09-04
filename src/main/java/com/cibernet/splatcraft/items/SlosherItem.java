@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
+import com.cibernet.splatcraft.util.WeaponStat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
@@ -37,6 +38,11 @@ public class SlosherItem extends WeaponBaseItem
 		this.projectileCount = projectileCount;
 		this.diffAngle = offsetBetweenProj;
 		this.inkConsumption = inkConsumption;
+		
+		
+		addStat(new WeaponStat("range", (stack, world) -> (int) (projectileSpeed*100)));
+		addStat(new WeaponStat("damage", (stack, world) -> (int) ((damage/20)*100)));
+		addStat(new WeaponStat("handling", (stack, world) -> (11-startupTicks)*10));
 	}
 	
 	public SlosherItem(String name, SlosherItem parent)

@@ -138,6 +138,14 @@
     "item.splatcraft.armored_ink_tank": "Armored Ink Tank",
     "item.splatcraft.hero_ink_tank": "Hero Tank",
     
+    "weaponStat.range": "Range: %s%%",
+    "weaponStat.damage": "Damage: %s%%",
+    "weaponStat.impact": "Impact: %s%%",
+    "weaponStat.fire_rate": "Fire Rate: %s%%",
+    "weaponStat.handling": "Handling: %s%%",
+    "weaponStat.ink_speed": "Ink Speed: %s%%",
+    "weaponStat.mobility": "Mobility: %s%%",
+    
     "subtitle.shooter_firing": "Shooter Firing",
     "subtitle.blaster_firing": "Blaster Firing",
     "subtitle.blaster_explosion": "Blaster Projectile Explodes",

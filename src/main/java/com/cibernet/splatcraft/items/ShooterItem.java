@@ -6,6 +6,7 @@ import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
+import com.cibernet.splatcraft.util.WeaponStat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -35,6 +36,13 @@ public class ShooterItem extends WeaponBaseItem
 		this.firingSpeed = firingSpeed;
 		this.damage = damage;
 		this.inkConsumption = inkConsumption;
+		
+		if(!(this instanceof BlasterItem))
+		{
+			addStat(new WeaponStat("range", (stack, world) -> (int) (projectileSpeed*100)));
+			addStat(new WeaponStat("damage", (stack, world) -> (int) ((damage/20)*100)));
+			addStat(new WeaponStat("fire_rate", (stack, world) -> (int) ((11-(firingSpeed))*10)));
+		}
 	}
 	
 	public ShooterItem(String name, ShooterItem parent)

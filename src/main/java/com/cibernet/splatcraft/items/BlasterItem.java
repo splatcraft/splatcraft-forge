@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
+import com.cibernet.splatcraft.util.WeaponStat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -26,6 +27,10 @@ public class BlasterItem extends ShooterItem
 		this.cooldown = cooldown;
 		this.splashDamage = splashDamage;
 		
+		
+		addStat(new WeaponStat("range", (stack, world) -> (int) ((projectileSpeed/projectileLifespan)*100)));
+		addStat(new WeaponStat("impact", (stack, world) -> (int) ((damage/20)*100)));
+		addStat(new WeaponStat("fire_rate", (stack, world) -> (int) ((11-(cooldown*0.5f))*10)));
 	}
 	
 	public BlasterItem(String name, BlasterItem parent)
