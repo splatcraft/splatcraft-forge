@@ -94,19 +94,6 @@ public class PlayerMovementHandler
 					input = player.movementInput;
 					input.moveForward *= 5.0F;
 					input = player.movementInput;
-					
-					/*
-					if(stack.getItem() instanceof ItemDualieBase && player.getCooldownTracker().getCooldown(stack.getItem(), 0) > 0)
-					{
-						input.moveForward = 0;
-						input.moveStrafe = 0;
-						input.jump = false;
-						player.capabilities.isFlying = false;
-						
-						if(Math.abs(player.motionX) <= 0.1 && Math.abs(player.motionZ) <= 0.1)
-							input.sneak = true;
-					}
-					*/
 				}
 			}
 		}
@@ -120,7 +107,7 @@ public class PlayerMovementHandler
 				input.moveStrafe = 0;
 				input.jump = false;
 			}
-			if(cooldown.forceCrouch())
+			if(cooldown.forceCrouch() && cooldown.getTime() > 1)
 				input.sneaking = !player.abilities.isFlying;
 			
 			player.inventory.currentItem = cooldown.getSlotIndex();

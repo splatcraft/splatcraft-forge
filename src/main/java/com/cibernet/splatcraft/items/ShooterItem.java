@@ -53,9 +53,9 @@ public class ShooterItem extends WeaponBaseItem
 	@Override
 	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
-		if(getInkAmount(entity, stack) >= inkConsumption)
+		if(!world.isRemote && (getUseDuration(stack) - timeLeft - 1) % firingSpeed == 0)
 		{
-			if(!world.isRemote && (getUseDuration(stack) - timeLeft - 1) % firingSpeed == 0)
+			if(getInkAmount(entity, stack) >= inkConsumption)
 			{
 				InkProjectileEntity proj = new InkProjectileEntity(world, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage).setShooterTrail();
 				proj.shoot(entity, entity.rotationPitch, entity.rotationYaw, 0.0f, projectileSpeed, inaccuracy);
@@ -63,7 +63,7 @@ public class ShooterItem extends WeaponBaseItem
 				world.playSound(null, entity.getPosition(), SplatcraftSounds.shooterShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 				reduceInk(entity, inkConsumption);
 			}
+			else sendNoInkMessage(entity);
 		}
-		else sendNoInkMessage(entity);
 	}
 }

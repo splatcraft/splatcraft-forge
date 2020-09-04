@@ -671,7 +671,7 @@
     "overrides": [
         {
             "predicate": {
-                "isLeft": 1
+                "splatcraft:is_left": 1
             },
             "model": "splatcraft:item/dualie_squelchers_left"
         }

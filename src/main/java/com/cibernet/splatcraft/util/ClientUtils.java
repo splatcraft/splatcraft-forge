@@ -7,15 +7,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.audio.SoundEngine;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.sound.SoundSetupEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -52,5 +52,18 @@ public class ClientUtils
 	public static void playClientSound(BlockPos pos, SoundEvent soundIn, SoundCategory category, float volume, float pitch)
 	{
 		Minecraft.getInstance().getSoundHandler().play(new ClientPlayerSound(soundIn, category, volume, pitch));
+	}
+	
+	public static boolean canPerformRoll(PlayerEntity entity)
+	{
+		MovementInput input = ((ClientPlayerEntity)entity).movementInput;
+		
+		return !PlayerCooldown.hasPlayerCooldown(entity) && input.jump && (input.moveStrafe != 0 || input.moveForward != 0);
+	}
+	
+	public static Vector3d getDodgeRollVector(PlayerEntity entity)
+	{
+		MovementInput input = ((ClientPlayerEntity)entity).movementInput;
+		return new Vector3d(input.moveStrafe, -0.4f, input.moveForward);
 	}
 }

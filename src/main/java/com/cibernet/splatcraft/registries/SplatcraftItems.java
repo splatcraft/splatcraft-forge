@@ -70,6 +70,9 @@ public class SplatcraftItems
 	//Chargers
 	
 	//Dualies
+	public static final DualieItem splatDualie = new DualieItem("splat_dualies", 1f, 0.55f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
+	public static final DualieItem enperrySplatDualie = new DualieItem("enperry_splat_dualies", splatDualie);
+	public static final DualieItem dualieSquelcher = new DualieItem("dualie_squelchers", 0.9f, 0.64f, 11.5f, 12, 4.4f, 1.2f, 1, 0.7f, 5, 6, 14);
 	
 	//Sloshers
 	public static final SlosherItem slosher = new SlosherItem("slosher", 1.6f, 0.4f, 2, 8,14, 6, 7f);
@@ -188,6 +191,7 @@ public class SplatcraftItems
 		ResourceLocation activeProperty = new ResourceLocation(Splatcraft.MODID,"active");
 		ResourceLocation modeProperty = new ResourceLocation(Splatcraft.MODID,"mode");
 		ResourceLocation inkProperty = new ResourceLocation(Splatcraft.MODID,"ink");
+		ResourceLocation isLeftProperty = new ResourceLocation(Splatcraft.MODID,"is_left");
 		
 		for(RemoteItem remote : RemoteItem.remotes)
 		{
@@ -196,9 +200,10 @@ public class SplatcraftItems
 		}
 		
 		for(InkTankItem tank : InkTankItem.inkTanks)
-		{
 			ItemModelsProperties.func_239418_a_(tank, inkProperty, (stack, world, entity) -> (InkTankItem.getInkAmount(stack) / tank.capacity));
-		}
+		
+		for(DualieItem dualie : DualieItem.dualies)
+			ItemModelsProperties.func_239418_a_(dualie, isLeftProperty, dualie.getIsLeft());
 	}
 	
 	@OnlyIn(Dist.CLIENT)
