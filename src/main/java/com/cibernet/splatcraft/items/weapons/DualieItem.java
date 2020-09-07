@@ -64,7 +64,7 @@ public class DualieItem extends WeaponBaseItem
 		this.finalRollCooldown = finalRollCooldown;
 		this.canRollFire = canRollFire;
 		
-		addStat(new WeaponStat("range", (stack, world) -> (int) (projectileSpeed*100)));
+		addStat(new WeaponStat("range", (stack, world) -> (int) ((projectileSpeed/1.2f)*100)));
 		addStat(new WeaponStat("damage", (stack, world) -> (int) ((damage/20)*100)));
 		addStat(new WeaponStat("mobility", (stack, world) -> (int) (rollSpeed*100)));
 		

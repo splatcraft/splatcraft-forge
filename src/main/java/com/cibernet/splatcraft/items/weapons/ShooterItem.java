@@ -32,7 +32,7 @@ public class ShooterItem extends WeaponBaseItem
 		
 		if(!(this instanceof BlasterItem))
 		{
-			addStat(new WeaponStat("range", (stack, world) -> (int) (projectileSpeed*100)));
+			addStat(new WeaponStat("range", (stack, world) -> (int) ((projectileSpeed/1.2f)*100)));
 			addStat(new WeaponStat("damage", (stack, world) -> (int) ((damage/20)*100)));
 			addStat(new WeaponStat("fire_rate", (stack, world) -> (int) ((11-(firingSpeed))*10)));
 		}

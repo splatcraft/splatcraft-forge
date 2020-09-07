@@ -36,7 +36,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	private static final DataParameter<Float> PROJ_SIZE = EntityDataManager.createKey(SlimeEntity.class, DataSerializers.FLOAT);
 	private static final DamageSource DAMAGE_SOURCE = new DamageSource("ink");
 	
-	public float gravityVelocity = 0.03f;
+	public float gravityVelocity = 0.075f;
 	public int lifespan = 600;
 	public boolean explodes = false;
 	public float damage = 0;

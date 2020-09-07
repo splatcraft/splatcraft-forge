@@ -48,15 +48,15 @@ public class SplatcraftItems
 	public static final IArmorMaterial ARMORED_INK_TANK = new SplatcraftArmorMaterial("armored_ink_tank", SoundEvents.ITEM_ARMOR_EQUIP_IRON, 3, 0, 0.05f);
 	
 	//Shooters
-	public static final ShooterItem splattershot = new ShooterItem("splattershot", 1.05f, 0.65f, 12f, 4, 8f, 0.9f);
+	public static final ShooterItem splattershot = new ShooterItem("splattershot", 1.05f, 0.75f, 12f, 4, 8f, 0.9f);
 	public static final ShooterItem tentatekSplattershot = new ShooterItem("tentatek_splattershot", splattershot);
 	public static final ShooterItem wasabiSplattershot = new ShooterItem("wasabi_splattershot", splattershot);
-	public static final ShooterItem splattershotJr = new ShooterItem("splattershot_jr", 1f, 0.35f, 13.5f, 4, 6.5f, 0.5f);
-	public static final ShooterItem aerosprayMG = new ShooterItem("aerospray_mg", 1.3f, 0.35f, 26f, 2, 4.8f, 0.5f);
+	public static final ShooterItem splattershotJr = new ShooterItem("splattershot_jr", 1f, 0.55f, 13.5f, 4, 6.5f, 0.5f);
+	public static final ShooterItem aerosprayMG = new ShooterItem("aerospray_mg", 1.3f, 0.45f, 26f, 2, 4.8f, 0.5f);
 	public static final ShooterItem getAerosprayRG = new ShooterItem("aerospray_rg", aerosprayMG);
-	public static final ShooterItem gal52 = new ShooterItem("52_gal", 1.2f, 0.68f, 16f, 9, 10.4f, 1.3f);
+	public static final ShooterItem gal52 = new ShooterItem("52_gal", 1.2f, 0.78f, 16f, 9, 10.4f, 1.3f);
 	public static final ShooterItem gal52Deco = new ShooterItem("52_gal_deco", gal52);
-	public static final ShooterItem gal96 = new ShooterItem("96_gal", 1.3f, 0.75f, 12.5f, 11, 12.4f, 2.5f);
+	public static final ShooterItem gal96 = new ShooterItem("96_gal", 1.3f, 0.85f, 12.5f, 11, 12.4f, 2.5f);
 	public static final ShooterItem gal96Deco = new ShooterItem("96_gal_deco", gal96);
 	
 	//Blasters
@@ -75,9 +75,9 @@ public class SplatcraftItems
 	//public static ChargerItem bamboozler14mk1 = new ChargerItem("bamboozler_14_mk1", 0, 0, 0, 4, 0, 16, 2.8f, 7, 0.8); //TODO bamboo gun
 	
 	//Dualies
-	public static final DualieItem splatDualie = new DualieItem("splat_dualies", 1f, 0.55f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
+	public static final DualieItem splatDualie = new DualieItem("splat_dualies", 1f, 0.65f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
 	public static final DualieItem enperrySplatDualie = new DualieItem("enperry_splat_dualies", splatDualie);
-	public static final DualieItem dualieSquelcher = new DualieItem("dualie_squelchers", 0.9f, 0.64f, 11.5f, 12, 4.4f, 1.2f, 1, 0.7f, 5, 6, 14);
+	public static final DualieItem dualieSquelcher = new DualieItem("dualie_squelchers", 0.9f, 0.74f, 11.5f, 12, 4.4f, 1.2f, 1, 0.7f, 5, 6, 14);
 	
 	//Sloshers
 	public static final SlosherItem slosher = new SlosherItem("slosher", 1.6f, 0.4f, 2, 8,14, 6, 7f);
