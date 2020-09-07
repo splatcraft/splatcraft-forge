@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.items;
+package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
@@ -7,14 +7,9 @@ import com.cibernet.splatcraft.util.PlayerCooldown;
 import com.cibernet.splatcraft.util.WeaponStat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
 
 public class SlosherItem extends WeaponBaseItem
 {
@@ -57,7 +52,7 @@ public class SlosherItem extends WeaponBaseItem
 		{
 			if(entity instanceof PlayerEntity && getUseDuration(stack) - timeLeft < startupTicks)
 				PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, true, false, true));
-		} else sendNoInkMessage(entity);
+		} else sendNoInkMessage(entity, null);
 	}
 	
 	@Override
@@ -81,6 +76,6 @@ public class SlosherItem extends WeaponBaseItem
 				world.playSound(null, player.getPosition(), SplatcraftSounds.slosherShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 				reduceInk(player, inkConsumption);
 			}
-		} else sendNoInkMessage(player);
+		} else sendNoInkMessage(player, null);
 	}
 }

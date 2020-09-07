@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.capabilities.playerinfo;
 
+import com.cibernet.splatcraft.util.PlayerCharge;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -22,6 +23,9 @@ public interface IPlayerInfo
 	
 	PlayerCooldown getPlayerCooldown();
 	void setPlayerCooldown(PlayerCooldown cooldown);
+	
+	PlayerCharge getPlayerCharge();
+	void setPlayerCharge(PlayerCharge charge);
 	
 	CompoundNBT writeNBT(CompoundNBT nbt);
 	void readNBT(CompoundNBT nbt);

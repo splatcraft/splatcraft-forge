@@ -2,17 +2,17 @@ package com.cibernet.splatcraft.handlers;
 
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfo;
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
-import com.cibernet.splatcraft.items.WeaponBaseItem;
+import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.util.ColorUtils;
+import com.cibernet.splatcraft.util.PlayerCharge;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -86,6 +86,8 @@ public class WeaponHandler
 			if(stack.getItem() instanceof WeaponBaseItem)
 				((WeaponBaseItem) stack.getItem()).weaponUseTick(player.world, player, stack, player.getItemInUseCount());
 		}
+		else if(PlayerCharge.canDischarge(player) || PlayerInfoCapability.isSquid(player))
+			PlayerCharge.dischargeWeapon(player);
 		
 		prevPosMap.put(player, player.getPositionVec());
 	}

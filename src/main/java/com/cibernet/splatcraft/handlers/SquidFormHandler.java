@@ -46,7 +46,7 @@ public class SquidFormHandler
 		if(event.phase == TickEvent.Phase.START)
 		{
 			if(!squidSubmergeMode.containsKey(player))
-				squidSubmergeMode.put(player, 0);
+				squidSubmergeMode.put(player, -2);
 			
 			if(InkBlockUtils.canSquidSwim(player) && PlayerInfoCapability.isSquid(player))
 				squidSubmergeMode.put(player, Math.min(2,Math.max(squidSubmergeMode.get(player)+1, 1)));

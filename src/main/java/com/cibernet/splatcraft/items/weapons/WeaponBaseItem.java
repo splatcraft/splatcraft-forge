@@ -1,7 +1,8 @@
-package com.cibernet.splatcraft.items;
+package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
@@ -20,6 +21,7 @@ import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
@@ -172,14 +174,17 @@ public class WeaponBaseItem extends Item
 		
 		InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);
 	}
-	
 	public static void sendNoInkMessage(LivingEntity entity)
+	{
+		sendNoInkMessage(entity, SplatcraftSounds.noInkMain);
+	}
+	public static void sendNoInkMessage(LivingEntity entity, SoundEvent sound)
 	{
 		if(entity instanceof PlayerEntity)
 		{
 			((PlayerEntity) entity).sendStatusMessage(new TranslationTextComponent("status.no_ink").mergeStyle(TextFormatting.RED), true);
-			if(entity.world.isRemote)
-				ClientUtils.playClientSound(entity.getPosition(), SplatcraftSounds.noInkMain, SoundCategory.PLAYERS, 0.8F,
+			if(sound != null)
+				entity.world.playSound(null, entity.getPosition(), sound, SoundCategory.PLAYERS, 0.8F,
 						((entity.world.rand.nextFloat() - entity.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 		}
 		

@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.capabilities.playerinfo;
 
 import com.cibernet.splatcraft.util.ColorUtils;
+import com.cibernet.splatcraft.util.PlayerCharge;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -16,6 +17,7 @@ public class PlayerInfo implements IPlayerInfo
 	private boolean initialized = false;
 	private NonNullList<ItemStack> matchInventory = NonNullList.create();
 	private PlayerCooldown playerCooldown = null;
+	private PlayerCharge playerCharge = null;
 	
 	@Override
 	public boolean isInitialized()
@@ -75,6 +77,18 @@ public class PlayerInfo implements IPlayerInfo
 	public void setPlayerCooldown(PlayerCooldown cooldown)
 	{
 		this.playerCooldown = cooldown;
+	}
+	
+	@Override
+	public PlayerCharge getPlayerCharge()
+	{
+		return playerCharge;
+	}
+	
+	@Override
+	public void setPlayerCharge(PlayerCharge charge)
+	{
+		playerCharge = charge;
 	}
 	
 	@Override

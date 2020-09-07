@@ -59,11 +59,6 @@ public class SplatcraftEntities
 	{
 		EntityType<T> type =  EntityType.Builder.create(supplier, classification).size(width,height).build(Splatcraft.MODID+":"+name);
 		type.setRegistryName(name);
-		
-		
-		
-		//GlobalEntityTypeAttributes.put(type, map.accept();)
-		
 		return type;
 	}
 	
@@ -91,7 +86,7 @@ public class SplatcraftEntities
 	{
 		AttributeModifierMap.MutableAttribute result = new AttributeModifierMap.MutableAttribute();
 		
-		Object obj = ObfuscationReflectionHelper.getPrivateValue(AttributeModifierMap.class, GlobalEntityTypeAttributes.getAttributesForEntity(entityType), "field_233777_d_");
+		Object obj = ObfuscationReflectionHelper.getPrivateValue(AttributeModifierMap.class, GlobalEntityTypeAttributes.getAttributesForEntity(entityType), "field_233802_a_");
 		
 		if(obj instanceof Map)
 		{

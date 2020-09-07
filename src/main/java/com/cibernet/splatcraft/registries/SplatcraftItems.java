@@ -12,6 +12,7 @@ import com.cibernet.splatcraft.items.remotes.ColorChangerItem;
 import com.cibernet.splatcraft.items.remotes.InkDisruptorItem;
 import com.cibernet.splatcraft.items.remotes.RemoteItem;
 import com.cibernet.splatcraft.items.remotes.TurfScannerItem;
+import com.cibernet.splatcraft.items.weapons.*;
 import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
@@ -21,7 +22,6 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
@@ -68,6 +68,11 @@ public class SplatcraftItems
 	//Rollers
 	
 	//Chargers
+	//public static ChargerItem splatCharger = new ChargerItem("splat_charger", 0.85f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4);
+	//public static ChargerItem bentoSplatCharger = new ChargerItem("bento_splat_charger", splatCharger);
+	//public static ChargerItem kelpSplatCharger = new ChargerItem("kelp_splat_charger", splatCharger);
+	//public static ChargerItem eLiter4K = new ChargerItem("e_liter_4k", 0.95f, 2.4f, 16, 35, 40, 36f, 2.25f, 25f, 0.15);
+	//public static ChargerItem bamboozler14mk1 = new ChargerItem("bamboozler_14_mk1", 0, 0, 0, 4, 0, 16, 2.8f, 7, 0.8); //TODO bamboo gun
 	
 	//Dualies
 	public static final DualieItem splatDualie = new DualieItem("splat_dualies", 1f, 0.55f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);

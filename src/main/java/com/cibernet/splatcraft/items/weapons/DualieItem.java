@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.items;
+package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.network.DodgeRollPacket;
@@ -15,8 +15,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -150,7 +148,7 @@ public class DualieItem extends WeaponBaseItem
 		if(rollCount >= maxRolls-1)
 			activeDualie = (getRollCooldown(mainDualie, maxRolls, rollCount) >= getRollCooldown(offhandDualie, maxRolls, rollCount))? mainDualie : offhandDualie;
 		else activeDualie = maxRolls % 2 == 1 && (offhandDualie.getItem() instanceof DualieItem) ? offhandDualie : mainDualie;
-				
+		
 		if(getInkAmount(player, activeDualie) >= getInkForRoll(activeDualie))
 		{
 			PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(getRollCooldown(activeDualie, maxRolls, rollCount), player.inventory.currentItem, false, true, false));

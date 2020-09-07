@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.items;
+package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
@@ -42,7 +42,7 @@ public class BlasterItem extends ShooterItem
 	public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft)
 	{
 		super.onPlayerStoppedUsing(stack, world, entity, timeLeft);
-		if(entity instanceof PlayerEntity)
+		if((getInkAmount(entity, stack) >= inkConsumption) && entity instanceof PlayerEntity)
 		{
 			CooldownTracker cooldownTracker = ((PlayerEntity)entity).getCooldownTracker();
 			cooldownTracker.setCooldown(this, cooldown);
@@ -52,11 +52,12 @@ public class BlasterItem extends ShooterItem
 	@Override
 	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
+		int cooldown = (getUseDuration(stack) - timeLeft < startupTicks) ? startupTicks : this.cooldown;
 		if(getInkAmount(entity, stack) > inkConsumption)
 		{
 			if(entity instanceof PlayerEntity)
-				PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown((getUseDuration(stack) - timeLeft < startupTicks) ? startupTicks : cooldown, ((PlayerEntity) entity).inventory.currentItem, true, false, true));
-		} else sendNoInkMessage(entity);
+				PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(cooldown, ((PlayerEntity) entity).inventory.currentItem, true, false, true));
+		} else if(timeLeft % (cooldown) == 0) sendNoInkMessage(entity);
 	}
 	
 	@Override
@@ -74,6 +75,6 @@ public class BlasterItem extends ShooterItem
 				reduceInk(player, inkConsumption);
 				
 			}
-		} else sendNoInkMessage(player);
+		} else sendNoInkMessage(player, null);
 	}
 }

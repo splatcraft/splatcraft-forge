@@ -1,19 +1,12 @@
-package com.cibernet.splatcraft.items;
+package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
-import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
-import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
-import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.WeaponStat;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 public class ShooterItem extends WeaponBaseItem

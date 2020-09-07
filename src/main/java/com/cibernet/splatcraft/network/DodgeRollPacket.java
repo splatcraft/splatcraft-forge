@@ -1,14 +1,10 @@
 package com.cibernet.splatcraft.network;
 
-import com.cibernet.splatcraft.items.DualieItem;
+import com.cibernet.splatcraft.items.weapons.DualieItem;
 import com.cibernet.splatcraft.network.base.PlayToServerPacket;
-import com.cibernet.splatcraft.util.ColorUtils;
-import com.cibernet.splatcraft.util.InkBlockUtils;
-import com.cibernet.splatcraft.util.InkExplosion;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
 
 import java.util.UUID;
 
