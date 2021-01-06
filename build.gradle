@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "1.16.1-2.3.0"
+version = "1.16.3-2.3.0"
 group = 'com.cibernet.splatcraft' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'splatcraft'
 
@@ -99,7 +99,7 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.16.4-35.1.4'
+    minecraft 'net.minecraftforge:forge:1.16.3-34.1.0'
     compile fg.deobf("curse.maven:obfuscate-289380:3067472")
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
