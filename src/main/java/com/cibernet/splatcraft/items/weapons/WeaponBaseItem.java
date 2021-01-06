@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
@@ -156,7 +157,7 @@ public class WeaponBaseItem extends Item
 		if(!(tank.getItem() instanceof InkTankItem))
 			return 0;
 		
-		return ((InkTankItem) tank.getItem()).capacity;
+		return InkTankItem.getInkAmount(tank, weapon);
 	}
 	
 	public static boolean hasInk(LivingEntity player, ItemStack weapon)
