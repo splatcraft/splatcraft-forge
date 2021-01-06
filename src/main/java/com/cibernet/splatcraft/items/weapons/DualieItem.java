@@ -12,10 +12,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -92,12 +94,39 @@ public class DualieItem extends WeaponBaseItem
 			return ((mainLeft && entity.getHeldItemMainhand().equals(stack)) || (!mainLeft && entity.getHeldItemOffhand().equals(stack))) ? 1 : 0;
 		};
 	}
-	
+
+	@Override
+	public String getTranslationKey(ItemStack stack)
+	{
+		if(stack.getOrCreateTag().getBoolean("IsPlural"))
+		{
+			System.out.println("plural");
+			return getDefaultTranslationKey() + ".plural";
+		}
+		return super.getTranslationKey(stack);
+	}
+
+	@Override
+	public ITextComponent getDisplayName(ItemStack stack) {
+		return super.getDisplayName(stack);
+	}
+
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
 	{
 		super.inventoryTick(stack, world, entity, itemSlot, isSelected);
-		
+
+		CompoundNBT nbt = stack.getOrCreateTag();
+
+		nbt.putBoolean("IsPlural", false);
+		if(entity instanceof LivingEntity)
+		{
+			Hand hand = ((LivingEntity) entity).getHeldItem(Hand.MAIN_HAND).equals(stack) ? Hand.MAIN_HAND : Hand.OFF_HAND;
+
+			if(((LivingEntity) entity).getHeldItem(hand).equals(stack) && ((LivingEntity) entity).getHeldItem(Hand.values()[(hand.ordinal()+1) % Hand.values().length]).getItem().equals(stack.getItem()))
+				nbt.putBoolean("IsPlural", true);
+		}
+
 		int rollCooldown = getRollCooldown(stack);
 		if(rollCooldown > 0)
 			setRollCooldown(stack, rollCooldown-1);

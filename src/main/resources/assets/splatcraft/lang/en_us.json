@@ -118,11 +118,16 @@
     "item.splatcraft.bamboozler_14_mk3": "Bamboozler 14 MK III",
     
     "item.splatcraft.splat_dualies": "Splat Dualie",
+    "item.splatcraft.splat_dualies.plural": "Splat Dualies",
     "item.splatcraft.enperry_splat_dualies": "Enperry Splat Dualie",
+    "item.splatcraft.enperry_splat_dualies.plural": "Enperry Splat Dualies",
     "item.splatcraft.Kensa_splat_dualies": "Kensa Splat Dualie",
+    "item.splatcraft.Kensa_splat_dualies.plural": "Kensa Splat Dualies",
     "item.splatcraft.dualie_squelchers": "Dualie Squelcher",
+    "item.splatcraft.dualie_squelchers.plural": "Dualie Squelchers",
     "item.splatcraft.custom_dualie_squelchers": "Custom Dualie Squelcher",
-    
+    "item.splatcraft.custom_dualie_squelchers.plural": "Custom Dualie Squelchers",
+
     "item.splatcraft.slosher": "Slosher",
     "item.splatcraft.classic_slosher": "Classic Slosher",
     "item.splatcraft.soda_slosher": "Soda Slosher",
