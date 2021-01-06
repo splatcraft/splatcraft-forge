@@ -309,7 +309,7 @@ public class InkVatContainer extends Container
 		@Override
 		public boolean isItemValid(ItemStack stack)
 		{
-			return SplatcraftTags.Items.getTag(SplatcraftTags.Items.FILTERS).contains(stack.getItem());
+			return SplatcraftTags.Items.FILTERS.contains(stack.getItem());
 		}
 		
 		@Override

@@ -12,13 +12,23 @@ import net.minecraft.util.NonNullList;
 
 public class PlayerInfo implements IPlayerInfo
 {
-	private int color = ColorUtils.getRandomStarterColor();
+	private int color;
 	private boolean isSquid = false;
 	private boolean initialized = false;
 	private NonNullList<ItemStack> matchInventory = NonNullList.create();
 	private PlayerCooldown playerCooldown = null;
 	private PlayerCharge playerCharge = null;
-	
+
+	public PlayerInfo(int defaultColor)
+	{
+		color = defaultColor;
+	}
+
+	public PlayerInfo()
+	{
+		this(ColorUtils.getRandomStarterColor());
+	}
+
 	@Override
 	public boolean isInitialized()
 	{
@@ -54,7 +64,7 @@ public class PlayerInfo implements IPlayerInfo
 	{
 		this.isSquid = isSquid;
 	}
-	
+
 	@Override
 	public NonNullList<ItemStack> getMatchInventory()
 	{

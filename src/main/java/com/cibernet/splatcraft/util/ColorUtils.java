@@ -181,8 +181,7 @@ public class ColorUtils
 	
 	public static int getRandomStarterColor()
 	{
-		
 		return SplatcraftTags.InkColors.STARTER_COLORS.getAllElements().isEmpty() ?
-				STARTER_COLORS[(int) (Math.random()*(STARTER_COLORS.length))] : SplatcraftTags.InkColors.STARTER_COLORS.getRandomElement(new Random()).getColor();
+				SplatcraftInkColors.undyed.getColor() : SplatcraftTags.InkColors.STARTER_COLORS.getRandomElement(new Random()).getColor();
 	}
 }

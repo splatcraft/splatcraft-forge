@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.capabilities.playerinfo;
 
 import com.cibernet.splatcraft.entities.InkSquidEntity;
+import com.cibernet.splatcraft.registries.SplatcraftInkColors;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -18,7 +19,7 @@ public class PlayerInfoCapability implements ICapabilitySerializable<CompoundNBT
 	@CapabilityInject(IPlayerInfo.class)
 	public static final Capability<IPlayerInfo> CAPABILITY = null;
 	private LazyOptional<IPlayerInfo> instance = LazyOptional.of(CAPABILITY::getDefaultInstance);
-	private static final IPlayerInfo DEFAULT = new PlayerInfo();
+	private static final IPlayerInfo DEFAULT = new PlayerInfo(SplatcraftInkColors.undyed.getColor());
 	
 	
 	public static void register()

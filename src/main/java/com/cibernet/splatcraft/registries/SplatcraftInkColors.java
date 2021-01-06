@@ -127,6 +127,7 @@ public class SplatcraftInkColors
 		registry.register(dyeBlack);
 		
 		registry.register(undyed);
+
 	}
 	
 	@SubscribeEvent
@@ -136,6 +137,7 @@ public class SplatcraftInkColors
 				.setName(new ResourceLocation(Splatcraft.MODID, "ink_colors"))
 				.setType(InkColor.class)
 				.set(DummyFactory.INSTANCE)
+				.tagFolder("ink_colors")
 				.create();
 	}
 	

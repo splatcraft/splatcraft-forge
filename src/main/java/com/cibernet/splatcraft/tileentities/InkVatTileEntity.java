@@ -177,7 +177,7 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
 			case 0: return ItemStack.areItemsEqual(stack, new ItemStack(Items.INK_SAC));
 			case 1: return ItemStack.areItemsEqual(stack, new ItemStack(SplatcraftItems.powerEgg));
 			case 2: return ItemStack.areItemsEqual(stack, new ItemStack(SplatcraftItems.emptyInkwell));
-			case 3: return SplatcraftTags.Items.getTag(SplatcraftTags.Items.FILTERS).contains(stack.getItem());
+			case 3: return SplatcraftTags.Items.FILTERS.contains(stack.getItem());
 		}
 		
 		return false;

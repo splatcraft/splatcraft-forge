@@ -135,7 +135,7 @@ public class SplatcraftCommonHandler
 			for(int i = 0; i < matchInv.size(); i++)
 			{
 				ItemStack stack = player.inventory.getStackInSlot(i);
-				if(SplatcraftTags.Items.getTag(SplatcraftTags.Items.MATCH_ITEMS).contains(stack.getItem()))
+				if(SplatcraftTags.Items.MATCH_ITEMS.contains(stack.getItem()))
 					matchInv.set(i, stack);
 			}
 			
