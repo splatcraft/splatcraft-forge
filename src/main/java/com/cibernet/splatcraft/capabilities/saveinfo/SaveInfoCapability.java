@@ -47,7 +47,7 @@ public class SaveInfoCapability implements ICapabilitySerializable<CompoundNBT>
 	
 	public static ISaveInfo get(MinecraftServer server) throws NullPointerException
 	{
-		return server.getWorld(World.field_234918_g_).getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find WorldData capability!"));
+		return server.getWorld(World.OVERWORLD).getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find WorldData capability!"));
 	}
 	
 }

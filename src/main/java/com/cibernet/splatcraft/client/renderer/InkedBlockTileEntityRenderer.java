@@ -97,7 +97,7 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
 			
 			TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(TEXTURE);
 			
-			BakedQuad renderedQuad = new BakedQuad(bakedquad.getVertexData(), bakedquad.getTintIndex(), bakedquad.getFace(), sprite, bakedquad.func_239287_f_());
+			BakedQuad renderedQuad = new BakedQuad(bakedquad.getVertexData(), bakedquad.getTintIndex(), bakedquad.getFace(), sprite, bakedquad.applyDiffuseLighting());
 			
 			renderedQuad = bakedquad;
 			

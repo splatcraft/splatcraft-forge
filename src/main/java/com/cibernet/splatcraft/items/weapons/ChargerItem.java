@@ -88,7 +88,6 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 		if(entity instanceof PlayerEntity && getInkAmount(entity, stack) >= getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack)))
 		{
 			if(world.isRemote) PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed);
-			System.out.println(PlayerCharge.getChargeValue((PlayerEntity) entity, stack));
 		}
 		else sendNoInkMessage(entity, null);
 	}

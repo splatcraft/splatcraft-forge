@@ -28,6 +28,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -137,7 +138,7 @@ public class CrateBlock extends Block implements IColoredBlock
 		
 		LootContext.Builder contextBuilder = new LootContext.Builder((ServerWorld) world);
 		List<ItemStack> loot = world.getServer().getLootTableManager().getLootTableFromLocation(STORAGE_SUNKEN_CRATE).generate(contextBuilder.withLuck(luckValue)
-				.withParameter(LootParameters.BLOCK_STATE, state).withParameter(LootParameters.TOOL, ItemStack.EMPTY).withParameter(LootParameters.POSITION, pos).build(LootParameterSets.BLOCK));
+				.withParameter(LootParameters.BLOCK_STATE, state).withParameter(LootParameters.TOOL, ItemStack.EMPTY).withParameter(LootParameters.field_237457_g_, new Vector3d(pos.getX(), pos.getY(), pos.getZ())).build(LootParameterSets.BLOCK));
 		
 		return loot;
 	}

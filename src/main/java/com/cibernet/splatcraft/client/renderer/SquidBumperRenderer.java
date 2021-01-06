@@ -117,7 +117,7 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
 		Minecraft minecraft = Minecraft.getInstance();
 		boolean flag = this.isVisible(entityIn);
 		boolean flag1 = !flag && !entityIn.isInvisibleToPlayer(minecraft.player);
-		boolean flag2 = minecraft.func_238206_b_(entityIn);
+		boolean flag2 = minecraft.isEntityGlowing(entityIn);
 		RenderType rendertype = this.func_230496_a_(entityIn, flag, flag1, flag2);
 		if (rendertype != null) {
 			IVertexBuilder ivertexbuilder = bufferIn.getBuffer(rendertype);
@@ -141,7 +141,7 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
 		}
 		
 		matrixStackIn.pop();
-		net.minecraftforge.client.event.RenderNameplateEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameplateEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn);
+		net.minecraftforge.client.event.RenderNameplateEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameplateEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
 		net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
 		if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.canRenderName(entityIn))) {
 			this.renderName(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);

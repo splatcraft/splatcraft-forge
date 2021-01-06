@@ -28,6 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -89,7 +90,7 @@ public class SquidBumperItem extends Item
 		BlockPos pos = new BlockItemUseContext(context).getPos();
 		ItemStack stack = context.getItem();
 		
-		SquidBumperEntity bumper = SplatcraftEntities.SQUID_BUMPER.create(world, stack.getTag(), (ITextComponent)null, context.getPlayer(), pos, SpawnReason.SPAWN_EGG, true, true);
+		SquidBumperEntity bumper = SplatcraftEntities.SQUID_BUMPER.create((ServerWorld) world, stack.getTag(), (ITextComponent)null, context.getPlayer(), pos, SpawnReason.SPAWN_EGG, true, true);
 		bumper.setColor(ColorUtils.getInkColor(stack));
 		
 		if(world.hasNoCollisions(bumper) && world.getEntitiesWithinAABBExcludingEntity(bumper, bumper.getBoundingBox()).isEmpty())

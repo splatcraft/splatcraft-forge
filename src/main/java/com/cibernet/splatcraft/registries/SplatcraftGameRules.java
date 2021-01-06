@@ -36,6 +36,7 @@ public class SplatcraftGameRules
 		WATER_DAMAGE = createBooleanRule("waterDamage", Category.PLAYER, false);
 		REQUIRE_INK_TANK = createBooleanRule("requireInkTank", Category.PLAYER, true);
 		INK_MOB_DAMAGE = createBooleanRule("inkMobDamage", Category.MOBS, false);
+		INK_FRIENDLY_FIRE = createBooleanRule("inkFriendlyFire", Category.PLAYER, false);
 	}
 	
 	public static GameRules.RuleKey<GameRules.BooleanValue> createBooleanRule(String name, GameRules.Category category, boolean defaultValue)
@@ -46,7 +47,7 @@ public class SplatcraftGameRules
 				try
 				{
 					Object booleanValue = booleanValueCreate.invoke(GameRules.BooleanValue.class, defaultValue);
-					GameRules.RuleKey<GameRules.BooleanValue> ruleKey = GameRules.func_234903_a_(Splatcraft.MODID + "." + name, category, (GameRules.RuleType<GameRules.BooleanValue>) booleanValue);
+					GameRules.RuleKey<GameRules.BooleanValue> ruleKey = GameRules.register(Splatcraft.MODID + "." + name, category, (GameRules.RuleType<GameRules.BooleanValue>) booleanValue);
 					ruleList.add(ruleKey);
 					booleanRules.put(getRuleIndex(ruleKey), defaultValue);
 					return ruleKey;

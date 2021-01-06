@@ -54,15 +54,15 @@ public class InkVatScreen extends ContainerScreen<InkVatContainer>
 	{
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		func_230459_a_(matrixStack, mouseX, mouseY);
+		renderHoveredTooltip(matrixStack, mouseX, mouseY);
 	}
 	
 	@Override
-	protected void func_230459_a_(MatrixStack matrixStack, int mouseX, int mouseY)
+	protected void renderHoveredTooltip(MatrixStack matrixStack, int mouseX, int mouseY)
 	{
 		List<Integer> colorSelection = container.sortRecipeList();
 		
-		super.func_230459_a_(matrixStack, mouseX, mouseY);
+		super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
 		int sc = (int) Math.ceil(Math.max(0, (colorSelection.size()-16) * scroll));
 		sc += sc%2;
 		

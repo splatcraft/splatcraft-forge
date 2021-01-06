@@ -62,7 +62,7 @@ public class SplatcraftPacketHandler
 	
 	public static <MSG> void sendToDim(MSG message, World world)
 	{
-		sendToDim(message, world.func_234923_W_());
+		sendToDim(message, world.getDimensionKey());
 	}
 	
 	public static <MSG> void sendToAll(MSG message)

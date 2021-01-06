@@ -8,6 +8,7 @@ import com.cibernet.splatcraft.handlers.ScoreboardHandler;
 import com.cibernet.splatcraft.network.PlayerColorPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
+import com.cibernet.splatcraft.registries.SplatcraftInkColors;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
@@ -130,7 +131,7 @@ public class ColorUtils
 	{
 		if(color == ColorUtils.DEFAULT)
 			return new StringTextComponent( (colorless ? TextFormatting.GRAY : "") + getColorName(color));
-		return new StringTextComponent(getColorName(color)).setStyle(Style.EMPTY.setColor(Color.func_240743_a_(color)));
+		return new StringTextComponent(getColorName(color)).setStyle(Style.EMPTY.setColor(Color.fromInt(color)));
 	}
 	
 	public static boolean colorEquals(LivingEntity entity, TileEntity te)

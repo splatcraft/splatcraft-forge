@@ -71,7 +71,7 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
 		if(activeTime <= 0 || !(block instanceof StageBarrierBlock))
 			return;
 		
-		ResourceLocation textureLoc = new ResourceLocation(Splatcraft.MODID, "blocks/" + block.getRegistryName().getPath() + (Minecraft.getInstance().gameSettings.field_238330_f_.func_238162_a_() > 0 ? "_fancy" : ""));
+		ResourceLocation textureLoc = new ResourceLocation(Splatcraft.MODID, "blocks/" + block.getRegistryName().getPath() + (Minecraft.getInstance().gameSettings.graphicFanciness.func_238162_a_() > 0 ? "_fancy" : ""));
 		
 		TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(textureLoc);
 		IVertexBuilder builder = buffer.getBuffer(BARRIER_RENDER);

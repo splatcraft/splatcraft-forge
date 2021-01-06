@@ -41,7 +41,7 @@ public class SplatcraftItems
 	public static final ArrayList<Item> inkColoredItems = new ArrayList<>();
 	
 	//Attributes
-	public static final Attribute INK_SWIM_SPEED = createAttribute("ink_swim_speed", (new RangedAttribute("attribute.splatcraft.ink_swim_speed", (double)0.7F, 0.0D, 1024.0D)).func_233753_a_(true));
+	public static final Attribute INK_SWIM_SPEED = createAttribute("ink_swim_speed", (new RangedAttribute("attribute.splatcraft.ink_swim_speed", (double)0.7F, 0.0D, 1024.0D)).setShouldWatch(true));
 	
 	//Armor Materials
 	public static final IArmorMaterial INK_CLOTH = new SplatcraftArmorMaterial("ink_cloth", SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0, 0, 0);
@@ -200,15 +200,15 @@ public class SplatcraftItems
 		
 		for(RemoteItem remote : RemoteItem.remotes)
 		{
-			ItemModelsProperties.func_239418_a_(remote, activeProperty, remote.getActiveProperty());
-			ItemModelsProperties.func_239418_a_(remote, modeProperty, remote.getModeProperty());
+			ItemModelsProperties.registerProperty(remote, activeProperty, remote.getActiveProperty());
+			ItemModelsProperties.registerProperty(remote, modeProperty, remote.getModeProperty());
 		}
 		
 		for(InkTankItem tank : InkTankItem.inkTanks)
-			ItemModelsProperties.func_239418_a_(tank, inkProperty, (stack, world, entity) -> (InkTankItem.getInkAmount(stack) / tank.capacity));
+			ItemModelsProperties.registerProperty(tank, inkProperty, (stack, world, entity) -> (InkTankItem.getInkAmount(stack) / tank.capacity));
 		
 		for(DualieItem dualie : DualieItem.dualies)
-			ItemModelsProperties.func_239418_a_(dualie, isLeftProperty, dualie.getIsLeft());
+			ItemModelsProperties.registerProperty(dualie, isLeftProperty, dualie.getIsLeft());
 	}
 	
 	@OnlyIn(Dist.CLIENT)
