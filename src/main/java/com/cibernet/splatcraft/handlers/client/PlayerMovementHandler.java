@@ -97,7 +97,7 @@ public class PlayerMovementHandler
 		input.moveStrafe *= speedMod;
 		//input = player.movementInput;
 
-		if(InkBlockUtils.canSquidClimb(player) && !player.abilities.isFlying)
+		if(PlayerInfoCapability.isSquid(player) && InkBlockUtils.canSquidClimb(player) && !player.abilities.isFlying)
 		{
 			double xOff = Math.signum(player.getHorizontalFacing().getXOffset() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
 			double zOff = Math.signum(player.getHorizontalFacing().getZOffset() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
