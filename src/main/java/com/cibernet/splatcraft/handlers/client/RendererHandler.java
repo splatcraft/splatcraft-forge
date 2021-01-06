@@ -2,11 +2,13 @@ package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.client.renderer.InkSquidRenderer;
+import com.cibernet.splatcraft.client.renderer.PlayerSquidRenderer;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import com.google.common.collect.Maps;
+import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
@@ -29,25 +31,23 @@ import java.util.TreeMap;
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class RendererHandler
 {
-	public static boolean wasInvisible;
-	
+
 	public static final ArrayList<ResourceLocation> textures = new ArrayList<>();
 	
-	private static InkSquidRenderer squidRenderer = null;
+	private static PlayerSquidRenderer squidRenderer = null;
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public static void playerRender(RenderPlayerEvent.Pre event)
+	public static void playerRender(RenderPlayerEvent event)
 	{
 		PlayerEntity player = event.getPlayer();
-		
-		wasInvisible = player.isInvisible();
 		
 		if(PlayerInfoCapability.isSquid(player))
 		{
 			event.setCanceled(true);
 			if(squidRenderer == null)
-				squidRenderer = new InkSquidRenderer(event.getRenderer().getRenderManager());
+				squidRenderer = new PlayerSquidRenderer(event.getRenderer().getRenderManager());
 			if(!InkBlockUtils.canSquidHide(player))
 			{
+
 				//squidRenderer.getRenderManager().setRenderShadow(true);
 				squidRenderer.render(player, player.rotationYawHead, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
 			}
@@ -55,7 +55,7 @@ public class RendererHandler
 		}
 		//else event.getRenderer().getRenderManager().setRenderShadow(true);
 	}
-	
+
 	@SubscribeEvent
 	public static void onRenderTick(TickEvent.RenderTickEvent event)
 	{
@@ -67,7 +67,6 @@ public class RendererHandler
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void playerRenderPost(RenderPlayerEvent.Post event)
 	{
-		event.getPlayer().setInvisible(wasInvisible);
 	}
 	
 	private static float tickTime = 0;
@@ -117,7 +116,7 @@ public class RendererHandler
 				String key = msgChildren.getString();
 				
 				if(players.containsKey(key))
-					msgChildren.setStyle(Style.EMPTY.setColor(Color.func_240743_a_(ColorUtils.getPlayerColor(players.get(key)))));
+					msgChildren.setStyle(Style.EMPTY.setColor(Color.fromInt(ColorUtils.getPlayerColor(players.get(key)))));
 			}
 		}
 	}
@@ -129,7 +128,7 @@ public class RendererHandler
 		{
 			int color = ColorUtils.getEntityColor((LivingEntity) event.getEntity());
 			if(color != -1)
-				event.setContent(((TextComponent)event.getContent()).setStyle(Style.EMPTY.setColor(Color.func_240743_a_(color))));
+				event.setContent(((TextComponent)event.getContent()).setStyle(Style.EMPTY.setColor(Color.fromInt(color))));
 		}
 	}
 	
