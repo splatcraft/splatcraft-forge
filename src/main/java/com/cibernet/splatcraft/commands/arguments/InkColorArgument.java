@@ -3,12 +3,14 @@ package com.cibernet.splatcraft.commands.arguments;
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.registries.SplatcraftInkColors;
 import com.cibernet.splatcraft.util.InkColor;
+import com.cibernet.splatcraft.util.SplatcraftResourceLocation;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
@@ -17,13 +19,13 @@ import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.IArgumentSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.ResourceLocationException;
 import net.minecraft.util.text.TranslationTextComponent;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class InkColorArgument implements ArgumentType<Integer>
 {
@@ -80,11 +82,10 @@ public class InkColorArgument implements ArgumentType<Integer>
 				return parseHex(reader.readString().toLowerCase(), reader);
 				
 			reader.setCursor(start);
-			ResourceLocation resourceLocation = ResourceLocation.read(reader);
-			
-			if(resourceLocation.getNamespace().equals("minecraft"))
-				resourceLocation = new ResourceLocation(Splatcraft.MODID, resourceLocation.getPath());
-			
+			ResourceLocation resourceLocation = SplatcraftResourceLocation.read(reader);
+
+			System.out.println(resourceLocation);
+
 			InkColor color = SplatcraftInkColors.REGISTRY.getValue(resourceLocation);
 			
 			if(color == null)
@@ -111,9 +112,37 @@ public class InkColorArgument implements ArgumentType<Integer>
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
 	{
-		return ISuggestionProvider.suggestIterable(SplatcraftInkColors.REGISTRY.getKeys(), builder);
+		return suggestIterable(SplatcraftInkColors.REGISTRY.getKeys(), builder);
 	}
-	
+
+
+	static CompletableFuture<Suggestions> suggestIterable(Iterable<ResourceLocation> p_197014_0_, SuggestionsBuilder builder) {
+		String s = builder.getRemaining().toLowerCase(Locale.ROOT);
+		func_210512_a(p_197014_0_, s, (p_210517_0_) -> {
+			return p_210517_0_;
+		}, (p_210513_1_) -> {
+			builder.suggest(p_210513_1_.toString());
+		});
+		return builder.buildFuture();
+	}
+
+	static <T> void func_210512_a(Iterable<T> p_210512_0_, String p_210512_1_, Function<T, ResourceLocation> p_210512_2_, Consumer<T> p_210512_3_) {
+		boolean flag = p_210512_1_.indexOf(58) > -1;
+
+		for(T t : p_210512_0_) {
+			ResourceLocation resourcelocation = p_210512_2_.apply(t);
+			if (flag) {
+				String s = resourcelocation.toString();
+				if (ISuggestionProvider.func_237256_a_(p_210512_1_, s)) {
+					p_210512_3_.accept(t);
+				}
+			} else if (ISuggestionProvider.func_237256_a_(p_210512_1_, resourcelocation.getNamespace()) || resourcelocation.getNamespace().equals(Splatcraft.MODID) && ISuggestionProvider.func_237256_a_(p_210512_1_, resourcelocation.getPath())) {
+				p_210512_3_.accept(t);
+			}
+		}
+
+	}
+
 	@Override
 	public Collection<String> getExamples()
 	{
