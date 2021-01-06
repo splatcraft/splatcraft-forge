@@ -36,7 +36,7 @@ public class SlosherItem extends WeaponBaseItem
 		this.inkConsumption = inkConsumption;
 		
 		
-		addStat(new WeaponStat("range", (stack, world) -> (int) (projectileSpeed*100)));
+		addStat(new WeaponStat("range", (stack, world) -> (int) ((projectileSpeed/1.2f)*100)));
 		addStat(new WeaponStat("damage", (stack, world) -> (int) ((damage/20)*100)));
 		addStat(new WeaponStat("handling", (stack, world) -> (11-startupTicks)*10));
 	}

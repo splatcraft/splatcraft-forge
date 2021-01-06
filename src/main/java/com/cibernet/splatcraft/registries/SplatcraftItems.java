@@ -80,10 +80,10 @@ public class SplatcraftItems
 	public static final DualieItem dualieSquelcher = new DualieItem("dualie_squelchers", 0.9f, 0.74f, 11.5f, 12, 4.4f, 1.2f, 1, 0.7f, 5, 6, 14);
 	
 	//Sloshers
-	public static final SlosherItem slosher = new SlosherItem("slosher", 1.6f, 0.4f, 2, 8,14, 6, 7f);
+	public static final SlosherItem slosher = new SlosherItem("slosher", 1.6f, 0.48f, 2, 8,14, 3, 7f);
 	public static final SlosherItem classicSlosher = new SlosherItem("classic_slosher", slosher);
 	public static final SlosherItem sodaSlosher = new SlosherItem("soda_slosher", slosher);
-	public static final SlosherItem triSlosher = new SlosherItem("tri_slosher", 1.65f, 0.37f, 3, 20,12.4f, 8, 6f);
+	public static final SlosherItem triSlosher = new SlosherItem("tri_slosher", 1.65f, 0.444f, 3, 20,12.4f, 4, 6f);
 	
 	
 	//Ink Tanks
