@@ -83,9 +83,6 @@ public class InkColorArgument implements ArgumentType<Integer>
 				
 			reader.setCursor(start);
 			ResourceLocation resourceLocation = SplatcraftResourceLocation.read(reader);
-
-			System.out.println(resourceLocation);
-
 			InkColor color = SplatcraftInkColors.REGISTRY.getValue(resourceLocation);
 			
 			if(color == null)

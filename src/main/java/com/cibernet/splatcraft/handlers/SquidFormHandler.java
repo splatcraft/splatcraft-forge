@@ -49,12 +49,11 @@ public class SquidFormHandler
 		{
 			if(!squidSubmergeMode.containsKey(player))
 				squidSubmergeMode.put(player, -2);
-			
-			if(InkBlockUtils.canSquidSwim(player) && info.isSquid())
-			{
-				squidSubmergeMode.put(player, Math.min(2,Math.max(squidSubmergeMode.get(player)+1, 1)));
+
+			if(info.isSquid() && InkBlockUtils.canSquidHide(player))
 				player.setInvisible(true);
-			}
+			if(InkBlockUtils.canSquidSwim(player) && info.isSquid())
+				squidSubmergeMode.put(player, Math.min(2,Math.max(squidSubmergeMode.get(player)+1, 1)));
 			else squidSubmergeMode.put(player, Math.max(-2,Math.min(squidSubmergeMode.get(player)-1, -1)));
 			
 			if(squidSubmergeMode.get(player) == 1)

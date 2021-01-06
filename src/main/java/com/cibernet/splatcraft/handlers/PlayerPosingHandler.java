@@ -70,8 +70,6 @@ public class PlayerPosingHandler
 
                     float angle = useTime/animTime;
 
-                    System.out.println("use time: " + useTime + " anim time: " + animTime + " angle: " + angle);
-
                     if(angle < 6.5f)
                         mainHand.rotateAngleX = MathHelper.cos(angle * 0.6662F);
                     break;
