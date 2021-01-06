@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
+import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCharge;
@@ -111,5 +112,10 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 	public float getInkConsumption(float charge)
 	{
 		return minConsumption + (maxConsumption-minConsumption)*charge;
+	}
+
+	@Override
+	public PlayerPosingHandler.WeaponPose getPose() {
+		return PlayerPosingHandler.WeaponPose.BOW_CHARGE;
 	}
 }

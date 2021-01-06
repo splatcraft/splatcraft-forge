@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
+import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
 import com.cibernet.splatcraft.network.DodgeRollPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
@@ -225,5 +226,10 @@ public class DualieItem extends WeaponBaseItem
 	{
 		stack.getOrCreateTag().putInt("RollCooldown", rollCooldown);
 		return stack;
+	}
+
+	@Override
+	public PlayerPosingHandler.WeaponPose getPose() {
+		return PlayerPosingHandler.WeaponPose.DUAL_FIRE;
 	}
 }

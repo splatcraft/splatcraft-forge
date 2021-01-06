@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
+import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
@@ -77,5 +78,10 @@ public class SlosherItem extends WeaponBaseItem
 				reduceInk(player, inkConsumption);
 			}
 		} else sendNoInkMessage(player, null);
+	}
+
+	@Override
+	public PlayerPosingHandler.WeaponPose getPose() {
+		return PlayerPosingHandler.WeaponPose.BUCKET_SWING;
 	}
 }

@@ -189,4 +189,9 @@ public class WeaponBaseItem extends Item
 		}
 		
 	}
+
+	public PlayerPosingHandler.WeaponPose getPose()
+	{
+		return PlayerPosingHandler.WeaponPose.NONE;
+	}
 }

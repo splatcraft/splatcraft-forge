@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
+import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.WeaponStat;
@@ -58,5 +59,10 @@ public class ShooterItem extends WeaponBaseItem
 			}
 			else sendNoInkMessage(entity);
 		}
+	}
+
+	@Override
+	public PlayerPosingHandler.WeaponPose getPose() {
+		return PlayerPosingHandler.WeaponPose.FIRE;
 	}
 }
