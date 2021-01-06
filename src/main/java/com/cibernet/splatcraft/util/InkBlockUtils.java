@@ -136,13 +136,13 @@ public class InkBlockUtils
 	
 	public static boolean canSquidHide(LivingEntity entity)
 	{
-		return canSquidSwim(entity) || canSquidClimb(entity);
+		return (entity.isOnGround() && canSquidSwim(entity)) || canSquidClimb(entity);
 	}
 	
 	public static boolean canSquidSwim(LivingEntity entity)
 	{
 		boolean canSwim = false;
-		
+
 		if(entity.world.getBlockState(entity.getPosition().down()).getBlock() instanceof IColoredBlock)
 			canSwim = ((IColoredBlock) entity.world.getBlockState(entity.getPosition().down()).getBlock()).canSwim();
 		
