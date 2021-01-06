@@ -5,16 +5,20 @@ import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -25,12 +29,16 @@ public class PlayerMovementHandler
 	private static final AttributeModifier INK_SWIM_SPEED = (new AttributeModifier( "Ink swimming speed boost", 0D, AttributeModifier.Operation.ADDITION));
 	private static final AttributeModifier SQUID_SWIM_SPEED = (new AttributeModifier( "Squid swim speed boost", 0.3D, AttributeModifier.Operation.MULTIPLY_TOTAL));
 	private static final AttributeModifier ENEMY_INK_SPEED = (new AttributeModifier( "Enemy ink speed penalty", -0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL));
-	
+
+	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
-	public static void playerMovement(PlayerSPPushOutOfBlocksEvent event)
+	public static void playerMovement(TickEvent.PlayerTickEvent event)
 	{
-		ClientPlayerEntity player = (ClientPlayerEntity) event.getPlayer();
-		MovementInput input = player.movementInput;
+		if(!(event.player instanceof ClientPlayerEntity) || event.phase != TickEvent.Phase.END)
+			return;
+
+		ClientPlayerEntity player = (ClientPlayerEntity) event.player;
+		//MovementInput input = player.movementInput;
 		ModifiableAttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
 		ModifiableAttributeInstance swimAttribute = player.getAttribute(ForgeMod.SWIM_SPEED.get());
 		
@@ -55,59 +63,11 @@ public class PlayerMovementHandler
 				speedAttribute.applyNonPersistentModifier(INK_SWIM_SPEED);
 			if(!swimAttribute.hasModifier(SQUID_SWIM_SPEED))
 				swimAttribute.applyNonPersistentModifier(SQUID_SWIM_SPEED);
-			
-			float speedMod = InkBlockUtils.canSquidHide(player) ? 20f : 2f;
-			
-			input.moveForward *= speedMod;
-			input = player.movementInput;
-			input.moveStrafe *= speedMod;
-			input = player.movementInput;
-			
-			if(InkBlockUtils.canSquidClimb(player) && !player.abilities.isFlying)
-			{
-				double xOff = Math.signum(player.getHorizontalFacing().getXOffset() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
-				double zOff = Math.signum(player.getHorizontalFacing().getZOffset() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
-				
-				//if((player.isOnGround() && player.world.getCollisionShapes(player, player.getBoundingBox().offset(xOff, (double)(player.stepHeight), zOff)).toArray().length == 0) || !player.isOnGround())
-				{
-					if(player.getMotion().getY() < (input.jump ? 0.46f : 0.4f))
-						player.moveRelative(0.055f * (input.jump ? 1.9f : 1.7f), new Vector3d(0.0f, player.moveForward, 0.0f));
-					if(player.getMotion().getY() <= 0 && !player.isSneaking())
-						player.moveRelative(0.035f, new Vector3d(0.0f,1f, 0.0f));
-					
-					if(player.isSneaking())
-						player.setMotion(player.getMotion().x, Math.max(0,player.getMotion().getY()), player.getMotion().z);
-				}
-			}
-		}
-		
-		if (player.isHandActive())
-		{
-			ItemStack stack = player.getActiveItemStack();
-			if (!stack.isEmpty())
-			{
-				if (stack.getItem() instanceof WeaponBaseItem)
-				{
-					input.moveStrafe *= 5.0F;
-					input = player.movementInput;
-					input.moveForward *= 5.0F;
-					input = player.movementInput;
-				}
-			}
 		}
 		
 		if(PlayerCooldown.hasPlayerCooldown(player))
 		{
 			PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
-			if(!cooldown.canMove())
-			{
-				input.moveForward = 0;
-				input.moveStrafe = 0;
-				input.jump = false;
-			}
-			if(cooldown.forceCrouch() && cooldown.getTime() > 1)
-				input.sneaking = !player.abilities.isFlying;
-			
 			player.inventory.currentItem = cooldown.getSlotIndex();
 		}
 		
@@ -121,5 +81,67 @@ public class PlayerMovementHandler
 			
 		}
 		
+	}
+
+	@SubscribeEvent
+	public static void onInputUpdate(InputUpdateEvent event)
+	{
+
+		MovementInput input = event.getMovementInput();
+		PlayerEntity player = event.getPlayer();
+
+		float speedMod = InkBlockUtils.canSquidHide(player) ? 20f : 2f;
+
+		input.moveForward *= speedMod;
+		//input = player.movementInput;
+		input.moveStrafe *= speedMod;
+		//input = player.movementInput;
+
+		if(InkBlockUtils.canSquidClimb(player) && !player.abilities.isFlying)
+		{
+			double xOff = Math.signum(player.getHorizontalFacing().getXOffset() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
+			double zOff = Math.signum(player.getHorizontalFacing().getZOffset() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
+
+			//if((player.isOnGround() && player.world.getCollisionShapes(player, player.getBoundingBox().offset(xOff, (double)(player.stepHeight), zOff)).toArray().length == 0) || !player.isOnGround())
+			{
+				if(player.getMotion().getY() < (input.jump ? 0.46f : 0.4f))
+					player.moveRelative(0.055f * (input.jump ? 1.9f : 1.7f), new Vector3d(0.0f, player.moveForward, 0.0f));
+				if(player.getMotion().getY() <= 0 && !player.isSneaking())
+					player.moveRelative(0.035f, new Vector3d(0.0f,1f, 0.0f));
+
+				if(player.isSneaking())
+					player.setMotion(player.getMotion().x, Math.max(0,player.getMotion().getY()), player.getMotion().z);
+			}
+		}
+
+
+		if (player.isHandActive())
+		{
+			ItemStack stack = player.getActiveItemStack();
+			if (!stack.isEmpty())
+			{
+				if (stack.getItem() instanceof WeaponBaseItem)
+				{
+					input.moveStrafe *= 5.0F;
+					//input = player.movementInput;
+					input.moveForward *= 5.0F;
+					//input = player.movementInput;
+				}
+			}
+		}
+
+		if(PlayerCooldown.hasPlayerCooldown(player))
+		{
+			PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
+			if (!cooldown.canMove()) {
+				input.moveForward = 0;
+				input.moveStrafe = 0;
+				input.jump = false;
+			}
+			if (cooldown.forceCrouch() && cooldown.getTime() > 1)
+				input.sneaking = !player.abilities.isFlying;
+
+		}
+
 	}
 }
