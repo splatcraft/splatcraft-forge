@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
+import com.cibernet.splatcraft.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
@@ -41,15 +42,19 @@ public class SquidFormHandler
 		
 		if(player.world.getGameRules().getBoolean(SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.ticksExisted %10 == 0)
 			player.attackEntityFrom(InkDamageUtils.WATER, 8f);
-		
-		
+
+
+		IPlayerInfo info = PlayerInfoCapability.get(player);
 		if(event.phase == TickEvent.Phase.START)
 		{
 			if(!squidSubmergeMode.containsKey(player))
 				squidSubmergeMode.put(player, -2);
 			
-			if(InkBlockUtils.canSquidSwim(player) && PlayerInfoCapability.isSquid(player))
+			if(InkBlockUtils.canSquidSwim(player) && info.isSquid())
+			{
 				squidSubmergeMode.put(player, Math.min(2,Math.max(squidSubmergeMode.get(player)+1, 1)));
+				player.setInvisible(true);
+			}
 			else squidSubmergeMode.put(player, Math.max(-2,Math.min(squidSubmergeMode.get(player)-1, -1)));
 			
 			if(squidSubmergeMode.get(player) == 1)
@@ -57,7 +62,9 @@ public class SquidFormHandler
 			else if(squidSubmergeMode.get(player) == -1)
 				player.world.playSound(null, player.getPosition(), SplatcraftSounds.inkSurface, SoundCategory.PLAYERS, 0.75F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 		}
-		
+		else if(!(InkBlockUtils.canSquidSwim(player) && info.isSquid()))
+			player.setInvisible(shouldBeInvisible(player));
+
 		if(PlayerInfoCapability.isSquid(player))
 		{
 			player.setPose(Pose.FALL_FLYING);
@@ -81,7 +88,10 @@ public class SquidFormHandler
 		}
 	}
 	
-	
+	protected static boolean shouldBeInvisible(PlayerEntity playerEntity)
+	{
+		return playerEntity.isPotionActive(Effects.INVISIBILITY);
+	}
 	
 	
 	@SubscribeEvent
