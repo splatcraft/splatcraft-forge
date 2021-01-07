@@ -39,21 +39,9 @@ public class BlasterItem extends ShooterItem
 	}
 	
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft)
-	{
-		super.onPlayerStoppedUsing(stack, world, entity, timeLeft);
-		if((getInkAmount(entity, stack) >= inkConsumption) && entity instanceof PlayerEntity)
-		{
-			CooldownTracker cooldownTracker = ((PlayerEntity)entity).getCooldownTracker();
-			cooldownTracker.setCooldown(this, cooldown);
-		}
-	}
-	
-	@Override
 	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
 		CooldownTracker cooldownTracker = ((PlayerEntity)entity).getCooldownTracker();
-		//int cooldown = (getUseDuration(stack) - timeLeft < startupTicks) ? startupTicks : this.cooldown;
 		if(getInkAmount(entity, stack) > inkConsumption && !cooldownTracker.hasCooldown(this))
 		{
 			if(entity instanceof PlayerEntity)
