@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.entities;
 
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
+import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
@@ -96,10 +97,10 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 	}
 	
 	@Override
-	public boolean onEntityInked(InkDamageUtils.InkDamageSource source, float damage)
+	public boolean onEntityInked(InkDamageUtils.InkDamageSource source, float damage, int color)
 	{
 		
-		if(!inkproof)
+		if(!inkproof && (getColor() != color || SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_FRIENDLY_FIRE)))
 		{
 			ink(damage);
 			if(getInkHealth() <= 0)
@@ -113,7 +114,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 	 */
 	public boolean attackEntityFrom(DamageSource source, float amount)
 	{
-		if(!this.world.isRemote && !this.removed)
+		if(!this.world.isRemote && !this.isAlive())
 		{
 			if(DamageSource.OUT_OF_WORLD.equals(source))
 			{

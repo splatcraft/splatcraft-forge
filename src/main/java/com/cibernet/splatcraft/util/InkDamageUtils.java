@@ -47,7 +47,7 @@ public class InkDamageUtils
 		InkDamageSource damageSource = new InkDamageSource(name, source, source, sourceItem);
 		
 		if(target instanceof IColoredEntity)
-			doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage);
+			doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
 			
 		if(doDamage)
 			target.attackEntityFrom(damageSource, damage);
