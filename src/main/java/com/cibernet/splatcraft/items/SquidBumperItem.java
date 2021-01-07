@@ -83,7 +83,7 @@ public class SquidBumperItem extends Item
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context)
 	{
-		if(context.getFace() == Direction.DOWN)
+		if(context.getFace() == Direction.DOWN || context.getWorld().isRemote)
 			return ActionResultType.FAIL;
 		
 		World world = context.getWorld();
@@ -98,7 +98,7 @@ public class SquidBumperItem extends Item
 			if(!world.isRemote)
 			{
 				float f = (float) MathHelper.floor((MathHelper.wrapDegrees(context.getPlacementYaw() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
-				bumper.setPosition(bumper.getPosX()+0.5, bumper.getPosY(), bumper.getPosZ()+0.5);
+				bumper.setPosition(bumper.getPosX(), bumper.getPosY(), bumper.getPosZ());
 				bumper.setRotationYawHead(f);
 				
 				world.addEntity(bumper);

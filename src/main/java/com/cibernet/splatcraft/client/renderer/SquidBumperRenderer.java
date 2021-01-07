@@ -165,14 +165,16 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
 	@Override
 	protected void applyRotations(SquidBumperEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks)
 	{
-		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - rotationYaw));
+		//matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - rotationYaw));
 		float punchTime = (float)(entityLiving.world.getGameTime() - entityLiving.punchCooldown) + partialTicks;
 		float hurtTime = (float)(entityLiving.world.getGameTime() - entityLiving.hurtCooldown) + partialTicks;
-		
+
+
 		if (punchTime < 5.0F)
 			matrixStackIn.rotate(Vector3f.YP.rotationDegrees(MathHelper.sin(punchTime / 1.5F * (float)Math.PI) * 3.0F));
 		if (hurtTime < 5.0F)
 			matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(MathHelper.sin(hurtTime / 1.5F * (float)Math.PI) * 3.0F));
+
 	}
 	
 	@Override

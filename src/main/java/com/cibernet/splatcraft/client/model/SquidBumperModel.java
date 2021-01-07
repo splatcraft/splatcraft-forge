@@ -57,7 +57,7 @@ public class SquidBumperModel extends EntityModel<SquidBumperEntity>
 	{
 		super.setLivingAnimations(entityIn, limbSwing, limbSwingAmount, partialTick);
 		
-		Bumper.rotateAngleY = ((float)Math.PI / 180F) * MathHelper.interpolateAngle(partialTick, entityIn.prevRotationYaw, entityIn.rotationYaw);
+		Bumper.rotateAngleY = ((float)Math.PI / 180F) * MathHelper.interpolateAngle(partialTick, entityIn.prevRotationYawHead, entityIn.prevRotationYawHead) + (float)Math.PI;
 		
 		Base.rotateAngleX = 0.0F;
 		Base.rotateAngleY = 0.0F;
