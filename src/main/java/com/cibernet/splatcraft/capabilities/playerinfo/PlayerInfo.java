@@ -3,8 +3,6 @@ package com.cibernet.splatcraft.capabilities.playerinfo;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.PlayerCharge;
 import com.cibernet.splatcraft.util.PlayerCooldown;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -82,7 +80,13 @@ public class PlayerInfo implements IPlayerInfo
 	{
 		return playerCooldown;
 	}
-	
+
+	@Override
+	public boolean hasPlayerCooldown()
+	{
+		return playerCooldown != null && playerCooldown.getTime() > 0;
+	}
+
 	@Override
 	public void setPlayerCooldown(PlayerCooldown cooldown)
 	{

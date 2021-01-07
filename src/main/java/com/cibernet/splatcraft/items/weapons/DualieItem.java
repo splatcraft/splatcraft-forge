@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.items.weapons;
 
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
 import com.cibernet.splatcraft.network.DodgeRollPacket;
@@ -99,10 +100,7 @@ public class DualieItem extends WeaponBaseItem
 	public String getTranslationKey(ItemStack stack)
 	{
 		if(stack.getOrCreateTag().getBoolean("IsPlural"))
-		{
-			System.out.println("plural");
 			return getDefaultTranslationKey() + ".plural";
-		}
 		return super.getTranslationKey(stack);
 	}
 
@@ -152,13 +150,15 @@ public class DualieItem extends WeaponBaseItem
 		else
 		{
 			boolean rollFire = canRollFire(stack);
+			boolean hasCooldown = PlayerInfoCapability.get(entity).hasPlayerCooldown();
+
 			if(offhandDualie.getItem() instanceof DualieItem)
 			{
 				rollFire = rollFire && canRollFire(offhandDualie);
-				if((!entity.isOnGround() && rollFire) || entity.isOnGround())
+				if((!entity.isOnGround() && (rollFire || !hasCooldown)) || entity.isOnGround())
 					((DualieItem) offhandDualie.getItem()).fireDualie(world, entity, offhandDualie, timeLeft + ((DualieItem) offhandDualie.getItem()).offhandFiringOffset);
 			}
-			if((!entity.isOnGround() && rollFire) || entity.isOnGround())
+			if((!entity.isOnGround() && (rollFire || !hasCooldown)) || entity.isOnGround())
 				fireDualie(world, entity, stack, timeLeft);
 		}
 	}

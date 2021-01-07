@@ -5,7 +5,6 @@ import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.vector.Vector3d;
 
 public interface IPlayerInfo
 {
@@ -22,6 +21,7 @@ public interface IPlayerInfo
 	void setMatchInventory(NonNullList<ItemStack> inventory);
 	
 	PlayerCooldown getPlayerCooldown();
+	boolean hasPlayerCooldown();
 	void setPlayerCooldown(PlayerCooldown cooldown);
 	
 	PlayerCharge getPlayerCharge();
