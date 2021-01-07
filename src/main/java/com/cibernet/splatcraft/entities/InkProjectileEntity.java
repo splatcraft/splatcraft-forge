@@ -133,7 +133,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 			if(explodes)
 			{
 				//TODO particles
-				world.playSound(null, getPosition(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+				world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 			}
 			remove();
 		}
@@ -178,7 +178,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		if(explodes)
 		{
 			//TODO particles
-			world.playSound(null, getPosition(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+			world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 		}
 		this.remove();
 	}

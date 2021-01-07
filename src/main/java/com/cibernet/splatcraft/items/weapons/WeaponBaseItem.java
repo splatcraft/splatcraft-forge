@@ -185,7 +185,7 @@ public class WeaponBaseItem extends Item
 		{
 			((PlayerEntity) entity).sendStatusMessage(new TranslationTextComponent("status.no_ink").mergeStyle(TextFormatting.RED), true);
 			if(sound != null)
-				entity.world.playSound(null, entity.getPosition(), sound, SoundCategory.PLAYERS, 0.8F,
+				entity.world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), sound, SoundCategory.PLAYERS, 0.8F,
 						((entity.world.rand.nextFloat() - entity.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 		}
 		

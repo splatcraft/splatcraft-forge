@@ -184,7 +184,7 @@ public class DualieItem extends WeaponBaseItem
 			PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(getRollCooldown(activeDualie, maxRolls, rollCount), player.inventory.currentItem, false, true, false));
 			if(!player.world.isRemote)
 			{
-				player.world.playSound(null, player.getPosition(), SplatcraftSounds.dualieDodge, SoundCategory.PLAYERS, 0.7F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+				player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.dualieDodge, SoundCategory.PLAYERS, 0.7F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 				InkExplosion.createInkExplosion(player.world, player, new DamageSource("ink"), player.getPosition(), 1.2f, 0, 0, false, ColorUtils.getInkColor(activeDualie), InkBlockUtils.getInkType(player), activeDualie);
 			}
 			reduceInk(player, getInkForRoll(activeDualie));
@@ -224,7 +224,7 @@ public class DualieItem extends WeaponBaseItem
 				InkProjectileEntity proj = new InkProjectileEntity(world, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage).setShooterTrail();
 				proj.shoot(entity, entity.rotationPitch, entity.rotationYaw, 0.0f, projectileSpeed, (entity instanceof PlayerEntity && PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity)) ? 0 : inaccuracy);
 				world.addEntity(proj);
-				world.playSound(null, entity.getPosition(), SplatcraftSounds.dualieShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+				world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), SplatcraftSounds.dualieShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 				reduceInk(entity, inkConsumption);
 			}
 			else sendNoInkMessage(entity);

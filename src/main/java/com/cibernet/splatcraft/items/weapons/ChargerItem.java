@@ -78,7 +78,7 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 		proj.setChargerStats((int) (projectileLifespan*charge));
 		proj.shoot(player, player.rotationPitch, player.rotationYaw, 0.0f, projectileSpeed, 0.1f);
 		world.addEntity(proj);
-		world.playSound(null, player.getPosition(), SplatcraftSounds.blasterShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.blasterShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 		reduceInk(player, getInkConsumption(charge));
 		PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(10, player.inventory.currentItem, true, false, false));
 	}

@@ -103,7 +103,7 @@ public abstract class RemoteItem extends Item
 			
 			if(remoteResult.getOutput() != null)
 				playerIn.sendStatusMessage(remoteResult.getOutput(), true);
-			worldIn.playSound(playerIn, playerIn.getPosition(), SplatcraftSounds.remoteUse, SoundCategory.BLOCKS, 0.8f, 1);
+			worldIn.playSound(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SplatcraftSounds.remoteUse, SoundCategory.BLOCKS, 0.8f, 1);
 			return new ActionResult<>(remoteResult.wasSuccessful() ? ActionResultType.SUCCESS : ActionResultType.FAIL, stack);
 		}
 		

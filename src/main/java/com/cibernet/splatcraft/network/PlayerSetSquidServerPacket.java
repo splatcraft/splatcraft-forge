@@ -53,7 +53,7 @@ public class PlayerSetSquidServerPacket extends PlayToServerPacket
 		if(squid == -1)
 			squid = !target.isSquid() ? 1 : 0;
 		target.setIsSquid(squid == 1);
-		world.playSound(null, player.getPosition(), squid == 1 ? SplatcraftSounds.squidTransform : SplatcraftSounds.squidRevert, SoundCategory.PLAYERS, 0.75F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+		world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), squid == 1 ? SplatcraftSounds.squidTransform : SplatcraftSounds.squidRevert, SoundCategory.PLAYERS, 0.75F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 		
 		SplatcraftPacketHandler.sendToDim(new PlayerSetSquidClientPacket(this.target, squid), player.world);
 	}
