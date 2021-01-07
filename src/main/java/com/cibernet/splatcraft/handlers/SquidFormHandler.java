@@ -66,6 +66,8 @@ public class SquidFormHandler
 
 		if(PlayerInfoCapability.isSquid(player))
 		{
+			player.setSprinting(false);
+
 			player.setPose(Pose.FALL_FLYING);
 			player.stopActiveHand();
 			
