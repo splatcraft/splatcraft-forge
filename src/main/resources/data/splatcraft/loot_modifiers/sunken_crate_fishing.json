@@ -1,0 +1,10 @@
+{
+  "type": "splatcraft:fishing",
+  "conditions": [],
+  "item": "splatcraft:sunken_crate",
+  "countMin": 1,
+  "countMax": 1,
+  "chance": 0.1,
+  "quality": 3,
+  "isTreasure": true
+}
