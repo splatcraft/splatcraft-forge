@@ -11,6 +11,7 @@ import com.cibernet.splatcraft.handlers.client.PlayerMovementHandler;
 import com.cibernet.splatcraft.handlers.client.SplatcraftKeyHandler;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.*;
+import com.cibernet.splatcraft.wolrd.gen.SplatcraftOreGen;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.server.MinecraftServer;
@@ -65,6 +66,8 @@ public class Splatcraft
 		SplatcraftStats.register();
 		ScoreboardHandler.register();
 		SplatcraftCommands.registerArguments();
+
+		SplatcraftOreGen.registerOres();
 	}
 	
 	private void clientSetup(final FMLClientSetupEvent event)
