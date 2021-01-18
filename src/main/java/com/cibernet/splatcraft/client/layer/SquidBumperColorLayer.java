@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.client.layer;
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.client.model.InkSquidModel;
 import com.cibernet.splatcraft.client.model.SquidBumperModel;
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
@@ -31,6 +32,8 @@ public class SquidBumperColorLayer extends LayerRenderer<SquidBumperEntity, Squi
 	public void render(MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn, SquidBumperEntity entity, float v, float v1, float v2, float v3, float v4, float v5)
 	{
 		int color = ColorUtils.getEntityColor(entity);
+		if(SplatcraftConfig.Client.getColorLock())
+			color = ColorUtils.getLockedColor(color);
 		float r = ((color & 16711680) >> 16) / 255.0f;
 		float g = ((color & '\uff00') >> 8) / 255.0f;
 		float b = ((color & 255) >> 0) / 255.0f;

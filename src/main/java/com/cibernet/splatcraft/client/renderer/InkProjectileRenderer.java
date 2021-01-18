@@ -1,8 +1,10 @@
 package com.cibernet.splatcraft.client.renderer;
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.client.model.InkProjectileModel;
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
+import com.cibernet.splatcraft.util.ColorUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -30,6 +32,10 @@ public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> i
 		{
 			float scale = entityIn.getProjectileSize();
 			int color = entityIn.getColor();
+
+			if(SplatcraftConfig.Client.getColorLock())
+				color = ColorUtils.getLockedColor(color);
+
 			float r = (float) (Math.floor(color / (256 * 256)) / 255f);
 			float g = (float) ((Math.floor(color / 256) % 256) / 255f);
 			float b = (color % 256) / 255f;

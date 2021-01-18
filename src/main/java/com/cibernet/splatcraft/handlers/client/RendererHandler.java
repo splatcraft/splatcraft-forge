@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.client.renderer.InkSquidRenderer;
 import com.cibernet.splatcraft.client.renderer.PlayerSquidRenderer;
@@ -67,11 +68,7 @@ public class RendererHandler
 			if(squidRenderer == null)
 				squidRenderer = new PlayerSquidRenderer(event.getRenderer().getRenderManager());
 			if(!InkBlockUtils.canSquidHide(player))
-			{
-
-				//squidRenderer.getRenderManager().setRenderShadow(true);
 				squidRenderer.render(player, player.rotationYawHead, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
-			}
 			//else player.setInvisible(true);
 		}
 		//else event.getRenderer().getRenderManager().setRenderShadow(true);
@@ -237,6 +234,8 @@ public class RendererHandler
 		if(SplatcraftGameRules.getBooleanRuleValue(event.getEntity().world, SplatcraftGameRules.COLORED_PLAYER_NAMES) && event.getEntity() instanceof LivingEntity)
 		{
 			int color = ColorUtils.getEntityColor((LivingEntity) event.getEntity());
+			if(SplatcraftConfig.Client.getColorLock())
+				color = ColorUtils.getLockedColor(color);
 			if(color != -1)
 				event.setContent(((TextComponent)event.getContent()).setStyle(Style.EMPTY.setColor(Color.fromInt(color))));
 		}

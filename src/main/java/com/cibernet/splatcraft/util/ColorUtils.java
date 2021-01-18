@@ -108,7 +108,15 @@ public class ColorUtils
 			return ((IColoredBlock) te.getBlockState().getBlock()).setColor(te.getWorld(), te.getPos(), color);
 		return false;
 	}
-	
+
+	@OnlyIn(Dist.CLIENT)
+	public static int getLockedColor(int color)
+	{
+		return (Minecraft.getInstance().player != null) ?
+				(ColorUtils.getPlayerColor(Minecraft.getInstance().player) == color ? SplatcraftInkColors.colorLockA.getColor() : SplatcraftInkColors.colorLockB.getColor())
+				: -1;
+	}
+
 	public static String getColorName(int color)
 	{
 		InkColor colorObj = InkColor.getByHex(color);

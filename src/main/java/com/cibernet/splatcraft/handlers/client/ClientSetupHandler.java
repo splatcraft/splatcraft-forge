@@ -1,12 +1,15 @@
 package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.SplatcraftConfig;
+import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.client.gui.InkVatScreen;
 import com.cibernet.splatcraft.client.gui.WeaponWorkbenchScreen;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -74,7 +77,10 @@ public class ClientSetupHandler
 		@Override
 		public int getColor(ItemStack stack, int i)
 		{
-			return (i == 0) ? ColorUtils.getInkColor(stack) : -1;
+			int color = (i == 0) ? ColorUtils.getInkColor(stack) : -1;
+			if(SplatcraftConfig.Client.getColorLock())
+				color = ColorUtils.getLockedColor(color);
+			return color;
 		}
 	}
 	
@@ -86,9 +92,12 @@ public class ClientSetupHandler
 		{
 			if(iBlockDisplayReader == null)
 				return -1;
-			
+
 			int color = ColorUtils.getInkColor(iBlockDisplayReader.getTileEntity(blockPos));
-			
+
+			if(SplatcraftConfig.Client.getColorLock())
+				color = ColorUtils.getLockedColor(color);
+
 			if(color == -1)
 				return 0xFFFFFF;
 			

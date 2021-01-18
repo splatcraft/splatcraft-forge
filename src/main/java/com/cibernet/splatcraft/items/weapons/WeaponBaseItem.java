@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.items.weapons;
 
+import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.blocks.InkwellBlock;
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
@@ -100,11 +101,11 @@ public class WeaponBaseItem extends Item
 			return 1;
 		}
 	}
-	
+
 	@Override
 	public int getRGBDurabilityForDisplay(ItemStack stack)
 	{
-		return ColorUtils.getInkColor(stack);
+		return SplatcraftConfig.Client.dynamicInkDurability.get() ? ColorUtils.getInkColor(stack) : super.getRGBDurabilityForDisplay(stack);
 	}
 	
 	@Override

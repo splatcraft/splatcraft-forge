@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.handlers.client;
 
+import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.network.PlayerSetSquidServerPacket;
@@ -33,9 +34,23 @@ public class SplatcraftKeyHandler
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event)
 	{
-		if(squidKey.isKeyDown())
-			pressState.put(squidKey, Math.min(pressState.get(squidKey)+1, 2));
-		else pressState.put(squidKey, 0);
+		if(Minecraft.getInstance().player == null)
+			return;
+
+		if(KeyMode.HOLD.equals(SplatcraftConfig.Client.squidKeyMode.get()))
+		{
+			boolean isPlayerSquid = PlayerInfoCapability.isSquid(Minecraft.getInstance().player);
+
+			if ((isPlayerSquid && !squidKey.isKeyDown()) || (!isPlayerSquid && squidKey.isKeyDown()))
+				pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 2));
+			else pressState.put(squidKey, 0);
+		}
+		else
+		{
+			if (squidKey.isKeyDown())
+				pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 2));
+			else pressState.put(squidKey, 0);
+		}
 		
 		if(pressState.get(squidKey) == 1)
 			onSquidKeyPress();
@@ -47,5 +62,11 @@ public class SplatcraftKeyHandler
 		IPlayerInfo capability = PlayerInfoCapability.get(player);
 		SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player));
 		capability.setIsSquid(!capability.isSquid());
+	}
+
+	public enum  KeyMode
+	{
+		HOLD,
+		TOGGLE
 	}
 }

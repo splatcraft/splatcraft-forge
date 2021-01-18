@@ -53,7 +53,11 @@ public class SplatcraftInkColors
 	public static final InkColor cobalt = new InkColor("cobalt", 0x005682);
 	public static final InkColor ice = new InkColor("ice", 0x88ffc1);
 	public static final InkColor floral = new InkColor("floral", 0xFF9BEE);
-	
+
+	//Color Lock
+	public static final InkColor colorLockA = new InkColor("color_lock_friendly", 0xDEA801);
+	public static final InkColor colorLockB = new InkColor("color_lock_hostile", 0x4717A9);
+
 	//Organic Colors
 	public static final InkColor dyeWhite = new InkColor("dye_white", 0xFAFAFA, DyeColor.WHITE);
 	public static final InkColor dyeOrange = new InkColor("dye_orange", 16351261, DyeColor.ORANGE);

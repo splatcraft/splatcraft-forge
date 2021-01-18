@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.items;
 
+import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.client.model.AbstractInkTankModel;
 import com.cibernet.splatcraft.data.tags.SplatcraftTags;
@@ -160,7 +161,7 @@ public class InkTankItem extends ColoredArmorItem implements IDyeableArmorItem
 	@Override
 	public int getRGBDurabilityForDisplay(ItemStack stack)
 	{
-		return ColorUtils.getInkColor(stack);
+		return SplatcraftConfig.Client.dynamicInkDurability.get() ? ColorUtils.getInkColor(stack) : super.getRGBDurabilityForDisplay(stack);
 	}
 	
 	@Override
