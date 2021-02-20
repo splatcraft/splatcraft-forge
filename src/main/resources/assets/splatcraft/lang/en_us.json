@@ -150,7 +150,54 @@
     "weaponStat.handling": "Handling: %s%%",
     "weaponStat.ink_speed": "Ink Speed: %s%%",
     "weaponStat.mobility": "Mobility: %s%%",
-    
+
+    "weaponTab.splatcraft:weapon_workbench_tabs/shooters": "Shooters",
+    "weaponTab.splatcraft:weapon_workbench_tabs/rollers": "Rollers",
+    "weaponTab.splatcraft:weapon_workbench_tabs/chargers": "Chargers",
+    "weaponTab.splatcraft:weapon_workbench_tabs/dualies": "Dualies",
+    "weaponTab.splatcraft:weapon_workbench_tabs/buckets": "Sloshers",
+    "weaponTab.splatcraft:weapon_workbench_tabs/splatlings": "Splatlings",
+    "weaponTab.splatcraft:weapon_workbench_tabs/brellas": "Brellas",
+    "weaponTab.splatcraft:weapon_workbench_tabs/sub_weapons": "Sub Weapons",
+    "weaponTab.splatcraft:weapon_workbench_tabs/special_weapons": "Special Weapons",
+    "weaponTab.splatcraft:weapon_workbench_tabs/ink_tanks": "Ink Tanks",
+
+    "weaponRecipe.splatcraft:weapon_workbench/aerospray": "Aerospray",
+    "weaponRecipe.splatcraft:weapon_workbench/e_liter": "E-Liter",
+    "weaponRecipe.splatcraft:weapon_workbench/bamboozler_14": "Bamboozler 14",
+
+    "weaponType.original": "Original",
+    "weaponType.classic": "Classic",
+    "weaponType.custom": "Custom",
+    "weaponType.deco": "Deco",
+    "weaponType.kensa": "Kensa",
+    "weaponType.hero": "Hero",
+    "weaponType.replica": "Replica",
+    "weaponType.hero_replica": "Hero Replica",
+    "weaponType.ultimate": "Ultimate",
+
+    "weaponType.tentatek": "Tentatek",
+    "weaponType.krak_on": "Krak-On",
+    "weaponType.enperry": "Enperry",
+    "weaponType.neo": "Neo",
+
+    "weaponType.wasabi": "Wasabi",
+    "weaponType.coro_coro": "CoroCoro",
+    "weaponType.bento": "Bento",
+    "weaponType.grim": "Grim",
+    "weaponType.permanent": "Permanent",
+    "weaponType.soda": "Soda",
+    "weaponType.kelp": "Kelp",
+
+    "weaponType.3k": "3K",
+    "weaponType.4k": "4K",
+    "weaponType.mg": "MG",
+    "weaponType.rg": "RG",
+    "weaponType.pg": "PG",
+    "weaponType.mk1": "Mk I",
+    "weaponType.mk2": "Mk II",
+    "weaponType.mk3": "Mk III",
+
     "subtitle.shooter_firing": "Shooter Firing",
     "subtitle.blaster_firing": "Blaster Firing",
     "subtitle.blaster_explosion": "Blaster Projectile Explodes",
@@ -174,8 +221,10 @@
     "subtitle.ink_surface": "Squid Surfaces",
     
     "container.ink_vat": "Inkwell Crafting",
-    "container.ammo_knights_workbench": "Weapon Crafting",
-    
+    "container.weapon_workbench": "Weapon Crafting",
+
+    "gui.weapon_workbench.craft": "Craft",
+
     "ink_color.splatcraft.orange": "Orange",
     "ink_color.splatcraft.blue": "Blue",
     "ink_color.splatcraft.green": "Green",

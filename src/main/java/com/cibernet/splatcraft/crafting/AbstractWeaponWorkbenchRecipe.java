@@ -20,10 +20,10 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
 {
 	protected final ResourceLocation id;
 	protected final ItemStack recipeOutput;
-	protected final NonNullList<Ingredient> recipeItems;
+	protected final NonNullList<StackedIngredient> recipeItems;
 	protected final String name;
 	
-	public AbstractWeaponWorkbenchRecipe(ResourceLocation id, String name, ItemStack recipeOutput, NonNullList<Ingredient> recipeItems)
+	public AbstractWeaponWorkbenchRecipe(ResourceLocation id, String name, ItemStack recipeOutput, NonNullList<StackedIngredient> recipeItems)
 	{
 		this.id = id;
 		this.recipeOutput = recipeOutput;
@@ -95,7 +95,7 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
 		return recipeOutput;
 	}
 	
-	public NonNullList<Ingredient> getInput()
+	public NonNullList<StackedIngredient> getInput()
 	{
 		return recipeItems;
 	}
@@ -109,12 +109,13 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
 			setRegistryName(name);
 		}
 		
-		protected static NonNullList<Ingredient> readIngredients(JsonArray p_199568_0_) {
-			NonNullList<Ingredient> nonnulllist = NonNullList.create();
+		protected static NonNullList<StackedIngredient> readIngredients(JsonArray p_199568_0_)
+		{
+			NonNullList<StackedIngredient> nonnulllist = NonNullList.create();
 			
 			for(int i = 0; i < p_199568_0_.size(); ++i) {
-				Ingredient ingredient = Ingredient.deserialize(p_199568_0_.get(i));
-				if (!ingredient.hasNoMatchingItems()) {
+				StackedIngredient ingredient = StackedIngredient.deserialize(p_199568_0_.get(i));
+				if (!ingredient.getIngredient().hasNoMatchingItems() && ingredient.getCount() > 0) {
 					nonnulllist.add(ingredient);
 				}
 			}

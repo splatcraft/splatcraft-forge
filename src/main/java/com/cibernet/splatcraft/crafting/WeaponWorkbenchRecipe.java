@@ -3,97 +3,138 @@ package com.cibernet.splatcraft.crafting;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.item.crafting.*;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class WeaponWorkbenchRecipe extends AbstractWeaponWorkbenchRecipe
+public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<WeaponWorkbenchRecipe>
 {
-	private final ResourceLocation tab;
-	private final NonNullList<WeaponWorkbenchSubtypeRecipe> subtypes = NonNullList.create();
-	
-	public WeaponWorkbenchRecipe(ResourceLocation id, String name, ResourceLocation tab, ItemStack recipeOutput, NonNullList<Ingredient> recipeItems)
-	{
-		super(id, name, recipeOutput, recipeItems);
+	protected final ResourceLocation id;
+	protected final ResourceLocation tab;
+	protected final List<WeaponWorkbenchSubtypeRecipe> subRecipes;
+	protected final int pos;
+
+	public WeaponWorkbenchRecipe(ResourceLocation id, ResourceLocation tab, int pos, List<WeaponWorkbenchSubtypeRecipe> subRecipes) {
+		this.id = id;
+		this.pos = pos;
 		this.tab = tab;
+		this.subRecipes = subRecipes;
 	}
-	
+
+	@Override
+	public boolean matches(IInventory inv, World worldIn) {
+		return true;
+	}
+
+	@Override
+	public ItemStack getCraftingResult(IInventory inv) {
+		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public boolean canFit(int width, int height) {
+		return false;
+	}
+
+	@Override
+	public ItemStack getRecipeOutput()
+	{
+		return subRecipes.isEmpty() ? ItemStack.EMPTY : subRecipes.get(0).getOutput();
+	}
+
+	@Override
+	public ResourceLocation getId() {
+		return id;
+	}
+
+	@Override
+	public IRecipeSerializer<?> getSerializer() {
+		return SplatcraftRecipeTypes.WEAPON_STATION_TAB;
+	}
+
+	@Override
+	public IRecipeType<?> getType() {
+		return SplatcraftRecipeTypes.WEAPON_STATION_TYPE;
+	}
+
+	@Override
+	public int compareTo(WeaponWorkbenchRecipe o) {
+		return pos - o.pos;
+	}
+
 	public WeaponWorkbenchTab getTab(World world)
 	{
-		IRecipe tab = world.getRecipeManager().getRecipe(this.tab).get();
-		return tab instanceof WeaponWorkbenchTab ? (WeaponWorkbenchTab) tab : null;
+		return (WeaponWorkbenchTab) world.getRecipeManager().getRecipe(tab).get();
 	}
-	
-	public void updateSubtypes(World world)
+
+	public WeaponWorkbenchSubtypeRecipe getRecipeFromIndex(int subTypePos)
 	{
-		subtypes.clear();
-		List<IRecipe<?>> stream = world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe instanceof WeaponWorkbenchSubtypeRecipe && ((WeaponWorkbenchSubtypeRecipe) recipe).getParentRecipe(world).equals(this)).collect(Collectors.toList());
-		
-		stream.forEach(recipe -> subtypes.add((WeaponWorkbenchSubtypeRecipe) recipe));
+		return subRecipes.get(subTypePos);
 	}
-	
-	public AbstractWeaponWorkbenchRecipe getRecipeFromIndex(int index)
+	public int getTotalRecipes()
 	{
-		if(index == 0)
-			return this;
-		return subtypes.get(index+1);
+		return subRecipes.size();
 	}
-	
-	public static class Serializer extends AbstractWeaponWorkbenchRecipe.Serializer<WeaponWorkbenchRecipe>
-	{
-		
-		public Serializer(String name)
-		{
-			super(name);
+
+	public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<WeaponWorkbenchRecipe> {
+
+		public Serializer(String name) {
+			super();
+			setRegistryName(name);
 		}
-		
+
 		@Override
 		public WeaponWorkbenchRecipe read(ResourceLocation recipeId, JsonObject json)
 		{
-			ResourceLocation tab = new ResourceLocation(JSONUtils.getString(json,"tab"));
-			ItemStack output = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
-			NonNullList<Ingredient> input = readIngredients(json.getAsJsonArray("ingredients"));
-			String name = JSONUtils.getString(json, "name");
-			
-			return new WeaponWorkbenchRecipe(recipeId, name, tab, output, input);
+			List<WeaponWorkbenchSubtypeRecipe> recipes = new ArrayList<>();
+			JsonArray arr = json.getAsJsonArray("recipes");
+
+			for(int i = 0; i < arr.size(); i++)
+			{
+				ResourceLocation id = new ResourceLocation(recipeId.getNamespace(), recipeId.getPath()+"subtype"+i);
+				recipes.add(WeaponWorkbenchSubtypeRecipe.fromJson(id, arr.get(i).getAsJsonObject()));
+			}
+
+			return new WeaponWorkbenchRecipe(recipeId, new ResourceLocation(JSONUtils.getString(json, "tab")), json.has("pos") ? JSONUtils.getInt(json, "pos") : Integer.MAX_VALUE, recipes);
 		}
-		
+
 		@Nullable
 		@Override
 		public WeaponWorkbenchRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
 		{
-			int i = buffer.readVarInt();
-			NonNullList<Ingredient> input = NonNullList.withSize(i, Ingredient.EMPTY);
-			
-			for(int j = 0; j < input.size(); ++j)
-				input.set(j, Ingredient.read(buffer));
-			
-			return new WeaponWorkbenchRecipe(recipeId, buffer.readString(), buffer.readResourceLocation(), buffer.readItemStack(), input);
+
+			List<WeaponWorkbenchSubtypeRecipe> s = new ArrayList<>();
+			for(int i = 0; i < buffer.readInt(); i++)
+				s.add(WeaponWorkbenchSubtypeRecipe.fromBuffer(buffer.readResourceLocation(), buffer));
+
+			return new WeaponWorkbenchRecipe(recipeId, buffer.readResourceLocation(), buffer.readInt(), s);
 		}
-		
+
 		@Override
 		public void write(PacketBuffer buffer, WeaponWorkbenchRecipe recipe)
 		{
-			buffer.writeVarInt(recipe.recipeItems.size());
-			for(Ingredient ingredient : recipe.recipeItems)
-				ingredient.write(buffer);
-			buffer.writeString(recipe.name);
+			buffer.writeInt(recipe.subRecipes.size());
+
+			for(WeaponWorkbenchSubtypeRecipe s : recipe.subRecipes)
+			{
+				buffer.writeResourceLocation(s.id);
+				s.toBuffer(buffer);
+			}
+
 			buffer.writeResourceLocation(recipe.tab);
-			buffer.writeItemStack(recipe.recipeOutput);
-		
-			
+			buffer.writeInt(recipe.pos);
 		}
 	}
 }

@@ -10,6 +10,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -44,7 +45,7 @@ public class SplatcraftTileEntitites
 	public static final TileEntityType<InkVatTileEntity> inkVatTileEntity = registerTileEntity("ink_vat", InkVatTileEntity::new, inkVat);
 	
 	public static final ContainerType<InkVatContainer> inkVatContainer = registerContainer("ink_vat", InkVatContainer::new);
-	public static final ContainerType<WeaponWorkbenchContainer> weaponWorkbenchContainer = registerContainer("weapon_workbench", WeaponWorkbenchContainer::new);
+	public static final ContainerType<WeaponWorkbenchContainer> weaponWorkbenchContainer = register("weapon_workbench", WeaponWorkbenchContainer::new);
 	
 	private static <T extends TileEntity> TileEntityType<T> registerTileEntity(String name, Supplier<T> factoryIn, Block... allowedBlocks)
 	{
@@ -61,7 +62,11 @@ public class SplatcraftTileEntitites
 		c_registry.add(container);
 		return container;
 	}
-	
+
+	private static <T extends Container> ContainerType<T> register(String key, ContainerType.IFactory<T> factory) {
+		return Registry.register(Registry.MENU, key, new ContainerType<>(factory));
+	}
+
 	@SubscribeEvent
 	public static void tileEntityInit(final RegistryEvent.Register<TileEntityType<?>> event)
 	{
