@@ -80,7 +80,7 @@ public class BarrierBarBlock extends Block implements IWaterLoggable
 		{
 			case STRAIGHT: return shapeArray[dirIndex];
 			case OUTER_LEFT: return shapeArray[dirIndex+4];
-			case OUTER_RIGHT: return mirrorShapeX(shapeArray[dirIndex+4]);
+			case OUTER_RIGHT: return shapeArray[rotatedDirIndex+4];
 			case INNER_LEFT: return VoxelShapes.or(shapeArray[dirIndex], shapeArray[rotatedCCWDirIndex]);
 			case INNER_RIGHT: return VoxelShapes.or(shapeArray[dirIndex], shapeArray[rotatedDirIndex]);
 		}

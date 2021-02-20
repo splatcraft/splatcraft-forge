@@ -37,11 +37,13 @@ import javax.annotation.Nullable;
 public class WeaponWorkbenchBlock extends HorizontalBlock implements IWaterLoggable
 {
 	
-	protected static final VoxelShape BOTTOM = VoxelShapes.or(makeCuboidShape(2, 0, 0, 5, 4, 16), makeCuboidShape(11, 0, 0, 14, 4, 16));
+	protected static final VoxelShape BOTTOM_LEFT = makeCuboidShape(2, 0, 0, 5, 4, 16);
+	protected static final VoxelShape BOTTOM_RIGHT = makeCuboidShape(11, 0, 0, 14, 4, 16);
 	protected static final VoxelShape BASE = makeCuboidShape(1, 1, 1, 15, 16,15);
-	protected static final VoxelShape DETAIL = VoxelShapes.or(makeCuboidShape(0, 8, 0, 16, 10, 16), makeCuboidShape(5, 11, 0, 11, 12, 1));
-	
-	public static final VoxelShape[] SHAPES = createVoxelShapes(BOTTOM, BASE, DETAIL);
+	protected static final VoxelShape DETAIL = makeCuboidShape(0, 8, 0, 16, 10, 16);
+	protected static final VoxelShape HANDLE = makeCuboidShape(5, 11, 0, 11, 12, 1);
+
+	public static final VoxelShape[] SHAPES = createVoxelShapes(BOTTOM_LEFT, BOTTOM_RIGHT, BASE, DETAIL, HANDLE);
 	
 	public static final EnumProperty<Direction> FACING = HORIZONTAL_FACING;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -63,9 +65,7 @@ public class WeaponWorkbenchBlock extends HorizontalBlock implements IWaterLogga
 	}
 	
 	public INamedContainerProvider getContainer(BlockState state, World worldIn, BlockPos pos) {
-		return new SimpleNamedContainerProvider((id, inventory, player) -> {
-			return new WeaponWorkbenchContainer(inventory, pos, id);
-		}, CONTAINER_NAME);
+		return new SimpleNamedContainerProvider((id, inventory, player) -> new WeaponWorkbenchContainer(inventory, IWorldPosCallable.of(worldIn, pos), id), CONTAINER_NAME);
 	}
 	
 	@Override
@@ -86,7 +86,7 @@ public class WeaponWorkbenchBlock extends HorizontalBlock implements IWaterLogga
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
 	{
-		return SHAPES[state.get(FACING).ordinal()-2];
+		return SHAPES[state.get(FACING).getHorizontalIndex()];
 	}
 	
 	protected static VoxelShape modifyShapeForDirection(Direction facing, VoxelShape shape)
@@ -96,11 +96,11 @@ public class WeaponWorkbenchBlock extends HorizontalBlock implements IWaterLogga
 		switch(facing)
 		{
 			case EAST:
-				return VoxelShapes.create(new AxisAlignedBB(1 - bb.maxZ, bb.minY, bb.minX, 1 - bb.minZ, bb.maxY, bb.maxX));
+				return VoxelShapes.create(new AxisAlignedBB(1-bb.minZ, bb.minY, 1-bb.minX, 1-bb.maxZ, bb.maxY, 1-bb.maxX));
 			case SOUTH:
 				return VoxelShapes.create(new AxisAlignedBB(1 - bb.maxX, bb.minY, 1- bb.maxZ, 1 - bb.minX, bb.maxY, 1 - bb.minZ));
 			case WEST:
-				return VoxelShapes.create(new AxisAlignedBB(bb.minZ, bb.minY, 1 - bb.maxX, bb.maxZ, bb.maxY, 1 - bb.minX));
+				return VoxelShapes.create(new AxisAlignedBB(bb.minZ, bb.minY, bb.minX, bb.maxZ, bb.maxY, bb.maxX));
 		}
 		return shape;
 	}
