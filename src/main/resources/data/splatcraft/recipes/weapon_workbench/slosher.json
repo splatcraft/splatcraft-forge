@@ -1,0 +1,93 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/buckets",
+  "pos": 0,
+  "recipes": [
+    {
+      "name": "weaponType.original",
+      "result": {
+        "item": "splatcraft:slosher",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 8
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 16
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 10
+        },
+        {
+          "item": "minecraft:bucket",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "weaponType.classic",
+      "result": {
+        "item": "splatcraft:classic_slosher",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 8
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 16
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 10
+        },
+        {
+          "item": "minecraft:bucket",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "weaponType.soda",
+      "result": {
+        "item": "splatcraft:soda_slosher",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 6
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 16
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 10
+        },
+        {
+          "item": "minecraft:bucket",
+          "count": 1
+        },
+        {
+          "item": "minecraft:yellow_dye",
+          "count": 4
+        },
+        {
+          "item": "minecraft:light_blue_dye",
+          "count": 2
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/dualies",
+  "pos": 1,
+  "recipes": [
+    {
+      "name": "weaponType.original",
+      "result": {
+        "item": "splatcraft:dualie_squelchers",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 3
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 8
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 2
+        },
+        {
+          "item": "minecraft:gunpowder",
+          "count": 2
+        },
+        {
+          "item": "minecraft:red_dye",
+          "count": 2
+        }
+      ]
+    }
+  ]
+}

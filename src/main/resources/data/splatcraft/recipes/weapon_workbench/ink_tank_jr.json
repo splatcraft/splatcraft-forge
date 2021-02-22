@@ -1,0 +1,29 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/ink_tanks",
+  "pos": 0,
+  "recipes": [
+    {
+      "name": "weaponType.original",
+      "result": {
+        "item": "splatcraft:ink_tank_jr",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 10
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 8
+        },
+        {
+          "item": "splatcraft:empty_inkwell",
+          "count": 1
+        }
+      ]
+    }
+  ]
+}

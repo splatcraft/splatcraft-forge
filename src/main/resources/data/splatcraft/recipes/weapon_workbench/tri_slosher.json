@@ -1,0 +1,33 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/buckets",
+  "pos": 1,
+  "recipes": [
+    {
+      "name": "weaponType.original",
+      "result": {
+        "item": "splatcraft:tri_slosher",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 9
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 18
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 12
+        },
+        {
+          "item": "minecraft:bucket",
+          "count": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/ink_tanks",
+  "pos": 2,
+  "recipes": [
+    {
+      "name": "weaponType.original",
+      "result": {
+        "item": "splatcraft:armored_ink_tank",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 10
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 18
+        },
+        {
+          "item": "splatcraft:empty_inkwell",
+          "count": 1
+        },
+        {
+          "item": "minecraft:iron_ingot",
+          "count": 6
+        }
+      ]
+    }
+  ]
+}

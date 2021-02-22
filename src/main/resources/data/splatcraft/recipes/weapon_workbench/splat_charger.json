@@ -1,0 +1,55 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/chargers",
+  "pos": 0,
+  "recipes": [
+    {
+      "name": "weaponType.original",
+      "result": {
+        "item": "splatcraft:splat_charger",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 6
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 20
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "weaponType.bento",
+      "result": {
+        "item": "splatcraft:bento_splat_charger",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 5
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 17
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 12
+        },
+        {
+          "item": "minecraft:paper",
+          "count": 2
+        }
+      ]
+    }
+  ]
+}
