@@ -1,6 +1,8 @@
 package com.cibernet.splatcraft.tileentities.container;
 
+import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -15,15 +17,14 @@ import javax.annotation.Nullable;
 
 public abstract class PlayerInventoryContainer<T extends PlayerInventoryContainer> extends Container
 {
-	BlockPos pos;
+	protected final IWorldPosCallable worldPosCallable;
 	int xPos;
 	int yPos;
-	protected final IWorldPosCallable callableInteract;
 	
-	public PlayerInventoryContainer(ContainerType<T> containerType, PlayerInventory player, BlockPos pos, int invX, int invY, int id)
+	public PlayerInventoryContainer(ContainerType<T> containerType, PlayerInventory player, IWorldPosCallable worldPosCallable, int invX, int invY, int id)
 	{
 		super(containerType, id);
-		this.pos = pos;
+		this.worldPosCallable = worldPosCallable;
 		this.xPos = invX;
 		this.yPos = invY;
 		
@@ -33,14 +34,12 @@ public abstract class PlayerInventoryContainer<T extends PlayerInventoryContaine
 		
 		for(int xx = 0; xx < 9; xx++)
 			addSlot(new Slot(player, xx, xPos + xx*18, yPos + 58));
-		
-		callableInteract = IWorldPosCallable.of(player.player.world, pos);
 	}
 	
 	@Override
 	public boolean canInteractWith(PlayerEntity playerIn)
 	{
-		return playerIn.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
+		return isWithinUsableDistance(this.worldPosCallable, playerIn, SplatcraftBlocks.weaponWorkbench);
 	}
 	
 	@Override

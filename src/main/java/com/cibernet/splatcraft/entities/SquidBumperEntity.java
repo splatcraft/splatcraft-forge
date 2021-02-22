@@ -114,7 +114,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 	 */
 	public boolean attackEntityFrom(DamageSource source, float amount)
 	{
-		if(!this.world.isRemote && !this.isAlive())
+		if(!this.world.isRemote && this.isAlive())
 		{
 			if(DamageSource.OUT_OF_WORLD.equals(source))
 			{
@@ -302,7 +302,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 	
 	public void dropBumper()
 	{
-		Block.spawnAsEntity(this.world, this.getPosition(), ColorUtils.setInkColor(new ItemStack(SplatcraftItems.squidBumper), getColor()));
+		Block.spawnAsEntity(this.world, this.getPosition(), ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.squidBumper), getColor()), true));
 	}
 	
 	@Override

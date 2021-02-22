@@ -1,5 +1,8 @@
 {
   "replace": false,
   "values": [
+    "splatcraft:splat_dualies",
+    "splatcraft:enperry_splat_dualies",
+    "splatcraft:dualie_squelchers"
   ]
 }

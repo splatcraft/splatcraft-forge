@@ -123,4 +123,9 @@ public class WeaponWorkbenchTab implements IRecipe<IInventory>, Comparable<Weapo
 			buffer.writeInt(recipe.pos);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return getId().toString();
+	}
 }

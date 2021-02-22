@@ -136,29 +136,36 @@ public class InkBlockUtils
 	
 	public static boolean canSquidHide(LivingEntity entity)
 	{
-		return (entity.isOnGround() && canSquidSwim(entity)) || canSquidClimb(entity);
+		return (!entity.world.getBlockState(new BlockPos(entity.getPosX(), entity.getPosY()-0.1, entity.getPosZ())).getBlock().equals(Blocks.AIR)
+				&& canSquidSwim(entity)) || canSquidClimb(entity);
 	}
-	
+
 	public static boolean canSquidSwim(LivingEntity entity)
 	{
 		boolean canSwim = false;
 
-		if(entity.world.getBlockState(entity.getPosition().down()).getBlock() instanceof IColoredBlock)
-			canSwim = ((IColoredBlock) entity.world.getBlockState(entity.getPosition().down()).getBlock()).canSwim();
+		BlockPos down = entity.getPosition().down();
+
+		Block standingBlock = entity.world.getBlockState(entity.getPosition().down()).getBlock();
+		if(standingBlock instanceof IColoredBlock)
+			canSwim = ((IColoredBlock) standingBlock).canSwim();
 		
 		if(canSwim)
-			return ColorUtils.colorEquals(entity, entity.world.getTileEntity(entity.getPosition().down()));
+			return ColorUtils.colorEquals(entity, entity.world.getTileEntity(down));
 		return false;
 	}
 	
 	public static boolean onEnemyInk(LivingEntity entity)
 	{
+		if(!entity.isOnGround())
+			return false;
 		boolean canDamage = false;
+		BlockPos pos = entity.getPosition().down();
+
+		if(entity.world.getBlockState(pos).getBlock() instanceof IColoredBlock)
+			canDamage = ((IColoredBlock) entity.world.getBlockState(pos).getBlock()).canDamage();
 		
-		if(entity.world.getBlockState(entity.getPosition().down()).getBlock() instanceof IColoredBlock)
-			canDamage = ((IColoredBlock) entity.world.getBlockState(entity.getPosition().down()).getBlock()).canDamage();
-		
-		return canDamage && ColorUtils.getInkColor(entity.world.getTileEntity(entity.getPosition().down())) != -1 && !canSquidSwim(entity);
+		return canDamage && ColorUtils.getInkColor(entity.world.getTileEntity(pos)) != -1 && !canSquidSwim(entity);
 	}
 	
 	public static boolean canSquidClimb(LivingEntity entity)

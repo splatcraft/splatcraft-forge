@@ -47,22 +47,24 @@ public class SquidFormHandler
 		IPlayerInfo info = PlayerInfoCapability.get(player);
 		if(event.phase == TickEvent.Phase.START)
 		{
+			player.setInvisible(shouldBeInvisible(player));
+
 			if(!squidSubmergeMode.containsKey(player))
 				squidSubmergeMode.put(player, -2);
 
-			if(info.isSquid() && InkBlockUtils.canSquidHide(player))
-				player.setInvisible(true);
-			if(InkBlockUtils.canSquidSwim(player) && info.isSquid())
+			if(InkBlockUtils.canSquidHide(player) && info.isSquid())
+			{
 				squidSubmergeMode.put(player, Math.min(2,Math.max(squidSubmergeMode.get(player)+1, 1)));
+				player.setInvisible(true);
+			}
 			else squidSubmergeMode.put(player, Math.max(-2,Math.min(squidSubmergeMode.get(player)-1, -1)));
-			
+
+
 			if(squidSubmergeMode.get(player) == 1)
-				player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.inkSubmerge, SoundCategory.PLAYERS, 0.75F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+				player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.inkSubmerge, SoundCategory.PLAYERS, 0.5F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F + 1.0F) * 0.95F);
 			else if(squidSubmergeMode.get(player) == -1)
-				player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.inkSurface, SoundCategory.PLAYERS, 0.75F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+				player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.inkSurface, SoundCategory.PLAYERS, 0.5F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F + 1.0F) * 0.95F);
 		}
-		else if(!(InkBlockUtils.canSquidSwim(player) && info.isSquid()))
-			player.setInvisible(shouldBeInvisible(player));
 
 		if(PlayerInfoCapability.isSquid(player))
 		{
