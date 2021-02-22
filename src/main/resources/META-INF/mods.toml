@@ -35,9 +35,7 @@ authors="Cibernet" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 Splatcraft is a Minecraft mod based on Nintendo's popular game Splatoon!
-
-This mod aims to add Items and Mechanics and Items based on the game in a cohesive way, such as Turf Wars, Weapons, Squid Transformations and many more!
-'''
+This mod aims to add items and mechanics based on the game in a cohesive way, such as Turf Wars, Weapons, Squid Transformations and many more!'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.splatcraft]] #optional
     # the modid of the dependency
