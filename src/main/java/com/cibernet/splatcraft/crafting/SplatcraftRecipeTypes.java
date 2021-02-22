@@ -23,7 +23,6 @@ public class SplatcraftRecipeTypes
 	public static final IRecipeSerializer<WeaponWorkbenchRecipe> WEAPON_STATION = new WeaponWorkbenchRecipe.Serializer("weapon_workbench");
 
 
-	//TODO
     public static boolean getItem(PlayerEntity player, Ingredient ingredient, int count, boolean takeItems)
 	{
 		for(int i = 0; i < player.inventory.getSizeInventory(); ++i)

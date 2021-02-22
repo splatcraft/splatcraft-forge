@@ -475,7 +475,7 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
 			}
 		}
 
-		//Ingredient Arrows TODO
+		//Ingredient Arrows
 		maxSections = selectedRecipe == null ? 0 : (int) Math.ceil(selectedRecipe.getInput().size()/8f);
 		if(selectedRecipe != null && maxSections > 1)
 		{
