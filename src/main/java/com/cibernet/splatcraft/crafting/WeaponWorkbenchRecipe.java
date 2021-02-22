@@ -51,7 +51,7 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return subRecipes.isEmpty() ? ItemStack.EMPTY : subRecipes.get(0).getOutput();
+		return subRecipes.isEmpty() ? ItemStack.EMPTY : subRecipes.get(0).getOutput().copy();
 	}
 
 	@Override
@@ -114,12 +114,17 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
 		@Override
 		public WeaponWorkbenchRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
 		{
-
 			List<WeaponWorkbenchSubtypeRecipe> s = new ArrayList<>();
-			for(int i = 0; i < buffer.readInt(); i++)
-				s.add(WeaponWorkbenchSubtypeRecipe.fromBuffer(buffer.readResourceLocation(), buffer));
+			int count = buffer.readInt();
+			for(int i = 0; i < count; i++)
+			{
+				ResourceLocation loc = buffer.readResourceLocation();
+				s.add(WeaponWorkbenchSubtypeRecipe.fromBuffer(loc, buffer));
+			}
 
-			return new WeaponWorkbenchRecipe(recipeId, buffer.readResourceLocation(), buffer.readInt(), s);
+			ResourceLocation loc = buffer.readResourceLocation();
+
+			return new WeaponWorkbenchRecipe(recipeId, loc, buffer.readInt(), s);
 		}
 
 		@Override

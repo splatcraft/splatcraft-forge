@@ -16,7 +16,6 @@ public class SplatcraftConfig
 
     static
     {
-        System.out.println("building!");
         Client.init(clientBuilder);
         clientConfig = clientBuilder.build();
     }

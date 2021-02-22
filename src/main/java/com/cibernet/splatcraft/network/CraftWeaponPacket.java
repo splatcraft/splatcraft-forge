@@ -43,8 +43,6 @@ public class CraftWeaponPacket extends PlayToServerPacket
     {
         Optional<? extends IRecipe<?>> recipeOptional = player.world.getRecipeManager().getRecipe(recipeID);
 
-        System.out.println(recipeID);
-
         if(recipeOptional.isPresent() && recipeOptional.get() instanceof WeaponWorkbenchRecipe)
         {
             WeaponWorkbenchSubtypeRecipe recipe = ((WeaponWorkbenchRecipe) recipeOptional.get()).getRecipeFromIndex(subtype);
@@ -52,7 +50,6 @@ public class CraftWeaponPacket extends PlayToServerPacket
             {
                 if(!SplatcraftRecipeTypes.getItem(player, ing.getIngredient(), ing.getCount(), false))
                 {
-                    System.out.println("missing: " + ing.getIngredient().getMatchingStacks());
                     return;
                 }
             }
@@ -66,7 +63,6 @@ public class CraftWeaponPacket extends PlayToServerPacket
                 if(item != null)
                     item.setNoPickupDelay();
             } else player.container.detectAndSendChanges();
-            System.out.println("success!");
         }
     }
 }
