@@ -3,8 +3,8 @@
 	"parent": "block/block",
 	"textures": {
 		"2": "splatcraft:blocks/crate_ink_3",
-		"particle": "splatcraft:blocks/crate_top",
-		"end": "splatcraft:blocks/crate_top",
+		"particle": "splatcraft:blocks/sunken_crate_top",
+		"end": "splatcraft:blocks/sunken_crate_top",
 		"side": "splatcraft:blocks/sunken_crate_side"
 	},
 	"elements": [
