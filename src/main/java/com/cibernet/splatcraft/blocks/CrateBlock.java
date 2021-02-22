@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.tileentities.CrateTileEntity;
+import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -136,9 +137,9 @@ public class CrateBlock extends Block implements IColoredBlock
 		if(hasLoot || !(worldIn.getTileEntity(pos) instanceof CrateTileEntity))
 			return 0;
 		ItemStack stack = ((CrateTileEntity)worldIn.getTileEntity(pos)).getStackInSlot(0);
-		System.out.println(stack);
 		return (int) (Math.floor(stack.getCount()/((float)stack.getMaxStackSize())) * 15);
 	}
+
 
 	@Override
 	public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving)

@@ -31,6 +31,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
@@ -104,7 +106,7 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
 	private void drawRecipeStack(World world, MatrixStack matrixStack, List<WeaponWorkbenchRecipe> recipeList, int x, int y, int i)
 	{
 		WeaponWorkbenchSubtypeRecipe selectedRecipe = recipeList.get(typePos).getRecipeFromIndex(subTypePos +i < 0 ? (recipeList.get(typePos).getTotalRecipes()-1) : (subTypePos +i) % recipeList.get(typePos).getTotalRecipes());
-		ItemStack displayStack = selectedRecipe.getOutput();
+		ItemStack displayStack = selectedRecipe.getOutput().copy();
 		ColorUtils.setInkColor(displayStack, PlayerInfoCapability.get(player).getColor());
 
 		matrixStack.push();
@@ -165,7 +167,7 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
 		for(int i = 0; i < tabList.size(); i++)
 		{
 			int ix = xSize/2 - (tabList.size()-1)*11 + i*22;
-			int iy = -4;
+			int iy = -5;
 			int ty = tabPos == i ? 8 : 28;
 
 			minecraft.getTextureManager().bindTexture(TEXTURES);
@@ -306,7 +308,7 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
 		for(int i = 0; i < tabList.size(); i++)
 		{
 			int ix = xSize/2 - (tabList.size()-1)*11 + i*22;
-			int iy = -4;
+			int iy = -5;
 			//matrixStack.translate(0,0,500);
 			if(isPointInRegion(ix-10, iy, 18, 18, mouseX, mouseY))
 			{
@@ -336,6 +338,10 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
 				if(t.getString().equals("weaponRecipe."+recipeList.get(i).getId().toString()))
 					tooltip.add(displayStack.getDisplayName());
 				else tooltip.add(t);
+
+				//if(minecraft.gameSettings.advancedItemTooltips)
+				//	tooltip.add(new StringTextComponent(recipeList.get(i).getId().toString()).mergeStyle(TextFormatting.DARK_GRAY));
+
 				func_243308_b(matrixStack, tooltip, mouseX-guiLeft, mouseY-guiTop);
 			}
 		}
@@ -375,7 +381,6 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
 			craftButtonState = 0;
 			if (selectedRecipe != null && isPointInRegion(71, 93, 34, 12, mouseX, mouseY))
 			{
-				System.out.println("craft");
 				SplatcraftPacketHandler.sendToServer(new CraftWeaponPacket(selectedWeapon.getId(), subTypePos));
 			}
 		}
@@ -419,7 +424,7 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
 			int ix = 17 + j*18;
 			int iy = 34;
 
-			if(isPointInRegion(ix, iy, 16, 16, mouseX, mouseY))
+			if(typePos != i && isPointInRegion(ix, iy, 16, 16, mouseX, mouseY))
 			{
 				typePos = i;
 				subTypePos = 0;
