@@ -20,12 +20,13 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber
 public class PlayerPosingHandler
 {
+    @SuppressWarnings("all")
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void setupPlayerAngles(PlayerModelEvent.SetupAngles.Post event)
     {
         PlayerEntity player = event.getPlayer();
-        PlayerModel model = event.getModelPlayer();
+        PlayerModel<?> model = event.getModelPlayer();
 
         if(model == null || player == null || PlayerInfoCapability.isSquid(player))
             return;
@@ -35,10 +36,9 @@ public class PlayerPosingHandler
         Hand activeHand = player.getActiveHand();
         HandSide handSide = player.getPrimaryHand();
 
-        if(activeHand == null)
-            return;
+        if (activeHand == null) return;
 
-        ModelRenderer mainHand = ((activeHand == Hand.MAIN_HAND && handSide == HandSide.LEFT) || activeHand == Hand.OFF_HAND && handSide == HandSide.RIGHT) ? model.bipedLeftArm : model.bipedRightArm;
+        ModelRenderer mainHand = activeHand == Hand.MAIN_HAND && handSide == HandSide.LEFT || activeHand == Hand.OFF_HAND && handSide == HandSide.RIGHT ? model.bipedLeftArm : model.bipedRightArm;
         ModelRenderer offHand = mainHand.equals(model.bipedLeftArm) ? model.bipedRightArm : model.bipedLeftArm;
 
         ItemStack mainStack = player.getHeldItem(activeHand);
@@ -48,7 +48,7 @@ public class PlayerPosingHandler
         if(!(mainStack.getItem() instanceof WeaponBaseItem))
             return;
 
-        if(useTime > 0 || (playerInfo.getPlayerCooldown() != null && playerInfo.getPlayerCooldown().getTime() > 0))
+        if(useTime > 0 || playerInfo.getPlayerCooldown() != null && playerInfo.getPlayerCooldown().getTime() > 0)
         {
             useTime = mainStack.getItem().getUseDuration(mainStack) - useTime;
             switch (((WeaponBaseItem) mainStack.getItem()).getPose())
