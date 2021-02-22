@@ -115,4 +115,9 @@ public class InkSquidEntity extends CreatureEntity implements IColoredEntity
 	{
 		dataManager.set(COLOR, color);
 	}
+
+	@Override
+	public boolean canDespawn(double distanceToClosestPlayer) {
+		return false;
+	}
 }
