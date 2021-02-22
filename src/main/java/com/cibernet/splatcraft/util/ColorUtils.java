@@ -22,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class ColorUtils
@@ -91,11 +92,12 @@ public class ColorUtils
 		if(te == null)
 			return -1;
 		
-		if((te instanceof InkColorTileEntity))
+		if(te instanceof InkColorTileEntity)
 			return ((InkColorTileEntity) te).getColor();
-		
-		if(te.getBlockState() != null && (te.getBlockState().getBlock() instanceof IColoredBlock))
-			return ((IColoredBlock) te.getBlockState().getBlock()).getColor(te.getWorld(), te.getPos());
+
+		te.getBlockState();
+		if(te.getBlockState().getBlock() instanceof IColoredBlock)
+			return ((IColoredBlock) te.getBlockState().getBlock()).getColor(Objects.requireNonNull(te.getWorld()), te.getPos());
 		return -1;
 	}
 	
@@ -106,8 +108,9 @@ public class ColorUtils
 			((InkColorTileEntity) te).setColor(color);
 			return true;
 		}
-		
-		if(te.getBlockState() != null && (te.getBlockState().getBlock() instanceof IColoredBlock))
+
+		te.getBlockState();
+		if(te.getBlockState().getBlock() instanceof IColoredBlock)
 			return ((IColoredBlock) te.getBlockState().getBlock()).setColor(te.getWorld(), te.getPos(), color);
 		return false;
 	}
@@ -115,16 +118,18 @@ public class ColorUtils
 	@OnlyIn(Dist.CLIENT)
 	public static int getLockedColor(int color)
 	{
-		return (Minecraft.getInstance().player != null) ?
-				(ColorUtils.getPlayerColor(Minecraft.getInstance().player) == color ? SplatcraftInkColors.colorLockA.getColor() : SplatcraftInkColors.colorLockB.getColor())
-				: -1;
+		return Minecraft.getInstance().player != null
+			? ColorUtils.getPlayerColor(Minecraft.getInstance().player) == color
+				? SplatcraftInkColors.colorLockA.getColor()
+				: SplatcraftInkColors.colorLockB.getColor()
+			: -1;
 	}
 
 	public static String getColorName(int color)
 	{
 		InkColor colorObj = InkColor.getByHex(color);
 		
-		String colorFormatting = "";//TextFormatting.fromColorIndex(color).toString();
+		// String colorFormatting = ""; // TextFormatting.fromColorIndex(color).toString();
 		
 		if(colorObj != null)
 			return colorObj.getLocalizedName();
@@ -140,29 +145,29 @@ public class ColorUtils
 	
 	public static ITextComponent getFormatedColorName(int color, boolean colorless)
 	{
-		if(color == ColorUtils.DEFAULT)
-			return new StringTextComponent( (colorless ? TextFormatting.GRAY : "") + getColorName(color));
-		return new StringTextComponent(getColorName(color)).setStyle(Style.EMPTY.setColor(Color.fromInt(color)));
+		return color == ColorUtils.DEFAULT
+			? new StringTextComponent( (colorless ? TextFormatting.GRAY : "") + getColorName(color))
+			: new StringTextComponent(getColorName(color)).setStyle(Style.EMPTY.setColor(Color.fromInt(color)));
 	}
 	
 	public static boolean colorEquals(LivingEntity entity, TileEntity te)
 	{
-		int a = getEntityColor(entity);
-		int b = getInkColor(te);
+		int entityColor = getEntityColor(entity);
+		int inkColor = getInkColor(te);
 		
-		if(a == -1 || b == -1)
+		if (entityColor == -1 || inkColor == -1)
 			return false;
-		return SplatcraftGameRules.getBooleanRuleValue(entity.world, SplatcraftGameRules.UNIVERSAL_INK) ? true : a == b;
+		return SplatcraftGameRules.getBooleanRuleValue(entity.world, SplatcraftGameRules.UNIVERSAL_INK) || entityColor == inkColor;
 	}
 	
 	public static boolean colorEquals(LivingEntity entity, ItemStack te)
 	{
-		int a = getEntityColor(entity);
-		int b = getInkColor(te);
+		int entityColor = getEntityColor(entity);
+		int inkColor = getInkColor(te);
 		
-		if(a == -1 || b == -1)
+		if (entityColor == -1 || inkColor == -1)
 			return false;
-		return SplatcraftGameRules.getBooleanRuleValue(entity.world, SplatcraftGameRules.UNIVERSAL_INK) ? true : a == b;
+		return SplatcraftGameRules.getBooleanRuleValue(entity.world, SplatcraftGameRules.UNIVERSAL_INK) || entityColor == inkColor;
 	}
 	
 	public static ItemStack setColorLocked(ItemStack stack, boolean isLocked)
@@ -185,14 +190,15 @@ public class ColorUtils
 	{
 		float r = ((color & 16711680) >> 16) / 255.0f;
 		float g = ((color & '\uff00') >> 8) / 255.0f;
-		float b = ((color & 255) >> 0) / 255.0f;
+		float b = (color & 255) / 255.0f;
 		
 		return new float[] {r, g, b};
 	}
 	
 	public static int getRandomStarterColor()
 	{
-		return SplatcraftTags.InkColors.STARTER_COLORS.getAllElements().isEmpty() ?
-				SplatcraftInkColors.undyed.getColor() : SplatcraftTags.InkColors.STARTER_COLORS.getRandomElement(new Random()).getColor();
+		return SplatcraftTags.InkColors.STARTER_COLORS.getAllElements().isEmpty()
+			? SplatcraftInkColors.undyed.getColor()
+			: SplatcraftTags.InkColors.STARTER_COLORS.getRandomElement(new Random()).getColor();
 	}
 }

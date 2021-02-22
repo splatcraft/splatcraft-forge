@@ -16,6 +16,9 @@ public class SplatcraftTags
 {
 	public static void register()
 	{
+		new Items();
+		new Blocks();
+		new InkColors();
 	}
 	
 	public static class Items
@@ -76,7 +79,6 @@ public class SplatcraftTags
 	
 	public static class InkColors
 	{
-
 		public static ITag<InkColor> STARTER_COLORS = createTag("starter_colors");
 
 		private static ITag<InkColor> createTag(String name)
