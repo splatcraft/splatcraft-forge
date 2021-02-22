@@ -88,7 +88,7 @@ public class FishingLootModifier extends LootModifier
             int countMax = JSONUtils.getInt(object, "countMax");
             float chance = JSONUtils.getFloat(object, "chance");
             int quality = JSONUtils.getInt(object, "quality");
-            boolean isTreasure = JSONUtils.isBoolean(object, "isTreasure") ? JSONUtils.getBoolean(object, "isTreasure") : false;
+            boolean isTreasure = (!JSONUtils.isJsonPrimitive(object, "isTreasure") ? false : object.getAsJsonPrimitive("isTreasure").isBoolean()) ? JSONUtils.getBoolean(object, "isTreasure") : false;
             return new FishingLootModifier(ailootcondition, item, countMin, countMax, chance, quality, isTreasure);
         }
 
