@@ -45,7 +45,7 @@ public class SplatcraftTileEntitites
 	public static final TileEntityType<InkVatTileEntity> inkVatTileEntity = registerTileEntity("ink_vat", InkVatTileEntity::new, inkVat);
 	
 	public static final ContainerType<InkVatContainer> inkVatContainer = registerContainer("ink_vat", InkVatContainer::new);
-	public static final ContainerType<WeaponWorkbenchContainer> weaponWorkbenchContainer = register("weapon_workbench", WeaponWorkbenchContainer::new);
+	public static final ContainerType<WeaponWorkbenchContainer> weaponWorkbenchContainer = registerMenu("weapon_workbench", WeaponWorkbenchContainer::new);
 	
 	private static <T extends TileEntity> TileEntityType<T> registerTileEntity(String name, Supplier<T> factoryIn, Block... allowedBlocks)
 	{
@@ -63,8 +63,12 @@ public class SplatcraftTileEntitites
 		return container;
 	}
 
-	private static <T extends Container> ContainerType<T> register(String key, ContainerType.IFactory<T> factory) {
-		return Registry.register(Registry.MENU, key, new ContainerType<>(factory));
+	private static <T extends Container> ContainerType<T> registerMenu(String name, ContainerType.IFactory<T> factory)
+	{
+		ContainerType<T> container = new ContainerType<>(factory);
+		container.setRegistryName(name);
+		c_registry.add(container);
+		return container;
 	}
 
 	@SubscribeEvent
