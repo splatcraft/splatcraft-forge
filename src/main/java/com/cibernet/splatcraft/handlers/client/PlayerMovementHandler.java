@@ -51,7 +51,7 @@ public class PlayerMovementHandler
 		
 		if(InkBlockUtils.onEnemyInk(player))
 		{
-			player.setMotion(player.getMotion().x, Math.min(player.getMotion().y, 0.05f), player.getMotion().z);
+			//player.setMotion(player.getMotion().x, Math.min(player.getMotion().y, 0.05f), player.getMotion().z);
 			if(!speedAttribute.hasModifier(ENEMY_INK_SPEED))
 				speedAttribute.applyNonPersistentModifier(ENEMY_INK_SPEED);
 		}
@@ -90,7 +90,7 @@ public class PlayerMovementHandler
 		MovementInput input = event.getMovementInput();
 		PlayerEntity player = event.getPlayer();
 
-		float speedMod = InkBlockUtils.canSquidHide(player) ? 20f : 2f;
+		float speedMod = !input.sneaking ? (InkBlockUtils.canSquidHide(player) ? 35f : 2f) : 1f;
 
 		input.moveForward *= speedMod;
 		//input = player.movementInput;
@@ -106,10 +106,10 @@ public class PlayerMovementHandler
 			{
 				if(player.getMotion().getY() < (input.jump ? 0.46f : 0.4f))
 					player.moveRelative(0.055f * (input.jump ? 1.9f : 1.7f), new Vector3d(0.0f, player.moveForward, 0.0f));
-				if(player.getMotion().getY() <= 0 && !player.isSneaking())
+				if(player.getMotion().getY() <= 0 && !input.sneaking)
 					player.moveRelative(0.035f, new Vector3d(0.0f,1f, 0.0f));
 
-				if(player.isSneaking())
+				if(input.sneaking)
 					player.setMotion(player.getMotion().x, Math.max(0,player.getMotion().getY()), player.getMotion().z);
 			}
 		}
