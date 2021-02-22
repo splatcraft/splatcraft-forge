@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.capabilities.playerinfo;
 
+import com.cibernet.splatcraft.registries.SplatcraftInkColors;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.PlayerCharge;
 import com.cibernet.splatcraft.util.PlayerCooldown;
@@ -24,7 +25,7 @@ public class PlayerInfo implements IPlayerInfo
 
 	public PlayerInfo()
 	{
-		this(ColorUtils.getRandomStarterColor());
+		this(SplatcraftInkColors.undyed.getColor());
 	}
 
 	@Override

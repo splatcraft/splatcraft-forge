@@ -6,6 +6,8 @@ import com.cibernet.splatcraft.data.tags.SplatcraftTags;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
+import com.cibernet.splatcraft.util.ColorUtils;
+import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -25,6 +27,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -37,6 +40,19 @@ import java.util.Map;
 @Mod.EventBusSubscriber
 public class SplatcraftCommonHandler
 {
+
+	@SubscribeEvent
+	public static void onPlayerJump(LivingEvent.LivingJumpEvent event)
+	{
+		LivingEntity entity = event.getEntityLiving();
+
+		if(!(entity instanceof PlayerEntity))
+			return;
+
+		if(InkBlockUtils.onEnemyInk(event.getEntityLiving()))
+			entity.setMotion(entity.getMotion().x, Math.min(entity.getMotion().y, 0.1f), entity.getMotion().z);
+	}
+
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void onPlayerClone(final PlayerEvent.Clone event)
 	{
@@ -170,9 +186,10 @@ public class SplatcraftCommonHandler
 		{
 			if(event.player.deathTime <= 0 && !PlayerInfoCapability.get(event.player).isInitialized())
 			{
+				PlayerInfoCapability.get(event.player).setInitialized(true);
+				PlayerInfoCapability.get(event.player).setColor(ColorUtils.getRandomStarterColor());
 				if(event.player.world.isRemote)
 					SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
-				PlayerInfoCapability.get(event.player).setInitialized(true);
 			}
 		} catch(NullPointerException e) {}
 	}
