@@ -1,0 +1,33 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/chargers",
+  "pos": 2,
+  "recipes": [
+    {
+      "name": "weaponType.mk1",
+      "result": {
+        "item": "splatcraft:bamboozler_14_mk1",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 5
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 12
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 18
+        },
+        {
+          "item": "minecraft:bamboo",
+          "count": 14
+        }
+      ]
+    }
+  ]
+}
