@@ -135,8 +135,8 @@ public class SplatcraftItems
 	public static final Item squidBumper = new SquidBumperItem("squid_bumper");
 	public static final Item sunkenCrate = new BlockItem(SplatcraftBlocks.sunkenCrate).setRegistryName("sunken_crate");
 	public static final Item crate = new BlockItem(SplatcraftBlocks.crate).setRegistryName("crate");
-	public static final Item stageBarrier = new BlockItem(SplatcraftBlocks.stageBarrier).setRegistryName("stage_barrier");
-	public static final Item stageVoid = new BlockItem(SplatcraftBlocks.stageVoid).setRegistryName("stage_void");
+	public static final Item stageBarrier = new StageBarrierItem(SplatcraftBlocks.stageBarrier).setRegistryName("stage_barrier");
+	public static final Item stageVoid = new StageBarrierItem(SplatcraftBlocks.stageVoid).setRegistryName("stage_void");
 	
 	//Misc
 	

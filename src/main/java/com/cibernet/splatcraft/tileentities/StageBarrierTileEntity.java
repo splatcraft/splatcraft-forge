@@ -1,6 +1,9 @@
 package com.cibernet.splatcraft.tileentities;
 
+import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.blocks.StageBarrierBlock;
+import com.cibernet.splatcraft.items.BlockItem;
+import com.cibernet.splatcraft.items.StageBarrierItem;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.util.ClientUtils;
 import com.cibernet.splatcraft.util.InkDamageUtils;
@@ -43,9 +46,19 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
 				entity.attackEntityFrom(InkDamageUtils.VOID_DAMAGE, Float.MAX_VALUE);
 			
 		}
-		
+
 		if(world.isRemote && ClientUtils.getClientPlayer().isCreative())
-			resetActiveTime();
+		{
+			boolean canRender = true;
+			if(SplatcraftConfig.Client.holdBarrierToRender.get())
+			{
+				PlayerEntity player = ClientUtils.getClientPlayer();
+				canRender = player.getHeldItemMainhand().getItem() instanceof BlockItem && (player.getHeldItemMainhand().getItem() instanceof StageBarrierItem) ||
+						player.getHeldItemOffhand().getItem() instanceof BlockItem && (player.getHeldItemOffhand().getItem() instanceof StageBarrierItem);
+			}
+			if(canRender)
+				resetActiveTime();
+		}
 			
 	}
 	
