@@ -61,7 +61,7 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
 
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return SplatcraftRecipeTypes.WEAPON_STATION_TAB;
+		return SplatcraftRecipeTypes.WEAPON_STATION;
 	}
 
 	@Override
