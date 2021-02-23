@@ -29,8 +29,8 @@ public class ColorUtils
 {
 	public static final int ORANGE = 0xDF641A;
 	public static final int BLUE = 0x26229F;
-	public static final int GREEN = 0xc83d79;
-	public static final int PINK = 0x409d3b;
+	public static final int GREEN = 0x409d3b;
+	public static final int PINK = 0xc83d79;
 	
 	public static final int DEFAULT = 0x1F1F2D;
 	

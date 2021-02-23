@@ -137,7 +137,7 @@ public class CrateBlock extends Block implements IColoredBlock
 		if(hasLoot || !(worldIn.getTileEntity(pos) instanceof CrateTileEntity))
 			return 0;
 		ItemStack stack = ((CrateTileEntity)worldIn.getTileEntity(pos)).getStackInSlot(0);
-		return (int) (Math.floor(stack.getCount()/((float)stack.getMaxStackSize())) * 15);
+		return (int) (Math.ceil(stack.getCount()/((float)stack.getMaxStackSize()) * 15));
 	}
 
 
