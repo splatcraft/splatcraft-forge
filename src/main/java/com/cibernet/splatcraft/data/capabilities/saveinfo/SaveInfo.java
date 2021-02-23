@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.capabilities.saveinfo;
+package com.cibernet.splatcraft.data.capabilities.saveinfo;
 
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
 import net.minecraft.nbt.CompoundNBT;

@@ -11,7 +11,6 @@ import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftInkColors;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -133,12 +132,24 @@ public class ColorUtils
 		
 		if(colorObj != null)
 			return colorObj.getLocalizedName();
-		
+
 		String fallbackUnloc = "ink_color."+String.format("%06X", color).toLowerCase();
-		String fallbackName = I18n.format(fallbackUnloc);
+		String fallbackName = new TranslationTextComponent(fallbackUnloc).getString();
 		
 		if(!fallbackName.equals(fallbackUnloc))
 			return fallbackUnloc;
+
+		colorObj = InkColor.getByHex(0xFFFFFF-color);
+		if(colorObj != null)
+			return new TranslationTextComponent("ink_color.invert", colorObj.getLocalizedName()).getString();
+
+		fallbackUnloc = "ink_color."+String.format("%06X", 0xFFFFFF-color).toLowerCase();
+		fallbackName = new TranslationTextComponent(fallbackUnloc).getString();
+
+		if(!fallbackName.equals(fallbackUnloc))
+			return new TranslationTextComponent("ink_color.invert", fallbackUnloc).getString();
+
+
 		return "#"+String.format("%06X", color).toUpperCase();
 		
 	}

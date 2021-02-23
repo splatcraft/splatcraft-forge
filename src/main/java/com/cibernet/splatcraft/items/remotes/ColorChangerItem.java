@@ -2,7 +2,7 @@ package com.cibernet.splatcraft.items.remotes;
 
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.InkwellBlock;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;

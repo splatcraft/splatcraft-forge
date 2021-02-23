@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.capabilities.playerinfo;
+package com.cibernet.splatcraft.data.capabilities.playerinfo;
 
 import com.cibernet.splatcraft.entities.InkSquidEntity;
 import com.cibernet.splatcraft.registries.SplatcraftInkColors;

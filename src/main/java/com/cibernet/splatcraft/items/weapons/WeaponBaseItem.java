@@ -2,7 +2,7 @@ package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.blocks.InkwellBlock;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;

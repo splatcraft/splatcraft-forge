@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.data.tags;
+package com.cibernet.splatcraft.data;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.items.InkTankItem;

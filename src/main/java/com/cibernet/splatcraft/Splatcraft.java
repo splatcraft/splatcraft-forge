@@ -1,21 +1,13 @@
 package com.cibernet.splatcraft;
 
-import com.cibernet.splatcraft.data.SplatcraftData;
-import com.cibernet.splatcraft.data.tags.SplatcraftTags;
-import com.cibernet.splatcraft.entities.InkSquidEntity;
+import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
-import com.cibernet.splatcraft.handlers.SplatcraftCommonHandler;
-import com.cibernet.splatcraft.handlers.WeaponHandler;
 import com.cibernet.splatcraft.handlers.client.ClientSetupHandler;
-import com.cibernet.splatcraft.handlers.client.PlayerMovementHandler;
 import com.cibernet.splatcraft.handlers.client.SplatcraftKeyHandler;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.*;
 import com.cibernet.splatcraft.wolrd.gen.SplatcraftOreGen;
 import net.minecraft.block.Block;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

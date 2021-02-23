@@ -2,14 +2,12 @@ package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.client.gui.InkVatScreen;
 import com.cibernet.splatcraft.client.gui.WeaponWorkbenchScreen;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -31,7 +29,6 @@ import static com.cibernet.splatcraft.registries.SplatcraftBlocks.inkColoredBloc
 import static com.cibernet.splatcraft.registries.SplatcraftItems.inkColoredItems;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetupHandler

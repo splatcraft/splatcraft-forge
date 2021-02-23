@@ -2,8 +2,7 @@ package com.cibernet.splatcraft.handlers;
 
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfo;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.PlayerCharge;

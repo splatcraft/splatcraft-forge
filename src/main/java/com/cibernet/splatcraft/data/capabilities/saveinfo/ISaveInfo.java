@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.capabilities.saveinfo;
+package com.cibernet.splatcraft.data.capabilities.saveinfo;
 
 import net.minecraft.nbt.CompoundNBT;
 

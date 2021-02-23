@@ -1,9 +1,9 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.SplatcraftConfig;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.client.model.AbstractInkTankModel;
-import com.cibernet.splatcraft.data.tags.SplatcraftTags;
+import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;

@@ -1,6 +1,6 @@
 package com.cibernet.splatcraft.commands;
 
-import com.cibernet.splatcraft.capabilities.saveinfo.SaveInfoCapability;
+import com.cibernet.splatcraft.data.capabilities.saveinfo.SaveInfoCapability;
 import com.cibernet.splatcraft.commands.arguments.ColorCriterionArgument;
 import com.cibernet.splatcraft.commands.arguments.InkColorArgument;
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
@@ -12,7 +12,6 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 
 import java.util.Collection;
 

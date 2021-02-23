@@ -3,7 +3,7 @@ package com.cibernet.splatcraft.util;
 import com.cibernet.splatcraft.blocks.AbstractSquidPassthroughBlock;
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.InkedBlock;
-import com.cibernet.splatcraft.data.tags.SplatcraftTags;
+import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftStats;

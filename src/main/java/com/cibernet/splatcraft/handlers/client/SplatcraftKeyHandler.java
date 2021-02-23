@@ -1,8 +1,8 @@
 package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.SplatcraftConfig;
-import com.cibernet.splatcraft.capabilities.playerinfo.IPlayerInfo;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.network.PlayerSetSquidServerPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import net.minecraft.client.Minecraft;

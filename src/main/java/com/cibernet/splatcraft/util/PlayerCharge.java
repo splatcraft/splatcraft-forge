@@ -1,14 +1,11 @@
 package com.cibernet.splatcraft.util;
 
-import com.cibernet.splatcraft.capabilities.playerinfo.IPlayerInfo;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfo;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.weapons.IChargeableWeapon;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import java.util.UUID;
 
 public class PlayerCharge
 {

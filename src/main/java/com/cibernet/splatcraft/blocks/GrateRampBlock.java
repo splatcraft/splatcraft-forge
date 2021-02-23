@@ -1,9 +1,6 @@
 package com.cibernet.splatcraft.blocks;
 
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
-import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import net.minecraft.block.*;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;

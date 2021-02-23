@@ -1,7 +1,7 @@
 package com.cibernet.splatcraft.items.remotes;
 
 import com.cibernet.splatcraft.blocks.IColoredBlock;
-import com.cibernet.splatcraft.data.tags.SplatcraftTags;
+import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
 import com.cibernet.splatcraft.network.SendScanTurfResultsPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;

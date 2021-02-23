@@ -1,8 +1,8 @@
 package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
-import com.cibernet.splatcraft.capabilities.playerinfo.IPlayerInfo;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.registries.SplatcraftStats;
@@ -13,9 +13,7 @@ import com.cibernet.splatcraft.util.InkDamageUtils;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Difficulty;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;

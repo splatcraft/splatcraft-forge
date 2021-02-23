@@ -1,7 +1,7 @@
 package com.cibernet.splatcraft.handlers;
 
-import com.cibernet.splatcraft.capabilities.playerinfo.IPlayerInfo;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.weapons.SlosherItem;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;

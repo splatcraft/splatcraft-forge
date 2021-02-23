@@ -1,8 +1,7 @@
 package com.cibernet.splatcraft.tileentities;
 
-import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.blocks.InkVatBlock;
-import com.cibernet.splatcraft.data.tags.SplatcraftTags;
+import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.items.FilterItem;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
@@ -10,7 +9,6 @@ import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
@@ -20,20 +18,15 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.BrewingStandTileEntity;
-import net.minecraft.tileentity.HopperTileEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import com.cibernet.splatcraft.tileentities.container.*;
-import org.omg.PortableInterceptor.ACTIVE;
 
 import javax.annotation.Nullable;
-import java.util.stream.IntStream;
 
 public class InkVatTileEntity extends LockableTileEntity implements ISidedInventory, ITickableTileEntity
 {

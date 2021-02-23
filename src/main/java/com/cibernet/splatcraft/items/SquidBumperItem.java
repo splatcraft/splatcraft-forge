@@ -1,7 +1,7 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.registries.SplatcraftEntities;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;

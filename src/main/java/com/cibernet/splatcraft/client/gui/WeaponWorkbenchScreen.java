@@ -1,13 +1,10 @@
 package com.cibernet.splatcraft.client.gui;
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.crafting.*;
-import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.network.CraftWeaponPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
-import com.cibernet.splatcraft.registries.SplatcraftItems;
-import com.cibernet.splatcraft.tileentities.container.PlayerInventoryContainer;
 import com.cibernet.splatcraft.tileentities.container.WeaponWorkbenchContainer;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -31,8 +28,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 

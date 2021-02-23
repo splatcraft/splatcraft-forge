@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.capabilities.playerinfo;
+package com.cibernet.splatcraft.data.capabilities.playerinfo;
 
 import com.cibernet.splatcraft.util.PlayerCharge;
 import com.cibernet.splatcraft.util.PlayerCooldown;
