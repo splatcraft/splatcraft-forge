@@ -2,10 +2,7 @@ package com.cibernet.splatcraft.blocks;
 
 import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.StairsBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -24,7 +21,7 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
-public class GrateRampBlock extends AbstractSquidPassthroughBlock
+public class GrateRampBlock extends AbstractSquidPassthroughBlock implements IWaterLoggable
 {
 	
 	private static final VoxelShape START = makeCuboidShape(0,0,0, 3, 3, 16);
@@ -64,6 +61,10 @@ public class GrateRampBlock extends AbstractSquidPassthroughBlock
 		FluidState fluidstate = context.getWorld().getFluidState(blockPos);
 		boolean flip = (direction != Direction.DOWN && (direction == Direction.UP || !(context.getHitVec().y - (double)blockPos.getY() > 0.5D)));
 		return getDefaultState().with(FACING, flip ? context.getPlacementHorizontalFacing().getOpposite() : context.getPlacementHorizontalFacing()).with(WATERLOGGED, Boolean.valueOf(fluidstate.getFluid() == Fluids.WATER));
+	}
+
+	public FluidState getFluidState(BlockState state) {
+		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
 	}
 	
 	private static VoxelShape[] makeVoxelShape(VoxelShape start, VoxelShape end, VoxelShape segment)
