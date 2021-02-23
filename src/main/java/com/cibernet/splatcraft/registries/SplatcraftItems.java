@@ -73,7 +73,8 @@ public class SplatcraftItems
 	public static ChargerItem kelpSplatCharger = new ChargerItem("kelp_splat_charger", splatCharger);
 	public static ChargerItem eLiter4K = new ChargerItem("e_liter_4k", 0.95f, 2.4f, 16, 35, 40, 36f, 2.25f, 25f, 0.15);
 	public static ChargerItem bamboozler14mk1 = new ChargerItem("bamboozler_14_mk1", 0, 0, 0, 4, 0, 16, 2.8f, 7, 0.8);
-	
+	public static ChargerItem bamboozler14mk2 = new ChargerItem("bamboozler_14_mk2", bamboozler14mk1);
+
 	//Dualies
 	public static final DualieItem splatDualie = new DualieItem("splat_dualies", 1f, 0.65f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
 	public static final DualieItem enperrySplatDualie = new DualieItem("enperry_splat_dualies", splatDualie);

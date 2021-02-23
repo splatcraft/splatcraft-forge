@@ -24,6 +24,31 @@
           "count": 10
         }
       ]
+    },{
+      "name": "weaponType.kelp",
+      "result": {
+        "item": "splatcraft:kelp_splat_charger",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 5
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 18
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 10
+        },
+        {
+          "item": "minecraft:kelp",
+          "count": 32
+        }
+      ]
     },
     {
       "name": "weaponType.bento",

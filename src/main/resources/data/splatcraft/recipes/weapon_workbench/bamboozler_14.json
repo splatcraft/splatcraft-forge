@@ -28,6 +28,32 @@
           "count": 14
         }
       ]
+    },
+    {
+      "name": "weaponType.mk2",
+      "result": {
+        "item": "splatcraft:bamboozler_14_mk2",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 10
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 8
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 20
+        },
+        {
+          "item": "minecraft:bamboo",
+          "count": 14
+        }
+      ]
     }
   ]
 }

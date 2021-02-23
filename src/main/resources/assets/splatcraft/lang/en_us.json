@@ -39,7 +39,7 @@
     "item.splatcraft.neon_filter": "Neon Filter",
     "item.splatcraft.enchanted_filter": "Enchanted Filter",
     "item.splatcraft.creative_filter": "Creative Filter",
-    "item.splatcraft.filter.tooltip": "Use it in an Ink Vat to get more colors!",
+    "item.splatcraft.filter.tooltip": "Use it at an Ink Vat to get more colors!",
     
     "item.splatcraft.ink_disruptor": "Ink Disruptor",
     "item.splatcraft.turf_scanner": "Turf Scanner",
@@ -150,6 +150,7 @@
     "weaponStat.handling": "Handling: %s%%",
     "weaponStat.ink_speed": "Ink Speed: %s%%",
     "weaponStat.mobility": "Mobility: %s%%",
+    "weaponStat.charge_speed": "Charge Speed: %s%%",
 
     "weaponTab.splatcraft:weapon_workbench_tabs/shooters": "Shooters",
     "weaponTab.splatcraft:weapon_workbench_tabs/rollers": "Rollers",
@@ -272,8 +273,13 @@
     
     "ink_color.splatcraft.default": "Undyed",
     
+    "death.attack.water": "%s dissolved in water",
     "death.attack.splat": "%s was splatted by %s",
     "death.attack.splat.item": "%s was splatted by %s using %s",
+    "death.attack.roll": "%s was crushed by %s",
+    "death.attack.roll.item": "%s was crushed by %s using %s",
+    "death.attack.squish": "%s was squished by %s",
+    "death.attack.squish.item": "%s was squished by %s using %s",
     
     "entity.splatcraft.ink_projectile": "Ink Projectile",
     "entity.splatcraft.ink_squid": "Squid",
