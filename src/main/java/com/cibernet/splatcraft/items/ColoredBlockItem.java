@@ -36,7 +36,15 @@ public class ColoredBlockItem extends BlockItem
 {
 	
 	private Item clearItem = null;
-	
+	private boolean addStartersToTab = true;
+
+
+	public ColoredBlockItem(Block block, String name, Properties properties, Item clearItem, boolean addStartersToTab)
+	{
+		this(block, name, properties, clearItem);
+		this.addStartersToTab = addStartersToTab;
+	}
+
 	public ColoredBlockItem(Block block, String name, Properties properties, Item clearItem)
 	{
 		super(block, properties);
@@ -64,7 +72,8 @@ public class ColoredBlockItem extends BlockItem
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
 		super.addInformation(stack, world, tooltip, flag);
-		tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
+		if(ColorUtils.getInkColor(stack) != -1)
+			tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
 		
 	}
 	@Override
@@ -86,8 +95,12 @@ public class ColoredBlockItem extends BlockItem
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
 	{
 		if(isInGroup(group))
-			for(int color : ColorUtils.STARTER_COLORS)
-				items.add(ColorUtils.setInkColor(new ItemStack(this), color));
+		{
+			if (addStartersToTab)
+				for (int color : ColorUtils.STARTER_COLORS)
+					items.add(ColorUtils.setInkColor(new ItemStack(this), color));
+			else super.fillItemGroup(group, items);
+		}
 	}
 	
 	@Override

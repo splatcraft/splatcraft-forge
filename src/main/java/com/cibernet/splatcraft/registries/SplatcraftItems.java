@@ -130,7 +130,7 @@ public class SplatcraftItems
 	public static final Item grate = new BlockItem(SplatcraftBlocks.grate).setRegistryName("grate");
 	public static final Item grateRamp = new BlockItem(SplatcraftBlocks.grateRamp).setRegistryName("grate_ramp");
 	public static final Item barrierBar = new BlockItem(SplatcraftBlocks.barrierBar).setRegistryName("barrier_bar");
-	public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "inked_wool", new Item.Properties(), Items.WHITE_WOOL);
+	public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "inked_wool", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_WOOL, false);
 	public static final Item canvas = new BlockItem(SplatcraftBlocks.canvas).setRegistryName("canvas");
 	public static final Item squidBumper = new SquidBumperItem("squid_bumper");
 	public static final Item sunkenCrate = new BlockItem(SplatcraftBlocks.sunkenCrate).setRegistryName("sunken_crate");
