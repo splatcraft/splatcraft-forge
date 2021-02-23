@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.items.FilterItem;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
+import com.cibernet.splatcraft.tileentities.container.InkVatContainer;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,12 +26,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import com.cibernet.splatcraft.tileentities.container.*;
-
 import javax.annotation.Nullable;
 
 public class InkVatTileEntity extends LockableTileEntity implements ISidedInventory, ITickableTileEntity
 {
-	private NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 	private int color = -1;
 	public int pointer = -1;
 	private int recipeEntries = 0;
@@ -121,7 +121,7 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
 	
 	public boolean hasRcipe()
 	{
-		return (!inventory.get(0).isEmpty() && !inventory.get(1).isEmpty() && !inventory.get(2).isEmpty() && getColor() != -1);
+		return !inventory.get(0).isEmpty() && !inventory.get(1).isEmpty() && !inventory.get(2).isEmpty() && getColor() != -1;
 	}
 	
 	
