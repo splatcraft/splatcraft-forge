@@ -1,8 +1,8 @@
 package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.blocks.IColoredBlock;
-import com.cibernet.splatcraft.capabilities.playerinfo.PlayerInfoCapability;
-import com.cibernet.splatcraft.data.tags.SplatcraftTags;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.entities.IColoredEntity;
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
 import com.cibernet.splatcraft.network.PlayerColorPacket;

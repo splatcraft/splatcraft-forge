@@ -10,10 +10,8 @@ import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.item.ArmorStandEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -56,9 +54,9 @@ public class SquidBumperItem extends Item
 	{
 		super.inventoryTick(stack, world, entity, itemSlot, isSelected);
 		
-		if(entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity)
+		if(entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != (0xFFFFFF-ColorUtils.getPlayerColor((PlayerEntity) entity))
 				&& PlayerInfoCapability.hasCapability((LivingEntity) entity))
-			ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor((PlayerEntity) entity));
+			ColorUtils.setInkColor(stack, 0xFFFFFF-ColorUtils.getPlayerColor((PlayerEntity) entity));
 	}
 	
 	@Override
@@ -98,9 +96,10 @@ public class SquidBumperItem extends Item
 			if(!world.isRemote)
 			{
 				float f = (float) MathHelper.floor((MathHelper.wrapDegrees(context.getPlacementYaw() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
-				bumper.setPosition(bumper.getPosX(), bumper.getPosY(), bumper.getPosZ());
+				bumper.setPositionAndRotation(bumper.getPosX(), bumper.getPosY(), bumper.getPosZ(), f, 0);
 				bumper.setRotationYawHead(f);
-				
+				bumper.prevRotationYawHead = f;
+
 				world.addEntity(bumper);
 				world.playSound(null, bumper.getPosX(), bumper.getPosY(), bumper.getPosZ(), SoundEvents.ENTITY_ARMOR_STAND_PLACE, SoundCategory.BLOCKS, 0.75F, 0.8F);
 			}

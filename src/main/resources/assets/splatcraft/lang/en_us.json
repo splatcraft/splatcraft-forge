@@ -226,6 +226,8 @@
 
     "gui.weapon_workbench.craft": "Craft",
 
+    "ink_color.invert": "Inverted %s",
+
     "ink_color.splatcraft.orange": "Orange",
     "ink_color.splatcraft.blue": "Blue",
     "ink_color.splatcraft.green": "Green",
