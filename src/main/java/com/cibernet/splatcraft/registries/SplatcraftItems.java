@@ -51,6 +51,7 @@ public class SplatcraftItems
 	public static final ShooterItem splattershot = new ShooterItem("splattershot", 1.05f, 0.75f, 12f, 4, 8f, 0.9f);
 	public static final ShooterItem tentatekSplattershot = new ShooterItem("tentatek_splattershot", splattershot);
 	public static final ShooterItem wasabiSplattershot = new ShooterItem("wasabi_splattershot", splattershot);
+	public static final ShooterItem ancientSplattershot = new ShooterItem("ancient_splattershot", splattershot).setSecret();
 	public static final ShooterItem splattershotJr = new ShooterItem("splattershot_jr", 1f, 0.55f, 13.5f, 4, 6.5f, 0.5f);
 	public static final ShooterItem aerosprayMG = new ShooterItem("aerospray_mg", 1.3f, 0.45f, 26f, 2, 4.8f, 0.5f);
 	public static final ShooterItem getAerosprayRG = new ShooterItem("aerospray_rg", aerosprayMG);

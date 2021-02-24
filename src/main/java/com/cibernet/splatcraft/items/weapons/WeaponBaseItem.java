@@ -20,10 +20,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
@@ -35,6 +32,7 @@ import java.util.List;
 public class WeaponBaseItem extends Item
 {
 	protected final List<WeaponStat> stats = new ArrayList<>();
+	protected boolean secret = false;
 	
 	public WeaponBaseItem()
 	{
@@ -42,7 +40,7 @@ public class WeaponBaseItem extends Item
 		SplatcraftItems.inkColoredItems.add(this);
 		SplatcraftItems.weapons.add(this);
 	}
-	
+
 	@Override
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
@@ -60,7 +58,14 @@ public class WeaponBaseItem extends Item
 	{
 		stats.add(stat);
 	}
-	
+
+	@Override
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list)
+	{
+		if(!secret)
+			super.fillItemGroup(group, list);
+	}
+
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
 	{
