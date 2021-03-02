@@ -168,7 +168,7 @@ public class InkExplosion
 		}
 		
 		this.affectedBlockPositions.addAll(set);
-		float f2 = this.size * 2.0F;
+		float f2 = this.size * 1.2f;
 		int k1 = MathHelper.floor(this.x - (double)f2 - 1.0D);
 		int l1 = MathHelper.floor(this.x + (double)f2 + 1.0D);
 		int i2 = MathHelper.floor(this.y - (double)f2 - 1.0D);
