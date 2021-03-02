@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.blocks.AbstractSquidPassthroughBlock;
 import com.cibernet.splatcraft.blocks.IColoredBlock;
+import com.cibernet.splatcraft.blocks.IInkPassthrough;
 import com.cibernet.splatcraft.blocks.InkedBlock;
 import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
@@ -125,7 +126,7 @@ public class InkBlockUtils
 	{
 		BlockState state = world.getBlockState(pos);
 		
-		if(state.getBlock() instanceof AbstractSquidPassthroughBlock)
+		if(state.getBlock() instanceof AbstractSquidPassthroughBlock || state.getBlock() instanceof IInkPassthrough)
 			return true;
 		
 		if(state.getCollisionShape(world, pos).isEmpty())

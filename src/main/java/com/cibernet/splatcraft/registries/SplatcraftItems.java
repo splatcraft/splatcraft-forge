@@ -187,7 +187,8 @@ public class SplatcraftItems
 		registry.register(stageVoid);
 		
 		registry.register(new net.minecraft.item.BlockItem(Blocks.IRON_BARS, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("minecraft","iron_bars"));
-		
+		registry.register(new net.minecraft.item.BlockItem(Blocks.CHAIN, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("minecraft","chain"));
+
 		
 		DispenserBlock.registerDispenseBehavior(inkwell, new PlaceBlockDispenseBehavior());
 		DispenserBlock.registerDispenseBehavior(emptyInkwell, new PlaceBlockDispenseBehavior());

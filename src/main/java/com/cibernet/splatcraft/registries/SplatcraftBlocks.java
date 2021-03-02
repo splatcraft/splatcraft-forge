@@ -84,6 +84,7 @@ public class SplatcraftBlocks
 		registry.register(stageVoid);
 		
 		registry.register(new IronBarsBlockOverride());
+		registry.register(new ChainBlockOverride());
 	}
 	
 	public static void setRenderLayers()

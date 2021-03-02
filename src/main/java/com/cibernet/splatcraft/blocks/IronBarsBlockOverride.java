@@ -14,7 +14,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
-public class IronBarsBlockOverride extends PaneBlock
+public class IronBarsBlockOverride extends PaneBlock implements IInkPassthrough
 {
 	@Deprecated
 	public IronBarsBlockOverride()
