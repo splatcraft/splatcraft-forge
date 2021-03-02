@@ -141,7 +141,7 @@ public class DualieItem extends WeaponBaseItem
 		
 		if(world.isRemote)
 		{
-			if(entity instanceof PlayerEntity && ClientUtils.canPerformRoll((PlayerEntity) entity))
+			if(entity == ClientUtils.getClientPlayer() && ClientUtils.canPerformRoll((PlayerEntity) entity))
 			{
 				entity.moveRelative(performRoll((PlayerEntity) entity, stack, offhandDualie), ClientUtils.getDodgeRollVector((PlayerEntity) entity));
 				SplatcraftPacketHandler.sendToServer(new DodgeRollPacket((PlayerEntity) entity, stack, offhandDualie));
