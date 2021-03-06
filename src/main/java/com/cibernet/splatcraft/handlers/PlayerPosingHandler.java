@@ -48,7 +48,7 @@ public class PlayerPosingHandler
         if(!(mainStack.getItem() instanceof WeaponBaseItem))
             return;
 
-        if(useTime > 0 || playerInfo.getPlayerCooldown() != null && playerInfo.getPlayerCooldown().getTime() > 0)
+        if(useTime > 0 || (playerInfo != null && playerInfo.getPlayerCooldown() != null && playerInfo.getPlayerCooldown().getTime() > 0))
         {
             useTime = mainStack.getItem().getUseDuration(mainStack) - useTime;
             switch (((WeaponBaseItem) mainStack.getItem()).getPose())
