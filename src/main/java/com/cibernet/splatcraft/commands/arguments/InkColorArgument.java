@@ -33,7 +33,7 @@ public class InkColorArgument implements ArgumentType<Integer>
 	private static final Collection<String> EXAMPLES = Arrays.asList("splatcraft:orange", "blue", "#C83D79", "4234555");
 	public static final DynamicCommandExceptionType COLOR_NOT_FOUND = new DynamicCommandExceptionType((p_208663_0_) -> new TranslationTextComponent("arg.inkColor.notFound", p_208663_0_));
 	
-	private static final int max = 0xFFFFFF;
+	public static final int max = 0xFFFFFF;
 	
 	protected InkColorArgument()
 	{
@@ -52,6 +52,11 @@ public class InkColorArgument implements ArgumentType<Integer>
 	
 	@Override
 	public Integer parse(StringReader reader) throws CommandSyntaxException
+	{
+		return parseStatic(reader);
+	}
+
+	public static Integer parseStatic(StringReader reader) throws CommandSyntaxException
 	{
 		final int start = reader.getCursor();
 		boolean hasInt = false;
@@ -146,7 +151,7 @@ public class InkColorArgument implements ArgumentType<Integer>
 		return EXAMPLES;
 	}
 	
-	private static int parseHex(String input, StringReader reader) throws CommandSyntaxException
+	public static int parseHex(String input, StringReader reader) throws CommandSyntaxException
 	{
 		try
 		{

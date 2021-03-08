@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.entities;
 
+import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
 import com.cibernet.splatcraft.handlers.WeaponHandler;
 import com.cibernet.splatcraft.registries.SplatcraftEntities;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
@@ -144,6 +145,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 				BlockPos inkPos = new BlockPos(getPosX(), y, getPosZ());
 				if(!InkBlockUtils.canInkPassthrough(world, inkPos))
 				{
+					world.setEntityState(this, (byte) 1);
 					InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, inkPos.up(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
 					InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
 					break;
@@ -151,7 +153,20 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 			}
 		
 	}
-	
+
+	@Override
+	public void handleStatusUpdate(byte id)
+	{
+		super.handleStatusUpdate(id);
+		switch (id)
+		{
+			case 1:
+				world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getPosX() - this.getMotion().getX() * 0.25D, this.getPosY() - this.getMotion().getY() * 0.25D, this.getPosZ() - this.getMotion().getZ() * 0.25D,  this.getMotion().getX(), -0.8f, this.getMotion().getZ());
+			break;
+		}
+
+	}
+
 	@Override
 	protected void onEntityHit(EntityRayTraceResult result)
 	{
