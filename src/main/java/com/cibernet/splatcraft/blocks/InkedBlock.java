@@ -5,12 +5,15 @@ import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
+import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -76,7 +79,21 @@ public class InkedBlock extends Block implements IColoredBlock
 		
 		return te.getSavedState().getBlock().getPlayerRelativeBlockHardness(te.getSavedState(), player, worldIn, pos);
 	}
-	
+
+	@Override
+	public boolean addLandingEffects(BlockState state1, ServerWorld worldserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles)
+	{
+		ColorUtils.addInkSplashParticle(worldserver, getColor(worldserver, pos), entity.getPosX(), entity.getPosYHeight(worldserver.rand.nextDouble()*0.3), entity.getPosZ(), (float) Math.sqrt(numberOfParticles)*0.3f);
+		return true;
+	}
+
+	@Override
+	public boolean addRunningEffects(BlockState state, World world, BlockPos pos, Entity entity)
+	{
+		ColorUtils.addInkSplashParticle(world, getColor(world, pos), entity.getPosX(), entity.getPosYHeight(world.rand.nextDouble()*0.3), entity.getPosZ(), 0.6f);
+		return true;
+	}
+
 	/* TODO modular ink
 	
 	@Override

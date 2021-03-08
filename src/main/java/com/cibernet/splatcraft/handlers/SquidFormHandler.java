@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -38,8 +39,13 @@ public class SquidFormHandler
 	{
 		PlayerEntity player = event.player;
 		
-		if(InkBlockUtils.onEnemyInk(player) && player.ticksExisted % 20 == 0 && player.getHealth() > 4 && player.world.getDifficulty() != Difficulty.PEACEFUL)
-			player.attackEntityFrom(InkDamageUtils.ENEMY_INK, 2f);
+		if(InkBlockUtils.onEnemyInk(player))
+		{
+			if(player.ticksExisted % 20 == 0 && player.getHealth() > 4 && player.world.getDifficulty() != Difficulty.PEACEFUL)
+				player.attackEntityFrom(InkDamageUtils.ENEMY_INK, 2f);
+			if(player.world.rand.nextFloat() < 0.7f)
+				ColorUtils.addStandingInkSplashParticle(player.world, player, 1);
+		}
 		
 		if(player.world.getGameRules().getBoolean(SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.ticksExisted %10 == 0)
 			player.attackEntityFrom(InkDamageUtils.WATER, 8f);
@@ -62,7 +68,13 @@ public class SquidFormHandler
 
 
 			if(squidSubmergeMode.get(player) == 1)
+			{
 				player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.inkSubmerge, SoundCategory.PLAYERS, 0.5F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F + 1.0F) * 0.95F);
+
+				if(player.world instanceof ServerWorld)
+				for(int i = 0; i < 2; i++)
+					ColorUtils.addInkSplashParticle((ServerWorld) player.world, player, 1.4f);
+			}
 			else if(squidSubmergeMode.get(player) == -1)
 				player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.inkSurface, SoundCategory.PLAYERS, 0.5F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F + 1.0F) * 0.95F);
 		}
@@ -81,6 +93,10 @@ public class SquidFormHandler
 				player.fallDistance = 0;
 				if(player.ticksExisted % 5 == 0 && player.getActivePotionEffect(Effects.POISON) == null && player.getActivePotionEffect(Effects.WITHER) == null)
 					player.heal(0.5f);
+
+				if(player.world.rand.nextFloat() <= 0.4f && (Math.abs(player.getMotion().getX()) > 0.14 || Math.abs(player.getMotion().getZ()) > 0.14))
+					ColorUtils.addInkSplashParticle(player.world, player, 1f);
+
 			}
 			
 			if(player.world.getBlockState(player.getPosition().down()).getBlock() instanceof InkwellBlock)

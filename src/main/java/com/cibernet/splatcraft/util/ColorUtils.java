@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.blocks.IColoredBlock;
+import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.entities.IColoredEntity;
@@ -16,8 +17,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -212,4 +215,45 @@ public class ColorUtils
 			? SplatcraftInkColors.undyed.getColor()
 			: SplatcraftTags.InkColors.STARTER_COLORS.getRandomElement(new Random()).getColor();
 	}
+
+	public static void addInkSplashParticle(World world, LivingEntity source, float size)
+	{
+		int color = DEFAULT;
+		if(PlayerInfoCapability.hasCapability(source))
+			color = PlayerInfoCapability.get(source).getColor();
+
+
+		addInkSplashParticle(world, color, source.getPosX(), source.getPosYHeight(world.rand.nextDouble()*0.3), source.getPosZ(), size + (world.rand.nextFloat()*0.2f - 0.1f));
+	}
+
+	public static void addInkSplashParticle(ServerWorld world, LivingEntity source, float size)
+	{
+		int color = DEFAULT;
+		if(PlayerInfoCapability.hasCapability(source))
+			color = PlayerInfoCapability.get(source).getColor();
+
+
+		addInkSplashParticle(world, color, source.getPosX(), source.getPosYHeight(world.rand.nextDouble()*0.3), source.getPosZ(), size + (world.rand.nextFloat()*0.2f - 0.1f));
+	}
+
+	public static void addStandingInkSplashParticle(World world, LivingEntity entity, float size)
+	{
+		int color = DEFAULT;
+		BlockPos pos = entity.getPosition().down();
+		if(entity.world.getBlockState(pos).getBlock() instanceof IColoredBlock)
+			color = ((IColoredBlock) entity.world.getBlockState(pos).getBlock()).getColor(world, pos);
+		addInkSplashParticle(world, color, entity.getPosX() + (world.rand.nextFloat()*0.8-0.4), entity.getPosYHeight(world.rand.nextDouble()*0.3), entity.getPosZ() + (world.rand.nextFloat()*0.8-0.4), size + (world.rand.nextFloat()*0.2f - 0.1f));
+	}
+
+	public static void addInkSplashParticle(World world, int color, double x, double y, double z, float size)
+	{
+		float[] rgb = hexToRGB(color);
+		world.addParticle(new InkSplashParticleData(rgb[0], rgb[1], rgb[2], size), x, y, z, 0.0D, 0.0D, 0.0D);
+	}
+	public static void addInkSplashParticle(ServerWorld world, int color, double x, double y, double z, float size)
+	{
+		float[] rgb = hexToRGB(color);
+		world.spawnParticle(new InkSplashParticleData(rgb[0], rgb[1], rgb[2], size), x, y, z, 1, 0, 0, 0, 0);
+	}
+
 }

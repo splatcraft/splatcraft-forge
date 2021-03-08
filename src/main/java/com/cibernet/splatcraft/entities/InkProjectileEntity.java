@@ -20,6 +20,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -161,7 +162,10 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		switch (id)
 		{
 			case 1:
-				world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getPosX() - this.getMotion().getX() * 0.25D, this.getPosY() - this.getMotion().getY() * 0.25D, this.getPosZ() - this.getMotion().getZ() * 0.25D,  this.getMotion().getX(), -0.8f, this.getMotion().getZ());
+				world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getPosX() - this.getMotion().getX() * 0.25D, this.getPosY() - this.getMotion().getY() * 0.25D, this.getPosZ() - this.getMotion().getZ() * 0.25D,  this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
+			break;
+			case 2:
+				world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()*2), this.getPosX(), this.getPosY(), this.getPosZ(),  0, 0, 0);
 			break;
 		}
 
@@ -188,14 +192,16 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 			return;
 			
 		this.func_230299_a_(result);
-		
+			
 		InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
 		if(explodes)
 		{
 			//TODO particles
 			world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 		}
-		this.remove();
+		else world.setEntityState(this, (byte) 2);
+		if(!world.isRemote)
+			this.remove();
 	}
 	
 	public void shoot(Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy)

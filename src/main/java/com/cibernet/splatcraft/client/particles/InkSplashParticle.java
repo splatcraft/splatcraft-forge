@@ -1,8 +1,13 @@
 package com.cibernet.splatcraft.client.particles;
 
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -17,13 +22,17 @@ public class InkSplashParticle extends SpriteTexturedParticle
     {
         super(world, x, y, z, motionX, motionY, motionZ);
 
+        this.motionX = motionX;
+        this.motionY = motionY;
+        this.motionZ = motionZ;
+
         particleRed = Math.max(0.018f,(float) (data.getRed()) - 0.018f);
         particleGreen = Math.max(0.018f,(float) (data.getGreen()) - 0.018f);
         particleBlue = Math.max(0.018f,(float) (data.getBlue()) - 0.018f);
 
         this.particleScale = 0.33F * (this.rand.nextFloat() * 0.5F + 0.5F) * 2.0F * data.getScale();
-        this.particleGravity = 0.1f;
-        this.maxAge = 5 + this.rand.nextInt(4);
+        this.particleGravity = 0;//0.1f;
+        this.maxAge = 5;
 
         spriteProvider = sprite;
         this.selectSpriteWithAge(sprite);
@@ -44,6 +53,21 @@ public class InkSplashParticle extends SpriteTexturedParticle
 
     public IParticleRenderType getRenderType() {
         return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    }
+
+    @Override
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
+    {
+        if(!(Minecraft.getInstance().gameSettings.getPointOfView().equals(PointOfView.FIRST_PERSON) && getDistanceSq(Minecraft.getInstance().player, posX, posY, posZ) < 0.2))
+            super.renderParticle(buffer, renderInfo, partialTicks);
+    }
+
+
+    protected double getDistanceSq(Entity entity, double x, double y, double z) {
+        double d0 = entity.getPosX() - x;
+        double d1 = entity.getPosYEye() - y;
+        double d2 = entity.getPosZ() - z;
+        return d0 * d0 + d1 * d1 + d2 * d2;
     }
 
     @OnlyIn(Dist.CLIENT)
