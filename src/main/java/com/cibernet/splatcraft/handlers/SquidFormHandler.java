@@ -82,6 +82,7 @@ public class SquidFormHandler
 		if(PlayerInfoCapability.isSquid(player))
 		{
 			player.setSprinting(false);
+			player.distanceWalkedModified = player.prevDistanceWalkedModified;
 
 			player.setPose(Pose.FALL_FLYING);
 			player.stopActiveHand();
