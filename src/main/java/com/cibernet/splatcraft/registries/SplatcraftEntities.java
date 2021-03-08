@@ -34,7 +34,7 @@ public class SplatcraftEntities
 {
 	
 	public static final EntityType<InkProjectileEntity> INK_PROJECTILE = create("ink_projectile", InkProjectileEntity::new, EntityClassification.MISC);
-	public static final EntityType<InkSquidEntity> INK_SQUID = create("ink_squid", InkSquidEntity::new, EntityClassification.AMBIENT, 0.6f, 0.6f);
+	public static final EntityType<InkSquidEntity> INK_SQUID = create("ink_squid", InkSquidEntity::new, EntityClassification.AMBIENT, 0.6f, 0.5f);
 	public static final EntityType<SquidBumperEntity> SQUID_BUMPER = create("squid_bumper", SquidBumperEntity::new, EntityClassification.MISC, 0.6f, 1.8f);
 	
 	@SubscribeEvent

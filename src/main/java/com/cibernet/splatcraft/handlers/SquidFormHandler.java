@@ -10,12 +10,15 @@ import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.InkDamageUtils;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.Difficulty;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -88,7 +91,22 @@ public class SquidFormHandler
 			}
 		}
 	}
-	
+
+	@SubscribeEvent
+	public static void onEntitySize(EntityEvent.Size event)
+	{
+		if(!event.getEntity().isAddedToWorld() || !(event.getEntity() instanceof PlayerEntity) || !PlayerInfoCapability.hasCapability((LivingEntity) event.getEntity()))
+			return;
+
+		IPlayerInfo info = PlayerInfoCapability.get((LivingEntity) event.getEntity());
+
+		if(info.isSquid())
+		{
+			event.setNewSize(new EntitySize(0.6f, 0.5f, false));
+			event.setNewEyeHeight(InkBlockUtils.canSquidHide((LivingEntity) event.getEntity()) ? 0.3f : 0.5f);
+		}
+	}
+
 	protected static boolean shouldBeInvisible(PlayerEntity playerEntity)
 	{
 		return playerEntity.isPotionActive(Effects.INVISIBILITY);
