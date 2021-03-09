@@ -31,6 +31,7 @@ public class SplatcraftConfig
     public static class Client
     {
         public static ForgeConfigSpec.EnumValue<SplatcraftKeyHandler.KeyMode> squidKeyMode;
+        public static ForgeConfigSpec.EnumValue<InkIndicator> inkIndicator;
         public static ForgeConfigSpec.BooleanValue vanillaInkDurability;
         public static ForgeConfigSpec.BooleanValue holdBarrierToRender;
         //public static ForgeConfigSpec.BooleanValue colorLock; TODO
@@ -39,6 +40,7 @@ public class SplatcraftConfig
         {
             client.comment("Accessibility Settings");
             squidKeyMode = client.comment("Squid Key Mode").defineEnum("splatcraft.squidKeyMode", SplatcraftKeyHandler.KeyMode.TOGGLE);
+            inkIndicator = client.comment("Determines how the amount of ink left in your tank is visualized.").defineEnum("splatcraft.inkIndicator", InkIndicator.BOTH);
             vanillaInkDurability = client.comment("Determines whether the any indicator that determines how much ink you have left matches vanilla durability colors instead of your ink color.")
                     .define("splatcraft.vanillaInkDurabilityColor", false);
             holdBarrierToRender = client.comment("Prevents Stage Barriers from rendering in creative mode unless the player is holding one in their hand.")
@@ -47,6 +49,14 @@ public class SplatcraftConfig
         }
 
         public static boolean getColorLock() {return false;}
+    }
+
+    public enum InkIndicator
+    {
+        CROSSHAIR,
+        DURABILITY,
+        BOTH,
+        NONE
     }
 
 }

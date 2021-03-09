@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.util;
 
+import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
@@ -21,7 +22,8 @@ public class ClientUtils
 	
 	public static boolean showDurabilityBar(ItemStack stack)
 	{
-		return getClientPlayer().getHeldItem(Hand.MAIN_HAND).equals(stack) && getDurabilityForDisplay(stack) > 0;
+		return(SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.DURABILITY)) &&
+				getClientPlayer().getHeldItem(Hand.MAIN_HAND).equals(stack) && getDurabilityForDisplay(stack) > 0;
 	}
 	
 	public static double getDurabilityForDisplay(ItemStack stack)

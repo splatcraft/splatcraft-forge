@@ -1,8 +1,12 @@
 package com.cibernet.splatcraft.handlers.client;
 
+import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
+import com.cibernet.splatcraft.data.SplatcraftTags;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.client.renderer.PlayerSquidRenderer;
+import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.ColorUtils;
@@ -19,6 +23,7 @@ import net.minecraft.block.BreakableBlock;
 import net.minecraft.block.StainedGlassPaneBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -26,11 +31,13 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
@@ -233,6 +240,76 @@ public class RendererHandler
 				event.setContent(((TextComponent)event.getContent()).setStyle(Style.EMPTY.setColor(Color.fromInt(color))));
 		}
 	}
-	
-	
+
+	private static int squidTime = 0;
+	private static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/widgets.png");
+
+	@SubscribeEvent
+	public static void renderGui(RenderGameOverlayEvent event)
+	{
+		PlayerEntity player = Minecraft.getInstance().player;
+		if(player == null || !PlayerInfoCapability.hasCapability(player))
+			return;
+		IPlayerInfo info = PlayerInfoCapability.get(player);
+
+		if(info.isSquid())
+		{
+			if(event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR))
+			{
+				squidTime++;
+
+				if (SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.CROSSHAIR))
+				{
+					int width = Minecraft.getInstance().getMainWindow().getScaledWidth();
+					int height = Minecraft.getInstance().getMainWindow().getScaledHeight();
+
+					int heightAnim = Math.min(14, squidTime);
+					int glowAnim = Math.max(0, Math.min(18, squidTime - 16));
+					float inkPctg = 0;
+					float[] rgb = ColorUtils.hexToRGB(info.getColor());
+
+					boolean hasTank = player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof InkTankItem;
+					boolean canUse = true;
+
+					if (hasTank) {
+						ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+						inkPctg = InkTankItem.getInkAmount(stack) / ((InkTankItem) stack.getItem()).capacity;
+
+						canUse = player.getActiveHand() != null ? ((InkTankItem) stack.getItem()).canUse(player.getHeldItem(player.getActiveHand()).getItem())
+								: ((InkTankItem) stack.getItem()).canUse(player.getHeldItemMainhand().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getHeldItemOffhand().getItem());
+					}
+
+					MatrixStack matrixStack = event.getMatrixStack();
+					matrixStack.push();
+					RenderSystem.enableBlend();
+					Minecraft.getInstance().getTextureManager().bindTexture(WIDGETS);
+					AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + (14 - heightAnim), 18, 2, 0, 95, 18, 2, 256, 256);
+					AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + (14 - heightAnim), 18, 4 + heightAnim, 0, 95, 18, 4 + heightAnim, 256, 256);
+					RenderSystem.color3f(rgb[0], rgb[1], rgb[2]);
+					AbstractGui.blit(matrixStack, width / 2 + 9, (int) (height / 2 - 9 + (14 - heightAnim) + (1 - inkPctg) * 18), 18, (int) ((4 + heightAnim) * inkPctg), 18, 95 + (int) ((1 - inkPctg) * 18), 18, (int) ((4 + heightAnim) * inkPctg), 256, 256);
+
+					if (SplatcraftConfig.Client.vanillaInkDurability.get()) {
+						float[] durRgb = ColorUtils.hexToRGB(MathHelper.hsvToRGB(Math.max(0.0F, (inkPctg)) / 3.0F, 1.0F, 1.0F));
+						RenderSystem.color3f(durRgb[0], durRgb[1], durRgb[2]);
+					}
+
+					AbstractGui.blit(matrixStack, width / 2 + 9 + (18 - glowAnim), height / 2 - 9, glowAnim, 18, 18 - glowAnim, 113, glowAnim, 18, 256, 256);
+
+					RenderSystem.color3f(1, 1, 1);
+					if (glowAnim >= 18 && (SplatcraftTags.Items.MATCH_ITEMS.contains(player.getHeldItemMainhand().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getHeldItemOffhand().getItem()))) {
+						if (!hasTank)
+							AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 18, 112, 18, 18, 256, 256);
+						else if (!canUse)
+							AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 36, 112, 18, 18, 256, 256);
+					}
+
+					matrixStack.pop();
+				}
+			}
+		}
+		else squidTime = 0;
+
+
+
+	}
 }

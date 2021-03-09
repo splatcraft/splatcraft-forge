@@ -163,11 +163,13 @@ public class InkTankItem extends ColoredArmorItem implements IDyeableArmorItem
 	{
 		return !SplatcraftConfig.Client.vanillaInkDurability.get() ? ColorUtils.getInkColor(stack) : super.getRGBDurabilityForDisplay(stack);
 	}
-	
+
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return stack.hasTag() && stack.getTag().contains("Ink") && getInkAmount(stack) < capacity;
+		return (SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.DURABILITY)) &&
+				stack.hasTag() && stack.getTag().contains("Ink") && getInkAmount(stack) < capacity;
 	}
 	
 	@Override
