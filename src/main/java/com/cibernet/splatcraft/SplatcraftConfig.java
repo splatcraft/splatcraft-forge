@@ -31,7 +31,7 @@ public class SplatcraftConfig
     public static class Client
     {
         public static ForgeConfigSpec.EnumValue<SplatcraftKeyHandler.KeyMode> squidKeyMode;
-        public static ForgeConfigSpec.BooleanValue dynamicInkDurability;
+        public static ForgeConfigSpec.BooleanValue vanillaInkDurability;
         public static ForgeConfigSpec.BooleanValue holdBarrierToRender;
         //public static ForgeConfigSpec.BooleanValue colorLock; TODO
 
@@ -39,8 +39,8 @@ public class SplatcraftConfig
         {
             client.comment("Accessibility Settings");
             squidKeyMode = client.comment("Squid Key Mode").defineEnum("splatcraft.squidKeyMode", SplatcraftKeyHandler.KeyMode.TOGGLE);
-            dynamicInkDurability = client.comment("Determines whether the durability bar on Splatcraft weapons that determines how much ink you have left matches its ink color or not")
-                    .define("splatcraft.dynamicInkDurabilityColor", true);
+            vanillaInkDurability = client.comment("Determines whether the any indicator that determines how much ink you have left matches vanilla durability colors instead of your ink color.")
+                    .define("splatcraft.vanillaInkDurabilityColor", false);
             holdBarrierToRender = client.comment("Prevents Stage Barriers from rendering in creative mode unless the player is holding one in their hand.")
                     .define("splatcraft.holdBarrierToRender", false);
             //colorLock = client.comment("Color Lock Mode").define("splatcraft.colorLock", false);

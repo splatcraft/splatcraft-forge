@@ -161,7 +161,7 @@ public class InkTankItem extends ColoredArmorItem implements IDyeableArmorItem
 	@Override
 	public int getRGBDurabilityForDisplay(ItemStack stack)
 	{
-		return SplatcraftConfig.Client.dynamicInkDurability.get() ? ColorUtils.getInkColor(stack) : super.getRGBDurabilityForDisplay(stack);
+		return !SplatcraftConfig.Client.vanillaInkDurability.get() ? ColorUtils.getInkColor(stack) : super.getRGBDurabilityForDisplay(stack);
 	}
 	
 	@Override
