@@ -300,7 +300,7 @@
     "gamerule.splatcraft.inkFriendlyFire": "Ink Friendly Fire",
     "gamerule.splatcraft.inkFriendlyFire.description": "Allows ink to damage players with their same color",
     "gamerule.splatcraft.inkMobDamagePercentage": "Ink Mob Damage Percentage",
-    "gamerule.splatcraft.inkMobDamage.description": "Determines how much damage is dealt by regular Splatcraft weapons against mobs.",
+    "gamerule.splatcraft.inkMobDamagePercentage.description": "Determines how much damage is dealt by regular Splatcraft weapons against mobs.",
     
     "status.coord_set.a": "first position to X: %s Y: %s Z: %s",
     "status.coord_set.b": "Set second position to X: %s Y: %s Z: %s",
