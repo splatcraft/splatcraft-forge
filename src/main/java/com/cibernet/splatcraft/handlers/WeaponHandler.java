@@ -83,7 +83,10 @@ public class WeaponHandler
 		{
 			ItemStack stack = player.getHeldItem(player.getActiveHand());
 			if(stack.getItem() instanceof WeaponBaseItem)
+			{
 				((WeaponBaseItem) stack.getItem()).weaponUseTick(player.world, player, stack, player.getItemInUseCount());
+				player.setSprinting(false);
+			}
 		}
 		else if(PlayerCharge.canDischarge(player) || PlayerInfoCapability.isSquid(player))
 			PlayerCharge.dischargeWeapon(player);
