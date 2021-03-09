@@ -2,6 +2,9 @@ package com.cibernet.splatcraft.handlers;
 
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
+import com.cibernet.splatcraft.client.particles.SquidSoulParticle;
+import com.cibernet.splatcraft.client.particles.SquidSoulParticleData;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.util.ColorUtils;
@@ -10,8 +13,10 @@ import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -24,30 +29,28 @@ public class WeaponHandler
 	private static Map<PlayerEntity, Vector3d> prevPosMap = new LinkedHashMap<>();
 	
 	@SubscribeEvent
-	public static void onLivingDamage(LivingDamageEvent event)
+	public static void onLivingDeath(LivingDeathEvent event)
 	{
 		if(event.getEntityLiving() instanceof PlayerEntity)
 		{
 			PlayerEntity target = (PlayerEntity) event.getEntityLiving();
-			
-			if(target.getHealth() > 0 && target.getHealth() - event.getAmount() <= 0)
+
+			int color = ColorUtils.getPlayerColor(target);
+			((ServerWorld)target.world).spawnParticle(new SquidSoulParticleData(color), target.getPosX(), target.getPosY()+0.5f, target.getPosZ(), 1,  0, 0, 0, 1.5f);
+
+			if(ScoreboardHandler.hasColorCriterion(color))
+				target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getDeathsAsColor(color), target.getScoreboardName(), score -> score.increaseScore(1));
+
+			if(event.getSource().getImmediateSource() instanceof PlayerEntity)
 			{
-				if(ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(target)))
-					target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getDeathsAsColor(ColorUtils.getPlayerColor(target)), target.getScoreboardName(), score -> score.increaseScore(1));
-				
-				if(event.getSource().getImmediateSource() instanceof PlayerEntity)
+				PlayerEntity source = (PlayerEntity) event.getSource().getTrueSource();
+				if(ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(source)))
 				{
-					PlayerEntity source = (PlayerEntity) event.getSource().getTrueSource();
-					if(ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(source)))
-					{
-						target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getColorKills(ColorUtils.getPlayerColor(target)), source.getScoreboardName(), score -> score.increaseScore(1));
-						target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getKillsAsColor(ColorUtils.getPlayerColor(source)), source.getScoreboardName(), score -> score.increaseScore(1));
-					}
+					target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getColorKills(color), source.getScoreboardName(), score -> score.increaseScore(1));
+					target.getWorldScoreboard().forAllObjectives(ScoreboardHandler.getKillsAsColor(ColorUtils.getPlayerColor(source)), source.getScoreboardName(), score -> score.increaseScore(1));
 				}
 			}
-		
-		
-		
+
 		}
 	}
 	

@@ -1,5 +1,7 @@
 package com.cibernet.splatcraft.entities;
 
+import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
+import com.cibernet.splatcraft.client.particles.SquidSoulParticleData;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
@@ -20,6 +22,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -60,7 +63,26 @@ public class InkSquidEntity extends CreatureEntity implements IColoredEntity
 		this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
 		goalSelector.addGoal(11, new LookAtGoal(this, PlayerEntity.class, 10.0F));
 	}
-	
+
+	@Override
+	public void onDeath(DamageSource p_70645_1_)
+	{
+		world.setEntityState(this, (byte) 60);
+		super.onDeath(p_70645_1_);
+	}
+
+	@Override
+	public void handleStatusUpdate(byte id)
+	{
+		switch(id)
+		{
+			case 60:
+				world.addParticle(new SquidSoulParticleData(getColor()), this.getPosX(), this.getPosY(), this.getPosZ(),  0, 1, 0);
+			break;
+			default: super.handleStatusUpdate(id);
+		}
+	}
+
 	@Override
 	protected int getExperiencePoints(PlayerEntity player)
 	{

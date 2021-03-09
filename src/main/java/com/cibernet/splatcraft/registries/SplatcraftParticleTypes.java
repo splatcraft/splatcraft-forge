@@ -27,6 +27,12 @@ public class SplatcraftParticleTypes
             return InkExplosionParticleData.CODEC;
         }
     };
+    public static final ParticleType<SquidSoulParticleData> SQUID_SOUL = new ParticleType<SquidSoulParticleData>(false, SquidSoulParticleData.DESERIALIZER) {
+        @Override
+        public Codec<SquidSoulParticleData> func_230522_e_() {
+            return SquidSoulParticleData.CODEC;
+        }
+    };
 
     @SubscribeEvent
     public static void registerFactories(ParticleFactoryRegisterEvent event)
@@ -34,6 +40,7 @@ public class SplatcraftParticleTypes
         Minecraft mc = Minecraft.getInstance();
         mc.particles.registerFactory(INK_SPLASH, InkSplashParticle.Factory::new);
         mc.particles.registerFactory(INK_EXPLOSION, InkExplosionParticle.Factory::new);
+        mc.particles.registerFactory(SQUID_SOUL, SquidSoulParticle.Factory::new);
     }
 
     @SubscribeEvent
@@ -43,5 +50,6 @@ public class SplatcraftParticleTypes
 
         registry.register(INK_SPLASH.setRegistryName("ink_splash"));
         registry.register(INK_EXPLOSION.setRegistryName("ink_explosion"));
+        registry.register(SQUID_SOUL.setRegistryName("squid_soul"));
     }
 }
