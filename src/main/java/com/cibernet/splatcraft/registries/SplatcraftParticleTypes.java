@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.client.particles.*;
+import com.cibernet.splatcraft.util.InkExplosion;
 import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleType;
@@ -14,10 +15,16 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class SplatcraftParticleTypes
 {
 
-    public static final ParticleType<InkSplashParticleData> INK = new ParticleType<InkSplashParticleData>(false, InkSplashParticleData.DESERIALIZER) {
+    public static final ParticleType<InkSplashParticleData> INK_SPLASH = new ParticleType<InkSplashParticleData>(false, InkSplashParticleData.DESERIALIZER) {
         @Override
         public Codec<InkSplashParticleData> func_230522_e_() {
             return InkSplashParticleData.CODEC;
+        }
+    };
+    public static final ParticleType<InkExplosionParticleData> INK_EXPLOSION = new ParticleType<InkExplosionParticleData>(false, InkExplosionParticleData.DESERIALIZER) {
+        @Override
+        public Codec<InkExplosionParticleData> func_230522_e_() {
+            return InkExplosionParticleData.CODEC;
         }
     };
 
@@ -25,7 +32,8 @@ public class SplatcraftParticleTypes
     public static void registerFactories(ParticleFactoryRegisterEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
-        mc.particles.registerFactory(INK, InkSplashParticle.Factory::new);
+        mc.particles.registerFactory(INK_SPLASH, InkSplashParticle.Factory::new);
+        mc.particles.registerFactory(INK_EXPLOSION, InkExplosionParticle.Factory::new);
     }
 
     @SubscribeEvent
@@ -33,6 +41,7 @@ public class SplatcraftParticleTypes
     {
         IForgeRegistry<ParticleType<?>> registry = event.getRegistry();
 
-        registry.register(INK.setRegistryName("ink_splash"));
+        registry.register(INK_SPLASH.setRegistryName("ink_splash"));
+        registry.register(INK_EXPLOSION.setRegistryName("ink_explosion"));
     }
 }

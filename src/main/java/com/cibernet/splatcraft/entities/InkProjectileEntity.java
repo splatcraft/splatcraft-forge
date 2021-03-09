@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.entities;
 
+import com.cibernet.splatcraft.client.particles.InkExplosionParticleData;
 import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
 import com.cibernet.splatcraft.handlers.WeaponHandler;
 import com.cibernet.splatcraft.registries.SplatcraftEntities;
@@ -134,7 +135,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 			InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
 			if(explodes)
 			{
-				//TODO particles
+				world.setEntityState(this, (byte) 3);
 				world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 			}
 			remove();
@@ -167,6 +168,9 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 			case 2:
 				world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()*2), this.getPosX(), this.getPosY(), this.getPosZ(),  0, 0, 0);
 			break;
+			case 3:
+				world.addParticle(new InkExplosionParticleData(getColor(), getProjectileSize()*2), this.getPosX(), this.getPosY(), this.getPosZ(),  0, 0, 0);
+			break;
 		}
 
 	}
@@ -177,11 +181,21 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		super.onEntityHit(result);
 		
 		Entity target = result.getEntity();
-		
+
+
 		if(!canPierce)
 		{
 			if(target instanceof LivingEntity)
 				InkDamageUtils.doSplatDamage(world, (LivingEntity) target, damage, getColor(),  func_234616_v_(), sourceWeapon, damageMobs, inkType);
+
+			if(explodes)
+			{
+				InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+				world.setEntityState(this, (byte) 3);
+				world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+			}
+			else world.setEntityState(this, (byte) 2);
+
 			remove();
 		}
 	}
@@ -196,7 +210,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
 		if(explodes)
 		{
-			//TODO particles
+			world.setEntityState(this, (byte) 3);
 			world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 		}
 		else world.setEntityState(this, (byte) 2);

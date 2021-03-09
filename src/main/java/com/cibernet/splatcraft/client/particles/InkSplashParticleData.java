@@ -18,10 +18,10 @@ import java.util.Locale;
 
 public class InkSplashParticleData implements IParticleData
 {
-    private final float red;
-    private final float green;
-    private final float blue;
-    private final float scale;
+    protected final float red;
+    protected final float green;
+    protected final float blue;
+    protected final float scale;
 
 
     public static final IDeserializer<InkSplashParticleData> DESERIALIZER = new IDeserializer<InkSplashParticleData>() {
@@ -69,7 +69,7 @@ public class InkSplashParticleData implements IParticleData
 
     @Override
     public ParticleType<?> getType() {
-        return SplatcraftParticleTypes.INK;
+        return SplatcraftParticleTypes.INK_SPLASH;
     }
 
     @Override
