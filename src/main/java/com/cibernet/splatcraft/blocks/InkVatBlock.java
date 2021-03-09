@@ -29,6 +29,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -42,7 +43,7 @@ public class InkVatBlock extends ContainerBlock implements IColoredBlock
 	
 	public InkVatBlock(String name)
 	{
-		super(Properties.create(Material.IRON));
+		super(Properties.create(Material.IRON).hardnessAndResistance(2.0f).harvestTool(ToolType.PICKAXE).setRequiresTool());
 		setRegistryName(name);
 		SplatcraftBlocks.inkColoredBlocks.add(this);
 		

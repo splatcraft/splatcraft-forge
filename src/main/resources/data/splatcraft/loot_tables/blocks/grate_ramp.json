@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:iron_block"
+          "name": "splatcraft:grate_ramp"
         }
       ],
       "conditions": [
