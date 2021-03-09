@@ -1,9 +1,7 @@
 package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.entities.IColoredEntity;
-import com.cibernet.splatcraft.entities.InkSquidEntity;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -37,8 +35,9 @@ public class InkDamageUtils
 		
 		if(damage == 0)
 			return false;
-		
-		boolean doDamage = damageMobs || SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_MOB_DAMAGE);
+
+		float mobDmgPctg = SplatcraftGameRules.getIntRuleValue(world, SplatcraftGameRules.INK_MOB_DAMAGE_PERCENTAGE)*0.01f;
+		boolean doDamage = damageMobs || mobDmgPctg > 0;
 		int targetColor = ColorUtils.getEntityColor(target);
 		
 		if(targetColor > -1)
@@ -50,7 +49,7 @@ public class InkDamageUtils
 			doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
 			
 		if(doDamage)
-			target.attackEntityFrom(damageSource, damage);
+			target.attackEntityFrom(damageSource, damage * ((target instanceof IColoredEntity || damageMobs) ? 1 : mobDmgPctg));
 		
 		return doDamage;
 	}

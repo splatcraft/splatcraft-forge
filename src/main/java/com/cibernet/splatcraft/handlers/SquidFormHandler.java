@@ -92,7 +92,7 @@ public class SquidFormHandler
 			if(InkBlockUtils.canSquidSwim(player))
 			{
 				player.fallDistance = 0;
-				if(player.ticksExisted % 5 == 0 && player.getActivePotionEffect(Effects.POISON) == null && player.getActivePotionEffect(Effects.WITHER) == null)
+				if(player.world.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN) && player.ticksExisted % 5 == 0 && player.getActivePotionEffect(Effects.POISON) == null && player.getActivePotionEffect(Effects.WITHER) == null)
 					player.heal(0.5f);
 
 				if(player.world.rand.nextFloat() <= 0.4f && (Math.abs(player.getMotion().getX()) > 0.14 || Math.abs(player.getMotion().getZ()) > 0.14))
