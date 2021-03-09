@@ -20,6 +20,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -89,14 +90,14 @@ public class SquidFormHandler
 			
 			player.addStat(SplatcraftStats.SQUID_TIME);
 			
-			if(InkBlockUtils.canSquidSwim(player))
+			if(InkBlockUtils.canSquidHide(player))
 			{
 				player.fallDistance = 0;
 				if(player.world.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN) && player.ticksExisted % 5 == 0 && player.getActivePotionEffect(Effects.POISON) == null && player.getActivePotionEffect(Effects.WITHER) == null)
 					player.heal(0.5f);
 
-				if(player.world.rand.nextFloat() <= 0.4f && (Math.abs(player.getMotion().getX()) > 0.14 || Math.abs(player.getMotion().getZ()) > 0.14))
-					ColorUtils.addInkSplashParticle(player.world, player, 1f);
+				if(player.world.rand.nextFloat() <= 0.6f && (Math.abs(player.getPosX() - player.prevPosX) > 0.14 ||Math.abs(player.getPosY() - player.prevPosY) > 0.07 || Math.abs(player.getPosZ() - player.prevPosZ) > 0.14))
+					ColorUtils.addInkSplashParticle(player.world, player, 1.1f);
 
 			}
 			
@@ -120,7 +121,7 @@ public class SquidFormHandler
 		if(info.isSquid())
 		{
 			event.setNewSize(new EntitySize(0.6f, 0.5f, false));
-			event.setNewEyeHeight(InkBlockUtils.canSquidHide((LivingEntity) event.getEntity()) ? 0.3f : 0.5f);
+			event.setNewEyeHeight(InkBlockUtils.canSquidHide((LivingEntity) event.getEntity()) ? 0.3f : 0.45f);
 		}
 	}
 
@@ -128,13 +129,18 @@ public class SquidFormHandler
 	{
 		return playerEntity.isPotionActive(Effects.INVISIBILITY);
 	}
-	
-	
+
+
 	@SubscribeEvent
-	public static void playerVisibility(PlayerEvent.Visibility event)
+	public static void playerVisibility(LivingEvent.LivingVisibilityEvent event)
 	{
-		if(PlayerInfoCapability.get(event.getPlayer()).isSquid() && InkBlockUtils.canSquidHide(event.getPlayer()))
-			event.modifyVisibility(0);
+		if(!(event.getEntityLiving() instanceof PlayerEntity))
+			return;
+
+		PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+
+		if(PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidHide(player))
+			event.modifyVisibility((Math.abs(player.getPosX() - player.prevPosX) > 0.14 ||Math.abs(player.getPosY() - player.prevPosY) > 0.07 || Math.abs(player.getPosZ() - player.prevPosZ) > 0.14) ? 0.7 : 0);
 	}
 	
 	@SubscribeEvent
