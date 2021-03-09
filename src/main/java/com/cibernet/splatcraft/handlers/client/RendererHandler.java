@@ -111,7 +111,7 @@ public class RendererHandler
 				tickTime = 0;
 			}
 			tickTime = (tickTime+1) % 10;
-			float yOff = -0.5f*((time/maxTime));// - (tickTime/20f));
+			float yOff = -0.5f*(((time-event.getPartialTicks())/maxTime));// - (tickTime/20f));
 			event.getMatrixStack().translate(0, yOff, 0);
 		}
 		else tickTime = 0;
@@ -242,6 +242,8 @@ public class RendererHandler
 	}
 
 	private static int squidTime = 0;
+	private static float prevInkPctg = 0;
+	private static float inkFlash = 0;
 	private static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/widgets.png");
 
 	@SubscribeEvent
@@ -257,6 +259,13 @@ public class RendererHandler
 			if(event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR))
 			{
 				squidTime++;
+				float inkPctg = 0;
+				boolean hasTank = player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof InkTankItem;
+				if(hasTank)
+				{
+					ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+					inkPctg = InkTankItem.getInkAmount(stack) / ((InkTankItem) stack.getItem()).capacity;
+				}
 
 				if (SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.CROSSHAIR))
 				{
@@ -265,15 +274,12 @@ public class RendererHandler
 
 					int heightAnim = Math.min(14, squidTime);
 					int glowAnim = Math.max(0, Math.min(18, squidTime - 16));
-					float inkPctg = 0;
 					float[] rgb = ColorUtils.hexToRGB(info.getColor());
 
-					boolean hasTank = player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof InkTankItem;
 					boolean canUse = true;
 
 					if (hasTank) {
 						ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-						inkPctg = InkTankItem.getInkAmount(stack) / ((InkTankItem) stack.getItem()).capacity;
 
 						canUse = player.getActiveHand() != null ? ((InkTankItem) stack.getItem()).canUse(player.getHeldItem(player.getActiveHand()).getItem())
 								: ((InkTankItem) stack.getItem()).canUse(player.getHeldItemMainhand().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getHeldItemOffhand().getItem());
@@ -285,13 +291,23 @@ public class RendererHandler
 					Minecraft.getInstance().getTextureManager().bindTexture(WIDGETS);
 					AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + (14 - heightAnim), 18, 2, 0, 95, 18, 2, 256, 256);
 					AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + (14 - heightAnim), 18, 4 + heightAnim, 0, 95, 18, 4 + heightAnim, 256, 256);
-					RenderSystem.color3f(rgb[0], rgb[1], rgb[2]);
-					AbstractGui.blit(matrixStack, width / 2 + 9, (int) (height / 2 - 9 + (14 - heightAnim) + (1 - inkPctg) * 18), 18, (int) ((4 + heightAnim) * inkPctg), 18, 95 + (int) ((1 - inkPctg) * 18), 18, (int) ((4 + heightAnim) * inkPctg), 256, 256);
+
+					if(inkPctg != prevInkPctg && inkPctg == 1)
+						inkFlash = 0.1f;
+					inkFlash = Math.max(0, inkFlash-0.002f);
+
+					float inkPctgLerp = lerp(prevInkPctg, inkPctg, 0.05f);
+					float inkSize = ((1 - inkPctg) * 18);
+
+					RenderSystem.color3f(rgb[0] + inkFlash, rgb[1] + inkFlash, rgb[2] + inkFlash);
+					matrixStack.translate(0, inkSize-Math.floor(inkSize), 0);
+					AbstractGui.blit(matrixStack, width / 2 + 9, (int) (height / 2 - 9 + (14 - heightAnim) + (1 - inkPctgLerp) * 18), 18, (int) ((4 + heightAnim) * inkPctgLerp), 18, 95 + inkSize, 18, (int) ((4 + heightAnim) * inkPctg), 256, 256);
+					matrixStack.translate(0, -(inkSize-Math.floor(inkSize)), 0);
 
 					if (SplatcraftConfig.Client.vanillaInkDurability.get()) {
-						float[] durRgb = ColorUtils.hexToRGB(MathHelper.hsvToRGB(Math.max(0.0F, (inkPctg)) / 3.0F, 1.0F, 1.0F));
+						float[] durRgb = ColorUtils.hexToRGB(MathHelper.hsvToRGB(Math.max(0.0F, (inkPctgLerp)) / 3.0F, 1.0F, 1.0F));
 						RenderSystem.color3f(durRgb[0], durRgb[1], durRgb[2]);
-					}
+					}else RenderSystem.color3f(rgb[0], rgb[1], rgb[2]);
 
 					AbstractGui.blit(matrixStack, width / 2 + 9 + (18 - glowAnim), height / 2 - 9, glowAnim, 18, 18 - glowAnim, 113, glowAnim, 18, 256, 256);
 
@@ -302,14 +318,17 @@ public class RendererHandler
 						else if (!canUse)
 							AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 36, 112, 18, 18, 256, 256);
 					}
-
 					matrixStack.pop();
 				}
+				prevInkPctg = inkPctg;
 			}
 		}
 		else squidTime = 0;
 
+	}
 
-
+	private static float lerp (float a, float b, float f)
+	{
+		return a + f * (b - a);
 	}
 }
