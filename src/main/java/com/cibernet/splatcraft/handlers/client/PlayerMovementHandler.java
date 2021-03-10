@@ -6,11 +6,13 @@ import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,6 +22,8 @@ import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.UUID;
 
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
@@ -74,13 +78,13 @@ public class PlayerMovementHandler
 		{
 			if(speedAttribute.hasModifier(INK_SWIM_SPEED))
 			{
-				player.moveRelative(((float)player.getAttributeValue(SplatcraftItems.INK_SWIM_SPEED)) * (player.isOnGround() ? 1 : 0.2f), new Vector3d(player.moveStrafing, 0.0f, player.moveForward));
-				//player.moveRelative(0, (float) Math.max(player.motionY, 0), 0, 0.06f);
+				player.moveRelative(((float)player.getAttributeValue(SplatcraftItems.INK_SWIM_SPEED)) * (player.isOnGround() ? 1 : 0.75f), new Vector3d(player.moveStrafing, 0.0f, player.moveForward));
 			}
 			
 		}
 		
 	}
+	private static final AttributeModifier SLOW_FALLING = new AttributeModifier(UUID.fromString("A5B6CF2A-2F7C-31EF-9022-7C3E7D5E6ABA"), "Slow falling acceleration reduction", -0.07, AttributeModifier.Operation.ADDITION); // Add -0.07 to 0.08 so we get the vanilla default of 0.01
 
 	@SubscribeEvent
 	public static void onInputUpdate(InputUpdateEvent event)
@@ -101,12 +105,24 @@ public class PlayerMovementHandler
 			double xOff = Math.signum(player.getHorizontalFacing().getXOffset() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
 			double zOff = Math.signum(player.getHorizontalFacing().getZOffset() == 0 ? player.moveStrafing : player.moveForward)*0.1 * player.getHorizontalFacing().getAxisDirection().getOffset();
 
+			double d0 = 0.08D;
+			ModifiableAttributeInstance gravity = player.getAttribute(net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get());
+			boolean flag = player.getMotion().y <= 0.0D;
+			if (flag && player.isPotionActive(Effects.SLOW_FALLING)) {
+				if (!gravity.hasModifier(SLOW_FALLING)) gravity.applyNonPersistentModifier(SLOW_FALLING);
+				player.fallDistance = 0.0F;
+			} else if (gravity.hasModifier(SLOW_FALLING)) {
+				gravity.removeModifier(SLOW_FALLING);
+			}
+			d0 = gravity.getValue();
+			//player.setMotion(player.getMotion().add(0.0D, d0 / 4.0D, 0.0D));
+
 			//if((player.isOnGround() && player.world.getCollisionShapes(player, player.getBoundingBox().offset(xOff, (double)(player.stepHeight), zOff)).toArray().length == 0) || !player.isOnGround())
 			{
 				if(player.getMotion().getY() < (input.jump ? 0.46f : 0.4f))
-					player.moveRelative(0.055f * (input.jump ? 1.9f : 1.7f), new Vector3d(0.0f, player.moveForward, 0.0f));
+					player.moveRelative(0.055f * (input.jump ? 1.9f : 1.7f), new Vector3d(0.0f, player.moveForward, -Math.min(0,player.moveForward)));
 				if(player.getMotion().getY() <= 0 && !input.sneaking)
-					player.moveRelative(0.035f, new Vector3d(0.0f,1f, 0.0f));
+					player.moveRelative(0.075f, new Vector3d(0.0f,1, 0.0f));
 
 				if(input.sneaking)
 					player.setMotion(player.getMotion().x, Math.max(0,player.getMotion().getY()), player.getMotion().z);

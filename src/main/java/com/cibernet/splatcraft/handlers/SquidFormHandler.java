@@ -111,6 +111,21 @@ public class SquidFormHandler
 	}
 
 	@SubscribeEvent
+	public static void onPlayerJump(LivingEvent.LivingJumpEvent event)
+	{
+		if(!(event.getEntityLiving() instanceof PlayerEntity) || !PlayerInfoCapability.hasCapability(event.getEntityLiving()))
+			return;
+
+		PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+
+		if(PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidSwim(player))
+		{
+			player.addExhaustion(0.2F);
+			player.setMotion(player.getMotion().getX(), player.getMotion().getY()*1.1, player.getMotion().getZ());
+		}
+	}
+
+	@SubscribeEvent
 	public static void onEntitySize(EntityEvent.Size event)
 	{
 		if(!event.getEntity().isAddedToWorld() || !(event.getEntity() instanceof PlayerEntity) || !PlayerInfoCapability.hasCapability((LivingEntity) event.getEntity()))
