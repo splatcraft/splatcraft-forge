@@ -289,34 +289,47 @@ public class RendererHandler
 					matrixStack.push();
 					RenderSystem.enableBlend();
 					Minecraft.getInstance().getTextureManager().bindTexture(WIDGETS);
-					AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + (14 - heightAnim), 18, 2, 0, 95, 18, 2, 256, 256);
-					AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + (14 - heightAnim), 18, 4 + heightAnim, 0, 95, 18, 4 + heightAnim, 256, 256);
 
-					if(inkPctg != prevInkPctg && inkPctg == 1)
-						inkFlash = 0.1f;
-					inkFlash = Math.max(0, inkFlash-0.002f);
+					if(SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK)) {
+						AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + (14 - heightAnim), 18, 2, 0, 95, 18, 2, 256, 256);
+						AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + (14 - heightAnim), 18, 4 + heightAnim, 0, 95, 18, 4 + heightAnim, 256, 256);
 
-					float inkPctgLerp = lerp(prevInkPctg, inkPctg, 0.05f);
-					float inkSize = ((1 - inkPctg) * 18);
+						if (inkPctg != prevInkPctg && inkPctg == 1)
+							inkFlash = 0.1f;
+						inkFlash = Math.max(0, inkFlash - 0.002f);
 
-					RenderSystem.color3f(rgb[0] + inkFlash, rgb[1] + inkFlash, rgb[2] + inkFlash);
-					matrixStack.translate(0, inkSize-Math.floor(inkSize), 0);
-					AbstractGui.blit(matrixStack, width / 2 + 9, (int) (height / 2 - 9 + (14 - heightAnim) + (1 - inkPctgLerp) * 18), 18, (int) ((4 + heightAnim) * inkPctgLerp), 18, 95 + inkSize, 18, (int) ((4 + heightAnim) * inkPctg), 256, 256);
-					matrixStack.translate(0, -(inkSize-Math.floor(inkSize)), 0);
+						float inkPctgLerp = lerp(prevInkPctg, inkPctg, 0.05f);
+						float inkSize = ((1 - inkPctg) * 18);
 
-					if (SplatcraftConfig.Client.vanillaInkDurability.get()) {
-						float[] durRgb = ColorUtils.hexToRGB(MathHelper.hsvToRGB(Math.max(0.0F, (inkPctgLerp)) / 3.0F, 1.0F, 1.0F));
-						RenderSystem.color3f(durRgb[0], durRgb[1], durRgb[2]);
-					}else RenderSystem.color3f(rgb[0], rgb[1], rgb[2]);
+						RenderSystem.color3f(rgb[0] + inkFlash, rgb[1] + inkFlash, rgb[2] + inkFlash);
+						matrixStack.translate(0, inkSize - Math.floor(inkSize), 0);
+						AbstractGui.blit(matrixStack, width / 2 + 9, (int) (height / 2 - 9 + (14 - heightAnim) + (1 - inkPctgLerp) * 18), 18, (int) ((4 + heightAnim) * inkPctgLerp), 18, 95 + inkSize, 18, (int) ((4 + heightAnim) * inkPctg), 256, 256);
+						matrixStack.translate(0, -(inkSize - Math.floor(inkSize)), 0);
 
-					AbstractGui.blit(matrixStack, width / 2 + 9 + (18 - glowAnim), height / 2 - 9, glowAnim, 18, 18 - glowAnim, 113, glowAnim, 18, 256, 256);
+						if (SplatcraftConfig.Client.vanillaInkDurability.get()) {
+							float[] durRgb = ColorUtils.hexToRGB(MathHelper.hsvToRGB(Math.max(0.0F, (inkPctgLerp)) / 3.0F, 1.0F, 1.0F));
+							RenderSystem.color3f(durRgb[0], durRgb[1], durRgb[2]);
+						} else RenderSystem.color3f(rgb[0], rgb[1], rgb[2]);
 
-					RenderSystem.color3f(1, 1, 1);
-					if (glowAnim >= 18 && (SplatcraftTags.Items.MATCH_ITEMS.contains(player.getHeldItemMainhand().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getHeldItemOffhand().getItem()))) {
-						if (!hasTank)
-							AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 18, 112, 18, 18, 256, 256);
-						else if (!canUse)
-							AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 36, 112, 18, 18, 256, 256);
+						AbstractGui.blit(matrixStack, width / 2 + 9 + (18 - glowAnim), height / 2 - 9, glowAnim, 18, 18 - glowAnim, 113, glowAnim, 18, 256, 256);
+
+						RenderSystem.color3f(1, 1, 1);
+						if (glowAnim >= 18 && (SplatcraftTags.Items.MATCH_ITEMS.contains(player.getHeldItemMainhand().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getHeldItemOffhand().getItem()))) {
+							if (!hasTank)
+								AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 18, 112, 18, 18, 256, 256);
+							else if (!canUse)
+								AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 36, 112, 18, 18, 256, 256);
+						}
+					}
+					else
+					{
+						AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + (14 - heightAnim), 18, 2, 0, 131, 18, 2, 256, 256);
+						AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + (14 - heightAnim), 18, 4 + heightAnim, 0, 131, 18, 4 + heightAnim, 256, 256);
+
+						RenderSystem.color3f(rgb[0], rgb[1], rgb[2]);
+
+						AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + (14 - heightAnim), 18, 4 + heightAnim, 18, 131, 18, 4 + heightAnim, 256, 256);
+						AbstractGui.blit(matrixStack, width / 2 + 9 + (18 - glowAnim), height / 2 - 9, glowAnim, 18, 18 - glowAnim, 149, glowAnim, 18, 256, 256);
 					}
 					matrixStack.pop();
 				}
