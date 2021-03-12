@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class InkSquidColorLayer extends LayerRenderer<LivingEntity, InkSquidModel>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/mobs/ink_squid.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/ink_squid.png");
 	private final InkSquidModel MODEL = new InkSquidModel();
 	
 	public InkSquidColorLayer(IEntityRenderer<LivingEntity, InkSquidModel> renderer)

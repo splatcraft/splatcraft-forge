@@ -43,7 +43,7 @@ import java.util.Collections;
 
 public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 {
-	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(SlimeEntity.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(InkProjectileEntity.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> RESPAWN_TIME = EntityDataManager.createKey(SquidBumperEntity.class, DataSerializers.VARINT);
 	private static final DataParameter<Float> SPLAT_HEALTH = EntityDataManager.createKey(SquidBumperEntity.class, DataSerializers.FLOAT);
 	

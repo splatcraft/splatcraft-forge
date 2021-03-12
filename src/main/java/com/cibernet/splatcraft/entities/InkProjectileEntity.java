@@ -34,11 +34,12 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class InkProjectileEntity extends ProjectileItemEntity implements IColoredEntity
 {
-	
-	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(SlimeEntity.class, DataSerializers.VARINT);
-	private static final DataParameter<Float> PROJ_SIZE = EntityDataManager.createKey(SlimeEntity.class, DataSerializers.FLOAT);
+
+	private static final DataParameter<String> PROJ_TYPE = EntityDataManager.createKey(InkProjectileEntity.class, DataSerializers.STRING);
+	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(InkProjectileEntity.class, DataSerializers.VARINT);
+	private static final DataParameter<Float> PROJ_SIZE = EntityDataManager.createKey(InkProjectileEntity.class, DataSerializers.FLOAT);
 	private static final DamageSource DAMAGE_SOURCE = new DamageSource("ink");
-	
+
 	public float gravityVelocity = 0.075f;
 	public int lifespan = 600;
 	public boolean explodes = false;
@@ -46,6 +47,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	public float splashDamage = 0;
 	public boolean damageMobs = false;
 	public boolean canPierce = false;
+	public boolean persistent = false;
 	public ItemStack sourceWeapon = ItemStack.EMPTY;
 	public float trailSize;
 	public float trailCooldown = 0;
@@ -100,6 +102,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		gravityVelocity = 0;
 		trailSize = getProjectileSize()*0.45f;
 		explodes = true;
+		setProjectileType(Types.BLASTER);
 		return this;
 	}
 	
@@ -107,6 +110,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	protected void registerData()
 	{
 		dataManager.register(COLOR, ColorUtils.DEFAULT);
+		dataManager.register(PROJ_TYPE, Types.SHOOTER);
 		dataManager.register(PROJ_SIZE, 1.0f);
 	}
 	
@@ -130,7 +134,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	{
 		super.tick();
 		
-		if(lifespan-- <= 0)
+		if(!world.isRemote && !persistent && lifespan-- <= 0)
 		{
 			InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
 			if(explodes)
@@ -227,8 +231,10 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		if(thrower instanceof PlayerEntity) try
 		{ posDiff = thrower.getPositionVec().subtract(WeaponHandler.getPlayerPrevPos((PlayerEntity) thrower)); }
 		catch(NullPointerException e) {}
-		
-		setPosition(getPosX() + posDiff.getX(), getPosY() + posDiff.getY(), getPosZ() + posDiff.getZ());
+
+
+
+		setPositionAndUpdate(getPosX() + posDiff.getX(), getPosY() + posDiff.getY(), getPosZ() + posDiff.getZ());
 		setMotion(getMotion().add(posDiff.mul(0.8, 0.8, 0.8)));
 	}
 	
@@ -254,8 +260,10 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		damageMobs = nbt.getBoolean("DamageMobs");
 		canPierce = nbt.getBoolean("CanPierce");
 		explodes = nbt.getBoolean("Explodes");
-		
-		
+		persistent = nbt.getBoolean("Persistent");
+
+		String type = nbt.getString("ProjectileType");
+		setProjectileType(type.isEmpty() ? Types.DEFAULT : type);
 		inkType = InkBlockUtils.InkType.values.get(nbt.getInt("InkType"));
 		
 		sourceWeapon = ItemStack.read(nbt.getCompound("SourceWeapon"));
@@ -274,7 +282,9 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		nbt.putBoolean("DamageMobs", damageMobs);
 		nbt.putBoolean("CanPierce", canPierce);
 		nbt.putBoolean("Explodes", explodes);
-		
+		nbt.putBoolean("Persistent", persistent);
+
+		nbt.putString("ProjectileType", getProjectileType());
 		nbt.putInt("InkType", inkType.getIndex());
 		nbt.put("SourceWeapon",sourceWeapon.write(new CompoundNBT()));
 	}
@@ -305,4 +315,14 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	
 	public int getColor() { return dataManager.get(COLOR);}
 	public void setColor(int color) { dataManager.set(COLOR, color);}
+	public String getProjectileType() { return dataManager.get(PROJ_TYPE);}
+	public void setProjectileType(String v) { dataManager.set(PROJ_TYPE, v);}
+
+	public static class Types
+	{
+		public static final String DEFAULT = "ink";
+		public static final String SHOOTER = "shooter";
+		public static final String SPLASH = "splash";
+		public static final String BLASTER = "blaster";
+	}
 }

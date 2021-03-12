@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class InkSquidRenderer extends LivingRenderer<LivingEntity, InkSquidModel> //implements IEntityRenderer<LivingEntity, InkSquidModel>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/mobs/ink_squid_overlay.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/ink_squid_overlay.png");
 	
 	public InkSquidRenderer(EntityRendererManager manager)
 	{

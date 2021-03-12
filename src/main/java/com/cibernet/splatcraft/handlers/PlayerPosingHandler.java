@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability
 import com.cibernet.splatcraft.items.weapons.SlosherItem;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -72,6 +73,21 @@ public class PlayerPosingHandler
 
                     if(angle < 6.5f)
                         mainHand.rotateAngleX = MathHelper.cos(angle * 0.6662F);
+                    break;
+                case BOW_CHARGE:
+                    if(mainHand == model.bipedRightArm) {
+                        mainHand.rotateAngleY = -0.1F + model.getModelHead().rotateAngleY;
+                        offHand.rotateAngleY = 0.1F + model.getModelHead().rotateAngleY + 0.4F;
+                        mainHand.rotateAngleX = (-(float) Math.PI / 2F) + model.getModelHead().rotateAngleX;
+                        offHand.rotateAngleX = (-(float) Math.PI / 2F) + model.getModelHead().rotateAngleX;
+                    }
+                    else
+                    {
+                        offHand.rotateAngleY = -0.1F + model.getModelHead().rotateAngleY - 0.4F;
+                        mainHand.rotateAngleY = 0.1F + model.getModelHead().rotateAngleY;
+                        offHand.rotateAngleX = (-(float)Math.PI / 2F) + model.getModelHead().rotateAngleX;
+                        mainHand.rotateAngleX = (-(float)Math.PI / 2F) + model.getModelHead().rotateAngleX;
+                    }
                     break;
             }
         }

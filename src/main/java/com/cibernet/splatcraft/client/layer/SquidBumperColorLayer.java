@@ -19,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class SquidBumperColorLayer extends LayerRenderer<SquidBumperEntity, SquidBumperModel>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/mobs/squid_bumper.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/squid_bumper.png");
 	private final SquidBumperModel MODEL = new SquidBumperModel();
 	
 	public SquidBumperColorLayer(IEntityRenderer<SquidBumperEntity, SquidBumperModel> renderer)

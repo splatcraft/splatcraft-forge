@@ -70,7 +70,7 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 	{
 		return chargeSpeed;
 	}
-	
+
 	@Override
 	public void onRelease(World world, PlayerEntity player, ItemStack stack, float charge)
 	{
@@ -82,7 +82,8 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 		reduceInk(player, getInkConsumption(charge));
 		PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(10, player.inventory.currentItem, true, false, false));
 	}
-	
+
+
 	@Override
 	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
@@ -92,7 +93,8 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 		}
 		else sendNoInkMessage(entity, null);
 	}
-	
+
+
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft)
 	{
@@ -108,7 +110,8 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 			PlayerCharge.setCanDischarge((PlayerEntity) entity, true);
 		}
 	}
-	
+
+
 	public float getInkConsumption(float charge)
 	{
 		return minConsumption + (maxConsumption-minConsumption)*charge;

@@ -28,7 +28,7 @@ import net.minecraft.util.text.TextFormatting;
 
 public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, SquidBumperModel> //implements IEntityRenderer<LivingEntity, InkSquidModel>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/mobs/squid_bumper_overlay.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/squid_bumper_overlay.png");
 	
 	public SquidBumperRenderer(EntityRendererManager manager)
 	{
