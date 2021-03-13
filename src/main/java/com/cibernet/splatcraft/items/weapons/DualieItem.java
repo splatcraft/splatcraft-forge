@@ -150,17 +150,26 @@ public class DualieItem extends WeaponBaseItem
 		}
 		else
 		{
+			int rollCount = getRollString(stack);
+			int maxRolls = 0;
+
+			if(stack.getItem() instanceof DualieItem)
+				maxRolls += ((DualieItem) stack.getItem()).maxRolls;
+			if(offhandDualie.getItem() instanceof DualieItem)
+				maxRolls += ((DualieItem) offhandDualie.getItem()).maxRolls;
+
 			boolean rollFire = canRollFire(stack);
 			boolean hasCooldown = PlayerInfoCapability.get(entity).hasPlayerCooldown();
+			boolean onRollCooldown = entity.isOnGround() && hasCooldown && rollCount >= Math.max(2, maxRolls);
 
 			if(offhandDualie.getItem() instanceof DualieItem)
 			{
-				rollFire = rollFire && canRollFire(offhandDualie);
+				rollFire = canRollFire(offhandDualie);
 				if((!entity.isOnGround() && (rollFire || !hasCooldown)) || entity.isOnGround())
-					((DualieItem) offhandDualie.getItem()).fireDualie(world, entity, offhandDualie, timeLeft + ((DualieItem) offhandDualie.getItem()).offhandFiringOffset);
+					((DualieItem) offhandDualie.getItem()).fireDualie(world, entity, offhandDualie, timeLeft + ((DualieItem) offhandDualie.getItem()).offhandFiringOffset, entity.isOnGround() && hasCooldown);
 			}
 			if((!entity.isOnGround() && (rollFire || !hasCooldown)) || entity.isOnGround())
-				fireDualie(world, entity, stack, timeLeft);
+				fireDualie(world, entity, stack, timeLeft, onRollCooldown);
 		}
 	}
 	
@@ -216,9 +225,9 @@ public class DualieItem extends WeaponBaseItem
 		return (stack.getItem() instanceof DualieItem) ? ((DualieItem) stack.getItem()).canRollFire : false;
 	}
 	
-	protected void fireDualie(World world, LivingEntity entity, ItemStack stack, int timeLeft)
+	protected void fireDualie(World world, LivingEntity entity, ItemStack stack, int timeLeft, boolean onRollCooldown)
 	{
-		if(!world.isRemote && (getUseDuration(stack) - timeLeft - 1) % firingSpeed == 0)
+		if(!world.isRemote && (getUseDuration(stack) - timeLeft - 1) % (onRollCooldown ? 2 : firingSpeed) == 0)
 		{
 			if(getInkAmount(entity, stack) >= inkConsumption)
 			{
