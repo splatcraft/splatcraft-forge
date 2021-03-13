@@ -34,11 +34,11 @@ import static com.cibernet.splatcraft.handlers.client.RendererHandler.TRANSLUCEN
 
 public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarrierTileEntity>
 {
-
+	/*
 	private static final RenderType BARRIER_RENDER = RenderType.makeType("splatcraft:stage_barriers", DefaultVertexFormats.BLOCK, 7, 131072, true, false, RenderType.State.getBuilder()
 			.shadeModel(new RenderState.ShadeModelState(true)).lightmap(new RenderState.LightmapState(true)).texture(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true))
 			.alpha(new RenderState.AlphaState(0.003921569F)).transparency(TRANSLUCENT_TRANSPARENCY).build(true));
-	
+	*/
 	
 	public StageBarrierTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
 	{
@@ -68,7 +68,7 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
 		ResourceLocation textureLoc = new ResourceLocation(Splatcraft.MODID, "blocks/" + block.getRegistryName().getPath() + (Minecraft.getInstance().gameSettings.graphicFanciness.func_238162_a_() > 0 ? "_fancy" : ""));
 		
 		TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(textureLoc);
-		IVertexBuilder builder = buffer.getBuffer(BARRIER_RENDER);
+		IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucentNoCrumbling());
 		
 		float alpha = (activeTime / tileEntity.getMaxActiveTime());
 		
