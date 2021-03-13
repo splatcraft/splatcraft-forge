@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.loot.BaseLootModifier;
+import com.cibernet.splatcraft.loot.ChestLootModifier;
 import com.cibernet.splatcraft.loot.FishingLootModifier;
 import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
@@ -31,6 +32,7 @@ public class SplatcraftLootModifier
         IForgeRegistry<GlobalLootModifierSerializer<?>> registry = event.getRegistry();
 
         registry.register(new FishingLootModifier.Serializer().setRegistryName(new ResourceLocation(Splatcraft.MODID, "fishing")));
+        registry.register(new ChestLootModifier.Serializer().setRegistryName(new ResourceLocation(Splatcraft.MODID, "chest_loot")));
     }
 }
 

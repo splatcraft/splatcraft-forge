@@ -2,6 +2,9 @@
   "replace": false,
   "entries": [
     "splatcraft:sunken_crate_fishing",
-    "splatcraft:power_egg_fishing"
+    "splatcraft:power_egg_fishing",
+    "splatcraft:small_ocean_ruin_loot",
+    "splatcraft:big_ocean_ruin_loot",
+    "splatcraft:big_ocean_ruin_crate"
   ]
 }

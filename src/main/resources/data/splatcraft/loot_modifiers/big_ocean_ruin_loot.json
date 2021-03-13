@@ -1,0 +1,9 @@
+{
+  "type": "splatcraft:chest_loot",
+  "conditions": [],
+  "item": "splatcraft:power_egg",
+  "countMin": 5,
+  "countMax": 20,
+  "chance": 0.4,
+  "parent": "minecraft:chests/underwater_ruin_big"
+}
