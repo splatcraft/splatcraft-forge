@@ -144,6 +144,7 @@ public class DualieItem extends WeaponBaseItem
 			if(entity == ClientUtils.getClientPlayer() && ClientUtils.canPerformRoll((PlayerEntity) entity))
 			{
 				entity.moveRelative(performRoll((PlayerEntity) entity, stack, offhandDualie), ClientUtils.getDodgeRollVector((PlayerEntity) entity));
+				entity.setMotion(entity.getMotion().getX(), 0.05, entity.getMotion().getZ());
 				SplatcraftPacketHandler.sendToServer(new DodgeRollPacket((PlayerEntity) entity, stack, offhandDualie));
 			}
 		}
