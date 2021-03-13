@@ -1,8 +1,8 @@
 package com.cibernet.splatcraft.handlers;
 
+import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
-import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
@@ -33,6 +33,8 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber
 public class SplatcraftCommonHandler
@@ -166,7 +168,17 @@ public class SplatcraftCommonHandler
 		int i = 0;
 		for(int c : ScoreboardHandler.getCriteriaKeySet())
 			colors[i++] = c;
-		
+
+		TreeMap<String, Integer> playerColors = new TreeMap<>();
+
+		for(PlayerEntity p : event.getPlayer().world.getPlayers())
+		{
+			if(PlayerInfoCapability.hasCapability(p))
+				playerColors.put(p.getDisplayName().getString(), PlayerInfoCapability.get(p).getColor());
+		}
+
+		SplatcraftPacketHandler.sendToAll(new UpdateClientColorsPacket(event.getPlayer().getDisplayName().getString(), PlayerInfoCapability.get(event.getPlayer()).getColor()));
+		SplatcraftPacketHandler.sendToPlayer(new UpdateClientColorsPacket(playerColors), (ServerPlayerEntity) player);
 		SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, colors), (ServerPlayerEntity) player);
 	}
 	
@@ -207,4 +219,5 @@ public class SplatcraftCommonHandler
 			}
 		}
 	}
+
 }

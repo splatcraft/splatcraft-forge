@@ -60,12 +60,15 @@ public class ColorUtils
 	}
 	public static void setPlayerColor(PlayerEntity player, int color, boolean updateClient)
 	{
-		PlayerInfoCapability.get(player).setColor(color);
-		ScoreboardHandler.updatePlayerColorScore(player, color);
+		if(PlayerInfoCapability.hasCapability(player))
+		{
+			PlayerInfoCapability.get(player).setColor(color);
+			ScoreboardHandler.updatePlayerColorScore(player, color);
+		}
 		
 		World world = player.world;
 		if(!world.isRemote && updateClient)
-			SplatcraftPacketHandler.sendToDim(new PlayerColorPacket(player, color), world);
+			SplatcraftPacketHandler.sendToAll(new PlayerColorPacket(player, color));
 	}
 	
 	public static void setPlayerColor(PlayerEntity player, int color)

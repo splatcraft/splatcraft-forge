@@ -12,9 +12,42 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.UUID;
 
 public class ClientUtils
 {
+	@OnlyIn(Dist.CLIENT)
+	protected static final TreeMap<String, Integer> clientColors = new TreeMap<>();
+
+	@OnlyIn(Dist.CLIENT)
+	public static void resetClientColors()
+	{
+		clientColors.clear();
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static int getClientPlayerColor(String player)
+	{
+		return clientColors.getOrDefault(player, -1);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static void setClientPlayerColor(String player, int color)
+	{
+		clientColors.put(player, color);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static void putClientColors(TreeMap<String, Integer> map)
+	{
+		clientColors.putAll(map);
+	}
+
 	public static PlayerEntity getClientPlayer()
 	{
 		return Minecraft.getInstance().player;

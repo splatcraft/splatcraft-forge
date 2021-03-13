@@ -45,8 +45,10 @@ public class PlayerSetSquidClientPacket extends PlayToClientPacket
 	@Override
 	public void execute()
 	{
+		if(Minecraft.getInstance().world.getPlayerByUuid(this.target) == null)
+			return;
 		IPlayerInfo target = PlayerInfoCapability.get(Minecraft.getInstance().world.getPlayerByUuid(this.target));
-		
+
 		if(squid == -1)
 			squid = !target.isSquid() ? 1 : 0;
 		target.setIsSquid(squid == 1 ? true : false);

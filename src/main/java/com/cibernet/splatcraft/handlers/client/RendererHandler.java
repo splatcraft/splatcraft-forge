@@ -9,6 +9,7 @@ import com.cibernet.splatcraft.client.renderer.PlayerSquidRenderer;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
+import com.cibernet.splatcraft.util.ClientUtils;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
@@ -24,6 +25,7 @@ import net.minecraft.block.StainedGlassPaneBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.network.play.NetworkPlayerInfo;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -36,9 +38,11 @@ import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.*;
+import net.minecraft.world.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.TickEvent;
@@ -47,6 +51,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.TreeMap;
 
 //@Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -212,18 +218,25 @@ public class RendererHandler
 		if(SplatcraftGameRules.getBooleanRuleValue(Minecraft.getInstance().world, SplatcraftGameRules.COLORED_PLAYER_NAMES) && event.getMessage() instanceof TranslationTextComponent)
 		{
 			TranslationTextComponent component = (TranslationTextComponent) event.getMessage();
-			TreeMap<String, AbstractClientPlayerEntity> players = Maps.newTreeMap();
-			Minecraft.getInstance().world.getPlayers().forEach(player -> players.put(player.getDisplayName().getString(), player));
-			
+			//TreeMap<String, AbstractClientPlayerEntity> players = Maps.newTreeMap();
+			//Minecraft.getInstance().world.getPlayers().forEach(player -> players.put(player.getDisplayName().getString(), player));
+
+
+			List<String> players = new ArrayList<>();
+			Minecraft.getInstance().getConnection().getPlayerInfoMap().forEach((info) ->
+			{
+				players.add(getDisplayName(info).getString());
+			});
+
 			for(Object obj : component.getFormatArgs())
 			{
 				if(!(obj instanceof TextComponent))
 					continue;
 				TextComponent msgChildren = (TextComponent) obj;
 				String key = msgChildren.getString();
-				
-				if(players.containsKey(key))
-					msgChildren.setStyle(Style.EMPTY.setColor(Color.fromInt(ColorUtils.getPlayerColor(players.get(key)))));
+
+				if(players.contains(key))
+					msgChildren.setStyle(Style.EMPTY.setColor(Color.fromInt(ClientUtils.getClientPlayerColor(key))));
 			}
 		}
 	}
@@ -241,6 +254,10 @@ public class RendererHandler
 		}
 	}
 
+
+	public static ITextComponent getDisplayName(NetworkPlayerInfo info) {
+		return info.getDisplayName() != null ? info.getDisplayName().deepCopy() : ScorePlayerTeam.func_237500_a_(info.getPlayerTeam(), new StringTextComponent(info.getGameProfile().getName()));
+	}
 	private static int squidTime = 0;
 	private static float prevInkPctg = 0;
 	private static float inkFlash = 0;
