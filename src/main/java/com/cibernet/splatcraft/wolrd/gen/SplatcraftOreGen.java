@@ -28,9 +28,11 @@ public class SplatcraftOreGen
 
     public static void registerOres()
     {
+        /*
         overworldGen.add(register("sardinium", Feature.ORE.withConfiguration(
                 new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, SplatcraftBlocks.sardiniumOre.getDefaultState(), 6))
         .range(40).func_242731_b(8)));
+        */
         oceanGen.add(register("sardinium_ocean", Feature.ORE.withConfiguration(
                 new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, SplatcraftBlocks.sardiniumOre.getDefaultState(), 12))
         .range(60).func_242731_b(8)));
