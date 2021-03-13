@@ -42,15 +42,16 @@ public class BlasterItem extends ShooterItem
 	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
 		CooldownTracker cooldownTracker = ((PlayerEntity)entity).getCooldownTracker();
-		if(getInkAmount(entity, stack) > inkConsumption && !cooldownTracker.hasCooldown(this))
+		if(!cooldownTracker.hasCooldown(this))
 		{
-			if(entity instanceof PlayerEntity)
-			{
-				PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, true, false, true));
-				if(!world.isRemote)
-					cooldownTracker.setCooldown(this, cooldown);
-			}
-		} else if(timeLeft % (cooldown) == 0) sendNoInkMessage(entity);
+			if (getInkAmount(entity, stack) > inkConsumption) {
+				if (entity instanceof PlayerEntity) {
+					PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, true, false, true));
+					if (!world.isRemote)
+						cooldownTracker.setCooldown(this, cooldown);
+				}
+			} else if (timeLeft % (cooldown) == 0) sendNoInkMessage(entity);
+		}
 	}
 	
 	@Override
