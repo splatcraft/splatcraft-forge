@@ -33,8 +33,9 @@ public class InkSplashParticleData implements IParticleData
             return new InkSplashParticleData(color, reader.readFloat());
         }
 
-        public InkSplashParticleData read(ParticleType<InkSplashParticleData> particleTypeIn, PacketBuffer buffer) {
-            return new InkSplashParticleData(buffer.readVarInt(), buffer.readFloat());
+        public InkSplashParticleData read(ParticleType<InkSplashParticleData> particleTypeIn, PacketBuffer buffer)
+        {
+            return new InkSplashParticleData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
     };
 
@@ -78,6 +79,7 @@ public class InkSplashParticleData implements IParticleData
         buffer.writeFloat(red);
         buffer.writeFloat(green);
         buffer.writeFloat(blue);
+        buffer.writeFloat(scale);
     }
 
     public String getParameters() {

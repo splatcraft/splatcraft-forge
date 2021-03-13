@@ -31,7 +31,7 @@ public class SquidSoulParticleData implements IParticleData
         }
 
         public SquidSoulParticleData read(ParticleType<SquidSoulParticleData> particleTypeIn, PacketBuffer buffer) {
-            return new SquidSoulParticleData(buffer.readVarInt());
+            return new SquidSoulParticleData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
     };
 

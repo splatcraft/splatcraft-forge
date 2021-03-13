@@ -31,6 +31,11 @@ public class InkExplosionParticleData extends InkSplashParticleData
         })).apply(p_239803_0_, InkExplosionParticleData::new);
     });
 
+    @Override
+    public void write(PacketBuffer buffer) {
+        super.write(buffer);
+    }
+
     public static final IDeserializer<InkExplosionParticleData> DESERIALIZER = new IDeserializer<InkExplosionParticleData>() {
         public InkExplosionParticleData deserialize(ParticleType<InkExplosionParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException
         {
@@ -41,7 +46,7 @@ public class InkExplosionParticleData extends InkSplashParticleData
         }
 
         public InkExplosionParticleData read(ParticleType<InkExplosionParticleData> particleTypeIn, PacketBuffer buffer) {
-            return new InkExplosionParticleData(buffer.readVarInt(), buffer.readFloat());
+            return new InkExplosionParticleData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
     };
 
