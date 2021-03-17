@@ -1,6 +1,10 @@
 package com.cibernet.splatcraft.util;
 
+import com.cibernet.splatcraft.data.capabilities.inkoverlay.IInkOverlayInfo;
+import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability;
 import com.cibernet.splatcraft.entities.IColoredEntity;
+import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
+import com.cibernet.splatcraft.network.UpdateInkOverlayPacket;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -22,15 +26,15 @@ public class InkDamageUtils
 	
 	public static boolean doSplatDamage(World world, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType)
 	{
-		return doDamage(world, target, damage, color, source, sourceItem, damageMobs, inkType, "splat");
+		return doDamage(world, target, damage, color, source, sourceItem, damageMobs, inkType, "splat", false);
 	}
 	
 	public static boolean doRollDamage(World world, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType)
 	{
-		return doDamage(world, target, damage, color, source, sourceItem, damageMobs, inkType, "roll");
+		return doDamage(world, target, damage, color, source, sourceItem, damageMobs, inkType, "roll", true);
 	}
 	
-	public static boolean doDamage(World world, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType, String name)
+	public static boolean doDamage(World world, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType, String name, boolean applyHurtCooldown)
 	{
 		
 		if(damage == 0)
@@ -49,8 +53,20 @@ public class InkDamageUtils
 			doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
 			
 		if(doDamage)
+		{
 			target.attackEntityFrom(damageSource, damage * ((target instanceof IColoredEntity || damageMobs) ? 1 : mobDmgPctg));
-		
+			if(InkOverlayCapability.hasCapability(target))
+			{
+				IInkOverlayInfo info = InkOverlayCapability.get(target);
+				info.addAmount(damage * ((target instanceof IColoredEntity || damageMobs) ? 1 : Math.max(0.5f,mobDmgPctg)));
+				info.setColor(color);
+				SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
+			}
+		}
+
+		if(!applyHurtCooldown && !SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_DAMAGE_COOLDOWN))
+			target.hurtResistantTime = 0;
+
 		return doDamage;
 	}
 	

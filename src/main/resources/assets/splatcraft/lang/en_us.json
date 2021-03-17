@@ -298,7 +298,9 @@
     "gamerule.splatcraft.universalInk": "Universal Ink",
     "gamerule.splatcraft.universalInk.description": "Allows players to swim on enemy ink.",
     "gamerule.splatcraft.inkFriendlyFire": "Ink Friendly Fire",
-    "gamerule.splatcraft.inkFriendlyFire.description": "Allows ink to damage players with their same color",
+    "gamerule.splatcraft.inkFriendlyFire.description": "Allows ink to damage players with their same color.",
+    "gamerule.splatcraft.inkDamageCooldown": "Ink Damage Cooldown",
+    "gamerule.splatcraft.inkDamageCooldown.description": "Prevents ink damage from bypassing hurt resistance time.",
     "gamerule.splatcraft.inkMobDamagePercentage": "Ink Mob Damage Percentage",
     "gamerule.splatcraft.inkMobDamagePercentage.description": "Determines how much damage is dealt by regular Splatcraft weapons against mobs.",
     
