@@ -10,6 +10,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -33,7 +34,7 @@ public class ScanTurfCommand
 	
 	private static int execute(CommandSource source, BlockPos from, BlockPos to, int mode) throws CommandSyntaxException
 	{
-		RemoteItem.RemoteResult result = TurfScannerItem.scanTurf(source.getWorld(), from, to, mode, source.asPlayer());
+		RemoteItem.RemoteResult result = TurfScannerItem.scanTurf(source.getWorld(), from, to, mode, source.getEntity() instanceof ServerPlayerEntity ? source.asPlayer() : null);
 		
 		source.sendFeedback(result.getOutput() == null ? new TranslationTextComponent("commands.scanturf.success", result.getCommandResult()) : result.getOutput(), true);
 		
