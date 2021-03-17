@@ -1,5 +1,10 @@
 package com.cibernet.splatcraft.entities;
 
+import com.cibernet.splatcraft.client.particles.InkExplosionParticleData;
+import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
+import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability;
+import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
+import com.cibernet.splatcraft.network.UpdateInkOverlayPacket;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
@@ -43,11 +48,11 @@ import java.util.Collections;
 
 public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 {
-	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(InkProjectileEntity.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(SquidBumperEntity.class, DataSerializers.VARINT);
 	private static final DataParameter<Integer> RESPAWN_TIME = EntityDataManager.createKey(SquidBumperEntity.class, DataSerializers.VARINT);
 	private static final DataParameter<Float> SPLAT_HEALTH = EntityDataManager.createKey(SquidBumperEntity.class, DataSerializers.FLOAT);
 	
-	private static final float maxInkHealth = 20.0F;
+	public static final float maxInkHealth = 20.0F;
 	public static final int maxRespawnTime = 60;
 	public boolean inkproof = false;
 	/** After punching the stand, the cooldown before you can punch it again without breaking it. */
@@ -104,7 +109,10 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 		{
 			ink(damage);
 			if(getInkHealth() <= 0)
+			{
 				this.world.setEntityState(this, (byte) 34);
+				InkOverlayCapability.get(this).setAmount(0);
+			}
 		}
 		return false;
 	}
@@ -193,13 +201,12 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 		
 	}
 	
-	private void playPopParticles() //TODO
+	private void playPopParticles()
 	{
-		/*
 		for(int i = 0; i < 10; i++)
-			SplatCraftParticleSpawner.spawnInkParticle(posX, posY + height * 0.5, posZ, rand.nextDouble() * 0.5 - 0.25, rand.nextDouble() * 0.5 - 0.25, rand.nextDouble() * 0.5 - 0.25, getColor(), 2);
-		SplatCraftParticleSpawner.spawnInksplosionParticle(posX, posY + height * 0.5, posZ, 0, 0, 0, getColor(), 2);
-		*/
+			world.addParticle(new InkSplashParticleData( getColor(), 2), getPosX(), getPosY() + getHeight() * 0.5, getPosZ(), rand.nextDouble() * 0.5 - 0.25, rand.nextDouble() * 0.5 - 0.25, rand.nextDouble() * 0.5 - 0.25);
+		world.addParticle(new InkExplosionParticleData(getColor(), 2),getPosX(), getPosY()+getHeight() * 0.5, getPosZ(), 0, 0, 0);
+
 	}
 	
 	private void playBrokenSound()
@@ -237,6 +244,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 				if(this.world.isRemote)
 				{
 					this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, this.getSoundCategory(), 0.5F, 20.0F, false);
+					InkOverlayCapability.get(this).setAmount(0);
 					playPopParticles();
 				}
 			break;
@@ -405,6 +413,9 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 			world.playSound(null, getPosX(), getPosY(), getPosZ(), SoundEvents.BLOCK_NOTE_BLOCK_CHIME, getSoundCategory(), 1, 4);
 		setInkHealth(maxInkHealth);
 		setRespawnTime(0);
+
+		InkOverlayCapability.get(this).setAmount(0);
+
 		//updateBoundingBox();
 		
 	}
