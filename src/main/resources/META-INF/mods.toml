@@ -43,7 +43,7 @@ This mod aims to add items and mechanics based on the game in a cohesive way, su
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[34.1,)" #mandatory
+    versionRange="[36.0,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
