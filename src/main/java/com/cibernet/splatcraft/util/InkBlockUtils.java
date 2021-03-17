@@ -180,7 +180,7 @@ public class InkBlockUtils
 			Block block = entity.world.getBlockState(pos).getBlock();
 			
 			if((!(block instanceof IColoredBlock) || (block instanceof IColoredBlock && ((IColoredBlock) block).canClimb())) && entity.world.getTileEntity(pos) instanceof InkColorTileEntity &&
-					(((InkColorTileEntity) entity.world.getTileEntity(pos)).getColor() == ColorUtils.getEntityColor(entity)) && !entity.isPassenger())
+					ColorUtils.colorEquals(entity, entity.world.getTileEntity(pos)) && !entity.isPassenger())
 				return true;
 		}
 		return false;
