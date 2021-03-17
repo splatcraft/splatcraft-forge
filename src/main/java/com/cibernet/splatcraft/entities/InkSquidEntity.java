@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 
 public class InkSquidEntity extends CreatureEntity implements IColoredEntity
 {
-	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(InkProjectileEntity.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(InkSquidEntity.class, DataSerializers.VARINT);
 	
 	
 	public InkSquidEntity(EntityType<? extends CreatureEntity> type, World world)
