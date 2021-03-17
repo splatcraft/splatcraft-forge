@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.data.capabilities.saveinfo.SaveInfoCapability;
 import net.minecraft.entity.Entity;
@@ -18,6 +19,7 @@ public class SplatcraftCapabilities
 	{
 		PlayerInfoCapability.register();
 		SaveInfoCapability.register();
+		InkOverlayCapability.register();
 	}
 	
 	@SubscribeEvent
@@ -25,7 +27,8 @@ public class SplatcraftCapabilities
 	{
 		if(event.getObject() instanceof PlayerEntity)
 			event.addCapability(new ResourceLocation(Splatcraft.MODID, "player_info"), new PlayerInfoCapability());
-		
+		event.addCapability(new ResourceLocation(Splatcraft.MODID, "ink_overlay"), new InkOverlayCapability());
+
 	}
 	
 	@SubscribeEvent

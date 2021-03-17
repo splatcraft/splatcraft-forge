@@ -2,10 +2,15 @@ package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
+import com.cibernet.splatcraft.client.model.InkSquidModel;
+import com.cibernet.splatcraft.client.model.SquidBumperModel;
+import com.cibernet.splatcraft.client.renderer.PlayerSquidRenderer;
 import com.cibernet.splatcraft.data.SplatcraftTags;
+import com.cibernet.splatcraft.data.capabilities.inkoverlay.IInkOverlayInfo;
+import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
-import com.cibernet.splatcraft.client.renderer.PlayerSquidRenderer;
+import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
@@ -13,7 +18,6 @@ import com.cibernet.splatcraft.util.ClientUtils;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
-import com.google.common.collect.Maps;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -23,15 +27,20 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BreakableBlock;
 import net.minecraft.block.StainedGlassPaneBlock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.network.play.NetworkPlayerInfo;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.PlayerContainer;
@@ -39,29 +48,27 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.*;
-import net.minecraft.world.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.TreeMap;
 
 //@Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class RendererHandler
 {
-
-	public static final ArrayList<ResourceLocation> textures = new ArrayList<>();
-	
 	private static PlayerSquidRenderer squidRenderer = null;
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void playerRender(RenderPlayerEvent event)
@@ -74,10 +81,68 @@ public class RendererHandler
 			if(squidRenderer == null)
 				squidRenderer = new PlayerSquidRenderer(event.getRenderer().getRenderManager());
 			if(!InkBlockUtils.canSquidHide(player))
+			{
 				squidRenderer.render(player, player.rotationYawHead, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
+				net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<LivingEntity, InkSquidModel>(player, squidRenderer, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight()));
+			}
 			//else player.setInvisible(true);
 		}
 		//else event.getRenderer().getRenderManager().setRenderShadow(true);
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public static void livingRenderer(RenderLivingEvent.Post event)
+	{
+		LivingEntity entity = event.getEntity();
+
+		int overlay = 0;
+		int color = ColorUtils.DEFAULT;
+
+		if(InkOverlayCapability.hasCapability(entity))
+		{
+			IInkOverlayInfo info = InkOverlayCapability.get(entity);
+			color = info.getColor();
+			overlay = (int) (Math.min(info.getAmount()/(entity instanceof SquidBumperEntity ? SquidBumperEntity.maxInkHealth : entity.getMaxHealth()) * 4, 4)-1);
+		}
+
+		if(overlay <= -1)
+			return;
+
+		MatrixStack matrixStack = event.getMatrixStack();
+		float f = MathHelper.interpolateAngle(event.getPartialRenderTick(), entity.prevRenderYawOffset, entity.renderYawOffset);
+
+		matrixStack.push();
+
+		try {
+			ObfuscationReflectionHelper.findMethod(LivingRenderer.class, "func_225621_a_", LivingEntity.class, MatrixStack.class, float.class, float.class, float.class)
+					.invoke(event.getRenderer(), entity, matrixStack,(float) entity.ticksExisted + event.getPartialRenderTick(), f, event.getPartialRenderTick());
+			ObfuscationReflectionHelper.findMethod(LivingRenderer.class, "func_225620_a_", LivingEntity.class, MatrixStack.class, float.class)
+					.invoke(event.getRenderer(), entity, matrixStack, event.getPartialRenderTick());
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+
+		if (entity.getPose() == Pose.SLEEPING) {
+			Direction direction = entity.getBedDirection();
+			if (direction != null) {
+				float f4 = entity.getEyeHeight(Pose.STANDING) - 0.1F;
+				matrixStack.translate((double)((float)(-direction.getXOffset()) * f4), 0.0D, (double)((float)(-direction.getZOffset()) * f4));
+			}
+		}
+
+		matrixStack.scale(-1.0F, -1.0F, 1.0F);
+		matrixStack.translate(0.0D, (double)-1.501F, 0.0D);
+
+		EntityModel model = event.getRenderer().getEntityModel();
+		RenderType rendertype = model.getRenderType(new ResourceLocation(Splatcraft.MODID, "textures/entity/ink_overlay_"+overlay+".png"));
+		IVertexBuilder ivertexbuilder = event.getBuffers().getBuffer(rendertype);
+		int i = LivingRenderer.getPackedOverlay(entity, 0);
+
+		float[] rgb = ColorUtils.hexToRGB(color);
+		model.render(matrixStack, ivertexbuilder, event.getLight(), i, rgb[0], rgb[1], rgb[2], 1);
+		matrixStack.pop();
 	}
 
 	@SubscribeEvent

@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.data.SplatcraftTags;
+import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.InkTankItem;
@@ -9,6 +10,8 @@ import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,6 +23,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -31,10 +35,8 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber
 public class SplatcraftCommonHandler
@@ -204,7 +206,7 @@ public class SplatcraftCommonHandler
 	}
 	
 	@SubscribeEvent
-	public static void gameruleUpdateEvent(TickEvent.WorldTickEvent event)
+	public static void onWorldTick(TickEvent.WorldTickEvent event)
 	{
 		World world = event.world;
 		if(world.isRemote)
@@ -216,6 +218,26 @@ public class SplatcraftCommonHandler
 			{
 				SplatcraftGameRules.booleanRules.put(rule.getKey(), worldValue);
 				SplatcraftPacketHandler.sendToAll(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.getRuleFromIndex(rule.getKey()), rule.getValue()));
+			}
+		}
+
+		List<Entity> entities = new ArrayList<>();
+
+		if(!world.isRemote)
+			entities = ((ServerWorld)world).getEntities().filter((entity -> entity instanceof LivingEntity)).collect(Collectors.toList());
+		else {
+			List<Entity> finalEntities = entities;
+			((ClientWorld)world).getAllEntities().forEach(entity -> {if(entity instanceof LivingEntity) finalEntities.add(entity);});
+		}
+
+		for(Entity e : entities)
+		{
+			LivingEntity living = ((LivingEntity)e);
+			if(InkOverlayCapability.hasCapability(living))
+			{
+				if(living.isInWater())
+					InkOverlayCapability.get(living).setAmount(0);
+				else InkOverlayCapability.get(living).addAmount(-0.01f);
 			}
 		}
 	}

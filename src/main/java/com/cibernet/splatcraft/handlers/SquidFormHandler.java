@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.blocks.InkwellBlock;
+import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
@@ -94,7 +95,10 @@ public class SquidFormHandler
 			{
 				player.fallDistance = 0;
 				if(player.world.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN) && player.ticksExisted % 5 == 0 && player.getActivePotionEffect(Effects.POISON) == null && player.getActivePotionEffect(Effects.WITHER) == null)
+				{
 					player.heal(0.5f);
+					InkOverlayCapability.get(player).addAmount(-0.49f);
+				}
 
 				if(player.world.rand.nextFloat() <= 0.6f && (Math.abs(player.getPosX() - player.prevPosX) > 0.14 ||Math.abs(player.getPosY() - player.prevPosY) > 0.07 || Math.abs(player.getPosZ() - player.prevPosZ) > 0.14))
 					ColorUtils.addInkSplashParticle(player.world, player, 1.1f);
@@ -108,6 +112,7 @@ public class SquidFormHandler
 				ColorUtils.setPlayerColor(player, inkwell.getColor());
 			}
 		}
+		InkOverlayCapability.get(player).addAmount(-0.01f);
 	}
 
 	@SubscribeEvent
@@ -120,7 +125,7 @@ public class SquidFormHandler
 
 		if(PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidSwim(player))
 		{
-			player.addExhaustion(0.2F);
+			player.addExhaustion(1F);
 			player.setMotion(player.getMotion().getX(), player.getMotion().getY()*1.1, player.getMotion().getZ());
 		}
 	}
