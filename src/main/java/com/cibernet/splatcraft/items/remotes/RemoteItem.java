@@ -67,20 +67,22 @@ public abstract class RemoteItem extends Item
 			tooltip.add(new TranslationTextComponent("item.remote.coords.a", nbt.getInt("PointAX"), nbt.getInt("PointAY"), nbt.getInt("PointAZ")));
 		
 	}
-	
+
 	@Override
 	public ActionResultType onItemUse(ItemUseContext context)
 	{
+		if(context.getWorld().isRemote)
+			return ActionResultType.PASS;
+
 		if(addCoords(context.getItem(), context.getPos()))
 		{
 			String key = (hasCoordA(context.getItem())) ? "b" : "a";
 			BlockPos pos = context.getPos();
-			
-			if(context.getWorld().isRemote)
-				context.getPlayer().sendStatusMessage(new TranslationTextComponent("status.coord_set." + key, pos.getX(), pos.getY(), pos.getZ()), true);
+
+			context.getPlayer().sendStatusMessage(new TranslationTextComponent("status.coord_set." + key, pos.getX(), pos.getY(), pos.getZ()), true);
 			return ActionResultType.SUCCESS;
 		}
-		return onItemRightClick(context.getWorld(), context.getPlayer(), context.getHand()).getType();
+		return ActionResultType.PASS;
 	}
 	
 	@Override
@@ -94,10 +96,10 @@ public abstract class RemoteItem extends Item
 			mode = cycleRemoteMode(stack);
 			String statusMsg = getTranslationKey() + ".mode." + mode;
 			
-			if(I18n.hasKey(statusMsg))
+			if(worldIn.isRemote && I18n.hasKey(statusMsg))
 				playerIn.sendStatusMessage(new TranslationTextComponent("status.remote_mode", new TranslationTextComponent(statusMsg)), true);
 		}
-		else if(hasCoordSet(stack))
+		else if(hasCoordSet(stack) && !worldIn.isRemote)
 		{
 			RemoteResult remoteResult = onRemoteUse(worldIn, stack, ColorUtils.getPlayerColor(playerIn), mode);
 			
@@ -106,7 +108,8 @@ public abstract class RemoteItem extends Item
 			worldIn.playSound(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SplatcraftSounds.remoteUse, SoundCategory.BLOCKS, 0.8f, 1);
 			return new ActionResult<>(remoteResult.wasSuccessful() ? ActionResultType.SUCCESS : ActionResultType.FAIL, stack);
 		}
-		
+
+
 		return super.onItemRightClick(worldIn, playerIn, handIn);
 	}
 	
@@ -160,7 +163,7 @@ public abstract class RemoteItem extends Item
 		if(hasCoordSet(stack))
 			return false;
 		
-		CompoundNBT nbt = stack.getTag();
+		CompoundNBT nbt = stack.getOrCreateTag();
 		
 		String key = (hasCoordA(stack)) ? "B" : "A";
 		
