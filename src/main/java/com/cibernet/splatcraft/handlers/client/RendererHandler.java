@@ -192,7 +192,7 @@ public class RendererHandler
 	@SubscribeEvent
 	public static void onItemRenderGui(RenderItemEvent.Gui.Pre event)
 	{
-		if(event.getItem().getItem().getRegistryName().getNamespace().equals(Splatcraft.MODID))
+		if(event.getItem().getItem().equals(SplatcraftItems.powerEgg))
 		{
 			IBakedModel modelIn = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getModelManager().getModel(new ModelResourceLocation(event.getItem().getItem().getRegistryName() + "#inventory"));
 			renderItem(event.getItem(), event.getTransformType(), true, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getOverlay(), modelIn);
