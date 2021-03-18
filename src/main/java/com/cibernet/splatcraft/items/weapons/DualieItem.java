@@ -143,8 +143,22 @@ public class DualieItem extends WeaponBaseItem
 		{
 			if(entity == ClientUtils.getClientPlayer() && ClientUtils.canPerformRoll((PlayerEntity) entity))
 			{
-				entity.moveRelative(performRoll((PlayerEntity) entity, stack, offhandDualie), ClientUtils.getDodgeRollVector((PlayerEntity) entity));
-				entity.setMotion(entity.getMotion().getX(), 0.05, entity.getMotion().getZ());
+				ItemStack activeDualie;
+				int rollCount = getRollString(stack);
+				int maxRolls = 0;
+				if(stack.getItem() instanceof DualieItem)
+					maxRolls += ((DualieItem) stack.getItem()).maxRolls;
+				if(offhandDualie.getItem() instanceof DualieItem)
+					maxRolls += ((DualieItem) offhandDualie.getItem()).maxRolls;
+				if(rollCount >= maxRolls-1)
+					activeDualie = (getRollCooldown(stack, maxRolls, rollCount) >= getRollCooldown(offhandDualie, maxRolls, rollCount))? stack : offhandDualie;
+				else activeDualie = maxRolls % 2 == 1 && (offhandDualie.getItem() instanceof DualieItem) ? offhandDualie : stack;
+
+				if(getInkAmount(entity, activeDualie) >= getInkForRoll(activeDualie))
+				{
+					entity.moveRelative(performRoll((PlayerEntity) entity, stack, offhandDualie), ClientUtils.getDodgeRollVector((PlayerEntity) entity));
+					entity.setMotion(entity.getMotion().getX(), 0.05, entity.getMotion().getZ());
+				}
 				SplatcraftPacketHandler.sendToServer(new DodgeRollPacket((PlayerEntity) entity, stack, offhandDualie));
 			}
 		}
