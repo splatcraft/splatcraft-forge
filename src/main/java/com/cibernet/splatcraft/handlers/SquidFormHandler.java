@@ -97,7 +97,8 @@ public class SquidFormHandler
 				if(player.world.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN) && player.ticksExisted % 5 == 0 && player.getActivePotionEffect(Effects.POISON) == null && player.getActivePotionEffect(Effects.WITHER) == null)
 				{
 					player.heal(0.5f);
-					InkOverlayCapability.get(player).addAmount(-0.49f);
+					if(InkOverlayCapability.hasCapability(player))
+						InkOverlayCapability.get(player).addAmount(-0.49f);
 				}
 
 				if(player.world.rand.nextFloat() <= 0.6f && (Math.abs(player.getPosX() - player.prevPosX) > 0.14 ||Math.abs(player.getPosY() - player.prevPosY) > 0.07 || Math.abs(player.getPosZ() - player.prevPosZ) > 0.14))
@@ -112,7 +113,8 @@ public class SquidFormHandler
 				ColorUtils.setPlayerColor(player, inkwell.getColor());
 			}
 		}
-		InkOverlayCapability.get(player).addAmount(-0.01f);
+		if(InkOverlayCapability.hasCapability(player))
+			InkOverlayCapability.get(player).addAmount(-0.01f);
 	}
 
 	@SubscribeEvent

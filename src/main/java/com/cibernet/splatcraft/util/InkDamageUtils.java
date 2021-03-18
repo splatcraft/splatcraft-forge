@@ -3,11 +3,13 @@ package com.cibernet.splatcraft.util;
 import com.cibernet.splatcraft.data.capabilities.inkoverlay.IInkOverlayInfo;
 import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability;
 import com.cibernet.splatcraft.entities.IColoredEntity;
+import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.network.UpdateInkOverlayPacket;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IndirectEntityDamageSource;
@@ -42,23 +44,43 @@ public class InkDamageUtils
 
 		float mobDmgPctg = SplatcraftGameRules.getIntRuleValue(world, SplatcraftGameRules.INK_MOB_DAMAGE_PERCENTAGE)*0.01f;
 		boolean doDamage = damageMobs || mobDmgPctg > 0;
+		boolean applyInkCoverage = true;
 		int targetColor = ColorUtils.getEntityColor(target);
 		
 		if(targetColor > -1)
+		{
 			doDamage = (targetColor != color || SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_FRIENDLY_FIRE));
+			applyInkCoverage = doDamage;
+		}
 		
 		InkDamageSource damageSource = new InkDamageSource(name, source, source, sourceItem);
 		
 		if(target instanceof IColoredEntity)
-			doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
-			
-		if(doDamage)
 		{
+			doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
+			applyInkCoverage = doDamage;
+		}
+
+		if(target instanceof SheepEntity)
+		{
+			if(!((SheepEntity) target).getSheared())
+			{
+				doDamage = false;
+				applyInkCoverage = false;
+			}
+		}
+
+		if(doDamage)
 			target.attackEntityFrom(damageSource, damage * ((target instanceof IColoredEntity || damageMobs) ? 1 : mobDmgPctg));
+
+		if(applyInkCoverage && !target.isInWater())
+		{
 			if(InkOverlayCapability.hasCapability(target))
 			{
 				IInkOverlayInfo info = InkOverlayCapability.get(target);
-				info.addAmount(damage * ((target instanceof IColoredEntity || damageMobs) ? 1 : Math.max(0.5f,mobDmgPctg)));
+
+				if(info.getAmount() < (target instanceof SquidBumperEntity ? SquidBumperEntity.maxInkHealth : target.getMaxHealth())*1.5)
+					info.addAmount(damage * ((target instanceof IColoredEntity || damageMobs) ? 1 : Math.max(0.5f,mobDmgPctg)));
 				info.setColor(color);
 				SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
 			}

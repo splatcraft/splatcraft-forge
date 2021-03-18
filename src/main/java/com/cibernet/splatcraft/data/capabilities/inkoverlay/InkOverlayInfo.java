@@ -35,11 +35,11 @@ public class InkOverlayInfo implements IInkOverlayInfo
 
 	@Override
 	public void setAmount(float v) {
-		amount = v;
+		amount = Math.max(0, v);
 	}
 	@Override
 	public void addAmount(float v) {
-		amount += v;
+		setAmount(amount + v);
 	}
 
 	@Override

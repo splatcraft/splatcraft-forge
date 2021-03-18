@@ -220,25 +220,17 @@ public class SplatcraftCommonHandler
 				SplatcraftPacketHandler.sendToAll(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.getRuleFromIndex(rule.getKey()), rule.getValue()));
 			}
 		}
+	}
 
-		List<Entity> entities = new ArrayList<>();
-
-		if(!world.isRemote)
-			entities = ((ServerWorld)world).getEntities().filter((entity -> entity instanceof LivingEntity)).collect(Collectors.toList());
-		else {
-			List<Entity> finalEntities = entities;
-			((ClientWorld)world).getAllEntities().forEach(entity -> {if(entity instanceof LivingEntity) finalEntities.add(entity);});
-		}
-
-		for(Entity e : entities)
+	@SubscribeEvent
+	public static void onLivingTick(LivingEvent.LivingUpdateEvent event)
+	{
+		LivingEntity entity = event.getEntityLiving();
+		if(InkOverlayCapability.hasCapability(entity))
 		{
-			LivingEntity living = ((LivingEntity)e);
-			if(InkOverlayCapability.hasCapability(living))
-			{
-				if(living.isInWater())
-					InkOverlayCapability.get(living).setAmount(0);
-				else InkOverlayCapability.get(living).addAmount(-0.01f);
-			}
+			if(entity.isInWater())
+				InkOverlayCapability.get(entity).setAmount(0);
+			else InkOverlayCapability.get(entity).addAmount(-0.01f);
 		}
 	}
 
