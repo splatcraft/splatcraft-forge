@@ -51,6 +51,9 @@ public class PlayerMovementHandler
 			speedAttribute.removeModifier(ENEMY_INK_SPEED);
 		if(swimAttribute.hasModifier(SQUID_SWIM_SPEED))
 			swimAttribute.removeModifier(SQUID_SWIM_SPEED);
+
+		if(speedAttribute.getModifier(SplatcraftItems.SPEED_MOD_UUID) != null)
+			speedAttribute.removeModifier(SplatcraftItems.SPEED_MOD_UUID);
 		
 		if(InkBlockUtils.onEnemyInk(player))
 		{
@@ -58,7 +61,14 @@ public class PlayerMovementHandler
 			if(!speedAttribute.hasModifier(ENEMY_INK_SPEED))
 				speedAttribute.applyNonPersistentModifier(ENEMY_INK_SPEED);
 		}
-		
+
+		if(player.getActiveItemStack().getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) player.getActiveItemStack().getItem()).hasSpeedModifier())
+		{
+			AttributeModifier mod = ((WeaponBaseItem) player.getActiveItemStack().getItem()).getSpeedModifier();
+			if(!speedAttribute.hasModifier(mod))
+				speedAttribute.applyNonPersistentModifier(mod);
+		}
+
 		if(PlayerInfoCapability.isSquid(player))
 		{
 			
@@ -122,7 +132,7 @@ public class PlayerMovementHandler
 				if(player.getMotion().getY() < (input.jump ? 0.46f : 0.4f))
 					player.moveRelative(0.055f * (input.jump ? 1.9f : 1.7f), new Vector3d(0.0f, player.moveForward, -Math.min(0,player.moveForward)));
 				if(player.getMotion().getY() <= 0 && !input.sneaking)
-					player.moveRelative(0.075f, new Vector3d(0.0f,1, 0.0f));
+					player.moveRelative(0.035f, new Vector3d(0.0f,1, 0.0f));
 
 				if(input.sneaking)
 					player.setMotion(player.getMotion().x, Math.max(0,player.getMotion().getY()), player.getMotion().z);

@@ -41,6 +41,7 @@ public class SplatcraftPacketHandler
 		registerMessage(CraftWeaponPacket.class, CraftWeaponPacket::decode);
 		registerMessage(UpdateClientColorsPacket.class, UpdateClientColorsPacket::decode);
 		registerMessage(UpdateInkOverlayPacket.class, UpdateInkOverlayPacket::decode);
+		registerMessage(ChargeableReleasePacket.class, ChargeableReleasePacket::decode);
 	}
 	
 	private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, Function<PacketBuffer, MSG> decoder)

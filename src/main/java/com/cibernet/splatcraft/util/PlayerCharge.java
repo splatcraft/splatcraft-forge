@@ -18,7 +18,12 @@ public class PlayerCharge
 		this.chargedWeapon = stack;
 		this.charge = charge;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "PlayerCharge: [" + chargedWeapon + " x " + charge + "] ("+super.toString()+")";
+	}
+
 	public static PlayerCharge getCharge(PlayerEntity player)
 	{
 		return PlayerInfoCapability.get(player).getPlayerCharge();
@@ -59,7 +64,7 @@ public class PlayerCharge
 		
 		if(chargeMatches(player, stack))
 			charge.charge = Math.max(0, Math.min(charge.charge + value, 1f));
-		else setCharge(player, new PlayerCharge(stack, 0));
+		else setCharge(player, new PlayerCharge(stack, value));
 	}
 	
 	public static float getChargeValue(PlayerEntity player, ItemStack stack)
@@ -82,8 +87,15 @@ public class PlayerCharge
 	{
 		if(shouldCreateCharge(entity))
 			setCharge(entity, new PlayerCharge(ItemStack.EMPTY, 0));
+		else PlayerCharge.getCharge(entity).reset();
 	}
-	
+
+	public void reset()
+	{
+		chargedWeapon = ItemStack.EMPTY;
+		charge = 0;
+	}
+
 	public static void dischargeWeapon(PlayerEntity player)
 	{
 		if(!player.world.isRemote || !hasCharge(player))

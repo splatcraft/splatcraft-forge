@@ -86,12 +86,13 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		return this;
 	}
 	
-	public InkProjectileEntity setChargerStats(int lifespan)
+	public InkProjectileEntity setChargerStats(int lifespan, boolean canPierce)
 	{
 		trailSize = getProjectileSize()*0.85f;
 		this.lifespan = lifespan;
 		gravityVelocity = 0;
-		canPierce = true;
+		this.canPierce = canPierce;
+		setProjectileType(Types.CHARGER);
 		return this;
 	}
 	
@@ -100,7 +101,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		this.lifespan = lifespan;
 		this.splashDamage = splashDamage;
 		gravityVelocity = 0;
-		trailSize = getProjectileSize()*0.45f;
+		trailSize = getProjectileSize()*0.35f;
 		explodes = true;
 		setProjectileType(Types.BLASTER);
 		return this;
@@ -145,7 +146,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 			remove();
 		}
 		
-		if(trailSize > 0 && ticksExisted % trailCooldown == 0)
+		if(trailSize > 0 && (trailCooldown == 0 || ticksExisted % trailCooldown == 0))
 			for(double y = getPosY(); y >= 0 && getPosY()-y <= 8; y--)
 			{
 				BlockPos inkPos = new BlockPos(getPosX(), y, getPosZ());
@@ -167,7 +168,9 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		switch (id)
 		{
 			case 1:
-				world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getPosX() - this.getMotion().getX() * 0.25D, this.getPosY() - this.getMotion().getY() * 0.25D, this.getPosZ() - this.getMotion().getZ() * 0.25D,  this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
+				if(getProjectileType().equals(Types.CHARGER))
+					world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getPosX() - this.getMotion().getX() * 0.25D, this.getPosY() - this.getMotion().getY() * 0.25D, this.getPosZ() - this.getMotion().getZ() * 0.25D,  0, -0.1, 0);
+				else world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getPosX() - this.getMotion().getX() * 0.25D, this.getPosY() - this.getMotion().getY() * 0.25D, this.getPosZ() - this.getMotion().getZ() * 0.25D,  this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
 			break;
 			case 2:
 				world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()*2), this.getPosX(), this.getPosY(), this.getPosZ(),  0, 0, 0);
@@ -186,12 +189,11 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		
 		Entity target = result.getEntity();
 
+		if(target instanceof LivingEntity)
+			InkDamageUtils.doSplatDamage(world, (LivingEntity) target, damage, getColor(),  func_234616_v_(), sourceWeapon, damageMobs, inkType);
 
 		if(!canPierce)
 		{
-			if(target instanceof LivingEntity)
-				InkDamageUtils.doSplatDamage(world, (LivingEntity) target, damage, getColor(),  func_234616_v_(), sourceWeapon, damageMobs, inkType);
-
 			if(explodes)
 			{
 				InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), getProjectileSize()*0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
@@ -322,6 +324,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 	{
 		public static final String DEFAULT = "ink";
 		public static final String SHOOTER = "shooter";
+		public static final String CHARGER = "charger";
 		public static final String SPLASH = "splash";
 		public static final String BLASTER = "blaster";
 	}

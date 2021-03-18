@@ -12,6 +12,7 @@ import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.items.InkTankItem;
+import com.cibernet.splatcraft.items.weapons.IChargeableWeapon;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.ClientUtils;
@@ -191,7 +192,7 @@ public class RendererHandler
 	@SubscribeEvent
 	public static void onItemRenderGui(RenderItemEvent.Gui.Pre event)
 	{
-		if(event.getItem().getItem().equals(SplatcraftItems.powerEgg))
+		if(event.getItem().getItem().getRegistryName().getNamespace().equals(Splatcraft.MODID))
 		{
 			IBakedModel modelIn = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getModelManager().getModel(new ModelResourceLocation(event.getItem().getItem().getRegistryName() + "#inventory"));
 			renderItem(event.getItem(), event.getTransformType(), true, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getOverlay(), modelIn);
@@ -336,6 +337,30 @@ public class RendererHandler
 			return;
 		IPlayerInfo info = PlayerInfoCapability.get(player);
 
+		int width = Minecraft.getInstance().getMainWindow().getScaledWidth();
+		int height = Minecraft.getInstance().getMainWindow().getScaledHeight();
+
+		if(event instanceof RenderGameOverlayEvent.Pre && event.getType().equals(RenderGameOverlayEvent.ElementType.CROSSHAIRS))
+		{
+			if(player.getHeldItemMainhand().getItem() instanceof IChargeableWeapon || player.getHeldItemOffhand().getItem() instanceof IChargeableWeapon)
+			{
+
+				MatrixStack matrixStack = event.getMatrixStack();
+				matrixStack.push();
+				RenderSystem.enableBlend();
+				Minecraft.getInstance().getTextureManager().bindTexture(WIDGETS);
+
+				AbstractGui.blit(matrixStack, width / 2 - 15, height / 2 + 14, 30, 9, 88, 0, 30, 9, 256, 256);
+				if(PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).getPlayerCharge() != null)
+				{
+					float charge = PlayerInfoCapability.get(player).getPlayerCharge().charge;
+					AbstractGui.blit(matrixStack, width / 2 - 15, height / 2 + 14, (int) (30*charge), 9, 88, 9, (int) (30*charge), 9, 256, 256);
+				}
+
+				matrixStack.pop();
+			}
+		}
+
 		if(info.isSquid())
 		{
 			if(event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR))
@@ -351,9 +376,6 @@ public class RendererHandler
 
 				if (SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.CROSSHAIR))
 				{
-					int width = Minecraft.getInstance().getMainWindow().getScaledWidth();
-					int height = Minecraft.getInstance().getMainWindow().getScaledHeight();
-
 					int heightAnim = Math.min(14, squidTime);
 					int glowAnim = Math.max(0, Math.min(18, squidTime - 16));
 					float[] rgb = ColorUtils.hexToRGB(info.getColor());

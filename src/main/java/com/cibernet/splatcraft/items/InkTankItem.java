@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.client.model.AbstractInkTankModel;
 import com.cibernet.splatcraft.data.SplatcraftTags;
+import com.cibernet.splatcraft.items.weapons.IChargeableWeapon;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
@@ -63,7 +64,7 @@ public class InkTankItem extends ColoredArmorItem implements IDyeableArmorItem
 			float ink = getInkAmount(stack);
 			
 			if(player.getItemStackFromSlot(EquipmentSlotType.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
-			&& !(player.getActiveItemStack().getItem() instanceof WeaponBaseItem))
+			&& (!(player.getActiveItemStack().getItem() instanceof WeaponBaseItem) || (player.getActiveItemStack().getItem() instanceof IChargeableWeapon)))
 					setInkAmount(stack, Math.min(capacity, ink + (InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player) ? 1 : 0.1f)));
 		}
 	}

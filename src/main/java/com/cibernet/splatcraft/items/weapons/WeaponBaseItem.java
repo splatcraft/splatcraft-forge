@@ -16,6 +16,7 @@ import com.cibernet.splatcraft.util.WeaponStat;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -195,6 +196,16 @@ public class WeaponBaseItem extends Item
 						((entity.world.rand.nextFloat() - entity.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 		}
 		
+	}
+
+	public boolean hasSpeedModifier()
+	{
+		return getSpeedModifier() != null;
+	}
+
+	public AttributeModifier getSpeedModifier()
+	{
+		return null;
 	}
 
 	public PlayerPosingHandler.WeaponPose getPose()

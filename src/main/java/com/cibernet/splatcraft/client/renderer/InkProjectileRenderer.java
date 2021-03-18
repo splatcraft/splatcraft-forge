@@ -26,6 +26,7 @@ public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> i
 	{{
 		put(InkProjectileEntity.Types.DEFAULT, new InkProjectileModel());
 		put(InkProjectileEntity.Types.SHOOTER, new ShooterInkProjectileModel());
+		put(InkProjectileEntity.Types.CHARGER, new ShooterInkProjectileModel());
 		put(InkProjectileEntity.Types.BLASTER, new BlasterInkProjectileModel());
 	}};
 	

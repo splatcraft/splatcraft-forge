@@ -17,6 +17,7 @@ import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
@@ -31,6 +32,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.cibernet.splatcraft.registries.SplatcraftItemGroups.*;
 
@@ -39,6 +41,7 @@ public class SplatcraftItems
 {
 	public static final List<Item> weapons = new ArrayList<>();
 	public static final ArrayList<Item> inkColoredItems = new ArrayList<>();
+	public static final UUID SPEED_MOD_UUID = UUID.fromString("dc65cedb-19d2-4731-a492-ee930c8234df");
 	
 	//Attributes
 	public static final Attribute INK_SWIM_SPEED = createAttribute("ink_swim_speed", (new RangedAttribute("attribute.splatcraft.ink_swim_speed", (double)0.7F, 0.0D, 1024.0D)).setShouldWatch(true));
@@ -65,15 +68,15 @@ public class SplatcraftItems
 	public static final BlasterItem grimBlaster = new BlasterItem("grim_blaster", blaster);
 	public static final BlasterItem clashBlaster = new BlasterItem("clash_blaster", 1.8f, 1.2f, 5f, 1, 10, 12f, 6f, 4, 4);
 	public static final BlasterItem clashBlasterNeo = new BlasterItem("clash_blaster_neo", clashBlaster);
-	
+
 	//Rollers
 	
 	//Chargers
-	public static ChargerItem splatCharger = new ChargerItem("splat_charger", 0.85f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4);
+	public static ChargerItem splatCharger = new ChargerItem("splat_charger", 0.87f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4, false, 1.1f);
 	public static ChargerItem bentoSplatCharger = new ChargerItem("bento_splat_charger", splatCharger);
 	public static ChargerItem kelpSplatCharger = new ChargerItem("kelp_splat_charger", splatCharger);
-	public static ChargerItem eLiter4K = new ChargerItem("e_liter_4k", 0.95f, 2.4f, 16, 35, 40, 36f, 2.25f, 25f, 0.15);
-	public static ChargerItem bamboozler14mk1 = new ChargerItem("bamboozler_14_mk1", 0, 0, 0, 4, 0, 16, 2.8f, 7, 0.8);
+	public static ChargerItem eLiter4K = new ChargerItem("e_liter_4k", 0.95f, 2.4f, 16, 35, 40, 36f, 2.25f, 25f, 0.15, false, 1.0f);
+	public static ChargerItem bamboozler14mk1 = new ChargerItem("bamboozler_14_mk1", 0.86f, 1.9f, 8, 4, 0, 16, 2.8f, 7, 0.8, true, 1.1f);
 	public static ChargerItem bamboozler14mk2 = new ChargerItem("bamboozler_14_mk2", bamboozler14mk1);
 
 	//Dualies
