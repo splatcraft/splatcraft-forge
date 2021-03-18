@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.items.weapons;
 
+import com.cibernet.splatcraft.client.audio.ChargerChargingTickableSound;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
@@ -11,10 +12,13 @@ import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCharge;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import com.cibernet.splatcraft.util.WeaponStat;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
@@ -100,18 +104,28 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 		{
 			if(world.isRemote)
 			{
-				PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (entity.isAirBorne && !airCharge ? 0.5f : 1));
+				PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1));
 			}
 		}
 		else sendNoInkMessage(entity, null);
 	}
 
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
+	{
+		ActionResult<ItemStack> result = super.onItemRightClick(world, player, hand);
+
+		if(world.isRemote)
+			Minecraft.getInstance().getSoundHandler().play(new ChargerChargingTickableSound(player));
+
+		return result;
+	}
 
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft)
 	{
 		super.onPlayerStoppedUsing(stack, world, entity, timeLeft);
-		
+
 		if(world.isRemote && !PlayerInfoCapability.isSquid(entity) && entity instanceof PlayerEntity)
 		{
 			float charge = PlayerCharge.getChargeValue((PlayerEntity) entity, stack);
