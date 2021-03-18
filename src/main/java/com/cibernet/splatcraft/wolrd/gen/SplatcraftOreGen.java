@@ -24,15 +24,15 @@ import java.util.ArrayList;
 public class SplatcraftOreGen
 {
     private static final ArrayList<ConfiguredFeature> overworldGen = new ArrayList<>();
+    private static final ArrayList<ConfiguredFeature> beachGen = new ArrayList<>();
     private static final ArrayList<ConfiguredFeature> oceanGen = new ArrayList<>();
 
     public static void registerOres()
     {
-        /*
-        overworldGen.add(register("sardinium", Feature.ORE.withConfiguration(
+        beachGen.add(register("sardinium", Feature.ORE.withConfiguration(
                 new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, SplatcraftBlocks.sardiniumOre.getDefaultState(), 6))
         .range(40).func_242731_b(8)));
-        */
+
         oceanGen.add(register("sardinium_ocean", Feature.ORE.withConfiguration(
                 new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, SplatcraftBlocks.sardiniumOre.getDefaultState(), 12))
         .range(60).func_242731_b(8)));
@@ -50,7 +50,9 @@ public class SplatcraftOreGen
 
         if(!event.getCategory().equals(Biome.Category.NETHER) && !event.getCategory().equals(Biome.Category.THEEND))
         {
-            for(ConfiguredFeature gen : (event.getCategory().equals(Biome.Category.OCEAN) ? oceanGen : overworldGen))
+
+            for(ConfiguredFeature gen : (event.getCategory().equals(Biome.Category.OCEAN) ? oceanGen :
+                    event.getCategory().equals(Biome.Category.BEACH) ? beachGen : overworldGen))
                 if(gen != null)
                     generation.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, gen);
         }
