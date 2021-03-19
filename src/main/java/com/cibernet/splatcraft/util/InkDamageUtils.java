@@ -54,14 +54,12 @@ public class InkDamageUtils
 		}
 		
 		InkDamageSource damageSource = new InkDamageSource(name, source, source, sourceItem);
-		
 		if(target instanceof IColoredEntity)
 		{
 			doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
-			applyInkCoverage = doDamage;
-		}
 
-		if(target instanceof SheepEntity)
+			applyInkCoverage = doDamage;
+		}else if(target instanceof SheepEntity)
 		{
 			if(!((SheepEntity) target).getSheared())
 			{
@@ -91,7 +89,12 @@ public class InkDamageUtils
 
 		return doDamage;
 	}
-	
+
+	public static boolean isSplatted(World world, LivingEntity target)
+	{
+		return target instanceof SquidBumperEntity ? ((SquidBumperEntity) target).getInkHealth() <= 0 : target.getHealth() <= 0;
+	}
+
 	public static class InkDamageSource extends IndirectEntityDamageSource
 	{
 		private final ItemStack weapon;
