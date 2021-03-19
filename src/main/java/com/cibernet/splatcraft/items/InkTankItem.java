@@ -63,7 +63,7 @@ public class InkTankItem extends ColoredArmorItem implements IDyeableArmorItem
 			PlayerEntity player = (PlayerEntity) entity;
 			float ink = getInkAmount(stack);
 			
-			if(player.getItemStackFromSlot(EquipmentSlotType.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
+			if(canRecharge(stack) && player.getItemStackFromSlot(EquipmentSlotType.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
 			&& (!(player.getActiveItemStack().getItem() instanceof WeaponBaseItem) || (player.getActiveItemStack().getItem() instanceof IChargeableWeapon)))
 					setInkAmount(stack, Math.min(capacity, ink + (InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player) ? 1 : 0.1f)));
 		}
@@ -89,6 +89,8 @@ public class InkTankItem extends ColoredArmorItem implements IDyeableArmorItem
 	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
 	{
 		super.addInformation(stack, world, tooltip, flag);
+		if(!canRecharge(stack))
+			tooltip.add(new TranslationTextComponent("item.splatcraft.ink_tank.cant_recharge"));
 		if(flag.isAdvanced())
 			tooltip.add(new TranslationTextComponent("item.splatcraft.ink_tank.ink", String.format("%.1f",getInkAmount(stack)), capacity));
 		
@@ -194,7 +196,12 @@ public class InkTankItem extends ColoredArmorItem implements IDyeableArmorItem
 		stack.getTag().putFloat("Ink", value);
 		return stack;
 	}
-	
+
+	public static boolean canRecharge(ItemStack stack)
+	{
+		return !stack.getOrCreateTag().contains("CanRecharge") || stack.getTag().getBoolean("CanRecharge");
+	}
+
 	public boolean canUse(Item item)
 	{
 		boolean hasWhitelist = SplatcraftTags.Items.INK_TANK_WHITELIST.get(this).getAllElements().size() > 0;
