@@ -9,6 +9,7 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -60,7 +61,7 @@ public class StageBarrierBlock extends Block
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
 	{
-		if(!(worldIn.getTileEntity(pos) instanceof StageBarrierTileEntity))
+		if(Minecraft.getInstance().player.isCreative() || !(worldIn.getTileEntity(pos) instanceof StageBarrierTileEntity))
 			return VoxelShapes.fullCube();
 		
 		StageBarrierTileEntity te = (StageBarrierTileEntity) worldIn.getTileEntity(pos);
