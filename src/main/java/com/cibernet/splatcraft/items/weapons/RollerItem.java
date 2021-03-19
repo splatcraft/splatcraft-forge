@@ -4,10 +4,7 @@ import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
 import com.cibernet.splatcraft.handlers.WeaponHandler;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
-import com.cibernet.splatcraft.util.ColorUtils;
-import com.cibernet.splatcraft.util.InkBlockUtils;
-import com.cibernet.splatcraft.util.InkDamageUtils;
-import com.cibernet.splatcraft.util.PlayerCooldown;
+import com.cibernet.splatcraft.util.*;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -51,6 +48,10 @@ public class RollerItem extends WeaponBaseItem
     {
         super();
 
+        addStat(new WeaponStat("range", ((stack, world) -> (int) ((flingProjectileSpeed+swingProjectileSpeed)*50))));
+        addStat(new WeaponStat("ink_speed", ((stack, world) -> (int) (dashMobility/2f*100))));
+        addStat(new WeaponStat("handling", ((stack, world) -> (int) ((20-(flingTime+swingTime)/2f)*5))));
+
         setRegistryName(name);
         rollers.add(this);
 
@@ -62,6 +63,24 @@ public class RollerItem extends WeaponBaseItem
         this.dashMobility = mobility;
         this.swingMobility = mobility;
         this.isBrush = isBrush;
+    }
+
+    private float getSwingTime()
+    {
+        return swingTime;
+    }
+    private float getFlingTime()
+    {
+        return flingTime;
+    }
+
+    private float getSwingProjSpeed() {
+        return swingProjectileSpeed;
+    }
+
+    private float getFlingProjSpeed()
+    {
+        return flingProjectileSpeed;
     }
 
     public RollerItem setDashStats(double dashMobility, float rollConsumptionDash, int dashTime)
@@ -88,7 +107,7 @@ public class RollerItem extends WeaponBaseItem
 
     public RollerItem setSwingStats(double swingMobility, float swingConsumption, float swingDamage, float swingProjectileSpeed, int swingTime)
     {
-        return setSwingStats(swingMobility, swingConsumption, swingDamage, swingProjectileSpeed, swingTime, swingConsumption, swingDamage, swingProjectileSpeed, swingTime);
+        return setSwingStats(swingMobility, swingConsumption, swingDamage, swingProjectileSpeed, swingTime, swingConsumption, swingDamage, swingProjectileSpeed * (isBrush ? 1 : 1.3f), swingTime);
     }
 
     public RollerItem(String name, RollerItem parent)
@@ -96,12 +115,6 @@ public class RollerItem extends WeaponBaseItem
         this(name, parent.rollSize, parent.rollConsumptionMin, parent.rollDamage, parent.mobility, parent.isBrush);
         setDashStats(parent.dashMobility, parent.rollConsumptionMax, parent.dashTime);
         setSwingStats(parent.swingMobility, parent.swingConsumption, parent.swingDamage, parent.swingProjectileSpeed, parent.swingTime, parent.flingConsumption, parent.flingDamage, parent.flingProjectileSpeed, parent.flingTime);
-    }
-
-    @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-        super.inventoryTick(stack, world, entity, itemSlot, isSelected);
-        setAttackCooldown(stack, Math.max(0, getAttackCooldown(stack)-1));
     }
 
     public IItemPropertyGetter getUnfolded()
@@ -146,13 +159,12 @@ public class RollerItem extends WeaponBaseItem
                     proj.shoot(entity, entity.rotationPitch, entity.rotationYaw + (i-total/2f)*20, 0, entity.isOnGround() ? flingProjectileSpeed : swingProjectileSpeed, 0.05f);
                     proj.setPositionAndUpdate(proj.getPosX(), proj.getPosY() - entity.getEyeHeight()/2f, proj.getPosZ());
                     world.addEntity(proj);
-                    reduceInk(entity, (entity.isOnGround() ? swingConsumption : flingConsumption));
                 }
+                reduceInk(entity, (entity.isOnGround() ? swingConsumption : flingConsumption));
             }
         }
         else
         {
-            //TODO roll
             double dxOff = Math.cos(Math.toRadians(entity.rotationYaw+90))*2;
             double dzOff = Math.sin(Math.toRadians(entity.rotationYaw+90))*2;
             boolean hasInk = (getInkAmount(entity, stack) > Math.min(rollConsumptionMax, rollConsumptionMin));
@@ -177,13 +189,12 @@ public class RollerItem extends WeaponBaseItem
                     }
                 }
 
-                if(isMoving && getAttackCooldown(stack) <= 0)
+                if(isMoving)
                 {
                     BlockPos attackPos = new BlockPos(entity.getPosX() + xOff+dxOff, entity.getPosY()-1, entity.getPosZ() + zOff+dzOff);
                     for(LivingEntity target : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(attackPos, attackPos.add(1, 2, 1))))
                     {
                         InkDamageUtils.doRollDamage(world, target, rollDamage * (hasInk ? 1 : 0.4f), ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity));
-                        setAttackCooldown(stack, 10);
                         if(!InkDamageUtils.isSplatted(world, target))
                             doPush = true;
                     }
@@ -192,7 +203,7 @@ public class RollerItem extends WeaponBaseItem
             if(doPush)
                 applyRecoilKnockback(entity, 0.8);//SplatcraftPacketHandler.sendToPlayer(new RollerRecoilPacket(), (ServerPlayerEntity) entity);
 
-            //if(isMoving)
+            if(isMoving)
             {
                 if(hasInk) reduceInk(entity, (Math.min(1, (float)(getUseDuration(stack)-timeLeft)/(float)dashTime)*(rollConsumptionMax-rollConsumptionMin)) + rollConsumptionMin);
                 else if(timeLeft % 4 == 0) sendNoInkMessage(entity);
@@ -206,52 +217,30 @@ public class RollerItem extends WeaponBaseItem
         entity.setMotion(entity.getMotion().add(Math.cos(Math.toRadians(entity.rotationYaw+90))*-pow, 0.1, Math.sin(Math.toRadians(entity.rotationYaw+90))*-pow));
     }
 
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
-    {
-        ItemStack stackA = oldStack.copy();
-        if(stackA.getOrCreateTag().contains("AttackCooldown"))
-            stackA.getTag().remove("AttackCooldown");
-        ItemStack stackB = newStack.copy();
-        if(stackB.getOrCreateTag().contains("AttackCooldown"))
-            stackB.getTag().remove("AttackCooldown");
-
-        return super.shouldCauseReequipAnimation(stackA, stackB, slotChanged);
-    }
-
-    public int getAttackCooldown(ItemStack stack)
-    {
-        return stack.getOrCreateTag().getInt("AttackCooldown");
-    }
-
-    public ItemStack setAttackCooldown(ItemStack stack, int v)
-    {
-        stack.getOrCreateTag().putInt("AttackCooldown", v);
-        return stack;
-    }
 
     @Override
     public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown) {
         boolean airborne = !cooldown.isGrounded();
 
-        if (!isBrush)
-        for(int i = 0; i < rollSize; i++)
+        if (getInkAmount(player, stack) >= (player.isOnGround() ? swingConsumption : flingConsumption) && !isBrush)
         {
-
-            InkProjectileEntity proj = new InkProjectileEntity(world, player, stack, InkBlockUtils.getInkType(player), 1.6f, airborne ? flingDamage : swingDamage);proj.shoot(player, player.rotationPitch, player.rotationYaw, 0.0f, airborne ? flingProjectileSpeed : swingProjectileSpeed, 0.05f);
-            if(airborne)
-                proj.setPositionAndUpdate(proj.getPosX(), proj.getPosY()+(double) i - i/2d, proj.getPosZ());
-            else
+            for(int i = 0; i < rollSize; i++)
             {
-                double off = (double) i - (rollSize-1)/2d;
-                double xOff = Math.cos(Math.toRadians(player.rotationYaw))*off;
-                double zOff = Math.sin(Math.toRadians(player.rotationYaw))*off;
-                proj.setPositionAndUpdate(proj.getPosX() + xOff, proj.getPosY() - player.getEyeHeight()/2f, proj.getPosZ() + zOff);
-            }
-            proj.shoot(player, 0, player.rotationYaw, airborne ? 0.0f : -67.5f, airborne ? flingProjectileSpeed : swingProjectileSpeed, 0);
-            world.addEntity(proj);
-            reduceInk(player, (airborne ? swingConsumption : flingConsumption));
 
+                InkProjectileEntity proj = new InkProjectileEntity(world, player, stack, InkBlockUtils.getInkType(player), 1.6f, airborne ? flingDamage : swingDamage);proj.shoot(player, player.rotationPitch, player.rotationYaw, 0.0f, airborne ? flingProjectileSpeed : swingProjectileSpeed, 0.05f);
+                if(airborne)
+                    proj.setPositionAndUpdate(proj.getPosX(), proj.getPosY()+(double) i - i/2d, proj.getPosZ());
+                else
+                {
+                    double off = (double) i - (rollSize-1)/2d;
+                    double xOff = Math.cos(Math.toRadians(player.rotationYaw))*off;
+                    double zOff = Math.sin(Math.toRadians(player.rotationYaw))*off;
+                    proj.setPositionAndUpdate(proj.getPosX() + xOff, proj.getPosY() - player.getEyeHeight()/2f, proj.getPosZ() + zOff);
+                }
+                proj.shoot(player, 0, player.rotationYaw, airborne ? 0.0f : -67.5f, airborne ? flingProjectileSpeed : swingProjectileSpeed, 0);
+                world.addEntity(proj);
+            }
+            reduceInk(player, (airborne ? swingConsumption : flingConsumption));
         }
     }
 

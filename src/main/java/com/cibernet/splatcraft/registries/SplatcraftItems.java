@@ -70,10 +70,16 @@ public class SplatcraftItems
 	public static final BlasterItem clashBlasterNeo = new BlasterItem("clash_blaster_neo", clashBlaster);
 
 	//Rollers
-	public static RollerItem splatRoller = new RollerItem("splat_roller", 3, 0.15f, 20, 0.4f, false).setDashStats(0.9, 0.3f, 20)
-			.setSwingStats(0.2, 1, 10, 0.55f, 20, 1, 10, 1, 20);
-	public static RollerItem inkbrush = new RollerItem("inkbrush", 1, 0.15f, 20, 0.4f, true).setDashStats(2, 0.3f, 60)
-			.setSwingStats(0.2, 1, 10, 0.5f, 4);
+	public static RollerItem splatRoller = new RollerItem("splat_roller", 3, 0.06f, 25, 1.08f, false).setDashStats(1.32, 0.3f, 30)
+			.setSwingStats(0.48, 9, 16, 0.55f, 6);
+	public static RollerItem krakOnSplatRoller = new RollerItem("krak_on_splat_roller", splatRoller);
+	public static RollerItem coroCoroSplatRoller = new RollerItem("corocoro_splat_roller", splatRoller);
+	public static RollerItem carbonRoller = new RollerItem("carbon_roller", 2, 0.06f, 14, 1.28f, false).setDashStats(1.52, 0.3f, 10)
+			.setSwingStats(0.6, 4, 20, 0.45f, 3, 4, 24, 0.58f, 4);
+	public static RollerItem inkbrush = new RollerItem("inkbrush", 1, 0.4f, 4, 1.92f, true)
+			.setSwingStats(0.24, 2f, 4, 0.54f, 2);
+	public static RollerItem octobrush = new RollerItem("octobrush", 2, 0.54f, 5, 1.92f, true)
+			.setSwingStats(0.24, 3.2f, 2, 0.6f, 3);
 	
 	//Chargers
 	public static ChargerItem splatCharger = new ChargerItem("splat_charger", 0.87f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4, false, 1.1f);

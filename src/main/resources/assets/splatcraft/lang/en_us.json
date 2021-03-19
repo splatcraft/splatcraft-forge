@@ -137,6 +137,7 @@
     
     "item.splatcraft.ink_tank": "Ink Tank",
     "item.splatcraft.ink_tank.ink": "%s / %s",
+    "item.splatcraft.ink_tank.cant_recharge": "§7§oCan't Recharge",
     "item.splatcraft.classic_ink_tank": "Classic Ink Tank",
     "item.splatcraft.ink_tank_jr": "Ink Tank Jr.",
     "item.splatcraft.ink_tank_jr.tooltip": "Only works with Junior weapons.",
