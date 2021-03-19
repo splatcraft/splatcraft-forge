@@ -118,9 +118,16 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 		ActionResult<ItemStack> result = super.onItemRightClick(world, player, hand);
 
 		if(world.isRemote)
-			Minecraft.getInstance().getSoundHandler().play(new ChargerChargingTickableSound(player));
+			playChargingSound(player);
 
 		return result;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	protected static void playChargingSound(PlayerEntity player)
+	{
+
+		Minecraft.getInstance().getSoundHandler().play(new ChargerChargingTickableSound(player));
 	}
 
 	@Override
