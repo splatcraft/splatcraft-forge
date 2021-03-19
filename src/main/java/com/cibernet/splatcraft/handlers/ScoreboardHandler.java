@@ -73,7 +73,7 @@ public class ScoreboardHandler
 			
 			if(colorObj != null)
 				suggestions.add(colorObj.getRegistryName().toString());
-			else suggestions.add(ColorUtils.getColorName(key));
+			else suggestions.add(ColorUtils.getColorId(key));
 		});
 		
 		return suggestions;

@@ -46,7 +46,7 @@ public class BlasterItem extends ShooterItem
 		{
 			if (getInkAmount(entity, stack) > inkConsumption) {
 				if (entity instanceof PlayerEntity) {
-					PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, true, false, true));
+					PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, true, false, true, entity.isOnGround()));
 					if (!world.isRemote)
 						cooldownTracker.setCooldown(this, cooldown);
 				}
@@ -55,7 +55,7 @@ public class BlasterItem extends ShooterItem
 	}
 	
 	@Override
-	public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack)
+	public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
 	{
 		if(getInkAmount(player, stack) >= inkConsumption)
 		{

@@ -70,6 +70,10 @@ public class SplatcraftItems
 	public static final BlasterItem clashBlasterNeo = new BlasterItem("clash_blaster_neo", clashBlaster);
 
 	//Rollers
+	public static RollerItem splatRoller = new RollerItem("splat_roller", 3, 0.15f, 20, 0.4f, false).setDashStats(0.9, 0.3f, 20)
+			.setSwingStats(0.2, 1, 10, 0.55f, 20, 1, 10, 1, 20);
+	public static RollerItem inkbrush = new RollerItem("inkbrush", 1, 0.15f, 20, 0.4f, true).setDashStats(2, 0.3f, 60)
+			.setSwingStats(0.2, 1, 10, 0.5f, 4);
 	
 	//Chargers
 	public static ChargerItem splatCharger = new ChargerItem("splat_charger", 0.87f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4, false, 1.1f);
@@ -203,7 +207,8 @@ public class SplatcraftItems
 		ResourceLocation modeProperty = new ResourceLocation(Splatcraft.MODID,"mode");
 		ResourceLocation inkProperty = new ResourceLocation(Splatcraft.MODID,"ink");
 		ResourceLocation isLeftProperty = new ResourceLocation(Splatcraft.MODID,"is_left");
-		
+		ResourceLocation unfoldedProperty = new ResourceLocation(Splatcraft.MODID,"unfolded");
+
 		for(RemoteItem remote : RemoteItem.remotes)
 		{
 			ItemModelsProperties.registerProperty(remote, activeProperty, remote.getActiveProperty());
@@ -215,6 +220,8 @@ public class SplatcraftItems
 		
 		for(DualieItem dualie : DualieItem.dualies)
 			ItemModelsProperties.registerProperty(dualie, isLeftProperty, dualie.getIsLeft());
+		for(RollerItem roller : RollerItem.rollers)
+			ItemModelsProperties.registerProperty(roller, unfoldedProperty, roller.getUnfolded());
 	}
 	
 	@OnlyIn(Dist.CLIENT)

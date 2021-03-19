@@ -13,6 +13,7 @@ import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.items.weapons.IChargeableWeapon;
+import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.ClientUtils;
@@ -184,6 +185,21 @@ public class RendererHandler
 			}
 			tickTime = (tickTime+1) % 10;
 			float yOff = -0.5f*(((time-event.getPartialTicks())/maxTime));// - (tickTime/20f));
+
+			if(player.getHeldItem(event.getHand()).getItem() instanceof WeaponBaseItem)
+			{
+				switch (((WeaponBaseItem) player.getHeldItem(event.getHand()).getItem()).getPose())
+				{
+					case ROLL:
+						yOff = -(((time-event.getPartialTicks())/maxTime)) + 0.5f;
+						break;
+					case BRUSH:
+						event.getMatrixStack().rotate(Vector3f.YN.rotation(yOff));
+						yOff = 0;
+						break;
+				}
+			}
+
 			event.getMatrixStack().translate(0, yOff, 0);
 		}
 		else tickTime = 0;

@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.items.weapons.RollerItem;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.InkBlockUtils;
@@ -62,9 +63,9 @@ public class PlayerMovementHandler
 				speedAttribute.applyNonPersistentModifier(ENEMY_INK_SPEED);
 		}
 
-		if(player.getActiveItemStack().getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) player.getActiveItemStack().getItem()).hasSpeedModifier())
+		if(player.getActiveItemStack().getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) player.getActiveItemStack().getItem()).hasSpeedModifier(player, player.getItemInUseCount()))
 		{
-			AttributeModifier mod = ((WeaponBaseItem) player.getActiveItemStack().getItem()).getSpeedModifier();
+			AttributeModifier mod = ((WeaponBaseItem) player.getActiveItemStack().getItem()).getSpeedModifier(player, player.getItemInUseCount());
 			if(!speedAttribute.hasModifier(mod))
 				speedAttribute.applyNonPersistentModifier(mod);
 		}
@@ -162,6 +163,10 @@ public class PlayerMovementHandler
 				input.moveForward = 0;
 				input.moveStrafe = 0;
 				input.jump = false;
+			} else if(cooldown.storedItem instanceof RollerItem)
+			{
+				input.moveForward = Math.min(1, Math.abs(input.moveForward)) * Math.signum(input.moveForward) * (float) ((RollerItem) cooldown.storedItem).swingMobility;
+				input.moveStrafe = Math.min(1, Math.abs(input.moveStrafe)) * Math.signum(input.moveStrafe) * (float) ((RollerItem) cooldown.storedItem).swingMobility;
 			}
 			if (cooldown.forceCrouch() && cooldown.getTime() > 1)
 				input.sneaking = !player.abilities.isFlying;

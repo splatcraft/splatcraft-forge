@@ -3,7 +3,13 @@ package com.cibernet.splatcraft.util;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class PlayerCooldown
 {
@@ -13,8 +19,11 @@ public class PlayerCooldown
 	final boolean canMove;
 	final boolean forceCrouch;
 	final boolean preventWeaponUse;
-	
-	public PlayerCooldown(int time, int maxTime, int slotIndex, boolean canMove, boolean forceCrouch, boolean preventWeaponUse)
+	final boolean isGrounded;
+
+	public Item storedItem = Items.AIR;
+
+	public PlayerCooldown(int time, int maxTime, int slotIndex, boolean canMove, boolean forceCrouch, boolean preventWeaponUse, boolean isGrounded)
 	{
 		this.time = ++time;
 		this.maxTime = maxTime;
@@ -22,16 +31,18 @@ public class PlayerCooldown
 		this.canMove = canMove;
 		this.forceCrouch = forceCrouch;
 		this.preventWeaponUse = preventWeaponUse;
+		this.isGrounded = isGrounded;
 	}
-	
-	public PlayerCooldown(int time, int slotIndex, boolean canMove, boolean forceCrouch, boolean preventWeaponUse)
+
+	public PlayerCooldown(int time, int slotIndex, boolean canMove, boolean forceCrouch, boolean preventWeaponUse, boolean isGrounded)
 	{
-		this(time, time, slotIndex, canMove, forceCrouch, preventWeaponUse);
+		this(time, time, slotIndex, canMove, forceCrouch, preventWeaponUse, isGrounded);
 	}
 	
 	public boolean canMove() {return canMove;}
 	public boolean forceCrouch() {return forceCrouch;}
 	public boolean preventWeaponUse() {return preventWeaponUse;}
+	public boolean isGrounded() {return isGrounded;}
 	public int getTime() {return time;}
 	public int getMaxTime() {return maxTime;}
 	public int getSlotIndex() {return slotIndex;}
@@ -40,7 +51,10 @@ public class PlayerCooldown
 	
 	public static PlayerCooldown readNBT(CompoundNBT nbt)
 	{
-		return new PlayerCooldown(nbt.getInt("Time"), nbt.getInt("MaxTime"), nbt.getInt("SlotIndex"), nbt.getBoolean("CanMove"), nbt.getBoolean("ForceCrouch"), nbt.getBoolean("PreventWeaponUse"));
+		PlayerCooldown result = new PlayerCooldown(nbt.getInt("Time"), nbt.getInt("MaxTime"), nbt.getInt("SlotIndex"), nbt.getBoolean("CanMove"), nbt.getBoolean("ForceCrouch"), nbt.getBoolean("PreventWeaponUse"), nbt.getBoolean("IsGrounded"));
+		if(nbt.contains("StoredItem"))
+			result.storedItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(nbt.getString("StoredItem")));
+		return result;
 	}
 	
 	public CompoundNBT writeNBT(CompoundNBT nbt)
@@ -51,6 +65,10 @@ public class PlayerCooldown
 		nbt.putBoolean("CanMove", canMove);
 		nbt.putBoolean("ForceCrouch", forceCrouch);
 		nbt.putBoolean("PreventWeaponUse", preventWeaponUse);
+		nbt.putBoolean("IsGrounded", isGrounded);
+		if(storedItem != Items.AIR)
+			nbt.putString("StoredItem", storedItem.getRegistryName().toString());
+
 		return nbt;
 	}
 	

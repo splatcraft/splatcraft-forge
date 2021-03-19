@@ -52,12 +52,12 @@ public class SlosherItem extends WeaponBaseItem
 		if(getInkAmount(entity, stack) >= inkConsumption)
 		{
 			if(entity instanceof PlayerEntity && getUseDuration(stack) - timeLeft < startupTicks)
-				PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, true, false, true));
+				PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, true, false, true, entity.isOnGround()));
 		} else sendNoInkMessage(entity, null);
 	}
 	
 	@Override
-	public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack)
+	public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
 	{
 		if(getInkAmount(player, stack) >= inkConsumption)
 		{

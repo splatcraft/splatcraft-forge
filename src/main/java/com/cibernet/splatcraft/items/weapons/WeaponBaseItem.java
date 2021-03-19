@@ -12,6 +12,7 @@ import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ClientUtils;
 import com.cibernet.splatcraft.util.ColorUtils;
+import com.cibernet.splatcraft.util.PlayerCooldown;
 import com.cibernet.splatcraft.util.WeaponStat;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -32,6 +33,7 @@ import java.util.List;
 
 public class WeaponBaseItem extends Item
 {
+	public static final int USE_DURATION = 72000;
 	protected final List<WeaponStat> stats = new ArrayList<>();
 	protected boolean secret = false;
 	
@@ -128,7 +130,7 @@ public class WeaponBaseItem extends Item
 	
 	@Override
 	public int getUseDuration(ItemStack stack) {
-		return 72000;
+		return USE_DURATION;
 	}
 	
 	@Override
@@ -150,7 +152,7 @@ public class WeaponBaseItem extends Item
 	
 	}
 	
-	public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack)
+	public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
 	{
 	
 	}
@@ -198,12 +200,12 @@ public class WeaponBaseItem extends Item
 		
 	}
 
-	public boolean hasSpeedModifier()
+	public boolean hasSpeedModifier(LivingEntity entity, int timeLeft)
 	{
-		return getSpeedModifier() != null;
+		return getSpeedModifier(entity, timeLeft) != null;
 	}
 
-	public AttributeModifier getSpeedModifier()
+	public AttributeModifier getSpeedModifier(LivingEntity entity, int timeLeft)
 	{
 		return null;
 	}

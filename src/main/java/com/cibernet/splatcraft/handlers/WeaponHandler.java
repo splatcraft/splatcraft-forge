@@ -78,7 +78,7 @@ public class WeaponHandler
 			{
 				ItemStack stack = player.getHeldItem(player.getActiveHand());
 				if(stack.getItem() instanceof WeaponBaseItem)
-					((WeaponBaseItem) stack.getItem()).onPlayerCooldownEnd(player.world, player, stack);
+					((WeaponBaseItem) stack.getItem()).onPlayerCooldownEnd(player.world, player, stack, cooldown);
 			}
 			
 		}

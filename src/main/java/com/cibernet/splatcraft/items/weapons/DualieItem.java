@@ -205,7 +205,7 @@ public class DualieItem extends WeaponBaseItem
 		
 		if(getInkAmount(player, activeDualie) >= getInkForRoll(activeDualie))
 		{
-			PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(getRollCooldown(activeDualie, maxRolls, rollCount), player.inventory.currentItem, false, true, false));
+			PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(getRollCooldown(activeDualie, maxRolls, rollCount), player.inventory.currentItem, false, true, false, player.isOnGround()));
 			if(!player.world.isRemote)
 			{
 				player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.dualieDodge, SoundCategory.PLAYERS, 0.7F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);

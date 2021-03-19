@@ -1241,7 +1241,7 @@
     "overrides": [
         {
             "predicate": {
-                "unfolded": 1
+                "splatcraft:unfolded": 1
             },
             "model": "splatcraft:item/octobrush_unfolded"
         }

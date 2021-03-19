@@ -2,8 +2,10 @@ package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.items.weapons.RollerItem;
 import com.cibernet.splatcraft.items.weapons.SlosherItem;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
+import com.cibernet.splatcraft.util.PlayerCooldown;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -17,6 +19,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.TreeMap;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber
 public class PlayerPosingHandler
@@ -52,6 +57,9 @@ public class PlayerPosingHandler
         if(useTime > 0 || (playerInfo != null && playerInfo.getPlayerCooldown() != null && playerInfo.getPlayerCooldown().getTime() > 0))
         {
             useTime = mainStack.getItem().getUseDuration(mainStack) - useTime;
+            float animTime;
+            float angle;
+
             switch (((WeaponBaseItem) mainStack.getItem()).getPose())
             {
                 case DUAL_FIRE:
@@ -65,11 +73,11 @@ public class PlayerPosingHandler
                     mainHand.rotateAngleX = -((float) Math.PI / 2F) + model.getModelHead().rotateAngleX;
                     break;
                 case BUCKET_SWING:
-                    float animTime = ((SlosherItem)mainStack.getItem()).startupTicks*0.5f;
+                    animTime = ((SlosherItem)mainStack.getItem()).startupTicks*0.5f;
                     mainHand.rotateAngleY = 0;
                     mainHand.rotateAngleX = -0.36f;
 
-                    float angle = useTime/animTime;
+                    angle = useTime/animTime + event.getPartialTicks();
 
                     if(angle < 6.5f)
                         mainHand.rotateAngleX = MathHelper.cos(angle * 0.6662F);
@@ -89,6 +97,33 @@ public class PlayerPosingHandler
                         mainHand.rotateAngleX = (-(float)Math.PI / 2F) + model.getModelHead().rotateAngleX;
                     }
                     break;
+                case ROLL:
+                    animTime = player.isOnGround() ? ((RollerItem)mainStack.getItem()).swingTime : ((RollerItem)mainStack.getItem()).flingTime;
+                    mainHand.rotateAngleY = 0;
+
+
+                    if(PlayerCooldown.hasPlayerCooldown(player))
+                    {
+                        PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
+                        angle = (float) ((cooldown.getMaxTime()-cooldown.getTime() + event.getPartialTicks())/animTime * Math.PI/2f) + ((float)Math.PI)/1.8f;
+                        mainHand.rotateAngleX = MathHelper.cos(angle) + (0.1F * 0.5F - ((float)Math.PI / 10F)) ;//+ 0.36f;
+                    } else
+                        mainHand.rotateAngleX = 0.1F * 0.5F - ((float)Math.PI / 10F);
+                    break;
+                case BRUSH:
+                    animTime = player.isOnGround() ? ((RollerItem)mainStack.getItem()).swingTime : ((RollerItem)mainStack.getItem()).flingTime;
+                    mainHand.rotateAngleX = 0.1F * 0.5F - ((float)Math.PI / 10F);
+
+
+                    if(PlayerCooldown.hasPlayerCooldown(player))
+                    {
+                        PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
+                        angle = (float) ((cooldown.getMaxTime()-cooldown.getTime() + event.getPartialTicks())/animTime * Math.PI/2f) + ((float)Math.PI)/1.8f;
+
+                        mainHand.rotateAngleY = MathHelper.cos(angle);//+ 0.36f;
+                    } else
+                        mainHand.rotateAngleY = 0;
+                    break;
             }
         }
     }
@@ -99,6 +134,7 @@ public class PlayerPosingHandler
         FIRE,
         DUAL_FIRE,
         ROLL,
+        BRUSH,
         BOW_CHARGE,
         BUCKET_SWING
     }
