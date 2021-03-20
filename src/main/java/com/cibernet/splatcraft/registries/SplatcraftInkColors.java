@@ -45,7 +45,7 @@ public class SplatcraftInkColors
 	public static final InkColor neonBlue = new InkColor("neon_blue", 0x2e0cb5);
 	
 	//Hero Colors
-	public static final InkColor squid = new InkColor("hero_yellow", 0xBDDD00);
+	public static final InkColor squid = new InkColor("hero_yellow", 0xD3F526);
 	public static final InkColor octo = new InkColor("octo_pink", 0xE51B5E);
 	
 	//Special Colors
