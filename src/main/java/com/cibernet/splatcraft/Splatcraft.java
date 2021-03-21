@@ -6,7 +6,7 @@ import com.cibernet.splatcraft.handlers.client.ClientSetupHandler;
 import com.cibernet.splatcraft.handlers.client.SplatcraftKeyHandler;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.*;
-import com.cibernet.splatcraft.wolrd.gen.SplatcraftOreGen;
+import com.cibernet.splatcraft.world.gen.SplatcraftOreGen;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;

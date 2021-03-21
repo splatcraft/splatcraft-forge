@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.wolrd.gen;
+package com.cibernet.splatcraft.world.gen;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
