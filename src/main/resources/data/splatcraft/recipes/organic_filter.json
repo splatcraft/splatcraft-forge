@@ -1,19 +1,19 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "###",
-        "#F#",
-        "###"
-    ],
-    "key": {
-      "F": {
-        "item": "splatcraft:filter"
-      },
-      "#": {
-        "tag": "forge:dyes"
-      }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#F#",
+    "###"
+  ],
+  "key": {
+    "F": {
+      "item": "splatcraft:filter"
     },
-    "result": {
-        "item": "splatcraft:organic_filter"
+    "#": {
+      "tag": "forge:dyes"
     }
+  },
+  "result": {
+    "item": "splatcraft:organic_filter"
+  }
 }

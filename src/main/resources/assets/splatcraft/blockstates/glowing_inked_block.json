@@ -1,5 +1,7 @@
 {
-    "variants": {
-        "": { "model": "splatcraft:block/glowing_inked_block" }
+  "variants": {
+    "": {
+      "model": "splatcraft:block/glowing_inked_block"
     }
+  }
 }

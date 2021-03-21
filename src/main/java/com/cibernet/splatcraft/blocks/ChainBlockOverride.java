@@ -14,21 +14,18 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
-public class ChainBlockOverride extends ChainBlock implements IInkPassthrough
-{
+public class ChainBlockOverride extends ChainBlock implements IInkPassthrough {
     @Deprecated
-    public ChainBlockOverride()
-    {
+    public ChainBlockOverride() {
         super(AbstractBlock.Properties.create(Material.IRON, MaterialColor.AIR).setRequiresTool().hardnessAndResistance(5.0F, 6.0F).sound(SoundType.CHAIN).notSolid());
         setRegistryName("minecraft", "chain");
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         boolean isSquid = false;
 
-        if(context.getEntity() instanceof LivingEntity)
+        if (context.getEntity() instanceof LivingEntity)
             isSquid = PlayerInfoCapability.isSquid((LivingEntity) context.getEntity());
 
         return isSquid ? VoxelShapes.empty() : super.getCollisionShape(state, worldIn, pos, context);

@@ -1,5 +1,7 @@
 {
-    "variants": {
-        "": { "model": "splatcraft:block/inkwell" }
+  "variants": {
+    "": {
+      "model": "splatcraft:block/inkwell"
     }
+  }
 }

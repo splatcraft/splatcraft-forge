@@ -1,13 +1,13 @@
 {
-    "variants": {
-        "type=bottom": {
-            "model": "splatcraft:block/inked_slab"
-        },
-        "type=double": {
-            "model": "splatcraft:block/inked_block"
-        },
-        "type=top": {
-            "model": "splatcraft:block/inked_slab_top"
-        }
+  "variants": {
+    "type=bottom": {
+      "model": "splatcraft:block/inked_slab"
+    },
+    "type=double": {
+      "model": "splatcraft:block/inked_block"
+    },
+    "type=top": {
+      "model": "splatcraft:block/inked_slab_top"
     }
+  }
 }

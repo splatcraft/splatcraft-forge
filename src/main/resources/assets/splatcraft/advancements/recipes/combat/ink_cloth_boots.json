@@ -6,7 +6,7 @@
     ]
   },
   "criteria": {
-  "has_canvas": {
+    "has_canvas": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [

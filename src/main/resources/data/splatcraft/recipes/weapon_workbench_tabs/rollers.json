@@ -1,5 +1,5 @@
 {
-    "type": "splatcraft:weapon_workbench_tab",
-    "icon": "splatcraft:textures/gui/icons/roller.png",
-    "pos": 1
+  "type": "splatcraft:weapon_workbench_tab",
+  "icon": "splatcraft:textures/gui/icons/roller.png",
+  "pos": 1
 }

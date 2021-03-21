@@ -1,6 +1,5 @@
 package com.cibernet.splatcraft.crafting;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.item.ItemStack;
@@ -9,8 +8,6 @@ import net.minecraft.util.JSONUtils;
 
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class StackedIngredient implements Predicate<ItemStack> {
     protected final Ingredient ingredient;
@@ -18,19 +15,16 @@ public class StackedIngredient implements Predicate<ItemStack> {
 
     public static final StackedIngredient EMPTY = new StackedIngredient(Ingredient.EMPTY, 0);
 
-    protected StackedIngredient(Ingredient ingredient, int count)
-    {
+    protected StackedIngredient(Ingredient ingredient, int count) {
         this.ingredient = ingredient;
         this.count = count;
     }
 
-    public Ingredient getIngredient()
-    {
+    public Ingredient getIngredient() {
         return ingredient;
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return count;
     }
 
@@ -41,8 +35,7 @@ public class StackedIngredient implements Predicate<ItemStack> {
     }
 
     @Override
-    public boolean test(ItemStack itemStack)
-    {
+    public boolean test(ItemStack itemStack) {
         return getIngredient().test(itemStack);
     }
 }

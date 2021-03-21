@@ -9,8 +9,7 @@
         "item": "splatcraft:clash_blaster",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 12
@@ -39,8 +38,7 @@
         "item": "splatcraft:clash_blaster_neo",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 16

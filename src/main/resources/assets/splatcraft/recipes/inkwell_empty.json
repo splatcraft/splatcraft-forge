@@ -1,17 +1,17 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "# #",
-        "# #",
-        "###"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:glass"
-        }
-    },
-    "result": {
-        "item": "splatcraft:inkwell_empty",
-        "count": 1
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "# #",
+    "# #",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:glass"
     }
+  },
+  "result": {
+    "item": "splatcraft:inkwell_empty",
+    "count": 1
+  }
 }

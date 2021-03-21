@@ -9,8 +9,7 @@
         "item": "splatcraft:aerospray_mg",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 5
@@ -35,8 +34,7 @@
         "item": "splatcraft:aerospray_rg",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 5

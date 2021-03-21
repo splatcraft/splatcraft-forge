@@ -9,8 +9,7 @@
         "item": "splatcraft:ink_tank",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 1
@@ -31,8 +30,7 @@
         "item": "splatcraft:classic_ink_tank",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 1

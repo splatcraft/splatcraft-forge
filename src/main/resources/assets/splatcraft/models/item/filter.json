@@ -1,6 +1,6 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "splatcraft:items/filter"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "splatcraft:items/filter"
+  }
 }

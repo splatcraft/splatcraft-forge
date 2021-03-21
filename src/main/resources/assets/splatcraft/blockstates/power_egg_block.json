@@ -1,5 +1,7 @@
 {
-    "variants": {
-        "": { "model": "splatcraft:block/power_egg_block" }
+  "variants": {
+    "": {
+      "model": "splatcraft:block/power_egg_block"
     }
+  }
 }

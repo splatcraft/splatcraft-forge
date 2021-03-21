@@ -9,8 +9,7 @@
         "item": "splatcraft:slosher",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 8
@@ -35,8 +34,7 @@
         "item": "splatcraft:classic_slosher",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 8
@@ -61,8 +59,7 @@
         "item": "splatcraft:soda_slosher",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 6

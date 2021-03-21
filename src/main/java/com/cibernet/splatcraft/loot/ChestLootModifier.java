@@ -12,11 +12,10 @@ import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class ChestLootModifier extends LootModifier
-{
+public class ChestLootModifier extends LootModifier {
     protected final Item item;
     protected final int countMin;
     protected final int countMax;
@@ -28,8 +27,7 @@ public class ChestLootModifier extends LootModifier
      *
      * @param conditionsIn the ILootConditions that need to be matched before the loot is modified.
      */
-    protected ChestLootModifier(ILootCondition[] conditionsIn, Item itemIn, int countMin, int countMax, float chance, ResourceLocation parentTable)
-    {
+    protected ChestLootModifier(ILootCondition[] conditionsIn, Item itemIn, int countMin, int countMax, float chance, ResourceLocation parentTable) {
         super(conditionsIn);
         item = itemIn;
         this.countMin = countMin;
@@ -40,24 +38,21 @@ public class ChestLootModifier extends LootModifier
 
     @Nonnull
     @Override
-    protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context)
-    {
-        if(!context.getQueriedLootTableId().equals(parentTable))
+    protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context) {
+        if (!context.getQueriedLootTableId().equals(parentTable))
             return generatedLoot;
 
-        if(context.getRandom().nextInt(100) <= (chance)*100)
-            generatedLoot.add(new ItemStack(item, (countMax-countMin <= 0 ? 0 : context.getRandom().nextInt(countMax-countMin))+countMin));
+        if (context.getRandom().nextInt(100) <= chance * 100)
+            generatedLoot.add(new ItemStack(item, (countMax - countMin <= 0 ? 0 : context.getRandom().nextInt(countMax - countMin)) + countMin));
 
         return generatedLoot;
     }
 
-    public static class Serializer extends GlobalLootModifierSerializer<ChestLootModifier>
-    {
+    public static class Serializer extends GlobalLootModifierSerializer<ChestLootModifier> {
 
         @Override
-        public ChestLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] ailootcondition)
-        {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation((JSONUtils.getString(object, "item"))));
+        public ChestLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] ailootcondition) {
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getString(object, "item")));
             int countMin = JSONUtils.getInt(object, "countMin");
             int countMax = JSONUtils.getInt(object, "countMax");
             float chance = JSONUtils.getFloat(object, "chance");
@@ -66,10 +61,9 @@ public class ChestLootModifier extends LootModifier
         }
 
         @Override
-        public JsonObject write(ChestLootModifier instance)
-        {
+        public JsonObject write(ChestLootModifier instance) {
             JsonObject result = new JsonObject();
-            result.addProperty("item", instance.item.getRegistryName().toString());
+            result.addProperty("item", Objects.requireNonNull(instance.item.getRegistryName()).toString());
             result.addProperty("countMin", instance.countMin);
             result.addProperty("countMax", instance.countMax);
             result.addProperty("chance", instance.chance);

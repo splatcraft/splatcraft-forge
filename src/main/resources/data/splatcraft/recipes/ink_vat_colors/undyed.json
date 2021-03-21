@@ -1,7 +1,7 @@
 {
-    "type": "splatcraft:ink_vat_color",
-    "color": "1F1F2D",
-    "filter": {
-        "item": "splatcraft:filter"
-    }
+  "type": "splatcraft:ink_vat_color",
+  "color": "1F1F2D",
+  "filter": {
+    "item": "splatcraft:filter"
+  }
 }

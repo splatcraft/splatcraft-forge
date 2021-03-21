@@ -9,8 +9,7 @@
         "item": "splatcraft:96_gal",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 12
@@ -31,8 +30,7 @@
         "item": "splatcraft:96_gal_deco",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 9

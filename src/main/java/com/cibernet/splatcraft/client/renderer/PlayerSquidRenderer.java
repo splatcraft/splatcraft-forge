@@ -13,26 +13,24 @@ import net.minecraft.entity.Pose;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 
-public class PlayerSquidRenderer extends InkSquidRenderer
-{
+public class PlayerSquidRenderer extends InkSquidRenderer {
     public PlayerSquidRenderer(EntityRendererManager manager) {
         super(manager);
     }
 
     @Override
-    public void render(LivingEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
-    {
+    public void render(LivingEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.push();
         this.entityModel.swingProgress = this.getSwingProgress(entityIn, partialTicks);
 
-        boolean shouldSit = entityIn.isPassenger() && (entityIn.getRidingEntity() != null && entityIn.getRidingEntity().shouldRiderSit());
+        boolean shouldSit = entityIn.isPassenger() && entityIn.getRidingEntity() != null && entityIn.getRidingEntity().shouldRiderSit();
         this.entityModel.isSitting = shouldSit;
         this.entityModel.isChild = entityIn.isChild();
         float f = MathHelper.interpolateAngle(partialTicks, entityIn.prevRenderYawOffset, entityIn.renderYawOffset);
         float f1 = MathHelper.interpolateAngle(partialTicks, entityIn.prevRotationYawHead, entityIn.rotationYawHead);
         float f2 = f1 - f;
         if (shouldSit && entityIn.getRidingEntity() instanceof LivingEntity) {
-            LivingEntity livingentity = (LivingEntity)entityIn.getRidingEntity();
+            LivingEntity livingentity = (LivingEntity) entityIn.getRidingEntity();
             f = MathHelper.interpolateAngle(partialTicks, livingentity.prevRenderYawOffset, livingentity.renderYawOffset);
             f2 = f1 - f;
             float f3 = MathHelper.wrapDegrees(f2);
@@ -57,7 +55,7 @@ public class PlayerSquidRenderer extends InkSquidRenderer
             Direction direction = entityIn.getBedDirection();
             if (direction != null) {
                 float f4 = entityIn.getEyeHeight(Pose.STANDING) - 0.1F;
-                matrixStackIn.translate((double)((float)(-direction.getXOffset()) * f4), 0.0D, (double)((float)(-direction.getZOffset()) * f4));
+                matrixStackIn.translate((float) -direction.getXOffset() * f4, 0.0D, (float) -direction.getZOffset() * f4);
             }
         }
 
@@ -65,7 +63,7 @@ public class PlayerSquidRenderer extends InkSquidRenderer
         this.applyRotations(entityIn, matrixStackIn, f7, f, partialTicks);
         matrixStackIn.scale(-1.0F, -1.0F, 1.0F);
         this.preRenderCallback(entityIn, matrixStackIn, partialTicks);
-        matrixStackIn.translate(0.0D, (double)-1.501F, 0.0D);
+        matrixStackIn.translate(0.0D, -1.501F, 0.0D);
         float f8 = 0.0F;
         float f5 = 0.0F;
         if (!shouldSit && entityIn.isAlive()) {
@@ -94,7 +92,7 @@ public class PlayerSquidRenderer extends InkSquidRenderer
         }
 
         if (!entityIn.isSpectator()) {
-            for(LayerRenderer<LivingEntity, InkSquidModel> layerrenderer : this.layerRenderers) {
+            for (LayerRenderer<LivingEntity, InkSquidModel> layerrenderer : this.layerRenderers) {
                 layerrenderer.render(matrixStackIn, bufferIn, packedLightIn, entityIn, f5, f8, partialTicks, f7, f2, f6);
             }
         }

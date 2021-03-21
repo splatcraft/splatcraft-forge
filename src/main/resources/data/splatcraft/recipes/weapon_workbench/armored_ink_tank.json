@@ -9,8 +9,7 @@
         "item": "splatcraft:armored_ink_tank",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 10

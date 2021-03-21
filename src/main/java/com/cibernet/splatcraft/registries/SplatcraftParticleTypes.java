@@ -1,7 +1,6 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.client.particles.*;
-import com.cibernet.splatcraft.util.InkExplosion;
 import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleType;
@@ -12,8 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class SplatcraftParticleTypes
-{
+public class SplatcraftParticleTypes {
 
     public static final ParticleType<InkSplashParticleData> INK_SPLASH = new ParticleType<InkSplashParticleData>(false, InkSplashParticleData.DESERIALIZER) {
         @Override
@@ -35,8 +33,7 @@ public class SplatcraftParticleTypes
     };
 
     @SubscribeEvent
-    public static void registerFactories(ParticleFactoryRegisterEvent event)
-    {
+    public static void registerFactories(ParticleFactoryRegisterEvent event) {
         Minecraft mc = Minecraft.getInstance();
         mc.particles.registerFactory(INK_SPLASH, InkSplashParticle.Factory::new);
         mc.particles.registerFactory(INK_EXPLOSION, InkExplosionParticle.Factory::new);
@@ -44,8 +41,7 @@ public class SplatcraftParticleTypes
     }
 
     @SubscribeEvent
-    public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event)
-    {
+    public static void registerParticles(RegistryEvent.Register<ParticleType<?>> event) {
         IForgeRegistry<ParticleType<?>> registry = event.getRegistry();
 
         registry.register(INK_SPLASH.setRegistryName("ink_splash"));

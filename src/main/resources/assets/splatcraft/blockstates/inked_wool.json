@@ -1,5 +1,7 @@
 {
-    "variants": {
-        "": { "model": "splatcraft:block/inked_wool" }
+  "variants": {
+    "": {
+      "model": "splatcraft:block/inked_wool"
     }
+  }
 }

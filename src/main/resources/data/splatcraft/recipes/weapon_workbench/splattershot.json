@@ -9,8 +9,7 @@
         "item": "splatcraft:splattershot",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 5
@@ -31,8 +30,7 @@
         "item": "splatcraft:tentatek_splattershot",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 7
@@ -53,8 +51,7 @@
         "item": "splatcraft:wasabi_splattershot",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 5

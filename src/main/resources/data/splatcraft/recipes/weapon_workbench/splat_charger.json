@@ -9,8 +9,7 @@
         "item": "splatcraft:splat_charger",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 6
@@ -24,14 +23,14 @@
           "count": 10
         }
       ]
-    },{
+    },
+    {
       "name": "weaponType.kelp",
       "result": {
         "item": "splatcraft:kelp_splat_charger",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 5
@@ -56,8 +55,7 @@
         "item": "splatcraft:bento_splat_charger",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 5

@@ -1,21 +1,21 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "splatcraft:items/turf_scanner"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "splatcraft:items/turf_scanner"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "splatcraft:active": 1
+      },
+      "model": "splatcraft:item/turf_scanner_active"
     },
-    "overrides": [
-        {
-            "predicate": {
-                "splatcraft:active": 1
-            },
-            "model": "splatcraft:item/turf_scanner_active"
-        },
-        {
-            "predicate": {
-                "splatcraft:active": 1,
-                "splatcraft:mode": 1
-            },
-            "model": "splatcraft:item/turf_scanner_active_1"
-        }
-    ]
+    {
+      "predicate": {
+        "splatcraft:active": 1,
+        "splatcraft:mode": 1
+      },
+      "model": "splatcraft:item/turf_scanner_active_1"
+    }
+  ]
 }
