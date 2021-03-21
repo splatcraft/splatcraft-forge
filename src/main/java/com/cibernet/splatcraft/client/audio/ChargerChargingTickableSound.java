@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.weapons.ChargerItem;
 import com.cibernet.splatcraft.items.weapons.IChargeableWeapon;
+import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.PlayerCharge;
 import net.minecraft.client.Minecraft;
@@ -44,6 +45,8 @@ public class ChargerChargingTickableSound extends TickableSound
             IPlayerInfo info = PlayerInfoCapability.get(player);
             if(!info.isSquid())
             {
+                volume = WeaponBaseItem.hasInk(player, player.getActiveItemStack()) ? 1 : 0;
+
                 if(PlayerCharge.getChargeValue(player, player.getActiveItemStack()) >= 1 && !isDonePlaying())
                 {
                     player.world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.chargerReady, SoundCategory.PLAYERS, 1, 1);

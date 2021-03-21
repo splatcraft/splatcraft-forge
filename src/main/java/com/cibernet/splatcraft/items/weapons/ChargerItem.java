@@ -109,7 +109,7 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 				PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1));
 			}
 		}
-		else sendNoInkMessage(entity, null);
+		else if(timeLeft % 4 == 0) sendNoInkMessage(entity, null);
 	}
 
 	@Override
