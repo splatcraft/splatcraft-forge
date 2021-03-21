@@ -18,10 +18,16 @@ public class UpdateInkOverlayPacket extends PlayToClientPacket
     {
         this(entity.getEntityId(), info.writeNBT(new CompoundNBT()));
     }
+
     public UpdateInkOverlayPacket(int entity, CompoundNBT info)
     {
         this.entityId = entity;
         this.nbt = info;
+    }
+
+    public static UpdateInkOverlayPacket decode(PacketBuffer buffer)
+    {
+        return new UpdateInkOverlayPacket(buffer.readInt(), buffer.readCompoundTag());
     }
 
     @Override
@@ -29,8 +35,10 @@ public class UpdateInkOverlayPacket extends PlayToClientPacket
     {
         Entity entity = Minecraft.getInstance().world.getEntityByID(entityId);
 
-        if(!(entity instanceof LivingEntity) || !InkOverlayCapability.hasCapability((LivingEntity) entity))
+        if (!(entity instanceof LivingEntity) || !InkOverlayCapability.hasCapability((LivingEntity) entity))
+        {
             return;
+        }
         InkOverlayCapability.get((LivingEntity) entity).readNBT(nbt);
     }
 
@@ -39,10 +47,5 @@ public class UpdateInkOverlayPacket extends PlayToClientPacket
     {
         buffer.writeInt(entityId);
         buffer.writeCompoundTag(nbt);
-    }
-
-    public static UpdateInkOverlayPacket decode(PacketBuffer buffer)
-    {
-        return new UpdateInkOverlayPacket(buffer.readInt(), buffer.readCompoundTag());
     }
 }

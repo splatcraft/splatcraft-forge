@@ -12,8 +12,8 @@ import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ChestLootModifier extends LootModifier
 {
@@ -42,11 +42,15 @@ public class ChestLootModifier extends LootModifier
     @Override
     protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context)
     {
-        if(!context.getQueriedLootTableId().equals(parentTable))
+        if (!context.getQueriedLootTableId().equals(parentTable))
+        {
             return generatedLoot;
+        }
 
-        if(context.getRandom().nextInt(100) <= (chance)*100)
-            generatedLoot.add(new ItemStack(item, (countMax-countMin <= 0 ? 0 : context.getRandom().nextInt(countMax-countMin))+countMin));
+        if (context.getRandom().nextInt(100) <= chance * 100)
+        {
+            generatedLoot.add(new ItemStack(item, (countMax - countMin <= 0 ? 0 : context.getRandom().nextInt(countMax - countMin)) + countMin));
+        }
 
         return generatedLoot;
     }
@@ -57,7 +61,7 @@ public class ChestLootModifier extends LootModifier
         @Override
         public ChestLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] ailootcondition)
         {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation((JSONUtils.getString(object, "item"))));
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getString(object, "item")));
             int countMin = JSONUtils.getInt(object, "countMin");
             int countMax = JSONUtils.getInt(object, "countMax");
             float chance = JSONUtils.getFloat(object, "chance");
@@ -69,7 +73,7 @@ public class ChestLootModifier extends LootModifier
         public JsonObject write(ChestLootModifier instance)
         {
             JsonObject result = new JsonObject();
-            result.addProperty("item", instance.item.getRegistryName().toString());
+            result.addProperty("item", Objects.requireNonNull(instance.item.getRegistryName()).toString());
             result.addProperty("countMin", instance.countMin);
             result.addProperty("countMax", instance.countMax);
             result.addProperty("chance", instance.chance);

@@ -22,67 +22,70 @@ import java.util.TreeMap;
 
 public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> implements IEntityRenderer<InkProjectileEntity, InkProjectileModel>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/shooter_projectile.png");
-	private final TreeMap<String, InkProjectileModel> MODELS = new TreeMap<String, InkProjectileModel>()
-	{{
-		put(InkProjectileEntity.Types.DEFAULT, new InkProjectileModel());
-		put(InkProjectileEntity.Types.SHOOTER, new ShooterInkProjectileModel());
-		put(InkProjectileEntity.Types.CHARGER, new ShooterInkProjectileModel());
-		put(InkProjectileEntity.Types.BLASTER, new BlasterInkProjectileModel());
-		put(InkProjectileEntity.Types.ROLLER, new RollerInkProjectileModel());
-	}};
-	
-	public InkProjectileRenderer(EntityRendererManager manager)
-	{
-		super(manager);
-	}
-	
-	@Override
-	public void render(InkProjectileEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
-	{
-		if (entityIn.ticksExisted >= 3 || this.renderManager.info.getRenderViewEntity().getDistanceSq(entityIn) >= 12.25D)
-		{
-			float scale = entityIn.getProjectileSize()*2.5f;
-			int color = entityIn.getColor();
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/shooter_projectile.png");
+    private final TreeMap<String, InkProjectileModel> MODELS = new TreeMap<String, InkProjectileModel>()
+    {{
+        put(InkProjectileEntity.Types.DEFAULT, new InkProjectileModel());
+        put(InkProjectileEntity.Types.SHOOTER, new ShooterInkProjectileModel());
+        put(InkProjectileEntity.Types.CHARGER, new ShooterInkProjectileModel());
+        put(InkProjectileEntity.Types.BLASTER, new BlasterInkProjectileModel());
+        put(InkProjectileEntity.Types.ROLLER, new RollerInkProjectileModel());
+    }};
 
-			if(SplatcraftConfig.Client.getColorLock())
-				color = ColorUtils.getLockedColor(color);
+    public InkProjectileRenderer(EntityRendererManager manager)
+    {
+        super(manager);
+    }
 
-			float r = (float) (Math.floor(color / (256 * 256)) / 255f);
-			float g = (float) ((Math.floor(color / 256) % 256) / 255f);
-			float b = (color % 256) / 255f;
+    @Override
+    public void render(InkProjectileEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
+    {
+        if (entityIn.ticksExisted >= 3 || this.renderManager.info.getRenderViewEntity().getDistanceSq(entityIn) >= 12.25D)
+        {
+            float scale = entityIn.getProjectileSize() * 2.5f;
+            int color = entityIn.getColor();
 
-			//0.30000001192092896D
-			matrixStackIn.push();
-			matrixStackIn.translate(0.0D, 0.4d/*0.15000000596046448D*/, 0.0D);
-			matrixStackIn.rotate(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.prevRotationYaw, entityIn.rotationYaw) - 180.0F));
-			matrixStackIn.rotate(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch)));
-			matrixStackIn.scale(scale, scale, scale);
+            if (SplatcraftConfig.Client.getColorLock())
+            {
+                color = ColorUtils.getLockedColor(color);
+            }
 
-			InkProjectileModel model = MODELS.getOrDefault(entityIn.getProjectileType(), MODELS.get(InkProjectileEntity.Types.DEFAULT));
+            float r = (float) (Math.floor((float) color / (256 * 256)) / 255f);
+            float g = (float) (Math.floor((float) color / 256) % 256 / 255f);
+            float b = (color % 256) / 255f;
 
-			model.setRotationAngles(entityIn, 0, 0, this.handleRotationFloat(entityIn, partialTicks), entityYaw, entityIn.rotationPitch);
-			model.render(matrixStackIn, bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))), packedLightIn, OverlayTexture.NO_OVERLAY, r, g, b, 1);
-			matrixStackIn.pop();
+            //0.30000001192092896D
+            matrixStackIn.push();
+            matrixStackIn.translate(0.0D, 0.4d/*0.15000000596046448D*/, 0.0D);
+            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.prevRotationYaw, entityIn.rotationYaw) - 180.0F));
+            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch)));
+            matrixStackIn.scale(scale, scale, scale);
 
-			super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-		}
-	}
+            InkProjectileModel model = MODELS.getOrDefault(entityIn.getProjectileType(), MODELS.get(InkProjectileEntity.Types.DEFAULT));
+
+            model.setRotationAngles(entityIn, 0, 0, this.handleRotationFloat(entityIn, partialTicks), entityYaw, entityIn.rotationPitch);
+            model.render(matrixStackIn, bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))), packedLightIn, OverlayTexture.NO_OVERLAY, r, g, b, 1);
+            matrixStackIn.pop();
+
+            super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        }
+    }
 
 
-	protected float handleRotationFloat(InkProjectileEntity livingBase, float partialTicks) {
-		return (float)livingBase.ticksExisted + partialTicks;
-	}
+    protected float handleRotationFloat(InkProjectileEntity livingBase, float partialTicks)
+    {
+        return (float) livingBase.ticksExisted + partialTicks;
+    }
 
-	@Override
-	public InkProjectileModel getEntityModel()
-	{
-		return MODELS.get(InkProjectileEntity.Types.DEFAULT);
-	}
-	
-	@Override
-	public ResourceLocation getEntityTexture(InkProjectileEntity entity)
-	{
-		return new ResourceLocation(Splatcraft.MODID, "textures/entity/"+entity.getProjectileType()+"_projectile.png");
-	}
+    @Override
+    public InkProjectileModel getEntityModel()
+    {
+        return MODELS.get(InkProjectileEntity.Types.DEFAULT);
+    }
+
+    @Override
+    public ResourceLocation getEntityTexture(InkProjectileEntity entity)
+    {
+        return new ResourceLocation(Splatcraft.MODID, "textures/entity/" + entity.getProjectileType() + "_projectile.png");
+    }
 }

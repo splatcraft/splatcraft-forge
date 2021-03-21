@@ -11,8 +11,8 @@ import java.io.File;
 @Mod.EventBusSubscriber
 public class SplatcraftConfig
 {
-    private static final ForgeConfigSpec.Builder clientBuilder = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec clientConfig;
+    private static final ForgeConfigSpec.Builder clientBuilder = new ForgeConfigSpec.Builder();
 
     static
     {
@@ -26,6 +26,14 @@ public class SplatcraftConfig
 
         file.load();
         config.setConfig(file);
+    }
+
+    public enum InkIndicator
+    {
+        CROSSHAIR,
+        DURABILITY,
+        BOTH,
+        NONE
     }
 
     public static class Client
@@ -48,15 +56,10 @@ public class SplatcraftConfig
             //colorLock = client.comment("Color Lock Mode").define("splatcraft.colorLock", false);
         }
 
-        public static boolean getColorLock() {return false;}
-    }
-
-    public enum InkIndicator
-    {
-        CROSSHAIR,
-        DURABILITY,
-        BOTH,
-        NONE
+        public static boolean getColorLock()
+        {
+            return false;
+        }
     }
 
 }

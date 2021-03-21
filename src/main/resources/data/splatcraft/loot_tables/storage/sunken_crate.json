@@ -3,8 +3,7 @@
   "pools": [
     {
       "rolls": 1,
-      "entries":
-      [
+      "entries": [
         {
           "type": "minecraft:item",
           "name": "splatcraft:power_egg",

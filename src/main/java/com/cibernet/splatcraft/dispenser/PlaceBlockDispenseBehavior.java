@@ -12,16 +12,19 @@ import net.minecraft.util.math.BlockPos;
 
 public class PlaceBlockDispenseBehavior extends OptionalDispenseBehavior
 {
-	protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
-		this.setSuccessful(false);
-		Item item = stack.getItem();
-		if (item instanceof BlockItem) {
-			Direction direction = source.getBlockState().get(DispenserBlock.FACING);
-			BlockPos blockpos = source.getBlockPos().offset(direction);
-			Direction direction1 = source.getWorld().isAirBlock(blockpos.down()) ? direction : Direction.UP;
-			this.setSuccessful(((BlockItem)item).tryPlace(new DirectionalPlaceContext(source.getWorld(), blockpos, direction, stack, direction1)).isSuccessOrConsume());
-		}
-		
-		return stack;
-	}
+    @Override
+    protected ItemStack dispenseStack(IBlockSource source, ItemStack stack)
+    {
+        this.setSuccessful(false);
+        Item item = stack.getItem();
+        if (item instanceof BlockItem)
+        {
+            Direction direction = source.getBlockState().get(DispenserBlock.FACING);
+            BlockPos blockpos = source.getBlockPos().offset(direction);
+            Direction direction1 = source.getWorld().isAirBlock(blockpos.down()) ? direction : Direction.UP;
+            this.setSuccessful(((BlockItem) item).tryPlace(new DirectionalPlaceContext(source.getWorld(), blockpos, direction, stack, direction1)).isSuccessOrConsume());
+        }
+
+        return stack;
+    }
 }

@@ -14,61 +14,68 @@ import net.minecraft.world.World;
 
 public class BlasterItem extends ShooterItem
 {
-	public int projLifespan;
-	public int startupTicks;
-	public int cooldown;
-	public float splashDamage;
-	
-	public BlasterItem(String name, float projectileSize, float projectileSpeed, float inaccuracy, int startupTicks, int cooldown, float damage, float splashDamage, float inkConsumption, int projectileLifespan)
-	{
-		super(name, projectileSize, projectileSpeed, inaccuracy, cooldown, damage, inkConsumption);
-		this.projLifespan = projectileLifespan;
-		this.startupTicks = startupTicks;
-		this.cooldown = cooldown;
-		this.splashDamage = splashDamage;
-		
-		
-		addStat(new WeaponStat("range", (stack, world) -> (int) ((projectileSpeed/projectileLifespan)*100)));
-		addStat(new WeaponStat("impact", (stack, world) -> (int) ((damage/20)*100)));
-		addStat(new WeaponStat("fire_rate", (stack, world) -> (int) ((11-(cooldown*0.5f))*10)));
-	}
-	
-	public BlasterItem(String name, BlasterItem parent)
-	{
-		this(name, parent.projectileSize, parent.projectileSpeed, parent.inaccuracy, parent.startupTicks, parent.firingSpeed, parent.damage, parent.splashDamage, parent.inkConsumption, parent.projLifespan);
-	}
-	
-	@Override
-	public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
-	{
-		CooldownTracker cooldownTracker = ((PlayerEntity)entity).getCooldownTracker();
-		if(!cooldownTracker.hasCooldown(this))
-		{
-			if (getInkAmount(entity, stack) > inkConsumption) {
-				if (entity instanceof PlayerEntity) {
-					PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, true, false, true, entity.isOnGround()));
-					if (!world.isRemote)
-						cooldownTracker.setCooldown(this, cooldown);
-				}
-			} else if (timeLeft % (cooldown) == 0) sendNoInkMessage(entity);
-		}
-	}
-	
-	@Override
-	public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
-	{
-		if(getInkAmount(player, stack) >= inkConsumption)
-		{
-			if(!world.isRemote)
-			{
-				InkProjectileEntity proj = new InkProjectileEntity(world, player, stack, InkBlockUtils.getInkType(player), projectileSize, damage).setShooterTrail();
-				proj.setBlasterStats(projLifespan, splashDamage);
-				proj.shoot(player, player.rotationPitch, player.rotationYaw, 0.0f, projectileSpeed, inaccuracy);
-				world.addEntity(proj);
-				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.blasterShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
-				reduceInk(player, inkConsumption);
-				
-			}
-		} else sendNoInkMessage(player, null);
-	}
+    public int projLifespan;
+    public int startupTicks;
+    public int cooldown;
+    public float splashDamage;
+
+    public BlasterItem(String name, float projectileSize, float projectileSpeed, float inaccuracy, int startupTicks, int cooldown, float damage, float splashDamage, float inkConsumption, int projectileLifespan)
+    {
+        super(name, projectileSize, projectileSpeed, inaccuracy, cooldown, damage, inkConsumption);
+        this.projLifespan = projectileLifespan;
+        this.startupTicks = startupTicks;
+        this.cooldown = cooldown;
+        this.splashDamage = splashDamage;
+
+
+        addStat(new WeaponStat("range", (stack, world) -> (int) (projectileSpeed / projectileLifespan * 100)));
+        addStat(new WeaponStat("impact", (stack, world) -> (int) (damage / 20 * 100)));
+        addStat(new WeaponStat("fire_rate", (stack, world) -> (int) ((11 - cooldown * 0.5f) * 10)));
+    }
+
+    public BlasterItem(String name, BlasterItem parent)
+    {
+        this(name, parent.projectileSize, parent.projectileSpeed, parent.inaccuracy, parent.startupTicks, parent.firingSpeed, parent.damage, parent.splashDamage, parent.inkConsumption, parent.projLifespan);
+    }
+
+    @Override
+    public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
+    {
+        CooldownTracker cooldownTracker = ((PlayerEntity) entity).getCooldownTracker();
+        if (!cooldownTracker.hasCooldown(this))
+        {
+            if (getInkAmount(entity, stack) > inkConsumption)
+            {
+                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, true, false, true, entity.isOnGround()));
+                if (!world.isRemote)
+                {
+                    cooldownTracker.setCooldown(this, cooldown);
+                }
+            } else if (timeLeft % cooldown == 0)
+            {
+                sendNoInkMessage(entity);
+            }
+        }
+    }
+
+    @Override
+    public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
+    {
+        if (getInkAmount(player, stack) >= inkConsumption)
+        {
+            if (!world.isRemote)
+            {
+                InkProjectileEntity proj = new InkProjectileEntity(world, player, stack, InkBlockUtils.getInkType(player), projectileSize, damage).setShooterTrail();
+                proj.setBlasterStats(projLifespan, splashDamage);
+                proj.shoot(player, player.rotationPitch, player.rotationYaw, 0.0f, projectileSpeed, inaccuracy);
+                world.addEntity(proj);
+                world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.blasterShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+                reduceInk(player, inkConsumption);
+
+            }
+        } else
+        {
+            sendNoInkMessage(player, null);
+        }
+    }
 }

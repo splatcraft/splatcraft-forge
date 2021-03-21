@@ -7,16 +7,17 @@ import net.minecraft.world.IBlockReader;
 
 public class LightBlock extends Block
 {
-	private int lightLevel;
-	public LightBlock(int lightLevel, Properties p_i48440_1_)
-	{
-		super(p_i48440_1_);
-		this.lightLevel = lightLevel;
-	}
-	
-	@Override
-	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos)
-	{
-		return lightLevel;
-	}
+    private final int lightLevel;
+
+    public LightBlock(int lightLevel, Properties p_i48440_1_)
+    {
+        super(p_i48440_1_);
+        this.lightLevel = lightLevel;
+    }
+
+    @Override
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos)
+    {
+        return lightLevel;
+    }
 }

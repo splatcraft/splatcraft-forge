@@ -1,4 +1,5 @@
 package com.cibernet.splatcraft.blocks;
 
-public interface IInkPassthrough {
+public interface IInkPassthrough
+{
 }

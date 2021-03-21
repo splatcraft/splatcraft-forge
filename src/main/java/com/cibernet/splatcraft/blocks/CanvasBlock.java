@@ -22,138 +22,150 @@ import javax.annotation.Nullable;
 
 public class CanvasBlock extends Block implements IColoredBlock
 {
-	
-	public static final BooleanProperty INKED = BooleanProperty.create("inked");
-	
-	public CanvasBlock(String name)
-	{
-		super(Properties.create(Material.WOOL).hardnessAndResistance(0.8f).sound(SoundType.CLOTH));
-		SplatcraftBlocks.inkColoredBlocks.add(this);
-		setRegistryName(name);
-		setDefaultState(getDefaultState().with(INKED, false));
-	}
-	
-	
-	@Override
-	public boolean hasTileEntity(BlockState state)
-	{
-		return true;
-	}
-	
-	@Nullable
-	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader world)
-	{
-		InkColorTileEntity te = SplatcraftTileEntitites.colorTileEntity.create();
-		te.setColor(-1);
-		return te;
-	}
-	
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-	{
-		builder.add(INKED);
-	}
-	
-	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
-	{
-		int color = getColor((World) worldIn, currentPos);
-		
-		if(InkedBlock.isTouchingLiquid(worldIn, currentPos))
-		{
-			if(worldIn.getTileEntity(currentPos) instanceof InkColorTileEntity)
-			{
-				((InkColorTileEntity) worldIn.getTileEntity(currentPos)).setColor(-1);
-			}
-		}
-		
-		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos).with(INKED, color != -1);
-	}
-	
-	private static BlockState clearInk(IWorld world, BlockPos pos)
-	{
-		InkedBlockTileEntity te = (InkedBlockTileEntity) world.getTileEntity(pos);
-		if(te.hasSavedState())
-		{
-			world.setBlockState(pos, te.getSavedState(), 3);
-			
-			if(te.hasSavedColor() && te.getSavedState().getBlock() instanceof IColoredBlock)
-			{
-				((World)world).setTileEntity(pos, te.getSavedState().getBlock().createTileEntity(te.getSavedState(), world));
-				if(world.getTileEntity(pos) instanceof InkColorTileEntity)
-				{
-					InkColorTileEntity newte = (InkColorTileEntity) world.getTileEntity(pos);
-					newte.setColor(te.getSavedColor());
-				}
-			}
-			
-			return te.getSavedState();
-		}
-		
-		return world.getBlockState(pos);
-	}
-	
-	@Override
-	public boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
-	{
-		if(InkedBlock.isTouchingLiquid(world, pos))
-			return false;
-		
-		if(color == getColor(world, pos))
-			return false;
-		
-		if(world.getTileEntity(pos) instanceof InkColorTileEntity)
-		{
-			BlockState state = world.getBlockState(pos);
-			((InkColorTileEntity) world.getTileEntity(pos)).setColor(color);
-			world.notifyBlockUpdate(pos, state, state.with(INKED, true), 2);
-			return true;
-		}
-		
-		return false;
-	}
-	
-	@Override
-	public boolean canClimb()
-	{
-		return true;
-	}
-	
-	@Override
-	public boolean canSwim()
-	{
-		return true;
-	}
-	
-	@Override
-	public boolean canDamage()
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean remoteColorChange(World world, BlockPos pos, int newColor)
-	{
-		BlockState state = world.getBlockState(pos);
-		if(world.getTileEntity(pos) instanceof InkColorTileEntity && ((InkColorTileEntity) world.getTileEntity(pos)).getColor() != newColor)
-		{
-			((InkColorTileEntity) world.getTileEntity(pos)).setColor(newColor);
-			world.setBlockState(pos, state.with(INKED, true), 2);
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public boolean remoteInkClear(World world, BlockPos pos)
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean countsTowardsTurf(World world, BlockPos pos)
-	{
-		return false;
-	}
+
+    public static final BooleanProperty INKED = BooleanProperty.create("inked");
+
+    public CanvasBlock(String name)
+    {
+        super(Properties.create(Material.WOOL).hardnessAndResistance(0.8f).sound(SoundType.CLOTH));
+        SplatcraftBlocks.inkColoredBlocks.add(this);
+        setRegistryName(name);
+        setDefaultState(getDefaultState().with(INKED, false));
+    }
+
+    private static BlockState clearInk(IWorld world, BlockPos pos)
+    {
+        InkedBlockTileEntity te = (InkedBlockTileEntity) world.getTileEntity(pos);
+        if (te != null && te.hasSavedState())
+        {
+            world.setBlockState(pos, te.getSavedState(), 3);
+
+            if (te.hasSavedColor() && te.getSavedState().getBlock() instanceof IColoredBlock)
+            {
+                ((World) world).setTileEntity(pos, te.getSavedState().getBlock().createTileEntity(te.getSavedState(), world));
+                if (world.getTileEntity(pos) instanceof InkColorTileEntity)
+                {
+                    InkColorTileEntity newte = (InkColorTileEntity) world.getTileEntity(pos);
+                    if (newte != null)
+                    {
+                        newte.setColor(te.getSavedColor());
+                    }
+                }
+            }
+
+            return te.getSavedState();
+        }
+
+        return world.getBlockState(pos);
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state)
+    {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    {
+        InkColorTileEntity te = SplatcraftTileEntitites.colorTileEntity.create();
+        if (te != null)
+        {
+            te.setColor(-1);
+        }
+        return te;
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    {
+        builder.add(INKED);
+    }
+
+    @Override
+    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+    {
+        int color = getColor((World) worldIn, currentPos);
+
+        if (InkedBlock.isTouchingLiquid(worldIn, currentPos))
+        {
+            TileEntity tileEntity = worldIn.getTileEntity(currentPos);
+            if (tileEntity instanceof InkColorTileEntity)
+            {
+                ((InkColorTileEntity) tileEntity).setColor(-1);
+            }
+        }
+
+        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos).with(INKED, color != -1);
+    }
+
+    @Override
+    public boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    {
+        if (InkedBlock.isTouchingLiquid(world, pos))
+        {
+            return false;
+        }
+
+        if (color == getColor(world, pos))
+        {
+            return false;
+        }
+
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof InkColorTileEntity)
+        {
+            BlockState state = world.getBlockState(pos);
+            ((InkColorTileEntity) tileEntity).setColor(color);
+            world.notifyBlockUpdate(pos, state, state.with(INKED, true), 2);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean canClimb()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean canSwim()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean canDamage()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean remoteColorChange(World world, BlockPos pos, int newColor)
+    {
+        BlockState state = world.getBlockState(pos);
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof InkColorTileEntity && ((InkColorTileEntity) tileEntity).getColor() != newColor)
+        {
+            ((InkColorTileEntity) tileEntity).setColor(newColor);
+            world.setBlockState(pos, state.with(INKED, true), 2);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean remoteInkClear(World world, BlockPos pos)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean countsTowardsTurf(World world, BlockPos pos)
+    {
+        return false;
+    }
 }

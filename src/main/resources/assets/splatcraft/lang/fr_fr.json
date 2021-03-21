@@ -1,18 +1,15 @@
 {
   "itemGroup.splatcraft_general": "Splatcraft",
   "itemGroup.splatcraft_weapons": "Splatcraft Armes",
-
   "block.splatcraft.inked_block": "Bloc encré",
   "block.splatcraft.inked_stairs": "Escaliers encrés",
   "block.splatcraft.inked_slab": "Dalle encrée",
   "block.splatcraft.glowing_inked_block": "Bloc encré scintillant",
   "block.splatcraft.glowing_inked_stairs": "Escaliers encrés scintillants",
   "block.splatcraft.glowing_inked_slab": "Dalle encrée scintillante",
-
   "block.splatcraft.inkwell": "Encrier",
   "block.splatcraft.canvas": "Toile d'encre",
   "block.splatcraft.inked_wool": "Laine encrée",
-
   "block.splatcraft.empty_inkwell": "Encrier vide",
   "block.splatcraft.grate": "Grille",
   "block.splatcraft.grate_ramp": "Grille inclinée",
@@ -22,17 +19,13 @@
   "block.splatcraft.power_egg_block": "Bloc d'oeuf de poisson",
   "block.splatcraft.sardinium_block": "Bloc de Sardinium",
   "block.splatcraft.sardinium_ore": "Minerai de Sardinium",
-
   "block.splatcraft.ink_vat": "Cuve d'encre",
   "block.splatcraft.weapon_workbench": "Optimatron",
-
   "block.splatcraft.stage_barrier": "Limite de stage",
   "block.splatcraft.stage_void": "Vide de stage",
-
   "item.splatcraft.sardinium": "Sardinium",
   "item.splatcraft.power_egg": "Oeuf de poisson",
   "item.splatcraft.power_egg_can": "Boîte d'oeufs de poisson",
-
   "item.splatcraft.filter": "Filtre",
   "item.splatcraft.organic_filter": "Filtre organique",
   "item.splatcraft.pastel_filter": "Filtre pastel",
@@ -40,7 +33,6 @@
   "item.splatcraft.enchanted_filter": "Filtre enchanté",
   "item.splatcraft.creative_filter": "Filtre créatif",
   "item.splatcraft.filter.tooltip": "Utilises le dans une cuve d'encre pour obtenir d'avantage de couleurs !",
-
   "item.splatcraft.ink_disruptor": "Effaceur d'encre",
   "item.splatcraft.turf_scanner": "Scanner de territoire",
   "item.splatcraft.turf_scanner.mode.0": "De haut en bas",
@@ -51,16 +43,13 @@
   "item.splatcraft.color_changer.mode.2": "liste noir des couleurs de joueur",
   "item.remote.coords.a": "(%s,%s,%s)",
   "item.remote.coords.b": "(%s,%s,%s) à (%s,%s,%s)",
-
   "item.splatcraft.squid_bumper": "Cible d'entraînement",
-
   "item.splatcraft.ink_cloth_helmet": "Casque d'encre",
   "item.splatcraft.ink_cloth_chestplate": "Plastron d'encre",
   "item.splatcraft.ink_cloth_leggings": "Jambières d'encre",
   "item.splatcraft.ink_cloth_boots": "Bottes d'encre",
   "item.splatcraft.ink_cloth_boots.colorless_tooltip": "S'adapte à votre couleur d'encre !",
   "item.splatcraft.splatfest_band": "Bracelet de Festival",
-
   "item.splatcraft.splattershot": "Liquidateur",
   "item.splatcraft.tentatek_splattershot": "Liquidateur griffé",
   "item.splatcraft.wasabi_splattershot": "Liquidateur Wasabi",
@@ -77,7 +66,6 @@
   "item.splatcraft.96_gal": "Calibre 3000",
   "item.splatcraft.96_gal_deco": "Calibre 3000 chic",
   "item.splatcraft.kensa_96_gal": "Calibre 3000 K",
-
   "item.splatcraft.blaster": "Eclablaster",
   "item.splatcraft.grim_blaster": "Eclablaster Nox",
   "item.splatcraft.custom_blaster": "Eclablaster griffé",
@@ -86,7 +74,6 @@
   "item.splatcraft.custom_range_blaster": "Eclablaster XL griffé",
   "item.splatcraft.clash_blaster": "Rafablaster",
   "item.splatcraft.clash_blaster_neo": "Rafablaster Néo",
-
   "item.splatcraft.splat_roller": "Rouleau",
   "item.splatcraft.krak_on_splat_roller": "Rouleau griffé",
   "item.splatcraft.corocoro_splat_roller": "Rouleau CoroCoro",
@@ -102,7 +89,6 @@
   "item.splatcraft.octobrush": "Epinceau Brosse",
   "item.splatcraft.kensa_octobrush": "Epinceau Brosse K",
   "item.splatcraft.octobrush_nouveau": "Epinceau Brosse nuancé",
-
   "item.splatcraft.splat_charger": "Concentraceur",
   "item.splatcraft.bento_splat_charger": "Concentraceur Bento",
   "item.splatcraft.kelp_splat_charger": "Concentraceur W",
@@ -116,7 +102,6 @@
   "item.splatcraft.bamboozler_14_mk1": "Bimbamboum MK I",
   "item.splatcraft.bamboozler_14_mk2": "Bimbamboum MK II",
   "item.splatcraft.bamboozler_14_mk3": "Bimbamboum MK III",
-
   "item.splatcraft.splat_dualies": "Double encreur",
   "item.splatcraft.splat_dualies.plural": "Double encreur",
   "item.splatcraft.enperry_splat_dualies": "Double encreur griffé",
@@ -127,14 +112,12 @@
   "item.splatcraft.dualie_squelchers.plural": "Double nettoyeur",
   "item.splatcraft.custom_dualie_squelchers": "Double nettoyeur modifié",
   "item.splatcraft.custom_dualie_squelchers.plural": "Double nettoyeur modifié",
-
   "item.splatcraft.slosher": "Seauceur",
   "item.splatcraft.classic_slosher": "Seauceur classique",
   "item.splatcraft.soda_slosher": "Seauceur Diabolo",
   "item.splatcraft.slosher_deco": "Seauceur chic",
   "item.splatcraft.tri_slosher": "Dépoteur",
   "item.splatcraft.tri_slosher_nouvueau": "Dépoteur nuancé",
-
   "item.splatcraft.ink_tank": "Réservoir d'encre",
   "item.splatcraft.ink_tank.ink": "%s / %s",
   "item.splatcraft.ink_tank.cant_recharge": "§7§oRechargement impossible",
@@ -143,7 +126,6 @@
   "item.splatcraft.ink_tank_jr.tooltip": "Uniquement utilisable avec le Liquidateur Jr., Sr. et Jr. K",
   "item.splatcraft.armored_ink_tank": "Réservoir d'encre blindé",
   "item.splatcraft.hero_ink_tank": "Réservoir héroïque",
-
   "weaponStat.range": "Portée: %s%%",
   "weaponStat.damage": "Dégâts: %s%%",
   "weaponStat.impact": "Impact: %s%%",
@@ -152,7 +134,6 @@
   "weaponStat.ink_speed": "Vitesse de l'encre: %s%%",
   "weaponStat.mobility": "mobilité: %s%%",
   "weaponStat.charge_speed": "Vitesse de chargement: %s%%",
-
   "weaponTab.splatcraft:weapon_workbench_tabs/shooters": "Lanceurs",
   "weaponTab.splatcraft:weapon_workbench_tabs/rollers": "Rouleaux",
   "weaponTab.splatcraft:weapon_workbench_tabs/chargers": "Fusils",
@@ -163,11 +144,9 @@
   "weaponTab.splatcraft:weapon_workbench_tabs/sub_weapons": "Armes secondaires",
   "weaponTab.splatcraft:weapon_workbench_tabs/special_weapons": "Armes spéciales",
   "weaponTab.splatcraft:weapon_workbench_tabs/ink_tanks": "Réservoirs d'encre",
-
   "weaponRecipe.splatcraft:weapon_workbench/aerospray": "Aérogun",
   "weaponRecipe.splatcraft:weapon_workbench/e_liter": "Extraceur",
   "weaponRecipe.splatcraft:weapon_workbench/bamboozler_14": "Bimbamboum",
-
   "weaponType.original": "Original",
   "weaponType.classic": "Classique",
   "weaponType.custom": "Modifié",
@@ -177,12 +156,10 @@
   "weaponType.replica": "(Réplique)",
   "weaponType.hero_replica": "Héroïque (Réplique)",
   "weaponType.ultimate": "Spécial",
-
   "weaponType.tentatek": "griffé",
   "weaponType.krak_on": "griffé",
   "weaponType.enperry": "griffé",
   "weaponType.neo": "Néo",
-
   "weaponType.wasabi": "Wasabi",
   "weaponType.coro_coro": "CoroCoro",
   "weaponType.bento": "Bento",
@@ -190,7 +167,6 @@
   "weaponType.permanent": "Permanent",
   "weaponType.soda": "Diabolo",
   "weaponType.kelp": "W",
-
   "weaponType.3k": "Original",
   "weaponType.4k": "+",
   "weaponType.mg": "Original",
@@ -199,7 +175,6 @@
   "weaponType.mk1": "Mk I",
   "weaponType.mk2": "Mk II",
   "weaponType.mk3": "Mk III",
-
   "subtitle.shooter_firing": "Tir de Lanceur",
   "subtitle.blaster_firing": "Tir de Blaster",
   "subtitle.blaster_explosion": "Explosion de projectile de Blaster",
@@ -223,12 +198,9 @@
   "subtitle.squid_revert": "Transformation en inkling",
   "subtitle.ink_submerge": "Calanage",
   "subtitle.ink_surface": "Calamar à la surface",
-
   "container.ink_vat": "Fabrication de l'encrier",
   "container.weapon_workbench": "Fabicration d'arme",
-
   "ink_color.invert": "Inversée %s",
-
   "ink_color.splatcraft.orange": "Orange",
   "ink_color.splatcraft.blue": "Bleu",
   "ink_color.splatcraft.green": "Vert",
@@ -239,24 +211,20 @@
   "ink_color.splatcraft.lilac": "Rosé",
   "ink_color.splatcraft.lemon": "Citron",
   "ink_color.splatcraft.plum": "Violet",
-
   "ink_color.splatcraft.mint": "Menthe",
   "ink_color.splatcraft.cyan": "Cyan",
   "ink_color.splatcraft.cherry": "Cerise",
   "ink_color.splatcraft.peach": "Pêche",
-
   "ink_color.splatcraft.neon_orange": "Orange Néon",
   "ink_color.splatcraft.neon_blue": "Bleu Néon",
   "ink_color.splatcraft.neon_green": "Vert Néon",
   "ink_color.splatcraft.neon_pink": "Rose Néon",
   "ink_color.splatcraft.hero_yellow": "Jaune Héroïque",
   "ink_color.splatcraft.octo_pink": "Rose Octaling",
-
   "ink_color.splatcraft.cobalt": "Cobalt",
   "ink_color.splatcraft.mojang": "Rouge Mojang",
   "ink_color.splatcraft.ice": "Menthe glacé",
   "ink_color.splatcraft.floral": "Rose floral",
-
   "ink_color.splatcraft.dye_white": "Blanc organique",
   "ink_color.splatcraft.dye_orange": "Orange organique",
   "ink_color.splatcraft.dye_magenta": "Magenta organique",
@@ -273,9 +241,7 @@
   "ink_color.splatcraft.dye_green": "Vert organique",
   "ink_color.splatcraft.dye_red": "Rouge organique",
   "ink_color.splatcraft.dye_black": "Noir organique",
-
   "ink_color.splatcraft.default": "Non peint",
-
   "death.attack.water": "%s s'est dissout dans l'eau",
   "death.attack.splat": "%s a été liquidé par %s",
   "death.attack.splat.item": "%s a été liquidé par %s en utilisant %s",
@@ -283,11 +249,9 @@
   "death.attack.roll.item": "%s s'est fait rouler dessus par %s en utilisant %s",
   "death.attack.squish": "%s a été écrasé par %s",
   "death.attack.squish.item": "%s a été écrasé par %s en utilisant %s",
-
   "entity.splatcraft.ink_projectile": "Projectile d'encre",
   "entity.splatcraft.ink_squid": "Calamar",
   "entity.splatcraft.squid_bumper": "Cible d'entraînement",
-
   "gamerule.splatcraft.inkDecay": "Disparition de l'encre",
   "gamerule.splatcraft.coloredPlayerNames": "Couleur d'encre sur le nom des joueurs",
   "gamerule.splatcraft.keepMatchItems": "Conserver les objets de match après la mort",
@@ -304,24 +268,19 @@
   "gamerule.splatcraft.inkDamageCooldown.description": "Active un temps d'invulnérabilité après s'être fait tirer dessus.",
   "gamerule.splatcraft.inkMobDamagePercentage": "Pourcentage des dégâts de l'encre sur les créatures",
   "gamerule.splatcraft.inkMobDamagePercentage.description": "Détermine les dégâts infligés par les armes de Splatcraft contre les créatures.",
-
   "status.coord_set.a": "Première position définie en X: %s Y: %s Z: %s",
   "status.coord_set.b": "Seconde position définie en X: %s Y: %s Z: %s",
   "status.no_ink": "Réservoir vide !",
   "status.remote_mode": "Définir le mode de distance sur %s",
-
   "status.scan_turf.out_of_world": "§cImpossible de vérifier des blocs en dehors du monde",
   "status.scan_turf.score": "%s = %s%%",
   "status.scan_turf.winner": "%s §eGagne le match !",
   "status.scan_turf.no_ink": "§cAucune encre n'a été trouvée sur la zone sélectionnée",
-
   "status.clear_ink.out_of_world": "§cImpossible d'effacer l'encre en dehors du monde",
   "status.clear_ink.no_ink": "Aucune encre effaçable n'a été trouvée sur la zone sélectionnée",
   "status.clear_ink.success": " %s blocs ont été éffacé avec succès",
-
   "status.change_color.out_of_world": "§cImpossible de recolorer l'encre en dehors du monde",
   "status.change_color.success": "%s blocs à %s recoloré avec succès",
-
   "commands.scanturf.success": "%s blocs ont été scanné avec succès",
   "commands.inkcolor.success.single": "Changement de l'encre %s pour de l'encre %s",
   "commands.inkcolor.success.multiple": "Cangement des couleurs d'encre des joueurs du %s au %s",
@@ -331,21 +290,15 @@
   "commands.colorscores.list.empty": "Il n'y a aucun critère de couleur enregistré",
   "commands.colorscores.list.count": "Affichage des critères de couleur enregistrés pour la couleur %s:",
   "commands.colorscores.list.entry": "%s: s'affiche comme '%s'",
-
   "arg.colorCriterion.notFound": "Aucun critère n'a été trouvé pour la couleur %s",
   "arg.inkColor.notFound": "La couleur %s est inconnue",
-
   "stat.splatcraft.squid_time": "Temps passé en calamar",
   "stat.splatcraft.blocks_inked": "Blocs encrés",
   "stat.splatcraft.weapons_crafted": "Armes fabriquées",
   "stat.splatcraft.inkwells_crafted": "Encriers remplis",
   "stat.splatcraft.subs_used": "Armes secondaire utilisées",
   "stat.splatcraft.specials_used": "Armes spéciale utilisées",
-
   "key.categories.splatcraft": "Splatcraft",
   "key.squidForm": "Forme Calmar",
-
   "attribute.splatcraft.ink_swim_speed": "Bonus turbo-calamar"
-
 }
-

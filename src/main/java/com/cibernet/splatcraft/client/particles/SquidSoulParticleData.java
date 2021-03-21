@@ -18,34 +18,34 @@ import java.util.Locale;
 
 public class SquidSoulParticleData implements IParticleData
 {
-    protected final float red;
-    protected final float green;
-    protected final float blue;
-
-
-    public static final IDeserializer<SquidSoulParticleData> DESERIALIZER = new IDeserializer<SquidSoulParticleData>() {
+    public static final IDeserializer<SquidSoulParticleData> DESERIALIZER = new IDeserializer<SquidSoulParticleData>()
+    {
+        @Override
         public SquidSoulParticleData deserialize(ParticleType<SquidSoulParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException
         {
             reader.expect(' ');
             return new SquidSoulParticleData(InkColorArgument.parseStatic(reader));
         }
 
-        public SquidSoulParticleData read(ParticleType<SquidSoulParticleData> particleTypeIn, PacketBuffer buffer) {
+        @Override
+        public SquidSoulParticleData read(ParticleType<SquidSoulParticleData> particleTypeIn, PacketBuffer buffer)
+        {
             return new SquidSoulParticleData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
     };
+    public static final Codec<SquidSoulParticleData> CODEC = RecordCodecBuilder.create(
+            p_239803_0_ -> p_239803_0_.group(
+                    Codec.FLOAT.fieldOf("r").forGetter(p_239807_0_ -> p_239807_0_.red),
+                    Codec.FLOAT.fieldOf("g").forGetter(p_239806_0_ -> p_239806_0_.green),
+                    Codec.FLOAT.fieldOf("b").forGetter(p_239805_0_ -> p_239805_0_.blue)
+            ).apply(p_239803_0_, SquidSoulParticleData::new)
+    );
+    protected final float red;
+    protected final float green;
+    protected final float blue;
 
-    public static final Codec<SquidSoulParticleData> CODEC = RecordCodecBuilder.create((p_239803_0_) -> {
-        return p_239803_0_.group(Codec.FLOAT.fieldOf("r").forGetter((p_239807_0_) -> {
-            return p_239807_0_.red;
-        }), Codec.FLOAT.fieldOf("g").forGetter((p_239806_0_) -> {
-            return p_239806_0_.green;
-        }), Codec.FLOAT.fieldOf("b").forGetter((p_239805_0_) -> {
-            return p_239805_0_.blue;
-        })).apply(p_239803_0_, SquidSoulParticleData::new);
-    });
-
-    public SquidSoulParticleData(int color) {
+    public SquidSoulParticleData(int color)
+    {
         this(ColorUtils.hexToRGB(color));
     }
 
@@ -62,7 +62,8 @@ public class SquidSoulParticleData implements IParticleData
     }
 
     @Override
-    public ParticleType<?> getType() {
+    public ParticleType<?> getType()
+    {
         return SplatcraftParticleTypes.SQUID_SOUL;
     }
 
@@ -74,21 +75,27 @@ public class SquidSoulParticleData implements IParticleData
         buffer.writeFloat(blue);
     }
 
-    public String getParameters() {
+    @Override
+    public String getParameters()
+    {
         return String.format(Locale.ROOT, "%s %.2f %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()), this.red, this.green, this.blue);
     }
+
     @OnlyIn(Dist.CLIENT)
-    public float getRed() {
+    public float getRed()
+    {
         return this.red;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getGreen() {
+    public float getGreen()
+    {
         return this.green;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getBlue() {
+    public float getBlue()
+    {
         return this.blue;
     }
 }

@@ -1,7 +1,7 @@
 {
-	"parent": "block/cube_all",
-	"textures": {
-		"all": "splatcraft:blocks/stage_void",
-		"particle": "splatcraft:blocks/stage_void"
-	}
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "splatcraft:blocks/stage_void",
+    "particle": "splatcraft:blocks/stage_void"
+  }
 }

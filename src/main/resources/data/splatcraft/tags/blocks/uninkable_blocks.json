@@ -1,8 +1,8 @@
 {
-    "replace": false,
-    "values": [
-        "minecraft:soul_sand",
-        "minecraft:grass_path",
-        "minecraft:wet_sponge"
-    ]
+  "replace": false,
+  "values": [
+    "minecraft:soul_sand",
+    "minecraft:grass_path",
+    "minecraft:wet_sponge"
+  ]
 }

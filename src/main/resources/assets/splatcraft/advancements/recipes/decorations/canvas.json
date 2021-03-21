@@ -6,7 +6,7 @@
     ]
   },
   "criteria": {
-  "has_power_egg": {
+    "has_power_egg": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [

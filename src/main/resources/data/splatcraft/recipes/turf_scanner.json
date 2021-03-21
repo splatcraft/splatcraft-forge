@@ -1,26 +1,26 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        " I ",
-        "#S#",
-        "#P#"
-    ],
-    "key": {
-        "#": {
-            "item": "splatcraft:sardinium"
-        },
-        "P": {
-            "item": "splatcraft:power_egg_block"
-        },
-        "S": {
-            "item": "minecraft:redstone"
-        },
-        "I": {
-            "item": "minecraft:iron_ingot"
-        }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " I ",
+    "#S#",
+    "#P#"
+  ],
+  "key": {
+    "#": {
+      "item": "splatcraft:sardinium"
     },
-    "result": {
-        "item": "splatcraft:turf_scanner",
-        "count": 1
+    "P": {
+      "item": "splatcraft:power_egg_block"
+    },
+    "S": {
+      "item": "minecraft:redstone"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
     }
+  },
+  "result": {
+    "item": "splatcraft:turf_scanner",
+    "count": 1
+  }
 }

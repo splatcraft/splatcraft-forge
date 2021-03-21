@@ -6,7 +6,7 @@
     ]
   },
   "criteria": {
-  "has_sardinium": {
+    "has_sardinium": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [

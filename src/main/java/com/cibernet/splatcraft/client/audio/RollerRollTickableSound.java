@@ -1,14 +1,8 @@
 package com.cibernet.splatcraft.client.audio;
 
-import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
-import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
-import com.cibernet.splatcraft.items.weapons.ChargerItem;
 import com.cibernet.splatcraft.items.weapons.RollerItem;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
-import com.cibernet.splatcraft.util.PlayerCharge;
-import com.cibernet.splatcraft.util.PlayerCooldown;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,7 +29,9 @@ public class RollerRollTickableSound extends TickableSound
     }
 
 
-    public boolean canBeSilent() {
+    @Override
+    public boolean canBeSilent()
+    {
         return true;
     }
 
@@ -46,26 +42,30 @@ public class RollerRollTickableSound extends TickableSound
         {
             System.out.println("roll");
             ItemStack roller = player.getActiveItemStack();
-            if(WeaponBaseItem.getInkAmount(player, roller) < (Math.max(((RollerItem)roller.getItem()).rollConsumptionMin, ((RollerItem)roller.getItem()).rollConsumptionMax)))
+            if (WeaponBaseItem.getInkAmount(player, roller) < Math.max(((RollerItem) roller.getItem()).rollConsumptionMin, ((RollerItem) roller.getItem()).rollConsumptionMax))
             {
                 finishPlaying();
                 return;
             }
 
-            this.x = (double)((float)this.player.getPosX());
-            this.y = (double)((float)this.player.getPosY());
-            this.z = (double)((float)this.player.getPosZ());
-            float lvt_1_1_ = MathHelper.sqrt(Entity.horizontalMag(this.player.getMotion()))*3f;
-            if ((double)lvt_1_1_ >= 0.01D) {
+            this.x = (float) this.player.getPosX();
+            this.y = (float) this.player.getPosY();
+            this.z = (float) this.player.getPosZ();
+            float lvt_1_1_ = MathHelper.sqrt(Entity.horizontalMag(this.player.getMotion())) * 3f;
+            if ((double) lvt_1_1_ >= 0.01D)
+            {
                 this.distance = MathHelper.clamp(this.distance + 0.0025F, 0.0F, 1.0F);
                 this.volume = MathHelper.lerp(MathHelper.clamp(lvt_1_1_, 0.0F, 0.5F), 0.0F, 1F);
-            } else {
+            } else
+            {
                 this.distance = 0.0F;
                 this.volume = 0.0F;
             }
             System.out.println(volume);
 
+        } else
+        {
+            finishPlaying();
         }
-        else finishPlaying();
     }
 }

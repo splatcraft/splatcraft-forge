@@ -14,6 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BaseLootModifier extends LootModifier
 {
@@ -39,7 +40,7 @@ public class BaseLootModifier extends LootModifier
     protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context)
     {
         List<ItemStack> result = new ArrayList<>();
-        result.add(new ItemStack(item, (countMax-countMin <= 0 ? 0 : context.getRandom().nextInt(countMax-countMin))+countMin));
+        result.add(new ItemStack(item, (countMax - countMin <= 0 ? 0 : context.getRandom().nextInt(countMax - countMin)) + countMin));
         return result;
     }
 
@@ -49,7 +50,7 @@ public class BaseLootModifier extends LootModifier
         @Override
         public BaseLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] ailootcondition)
         {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation((JSONUtils.getString(object, "item"))));
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getString(object, "item")));
             int countMin = JSONUtils.getInt(object, "countMin");
             int countMax = JSONUtils.getInt(object, "countMax");
             return new BaseLootModifier(ailootcondition, item, countMin, countMax);
@@ -59,7 +60,7 @@ public class BaseLootModifier extends LootModifier
         public JsonObject write(BaseLootModifier instance)
         {
             JsonObject result = new JsonObject();
-            result.addProperty("item", instance.item.getRegistryName().toString());
+            result.addProperty("item", Objects.requireNonNull(instance.item.getRegistryName()).toString());
             result.addProperty("countMin", instance.countMin);
             result.addProperty("countMax", instance.countMax);
             return result;

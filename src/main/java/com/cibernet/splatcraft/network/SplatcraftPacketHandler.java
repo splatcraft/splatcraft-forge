@@ -18,64 +18,64 @@ import java.util.function.Supplier;
 
 public class SplatcraftPacketHandler
 {
-	private static final String PROTOCOL_VERSION = "1";
-	public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(Splatcraft.MODID, "main"),
-			() -> PROTOCOL_VERSION,
-			PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals);
-	private static int ID = 0;
-	
-	public static void registerMessages()
-	{
-		//INSTANCE.registerMessage(ID++, PlayerColorPacket.class, SplatcraftPacket::encode, PlayerColorPacket::decode, SplatcraftPacket::consume);
-		registerMessage(UpdatePlayerInfoPacket.class, UpdatePlayerInfoPacket::decode);
-		registerMessage(PlayerColorPacket.class, PlayerColorPacket::decode);
-		registerMessage(PlayerSetSquidServerPacket.class, PlayerSetSquidServerPacket::decode);
-		registerMessage(PlayerSetSquidClientPacket.class, PlayerSetSquidClientPacket::decode);
-		registerMessage(UpdateBooleanGamerulesPacket.class, UpdateBooleanGamerulesPacket::decode);
-		registerMessage(RequestPlayerInfoPacket.class, RequestPlayerInfoPacket::decode);
-		registerMessage(SendScanTurfResultsPacket.class, SendScanTurfResultsPacket::decode);
-		registerMessage(UpdateColorScoresPacket.class, UpdateColorScoresPacket::decode);
-		registerMessage(UpdateBlockColorPacket.class, UpdateBlockColorPacket::decode);
-		registerMessage(DodgeRollPacket.class, DodgeRollPacket::decode);
-		registerMessage(CraftWeaponPacket.class, CraftWeaponPacket::decode);
-		registerMessage(UpdateClientColorsPacket.class, UpdateClientColorsPacket::decode);
-		registerMessage(UpdateInkOverlayPacket.class, UpdateInkOverlayPacket::decode);
-		registerMessage(ChargeableReleasePacket.class, ChargeableReleasePacket::decode);
-	}
-	
-	private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, Function<PacketBuffer, MSG> decoder)
-	{
-		registerMessage(messageType, SplatcraftPacket::encode, decoder, SplatcraftPacket::consume);
-	}
-	
-	private static <MSG> void registerMessage(Class<MSG> messageType, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> messageConsumer)
-	{
-		INSTANCE.registerMessage(ID++, messageType, encoder, decoder, messageConsumer);
-	}
-	
-	public static <MSG> void sendToPlayer(MSG message, ServerPlayerEntity player)
-	{
-		INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
-	}
-	
-	public static <MSG> void sendToDim(MSG message, RegistryKey<World> world)
-	{
-		INSTANCE.send(PacketDistributor.DIMENSION.with(() -> world), message);
-	}
-	
-	public static <MSG> void sendToDim(MSG message, World world)
-	{
-		sendToDim(message, world.getDimensionKey());
-	}
-	
-	public static <MSG> void sendToAll(MSG message)
-	{
-		INSTANCE.send(PacketDistributor.ALL.noArg(), message);
-	}
-	
-	public static <MSG> void sendToServer(MSG message)
-	{
-		INSTANCE.sendToServer(message);
-	}
+    private static final String PROTOCOL_VERSION = "1";
+    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(Splatcraft.MODID, "main"),
+            () -> PROTOCOL_VERSION,
+            PROTOCOL_VERSION::equals,
+            PROTOCOL_VERSION::equals);
+    private static int ID = 0;
+
+    public static void registerMessages()
+    {
+        //INSTANCE.registerMessage(ID++, PlayerColorPacket.class, SplatcraftPacket::encode, PlayerColorPacket::decode, SplatcraftPacket::consume);
+        registerMessage(UpdatePlayerInfoPacket.class, UpdatePlayerInfoPacket::decode);
+        registerMessage(PlayerColorPacket.class, PlayerColorPacket::decode);
+        registerMessage(PlayerSetSquidServerPacket.class, PlayerSetSquidServerPacket::decode);
+        registerMessage(PlayerSetSquidClientPacket.class, PlayerSetSquidClientPacket::decode);
+        registerMessage(UpdateBooleanGamerulesPacket.class, UpdateBooleanGamerulesPacket::decode);
+        registerMessage(RequestPlayerInfoPacket.class, RequestPlayerInfoPacket::decode);
+        registerMessage(SendScanTurfResultsPacket.class, SendScanTurfResultsPacket::decode);
+        registerMessage(UpdateColorScoresPacket.class, UpdateColorScoresPacket::decode);
+        registerMessage(UpdateBlockColorPacket.class, UpdateBlockColorPacket::decode);
+        registerMessage(DodgeRollPacket.class, DodgeRollPacket::decode);
+        registerMessage(CraftWeaponPacket.class, CraftWeaponPacket::decode);
+        registerMessage(UpdateClientColorsPacket.class, UpdateClientColorsPacket::decode);
+        registerMessage(UpdateInkOverlayPacket.class, UpdateInkOverlayPacket::decode);
+        registerMessage(ChargeableReleasePacket.class, ChargeableReleasePacket::decode);
+    }
+
+    private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, Function<PacketBuffer, MSG> decoder)
+    {
+        registerMessage(messageType, SplatcraftPacket::encode, decoder, SplatcraftPacket::consume);
+    }
+
+    private static <MSG> void registerMessage(Class<MSG> messageType, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> messageConsumer)
+    {
+        INSTANCE.registerMessage(ID++, messageType, encoder, decoder, messageConsumer);
+    }
+
+    public static <MSG> void sendToPlayer(MSG message, ServerPlayerEntity player)
+    {
+        INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+    }
+
+    public static <MSG> void sendToDim(MSG message, RegistryKey<World> world)
+    {
+        INSTANCE.send(PacketDistributor.DIMENSION.with(() -> world), message);
+    }
+
+    public static <MSG> void sendToDim(MSG message, World world)
+    {
+        sendToDim(message, world.getDimensionKey());
+    }
+
+    public static <MSG> void sendToAll(MSG message)
+    {
+        INSTANCE.send(PacketDistributor.ALL.noArg(), message);
+    }
+
+    public static <MSG> void sendToServer(MSG message)
+    {
+        INSTANCE.sendToServer(message);
+    }
 }

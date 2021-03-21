@@ -26,9 +26,9 @@ public class InkSplashParticle extends SpriteTexturedParticle
         this.motionY = motionY;
         this.motionZ = motionZ;
 
-        particleRed = Math.max(0.018f,(float) (data.getRed()) - 0.018f);
-        particleGreen = Math.max(0.018f,(float) (data.getGreen()) - 0.018f);
-        particleBlue = Math.max(0.018f,(float) (data.getBlue()) - 0.018f);
+        particleRed = Math.max(0.018f, data.getRed() - 0.018f);
+        particleGreen = Math.max(0.018f, data.getGreen() - 0.018f);
+        particleBlue = Math.max(0.018f, data.getBlue() - 0.018f);
 
         this.particleScale = 0.33F * (this.rand.nextFloat() * 0.5F + 0.5F) * 2.0F * data.getScale();
         this.particleGravity = 0;//0.1f;
@@ -42,28 +42,37 @@ public class InkSplashParticle extends SpriteTexturedParticle
     public void tick()
     {
         super.tick();
-        if(particleGravity > 0)
-            this.motionY -= 0.004D + 0.04D * (double)this.particleGravity;
+        if (particleGravity > 0)
+        {
+            this.motionY -= 0.004D + 0.04D * (double) this.particleGravity;
+        }
         if (this.world.getBlockState(new BlockPos(this.posX, this.posY, this.posZ)).getMaterial() == Material.WATER)
         {
             this.setExpired();
+        } else
+        {
+            selectSpriteWithAge(spriteProvider);
         }
-        else selectSpriteWithAge(spriteProvider);
     }
 
-    public IParticleRenderType getRenderType() {
+    @Override
+    public IParticleRenderType getRenderType()
+    {
         return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
     {
-        if(!(Minecraft.getInstance().gameSettings.getPointOfView().equals(PointOfView.FIRST_PERSON) && getDistanceSq(Minecraft.getInstance().player, posX, posY, posZ) < 0.2))
+        if (!(Minecraft.getInstance().gameSettings.getPointOfView().equals(PointOfView.FIRST_PERSON) && getDistanceSq(Minecraft.getInstance().player, posX, posY, posZ) < 0.2))
+        {
             super.renderParticle(buffer, renderInfo, partialTicks);
+        }
     }
 
 
-    protected double getDistanceSq(Entity entity, double x, double y, double z) {
+    protected double getDistanceSq(Entity entity, double x, double y, double z)
+    {
         double d0 = entity.getPosX() - x;
         double d1 = entity.getPosYEye() - y;
         double d2 = entity.getPosZ() - z;
@@ -76,17 +85,17 @@ public class InkSplashParticle extends SpriteTexturedParticle
 
         private final IAnimatedSprite spriteSet;
 
-        public Factory(IAnimatedSprite sprite) {
+        public Factory(IAnimatedSprite sprite)
+        {
             this.spriteSet = sprite;
         }
 
         @Nullable
         @Override
-        public Particle makeParticle(InkSplashParticleData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return  new InkSplashParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn, this.spriteSet);
+        public Particle makeParticle(InkSplashParticleData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+        {
+            return new InkSplashParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn, this.spriteSet);
         }
     }
 
 }
-
-

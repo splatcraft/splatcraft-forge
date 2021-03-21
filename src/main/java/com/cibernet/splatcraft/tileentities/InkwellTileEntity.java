@@ -11,19 +11,24 @@ import net.minecraft.util.math.AxisAlignedBB;
 
 public class InkwellTileEntity extends InkColorTileEntity implements ITickableTileEntity
 {
-	
-	public InkwellTileEntity() {super(SplatcraftTileEntitites.inkwellTileEntity);}
-	
-	@Override
-	public void tick()
-	{
-		AxisAlignedBB bb = new AxisAlignedBB(getPos().up());
-		
-		for(ItemEntity entity : world.getEntitiesWithinAABB(ItemEntity.class, bb))
-		{
-			ItemStack stack = entity.getItem();
-			if(stack.getItem().equals(Items.WHITE_WOOL) || (stack.getItem().equals(SplatcraftItems.inkedWool) && ColorUtils.getInkColor(stack) != getColor()))
-				entity.setItem(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool, stack.getCount(), stack.getTag()), getColor()));
-		}
-	}
+
+    public InkwellTileEntity()
+    {
+        super(SplatcraftTileEntitites.inkwellTileEntity);
+    }
+
+    @Override
+    public void tick()
+    {
+        AxisAlignedBB bb = new AxisAlignedBB(getPos().up());
+
+        for (ItemEntity entity : world.getEntitiesWithinAABB(ItemEntity.class, bb))
+        {
+            ItemStack stack = entity.getItem();
+            if (stack.getItem().equals(Items.WHITE_WOOL) || stack.getItem().equals(SplatcraftItems.inkedWool) && ColorUtils.getInkColor(stack) != getColor())
+            {
+                entity.setItem(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool, stack.getCount(), stack.getTag()), getColor()));
+            }
+        }
+    }
 }

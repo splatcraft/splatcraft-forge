@@ -9,8 +9,7 @@
         "item": "splatcraft:blaster",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 10
@@ -35,8 +34,7 @@
         "item": "splatcraft:grim_blaster",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 8

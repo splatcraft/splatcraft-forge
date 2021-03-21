@@ -6,7 +6,9 @@ import net.minecraft.world.World;
 
 public interface IChargeableWeapon
 {
-	float getDischargeSpeed();
-	float getChargeSpeed();
-	void onRelease(World worldIn, PlayerEntity playerIn, ItemStack stack, float charge);
+    float getDischargeSpeed();
+
+    float getChargeSpeed();
+
+    void onRelease(World worldIn, PlayerEntity playerIn, ItemStack stack, float charge);
 }

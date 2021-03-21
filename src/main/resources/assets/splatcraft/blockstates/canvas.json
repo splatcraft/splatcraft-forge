@@ -1,6 +1,10 @@
 {
-    "variants": {
-        "inked=false": { "model": "splatcraft:block/ink_canvas" },
-        "inked=true": { "model": "splatcraft:block/ink_canvas_inked" }
+  "variants": {
+    "inked=false": {
+      "model": "splatcraft:block/ink_canvas"
+    },
+    "inked=true": {
+      "model": "splatcraft:block/ink_canvas_inked"
     }
+  }
 }

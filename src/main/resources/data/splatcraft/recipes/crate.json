@@ -1,20 +1,20 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "###",
-        "#o#",
-        "###"
-    ],
-    "key": {
-        "o": {
-            "item": "splatcraft:power_egg"
-        },
-        "#": {
-            "tag": "minecraft:planks"
-        }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#o#",
+    "###"
+  ],
+  "key": {
+    "o": {
+      "item": "splatcraft:power_egg"
     },
-    "result": {
-        "item": "splatcraft:crate",
-        "count": 1
+    "#": {
+      "tag": "minecraft:planks"
     }
+  },
+  "result": {
+    "item": "splatcraft:crate",
+    "count": 1
+  }
 }

@@ -9,7 +9,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
@@ -26,6 +25,11 @@ public class CraftWeaponPacket extends PlayToServerPacket
         this.subtype = subtype;
     }
 
+    public static CraftWeaponPacket decode(PacketBuffer buffer)
+    {
+        return new CraftWeaponPacket(buffer.readResourceLocation(), buffer.readInt());
+    }
+
     @Override
     public void encode(PacketBuffer buffer)
     {
@@ -33,36 +37,38 @@ public class CraftWeaponPacket extends PlayToServerPacket
         buffer.writeInt(subtype);
     }
 
-    public static CraftWeaponPacket decode(PacketBuffer buffer)
-    {
-        return new CraftWeaponPacket(buffer.readResourceLocation(), buffer.readInt());
-    }
-
     @Override
     public void execute(PlayerEntity player)
     {
         Optional<? extends IRecipe<?>> recipeOptional = player.world.getRecipeManager().getRecipe(recipeID);
 
-        if(recipeOptional.isPresent() && recipeOptional.get() instanceof WeaponWorkbenchRecipe)
+        if (recipeOptional.isPresent() && recipeOptional.get() instanceof WeaponWorkbenchRecipe)
         {
             WeaponWorkbenchSubtypeRecipe recipe = ((WeaponWorkbenchRecipe) recipeOptional.get()).getRecipeFromIndex(subtype);
-            for(StackedIngredient ing : recipe.getInput())
+            for (StackedIngredient ing : recipe.getInput())
             {
-                if(!SplatcraftRecipeTypes.getItem(player, ing.getIngredient(), ing.getCount(), false))
+                if (!SplatcraftRecipeTypes.getItem(player, ing.getIngredient(), ing.getCount(), false))
                 {
                     return;
                 }
             }
 
-            for(StackedIngredient ing : recipe.getInput())
+            for (StackedIngredient ing : recipe.getInput())
+            {
                 SplatcraftRecipeTypes.getItem(player, ing.getIngredient(), ing.getCount(), true);
+            }
             ItemStack output = recipe.getOutput().copy();
-            if(!player.addItemStackToInventory(output))
+            if (!player.addItemStackToInventory(output))
             {
                 ItemEntity item = player.dropItem(output, false);
-                if(item != null)
+                if (item != null)
+                {
                     item.setNoPickupDelay();
-            } else player.container.detectAndSendChanges();
+                }
+            } else
+            {
+                player.container.detectAndSendChanges();
+            }
         }
     }
 }

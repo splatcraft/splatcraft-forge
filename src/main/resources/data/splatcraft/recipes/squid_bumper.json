@@ -1,20 +1,20 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "###",
-        "# #",
-        "#S#"
-    ],
-    "key": {
-        "S": {
-            "item": "splatcraft:sardinium"
-        },
-        "#": {
-            "item": "splatcraft:canvas"
-        }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "# #",
+    "#S#"
+  ],
+  "key": {
+    "S": {
+      "item": "splatcraft:sardinium"
     },
-    "result": {
-        "item": "splatcraft:squid_bumper",
-        "count": 1
+    "#": {
+      "item": "splatcraft:canvas"
     }
+  },
+  "result": {
+    "item": "splatcraft:squid_bumper",
+    "count": 1
+  }
 }

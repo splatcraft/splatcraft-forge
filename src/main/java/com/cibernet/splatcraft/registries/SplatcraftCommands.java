@@ -15,21 +15,21 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class SplatcraftCommands
 {
-	@SubscribeEvent
-	public static void registerCommands(FMLServerStartingEvent event)
-	{
-		CommandDispatcher<CommandSource> dispatcher = event.getServer().getCommandManager().getDispatcher();
-		
-		InkColorCommand.register(dispatcher);
-		ScanTurfCommand.register(dispatcher);
-		ClearInkCommand.register(dispatcher);
-		ReplaceColorCommand.register(dispatcher);
-		ColorScoresCommand.register(dispatcher);
-	}
-	
-	public static void registerArguments()
-	{
-		ArgumentTypes.register(Splatcraft.MODID+":ink_color", InkColorArgument.class, new ArgumentSerializer<InkColorArgument>(InkColorArgument::inkColor));
-		ArgumentTypes.register(Splatcraft.MODID+":color_criterion", ColorCriterionArgument.class, new ArgumentSerializer<ColorCriterionArgument>(ColorCriterionArgument::colorCriterion));
-	}
+    @SubscribeEvent
+    public static void registerCommands(FMLServerStartingEvent event)
+    {
+        CommandDispatcher<CommandSource> dispatcher = event.getServer().getCommandManager().getDispatcher();
+
+        InkColorCommand.register(dispatcher);
+        ScanTurfCommand.register(dispatcher);
+        ClearInkCommand.register(dispatcher);
+        ReplaceColorCommand.register(dispatcher);
+        ColorScoresCommand.register(dispatcher);
+    }
+
+    public static void registerArguments()
+    {
+        ArgumentTypes.register(Splatcraft.MODID + ":ink_color", InkColorArgument.class, new ArgumentSerializer<>(InkColorArgument::inkColor));
+        ArgumentTypes.register(Splatcraft.MODID + ":color_criterion", ColorCriterionArgument.class, new ArgumentSerializer<>(ColorCriterionArgument::colorCriterion));
+    }
 }

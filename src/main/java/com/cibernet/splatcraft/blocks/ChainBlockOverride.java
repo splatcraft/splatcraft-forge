@@ -28,8 +28,10 @@ public class ChainBlockOverride extends ChainBlock implements IInkPassthrough
     {
         boolean isSquid = false;
 
-        if(context.getEntity() instanceof LivingEntity)
+        if (context.getEntity() instanceof LivingEntity)
+        {
             isSquid = PlayerInfoCapability.isSquid((LivingEntity) context.getEntity());
+        }
 
         return isSquid ? VoxelShapes.empty() : super.getCollisionShape(state, worldIn, pos, context);
     }

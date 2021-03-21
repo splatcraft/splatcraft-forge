@@ -6,8 +6,8 @@ import net.minecraftforge.common.ToolType;
 
 public class OreBlock extends Block
 {
-	public OreBlock(int harvestLevel)
-	{
-		super(Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F).harvestLevel(harvestLevel).harvestTool(ToolType.PICKAXE));
-	}
+    public OreBlock(int harvestLevel)
+    {
+        super(Properties.create(Material.ROCK).hardnessAndResistance(3.0F, 3.0F).harvestLevel(harvestLevel).harvestTool(ToolType.PICKAXE));
+    }
 }

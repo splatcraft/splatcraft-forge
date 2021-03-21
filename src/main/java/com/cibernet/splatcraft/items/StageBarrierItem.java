@@ -4,11 +4,13 @@ import net.minecraft.block.Block;
 
 public class StageBarrierItem extends BlockItem
 {
-    public StageBarrierItem(Block block) {
+    public StageBarrierItem(Block block)
+    {
         super(block);
     }
 
-    public StageBarrierItem(Block block, Properties properties) {
+    public StageBarrierItem(Block block, Properties properties)
+    {
         super(block, properties);
     }
 }

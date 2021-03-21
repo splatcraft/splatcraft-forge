@@ -52,11 +52,13 @@ public class FishingLootModifier extends LootModifier
     @Override
     protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context)
     {
-        if(!(context.get(LootParameters.THIS_ENTITY) instanceof FishingBobberEntity) || isTreasure && !FishingPredicate.func_234640_a_(true).func_234638_a_(Objects.requireNonNull(context.get(LootParameters.THIS_ENTITY))))
+        if (!(context.get(LootParameters.THIS_ENTITY) instanceof FishingBobberEntity) || isTreasure && !FishingPredicate.func_234640_a_(true).func_234638_a_(Objects.requireNonNull(context.get(LootParameters.THIS_ENTITY))))
+        {
             return generatedLoot;
+        }
 
         float chanceMod = 0;
-        if(context.get(LootParameters.KILLER_ENTITY) instanceof LivingEntity)
+        if (context.get(LootParameters.KILLER_ENTITY) instanceof LivingEntity)
         {
             LivingEntity entity = (LivingEntity) context.get(LootParameters.KILLER_ENTITY);
             assert entity != null;
@@ -64,24 +66,55 @@ public class FishingLootModifier extends LootModifier
             int fishingLuck = EnchantmentHelper.getFishingLuckBonus(stack);
             float luck = entity instanceof PlayerEntity ? ((PlayerEntity) entity).getLuck() : 0;
 
-            if(isTreasure)
+            if (isTreasure)
+            {
                 chanceMod += fishingLuck;
+            }
             chanceMod += luck;
 
-            chanceMod *= quality * (chance/2);
+            chanceMod *= quality * (chance / 2);
         }
 
-        if(context.getRandom().nextInt(100) <= (chance+chanceMod)*100)
+        if (context.getRandom().nextInt(100) <= (chance + chanceMod) * 100)
         {
-            if(generatedLoot.size() <= 1)
+            if (generatedLoot.size() <= 1)
+            {
                 generatedLoot.clear();
-            generatedLoot.add(new ItemStack(item, (countMax-countMin <= 0 ? 0 : context.getRandom().nextInt(countMax-countMin))+countMin));
+            }
+            generatedLoot.add(new ItemStack(item, (countMax - countMin <= 0 ? 0 : context.getRandom().nextInt(countMax - countMin)) + countMin));
         }
         return generatedLoot;
     }
 
     public static class Serializer extends GlobalLootModifierSerializer<FishingLootModifier>
     {
+
+        protected static int getInt(JsonObject json, String memberName)
+        {
+            if (json.has(memberName))
+            {
+                return getInt(json.get(memberName), memberName);
+            } else
+            {
+                throw new JsonSyntaxException("Missing " + memberName + ", expected to find a Int");
+            }
+        }
+
+        protected static boolean isBoolean(JsonObject json, String memberName)
+        {
+            return JSONUtils.isJsonPrimitive(json, memberName) && json.getAsJsonPrimitive(memberName).isBoolean();
+        }
+
+        protected static int getInt(JsonElement json, String memberName)
+        {
+            if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isNumber())
+            {
+                return json.getAsInt();
+            } else
+            {
+                throw new JsonSyntaxException("Expected " + memberName + " to be a Int, was " + JSONUtils.toString(json));
+            }
+        }
 
         @Override
         public FishingLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] ailootcondition)
@@ -103,24 +136,6 @@ public class FishingLootModifier extends LootModifier
             result.addProperty("countMin", instance.countMin);
             result.addProperty("countMax", instance.countMax);
             return result;
-        }
-
-        protected static int getInt(JsonObject json, String memberName) {
-            if (json.has(memberName)) {
-                return getInt(json.get(memberName), memberName);
-            } else {
-                throw new JsonSyntaxException("Missing " + memberName + ", expected to find a Int");
-            }
-        }
-        protected static boolean isBoolean(JsonObject json, String memberName) {
-            return JSONUtils.isJsonPrimitive(json, memberName) && json.getAsJsonPrimitive(memberName).isBoolean();
-        }
-        protected static int getInt(JsonElement json, String memberName) {
-            if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isNumber()) {
-                return json.getAsInt();
-            } else {
-                throw new JsonSyntaxException("Expected " + memberName + " to be a Int, was " + JSONUtils.toString(json));
-            }
         }
     }
 }

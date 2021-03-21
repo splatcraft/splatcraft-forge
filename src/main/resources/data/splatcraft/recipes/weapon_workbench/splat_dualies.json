@@ -9,8 +9,7 @@
         "item": "splatcraft:splat_dualies",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 4
@@ -35,8 +34,7 @@
         "item": "splatcraft:enperry_splat_dualies",
         "count": 1
       },
-      "ingredients":
-      [
+      "ingredients": [
         {
           "item": "splatcraft:sardinium",
           "count": 2

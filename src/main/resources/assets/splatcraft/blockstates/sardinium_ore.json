@@ -1,5 +1,7 @@
 {
-    "variants": {
-        "": { "model": "splatcraft:block/sardinium_ore" }
+  "variants": {
+    "": {
+      "model": "splatcraft:block/sardinium_ore"
     }
+  }
 }

@@ -9,16 +9,16 @@ import javax.annotation.Nullable;
 
 public class SaveInfoStorage implements Capability.IStorage<ISaveInfo>
 {
-	@Nullable
-	@Override
-	public INBT writeNBT(Capability<ISaveInfo> capability, ISaveInfo instance, Direction side)
-	{
-		return instance.writeNBT(new CompoundNBT());
-	}
-	
-	@Override
-	public void readNBT(Capability<ISaveInfo> capability, ISaveInfo instance, Direction side, INBT nbt)
-	{
-		instance.readNBT((CompoundNBT) nbt);
-	}
+    @Nullable
+    @Override
+    public INBT writeNBT(Capability<ISaveInfo> capability, ISaveInfo instance, Direction side)
+    {
+        return instance.writeNBT(new CompoundNBT());
+    }
+
+    @Override
+    public void readNBT(Capability<ISaveInfo> capability, ISaveInfo instance, Direction side, INBT nbt)
+    {
+        instance.readNBT((CompoundNBT) nbt);
+    }
 }

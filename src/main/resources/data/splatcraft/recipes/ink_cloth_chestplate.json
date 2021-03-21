@@ -1,20 +1,20 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "# #",
-        "W#W",
-        "#W#"
-    ],
-    "key": {
-        "#": {
-            "item": "splatcraft:canvas"
-        },
-        "W": {
-            "tag": "minecraft:wool"
-        }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "# #",
+    "W#W",
+    "#W#"
+  ],
+  "key": {
+    "#": {
+      "item": "splatcraft:canvas"
     },
-    "result": {
-        "item": "splatcraft:ink_cloth_chestplate",
-        "count": 8
+    "W": {
+      "tag": "minecraft:wool"
     }
+  },
+  "result": {
+    "item": "splatcraft:ink_cloth_chestplate",
+    "count": 8
+  }
 }

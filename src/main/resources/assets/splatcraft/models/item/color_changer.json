@@ -1,30 +1,30 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "splatcraft:items/color_changer_overlay",
-        "layer1": "splatcraft:items/color_changer"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "splatcraft:items/color_changer_overlay",
+    "layer1": "splatcraft:items/color_changer"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "splatcraft:active": 1,
+        "splatcraft:mode": 0
+      },
+      "model": "splatcraft:item/color_changer_active"
     },
-    "overrides": [
-        {
-            "predicate": {
-                "splatcraft:active": 1,
-                "splatcraft:mode": 0
-            },
-            "model": "splatcraft:item/color_changer_active"
-        },
-        {
-            "predicate": {
-                "splatcraft:active": 1,
-                "splatcraft:mode": 1
-            },
-            "model": "splatcraft:item/color_changer_active_1"
-        },
-        {
-            "predicate": {
-                "splatcraft:active": 1,
-                "splatcraft:mode": 2
-            },
-            "model": "splatcraft:item/color_changer_active_2"
-        }
-    ]
+    {
+      "predicate": {
+        "splatcraft:active": 1,
+        "splatcraft:mode": 1
+      },
+      "model": "splatcraft:item/color_changer_active_1"
+    },
+    {
+      "predicate": {
+        "splatcraft:active": 1,
+        "splatcraft:mode": 2
+      },
+      "model": "splatcraft:item/color_changer_active_2"
+    }
+  ]
 }
