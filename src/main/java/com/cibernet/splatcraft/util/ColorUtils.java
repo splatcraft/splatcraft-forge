@@ -130,41 +130,56 @@ public class ColorUtils
 			: -1;
 	}
 
-	public static String getColorName(int color)
+	public static TextComponent getColorName(int color)
 	{
 		InkColor colorObj = InkColor.getByHex(color);
 		
 		// String colorFormatting = ""; // TextFormatting.fromColorIndex(color).toString();
 		
 		if(colorObj != null)
-			return colorObj.getLocalizedName();
+			return new StringTextComponent(colorObj.getLocalizedName());
 
-		String fallbackUnloc = "ink_color."+String.format("%06X", color).toLowerCase();
-		String fallbackName = new TranslationTextComponent(fallbackUnloc).getString();
-		
-		if(!fallbackName.equals(fallbackUnloc))
-			return fallbackUnloc;
+		String fallbackUnloc;
+		String fallbackName;
+
+		try {
+			fallbackUnloc = "ink_color." + String.format("%06X", color).toLowerCase();
+			fallbackName = new TranslationTextComponent(fallbackUnloc).getString();
+			if (!fallbackName.equals(fallbackUnloc))
+				return new StringTextComponent(fallbackUnloc);
+		} catch (NoClassDefFoundError error) {}
+
 
 		colorObj = InkColor.getByHex(0xFFFFFF-color);
 		if(colorObj != null)
-			return new TranslationTextComponent("ink_color.invert", colorObj.getLocalizedName()).getString();
+			return new TranslationTextComponent("ink_color.invert", colorObj.getLocalizedName());
 
+		try {
 		fallbackUnloc = "ink_color."+String.format("%06X", 0xFFFFFF-color).toLowerCase();
 		fallbackName = new TranslationTextComponent(fallbackUnloc).getString();
 
 		if(!fallbackName.equals(fallbackUnloc))
-			return new TranslationTextComponent("ink_color.invert", fallbackUnloc).getString();
+			return new TranslationTextComponent("ink_color.invert", fallbackUnloc);
+		} catch (NoClassDefFoundError error) {}
 
 
-		return "#"+String.format("%06X", color).toUpperCase();
+		return new StringTextComponent("#"+String.format("%06X", color).toUpperCase());
 		
 	}
-	
+
+	public static String getColorId(int color)
+	{
+		InkColor colorObj = InkColor.getByHex(color);
+		if(colorObj != null)
+			return colorObj.getLocalizedName();
+		else return String.format("%06X", color).toLowerCase();
+	}
+
 	public static ITextComponent getFormatedColorName(int color, boolean colorless)
 	{
 		return color == ColorUtils.DEFAULT
-			? new StringTextComponent( (colorless ? TextFormatting.GRAY : "") + getColorName(color))
-			: new StringTextComponent(getColorName(color)).setStyle(Style.EMPTY.setColor(Color.fromInt(color)));
+			? new StringTextComponent( (colorless ? TextFormatting.GRAY : "") + getColorName(color).getString())
+			: getColorName(color).setStyle(Style.EMPTY.setColor(Color.fromInt(color)));
 	}
 	
 	public static boolean colorEquals(LivingEntity entity, TileEntity te)
