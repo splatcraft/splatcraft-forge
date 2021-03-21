@@ -1,0 +1,89 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/rollers",
+  "pos": 0,
+  "recipes": [
+    {
+      "name": "weaponType.original",
+      "result": {
+        "item": "splatcraft:splat_roller",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 6
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 14
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 14
+        },
+        {
+          "item": "minecraft:white_wool",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "name": "weaponType.krak_on",
+      "result": {
+        "item": "splatcraft:krak_on_splat_roller",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 5
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 12
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 18
+        },
+        {
+          "item": "minecraft:white_wool",
+          "count": 4
+        },
+        {
+          "item": "minecraft:blue_dye",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "name": "weaponType.coro_coro",
+      "result": {
+        "item": "splatcraft:corocoro_splat_roller",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 8
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 12
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 14
+        },
+        {
+          "item": "minecraft:white_wool",
+          "count": 4
+        }
+      ]
+    }
+  ]
+}

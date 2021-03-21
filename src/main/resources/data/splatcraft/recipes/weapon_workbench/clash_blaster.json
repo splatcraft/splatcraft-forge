@@ -1,7 +1,7 @@
 {
   "type": "splatcraft:weapon_workbench",
   "tab": "splatcraft:weapon_workbench_tabs/shooters",
-  "pos": 6,
+  "pos": 16,
   "recipes": [
     {
       "name": "weaponType.original",
