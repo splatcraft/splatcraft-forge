@@ -14,14 +14,17 @@ import net.minecraftforge.common.ForgeTagHandler;
 
 import java.util.HashMap;
 
-public class SplatcraftTags {
-    public static void register() {
+public class SplatcraftTags
+{
+    public static void register()
+    {
         new Items();
         new Blocks();
         new InkColors();
     }
 
-    public static class Items {
+    public static class Items
+    {
         public static final HashMap<InkTankItem, ITag.INamedTag<Item>> INK_TANK_WHITELIST = new HashMap<>();
         public static final HashMap<InkTankItem, ITag.INamedTag<Item>> INK_TANK_BLACKLIST = new HashMap<>();
 
@@ -42,39 +45,50 @@ public class SplatcraftTags {
         public static final ITag.INamedTag<Item> FILTERS = createTag("filters");
         public static final ITag.INamedTag<Item> REMOTES = createTag("remotes");
 
-        public static void putInkTankTags(InkTankItem tank, String name) {
+        public static void putInkTankTags(InkTankItem tank, String name)
+        {
             if (!INK_TANK_WHITELIST.containsKey(tank))
+            {
                 INK_TANK_WHITELIST.put(tank, createTag(name + "_whitelist"));
+            }
             if (!INK_TANK_BLACKLIST.containsKey(tank))
+            {
                 INK_TANK_BLACKLIST.put(tank, createTag(name + "_blacklist"));
+            }
         }
 
-        public static ITag<Item> getTag(ResourceLocation location) {
+        public static ITag<Item> getTag(ResourceLocation location)
+        {
             return ItemTags.getCollection().get(location);
         }
 
-        private static ITag.INamedTag<Item> createTag(String name) {
+        private static ITag.INamedTag<Item> createTag(String name)
+        {
             return ItemTags.makeWrapperTag(new ResourceLocation(Splatcraft.MODID, name).toString());
         }
     }
 
-    public static class Blocks {
+    public static class Blocks
+    {
         public static final ITag<Block> UNINKABLE_BLOCKS = createTag("uninkable_blocks");
         public static final ITag<Block> INKABLE_BLOCKS = createTag("inkable_blocks");
 
         public static final ITag<Block> INKED_BLOCKS = createTag("inked_blocks");
         public static final ITag<Block> BLOCKS_TURF = createTag("blocks_turf");
 
-        private static ITag<Block> createTag(String name) {
+        private static ITag<Block> createTag(String name)
+        {
             return BlockTags.makeWrapperTag(new ResourceLocation(Splatcraft.MODID, name).toString());
         }
     }
 
 
-    public static class InkColors {
+    public static class InkColors
+    {
         public static ITag<InkColor> STARTER_COLORS = createTag("starter_colors");
 
-        private static ITag<InkColor> createTag(String name) {
+        private static ITag<InkColor> createTag(String name)
+        {
             return ForgeTagHandler.makeWrapperTag(new ResourceLocation(Splatcraft.MODID, "ink_colors"), new SplatcraftResourceLocation(name));
         }
 

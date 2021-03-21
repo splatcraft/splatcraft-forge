@@ -19,35 +19,44 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.ArrayList;
 
 @Mod.EventBusSubscriber
-public class SplatcraftOreGen {
+public class SplatcraftOreGen
+{
     private static final ArrayList<ConfiguredFeature<?, ?>> overworldGen = new ArrayList<>();
     private static final ArrayList<ConfiguredFeature<?, ?>> beachGen = new ArrayList<>();
     private static final ArrayList<ConfiguredFeature<?, ?>> oceanGen = new ArrayList<>();
 
-    public static void registerOres() {
+    public static void registerOres()
+    {
         beachGen.add(register("sardinium", Feature.ORE.withConfiguration(
-            new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, SplatcraftBlocks.sardiniumOre.getDefaultState(), 6))
-            .range(40).func_242731_b(8)));
+                new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, SplatcraftBlocks.sardiniumOre.getDefaultState(), 6))
+                .range(40).func_242731_b(8)));
 
         oceanGen.add(register("sardinium_ocean", Feature.ORE.withConfiguration(
-            new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, SplatcraftBlocks.sardiniumOre.getDefaultState(), 12))
-            .range(60).func_242731_b(8)));
+                new OreFeatureConfig(OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD, SplatcraftBlocks.sardiniumOre.getDefaultState(), 12))
+                .range(60).func_242731_b(8)));
     }
 
-    protected static <FC extends IFeatureConfig> ConfiguredFeature<FC, ?> register(String name, ConfiguredFeature<FC, ?> feature) {
+    protected static <FC extends IFeatureConfig> ConfiguredFeature<FC, ?> register(String name, ConfiguredFeature<FC, ?> feature)
+    {
         return Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(Splatcraft.MODID, name), feature);
     }
 
     @SubscribeEvent
-    public static void onBiomeLoad(BiomeLoadingEvent event) {
+    public static void onBiomeLoad(BiomeLoadingEvent event)
+    {
         BiomeGenerationSettingsBuilder generation = event.getGeneration();
 
-        if (!event.getCategory().equals(Biome.Category.NETHER) && !event.getCategory().equals(Biome.Category.THEEND)) {
+        if (!event.getCategory().equals(Biome.Category.NETHER) && !event.getCategory().equals(Biome.Category.THEEND))
+        {
 
             for (ConfiguredFeature<?, ?> gen : event.getCategory().equals(Biome.Category.OCEAN) ? oceanGen :
-                event.getCategory().equals(Biome.Category.BEACH) ? beachGen : overworldGen)
+                    event.getCategory().equals(Biome.Category.BEACH) ? beachGen : overworldGen)
+            {
                 if (gen != null)
+                {
                     generation.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, gen);
+                }
+            }
         }
     }
 }

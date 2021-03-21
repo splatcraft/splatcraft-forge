@@ -14,13 +14,14 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilterItem extends Item {
+public class FilterItem extends Item
+{
+    public static final ArrayList<FilterItem> filters = Lists.newArrayList();
     protected final boolean isGlowing;
     protected final boolean isOmni;
 
-    public static final ArrayList<FilterItem> filters = Lists.newArrayList();
-
-    public FilterItem(String name, boolean isGlowing, boolean isOmni) {
+    public FilterItem(String name, boolean isGlowing, boolean isOmni)
+    {
         super(new Properties().group(SplatcraftItemGroups.GROUP_GENERAL).maxStackSize(1));
         setRegistryName(name);
 
@@ -30,22 +31,26 @@ public class FilterItem extends Item {
         filters.add(this);
     }
 
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag isAdvanced) {
-        super.addInformation(stack, world, tooltip, isAdvanced);
-        tooltip.add(new TranslationTextComponent("item.splatcraft.filter.tooltip").mergeStyle(TextFormatting.GRAY));
-    }
-
-    public FilterItem(String name) {
+    public FilterItem(String name)
+    {
         this(name, false, false);
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack) {
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag isAdvanced)
+    {
+        super.addInformation(stack, world, tooltip, isAdvanced);
+        tooltip.add(new TranslationTextComponent("item.splatcraft.filter.tooltip").mergeStyle(TextFormatting.GRAY));
+    }
+
+    @Override
+    public boolean hasEffect(ItemStack stack)
+    {
         return isGlowing;
     }
 
-    public boolean isOmni() {
+    public boolean isOmni()
+    {
         return isOmni;
     }
 }

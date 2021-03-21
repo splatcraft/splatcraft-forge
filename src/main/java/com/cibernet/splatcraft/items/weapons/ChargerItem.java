@@ -24,9 +24,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon {
+public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
+{
     private final AttributeModifier SPEED_MODIFIER;
-
+    private final double mobility;
     public float projectileSize;
     public float projectileSpeed;
     public int projectileLifespan;
@@ -34,15 +35,12 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon {
     public float dischargeSpeed;
     public float damage;
     public float pierceCharge;
-
     public float minConsumption;
     public float maxConsumption;
-
     public boolean airCharge;
 
-    private final double mobility;
-
-    public ChargerItem(String name, float projectileSize, float projectileSpeed, int projectileLifespan, int chargeTime, int dischargeTime, float damage, float minConsumption, float maxConsumption, double mobility, boolean canAirCharge, float pierceCharge) {
+    public ChargerItem(String name, float projectileSize, float projectileSpeed, int projectileLifespan, int chargeTime, int dischargeTime, float damage, float minConsumption, float maxConsumption, double mobility, boolean canAirCharge, float pierceCharge)
+    {
         setRegistryName(name);
 
         this.projectileSize = projectileSize;
@@ -67,22 +65,33 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon {
         addStat(new WeaponStat("mobility", (stack, world) -> (int) (mobility * 100)));
     }
 
-    public ChargerItem(String name, ChargerItem parent) {
+    public ChargerItem(String name, ChargerItem parent)
+    {
         this(name, parent.projectileSize, parent.projectileSpeed, parent.projectileLifespan, (int) (1f / parent.chargeSpeed), (int) (1f / parent.dischargeSpeed), parent.damage, parent.minConsumption, parent.maxConsumption, parent.mobility, parent.airCharge, parent.pierceCharge);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    protected static void playChargingSound(PlayerEntity player)
+    {
+
+        Minecraft.getInstance().getSoundHandler().play(new ChargerChargingTickableSound(player));
+    }
+
     @Override
-    public float getDischargeSpeed() {
+    public float getDischargeSpeed()
+    {
         return dischargeSpeed;
     }
 
     @Override
-    public float getChargeSpeed() {
+    public float getChargeSpeed()
+    {
         return chargeSpeed;
     }
 
     @Override
-    public void onRelease(World world, PlayerEntity player, ItemStack stack, float charge) {
+    public void onRelease(World world, PlayerEntity player, ItemStack stack, float charge)
+    {
         InkProjectileEntity proj = new InkProjectileEntity(world, player, stack, InkBlockUtils.getInkType(player), projectileSize, charge > 0.95f ? damage : damage * charge / 4f + damage / 4f);
         proj.setChargerStats((int) (projectileLifespan * charge), charge >= pierceCharge);
         proj.shoot(player, player.rotationPitch, player.rotationYaw, 0.0f, projectileSpeed, 0.1f);
@@ -92,39 +101,44 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon {
         PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(10, player.inventory.currentItem, true, false, false, player.isOnGround()));
     }
 
-
     @Override
-    public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft) {
-        if (entity instanceof PlayerEntity && getInkAmount(entity, stack) >= getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack))) {
-            if (world.isRemote) {
+    public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
+    {
+        if (entity instanceof PlayerEntity && getInkAmount(entity, stack) >= getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack)))
+        {
+            if (world.isRemote)
+            {
                 PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1));
             }
-        } else if (timeLeft % 4 == 0) sendNoInkMessage(entity, null);
+        } else if (timeLeft % 4 == 0)
+        {
+            sendNoInkMessage(entity, null);
+        }
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
+    {
         ActionResult<ItemStack> result = super.onItemRightClick(world, player, hand);
 
         if (world.isRemote)
+        {
             playChargingSound(player);
+        }
 
         return result;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected static void playChargingSound(PlayerEntity player) {
-
-        Minecraft.getInstance().getSoundHandler().play(new ChargerChargingTickableSound(player));
-    }
-
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft) {
+    public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft)
+    {
         super.onPlayerStoppedUsing(stack, world, entity, timeLeft);
 
-        if (world.isRemote && !PlayerInfoCapability.isSquid(entity) && entity instanceof PlayerEntity) {
+        if (world.isRemote && !PlayerInfoCapability.isSquid(entity) && entity instanceof PlayerEntity)
+        {
             float charge = PlayerCharge.getChargeValue((PlayerEntity) entity, stack);
-            if (charge > 0.05f) {
+            if (charge > 0.05f)
+            {
                 PlayerCharge.reset((PlayerEntity) entity);
                 PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(10, ((PlayerEntity) entity).inventory.currentItem, true, false, false, entity.isOnGround()));
                 SplatcraftPacketHandler.sendToServer(new ChargeableReleasePacket(charge, stack));
@@ -134,17 +148,20 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon {
     }
 
 
-    public float getInkConsumption(float charge) {
+    public float getInkConsumption(float charge)
+    {
         return minConsumption + (maxConsumption - minConsumption) * charge;
     }
 
     @Override
-    public AttributeModifier getSpeedModifier(LivingEntity entity, int useTime) {
+    public AttributeModifier getSpeedModifier(LivingEntity entity, int useTime)
+    {
         return SPEED_MODIFIER;
     }
 
     @Override
-    public PlayerPosingHandler.WeaponPose getPose() {
+    public PlayerPosingHandler.WeaponPose getPose()
+    {
         return PlayerPosingHandler.WeaponPose.BOW_CHARGE;
     }
 }

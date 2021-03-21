@@ -14,10 +14,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-public class InkSplashParticle extends SpriteTexturedParticle {
+public class InkSplashParticle extends SpriteTexturedParticle
+{
     private final IAnimatedSprite spriteProvider;
 
-    public InkSplashParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, InkSplashParticleData data, IAnimatedSprite sprite) {
+    public InkSplashParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, InkSplashParticleData data, IAnimatedSprite sprite)
+    {
         super(world, x, y, z, motionX, motionY, motionZ);
 
         this.motionX = motionX;
@@ -37,28 +39,40 @@ public class InkSplashParticle extends SpriteTexturedParticle {
     }
 
     @Override
-    public void tick() {
+    public void tick()
+    {
         super.tick();
         if (particleGravity > 0)
+        {
             this.motionY -= 0.004D + 0.04D * (double) this.particleGravity;
-        if (this.world.getBlockState(new BlockPos(this.posX, this.posY, this.posZ)).getMaterial() == Material.WATER) {
+        }
+        if (this.world.getBlockState(new BlockPos(this.posX, this.posY, this.posZ)).getMaterial() == Material.WATER)
+        {
             this.setExpired();
-        } else selectSpriteWithAge(spriteProvider);
+        } else
+        {
+            selectSpriteWithAge(spriteProvider);
+        }
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public IParticleRenderType getRenderType()
+    {
         return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
-    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
+    {
         if (!(Minecraft.getInstance().gameSettings.getPointOfView().equals(PointOfView.FIRST_PERSON) && getDistanceSq(Minecraft.getInstance().player, posX, posY, posZ) < 0.2))
+        {
             super.renderParticle(buffer, renderInfo, partialTicks);
+        }
     }
 
 
-    protected double getDistanceSq(Entity entity, double x, double y, double z) {
+    protected double getDistanceSq(Entity entity, double x, double y, double z)
+    {
         double d0 = entity.getPosX() - x;
         double d1 = entity.getPosYEye() - y;
         double d2 = entity.getPosZ() - z;
@@ -66,17 +80,20 @@ public class InkSplashParticle extends SpriteTexturedParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<InkSplashParticleData> {
+    public static class Factory implements IParticleFactory<InkSplashParticleData>
+    {
 
         private final IAnimatedSprite spriteSet;
 
-        public Factory(IAnimatedSprite sprite) {
+        public Factory(IAnimatedSprite sprite)
+        {
             this.spriteSet = sprite;
         }
 
         @Nullable
         @Override
-        public Particle makeParticle(InkSplashParticleData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(InkSplashParticleData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+        {
             return new InkSplashParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn, this.spriteSet);
         }
     }

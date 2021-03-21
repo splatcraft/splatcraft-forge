@@ -35,31 +35,42 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @Mod.EventBusSubscriber
-public class SplatcraftCommonHandler {
+public class SplatcraftCommonHandler
+{
 
     @SubscribeEvent
-    public static void onPlayerJump(LivingEvent.LivingJumpEvent event) {
+    public static void onPlayerJump(LivingEvent.LivingJumpEvent event)
+    {
         LivingEntity entity = event.getEntityLiving();
 
         if (!(entity instanceof PlayerEntity))
+        {
             return;
+        }
 
         if (InkBlockUtils.onEnemyInk(event.getEntityLiving()))
+        {
             entity.setMotion(entity.getMotion().x, Math.min(entity.getMotion().y, 0.1f), entity.getMotion().z);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onPlayerClone(final PlayerEvent.Clone event) {
+    public static void onPlayerClone(final PlayerEvent.Clone event)
+    {
         PlayerEntity player = event.getPlayer();
         PlayerInfoCapability.get(player).readNBT(PlayerInfoCapability.get(event.getOriginal()).writeNBT(new CompoundNBT()));
 
         NonNullList<ItemStack> matchInv = PlayerInfoCapability.get(player).getMatchInventory();
 
-        if (!matchInv.isEmpty()) {
-            for (int i = 0; i < matchInv.size(); i++) {
+        if (!matchInv.isEmpty())
+        {
+            for (int i = 0; i < matchInv.size(); i++)
+            {
                 ItemStack stack = matchInv.get(i);
                 if (!stack.isEmpty() && !putStackInSlot(player.inventory, stack, i) && !player.inventory.addItemStackToInventory(stack))
+                {
                     player.dropItem(stack, true, true);
+                }
             }
 
             PlayerInfoCapability.get(player).setMatchInventory(NonNullList.create());
@@ -67,14 +78,17 @@ public class SplatcraftCommonHandler {
         PlayerCooldown.setPlayerCooldown(player, null);
     }
 
-    private static boolean putStackInSlot(PlayerInventory inventory, ItemStack stack, int i) {
+    private static boolean putStackInSlot(PlayerInventory inventory, ItemStack stack, int i)
+    {
         ItemStack invStack = inventory.getStackInSlot(i);
 
-        if (invStack.isEmpty()) {
+        if (invStack.isEmpty())
+        {
             inventory.setInventorySlotContents(i, stack);
             return true;
         }
-        if (invStack.isItemEqual(stack)) {
+        if (invStack.isItemEqual(stack))
+        {
             int invCount = invStack.getCount();
             int count = Math.min(invStack.getMaxStackSize(), stack.getCount() + invStack.getCount());
             invStack.setCount(count);
@@ -86,51 +100,68 @@ public class SplatcraftCommonHandler {
     }
 
     @SubscribeEvent
-    public static void onLivingDeath(final LivingDeathEvent event) {
+    public static void onLivingDeath(final LivingDeathEvent event)
+    {
         LivingEntity entity = event.getEntityLiving();
         ItemStack stack = entity.getItemStackFromSlot(EquipmentSlotType.CHEST);
 
         if (stack.getItem() instanceof InkTankItem)
+        {
             ((InkTankItem) stack.getItem()).refill(stack);
+        }
     }
 
     @SubscribeEvent
-    public static void onPlayerDeathDrops(LivingDropsEvent event) {
-        if (event.getEntityLiving() instanceof PlayerEntity) {
+    public static void onPlayerDeathDrops(LivingDropsEvent event)
+    {
+        if (event.getEntityLiving() instanceof PlayerEntity)
+        {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
             NonNullList<ItemStack> matchInv = PlayerInfoCapability.get(player).getMatchInventory();
 
             event.getDrops().removeIf(drop -> matchInv.contains(drop.getItem()));
 
-            for (int i = 0; i < matchInv.size(); i++) {
+            for (int i = 0; i < matchInv.size(); i++)
+            {
                 ItemStack stack = matchInv.get(i);
                 if (!stack.isEmpty() && !putStackInSlot(player.inventory, stack, i))
+                {
                     player.inventory.addItemStackToInventory(stack);
+                }
             }
 
         }
     }
 
     @SubscribeEvent
-    public static void onPlayerAboutToDie(LivingDamageEvent event) {
+    public static void onPlayerAboutToDie(LivingDamageEvent event)
+    {
         if (!(event.getEntityLiving() instanceof PlayerEntity) || event.getEntityLiving().getHealth() - event.getAmount() > 0)
+        {
             return;
+        }
 
         PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-        if (!player.world.getGameRules().getBoolean(GameRules.KEEP_INVENTORY) && SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.KEEP_MATCH_ITEMS)) {
+        if (!player.world.getGameRules().getBoolean(GameRules.KEEP_INVENTORY) && SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.KEEP_MATCH_ITEMS))
+        {
             IPlayerInfo playerCapability;
-            try {
+            try
+            {
                 playerCapability = PlayerInfoCapability.get(player);
-            } catch (NullPointerException e) {
+            } catch (NullPointerException e)
+            {
                 return;
             }
 
             NonNullList<ItemStack> matchInv = NonNullList.withSize(player.inventory.getSizeInventory(), ItemStack.EMPTY);
 
-            for (int i = 0; i < matchInv.size(); i++) {
+            for (int i = 0; i < matchInv.size(); i++)
+            {
                 ItemStack stack = player.inventory.getStackInSlot(i);
                 if (SplatcraftTags.Items.MATCH_ITEMS.contains(stack.getItem()))
+                {
                     matchInv.set(i, stack);
+                }
             }
 
             playerCapability.setMatchInventory(matchInv);
@@ -138,20 +169,26 @@ public class SplatcraftCommonHandler {
     }
 
     @SubscribeEvent
-    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
+    {
         PlayerEntity player = event.getPlayer();
         SplatcraftPacketHandler.sendToPlayer(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.booleanRules), (ServerPlayerEntity) player);
 
         int[] colors = new int[ScoreboardHandler.getCriteriaKeySet().size()];
         int i = 0;
         for (int c : ScoreboardHandler.getCriteriaKeySet())
+        {
             colors[i++] = c;
+        }
 
         TreeMap<String, Integer> playerColors = new TreeMap<>();
 
-        for (PlayerEntity p : event.getPlayer().world.getPlayers()) {
+        for (PlayerEntity p : event.getPlayer().world.getPlayers())
+        {
             if (PlayerInfoCapability.hasCapability(p))
+            {
                 playerColors.put(p.getDisplayName().getString(), PlayerInfoCapability.get(p).getColor());
+            }
         }
 
         SplatcraftPacketHandler.sendToAll(new UpdateClientColorsPacket(event.getPlayer().getDisplayName().getString(), PlayerInfoCapability.get(event.getPlayer()).getColor()));
@@ -160,30 +197,43 @@ public class SplatcraftCommonHandler {
     }
 
     @SubscribeEvent
-    public static void onDataReload(AddReloadListenerEvent event) {
+    public static void onDataReload(AddReloadListenerEvent event)
+    {
 
     }
 
     @SubscribeEvent
-    public static void capabilityUpdateEvent(TickEvent.PlayerTickEvent event) {
-        try {
-            if (event.player.deathTime <= 0 && !PlayerInfoCapability.get(event.player).isInitialized()) {
+    public static void capabilityUpdateEvent(TickEvent.PlayerTickEvent event)
+    {
+        try
+        {
+            if (event.player.deathTime <= 0 && !PlayerInfoCapability.get(event.player).isInitialized())
+            {
                 PlayerInfoCapability.get(event.player).setInitialized(true);
                 PlayerInfoCapability.get(event.player).setColor(ColorUtils.getRandomStarterColor());
                 if (event.player.world.isRemote)
+                {
                     SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
+                }
             }
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException ignored)
+        {
+        }
     }
 
     @SubscribeEvent
-    public static void onWorldTick(TickEvent.WorldTickEvent event) {
+    public static void onWorldTick(TickEvent.WorldTickEvent event)
+    {
         World world = event.world;
         if (world.isRemote)
+        {
             return;
-        for (Map.Entry<Integer, Boolean> rule : SplatcraftGameRules.booleanRules.entrySet()) {
+        }
+        for (Map.Entry<Integer, Boolean> rule : SplatcraftGameRules.booleanRules.entrySet())
+        {
             boolean worldValue = world.getGameRules().getBoolean(SplatcraftGameRules.getRuleFromIndex(rule.getKey()));
-            if (rule.getValue() != worldValue) {
+            if (rule.getValue() != worldValue)
+            {
                 SplatcraftGameRules.booleanRules.put(rule.getKey(), worldValue);
                 SplatcraftPacketHandler.sendToAll(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.getRuleFromIndex(rule.getKey()), rule.getValue()));
             }
@@ -191,12 +241,18 @@ public class SplatcraftCommonHandler {
     }
 
     @SubscribeEvent
-    public static void onLivingTick(LivingEvent.LivingUpdateEvent event) {
+    public static void onLivingTick(LivingEvent.LivingUpdateEvent event)
+    {
         LivingEntity entity = event.getEntityLiving();
-        if (InkOverlayCapability.hasCapability(entity)) {
+        if (InkOverlayCapability.hasCapability(entity))
+        {
             if (entity.isInWater())
+            {
                 InkOverlayCapability.get(entity).setAmount(0);
-            else InkOverlayCapability.get(entity).addAmount(-0.01f);
+            } else
+            {
+                InkOverlayCapability.get(entity).addAmount(-0.01f);
+            }
         }
     }
 

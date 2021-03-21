@@ -7,17 +7,22 @@ import net.minecraft.item.ItemStack;
 import static com.cibernet.splatcraft.registries.SplatcraftItems.sardiniumBlock;
 import static com.cibernet.splatcraft.registries.SplatcraftItems.splattershot;
 
-public class SplatcraftItemGroups {
-    public static final ItemGroup GROUP_GENERAL = new ItemGroup("splatcraft_general") {
+public class SplatcraftItemGroups
+{
+    public static final ItemGroup GROUP_GENERAL = new ItemGroup("splatcraft_general")
+    {
         @Override
-        public ItemStack createIcon() {
+        public ItemStack createIcon()
+        {
             return new ItemStack(sardiniumBlock);
         }
     };
 
-    public static final ItemGroup GROUP_WEAPONS = new ItemGroup("splatcraft_weapons") {
+    public static final ItemGroup GROUP_WEAPONS = new ItemGroup("splatcraft_weapons")
+    {
         @Override
-        public ItemStack createIcon() {
+        public ItemStack createIcon()
+        {
             return ColorUtils.setInkColor(new ItemStack(splattershot), ColorUtils.ORANGE);
         }
     };

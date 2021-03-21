@@ -24,100 +24,125 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class InkSquidEntity extends CreatureEntity implements IColoredEntity {
+public class InkSquidEntity extends CreatureEntity implements IColoredEntity
+{
     private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(InkSquidEntity.class, DataSerializers.VARINT);
 
 
-    public InkSquidEntity(EntityType<? extends CreatureEntity> type, World world) {
+    public InkSquidEntity(EntityType<? extends CreatureEntity> type, World world)
+    {
         super(type, world);
     }
 
+    public static AttributeModifierMap.MutableAttribute setCustomAttributes()
+    {
+        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 20).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.23D);
+    }
+
     @Override
-    protected void registerData() {
+    protected void registerData()
+    {
         super.registerData();
         dataManager.register(COLOR, ColorUtils.DEFAULT);
     }
 
     @Override
-    public AttributeModifierManager getAttributeManager() {
+    public AttributeModifierManager getAttributeManager()
+    {
         return super.getAttributeManager();
     }
 
-    public static AttributeModifierMap.MutableAttribute setCustomAttributes() {
-        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 20).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.23D);
-    }
-
     @Override
-    protected void registerGoals() {
+    protected void registerGoals()
+    {
         goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.6D));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
         goalSelector.addGoal(11, new LookAtGoal(this, PlayerEntity.class, 10.0F));
     }
 
     @Override
-    public void onDeath(DamageSource p_70645_1_) {
+    public void onDeath(DamageSource p_70645_1_)
+    {
         world.setEntityState(this, (byte) 60);
         super.onDeath(p_70645_1_);
     }
 
     @Override
-    public void handleStatusUpdate(byte id) {
-        if (id == 60) {
+    public void handleStatusUpdate(byte id)
+    {
+        if (id == 60)
+        {
             world.addParticle(new SquidSoulParticleData(getColor()), this.getPosX(), this.getPosY(), this.getPosZ(), 0, 1, 0);
-        } else {
+        } else
+        {
             super.handleStatusUpdate(id);
         }
     }
 
     @Override
-    protected int getExperiencePoints(PlayerEntity player) {
+    protected int getExperiencePoints(PlayerEntity player)
+    {
         return 0;
     }
 
     @Override
-    public void livingTick() {
+    public void livingTick()
+    {
         super.livingTick();
 
         BlockPos pos = getPositionUnderneath();
 
-        if (world.getBlockState(pos).getBlock() == SplatcraftBlocks.inkwell && world.getTileEntity(pos) instanceof InkColorTileEntity) {
+        if (world.getBlockState(pos).getBlock() == SplatcraftBlocks.inkwell && world.getTileEntity(pos) instanceof InkColorTileEntity)
+        {
             InkColorTileEntity te = (InkColorTileEntity) world.getTileEntity(pos);
             if (te.getColor() != getColor())
+            {
                 setColor(te.getColor());
+            }
         }
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, BlockState state) {
+    protected void playStepSound(BlockPos pos, BlockState state)
+    {
         playSound(SoundEvents.BLOCK_HONEY_BLOCK_FALL, 0.15F, 1.0F);
     }
 
     @Override
-    public void readAdditional(CompoundNBT nbt) {
+    public void readAdditional(CompoundNBT nbt)
+    {
         super.readAdditional(nbt);
         if (nbt.contains("Color"))
+        {
             setColor(nbt.getInt("Color"));
-        else setColor(ColorUtils.getRandomStarterColor());
+        } else
+        {
+            setColor(ColorUtils.getRandomStarterColor());
+        }
     }
 
     @Override
-    public void writeAdditional(CompoundNBT nbt) {
+    public void writeAdditional(CompoundNBT nbt)
+    {
         super.writeAdditional(nbt);
         nbt.putInt("Color", getColor());
     }
 
     @Override
-    public int getColor() {
+    public int getColor()
+    {
         return dataManager.get(COLOR);
     }
 
     @Override
-    public void setColor(int color) {
+    public void setColor(int color)
+    {
         dataManager.set(COLOR, color);
     }
 
     @Override
-    public boolean canDespawn(double distanceToClosestPlayer) {
+    public boolean canDespawn(double distanceToClosestPlayer)
+    {
         return false;
     }
 }

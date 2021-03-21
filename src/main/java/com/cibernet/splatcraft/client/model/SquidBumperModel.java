@@ -11,13 +11,15 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.math.MathHelper;
 
-public class SquidBumperModel extends EntityModel<SquidBumperEntity> {
+public class SquidBumperModel extends EntityModel<SquidBumperEntity>
+{
     private final ModelRenderer Base;
     private final ModelRenderer Bumper;
     private final ModelRenderer Left_Side;
     private final ModelRenderer Right_Side;
 
-    public SquidBumperModel() {
+    public SquidBumperModel()
+    {
         textureWidth = 128;
         textureHeight = 128;
 
@@ -46,12 +48,14 @@ public class SquidBumperModel extends EntityModel<SquidBumperEntity> {
     }
 
     @Override
-    public void setRotationAngles(SquidBumperEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(SquidBumperEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+    {
         //previously the render function, render code was moved to a method below
     }
 
     @Override
-    public void setLivingAnimations(SquidBumperEntity entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+    public void setLivingAnimations(SquidBumperEntity entityIn, float limbSwing, float limbSwingAmount, float partialTick)
+    {
         super.setLivingAnimations(entityIn, limbSwing, limbSwingAmount, partialTick);
 
         Bumper.rotateAngleY = (float) Math.PI / 180F * MathHelper.interpolateAngle(partialTick, entityIn.prevRotationYawHead, entityIn.prevRotationYawHead) + (float) Math.PI;
@@ -65,16 +69,20 @@ public class SquidBumperModel extends EntityModel<SquidBumperEntity> {
         Bumper.rotationPointY = 24;
 
         if (entityIn.getInkHealth() <= 0f)
+        {
             Bumper.rotationPointY *= 1 / scale;
+        }
     }
 
     @Override
-    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
+    {
         renderBase(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         renderBumper(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    public void render(SquidBumperEntity entityIn, MatrixStack matrixStackIn, IVertexBuilder builderIn, int packedLightIn) {
+    public void render(SquidBumperEntity entityIn, MatrixStack matrixStackIn, IVertexBuilder builderIn, int packedLightIn)
+    {
         float scale = (10 - Math.min(entityIn.getRespawnTime(), 10)) / 10f;
         int color = entityIn.getColor();
         float r = (float) (Math.floor((float) color / (256 * 256)) / 255f);
@@ -91,15 +99,18 @@ public class SquidBumperModel extends EntityModel<SquidBumperEntity> {
     }
 
 
-    public void renderBase(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderBase(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
+    {
         Base.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    public void renderBumper(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderBumper(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
+    {
         Bumper.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
+    {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

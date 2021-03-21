@@ -13,24 +13,32 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID)
-public class SplatcraftCapabilities {
-    public static void registerCapabilities() {
+public class SplatcraftCapabilities
+{
+    public static void registerCapabilities()
+    {
         PlayerInfoCapability.register();
         SaveInfoCapability.register();
         InkOverlayCapability.register();
     }
 
     @SubscribeEvent
-    public static void attachEntityCapabilities(final AttachCapabilitiesEvent<Entity> event) {
+    public static void attachEntityCapabilities(final AttachCapabilitiesEvent<Entity> event)
+    {
         if (event.getObject() instanceof PlayerEntity)
+        {
             event.addCapability(new ResourceLocation(Splatcraft.MODID, "player_info"), new PlayerInfoCapability());
+        }
         event.addCapability(new ResourceLocation(Splatcraft.MODID, "ink_overlay"), new InkOverlayCapability());
 
     }
 
     @SubscribeEvent
-    public static void attachWorldCapabilities(final AttachCapabilitiesEvent<World> event) {
+    public static void attachWorldCapabilities(final AttachCapabilitiesEvent<World> event)
+    {
         if (event.getObject().getDimensionKey() == World.OVERWORLD)
+        {
             event.addCapability(new ResourceLocation(Splatcraft.MODID, "save_info"), new SaveInfoCapability());
+        }
     }
 }

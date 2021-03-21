@@ -13,35 +13,40 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class SaveInfoCapability implements ICapabilitySerializable<CompoundNBT> {
+public class SaveInfoCapability implements ICapabilitySerializable<CompoundNBT>
+{
     @CapabilityInject(ISaveInfo.class)
     public static final Capability<ISaveInfo> CAPABILITY = null;
-    private final LazyOptional<ISaveInfo> instance = LazyOptional.of(CAPABILITY::getDefaultInstance);
     private static final ISaveInfo DEFAULT = new SaveInfo();
+    private final LazyOptional<ISaveInfo> instance = LazyOptional.of(CAPABILITY::getDefaultInstance);
 
-
-    public static void register() {
+    public static void register()
+    {
         CapabilityManager.INSTANCE.register(ISaveInfo.class, new SaveInfoStorage(), SaveInfo::new);
+    }
+
+    public static ISaveInfo get(MinecraftServer server) throws NullPointerException
+    {
+        return server.getWorld(World.OVERWORLD).getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find WorldData capability!"));
     }
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+    {
         return CAPABILITY.orEmpty(cap, instance);
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
+    public CompoundNBT serializeNBT()
+    {
         return (CompoundNBT) CAPABILITY.getStorage().writeNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null);
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundNBT nbt)
+    {
         CAPABILITY.getStorage().readNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null, nbt);
-    }
-
-    public static ISaveInfo get(MinecraftServer server) throws NullPointerException {
-        return server.getWorld(World.OVERWORLD).getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find WorldData capability!"));
     }
 
 }

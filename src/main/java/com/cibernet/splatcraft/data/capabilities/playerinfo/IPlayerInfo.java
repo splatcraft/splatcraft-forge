@@ -6,7 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 
-public interface IPlayerInfo {
+public interface IPlayerInfo
+{
     boolean isInitialized();
 
     void setInitialized(boolean init);
@@ -25,9 +26,9 @@ public interface IPlayerInfo {
 
     PlayerCooldown getPlayerCooldown();
 
-    boolean hasPlayerCooldown();
-
     void setPlayerCooldown(PlayerCooldown cooldown);
+
+    boolean hasPlayerCooldown();
 
     PlayerCharge getPlayerCharge();
 

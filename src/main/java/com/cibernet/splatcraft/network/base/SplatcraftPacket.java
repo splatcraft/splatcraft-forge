@@ -5,7 +5,8 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public abstract class SplatcraftPacket {
+public abstract class SplatcraftPacket
+{
     public abstract void encode(PacketBuffer buffer);
 
     public abstract void consume(Supplier<NetworkEvent.Context> ctx);

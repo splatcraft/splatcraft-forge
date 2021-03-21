@@ -20,9 +20,11 @@ import net.minecraft.util.math.vector.Vector3f;
 
 import java.util.TreeMap;
 
-public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> implements IEntityRenderer<InkProjectileEntity, InkProjectileModel> {
+public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> implements IEntityRenderer<InkProjectileEntity, InkProjectileModel>
+{
     private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/shooter_projectile.png");
-    private final TreeMap<String, InkProjectileModel> MODELS = new TreeMap<String, InkProjectileModel>() {{
+    private final TreeMap<String, InkProjectileModel> MODELS = new TreeMap<String, InkProjectileModel>()
+    {{
         put(InkProjectileEntity.Types.DEFAULT, new InkProjectileModel());
         put(InkProjectileEntity.Types.SHOOTER, new ShooterInkProjectileModel());
         put(InkProjectileEntity.Types.CHARGER, new ShooterInkProjectileModel());
@@ -30,18 +32,23 @@ public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> i
         put(InkProjectileEntity.Types.ROLLER, new RollerInkProjectileModel());
     }};
 
-    public InkProjectileRenderer(EntityRendererManager manager) {
+    public InkProjectileRenderer(EntityRendererManager manager)
+    {
         super(manager);
     }
 
     @Override
-    public void render(InkProjectileEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        if (entityIn.ticksExisted >= 3 || this.renderManager.info.getRenderViewEntity().getDistanceSq(entityIn) >= 12.25D) {
+    public void render(InkProjectileEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
+    {
+        if (entityIn.ticksExisted >= 3 || this.renderManager.info.getRenderViewEntity().getDistanceSq(entityIn) >= 12.25D)
+        {
             float scale = entityIn.getProjectileSize() * 2.5f;
             int color = entityIn.getColor();
 
             if (SplatcraftConfig.Client.getColorLock())
+            {
                 color = ColorUtils.getLockedColor(color);
+            }
 
             float r = (float) (Math.floor((float) color / (256 * 256)) / 255f);
             float g = (float) (Math.floor((float) color / 256) % 256 / 255f);
@@ -65,17 +72,20 @@ public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> i
     }
 
 
-    protected float handleRotationFloat(InkProjectileEntity livingBase, float partialTicks) {
+    protected float handleRotationFloat(InkProjectileEntity livingBase, float partialTicks)
+    {
         return (float) livingBase.ticksExisted + partialTicks;
     }
 
     @Override
-    public InkProjectileModel getEntityModel() {
+    public InkProjectileModel getEntityModel()
+    {
         return MODELS.get(InkProjectileEntity.Types.DEFAULT);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(InkProjectileEntity entity) {
+    public ResourceLocation getEntityTexture(InkProjectileEntity entity)
+    {
         return new ResourceLocation(Splatcraft.MODID, "textures/entity/" + entity.getProjectileType() + "_projectile.png");
     }
 }

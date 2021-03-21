@@ -10,12 +10,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-public class PlaceBlockDispenseBehavior extends OptionalDispenseBehavior {
+public class PlaceBlockDispenseBehavior extends OptionalDispenseBehavior
+{
     @Override
-    protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+    protected ItemStack dispenseStack(IBlockSource source, ItemStack stack)
+    {
         this.setSuccessful(false);
         Item item = stack.getItem();
-        if (item instanceof BlockItem) {
+        if (item instanceof BlockItem)
+        {
             Direction direction = source.getBlockState().get(DispenserBlock.FACING);
             BlockPos blockpos = source.getBlockPos().offset(direction);
             Direction direction1 = source.getWorld().isAirBlock(blockpos.down()) ? direction : Direction.UP;

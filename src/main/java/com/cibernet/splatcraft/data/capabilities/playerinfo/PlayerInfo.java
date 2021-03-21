@@ -8,7 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 
-public class PlayerInfo implements IPlayerInfo {
+public class PlayerInfo implements IPlayerInfo
+{
     private int color;
     private boolean isSquid = false;
     private boolean initialized = false;
@@ -16,92 +17,110 @@ public class PlayerInfo implements IPlayerInfo {
     private PlayerCooldown playerCooldown = null;
     private PlayerCharge playerCharge = null;
 
-    public PlayerInfo(int defaultColor) {
+    public PlayerInfo(int defaultColor)
+    {
         color = defaultColor;
     }
 
-    public PlayerInfo() {
+    public PlayerInfo()
+    {
         this(SplatcraftInkColors.undyed.getColor());
     }
 
     @Override
-    public boolean isInitialized() {
+    public boolean isInitialized()
+    {
         return initialized;
     }
 
     @Override
-    public void setInitialized(boolean init) {
+    public void setInitialized(boolean init)
+    {
         initialized = init;
     }
 
     @Override
-    public int getColor() {
+    public int getColor()
+    {
         return color;
     }
 
     @Override
-    public void setColor(int color) {
+    public void setColor(int color)
+    {
         this.color = color;
     }
 
     @Override
-    public boolean isSquid() {
+    public boolean isSquid()
+    {
         return isSquid;
     }
 
     @Override
-    public void setIsSquid(boolean isSquid) {
+    public void setIsSquid(boolean isSquid)
+    {
         this.isSquid = isSquid;
     }
 
     @Override
-    public NonNullList<ItemStack> getMatchInventory() {
+    public NonNullList<ItemStack> getMatchInventory()
+    {
         return matchInventory;
     }
 
     @Override
-    public void setMatchInventory(NonNullList<ItemStack> inventory) {
+    public void setMatchInventory(NonNullList<ItemStack> inventory)
+    {
         this.matchInventory = inventory;
     }
 
     @Override
-    public PlayerCooldown getPlayerCooldown() {
+    public PlayerCooldown getPlayerCooldown()
+    {
         return playerCooldown;
     }
 
     @Override
-    public boolean hasPlayerCooldown() {
-        return playerCooldown != null && playerCooldown.getTime() > 0;
-    }
-
-    @Override
-    public void setPlayerCooldown(PlayerCooldown cooldown) {
+    public void setPlayerCooldown(PlayerCooldown cooldown)
+    {
         this.playerCooldown = cooldown;
     }
 
     @Override
-    public PlayerCharge getPlayerCharge() {
+    public boolean hasPlayerCooldown()
+    {
+        return playerCooldown != null && playerCooldown.getTime() > 0;
+    }
+
+    @Override
+    public PlayerCharge getPlayerCharge()
+    {
         return playerCharge;
     }
 
     @Override
-    public void setPlayerCharge(PlayerCharge charge) {
+    public void setPlayerCharge(PlayerCharge charge)
+    {
         playerCharge = charge;
     }
 
     @Override
-    public CompoundNBT writeNBT(CompoundNBT nbt) {
+    public CompoundNBT writeNBT(CompoundNBT nbt)
+    {
         nbt.putInt("Color", getColor());
         nbt.putBoolean("IsSquid", isSquid());
         nbt.putBoolean("Initialized", initialized);
 
-        if (!matchInventory.isEmpty()) {
+        if (!matchInventory.isEmpty())
+        {
             CompoundNBT invNBT = new CompoundNBT();
             ItemStackHelper.saveAllItems(invNBT, matchInventory);
             nbt.put("MatchInventory", invNBT);
         }
 
-        if (playerCooldown != null) {
+        if (playerCooldown != null)
+        {
             CompoundNBT cooldownNBT = new CompoundNBT();
             playerCooldown.writeNBT(cooldownNBT);
             nbt.put("PlayerCooldown", cooldownNBT);
@@ -111,18 +130,22 @@ public class PlayerInfo implements IPlayerInfo {
     }
 
     @Override
-    public void readNBT(CompoundNBT nbt) {
+    public void readNBT(CompoundNBT nbt)
+    {
         setColor(nbt.getInt("Color"));
         setIsSquid(nbt.getBoolean("IsSquid"));
         setInitialized(nbt.getBoolean("Initialized"));
 
-        if (nbt.contains("MatchInventory")) {
+        if (nbt.contains("MatchInventory"))
+        {
             NonNullList<ItemStack> nbtInv = NonNullList.withSize(41, ItemStack.EMPTY);
             ItemStackHelper.loadAllItems(nbt.getCompound("MatchInventory"), nbtInv);
             setMatchInventory(nbtInv);
         }
 
         if (nbt.contains("PlayerCooldown"))
+        {
             setPlayerCooldown(PlayerCooldown.readNBT(nbt.getCompound("PlayerCooldown")));
+        }
     }
 }

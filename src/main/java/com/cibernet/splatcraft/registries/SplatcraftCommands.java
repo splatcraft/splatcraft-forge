@@ -13,9 +13,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class SplatcraftCommands {
+public class SplatcraftCommands
+{
     @SubscribeEvent
-    public static void registerCommands(FMLServerStartingEvent event) {
+    public static void registerCommands(FMLServerStartingEvent event)
+    {
         CommandDispatcher<CommandSource> dispatcher = event.getServer().getCommandManager().getDispatcher();
 
         InkColorCommand.register(dispatcher);
@@ -25,7 +27,8 @@ public class SplatcraftCommands {
         ColorScoresCommand.register(dispatcher);
     }
 
-    public static void registerArguments() {
+    public static void registerArguments()
+    {
         ArgumentTypes.register(Splatcraft.MODID + ":ink_color", InkColorArgument.class, new ArgumentSerializer<>(InkColorArgument::inkColor));
         ArgumentTypes.register(Splatcraft.MODID + ":color_criterion", ColorCriterionArgument.class, new ArgumentSerializer<>(ColorCriterionArgument::colorCriterion));
     }

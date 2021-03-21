@@ -4,7 +4,8 @@ import net.minecraft.nbt.CompoundNBT;
 
 import java.util.Collection;
 
-public interface ISaveInfo {
+public interface ISaveInfo
+{
     Collection<Integer> getInitializedColorScores();
 
     void addInitializedColorScores(Integer... colors);

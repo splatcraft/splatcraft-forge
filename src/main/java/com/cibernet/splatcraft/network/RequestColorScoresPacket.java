@@ -6,27 +6,34 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 
-public class RequestColorScoresPacket extends PlayToServerPacket {
+public class RequestColorScoresPacket extends PlayToServerPacket
+{
 
-    public RequestColorScoresPacket() {
+    public RequestColorScoresPacket()
+    {
 
     }
 
-    @Override
-    public void execute(PlayerEntity player) {
-        int[] colors = new int[ScoreboardHandler.getCriteriaKeySet().size()];
-        int i = 0;
-        for (int c : ScoreboardHandler.getCriteriaKeySet())
-            colors[i++] = c;
-        SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, colors), (ServerPlayerEntity) player);
-    }
-
-    public static RequestColorScoresPacket decode(PacketBuffer buffer) {
+    public static RequestColorScoresPacket decode(PacketBuffer buffer)
+    {
         return new RequestColorScoresPacket();
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void execute(PlayerEntity player)
+    {
+        int[] colors = new int[ScoreboardHandler.getCriteriaKeySet().size()];
+        int i = 0;
+        for (int c : ScoreboardHandler.getCriteriaKeySet())
+        {
+            colors[i++] = c;
+        }
+        SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, colors), (ServerPlayerEntity) player);
+    }
+
+    @Override
+    public void encode(PacketBuffer buffer)
+    {
 
     }
 }

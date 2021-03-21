@@ -7,24 +7,29 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class WeaponStat {
+public class WeaponStat
+{
     private final String name;
     private final IStatValueGetter valueGetter;
 
-    public WeaponStat(String name, IStatValueGetter valueGetter) {
+    public WeaponStat(String name, IStatValueGetter valueGetter)
+    {
         this.name = name;
         this.valueGetter = valueGetter;
     }
 
-    public int getStatValue(ItemStack stack, @Nullable World world) {
+    public int getStatValue(ItemStack stack, @Nullable World world)
+    {
         return valueGetter.get(stack, world);
     }
 
-    public TextComponent getTextComponent(ItemStack stack, World world) {
+    public TextComponent getTextComponent(ItemStack stack, World world)
+    {
         return new TranslationTextComponent("weaponStat." + name, getStatValue(stack, world));
     }
 
-    public interface IStatValueGetter {
+    public interface IStatValueGetter
+    {
         int get(ItemStack stack, @Nullable World world);
     }
 }

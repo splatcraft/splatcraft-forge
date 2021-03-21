@@ -8,10 +8,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class BlasterInkProjectileModel extends InkProjectileModel {
+public class BlasterInkProjectileModel extends InkProjectileModel
+{
     private final ModelRenderer main;
 
-    public BlasterInkProjectileModel() {
+    public BlasterInkProjectileModel()
+    {
         textureWidth = 16;
         textureHeight = 16;
 
@@ -22,17 +24,20 @@ public class BlasterInkProjectileModel extends InkProjectileModel {
     }
 
     @Override
-    public void setRotationAngles(InkProjectileEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(InkProjectileEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+    {
         main.rotateAngleZ = ageInTicks * 0.6f;
     }
 
     @Override
-    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
+    {
         main.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
     @Override
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
+    {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

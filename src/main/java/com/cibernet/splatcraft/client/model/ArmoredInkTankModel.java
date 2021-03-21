@@ -7,13 +7,15 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 
 import java.util.ArrayList;
 
-public class ArmoredInkTankModel extends AbstractInkTankModel {
+public class ArmoredInkTankModel extends AbstractInkTankModel
+{
     private final ModelRenderer Torso;
     private final ModelRenderer Ink_Tank;
     private final ModelRenderer Left_Arm;
     private final ModelRenderer Right_Arm;
 
-    public ArmoredInkTankModel() {
+    public ArmoredInkTankModel()
+    {
         textureWidth = 128;
         textureHeight = 128;
 
@@ -49,7 +51,8 @@ public class ArmoredInkTankModel extends AbstractInkTankModel {
         inkPieces = new ArrayList<>();
         inkBarY = 23.25f;
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++)
+        {
             ModelRenderer ink = new ModelRenderer(this);
             ink.setRotationPoint(0.0F, inkBarY, -0.75F);
             Ink_Tank.addChild(ink);

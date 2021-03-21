@@ -11,61 +11,73 @@ import net.minecraft.tileentity.TileEntityType;
 
 import javax.annotation.Nullable;
 
-public class InkColorTileEntity extends TileEntity {
+public class InkColorTileEntity extends TileEntity
+{
 
     private int color = ColorUtils.DEFAULT;
 
-    public InkColorTileEntity() {
+    public InkColorTileEntity()
+    {
         super(SplatcraftTileEntitites.colorTileEntity);
     }
 
-    public InkColorTileEntity(TileEntityType type) {
+    public InkColorTileEntity(TileEntityType type)
+    {
         super(type);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT write(CompoundNBT nbt)
+    {
         nbt.putInt("Color", color);
         return super.write(nbt);
     }
 
     //Nbt Read
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void read(BlockState state, CompoundNBT nbt)
+    {
         super.read(state, nbt);
         color = nbt.getInt("Color");
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
+    public CompoundNBT getUpdateTag()
+    {
         return this.write(new CompoundNBT());
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+    public void handleUpdateTag(BlockState state, CompoundNBT tag)
+    {
         this.read(state, tag);
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
+    public SUpdateTileEntityPacket getUpdatePacket()
+    {
         return new SUpdateTileEntityPacket(getPos(), 2, getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        if (world != null) {
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
+    {
+        if (world != null)
+        {
             BlockState state = world.getBlockState(pos);
             world.notifyBlockUpdate(pos, state, state, 2);
             handleUpdateTag(state, pkt.getNbtCompound());
         }
     }
 
-    public int getColor() {
+    public int getColor()
+    {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(int color)
+    {
         this.color = color;
     }
 

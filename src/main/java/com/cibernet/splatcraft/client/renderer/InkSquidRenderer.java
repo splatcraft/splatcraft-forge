@@ -12,18 +12,21 @@ public class InkSquidRenderer extends LivingRenderer<LivingEntity, InkSquidModel
 {
     private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/ink_squid_overlay.png");
 
-    public InkSquidRenderer(EntityRendererManager manager) {
+    public InkSquidRenderer(EntityRendererManager manager)
+    {
         super(manager, new InkSquidModel(), 0.5f);
         addLayer(new InkSquidColorLayer(this));
     }
 
     @Override
-    protected boolean canRenderName(LivingEntity entity) {
+    protected boolean canRenderName(LivingEntity entity)
+    {
         return super.canRenderName(entity) && (entity.getAlwaysRenderNameTagForRender() || entity.hasCustomName() && entity == this.renderManager.pointedEntity);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(LivingEntity entity) {
+    public ResourceLocation getEntityTexture(LivingEntity entity)
+    {
         return TEXTURE;
     }
 }

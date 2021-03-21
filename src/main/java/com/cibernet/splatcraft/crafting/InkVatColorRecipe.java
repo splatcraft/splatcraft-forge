@@ -22,88 +22,106 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class InkVatColorRecipe implements IRecipe<IInventory> {
+public class InkVatColorRecipe implements IRecipe<IInventory>
+{
+    protected static final ArrayList<Integer> omniColors = Lists.newArrayList();
     protected final Ingredient ingredient;
     protected final int color;
     protected final boolean disableOmni;
     protected final ResourceLocation id;
 
-    protected static final ArrayList<Integer> omniColors = Lists.newArrayList();
-
-    public InkVatColorRecipe(ResourceLocation id, Ingredient input, int outputColor, boolean disableOmni) {
+    public InkVatColorRecipe(ResourceLocation id, Ingredient input, int outputColor, boolean disableOmni)
+    {
         this.id = id;
         this.disableOmni = disableOmni;
         ingredient = input;
         color = outputColor;
 
         if (!disableOmni && !omniColors.contains(color))
+        {
             omniColors.add(color);
+        }
     }
 
-    public static Collection<Integer> getOmniList() {
+    public static Collection<Integer> getOmniList()
+    {
         return omniColors;
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn) {
+    public boolean matches(IInventory inv, World worldIn)
+    {
         return ingredient.test(inv.getStackInSlot(3));
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv) {
+    public ItemStack getCraftingResult(IInventory inv)
+    {
         return inv.getStackInSlot(0);
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canFit(int width, int height)
+    {
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getRecipeOutput()
+    {
         return ColorUtils.setInkColor(new ItemStack(SplatcraftBlocks.inkwell), color);
     }
 
-    public int getOutputColor() {
+    public int getOutputColor()
+    {
         return color;
     }
 
     @Override
-    public ResourceLocation getId() {
+    public ResourceLocation getId()
+    {
         return id;
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public IRecipeSerializer<?> getSerializer()
+    {
         return SplatcraftRecipeTypes.INK_VAT_COLOR_CRAFTING;
     }
 
     @Override
-    public IRecipeType<?> getType() {
+    public IRecipeType<?> getType()
+    {
         return SplatcraftRecipeTypes.INK_VAT_COLOR_CRAFTING_TYPE;
     }
 
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getIcon()
+    {
         return new ItemStack(SplatcraftItems.inkVat);
     }
 
-    public static class InkVatColorSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<InkVatColorRecipe> {
+    public static class InkVatColorSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<InkVatColorRecipe>
+    {
 
-        public InkVatColorSerializer(String name) {
+        public InkVatColorSerializer(String name)
+        {
             super();
             setRegistryName(name);
         }
 
         @Override
-        public InkVatColorRecipe read(ResourceLocation recipeId, JsonObject json) {
+        public InkVatColorRecipe read(ResourceLocation recipeId, JsonObject json)
+        {
             Ingredient ingredient = json.has("filter") ? Ingredient.deserialize(json.get("filter")) : Ingredient.EMPTY;
             boolean disableOmni = json.has("not_on_omni_filter") && JSONUtils.getBoolean(json, "not_on_omni_filter");
             int color;
 
-            try {
+            try
+            {
                 color = JSONUtils.getInt(json, "color");
-            } catch (JsonSyntaxException e) {
+            } catch (JsonSyntaxException e)
+            {
                 color = Integer.parseInt(JSONUtils.getString(json, "color"), 16);
             }
 
@@ -113,12 +131,14 @@ public class InkVatColorRecipe implements IRecipe<IInventory> {
 
         @Nullable
         @Override
-        public InkVatColorRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+        public InkVatColorRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+        {
             return new InkVatColorRecipe(recipeId, Ingredient.read(buffer), buffer.readInt(), buffer.readBoolean());
         }
 
         @Override
-        public void write(PacketBuffer buffer, InkVatColorRecipe recipe) {
+        public void write(PacketBuffer buffer, InkVatColorRecipe recipe)
+        {
             recipe.ingredient.write(buffer);
             buffer.writeInt(recipe.color);
             buffer.writeBoolean(recipe.disableOmni);

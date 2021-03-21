@@ -9,10 +9,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-public class InkExplosionParticle extends SpriteTexturedParticle {
+public class InkExplosionParticle extends SpriteTexturedParticle
+{
     private final IAnimatedSprite spriteProvider;
 
-    public InkExplosionParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, InkExplosionParticleData data, IAnimatedSprite sprite) {
+    public InkExplosionParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, InkExplosionParticleData data, IAnimatedSprite sprite)
+    {
         super(world, x, y, z, motionX, motionY, motionZ);
 
         this.motionX = motionX;
@@ -33,34 +35,42 @@ public class InkExplosionParticle extends SpriteTexturedParticle {
     }
 
     @Override
-    public void tick() {
+    public void tick()
+    {
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
         if (this.age++ >= this.maxAge || this.world.getBlockState(new BlockPos(this.posX, this.posY, this.posZ)).getMaterial() == Material.WATER)
+        {
             this.setExpired();
-        else
+        } else
+        {
             this.selectSpriteWithAge(this.spriteProvider);
+        }
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
+    public IParticleRenderType getRenderType()
+    {
         return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<InkExplosionParticleData> {
+    public static class Factory implements IParticleFactory<InkExplosionParticleData>
+    {
 
         private final IAnimatedSprite spriteSet;
 
-        public Factory(IAnimatedSprite sprite) {
+        public Factory(IAnimatedSprite sprite)
+        {
             this.spriteSet = sprite;
         }
 
         @Nullable
         @Override
-        public Particle makeParticle(InkExplosionParticleData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(InkExplosionParticleData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+        {
             return new InkExplosionParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn, this.spriteSet);
         }
     }

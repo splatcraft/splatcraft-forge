@@ -18,7 +18,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 import java.util.ArrayList;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class SplatcraftBlocks {
+public class SplatcraftBlocks
+{
     public static final ArrayList<Block> inkColoredBlocks = new ArrayList<>();
 
     public static final Block inkedBlock = new InkedBlock("inked_block");
@@ -50,7 +51,8 @@ public class SplatcraftBlocks {
     public static final Block stageVoid = new StageBarrierBlock("stage_void", true);
 
     @SubscribeEvent
-    public static void blockInit(final RegistryEvent.Register<Block> event) {
+    public static void blockInit(final RegistryEvent.Register<Block> event)
+    {
         IForgeRegistry<Block> registry = event.getRegistry();
 
         registry.register(inkedBlock);
@@ -85,7 +87,8 @@ public class SplatcraftBlocks {
         registry.register(new ChainBlockOverride());
     }
 
-    public static void setRenderLayers() {
+    public static void setRenderLayers()
+    {
         RenderTypeLookup.setRenderLayer(glowingInkedBlock, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(glowingInkedStairs, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(glowingInkedSlab, RenderType.getTranslucent());

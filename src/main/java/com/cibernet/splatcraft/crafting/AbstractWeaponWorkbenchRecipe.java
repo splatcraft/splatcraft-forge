@@ -18,13 +18,15 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nullable;
 
 
-public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventory> {
+public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventory>
+{
     protected final ResourceLocation id;
     protected final ItemStack recipeOutput;
     protected final NonNullList<StackedIngredient> recipeItems;
     protected final String name;
 
-    public AbstractWeaponWorkbenchRecipe(ResourceLocation id, String name, ItemStack recipeOutput, NonNullList<StackedIngredient> recipeItems) {
+    public AbstractWeaponWorkbenchRecipe(ResourceLocation id, String name, ItemStack recipeOutput, NonNullList<StackedIngredient> recipeItems)
+    {
         this.id = id;
         this.recipeOutput = recipeOutput;
         this.recipeItems = recipeItems;
@@ -33,13 +35,16 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
 
 
     @Override
-    public boolean matches(IInventory inv, World worldIn) {
+    public boolean matches(IInventory inv, World worldIn)
+    {
         java.util.List<ItemStack> inputs = new java.util.ArrayList<>();
         int i = 0;
 
-        for (int j = 0; j < inv.getSizeInventory(); ++j) {
+        for (int j = 0; j < inv.getSizeInventory(); ++j)
+        {
             ItemStack itemstack = inv.getStackInSlot(j);
-            if (!itemstack.isEmpty()) {
+            if (!itemstack.isEmpty())
+            {
                 ++i;
                 inputs.add(itemstack);
             }
@@ -48,61 +53,75 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
         return i == this.recipeItems.size() && net.minecraftforge.common.util.RecipeMatcher.findMatches(inputs, this.recipeItems) != null;
     }
 
-    public TextComponent getName() {
+    public TextComponent getName()
+    {
         return new TranslationTextComponent(name);
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv) {
+    public ItemStack getCraftingResult(IInventory inv)
+    {
         return recipeOutput;
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canFit(int width, int height)
+    {
         return false;
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getRecipeOutput()
+    {
         return recipeOutput;
     }
 
     @Override
-    public ResourceLocation getId() {
+    public ResourceLocation getId()
+    {
         return id;
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public IRecipeSerializer<?> getSerializer()
+    {
         return SplatcraftRecipeTypes.WEAPON_STATION;
     }
 
     @Override
-    public IRecipeType<?> getType() {
+    public IRecipeType<?> getType()
+    {
         return SplatcraftRecipeTypes.WEAPON_STATION_TYPE;
     }
 
-    public ItemStack getOutput() {
+    public ItemStack getOutput()
+    {
         return recipeOutput;
     }
 
-    public NonNullList<StackedIngredient> getInput() {
+    public NonNullList<StackedIngredient> getInput()
+    {
         return recipeItems;
     }
 
-    public static class Serializer<T extends AbstractWeaponWorkbenchRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+    public static class Serializer<T extends AbstractWeaponWorkbenchRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T>
+    {
 
-        public Serializer(String name) {
+        public Serializer(String name)
+        {
             super();
             setRegistryName(name);
         }
 
-        protected static NonNullList<StackedIngredient> readIngredients(JsonArray p_199568_0_) {
+        protected static NonNullList<StackedIngredient> readIngredients(JsonArray p_199568_0_)
+        {
             NonNullList<StackedIngredient> nonnulllist = NonNullList.create();
 
-            for (int i = 0; i < p_199568_0_.size(); ++i) {
+            for (int i = 0; i < p_199568_0_.size(); ++i)
+            {
                 StackedIngredient ingredient = StackedIngredient.deserialize(p_199568_0_.get(i));
-                if (!ingredient.getIngredient().hasNoMatchingItems() && ingredient.getCount() > 0) {
+                if (!ingredient.getIngredient().hasNoMatchingItems() && ingredient.getCount() > 0)
+                {
                     nonnulllist.add(ingredient);
                 }
             }
@@ -111,18 +130,21 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
         }
 
         @Override
-        public T read(ResourceLocation recipeId, JsonObject json) {
+        public T read(ResourceLocation recipeId, JsonObject json)
+        {
             return null;
         }
 
         @Nullable
         @Override
-        public T read(ResourceLocation recipeId, PacketBuffer buffer) {
+        public T read(ResourceLocation recipeId, PacketBuffer buffer)
+        {
             return null;
         }
 
         @Override
-        public void write(PacketBuffer buffer, T recipe) {
+        public void write(PacketBuffer buffer, T recipe)
+        {
 
         }
     }

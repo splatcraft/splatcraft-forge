@@ -11,41 +11,50 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class PlayerSetSquidServerPacket extends PlayToServerPacket {
-    private int squid = -1;
+public class PlayerSetSquidServerPacket extends PlayToServerPacket
+{
     UUID target;
+    private int squid = -1;
 
-    public PlayerSetSquidServerPacket(PlayerEntity player) {
+    public PlayerSetSquidServerPacket(PlayerEntity player)
+    {
         target = player.getUniqueID();
     }
 
-    public PlayerSetSquidServerPacket(PlayerEntity player, boolean set) {
+    public PlayerSetSquidServerPacket(PlayerEntity player, boolean set)
+    {
         squid = set ? 1 : 0;
         target = player.getUniqueID();
     }
 
-    protected PlayerSetSquidServerPacket(UUID player, int squid) {
+    protected PlayerSetSquidServerPacket(UUID player, int squid)
+    {
         this.squid = squid;
         this.target = player;
     }
 
-    @Override
-    public void encode(PacketBuffer buffer) {
-        buffer.writeUniqueId(target);
-        buffer.writeInt(squid);
-    }
-
-    public static PlayerSetSquidServerPacket decode(PacketBuffer buffer) {
+    public static PlayerSetSquidServerPacket decode(PacketBuffer buffer)
+    {
         return new PlayerSetSquidServerPacket(buffer.readUniqueId(), buffer.readInt());
     }
 
     @Override
-    public void execute(PlayerEntity player) {
+    public void encode(PacketBuffer buffer)
+    {
+        buffer.writeUniqueId(target);
+        buffer.writeInt(squid);
+    }
+
+    @Override
+    public void execute(PlayerEntity player)
+    {
         World world = player.world;
         IPlayerInfo target = PlayerInfoCapability.get(world.getPlayerByUuid(this.target));
 
         if (squid == -1)
+        {
             squid = !target.isSquid() ? 1 : 0;
+        }
         target.setIsSquid(squid == 1);
         world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), squid == 1 ? SplatcraftSounds.squidTransform : SplatcraftSounds.squidRevert, SoundCategory.PLAYERS, 0.75F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
 

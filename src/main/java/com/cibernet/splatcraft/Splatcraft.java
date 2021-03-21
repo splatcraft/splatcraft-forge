@@ -26,15 +26,17 @@ import org.apache.logging.log4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Splatcraft.MODID)
-public class Splatcraft {
-    // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+public class Splatcraft
+{
     public static final String MODID = "splatcraft";
     public static final String MODNAME = "Splatcraft";
     public static final String SHORT = "SC";
     public static final String VERSION = "2.3.0";
+    // Directly reference a log4j logger.
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public Splatcraft() {
+    public Splatcraft()
+    {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SplatcraftConfig.clientConfig);
         SplatcraftConfig.loadConfig(SplatcraftConfig.clientConfig, FMLPaths.CONFIGDIR.get().resolve(Splatcraft.MODID + "-client.toml").toString());
 
@@ -45,7 +47,8 @@ public class Splatcraft {
         MinecraftForge.EVENT_BUS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
+    private void commonSetup(final FMLCommonSetupEvent event)
+    {
         SplatcraftCapabilities.registerCapabilities();
         SplatcraftPacketHandler.registerMessages();
 
@@ -64,7 +67,8 @@ public class Splatcraft {
         SplatcraftOreGen.registerOres();
     }
 
-    private void clientSetup(final FMLClientSetupEvent event) {
+    private void clientSetup(final FMLClientSetupEvent event)
+    {
         SplatcraftEntities.bindRenderers();
         SplatcraftKeyHandler.registerKeys();
         SplatcraftBlocks.setRenderLayers();
@@ -80,18 +84,23 @@ public class Splatcraft {
     }
 
     @SubscribeEvent
-    public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
+    public void onServerAboutToStart(FMLServerAboutToStartEvent event)
+    {
 
     }
 
     @SubscribeEvent
-    public void onServerStarted(FMLServerStartedEvent event) {
+    public void onServerStarted(FMLServerStartedEvent event)
+    {
         SplatcraftGameRules.booleanRules.replaceAll((k, v) -> event.getServer().getGameRules().getBoolean(SplatcraftGameRules.getRuleFromIndex(k)));
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
+    public static class RegistryEvents
+    {
         @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {}
+        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent)
+        {
+        }
     }
 }

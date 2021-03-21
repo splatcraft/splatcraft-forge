@@ -28,13 +28,15 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
 {
     private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/squid_bumper_overlay.png");
 
-    public SquidBumperRenderer(EntityRendererManager manager) {
+    public SquidBumperRenderer(EntityRendererManager manager)
+    {
         super(manager, new SquidBumperModel(), 0.5f);
         addLayer(new SquidBumperColorLayer(this));
     }
 
     @Override
-    protected boolean canRenderName(SquidBumperEntity entity) {
+    protected boolean canRenderName(SquidBumperEntity entity)
+    {
         return !entity.hasCustomName() && !(entity.getInkHealth() >= 20) || super.canRenderName(entity) && (entity.getAlwaysRenderNameTagForRender() || entity == this.renderManager.pointedEntity);
     }
     
@@ -47,9 +49,12 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
     */
 
     @Override
-    public void render(SquidBumperEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(SquidBumperEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
+    {
         if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre<>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn)))
+        {
             return;
+        }
         matrixStackIn.push();
         this.entityModel.swingProgress = this.getSwingProgress(entityIn, partialTicks);
 
@@ -59,21 +64,25 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
         float f = MathHelper.interpolateAngle(partialTicks, entityIn.prevRenderYawOffset, entityIn.renderYawOffset);
         float f1 = MathHelper.interpolateAngle(partialTicks, entityIn.prevRotationYawHead, entityIn.rotationYawHead);
         float f2 = f1 - f;
-        if (shouldSit && entityIn.getRidingEntity() instanceof LivingEntity) {
+        if (shouldSit && entityIn.getRidingEntity() instanceof LivingEntity)
+        {
             LivingEntity livingentity = (LivingEntity) entityIn.getRidingEntity();
             f = MathHelper.interpolateAngle(partialTicks, livingentity.prevRenderYawOffset, livingentity.renderYawOffset);
             f2 = f1 - f;
             float f3 = MathHelper.wrapDegrees(f2);
-            if (f3 < -85.0F) {
+            if (f3 < -85.0F)
+            {
                 f3 = -85.0F;
             }
 
-            if (f3 >= 85.0F) {
+            if (f3 >= 85.0F)
+            {
                 f3 = 85.0F;
             }
 
             f = f1 - f3;
-            if (f3 * f3 > 2500.0F) {
+            if (f3 * f3 > 2500.0F)
+            {
                 f += f3 * 0.2F;
             }
 
@@ -81,9 +90,11 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
         }
 
         float f6 = MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch);
-        if (entityIn.getPose() == Pose.SLEEPING) {
+        if (entityIn.getPose() == Pose.SLEEPING)
+        {
             Direction direction = entityIn.getBedDirection();
-            if (direction != null) {
+            if (direction != null)
+            {
                 float f4 = entityIn.getEyeHeight(Pose.STANDING) - 0.1F;
                 matrixStackIn.translate((float) -direction.getXOffset() * f4, 0.0D, (float) -direction.getZOffset() * f4);
             }
@@ -96,14 +107,17 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
         matrixStackIn.translate(0.0D, -1.501F, 0.0D);
         float f8 = 0.0F;
         float f5 = 0.0F;
-        if (!shouldSit && entityIn.isAlive()) {
+        if (!shouldSit && entityIn.isAlive())
+        {
             f8 = MathHelper.lerp(partialTicks, entityIn.prevLimbSwingAmount, entityIn.limbSwingAmount);
             f5 = entityIn.limbSwing - entityIn.limbSwingAmount * (1.0F - partialTicks);
-            if (entityIn.isChild()) {
+            if (entityIn.isChild())
+            {
                 f5 *= 3.0F;
             }
 
-            if (f8 > 1.0F) {
+            if (f8 > 1.0F)
+            {
                 f8 = 1.0F;
             }
         }
@@ -115,7 +129,8 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
         boolean flag1 = !flag && minecraft.player != null && !entityIn.isInvisibleToPlayer(minecraft.player);
         boolean flag2 = minecraft.isEntityGlowing(entityIn);
         RenderType rendertype = this.func_230496_a_(entityIn, flag, flag1, flag2);
-        if (rendertype != null) {
+        if (rendertype != null)
+        {
             IVertexBuilder ivertexbuilder = bufferIn.getBuffer(rendertype);
             int i = getPackedOverlay(entityIn, this.getOverlayProgress(entityIn, partialTicks));
 
@@ -130,8 +145,10 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
 
         }
 
-        if (!entityIn.isSpectator()) {
-            for (LayerRenderer<SquidBumperEntity, SquidBumperModel> layerrenderer : this.layerRenderers) {
+        if (!entityIn.isSpectator())
+        {
+            for (LayerRenderer<SquidBumperEntity, SquidBumperModel> layerrenderer : this.layerRenderers)
+            {
                 layerrenderer.render(matrixStackIn, bufferIn, packedLightIn, entityIn, f5, f8, partialTicks, f7, f2, f6);
             }
         }
@@ -139,17 +156,21 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
         matrixStackIn.pop();
         net.minecraftforge.client.event.RenderNameplateEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameplateEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
-        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.canRenderName(entityIn))) {
+        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.canRenderName(entityIn)))
+        {
             this.renderName(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
         }
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post<>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
     }
 
     @Override
-    protected void renderName(SquidBumperEntity entityIn, ITextComponent displayNameIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    protected void renderName(SquidBumperEntity entityIn, ITextComponent displayNameIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
+    {
         if (entityIn.hasCustomName())
+        {
             super.renderName(entityIn, displayNameIn, matrixStackIn, bufferIn, packedLightIn);
-        else {
+        } else
+        {
             float health = 20 - entityIn.getInkHealth();
             super.renderName(entityIn, new StringTextComponent((health >= 20 ? TextFormatting.DARK_RED : "") + String.format("%.1f", health)), matrixStackIn, bufferIn, packedLightIn);
 
@@ -157,21 +178,27 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
     }
 
     @Override
-    protected void applyRotations(SquidBumperEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
+    protected void applyRotations(SquidBumperEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks)
+    {
         //matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - rotationYaw));
         float punchTime = (float) (entityLiving.world.getGameTime() - entityLiving.punchCooldown) + partialTicks;
         float hurtTime = (float) (entityLiving.world.getGameTime() - entityLiving.hurtCooldown) + partialTicks;
 
 
         if (punchTime < 5.0F)
+        {
             matrixStackIn.rotate(Vector3f.YP.rotationDegrees(MathHelper.sin(punchTime / 1.5F * (float) Math.PI) * 3.0F));
+        }
         if (hurtTime < 5.0F)
+        {
             matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(MathHelper.sin(hurtTime / 1.5F * (float) Math.PI) * 3.0F));
+        }
 
     }
 
     @Override
-    public ResourceLocation getEntityTexture(SquidBumperEntity entity) {
+    public ResourceLocation getEntityTexture(SquidBumperEntity entity)
+    {
         return TEXTURE;
     }
 }

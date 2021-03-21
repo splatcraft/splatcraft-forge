@@ -12,18 +12,21 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collection;
 
-public class InkColorCommand {
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+public class InkColorCommand
+{
+    public static void register(CommandDispatcher<CommandSource> dispatcher)
+    {
 
         dispatcher.register(Commands.literal("inkcolor").requires(commandSource -> commandSource.hasPermissionLevel(2))
-            .then(Commands.argument("color", InkColorArgument.inkColor()).executes(
-                context -> setColor(context.getSource(), InkColorArgument.getInkColor(context, "color"))
-            ).then(Commands.argument("targets", EntityArgument.players()).executes(
-                context -> setColor(context.getSource(), InkColorArgument.getInkColor(context, "color"), EntityArgument.getPlayers(context, "targets"))
-            ))));
+                .then(Commands.argument("color", InkColorArgument.inkColor()).executes(
+                        context -> setColor(context.getSource(), InkColorArgument.getInkColor(context, "color"))
+                ).then(Commands.argument("targets", EntityArgument.players()).executes(
+                        context -> setColor(context.getSource(), InkColorArgument.getInkColor(context, "color"), EntityArgument.getPlayers(context, "targets"))
+                ))));
     }
 
-    private static int setColor(CommandSource source, int color) throws CommandSyntaxException {
+    private static int setColor(CommandSource source, int color) throws CommandSyntaxException
+    {
         ColorUtils.setPlayerColor(source.asPlayer(), color);
 
         source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", source.asPlayer().getDisplayName(), ColorUtils.getFormatedColorName(color, false)), true);
@@ -31,12 +34,15 @@ public class InkColorCommand {
         return 1;
     }
 
-    private static int setColor(CommandSource source, int color, Collection<ServerPlayerEntity> targets) {
+    private static int setColor(CommandSource source, int color, Collection<ServerPlayerEntity> targets)
+    {
         targets.forEach(player -> ColorUtils.setPlayerColor(player, color));
 
-        if (targets.size() == 1) {
+        if (targets.size() == 1)
+        {
             source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", ColorUtils.getFormatedColorName(color, false), targets.iterator().next().getDisplayName()), true);
-        } else {
+        } else
+        {
             source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.multiple", ColorUtils.getFormatedColorName(color, false), targets.size()), true);
         }
 

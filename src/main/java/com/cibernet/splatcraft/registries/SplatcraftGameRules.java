@@ -11,7 +11,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-public class SplatcraftGameRules {
+public class SplatcraftGameRules
+{
     public static final TreeMap<Integer, Boolean> booleanRules = new TreeMap<>();
     public static final TreeMap<Integer, Integer> intRules = new TreeMap<>();
     public static final ArrayList<GameRules.RuleKey<?>> ruleList = new ArrayList<>();
@@ -28,7 +29,8 @@ public class SplatcraftGameRules {
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_REGEN;
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_DAMAGE_COOLDOWN;
 
-    public static void registerGamerules() {
+    public static void registerGamerules()
+    {
         INK_DECAY = createBooleanRule("inkDecay", Category.UPDATES, true);
         COLORED_PLAYER_NAMES = createBooleanRule("coloredPlayerNames", Category.PLAYER, false);
         KEEP_MATCH_ITEMS = createBooleanRule("keepMatchItems", Category.PLAYER, false);
@@ -42,29 +44,34 @@ public class SplatcraftGameRules {
         INK_MOB_DAMAGE_PERCENTAGE = createIntRule("inkMobDamagePercentage", Category.MOBS, 0);
     }
 
-    public static GameRules.RuleKey<GameRules.BooleanValue> createBooleanRule(String name, GameRules.Category category, boolean defaultValue) {
+    public static GameRules.RuleKey<GameRules.BooleanValue> createBooleanRule(String name, GameRules.Category category, boolean defaultValue)
+    {
         Method booleanValueCreate = ObfuscationReflectionHelper.findMethod(GameRules.BooleanValue.class, "func_223568_b", boolean.class);
         booleanValueCreate.setAccessible(true);
 
-        try {
+        try
+        {
             Object booleanValue = booleanValueCreate.invoke(GameRules.BooleanValue.class, defaultValue);
             GameRules.RuleKey<GameRules.BooleanValue> ruleKey = GameRules.register(Splatcraft.MODID + "." + name, category, (GameRules.RuleType<GameRules.BooleanValue>) booleanValue);
             ruleList.add(ruleKey);
             booleanRules.put(getRuleIndex(ruleKey), defaultValue);
             return ruleKey;
 
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e)
+        {
             e.printStackTrace();
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    public static GameRules.RuleKey<GameRules.IntegerValue> createIntRule(String name, GameRules.Category category, int defaultValue) {
+    public static GameRules.RuleKey<GameRules.IntegerValue> createIntRule(String name, GameRules.Category category, int defaultValue)
+    {
         Method intValueCreate = ObfuscationReflectionHelper.findMethod(GameRules.IntegerValue.class, "func_223559_b", int.class);
         intValueCreate.setAccessible(true);
 
-        try {
+        try
+        {
             Object intValue = intValueCreate.invoke(GameRules.IntegerValue.class, defaultValue);
             GameRules.RuleKey<GameRules.IntegerValue> ruleKey = GameRules.register(Splatcraft.MODID + "." + name, category, (GameRules.RuleType<GameRules.IntegerValue>) intValue);
 
@@ -72,34 +79,41 @@ public class SplatcraftGameRules {
             intRules.put(getRuleIndex(ruleKey), defaultValue);
             return ruleKey;
 
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e)
+        {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static int getRuleIndex(GameRules.RuleKey<?> rule) {
+    public static int getRuleIndex(GameRules.RuleKey<?> rule)
+    {
         return ruleList.indexOf(rule);
     }
 
     @SuppressWarnings("rawtypes")
-    public static GameRules.RuleKey getRuleFromIndex(int index) {
+    public static GameRules.RuleKey getRuleFromIndex(int index)
+    {
         return ruleList.get(index);
     }
 
-    public static boolean getBooleanRuleValue(World world, GameRules.RuleKey<GameRules.BooleanValue> rule) {
+    public static boolean getBooleanRuleValue(World world, GameRules.RuleKey<GameRules.BooleanValue> rule)
+    {
         return world.isRemote ? getClientsideBooleanValue(rule) : world.getGameRules().getBoolean(rule);
     }
 
-    public static int getIntRuleValue(World world, GameRules.RuleKey<GameRules.IntegerValue> rule) {
+    public static int getIntRuleValue(World world, GameRules.RuleKey<GameRules.IntegerValue> rule)
+    {
         return world.isRemote ? getClientsideIntValue(rule) : world.getGameRules().getInt(rule);
     }
 
-    public static boolean getClientsideBooleanValue(GameRules.RuleKey<GameRules.BooleanValue> rule) {
+    public static boolean getClientsideBooleanValue(GameRules.RuleKey<GameRules.BooleanValue> rule)
+    {
         return booleanRules.get(getRuleIndex(rule));
     }
 
-    public static int getClientsideIntValue(GameRules.RuleKey<GameRules.IntegerValue> rule) {
+    public static int getClientsideIntValue(GameRules.RuleKey<GameRules.IntegerValue> rule)
+    {
         return intRules.get(getRuleIndex(rule));
     }
 }

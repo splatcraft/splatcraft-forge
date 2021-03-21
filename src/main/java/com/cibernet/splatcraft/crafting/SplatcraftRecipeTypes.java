@@ -12,27 +12,33 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 
-public class SplatcraftRecipeTypes {
+public class SplatcraftRecipeTypes
+{
+    public static final IRecipeSerializer<InkVatColorRecipe> INK_VAT_COLOR_CRAFTING = new InkVatColorRecipe.InkVatColorSerializer("ink_vat_color");
+    public static final IRecipeSerializer<WeaponWorkbenchTab> WEAPON_STATION_TAB = new WeaponWorkbenchTab.WeaponWorkbenchTabSerializer("weapon_workbench_tab");
+    public static final IRecipeSerializer<WeaponWorkbenchRecipe> WEAPON_STATION = new WeaponWorkbenchRecipe.Serializer("weapon_workbench");
     public static IRecipeType<AbstractWeaponWorkbenchRecipe> WEAPON_STATION_TYPE;
     public static IRecipeType<WeaponWorkbenchTab> WEAPON_STATION_TAB_TYPE;
     public static IRecipeType<InkVatColorRecipe> INK_VAT_COLOR_CRAFTING_TYPE;
 
-    public static final IRecipeSerializer<InkVatColorRecipe> INK_VAT_COLOR_CRAFTING = new InkVatColorRecipe.InkVatColorSerializer("ink_vat_color");
-    public static final IRecipeSerializer<WeaponWorkbenchTab> WEAPON_STATION_TAB = new WeaponWorkbenchTab.WeaponWorkbenchTabSerializer("weapon_workbench_tab");
-    public static final IRecipeSerializer<WeaponWorkbenchRecipe> WEAPON_STATION = new WeaponWorkbenchRecipe.Serializer("weapon_workbench");
-
-
-    public static boolean getItem(PlayerEntity player, Ingredient ingredient, int count, boolean takeItems) {
-        for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
+    public static boolean getItem(PlayerEntity player, Ingredient ingredient, int count, boolean takeItems)
+    {
+        for (int i = 0; i < player.inventory.getSizeInventory(); ++i)
+        {
             ItemStack invStack = player.inventory.getStackInSlot(i);
             if (!takeItems)
+            {
                 invStack = invStack.copy();
+            }
 
-            if (ingredient.test(invStack)) {
-                if (count > invStack.getCount()) {
+            if (ingredient.test(invStack))
+            {
+                if (count > invStack.getCount())
+                {
                     count -= invStack.getCount();
                     invStack.setCount(0);
-                } else {
+                } else
+                {
                     invStack.setCount(invStack.getCount() - count);
                     return true;
                 }
@@ -42,9 +48,11 @@ public class SplatcraftRecipeTypes {
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class Subscriber {
+    public static class Subscriber
+    {
         @SubscribeEvent
-        public static void registerSerializers(final RegistryEvent.Register<IRecipeSerializer<?>> event) {
+        public static void registerSerializers(final RegistryEvent.Register<IRecipeSerializer<?>> event)
+        {
             IForgeRegistry<IRecipeSerializer<?>> registry = event.getRegistry();
 
             INK_VAT_COLOR_CRAFTING_TYPE = IRecipeType.register(Splatcraft.MODID + ":ink_vat_color");

@@ -10,18 +10,23 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 
-public abstract class AbstractSquidPassthroughBlock extends Block {
+public abstract class AbstractSquidPassthroughBlock extends Block
+{
 
-    public AbstractSquidPassthroughBlock(Properties properties) {
+    public AbstractSquidPassthroughBlock(Properties properties)
+    {
         super(properties);
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
         boolean isSquid = false;
 
         if (context.getEntity() instanceof LivingEntity)
+        {
             isSquid = PlayerInfoCapability.isSquid((LivingEntity) context.getEntity());
+        }
 
         return isSquid ? VoxelShapes.empty() : super.getCollisionShape(state, worldIn, pos, context);
     }

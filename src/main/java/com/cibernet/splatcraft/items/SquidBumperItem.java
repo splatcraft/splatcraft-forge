@@ -31,38 +31,49 @@ import net.minecraft.world.server.ServerWorld;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SquidBumperItem extends Item {
-    public SquidBumperItem(String name) {
+public class SquidBumperItem extends Item
+{
+    public SquidBumperItem(String name)
+    {
         super(new Properties().maxStackSize(16).group(SplatcraftItemGroups.GROUP_GENERAL));
         SplatcraftItems.inkColoredItems.add(this);
         setRegistryName(name);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    {
         super.addInformation(stack, world, tooltip, flag);
 
         if (ColorUtils.isColorLocked(stack))
+        {
             tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
+        }
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
+    {
         super.inventoryTick(stack, world, entity, itemSlot, isSelected);
 
         if (entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != 0xFFFFFF - ColorUtils.getPlayerColor((PlayerEntity) entity)
-            && PlayerInfoCapability.hasCapability((LivingEntity) entity))
+                && PlayerInfoCapability.hasCapability((LivingEntity) entity))
+        {
             ColorUtils.setInkColor(stack, 0xFFFFFF - ColorUtils.getPlayerColor((PlayerEntity) entity));
+        }
     }
 
     @Override
-    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity)
+    {
         BlockPos pos = entity.getPosition().down();
 
-        if (entity.world.getBlockState(pos).getBlock() instanceof InkwellBlock) {
+        if (entity.world.getBlockState(pos).getBlock() instanceof InkwellBlock)
+        {
             InkColorTileEntity te = (InkColorTileEntity) entity.world.getTileEntity(pos);
 
-            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te)) {
+            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te))
+            {
                 ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColor(te));
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
@@ -72,20 +83,26 @@ public class SquidBumperItem extends Item {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType onItemUse(ItemUseContext context)
+    {
         if (context.getFace() == Direction.DOWN || context.getWorld().isRemote)
+        {
             return ActionResultType.FAIL;
+        }
 
         World world = context.getWorld();
         BlockPos pos = new BlockItemUseContext(context).getPos();
         ItemStack stack = context.getItem();
 
         SquidBumperEntity bumper = SplatcraftEntities.SQUID_BUMPER.create((ServerWorld) world, stack.getTag(), null, context.getPlayer(), pos, SpawnReason.SPAWN_EGG, true, true);
-        if (bumper != null) {
+        if (bumper != null)
+        {
             bumper.setColor(ColorUtils.getInkColor(stack));
 
-            if (world.hasNoCollisions(bumper) && world.getEntitiesWithinAABBExcludingEntity(bumper, bumper.getBoundingBox()).isEmpty()) {
-                if (!world.isRemote) {
+            if (world.hasNoCollisions(bumper) && world.getEntitiesWithinAABBExcludingEntity(bumper, bumper.getBoundingBox()).isEmpty())
+            {
+                if (!world.isRemote)
+                {
                     float f = (float) MathHelper.floor((MathHelper.wrapDegrees(context.getPlacementYaw() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
                     bumper.setPositionAndRotation(bumper.getPosX(), bumper.getPosY(), bumper.getPosZ(), f, 0);
                     bumper.setRotationYawHead(f);

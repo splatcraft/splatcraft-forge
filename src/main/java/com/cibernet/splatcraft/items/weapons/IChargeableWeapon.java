@@ -4,7 +4,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public interface IChargeableWeapon {
+public interface IChargeableWeapon
+{
     float getDischargeSpeed();
 
     float getChargeSpeed();

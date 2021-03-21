@@ -14,17 +14,21 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class PowerEggCanItem extends Item {
-    public PowerEggCanItem(String name) {
+public class PowerEggCanItem extends Item
+{
+    public PowerEggCanItem(String name)
+    {
         super(new Properties().maxStackSize(16).group(SplatcraftItemGroups.GROUP_GENERAL));
         setRegistryName(name);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+    {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         worldIn.playSound(null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.BLOCK_BARREL_OPEN, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
-        if (!worldIn.isRemote) {
+        if (!worldIn.isRemote)
+        {
             double d0 = playerIn.getPosYEye() - (double) 0.3F;
             ItemEntity itementity = new ItemEntity(worldIn, playerIn.getPosX(), d0, playerIn.getPosZ(), new ItemStack(SplatcraftItems.powerEgg, (worldIn.rand.nextInt(4) + 1) * 10));
             itementity.setPickupDelay(0);
@@ -38,7 +42,8 @@ public class PowerEggCanItem extends Item {
         }
 
         playerIn.addStat(Stats.ITEM_USED.get(this));
-        if (!playerIn.abilities.isCreativeMode) {
+        if (!playerIn.abilities.isCreativeMode)
+        {
             itemstack.shrink(1);
         }
 

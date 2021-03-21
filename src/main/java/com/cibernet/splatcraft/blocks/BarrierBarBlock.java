@@ -29,7 +29,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.common.ToolType;
 
-public class BarrierBarBlock extends Block implements IWaterLoggable {
+public class BarrierBarBlock extends Block implements IWaterLoggable
+{
     public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
@@ -62,21 +63,103 @@ public class BarrierBarBlock extends Block implements IWaterLoggable {
     protected static final VoxelShape[] TOP_SHAPES = new VoxelShape[]{NU_STRAIGHT, SU_STRAIGHT, WU_STRAIGHT, EU_STRAIGHT, NU_CORNER, SU_CORNER, WU_CORNER, EU_CORNER};
     protected static final VoxelShape[] BOTTOM_SHAPES = new VoxelShape[]{ND_STRAIGHT, SD_STRAIGHT, WD_STRAIGHT, ED_STRAIGHT, ND_CORNER, SD_CORNER, WD_CORNER, ED_CORNER};
 
-    public BarrierBarBlock(String name) {
+    public BarrierBarBlock(String name)
+    {
         super(Properties.create(Material.IRON, MaterialColor.AIR).hardnessAndResistance(3.0f).harvestTool(ToolType.PICKAXE).setRequiresTool());
         this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(HALF, Half.BOTTOM).with(SHAPE, StairsShape.STRAIGHT).with(WATERLOGGED, false));
         setRegistryName(name);
     }
 
+    protected static VoxelShape modifyShapeForDirection(Direction facing, VoxelShape shape)
+    {
+        AxisAlignedBB bb = shape.getBoundingBox();
+
+        switch (facing)
+        {
+            case EAST:
+                return VoxelShapes.create(new AxisAlignedBB(1 - bb.maxZ, bb.minY, bb.minX, 1 - bb.minZ, bb.maxY, bb.maxX));
+            case SOUTH:
+                return VoxelShapes.create(new AxisAlignedBB(1 - bb.maxX, bb.minY, 1 - bb.maxZ, 1 - bb.minX, bb.maxY, 1 - bb.minZ));
+            case WEST:
+                return VoxelShapes.create(new AxisAlignedBB(bb.minZ, bb.minY, 1 - bb.maxX, bb.maxZ, bb.maxY, 1 - bb.minX));
+        }
+        return shape;
+    }
+
+    public static VoxelShape mirrorShapeY(VoxelShape shape)
+    {
+        AxisAlignedBB bb = shape.getBoundingBox();
+
+        return VoxelShapes.create(new AxisAlignedBB(bb.minX, 1 - bb.minY, bb.minZ, bb.maxX, 1 - bb.maxY, bb.maxZ));
+    }
+
+    public static VoxelShape mirrorShapeX(VoxelShape shape)
+    {
+        AxisAlignedBB bb = shape.getBoundingBox();
+
+        return VoxelShapes.create(new AxisAlignedBB(1 - bb.minX, bb.minY, bb.minZ, 1 - bb.maxX, bb.maxY, bb.maxZ));
+    }
+
+    /**
+     * Returns a stair shape property based on the surrounding stairs from the given blockstate and position
+     */
+    private static StairsShape getShapeProperty(BlockState state, IBlockReader worldIn, BlockPos pos)
+    {
+        Direction direction = state.get(FACING);
+        BlockState blockstate = worldIn.getBlockState(pos.offset(direction));
+        if (isBar(blockstate) && state.get(HALF) == blockstate.get(HALF))
+        {
+            Direction direction1 = blockstate.get(FACING);
+            if (direction1.getAxis() != state.get(FACING).getAxis() && isDifferentBar(state, worldIn, pos, direction1.getOpposite()))
+            {
+                if (direction1 == direction.rotateYCCW())
+                {
+                    return StairsShape.OUTER_LEFT;
+                }
+
+                return StairsShape.OUTER_RIGHT;
+            }
+        }
+
+        BlockState blockstate1 = worldIn.getBlockState(pos.offset(direction.getOpposite()));
+        if (isBar(blockstate1) && state.get(HALF) == blockstate1.get(HALF))
+        {
+            Direction direction2 = blockstate1.get(FACING);
+            if (direction2.getAxis() != state.get(FACING).getAxis() && isDifferentBar(state, worldIn, pos, direction2))
+            {
+                if (direction2 == direction.rotateYCCW())
+                {
+                    return StairsShape.INNER_LEFT;
+                }
+
+                return StairsShape.INNER_RIGHT;
+            }
+        }
+
+        return StairsShape.STRAIGHT;
+    }
+
+    private static boolean isDifferentBar(BlockState state, IBlockReader worldIn, BlockPos pos, Direction face)
+    {
+        BlockState blockstate = worldIn.getBlockState(pos.offset(face));
+        return !isBar(blockstate) || blockstate.get(FACING) != state.get(FACING) || blockstate.get(HALF) != state.get(HALF);
+    }
+
+    public static boolean isBar(BlockState state)
+    {
+        return state.getBlock() instanceof BarrierBarBlock;
+    }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
         VoxelShape[] shapeArray = state.get(HALF).equals(Half.TOP) ? TOP_SHAPES : BOTTOM_SHAPES;
         int dirIndex = state.get(FACING).ordinal() - 2;
         int rotatedDirIndex = state.get(FACING).rotateY().ordinal() - 2;
         int rotatedCCWDirIndex = state.get(FACING).rotateYCCW().ordinal() - 2;
 
-        switch (state.get(SHAPE)) {
+        switch (state.get(SHAPE))
+        {
             case STRAIGHT:
                 return shapeArray[dirIndex];
             case OUTER_LEFT:
@@ -93,38 +176,14 @@ public class BarrierBarBlock extends Block implements IWaterLoggable {
     }
 
     @Override
-    public boolean isTransparent(BlockState state) {
+    public boolean isTransparent(BlockState state)
+    {
         return true;
     }
 
-    protected static VoxelShape modifyShapeForDirection(Direction facing, VoxelShape shape) {
-        AxisAlignedBB bb = shape.getBoundingBox();
-
-        switch (facing) {
-            case EAST:
-                return VoxelShapes.create(new AxisAlignedBB(1 - bb.maxZ, bb.minY, bb.minX, 1 - bb.minZ, bb.maxY, bb.maxX));
-            case SOUTH:
-                return VoxelShapes.create(new AxisAlignedBB(1 - bb.maxX, bb.minY, 1 - bb.maxZ, 1 - bb.minX, bb.maxY, 1 - bb.minZ));
-            case WEST:
-                return VoxelShapes.create(new AxisAlignedBB(bb.minZ, bb.minY, 1 - bb.maxX, bb.maxZ, bb.maxY, 1 - bb.minX));
-        }
-        return shape;
-    }
-
-    public static VoxelShape mirrorShapeY(VoxelShape shape) {
-        AxisAlignedBB bb = shape.getBoundingBox();
-
-        return VoxelShapes.create(new AxisAlignedBB(bb.minX, 1 - bb.minY, bb.minZ, bb.maxX, 1 - bb.maxY, bb.maxZ));
-    }
-
-    public static VoxelShape mirrorShapeX(VoxelShape shape) {
-        AxisAlignedBB bb = shape.getBoundingBox();
-
-        return VoxelShapes.create(new AxisAlignedBB(1 - bb.minX, bb.minY, bb.minZ, 1 - bb.maxX, bb.maxY, bb.maxZ));
-    }
-
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockItemUseContext context)
+    {
         Direction direction = context.getFace();
         BlockPos blockpos = context.getPos();
         FluidState fluidstate = context.getWorld().getFluidState(blockpos);
@@ -133,68 +192,34 @@ public class BarrierBarBlock extends Block implements IWaterLoggable {
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-        if (stateIn.get(WATERLOGGED)) {
+    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+    {
+        if (stateIn.get(WATERLOGGED))
+        {
             worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
         }
 
         return facing.getAxis().isHorizontal() ? stateIn.with(SHAPE, getShapeProperty(stateIn, worldIn, currentPos)) : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
 
-    /**
-     * Returns a stair shape property based on the surrounding stairs from the given blockstate and position
-     */
-    private static StairsShape getShapeProperty(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        Direction direction = state.get(FACING);
-        BlockState blockstate = worldIn.getBlockState(pos.offset(direction));
-        if (isBar(blockstate) && state.get(HALF) == blockstate.get(HALF)) {
-            Direction direction1 = blockstate.get(FACING);
-            if (direction1.getAxis() != state.get(FACING).getAxis() && isDifferentBar(state, worldIn, pos, direction1.getOpposite())) {
-                if (direction1 == direction.rotateYCCW()) {
-                    return StairsShape.OUTER_LEFT;
-                }
-
-                return StairsShape.OUTER_RIGHT;
-            }
-        }
-
-        BlockState blockstate1 = worldIn.getBlockState(pos.offset(direction.getOpposite()));
-        if (isBar(blockstate1) && state.get(HALF) == blockstate1.get(HALF)) {
-            Direction direction2 = blockstate1.get(FACING);
-            if (direction2.getAxis() != state.get(FACING).getAxis() && isDifferentBar(state, worldIn, pos, direction2)) {
-                if (direction2 == direction.rotateYCCW()) {
-                    return StairsShape.INNER_LEFT;
-                }
-
-                return StairsShape.INNER_RIGHT;
-            }
-        }
-
-        return StairsShape.STRAIGHT;
-    }
-
-    private static boolean isDifferentBar(BlockState state, IBlockReader worldIn, BlockPos pos, Direction face) {
-        BlockState blockstate = worldIn.getBlockState(pos.offset(face));
-        return !isBar(blockstate) || blockstate.get(FACING) != state.get(FACING) || blockstate.get(HALF) != state.get(HALF);
-    }
-
-    public static boolean isBar(BlockState state) {
-        return state.getBlock() instanceof BarrierBarBlock;
-    }
-
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
+    public BlockState rotate(BlockState state, Rotation rot)
+    {
         return state.with(FACING, rot.rotate(state.get(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirrorIn) {
+    public BlockState mirror(BlockState state, Mirror mirrorIn)
+    {
         Direction direction = state.get(FACING);
         StairsShape stairsshape = state.get(SHAPE);
-        switch (mirrorIn) {
+        switch (mirrorIn)
+        {
             case LEFT_RIGHT:
-                if (direction.getAxis() == Direction.Axis.Z) {
-                    switch (stairsshape) {
+                if (direction.getAxis() == Direction.Axis.Z)
+                {
+                    switch (stairsshape)
+                    {
                         case INNER_LEFT:
                             return state.rotate(Rotation.CLOCKWISE_180).with(SHAPE, StairsShape.INNER_RIGHT);
                         case INNER_RIGHT:
@@ -209,8 +234,10 @@ public class BarrierBarBlock extends Block implements IWaterLoggable {
                 }
                 break;
             case FRONT_BACK:
-                if (direction.getAxis() == Direction.Axis.X) {
-                    switch (stairsshape) {
+                if (direction.getAxis() == Direction.Axis.X)
+                {
+                    switch (stairsshape)
+                    {
                         case INNER_LEFT:
                             return state.rotate(Rotation.CLOCKWISE_180).with(SHAPE, StairsShape.INNER_LEFT);
                         case INNER_RIGHT:
@@ -229,17 +256,20 @@ public class BarrierBarBlock extends Block implements IWaterLoggable {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    {
         builder.add(FACING, HALF, SHAPE, WATERLOGGED);
     }
 
     @Override
-    public FluidState getFluidState(BlockState state) {
+    public FluidState getFluidState(BlockState state)
+    {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
     }
 
     @Override
-    public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type) {
+    public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type)
+    {
         return false;
     }
 

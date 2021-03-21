@@ -8,35 +8,41 @@ import net.minecraft.network.PacketBuffer;
 
 import java.util.UUID;
 
-public class DodgeRollPacket extends PlayToServerPacket {
+public class DodgeRollPacket extends PlayToServerPacket
+{
     UUID target;
     ItemStack mainDualie;
     ItemStack offhandDualie;
 
-    public DodgeRollPacket(PlayerEntity player, ItemStack mainDualie, ItemStack offhandDualie) {
+    public DodgeRollPacket(PlayerEntity player, ItemStack mainDualie, ItemStack offhandDualie)
+    {
         this(player.getUniqueID(), mainDualie, offhandDualie);
     }
 
-    public DodgeRollPacket(UUID target, ItemStack mainDualie, ItemStack offhandDualie) {
+    public DodgeRollPacket(UUID target, ItemStack mainDualie, ItemStack offhandDualie)
+    {
         this.target = target;
         this.mainDualie = mainDualie;
         this.offhandDualie = offhandDualie;
     }
 
+    public static DodgeRollPacket decode(PacketBuffer buffer)
+    {
+        return new DodgeRollPacket(buffer.readUniqueId(), buffer.readItemStack(), buffer.readItemStack());
+    }
+
     @Override
-    public void execute(PlayerEntity player) {
+    public void execute(PlayerEntity player)
+    {
         PlayerEntity target = player.world.getPlayerByUuid(this.target);
         DualieItem.performRoll(target, mainDualie, offhandDualie);
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(PacketBuffer buffer)
+    {
         buffer.writeUniqueId(target);
         buffer.writeItemStack(mainDualie);
         buffer.writeItemStack(offhandDualie);
-    }
-
-    public static DodgeRollPacket decode(PacketBuffer buffer) {
-        return new DodgeRollPacket(buffer.readUniqueId(), buffer.readItemStack(), buffer.readItemStack());
     }
 }

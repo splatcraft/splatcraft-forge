@@ -10,7 +10,8 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class InkSquidModel extends EntityModel<LivingEntity> {
+public class InkSquidModel extends EntityModel<LivingEntity>
+{
     private final ModelRenderer squid;
     private final ModelRenderer Body;
     private final ModelRenderer eyes;
@@ -18,7 +19,8 @@ public class InkSquidModel extends EntityModel<LivingEntity> {
     private final ModelRenderer LeftLimb;
     private final ModelRenderer RightLimb;
 
-    public InkSquidModel() {
+    public InkSquidModel()
+    {
         textureWidth = 64;
         textureHeight = 64;
 
@@ -66,39 +68,50 @@ public class InkSquidModel extends EntityModel<LivingEntity> {
     }
 
     @Override
-    public void setRotationAngles(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+    {
 
     }
 
     @Override
-    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
+    {
         squid.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
+    {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
     }
 
     @Override
-    public void setLivingAnimations(LivingEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
+    public void setLivingAnimations(LivingEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime)
+    {
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
         boolean isSwimming = entitylivingbaseIn.isSwimming();
 
-        if (!entitylivingbaseIn.isPassenger()) {
+        if (!entitylivingbaseIn.isPassenger())
+        {
             float angle = isSwimming ? (float) -(entitylivingbaseIn.rotationPitch * Math.PI / 180F) : (float) (entitylivingbaseIn.getPosY() - entitylivingbaseIn.prevPosY) * 1.1f;
             squid.rotateAngleX = (float) -Math.min(Math.PI / 2, Math.max(-Math.PI / 2, angle));
         }
 
-        if (entitylivingbaseIn.isOnGround() || isSwimming) {
+        if (entitylivingbaseIn.isOnGround() || isSwimming)
+        {
             this.RightLimb.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount / (isSwimming ? 2.2f : 1.5f);
             this.LeftLimb.rotateAngleY = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount / (isSwimming ? 2.2f : 1.5f);
-        } else {
+        } else
+        {
             if (Math.abs(Math.round(RightLimb.rotateAngleY * 100)) != 0)
+            {
                 this.RightLimb.rotateAngleY -= RightLimb.rotateAngleY / 8f;
+            }
             if (Math.abs(Math.round(LeftLimb.rotateAngleY * 100)) != 0)
+            {
                 this.LeftLimb.rotateAngleY -= LeftLimb.rotateAngleY / 8f;
+            }
         }
     }
 }

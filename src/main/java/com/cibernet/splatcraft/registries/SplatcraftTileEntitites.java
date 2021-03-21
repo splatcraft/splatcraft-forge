@@ -24,37 +24,39 @@ import java.util.function.Supplier;
 import static com.cibernet.splatcraft.registries.SplatcraftBlocks.*;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class SplatcraftTileEntitites {
+public class SplatcraftTileEntitites
+{
 
     private static final List<TileEntityType<?>> te_registry = new ArrayList<>();
-    private static final List<ContainerType<?>> c_registry = new ArrayList<>();
-
     public static final TileEntityType<InkColorTileEntity> colorTileEntity = registerTileEntity("color", InkColorTileEntity::new, inkedWool, canvas);
     public static final TileEntityType<InkwellTileEntity> inkwellTileEntity = registerTileEntity("inkwell", InkwellTileEntity::new, inkwell);
     public static final TileEntityType<InkedBlockTileEntity> inkedTileEntity = registerTileEntity("inked_block", InkedBlockTileEntity::new, inkedBlock);
     public static final TileEntityType<CrateTileEntity> crateTileEntity = registerTileEntity("crate", CrateTileEntity::new, crate, sunkenCrate);
     public static final TileEntityType<StageBarrierTileEntity> stageBarrierTileEntity = registerTileEntity("stage_barrier", StageBarrierTileEntity::new, stageBarrier, stageVoid);
     public static final TileEntityType<InkVatTileEntity> inkVatTileEntity = registerTileEntity("ink_vat", InkVatTileEntity::new, inkVat);
-
+    private static final List<ContainerType<?>> c_registry = new ArrayList<>();
     public static final ContainerType<InkVatContainer> inkVatContainer = registerContainer("ink_vat", InkVatContainer::new);
     public static final ContainerType<WeaponWorkbenchContainer> weaponWorkbenchContainer = registerMenu("weapon_workbench", WeaponWorkbenchContainer::new);
 
     @SuppressWarnings("ConstantConditions")
-    private static <T extends TileEntity> TileEntityType<T> registerTileEntity(String name, Supplier<T> factoryIn, Block... allowedBlocks) {
+    private static <T extends TileEntity> TileEntityType<T> registerTileEntity(String name, Supplier<T> factoryIn, Block... allowedBlocks)
+    {
         TileEntityType<T> te = TileEntityType.Builder.create(factoryIn, allowedBlocks).build(null);
         te.setRegistryName(name);
         te_registry.add(te);
         return te;
     }
 
-    private static <T extends Container> ContainerType<T> registerContainer(String name, IContainerFactory<T> factoryIn) {
+    private static <T extends Container> ContainerType<T> registerContainer(String name, IContainerFactory<T> factoryIn)
+    {
         ContainerType<T> container = IForgeContainerType.create(factoryIn);
         container.setRegistryName(name);
         c_registry.add(container);
         return container;
     }
 
-    private static <T extends Container> ContainerType<T> registerMenu(String name, ContainerType.IFactory<T> factory) {
+    private static <T extends Container> ContainerType<T> registerMenu(String name, ContainerType.IFactory<T> factory)
+    {
         ContainerType<T> container = new ContainerType<>(factory);
         container.setRegistryName(name);
         c_registry.add(container);
@@ -62,19 +64,22 @@ public class SplatcraftTileEntitites {
     }
 
     @SubscribeEvent
-    public static void tileEntityInit(final RegistryEvent.Register<TileEntityType<?>> event) {
+    public static void tileEntityInit(final RegistryEvent.Register<TileEntityType<?>> event)
+    {
         IForgeRegistry<TileEntityType<?>> registry = event.getRegistry();
         te_registry.forEach(registry::register);
     }
 
     @SubscribeEvent
-    public static void containerInit(final RegistryEvent.Register<ContainerType<?>> event) {
+    public static void containerInit(final RegistryEvent.Register<ContainerType<?>> event)
+    {
         IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
 
         c_registry.forEach(registry::register);
     }
 
-    public static void bindTESR() {
+    public static void bindTESR()
+    {
         //ClientRegistry.bindTileEntityRenderer(inkedTileEntity.get(), InkedBlockTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(stageBarrierTileEntity, StageBarrierTileEntityRenderer::new);
     }

@@ -9,10 +9,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class StageBarrierModel extends Model {
+public class StageBarrierModel extends Model
+{
     private final ModelRenderer bb_main;
 
-    public StageBarrierModel() {
+    public StageBarrierModel()
+    {
         super(RenderType::getEntityCutoutNoCull);
         textureWidth = 64;
         textureHeight = 64;
@@ -24,7 +26,8 @@ public class StageBarrierModel extends Model {
 
 
     @Override
-    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
+    {
         bb_main.render(matrixStack, buffer, packedLight, packedOverlay);
     }
 }

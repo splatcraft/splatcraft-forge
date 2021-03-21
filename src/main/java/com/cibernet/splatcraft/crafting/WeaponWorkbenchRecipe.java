@@ -17,13 +17,15 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<WeaponWorkbenchRecipe> {
+public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<WeaponWorkbenchRecipe>
+{
     protected final ResourceLocation id;
     protected final ResourceLocation tab;
     protected final List<WeaponWorkbenchSubtypeRecipe> subRecipes;
     protected final int pos;
 
-    public WeaponWorkbenchRecipe(ResourceLocation id, ResourceLocation tab, int pos, List<WeaponWorkbenchSubtypeRecipe> subRecipes) {
+    public WeaponWorkbenchRecipe(ResourceLocation id, ResourceLocation tab, int pos, List<WeaponWorkbenchSubtypeRecipe> subRecipes)
+    {
         this.id = id;
         this.pos = pos;
         this.tab = tab;
@@ -31,70 +33,85 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn) {
+    public boolean matches(IInventory inv, World worldIn)
+    {
         return true;
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv) {
+    public ItemStack getCraftingResult(IInventory inv)
+    {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canFit(int width, int height)
+    {
         return false;
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getRecipeOutput()
+    {
         return subRecipes.isEmpty() ? ItemStack.EMPTY : subRecipes.get(0).getOutput().copy();
     }
 
     @Override
-    public ResourceLocation getId() {
+    public ResourceLocation getId()
+    {
         return id;
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public IRecipeSerializer<?> getSerializer()
+    {
         return SplatcraftRecipeTypes.WEAPON_STATION;
     }
 
     @Override
-    public IRecipeType<?> getType() {
+    public IRecipeType<?> getType()
+    {
         return SplatcraftRecipeTypes.WEAPON_STATION_TYPE;
     }
 
     @Override
-    public int compareTo(WeaponWorkbenchRecipe o) {
+    public int compareTo(WeaponWorkbenchRecipe o)
+    {
         return pos - o.pos;
     }
 
-    public WeaponWorkbenchTab getTab(World world) {
+    public WeaponWorkbenchTab getTab(World world)
+    {
         return (WeaponWorkbenchTab) world.getRecipeManager().getRecipe(tab).get();
     }
 
-    public WeaponWorkbenchSubtypeRecipe getRecipeFromIndex(int subTypePos) {
+    public WeaponWorkbenchSubtypeRecipe getRecipeFromIndex(int subTypePos)
+    {
         return subRecipes.get(subTypePos);
     }
 
-    public int getTotalRecipes() {
+    public int getTotalRecipes()
+    {
         return subRecipes.size();
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<WeaponWorkbenchRecipe> {
+    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<WeaponWorkbenchRecipe>
+    {
 
-        public Serializer(String name) {
+        public Serializer(String name)
+        {
             super();
             setRegistryName(name);
         }
 
         @Override
-        public WeaponWorkbenchRecipe read(ResourceLocation recipeId, JsonObject json) {
+        public WeaponWorkbenchRecipe read(ResourceLocation recipeId, JsonObject json)
+        {
             List<WeaponWorkbenchSubtypeRecipe> recipes = new ArrayList<>();
             JsonArray arr = json.getAsJsonArray("recipes");
 
-            for (int i = 0; i < arr.size(); i++) {
+            for (int i = 0; i < arr.size(); i++)
+            {
                 ResourceLocation id = new ResourceLocation(recipeId.getNamespace(), recipeId.getPath() + "subtype" + i);
                 recipes.add(WeaponWorkbenchSubtypeRecipe.fromJson(id, arr.get(i).getAsJsonObject()));
             }
@@ -104,10 +121,12 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
 
         @Nullable
         @Override
-        public WeaponWorkbenchRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+        public WeaponWorkbenchRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+        {
             List<WeaponWorkbenchSubtypeRecipe> s = new ArrayList<>();
             int count = buffer.readInt();
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < count; i++)
+            {
                 ResourceLocation loc = buffer.readResourceLocation();
                 s.add(WeaponWorkbenchSubtypeRecipe.fromBuffer(loc, buffer));
             }
@@ -118,10 +137,12 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
         }
 
         @Override
-        public void write(PacketBuffer buffer, WeaponWorkbenchRecipe recipe) {
+        public void write(PacketBuffer buffer, WeaponWorkbenchRecipe recipe)
+        {
             buffer.writeInt(recipe.subRecipes.size());
 
-            for (WeaponWorkbenchSubtypeRecipe s : recipe.subRecipes) {
+            for (WeaponWorkbenchSubtypeRecipe s : recipe.subRecipes)
+            {
                 buffer.writeResourceLocation(s.id);
                 s.toBuffer(buffer);
             }

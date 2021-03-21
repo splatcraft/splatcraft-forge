@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class SplatcraftSounds {
+public class SplatcraftSounds
+{
 
     private static final List<SoundEvent> sounds = new ArrayList<>();
 
@@ -40,7 +41,8 @@ public class SplatcraftSounds {
     public static SoundEvent subDetonate;
     public static SoundEvent remoteUse;
 
-    public static void initSounds() {
+    public static void initSounds()
+    {
         squidTransform = createSoundEvent("squid_transform");
         squidRevert = createSoundEvent("squid_revert");
         inkSubmerge = createSoundEvent("ink_submerge");
@@ -66,7 +68,8 @@ public class SplatcraftSounds {
         remoteUse = createSoundEvent("remote_use");
     }
 
-    private static SoundEvent createSoundEvent(String id) {
+    private static SoundEvent createSoundEvent(String id)
+    {
         ResourceLocation loc = new ResourceLocation(Splatcraft.MODID, id);
         SoundEvent sound = new SoundEvent(loc).setRegistryName(loc);
         sounds.add(sound);
@@ -74,11 +77,14 @@ public class SplatcraftSounds {
     }
 
     @SubscribeEvent
-    public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
+    public static void registerSounds(RegistryEvent.Register<SoundEvent> event)
+    {
         initSounds();
 
         IForgeRegistry<SoundEvent> registry = event.getRegistry();
         for (SoundEvent sound : sounds)
+        {
             registry.register(sound);
+        }
     }
 }

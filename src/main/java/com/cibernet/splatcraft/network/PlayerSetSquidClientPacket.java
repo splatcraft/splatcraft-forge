@@ -9,42 +9,53 @@ import net.minecraft.network.PacketBuffer;
 
 import java.util.UUID;
 
-public class PlayerSetSquidClientPacket extends PlayToClientPacket {
-    private int squid = -1;
+public class PlayerSetSquidClientPacket extends PlayToClientPacket
+{
     UUID target;
+    private int squid = -1;
 
-    public PlayerSetSquidClientPacket(PlayerEntity player) {
+    public PlayerSetSquidClientPacket(PlayerEntity player)
+    {
         target = player.getUniqueID();
     }
 
-    public PlayerSetSquidClientPacket(PlayerEntity player, boolean set) {
+    public PlayerSetSquidClientPacket(PlayerEntity player, boolean set)
+    {
         squid = set ? 1 : 0;
         target = player.getUniqueID();
     }
 
-    protected PlayerSetSquidClientPacket(UUID player, int squid) {
+    protected PlayerSetSquidClientPacket(UUID player, int squid)
+    {
         this.squid = squid;
         this.target = player;
     }
 
-    @Override
-    public void encode(PacketBuffer buffer) {
-        buffer.writeUniqueId(target);
-        buffer.writeInt(squid);
-    }
-
-    public static PlayerSetSquidClientPacket decode(PacketBuffer buffer) {
+    public static PlayerSetSquidClientPacket decode(PacketBuffer buffer)
+    {
         return new PlayerSetSquidClientPacket(buffer.readUniqueId(), buffer.readInt());
     }
 
     @Override
-    public void execute() {
+    public void encode(PacketBuffer buffer)
+    {
+        buffer.writeUniqueId(target);
+        buffer.writeInt(squid);
+    }
+
+    @Override
+    public void execute()
+    {
         if (Minecraft.getInstance().world.getPlayerByUuid(this.target) == null)
+        {
             return;
+        }
         IPlayerInfo target = PlayerInfoCapability.get(Minecraft.getInstance().world.getPlayerByUuid(this.target));
 
         if (squid == -1)
+        {
             squid = !target.isSquid() ? 1 : 0;
+        }
         target.setIsSquid(squid == 1);
 
     }

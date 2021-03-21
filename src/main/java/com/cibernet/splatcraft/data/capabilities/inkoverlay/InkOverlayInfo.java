@@ -3,52 +3,63 @@ package com.cibernet.splatcraft.data.capabilities.inkoverlay;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.nbt.CompoundNBT;
 
-public class InkOverlayInfo implements IInkOverlayInfo {
+public class InkOverlayInfo implements IInkOverlayInfo
+{
     private int color = ColorUtils.DEFAULT;
     private float amount = 0;
 
-    public InkOverlayInfo() {}
+    public InkOverlayInfo()
+    {
+    }
 
     @Override
-    public int getColor() {
+    public int getColor()
+    {
         return color;
     }
 
     @Override
-    public void setColor(int color) {
+    public void setColor(int color)
+    {
         this.color = color;
     }
 
     @Override
-    public float getAmount() {
+    public float getAmount()
+    {
         return amount;
     }
 
     @Override
-    public void setAmount(float v) {
+    public void setAmount(float v)
+    {
         amount = Math.max(0, v);
     }
 
     @Override
-    public void addAmount(float v) {
+    public void addAmount(float v)
+    {
         setAmount(amount + v);
     }
 
     @Override
-    public CompoundNBT writeNBT(CompoundNBT nbt) {
+    public CompoundNBT writeNBT(CompoundNBT nbt)
+    {
         nbt.putInt("Color", getColor());
         nbt.putFloat("Amount", getAmount());
         return nbt;
     }
 
     @Override
-    public void readNBT(CompoundNBT nbt) {
+    public void readNBT(CompoundNBT nbt)
+    {
         setColor(nbt.getInt("Color"));
         setAmount(nbt.getFloat("Amount"));
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Color: " + color + " Amount: " + amount;
     }
 }

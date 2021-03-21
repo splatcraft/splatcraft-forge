@@ -12,7 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
-public class SlosherItem extends WeaponBaseItem {
+public class SlosherItem extends WeaponBaseItem
+{
     public float projectileSize;
     public float projectileSpeed;
     public float damage;
@@ -21,7 +22,8 @@ public class SlosherItem extends WeaponBaseItem {
     public float diffAngle;
     public float inkConsumption;
 
-    public SlosherItem(String name, float projectileSize, float projectileSpeed, int projectileCount, float offsetBetweenProj, float damage, int startupTicks, float inkConsumption) {
+    public SlosherItem(String name, float projectileSize, float projectileSpeed, int projectileCount, float offsetBetweenProj, float damage, int startupTicks, float inkConsumption)
+    {
         super();
         setRegistryName(name);
 
@@ -39,23 +41,35 @@ public class SlosherItem extends WeaponBaseItem {
         addStat(new WeaponStat("handling", (stack, world) -> (11 - startupTicks) * 10));
     }
 
-    public SlosherItem(String name, SlosherItem parent) {
+    public SlosherItem(String name, SlosherItem parent)
+    {
         this(name, parent.projectileSize, parent.projectileSpeed, parent.projectileCount, parent.diffAngle, parent.damage, parent.startupTicks, parent.inkConsumption);
     }
 
     @Override
-    public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft) {
-        if (getInkAmount(entity, stack) >= inkConsumption) {
+    public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
+    {
+        if (getInkAmount(entity, stack) >= inkConsumption)
+        {
             if (entity instanceof PlayerEntity && getUseDuration(stack) - timeLeft < startupTicks)
+            {
                 PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, true, false, true, entity.isOnGround()));
-        } else sendNoInkMessage(entity, null);
+            }
+        } else
+        {
+            sendNoInkMessage(entity, null);
+        }
     }
 
     @Override
-    public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown) {
-        if (getInkAmount(player, stack) >= inkConsumption) {
-            if (!world.isRemote) {
-                for (int i = 0; i < projectileCount; i++) {
+    public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
+    {
+        if (getInkAmount(player, stack) >= inkConsumption)
+        {
+            if (!world.isRemote)
+            {
+                for (int i = 0; i < projectileCount; i++)
+                {
                     boolean hasTrail = i == Math.floor((projectileCount - 1) / 2f) || i == Math.ceil((projectileCount - 1) / 2f);
                     float angle = diffAngle * i - diffAngle * (projectileCount - 1) / 2;
 
@@ -67,11 +81,15 @@ public class SlosherItem extends WeaponBaseItem {
                 world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.slosherShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 reduceInk(player, inkConsumption);
             }
-        } else sendNoInkMessage(player, null);
+        } else
+        {
+            sendNoInkMessage(player, null);
+        }
     }
 
     @Override
-    public PlayerPosingHandler.WeaponPose getPose() {
+    public PlayerPosingHandler.WeaponPose getPose()
+    {
         return PlayerPosingHandler.WeaponPose.BUCKET_SWING;
     }
 }

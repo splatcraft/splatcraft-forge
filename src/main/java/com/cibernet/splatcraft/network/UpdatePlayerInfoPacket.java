@@ -10,32 +10,38 @@ import net.minecraft.network.PacketBuffer;
 
 import java.util.UUID;
 
-public class UpdatePlayerInfoPacket extends PlayToClientPacket {
+public class UpdatePlayerInfoPacket extends PlayToClientPacket
+{
     UUID target;
     CompoundNBT nbt;
 
 
-    protected UpdatePlayerInfoPacket(UUID player, CompoundNBT nbt) {
+    protected UpdatePlayerInfoPacket(UUID player, CompoundNBT nbt)
+    {
         this.target = player;
         this.nbt = nbt;
     }
 
-    public UpdatePlayerInfoPacket(PlayerEntity target) {
+    public UpdatePlayerInfoPacket(PlayerEntity target)
+    {
         this(target.getUniqueID(), PlayerInfoCapability.get(target).writeNBT(new CompoundNBT()));
     }
 
-    @Override
-    public void encode(PacketBuffer buffer) {
-        buffer.writeString(target.toString());
-        buffer.writeCompoundTag(nbt);
-    }
-
-    public static UpdatePlayerInfoPacket decode(PacketBuffer buffer) {
+    public static UpdatePlayerInfoPacket decode(PacketBuffer buffer)
+    {
         return new UpdatePlayerInfoPacket(UUID.fromString(buffer.readString()), buffer.readCompoundTag());
     }
 
     @Override
-    public void execute() {
+    public void encode(PacketBuffer buffer)
+    {
+        buffer.writeString(target.toString());
+        buffer.writeCompoundTag(nbt);
+    }
+
+    @Override
+    public void execute()
+    {
         PlayerEntity target = Minecraft.getInstance().world.getPlayerByUuid(this.target);
 
         PlayerInfoCapability.get(target).readNBT(nbt);

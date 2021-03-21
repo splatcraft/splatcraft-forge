@@ -2,7 +2,8 @@ package com.cibernet.splatcraft.data.capabilities.inkoverlay;
 
 import net.minecraft.nbt.CompoundNBT;
 
-public interface IInkOverlayInfo {
+public interface IInkOverlayInfo
+{
     int getColor();
 
     void setColor(int color);

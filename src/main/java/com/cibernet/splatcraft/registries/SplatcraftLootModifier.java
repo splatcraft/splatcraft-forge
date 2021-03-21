@@ -11,9 +11,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = Splatcraft.MODID)
-public class SplatcraftLootModifier {
+public class SplatcraftLootModifier
+{
     @SubscribeEvent
-    public static void registerGLM(RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
+    public static void registerGLM(RegistryEvent.Register<GlobalLootModifierSerializer<?>> event)
+    {
         IForgeRegistry<GlobalLootModifierSerializer<?>> registry = event.getRegistry();
 
         registry.register(new FishingLootModifier.Serializer().setRegistryName(new ResourceLocation(Splatcraft.MODID, "fishing")));
