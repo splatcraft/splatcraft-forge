@@ -1,20 +1,27 @@
 package com.cibernet.splatcraft.items.weapons;
 
+import com.cibernet.splatcraft.client.audio.RollerRollTickableSound;
+import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
 import com.cibernet.splatcraft.handlers.WeaponHandler;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
+import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.*;
 import com.google.common.collect.Lists;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 
@@ -151,11 +158,13 @@ public class RollerItem extends WeaponBaseItem
             if (getInkAmount(entity, stack) < (entity.isOnGround() ? swingConsumption : flingConsumption)) sendNoInkMessage(entity);
             else if(isBrush)
             {
+                world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), SplatcraftSounds.brushFling, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 int total = rollSize*2+1;
                 for (int i = 0; i < total; i++)
                 {
                     InkProjectileEntity proj = new InkProjectileEntity(world, entity, stack, InkBlockUtils.getInkType(entity), 1.6f,
                             entity.isOnGround() ? flingDamage : swingDamage);
+                    proj.setProjectileType(InkProjectileEntity.Types.ROLLER);
                     proj.shoot(entity, entity.rotationPitch, entity.rotationYaw + (i-total/2f)*20, 0, entity.isOnGround() ? flingProjectileSpeed : swingProjectileSpeed, 0.05f);
                     proj.setPositionAndUpdate(proj.getPosX(), proj.getPosY() - entity.getEyeHeight()/2f, proj.getPosZ());
                     world.addEntity(proj);
@@ -168,29 +177,40 @@ public class RollerItem extends WeaponBaseItem
             double dxOff = Math.cos(Math.toRadians(entity.rotationYaw+90))*2;
             double dzOff = Math.sin(Math.toRadians(entity.rotationYaw+90))*2;
             boolean hasInk = (getInkAmount(entity, stack) > Math.min(rollConsumptionMax, rollConsumptionMin));
-            boolean isMoving = world.isRemote ? Math.abs(entity.getMotion().getX()) > 0 || Math.abs(entity.getMotion().getZ()) > 0
-                    : entity.getPositionVec().mul(1, 0, 1).distanceTo(WeaponHandler.getPlayerPrevPos((PlayerEntity) entity).mul(1, 0, 1)) > 0;
+            boolean isMoving = Math.abs(entity.prevRotationYaw-entity.rotationYaw) > 0 || (world.isRemote ? Math.abs(entity.getMotion().getX()) > 0 || Math.abs(entity.getMotion().getZ()) > 0
+                    : entity.getPositionVec().mul(1, 0, 1).distanceTo(WeaponHandler.getPlayerPrevPos((PlayerEntity) entity).mul(1, 0, 1)) > 0);
 
             boolean doPush = false;
-            for(int i = 0; i < rollSize; i++)
+            if(isMoving)
             {
-                double off = (double) i - (rollSize-1)/2d;
-                double xOff = Math.cos(Math.toRadians(entity.rotationYaw))*off;
-                double zOff = Math.sin(Math.toRadians(entity.rotationYaw))*off;
-
-                if(hasInk)
-                for(int yOff = 0; yOff >= -1; yOff--)
+                for(int i = 0; i < rollSize; i++)
                 {
-                    BlockPos pos = new BlockPos( entity.getPosX() + xOff+dxOff, entity.getPosY() + yOff, entity.getPosZ() + zOff+dzOff);
-                    if(!InkBlockUtils.canInkPassthrough(world, pos))
+                    double off = (double) i - (rollSize-1)/2d;
+                    double xOff = Math.cos(Math.toRadians(entity.rotationYaw))*off;
+                    double zOff = Math.sin(Math.toRadians(entity.rotationYaw))*off;
+
+                    if(hasInk)
+                    for(int yOff = 0; yOff >= -1; yOff--)
                     {
-                        InkBlockUtils.inkBlock(world, pos, ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
-                        break;
-                    }
-                }
+                        BlockPos pos = new BlockPos( entity.getPosX() + xOff+dxOff, entity.getPosY() + yOff, entity.getPosZ() + zOff+dzOff);
+                        if(!InkBlockUtils.canInkPassthrough(world, pos))
+                        {
+                            InkBlockUtils.inkBlock(world, pos, ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
+                            double blockHeight = world.getBlockState(pos).getCollisionShape(world, pos).getBoundingBox().maxY;
 
-                if(isMoving)
-                {
+                            world.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getPosX() + xOff+dxOff, pos.getY()+blockHeight+0.1, entity.getPosZ() + zOff+dzOff, 0, 0, 0);
+
+                            if(i > 0)
+                            {
+                                double xhOff = dxOff + Math.cos(Math.toRadians(entity.rotationYaw))*(off-0.5);
+                                double zhOff = dzOff + Math.sin(Math.toRadians(entity.rotationYaw))*(off-0.5);
+                                world.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getPosX() + xhOff, pos.getY()+blockHeight+0.1, entity.getPosZ() + zhOff, 0, 0, 0);
+                            }
+
+                            break;
+                        }
+                    }
+
                     BlockPos attackPos = new BlockPos(entity.getPosX() + xOff+dxOff, entity.getPosY()-1, entity.getPosZ() + zOff+dzOff);
                     for(LivingEntity target : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(attackPos, attackPos.add(1, 2, 1))))
                     {
@@ -199,16 +219,11 @@ public class RollerItem extends WeaponBaseItem
                             doPush = true;
                     }
                 }
+                if(hasInk) reduceInk(entity, (Math.min(1, (float)(getUseDuration(stack)-timeLeft)/(float)dashTime)*(rollConsumptionMax-rollConsumptionMin)) + rollConsumptionMin);
+                else if(timeLeft % 4 == 0) sendNoInkMessage(entity, null);
             }
             if(doPush)
                 applyRecoilKnockback(entity, 0.8);//SplatcraftPacketHandler.sendToPlayer(new RollerRecoilPacket(), (ServerPlayerEntity) entity);
-
-            if(isMoving)
-            {
-                if(hasInk) reduceInk(entity, (Math.min(1, (float)(getUseDuration(stack)-timeLeft)/(float)dashTime)*(rollConsumptionMax-rollConsumptionMin)) + rollConsumptionMin);
-                else if(timeLeft % 4 == 0) sendNoInkMessage(entity);
-            }
-
         }
     }
 
@@ -222,12 +237,17 @@ public class RollerItem extends WeaponBaseItem
     public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown) {
         boolean airborne = !cooldown.isGrounded();
 
+        if(world.isRemote)
+            playRollSound(player);
+
         if (getInkAmount(player, stack) >= (player.isOnGround() ? swingConsumption : flingConsumption) && !isBrush)
         {
+            world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.rollerFling, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
             for(int i = 0; i < rollSize; i++)
             {
 
                 InkProjectileEntity proj = new InkProjectileEntity(world, player, stack, InkBlockUtils.getInkType(player), 1.6f, airborne ? flingDamage : swingDamage);proj.shoot(player, player.rotationPitch, player.rotationYaw, 0.0f, airborne ? flingProjectileSpeed : swingProjectileSpeed, 0.05f);
+                proj.setProjectileType(InkProjectileEntity.Types.ROLLER);
                 if(airborne)
                     proj.setPositionAndUpdate(proj.getPosX(), proj.getPosY()+(double) i - i/2d, proj.getPosZ());
                 else
@@ -242,6 +262,12 @@ public class RollerItem extends WeaponBaseItem
             }
             reduceInk(player, (airborne ? swingConsumption : flingConsumption));
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected void playRollSound(PlayerEntity player)
+    {
+        Minecraft.getInstance().getSoundHandler().play(new RollerRollTickableSound(player, isBrush));
     }
 
     @Override

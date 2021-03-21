@@ -4,6 +4,7 @@ import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.client.model.BlasterInkProjectileModel;
 import com.cibernet.splatcraft.client.model.InkProjectileModel;
+import com.cibernet.splatcraft.client.model.RollerInkProjectileModel;
 import com.cibernet.splatcraft.client.model.ShooterInkProjectileModel;
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
@@ -28,6 +29,7 @@ public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> i
 		put(InkProjectileEntity.Types.SHOOTER, new ShooterInkProjectileModel());
 		put(InkProjectileEntity.Types.CHARGER, new ShooterInkProjectileModel());
 		put(InkProjectileEntity.Types.BLASTER, new BlasterInkProjectileModel());
+		put(InkProjectileEntity.Types.ROLLER, new RollerInkProjectileModel());
 	}};
 	
 	public InkProjectileRenderer(EntityRendererManager manager)

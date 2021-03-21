@@ -99,7 +99,7 @@ public class PlayerPosingHandler
                     break;
                 case ROLL:
                     animTime = player.isOnGround() ? ((RollerItem)mainStack.getItem()).swingTime : ((RollerItem)mainStack.getItem()).flingTime;
-                    mainHand.rotateAngleY = 0;
+                    mainHand.rotateAngleY = model.getModelHead().rotateAngleY;
 
 
                     if(PlayerCooldown.hasPlayerCooldown(player))
@@ -120,9 +120,9 @@ public class PlayerPosingHandler
                         PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
                         angle = (float) ((cooldown.getMaxTime()-cooldown.getTime() + event.getPartialTicks())/animTime * Math.PI/2f) + ((float)Math.PI)/1.8f;
 
-                        mainHand.rotateAngleY = MathHelper.cos(angle);//+ 0.36f;
+                        mainHand.rotateAngleY = model.getModelHead().rotateAngleY + MathHelper.cos(angle);//+ 0.36f;
                     } else
-                        mainHand.rotateAngleY = 0;
+                        mainHand.rotateAngleY = model.getModelHead().rotateAngleY;
                     break;
             }
         }

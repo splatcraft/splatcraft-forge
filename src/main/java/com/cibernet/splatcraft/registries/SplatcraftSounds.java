@@ -28,6 +28,8 @@ public class SplatcraftSounds
 	public static SoundEvent blasterExplosion;
 	public static SoundEvent rollerFling;
 	public static SoundEvent rollerRoll;
+	public static SoundEvent brushFling;
+	public static SoundEvent brushRoll;
 	public static SoundEvent chargerCharge;
 	public static SoundEvent chargerReady;
 	public static SoundEvent chargerShot;
@@ -52,6 +54,8 @@ public class SplatcraftSounds
 		blasterExplosion = createSoundEvent("blaster_explosion");
 		rollerFling = createSoundEvent("roller_fling");
 		rollerRoll = createSoundEvent("roller_roll");
+		brushFling = createSoundEvent("brush_fling");
+		brushRoll = createSoundEvent("brush_roll");
 		chargerCharge = createSoundEvent("charger_charge");
 		chargerReady = createSoundEvent("charger_ready");
 		chargerShot = createSoundEvent("charger_shot");

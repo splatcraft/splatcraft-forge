@@ -325,7 +325,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 		public static final String DEFAULT = "ink";
 		public static final String SHOOTER = "shooter";
 		public static final String CHARGER = "charger";
-		public static final String SPLASH = "splash";
+		public static final String ROLLER = "roller";
 		public static final String BLASTER = "blaster";
 	}
 }
