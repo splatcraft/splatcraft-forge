@@ -80,6 +80,7 @@ public class InkDamageUtils
 				if(info.getAmount() < (target instanceof SquidBumperEntity ? SquidBumperEntity.maxInkHealth : target.getMaxHealth())*1.5)
 					info.addAmount(damage * ((target instanceof IColoredEntity || damageMobs) ? 1 : Math.max(0.5f,mobDmgPctg)));
 				info.setColor(color);
+				if(!world.isRemote)
 				SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
 			}
 		}
