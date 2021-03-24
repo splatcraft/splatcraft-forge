@@ -104,6 +104,24 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
         return recipeItems;
     }
 
+
+    protected static NonNullList<StackedIngredient> readIngredients(JsonArray p_199568_0_)
+    {
+        NonNullList<StackedIngredient> nonnulllist = NonNullList.create();
+
+        for (int i = 0; i < p_199568_0_.size(); ++i)
+        {
+            StackedIngredient ingredient = StackedIngredient.deserialize(p_199568_0_.get(i));
+            if (!ingredient.getIngredient().hasNoMatchingItems() && ingredient.getCount() > 0)
+            {
+                nonnulllist.add(ingredient);
+            }
+        }
+
+        return nonnulllist;
+    }
+
+
     public static class Serializer<T extends AbstractWeaponWorkbenchRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T>
     {
 
@@ -111,22 +129,6 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
         {
             super();
             setRegistryName(name);
-        }
-
-        protected static NonNullList<StackedIngredient> readIngredients(JsonArray p_199568_0_)
-        {
-            NonNullList<StackedIngredient> nonnulllist = NonNullList.create();
-
-            for (int i = 0; i < p_199568_0_.size(); ++i)
-            {
-                StackedIngredient ingredient = StackedIngredient.deserialize(p_199568_0_.get(i));
-                if (!ingredient.getIngredient().hasNoMatchingItems() && ingredient.getCount() > 0)
-                {
-                    nonnulllist.add(ingredient);
-                }
-            }
-
-            return nonnulllist;
         }
 
         @Override
