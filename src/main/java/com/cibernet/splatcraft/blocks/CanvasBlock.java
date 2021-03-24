@@ -47,9 +47,7 @@ public class CanvasBlock extends Block implements IColoredBlock
                 {
                     InkColorTileEntity newte = (InkColorTileEntity) world.getTileEntity(pos);
                     if (newte != null)
-                    {
                         newte.setColor(te.getSavedColor());
-                    }
                 }
             }
 
@@ -71,9 +69,7 @@ public class CanvasBlock extends Block implements IColoredBlock
     {
         InkColorTileEntity te = SplatcraftTileEntitites.colorTileEntity.create();
         if (te != null)
-        {
             te.setColor(-1);
-        }
         return te;
     }
 
@@ -92,9 +88,7 @@ public class CanvasBlock extends Block implements IColoredBlock
         {
             TileEntity tileEntity = worldIn.getTileEntity(currentPos);
             if (tileEntity instanceof InkColorTileEntity)
-            {
                 ((InkColorTileEntity) tileEntity).setColor(-1);
-            }
         }
 
         return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos).with(INKED, color != -1);
@@ -104,20 +98,17 @@ public class CanvasBlock extends Block implements IColoredBlock
     public boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
         if (InkedBlock.isTouchingLiquid(world, pos))
-        {
             return false;
-        }
 
         if (color == getColor(world, pos))
-        {
             return false;
-        }
 
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof InkColorTileEntity)
         {
             BlockState state = world.getBlockState(pos);
             ((InkColorTileEntity) tileEntity).setColor(color);
+            world.setBlockState(pos, state.with(INKED, true), 2);
             world.notifyBlockUpdate(pos, state, state.with(INKED, true), 2);
             return true;
         }
@@ -159,12 +150,6 @@ public class CanvasBlock extends Block implements IColoredBlock
 
     @Override
     public boolean remoteInkClear(World world, BlockPos pos)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean countsTowardsTurf(World world, BlockPos pos)
     {
         return false;
     }

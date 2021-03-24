@@ -202,10 +202,4 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     {
         return false;
     }
-
-    @Override
-    public boolean countsTowardsTurf(World world, BlockPos pos)
-    {
-        return false;
-    }
 }

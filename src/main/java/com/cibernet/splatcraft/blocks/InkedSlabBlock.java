@@ -183,12 +183,6 @@ public class InkedSlabBlock extends SlabBlock implements IColoredBlock
     }
 
     @Override
-    public boolean countsTowardsTurf(World world, BlockPos pos)
-    {
-        return true;
-    }
-
-    @Override
     public boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
         if (!(world.getTileEntity(pos) instanceof InkedBlockTileEntity))

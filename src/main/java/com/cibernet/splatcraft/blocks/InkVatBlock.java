@@ -117,12 +117,6 @@ public class InkVatBlock extends ContainerBlock implements IColoredBlock
     }
 
     @Override
-    public boolean countsTowardsTurf(World world, BlockPos pos)
-    {
-        return false;
-    }
-
-    @Override
     public int getColor(World world, BlockPos pos)
     {
         if (world.getTileEntity(pos) instanceof InkVatTileEntity)

@@ -28,8 +28,6 @@ public interface IColoredBlock
 
     boolean remoteInkClear(World world, BlockPos pos);
 
-    boolean countsTowardsTurf(World world, BlockPos pos);
-
     default boolean setColor(World world, BlockPos pos, int color)
     {
         return false;

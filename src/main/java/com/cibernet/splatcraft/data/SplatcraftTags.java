@@ -74,7 +74,8 @@ public class SplatcraftTags
         public static final ITag<Block> INKABLE_BLOCKS = createTag("inkable_blocks");
 
         public static final ITag<Block> INKED_BLOCKS = createTag("inked_blocks");
-        public static final ITag<Block> BLOCKS_TURF = createTag("blocks_turf");
+        public static final ITag<Block> SCAN_TURF_IGNORED = createTag("scan_turf_ignored");
+        public static final ITag<Block> SCAN_TURF_SCORED = createTag("scan_turf_scored");
 
         private static ITag<Block> createTag(String name)
         {

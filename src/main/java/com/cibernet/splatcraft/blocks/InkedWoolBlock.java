@@ -136,10 +136,4 @@ public class InkedWoolBlock extends Block implements IColoredBlock
     {
         return false;
     }
-
-    @Override
-    public boolean countsTowardsTurf(World world, BlockPos pos)
-    {
-        return false;
-    }
 }

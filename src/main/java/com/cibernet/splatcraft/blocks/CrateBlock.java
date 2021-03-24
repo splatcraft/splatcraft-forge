@@ -260,10 +260,4 @@ public class CrateBlock extends Block implements IColoredBlock
         }
         return false;
     }
-
-    @Override
-    public boolean countsTowardsTurf(World world, BlockPos pos)
-    {
-        return false;
-    }
 }

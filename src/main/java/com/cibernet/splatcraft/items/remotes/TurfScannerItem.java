@@ -95,15 +95,11 @@ public class TurfScannerItem extends RemoteItem
                         IColoredBlock block = (IColoredBlock) world.getBlockState(checkPos).getBlock();
                         int color = te.getColor();
 
-                        if (block.countsTowardsTurf(world, checkPos))
+                        if (color >= 0 && SplatcraftTags.Blocks.SCAN_TURF_SCORED.contains(world.getBlockState(checkPos).getBlock()))
                         {
                             if (scores.containsKey(color))
-                            {
                                 scores.replace(color, scores.get(color) + 1);
-                            } else
-                            {
-                                scores.put(color, 1);
-                            }
+                            else scores.put(color, 1);
                             affectedBlockTotal++;
                         }
 
@@ -159,15 +155,11 @@ public class TurfScannerItem extends RemoteItem
                             IColoredBlock block = (IColoredBlock) world.getBlockState(checkPos).getBlock();
                             int color = te.getColor();
 
-                            if (block.countsTowardsTurf(world, checkPos))
+                            if (color >= 0 && SplatcraftTags.Blocks.SCAN_TURF_SCORED.contains(world.getBlockState(checkPos).getBlock()))
                             {
                                 if (scores.containsKey(color))
-                                {
                                     scores.replace(color, scores.get(color) + 1);
-                                } else
-                                {
-                                    scores.put(color, 1);
-                                }
+                                else scores.put(color, 1);
                             }
 
 
@@ -259,7 +251,7 @@ public class TurfScannerItem extends RemoteItem
             blockpos1 = blockpos.down();
             BlockState state = chunk.getBlockState(blockpos1);
 
-            if (SplatcraftTags.Blocks.BLOCKS_TURF.contains(state.getBlock()) || !InkBlockUtils.canInkPassthrough(world, blockpos1) ||
+            if (SplatcraftTags.Blocks.SCAN_TURF_IGNORED.contains(state.getBlock()) || !InkBlockUtils.canInkPassthrough(world, blockpos1) ||
                     state.getMaterial().blocksMovement())
             {
                 break;
