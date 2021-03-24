@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
+import com.cibernet.splatcraft.client.renderer.InkAccessoryLayer;
 import com.cibernet.splatcraft.client.renderer.PlayerSquidRenderer;
 import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.inkoverlay.IInkOverlayInfo;
@@ -83,6 +84,7 @@ public class RendererHandler
     });
     private static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/widgets.png");
     private static PlayerSquidRenderer squidRenderer = null;
+    private static boolean hasAccessoryLayer = false;
     private static float tickTime = 0;
     private static float oldCooldown = 0;
     private static int squidTime = 0;
@@ -93,6 +95,12 @@ public class RendererHandler
     public static void playerRender(RenderPlayerEvent event)
     {
         PlayerEntity player = event.getPlayer();
+
+        if(!hasAccessoryLayer)
+        {
+            event.getRenderer().addLayer(new InkAccessoryLayer(event.getRenderer()));
+            hasAccessoryLayer = true;
+        }
 
         if (PlayerInfoCapability.isSquid(player))
         {
