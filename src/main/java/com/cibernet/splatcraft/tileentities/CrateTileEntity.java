@@ -10,6 +10,7 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
     private float health;
     private float maxHealth;
     private boolean hasLoot;
+    private ResourceLocation lootTable = CrateBlock.STORAGE_SUNKEN_CRATE;
 
     public CrateTileEntity()
     {
@@ -66,6 +68,11 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
         return hasLoot ? CrateBlock.generateLoot(world, getPos(), getBlockState(), 0f) : getInventory();
     }
 
+    public ResourceLocation getLootTable()
+    {
+        return lootTable;
+    }
+
     @Override
     public void read(BlockState state, CompoundNBT nbt)
     {
@@ -78,6 +85,8 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
         if (state.getBlock() instanceof CrateBlock)
         {
             hasLoot = ((CrateBlock) state.getBlock()).hasLoot;
+            if(nbt.contains("LootTable"))
+                lootTable = new ResourceLocation(nbt.getString("LootTable"));
         }
     }
 
@@ -87,6 +96,9 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
         nbt.putFloat("Health", health);
         nbt.putFloat("MaxHealth", maxHealth);
         ItemStackHelper.saveAllItems(nbt, inventory);
+
+        if(hasLoot)
+            nbt.putString("LootTable", lootTable.toString());
 
         return super.write(nbt);
     }

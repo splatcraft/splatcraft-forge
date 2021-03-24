@@ -63,12 +63,12 @@ public class CrateBlock extends Block implements IColoredBlock
     public static List<ItemStack> generateLoot(World world, BlockPos pos, BlockState state, float luckValue)
     {
         if (world == null || world.isRemote)
-        {
             return Collections.emptyList();
-        }
+
+        TileEntity crate = world.getTileEntity(pos);
 
         LootContext.Builder contextBuilder = new LootContext.Builder((ServerWorld) world);
-        return world.getServer().getLootTableManager().getLootTableFromLocation(STORAGE_SUNKEN_CRATE).generate(contextBuilder.withLuck(luckValue)
+        return world.getServer().getLootTableManager().getLootTableFromLocation((crate instanceof  CrateTileEntity) ? ((CrateTileEntity) crate).getLootTable() : STORAGE_SUNKEN_CRATE).generate(contextBuilder.withLuck(luckValue)
                 .withParameter(LootParameters.BLOCK_STATE, state).withParameter(LootParameters.TOOL, ItemStack.EMPTY).withParameter(LootParameters.field_237457_g_, new Vector3d(pos.getX(), pos.getY(), pos.getZ())).build(LootParameterSets.BLOCK));
     }
 
