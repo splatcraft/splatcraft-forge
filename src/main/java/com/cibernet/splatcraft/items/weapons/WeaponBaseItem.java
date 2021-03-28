@@ -15,18 +15,24 @@ import com.cibernet.splatcraft.util.ClientUtils;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import com.cibernet.splatcraft.util.WeaponStat;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.CauldronBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
@@ -208,7 +214,8 @@ public class WeaponBaseItem extends Item
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
     {
-        player.setActiveHand(hand);
+        if(!player.isVisuallySwimming())
+            player.setActiveHand(hand);
         return super.onItemRightClick(world, player, hand);
     }
 

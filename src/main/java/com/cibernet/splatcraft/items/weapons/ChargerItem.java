@@ -121,10 +121,8 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
     {
         ActionResult<ItemStack> result = super.onItemRightClick(world, player, hand);
 
-        if (world.isRemote)
-        {
+        if (world.isRemote && player.isVisuallySwimming())
             playChargingSound(player);
-        }
 
         return result;
     }
