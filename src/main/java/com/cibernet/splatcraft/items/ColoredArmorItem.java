@@ -6,6 +6,8 @@ import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.CauldronBlock;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -13,11 +15,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.IDyeableArmorItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -88,6 +90,36 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem
         }
 
         return false;
+    }
+
+
+    @Override
+    public ActionResultType onItemUse(ItemUseContext context)
+    {
+        BlockState state = context.getWorld().getBlockState(context.getPos());
+        if (ColorUtils.isColorLocked(context.getItem()) && state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && !context.getPlayer().isSneaking())
+        {
+            int i = state.get(CauldronBlock.LEVEL);
+
+            if (i > 0)
+            {
+                World world = context.getWorld();
+                PlayerEntity player = context.getPlayer();
+                ColorUtils.setColorLocked(context.getItem(), false);
+
+                context.getPlayer().addStat(Stats.USE_CAULDRON);
+
+                if (!player.abilities.isCreativeMode)
+                {world.setBlockState(context.getPos(), state.with(CauldronBlock.LEVEL, MathHelper.clamp(i - 1, 0, 3)), 2);
+                    world.updateComparatorOutputLevel(context.getPos(), state.getBlock());
+                }
+
+                return ActionResultType.SUCCESS;
+            }
+
+        }
+
+        return super.onItemUse(context);
     }
 
     @Override

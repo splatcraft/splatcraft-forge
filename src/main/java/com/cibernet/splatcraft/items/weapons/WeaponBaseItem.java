@@ -220,6 +220,35 @@ public class WeaponBaseItem extends Item
     }
 
     @Override
+    public ActionResultType onItemUse(ItemUseContext context)
+    {
+        BlockState state = context.getWorld().getBlockState(context.getPos());
+        if (ColorUtils.isColorLocked(context.getItem()) && state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && !context.getPlayer().isSneaking())
+        {
+            int i = state.get(CauldronBlock.LEVEL);
+
+            if (i > 0)
+            {
+                World world = context.getWorld();
+                PlayerEntity player = context.getPlayer();
+                ColorUtils.setColorLocked(context.getItem(), false);
+
+                context.getPlayer().addStat(Stats.USE_CAULDRON);
+
+                if (!player.abilities.isCreativeMode)
+                {world.setBlockState(context.getPos(), state.with(CauldronBlock.LEVEL, MathHelper.clamp(i - 1, 0, 3)), 2);
+                    world.updateComparatorOutputLevel(context.getPos(), state.getBlock());
+                }
+
+                return ActionResultType.SUCCESS;
+            }
+
+        }
+
+        return super.onItemUse(context);
+    }
+
+    @Override
     public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft)
     {
         entity.resetActiveHand();
