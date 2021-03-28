@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.data.capabilities.playerinfo;
 
 import com.cibernet.splatcraft.registries.SplatcraftInkColors;
+import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCharge;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.inventory.ItemStackHelper;
@@ -16,6 +17,7 @@ public class PlayerInfo implements IPlayerInfo
     private NonNullList<ItemStack> matchInventory = NonNullList.create();
     private PlayerCooldown playerCooldown = null;
     private PlayerCharge playerCharge = null;
+    private InkBlockUtils.InkType inkType = InkBlockUtils.InkType.NORMAL;
 
     public PlayerInfo(int defaultColor)
     {
@@ -61,6 +63,17 @@ public class PlayerInfo implements IPlayerInfo
     public void setIsSquid(boolean isSquid)
     {
         this.isSquid = isSquid;
+    }
+
+    @Override
+    public InkBlockUtils.InkType getInkType() {
+        return inkType;
+    }
+
+    @Override
+    public void setInkType(InkBlockUtils.InkType type)
+    {
+        inkType = type;
     }
 
     @Override
@@ -110,6 +123,7 @@ public class PlayerInfo implements IPlayerInfo
     {
         nbt.putInt("Color", getColor());
         nbt.putBoolean("IsSquid", isSquid());
+        nbt.putInt("InkType", getInkType().getIndex());
         nbt.putBoolean("Initialized", initialized);
 
         if (!matchInventory.isEmpty())
@@ -134,6 +148,7 @@ public class PlayerInfo implements IPlayerInfo
     {
         setColor(nbt.getInt("Color"));
         setIsSquid(nbt.getBoolean("IsSquid"));
+        setInkType(InkBlockUtils.InkType.values.get(nbt.getInt("InkType")));
         setInitialized(nbt.getBoolean("Initialized"));
 
         if (nbt.contains("MatchInventory"))

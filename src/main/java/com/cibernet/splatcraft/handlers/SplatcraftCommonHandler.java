@@ -201,19 +201,26 @@ public class SplatcraftCommonHandler
     @SubscribeEvent
     public static void capabilityUpdateEvent(TickEvent.PlayerTickEvent event)
     {
-        try
+        IPlayerInfo info = PlayerInfoCapability.get(event.player);
+        if(PlayerInfoCapability.hasCapability(event.player))
         {
-            if (event.player.deathTime <= 0 && !PlayerInfoCapability.get(event.player).isInitialized())
+            InkBlockUtils.InkType checkedInkType = InkBlockUtils.checkInkType(event.player);
+            if(!event.player.world.isRemote && !checkedInkType.equals(info.getInkType()))
             {
-                PlayerInfoCapability.get(event.player).setInitialized(true);
-                PlayerInfoCapability.get(event.player).setColor(ColorUtils.getRandomStarterColor());
-                if (event.player.world.isRemote)
-                {
-                    SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
-                }
+                info.setInkType(checkedInkType);
+                SplatcraftPacketHandler.sendToDim(new UpdatePlayerInfoPacket(event.player), event.player.world);
             }
-        } catch (NullPointerException ignored)
-        {
+
+            try
+            {
+                if (event.player.deathTime <= 0 && !info.isInitialized())
+                {
+                    PlayerInfoCapability.get(event.player).setInitialized(true);
+                    PlayerInfoCapability.get(event.player).setColor(ColorUtils.getRandomStarterColor());
+                    if (event.player.world.isRemote)
+                        SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
+                }
+            } catch (NullPointerException ignored) {}
         }
     }
 

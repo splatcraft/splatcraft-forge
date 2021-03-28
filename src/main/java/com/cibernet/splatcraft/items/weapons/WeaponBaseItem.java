@@ -214,7 +214,7 @@ public class WeaponBaseItem extends Item
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
     {
-        if(!player.isVisuallySwimming())
+        if(!(player.isActualySwimming() && !player.isInWater()))
             player.setActiveHand(hand);
         return super.onItemRightClick(world, player, hand);
     }

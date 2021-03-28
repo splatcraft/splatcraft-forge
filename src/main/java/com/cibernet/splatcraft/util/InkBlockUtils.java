@@ -1,10 +1,12 @@
 package com.cibernet.splatcraft.util;
 
+import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.blocks.AbstractSquidPassthroughBlock;
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.IInkPassthrough;
 import com.cibernet.splatcraft.blocks.InkedBlock;
 import com.cibernet.splatcraft.data.SplatcraftTags;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftStats;
@@ -17,11 +19,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
@@ -225,39 +230,14 @@ public class InkBlockUtils
 
     public static InkBlockUtils.InkType getInkType(LivingEntity entity)
     {
+        return PlayerInfoCapability.hasCapability(entity) ? PlayerInfoCapability.get(entity).getInkType() : InkType.NORMAL;
+    }
+
+    public static InkType checkInkType(LivingEntity entity)
+    {
         if (entity instanceof PlayerEntity && ((PlayerEntity) entity).inventory.hasItemStack(new ItemStack(SplatcraftItems.splatfestBand)))
             return InkType.GLOWING;
         return InkType.NORMAL;
-    }
-
-    public static InkType getInkType(ItemStack stack)
-    {
-
-        if (stack.isItemEqual(new ItemStack(SplatcraftItems.splatfestBand)))
-            return InkType.GLOWING;
-        return InkType.NORMAL;
-    }
-
-    public static ItemStack getBandStack(LivingEntity entity, InkType type)
-    {
-        if(type == InkType.NORMAL || !(entity instanceof PlayerEntity))
-            return ItemStack.EMPTY;
-
-        ItemStack refStack = new ItemStack(SplatcraftItems.splatfestBand);
-
-        PlayerInventory inv = ((PlayerEntity) entity).inventory;
-
-        for(List<ItemStack> list : ImmutableList.of(inv.armorInventory, inv.mainInventory, inv.offHandInventory))
-        {
-            for(ItemStack itemstack : list)
-            {
-                if (!itemstack.isEmpty() && itemstack.isItemEqual(refStack)) {
-                    return itemstack;
-                }
-            }
-        }
-
-        return ItemStack.EMPTY;
     }
 
     public static Block getInkBlock(InkType inkType, Block baseBlock)
@@ -267,15 +247,24 @@ public class InkBlockUtils
 
     public static class InkType implements Comparable<InkType>
     {
-
         public static final ArrayList<InkType> values = new ArrayList<>();
 
-        public static final InkType NORMAL = new InkType();
-        public static final InkType GLOWING = new InkType();
+        public static final InkType NORMAL = new InkType(new ResourceLocation(Splatcraft.MODID, "normal"));
+        public static final InkType GLOWING = new InkType(new ResourceLocation(Splatcraft.MODID, "splatfest_band"), SplatcraftItems.splatfestBand);
 
-        public InkType()
+        private final ResourceLocation name;
+        private final Item repItem;
+
+        public InkType(ResourceLocation name, Item repItem)
         {
             values.add(this);
+            this.name = name;
+            this.repItem = repItem;
+        }
+
+        public InkType(ResourceLocation name)
+        {
+            this(name, Items.AIR);
         }
 
         @Override
@@ -287,6 +276,21 @@ public class InkBlockUtils
         public int getIndex()
         {
             return values.indexOf(this);
+        }
+
+        public ResourceLocation getName()
+        {
+            return name;
+        }
+
+        public Item getRepItem()
+        {
+            return repItem;
+        }
+
+        @Override
+        public String toString() {
+            return name.toString();
         }
     }
 

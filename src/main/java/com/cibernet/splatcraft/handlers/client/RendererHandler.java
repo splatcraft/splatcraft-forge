@@ -37,6 +37,7 @@ import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PhantomRenderer;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.SlimeRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -88,7 +89,7 @@ public class RendererHandler
     });
     private static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/widgets.png");
     private static PlayerSquidRenderer squidRenderer = null;
-    private static boolean hasAccessoryLayer = false;
+    private static List<PlayerRenderer> hasAccessoryLayer = new ArrayList<>();
     private static float tickTime = 0;
     private static float oldCooldown = 0;
     private static int squidTime = 0;
@@ -100,13 +101,13 @@ public class RendererHandler
     {
         PlayerEntity player = event.getPlayer();
 
-        /*
-        if(!hasAccessoryLayer)
+
+        if(!hasAccessoryLayer.contains(event.getRenderer()))
         {
             event.getRenderer().addLayer(new InkAccessoryLayer(event.getRenderer()));
-            hasAccessoryLayer = true;
+            hasAccessoryLayer.add(event.getRenderer());
         }
-        */
+
 
         if (PlayerInfoCapability.isSquid(player))
         {
@@ -450,7 +451,7 @@ public class RendererHandler
                     {
                         ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
                         if(player.getActiveItemStack() != null)
-                            canUse = ((InkTankItem) stack.getItem()).canUse(player.getActiveItemStack().getItem());
+                            canUse = ((InkTankItem) stack.getItem()).canUse(player.getHeldItemMainhand().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getHeldItemOffhand().getItem());
                     }
 
                     MatrixStack matrixStack = event.getMatrixStack();

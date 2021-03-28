@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.data.capabilities.playerinfo;
 
+import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCharge;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.item.ItemStack;
@@ -19,6 +20,9 @@ public interface IPlayerInfo
     boolean isSquid();
 
     void setIsSquid(boolean isSquid);
+
+    InkBlockUtils.InkType getInkType();
+    void setInkType(InkBlockUtils.InkType type);
 
     NonNullList<ItemStack> getMatchInventory();
 
