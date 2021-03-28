@@ -44,19 +44,13 @@ public class SquidFormHandler
         if (InkBlockUtils.onEnemyInk(player))
         {
             if (player.ticksExisted % 20 == 0 && player.getHealth() > 4 && player.world.getDifficulty() != Difficulty.PEACEFUL)
-            {
                 player.attackEntityFrom(InkDamageUtils.ENEMY_INK, 2f);
-            }
             if (player.world.rand.nextFloat() < 0.7f)
-            {
                 ColorUtils.addStandingInkSplashParticle(player.world, player, 1);
-            }
         }
 
         if (player.world.getGameRules().getBoolean(SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.ticksExisted % 10 == 0)
-        {
             player.attackEntityFrom(InkDamageUtils.WATER, 8f);
-        }
 
 
         IPlayerInfo info = PlayerInfoCapability.get(player);
@@ -65,18 +59,13 @@ public class SquidFormHandler
             player.setInvisible(shouldBeInvisible(player));
 
             if (!squidSubmergeMode.containsKey(player))
-            {
                 squidSubmergeMode.put(player, -2);
-            }
 
             if (InkBlockUtils.canSquidHide(player) && info.isSquid())
             {
                 squidSubmergeMode.put(player, Math.min(2, Math.max(squidSubmergeMode.get(player) + 1, 1)));
                 player.setInvisible(true);
-            } else
-            {
-                squidSubmergeMode.put(player, Math.max(-2, Math.min(squidSubmergeMode.get(player) - 1, -1)));
-            }
+            } else squidSubmergeMode.put(player, Math.max(-2, Math.min(squidSubmergeMode.get(player) - 1, -1)));
 
 
             if (squidSubmergeMode.get(player) == 1)
@@ -86,22 +75,18 @@ public class SquidFormHandler
                 if (player.world instanceof ServerWorld)
                 {
                     for (int i = 0; i < 2; i++)
-                    {
                         ColorUtils.addInkSplashParticle((ServerWorld) player.world, player, 1.4f);
-                    }
                 }
             } else if (squidSubmergeMode.get(player) == -1)
-            {
                 player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.inkSurface, SoundCategory.PLAYERS, 0.5F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F + 1.0F) * 0.95F);
-            }
         }
 
         if (PlayerInfoCapability.isSquid(player))
         {
-            player.setSprinting(false);
+            player.setSprinting(player.isInWater());
             player.distanceWalkedModified = player.prevDistanceWalkedModified;
 
-            player.setPose(Pose.FALL_FLYING);
+            player.setPose(Pose.SWIMMING);
             player.stopActiveHand();
 
             player.addStat(SplatcraftStats.SQUID_TIME);
@@ -159,16 +144,14 @@ public class SquidFormHandler
     public static void onEntitySize(EntityEvent.Size event)
     {
         if (!event.getEntity().isAddedToWorld() || !(event.getEntity() instanceof PlayerEntity) || !PlayerInfoCapability.hasCapability((LivingEntity) event.getEntity()))
-        {
             return;
-        }
 
         IPlayerInfo info = PlayerInfoCapability.get((LivingEntity) event.getEntity());
 
         if (info.isSquid())
         {
             event.setNewSize(new EntitySize(0.6f, 0.5f, false));
-            event.setNewEyeHeight(InkBlockUtils.canSquidHide((LivingEntity) event.getEntity()) ? 0.3f : 0.45f);
+            event.setNewEyeHeight(InkBlockUtils.canSquidHide((LivingEntity) event.getEntity()) ? 0.3f : 0.4f);
         }
     }
 

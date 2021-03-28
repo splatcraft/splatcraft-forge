@@ -28,7 +28,7 @@ public class WeaponHandler
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event)
     {
-        if (event.getEntityLiving() instanceof PlayerEntity)
+        if (event.getEntityLiving() instanceof PlayerEntity && !event.getEntityLiving().isSpectator())
         {
             PlayerEntity target = (PlayerEntity) event.getEntityLiving();
 

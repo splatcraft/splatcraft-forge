@@ -46,7 +46,7 @@ public class BlasterItem extends ShooterItem
         {
             if (getInkAmount(entity, stack) > inkConsumption)
             {
-                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, true, false, true, entity.isOnGround()));
+                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, entity.getActiveHand(), true, false, true, entity.isOnGround()));
                 if (!world.isRemote)
                 {
                     cooldownTracker.setCooldown(this, cooldown);

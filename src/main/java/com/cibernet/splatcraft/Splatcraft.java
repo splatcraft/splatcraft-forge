@@ -52,13 +52,12 @@ public class Splatcraft
         SplatcraftCapabilities.registerCapabilities();
         SplatcraftPacketHandler.registerMessages();
 
-        DeferredWorkQueue.runLater(() ->
+        event.enqueueWork(() ->
         {
             SplatcraftEntities.setEntityAttributes();
             SplatcraftGameRules.registerGamerules();
         });
 
-        SplatcraftSounds.initSounds();
         SplatcraftTags.register();
         SplatcraftStats.register();
         ScoreboardHandler.register();
@@ -75,7 +74,7 @@ public class Splatcraft
         SplatcraftTileEntitites.bindTESR();
 
 
-        DeferredWorkQueue.runLater(() ->
+        event.enqueueWork(() ->
         {
             SplatcraftItems.registerModelProperties();
             SplatcraftItems.registerArmorModels();

@@ -31,14 +31,7 @@ public class InkOverlayCapability implements ICapabilitySerializable<CompoundNBT
 
     public static boolean hasCapability(LivingEntity entity)
     {
-        try
-        {
-            get(entity);
-            return true;
-        } catch (NullPointerException e)
-        {
-            return false;
-        }
+        return entity.getCapability(CAPABILITY).isPresent();
     }
 
     @Nonnull

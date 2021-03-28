@@ -3226,7 +3226,7 @@
   "overrides": [
     {
       "predicate": {
-        "unfolded": 1
+        "splatcraft:unfolded": 1
       },
       "model": "splatcraft:item/corocoro_splat_roller_unfolded"
     }

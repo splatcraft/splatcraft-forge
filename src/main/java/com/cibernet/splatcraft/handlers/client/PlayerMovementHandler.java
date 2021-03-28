@@ -39,9 +39,7 @@ public class PlayerMovementHandler
     public static void playerMovement(TickEvent.PlayerTickEvent event)
     {
         if (!(event.player instanceof ClientPlayerEntity) || event.phase != TickEvent.Phase.END)
-        {
             return;
-        }
 
         ClientPlayerEntity player = (ClientPlayerEntity) event.player;
         //MovementInput input = player.movementInput;
@@ -49,52 +47,35 @@ public class PlayerMovementHandler
         ModifiableAttributeInstance swimAttribute = player.getAttribute(ForgeMod.SWIM_SPEED.get());
 
         if (speedAttribute.hasModifier(INK_SWIM_SPEED) && player.isOnGround())
-        {
             speedAttribute.removeModifier(INK_SWIM_SPEED);
-        }
         if (speedAttribute.hasModifier(ENEMY_INK_SPEED))
-        {
             speedAttribute.removeModifier(ENEMY_INK_SPEED);
-        }
         if (swimAttribute.hasModifier(SQUID_SWIM_SPEED))
-        {
             swimAttribute.removeModifier(SQUID_SWIM_SPEED);
-        }
 
         if (speedAttribute.getModifier(SplatcraftItems.SPEED_MOD_UUID) != null)
-        {
             speedAttribute.removeModifier(SplatcraftItems.SPEED_MOD_UUID);
-        }
 
         if (InkBlockUtils.onEnemyInk(player))
         {
             //player.setMotion(player.getMotion().x, Math.min(player.getMotion().y, 0.05f), player.getMotion().z);
             if (!speedAttribute.hasModifier(ENEMY_INK_SPEED))
-            {
                 speedAttribute.applyNonPersistentModifier(ENEMY_INK_SPEED);
-            }
         }
 
-        if (player.getActiveItemStack().getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) player.getActiveItemStack().getItem()).hasSpeedModifier(player, player.getItemInUseCount()))
+        if (player.getActiveItemStack().getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) player.getActiveItemStack().getItem()).hasSpeedModifier(player, player.getActiveItemStack()))
         {
-            AttributeModifier mod = ((WeaponBaseItem) player.getActiveItemStack().getItem()).getSpeedModifier(player, player.getItemInUseCount());
+            AttributeModifier mod = ((WeaponBaseItem) player.getActiveItemStack().getItem()).getSpeedModifier(player, player.getActiveItemStack());
             if (!speedAttribute.hasModifier(mod))
-            {
                 speedAttribute.applyNonPersistentModifier(mod);
-            }
         }
 
         if (PlayerInfoCapability.isSquid(player))
         {
-
             if (InkBlockUtils.canSquidSwim(player) && !speedAttribute.hasModifier(INK_SWIM_SPEED))
-            {
                 speedAttribute.applyNonPersistentModifier(INK_SWIM_SPEED);
-            }
             if (!swimAttribute.hasModifier(SQUID_SWIM_SPEED))
-            {
                 swimAttribute.applyNonPersistentModifier(SQUID_SWIM_SPEED);
-            }
         }
 
         if (PlayerCooldown.hasPlayerCooldown(player))
@@ -106,9 +87,7 @@ public class PlayerMovementHandler
         if (!player.abilities.isFlying)
         {
             if (speedAttribute.hasModifier(INK_SWIM_SPEED))
-            {
                 player.moveRelative((float) player.getAttributeValue(SplatcraftItems.INK_SWIM_SPEED) * (player.isOnGround() ? 1 : 0.75f), new Vector3d(player.moveStrafing, 0.0f, player.moveForward));
-            }
 
         }
 
@@ -135,31 +114,21 @@ public class PlayerMovementHandler
             if (flag && player.isPotionActive(Effects.SLOW_FALLING))
             {
                 if (!gravity.hasModifier(SLOW_FALLING))
-                {
                     gravity.applyNonPersistentModifier(SLOW_FALLING);
-                }
                 player.fallDistance = 0.0F;
             } else if (gravity.hasModifier(SLOW_FALLING))
-            {
                 gravity.removeModifier(SLOW_FALLING);
-            }
             //player.setMotion(player.getMotion().add(0.0D, d0 / 4.0D, 0.0D));
 
             //if((player.isOnGround() && player.world.getCollisionShapes(player, player.getBoundingBox().offset(xOff, (double)(player.stepHeight), zOff)).toArray().length == 0) || !player.isOnGround())
             {
                 if (player.getMotion().getY() < (input.jump ? 0.46f : 0.4f))
-                {
                     player.moveRelative(0.055f * (input.jump ? 1.9f : 1.7f), new Vector3d(0.0f, player.moveForward, -Math.min(0, player.moveForward)));
-                }
                 if (player.getMotion().getY() <= 0 && !input.sneaking)
-                {
                     player.moveRelative(0.035f, new Vector3d(0.0f, 1, 0.0f));
-                }
 
                 if (input.sneaking)
-                {
                     player.setMotion(player.getMotion().x, Math.max(0, player.getMotion().getY()), player.getMotion().z);
-                }
             }
         }
 
@@ -182,6 +151,10 @@ public class PlayerMovementHandler
         if (PlayerCooldown.hasPlayerCooldown(player))
         {
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
+
+            if(cooldown.storedItem instanceof RollerItem)
+                input.jump = false;
+
             if (!cooldown.canMove())
             {
                 input.moveForward = 0;

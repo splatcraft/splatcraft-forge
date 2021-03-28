@@ -220,7 +220,7 @@ public class InkExplosion
 
             if (targetColor == -1 && damageMobs || color != targetColor && targetColor > -1)
             {
-                InkDamageUtils.doSplatDamage(world, (LivingEntity) entity, damage, color, exploder, weapon, damageMobs, inkType); //TODO damage
+                InkDamageUtils.doSplatDamage(world, (LivingEntity) entity, damage, color, exploder, weapon, damageMobs, inkType);
             }
 
             DyeColor dyeColor = null;

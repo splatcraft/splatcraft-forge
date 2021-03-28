@@ -10,6 +10,7 @@ import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IndirectEntityDamageSource;
@@ -37,22 +38,25 @@ public class InkDamageUtils
         return doDamage(world, target, damage, color, source, sourceItem, damageMobs, inkType, "roll", true);
     }
 
+    public static boolean canDamageColor(World world, int targetColor, int sourceColor)
+    {
+        return SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_FRIENDLY_FIRE) || !ColorUtils.colorEquals(world, targetColor, sourceColor);
+    }
+
     public static boolean doDamage(World world, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType, String name, boolean applyHurtCooldown)
     {
 
         if (damage == 0)
-        {
             return false;
-        }
 
         float mobDmgPctg = SplatcraftGameRules.getIntRuleValue(world, SplatcraftGameRules.INK_MOB_DAMAGE_PERCENTAGE) * 0.01f;
-        boolean doDamage = damageMobs || mobDmgPctg > 0;
+        boolean doDamage = target instanceof PlayerEntity || damageMobs || mobDmgPctg > 0;
         boolean applyInkCoverage = true;
         int targetColor = ColorUtils.getEntityColor(target);
 
         if (targetColor > -1)
         {
-            doDamage = targetColor != color || SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_FRIENDLY_FIRE);
+            doDamage = canDamageColor(world, color, targetColor);
             applyInkCoverage = doDamage;
         }
 
@@ -60,9 +64,9 @@ public class InkDamageUtils
         if (target instanceof IColoredEntity)
         {
             doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
-
             applyInkCoverage = doDamage;
-        } else if (target instanceof SheepEntity)
+        }
+        else if (target instanceof SheepEntity)
         {
             if (!((SheepEntity) target).getSheared())
             {
@@ -72,9 +76,7 @@ public class InkDamageUtils
         }
 
         if (doDamage)
-        {
-            target.attackEntityFrom(damageSource, damage * (target instanceof IColoredEntity || damageMobs ? 1 : mobDmgPctg));
-        }
+            target.attackEntityFrom(damageSource, damage * (target instanceof PlayerEntity || target instanceof IColoredEntity || damageMobs ? 1 : mobDmgPctg));
 
         if (applyInkCoverage && !target.isInWater())
         {
@@ -83,21 +85,17 @@ public class InkDamageUtils
                 IInkOverlayInfo info = InkOverlayCapability.get(target);
 
                 if (info.getAmount() < (target instanceof SquidBumperEntity ? SquidBumperEntity.maxInkHealth : target.getMaxHealth()) * 1.5)
-                {
                     info.addAmount(damage * (target instanceof IColoredEntity || damageMobs ? 1 : Math.max(0.5f, mobDmgPctg)));
-                }
                 info.setColor(color);
                 if (!world.isRemote)
-                {
                     SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
-                }
             }
         }
 
+
+
         if (!applyHurtCooldown && !SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_DAMAGE_COOLDOWN))
-        {
-            target.hurtResistantTime = 0;
-        }
+            target.hurtResistantTime = 1;
 
         return doDamage;
     }

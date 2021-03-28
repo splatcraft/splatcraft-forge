@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.items.weapons;
 
 import com.cibernet.splatcraft.SplatcraftConfig;
+import com.cibernet.splatcraft.blocks.InkedBlock;
 import com.cibernet.splatcraft.blocks.InkwellBlock;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
@@ -141,9 +142,7 @@ public class WeaponBaseItem extends Item
 
         if (entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity)
                 && PlayerInfoCapability.hasCapability((LivingEntity) entity))
-        {
             ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor((PlayerEntity) entity));
-        }
     }
 
     @Override
@@ -160,6 +159,11 @@ public class WeaponBaseItem extends Item
                 ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColor(te));
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
+        }
+        else if(InkedBlock.causesClear(entity.world.getBlockState(pos)) && ColorUtils.isColorLocked(stack))
+        {
+            ColorUtils.setInkColor(stack, 0xFFFFFF);
+            ColorUtils.setColorLocked(stack, false);
         }
 
         return false;
@@ -225,12 +229,12 @@ public class WeaponBaseItem extends Item
 
     }
 
-    public boolean hasSpeedModifier(LivingEntity entity, int timeLeft)
+    public boolean hasSpeedModifier(LivingEntity entity, ItemStack stack)
     {
-        return getSpeedModifier(entity, timeLeft) != null;
+        return getSpeedModifier(entity, stack) != null;
     }
 
-    public AttributeModifier getSpeedModifier(LivingEntity entity, int timeLeft)
+    public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack)
     {
         return null;
     }

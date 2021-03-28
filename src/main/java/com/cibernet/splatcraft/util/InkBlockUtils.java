@@ -10,13 +10,20 @@ import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftStats;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -156,7 +163,7 @@ public class InkBlockUtils
 
     public static boolean canSquidHide(LivingEntity entity)
     {
-        return !entity.world.getBlockState(new BlockPos(entity.getPosX(), entity.getPosY() - 0.1, entity.getPosZ())).getBlock().equals(Blocks.AIR)
+        return (entity.isOnGround() || !entity.world.getBlockState(new BlockPos(entity.getPosX(), entity.getPosY() - 0.1, entity.getPosZ())).getBlock().equals(Blocks.AIR))
                 && canSquidSwim(entity) || canSquidClimb(entity);
     }
 
@@ -164,34 +171,34 @@ public class InkBlockUtils
     {
         boolean canSwim = false;
 
-        BlockPos down = entity.getPosition().down();
+        BlockPos down = getBlockStandingOnPos(entity);
 
-        Block standingBlock = entity.world.getBlockState(entity.getPosition().down()).getBlock();
+        Block standingBlock = entity.world.getBlockState(down).getBlock();
         if (standingBlock instanceof IColoredBlock)
-        {
             canSwim = ((IColoredBlock) standingBlock).canSwim();
-        }
 
         if (canSwim)
-        {
             return ColorUtils.colorEquals(entity, entity.world.getTileEntity(down));
-        }
         return false;
+    }
+
+    public static BlockPos getBlockStandingOnPos(Entity entity)
+    {
+        BlockPos result = new BlockPos(entity.getPosX(), entity.getPosY()-0.4, entity.getPosZ());
+        if(entity.world.getBlockState(result).getMaterial().equals(Material.AIR) || entity.world.getBlockState(result).allowsMovement(entity.world, result, PathType.LAND))
+            result = new BlockPos(entity.getPosX(), entity.getPosY()-0.5001, entity.getPosZ());
+        return result;
     }
 
     public static boolean onEnemyInk(LivingEntity entity)
     {
         if (!entity.isOnGround())
-        {
             return false;
-        }
         boolean canDamage = false;
-        BlockPos pos = entity.getPosition().down();
+        BlockPos pos = getBlockStandingOnPos(entity);
 
         if (entity.world.getBlockState(pos).getBlock() instanceof IColoredBlock)
-        {
             canDamage = ((IColoredBlock) entity.world.getBlockState(pos).getBlock()).canDamage();
-        }
 
         return canDamage && ColorUtils.getInkColor(entity.world.getTileEntity(pos)) != -1 && !canSquidSwim(entity);
     }
@@ -199,19 +206,19 @@ public class InkBlockUtils
     public static boolean canSquidClimb(LivingEntity entity)
     {
         if (onEnemyInk(entity))
-        {
             return false;
-        }
         for (int i = 0; i < 4; i++)
         {
             float xOff = (i < 2 ? .32f : 0) * (i % 2 == 0 ? 1 : -1), zOff = (i < 2 ? 0 : .32f) * (i % 2 == 0 ? 1 : -1);
             BlockPos pos = new BlockPos(entity.getPosX() - xOff, entity.getPosY(), entity.getPosZ() - zOff);
             Block block = entity.world.getBlockState(pos).getBlock();
+            VoxelShape shape = block.getCollisionShape(entity.world.getBlockState(pos), entity.world, pos);
+
+            if(pos.equals(getBlockStandingOnPos(entity)) || (shape != null && !shape.isEmpty() && shape.getBoundingBox().maxY <= (entity.getPosY()-entity.getPosition().getY())))
+                continue;
 
             if ((!(block instanceof IColoredBlock) || ((IColoredBlock) block).canClimb()) && entity.world.getTileEntity(pos) instanceof InkColorTileEntity && ColorUtils.colorEquals(entity, entity.world.getTileEntity(pos)) && !entity.isPassenger())
-            {
                 return true;
-            }
         }
         return false;
     }
@@ -219,10 +226,38 @@ public class InkBlockUtils
     public static InkBlockUtils.InkType getInkType(LivingEntity entity)
     {
         if (entity instanceof PlayerEntity && ((PlayerEntity) entity).inventory.hasItemStack(new ItemStack(SplatcraftItems.splatfestBand)))
-        {
             return InkType.GLOWING;
-        }
         return InkType.NORMAL;
+    }
+
+    public static InkType getInkType(ItemStack stack)
+    {
+
+        if (stack.isItemEqual(new ItemStack(SplatcraftItems.splatfestBand)))
+            return InkType.GLOWING;
+        return InkType.NORMAL;
+    }
+
+    public static ItemStack getBandStack(LivingEntity entity, InkType type)
+    {
+        if(type == InkType.NORMAL || !(entity instanceof PlayerEntity))
+            return ItemStack.EMPTY;
+
+        ItemStack refStack = new ItemStack(SplatcraftItems.splatfestBand);
+
+        PlayerInventory inv = ((PlayerEntity) entity).inventory;
+
+        for(List<ItemStack> list : ImmutableList.of(inv.armorInventory, inv.mainInventory, inv.offHandInventory))
+        {
+            for(ItemStack itemstack : list)
+            {
+                if (!itemstack.isEmpty() && itemstack.isItemEqual(refStack)) {
+                    return itemstack;
+                }
+            }
+        }
+
+        return ItemStack.EMPTY;
     }
 
     public static Block getInkBlock(InkType inkType, Block baseBlock)

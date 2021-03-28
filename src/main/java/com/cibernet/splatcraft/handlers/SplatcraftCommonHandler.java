@@ -177,18 +177,14 @@ public class SplatcraftCommonHandler
         int[] colors = new int[ScoreboardHandler.getCriteriaKeySet().size()];
         int i = 0;
         for (int c : ScoreboardHandler.getCriteriaKeySet())
-        {
             colors[i++] = c;
-        }
 
         TreeMap<String, Integer> playerColors = new TreeMap<>();
 
         for (PlayerEntity p : event.getPlayer().world.getPlayers())
         {
             if (PlayerInfoCapability.hasCapability(p))
-            {
                 playerColors.put(p.getDisplayName().getString(), PlayerInfoCapability.get(p).getColor());
-            }
         }
 
         SplatcraftPacketHandler.sendToAll(new UpdateClientColorsPacket(event.getPlayer().getDisplayName().getString(), PlayerInfoCapability.get(event.getPlayer()).getColor()));

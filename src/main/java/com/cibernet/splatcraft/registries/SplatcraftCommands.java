@@ -8,6 +8,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.arguments.ArgumentSerializer;
 import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -16,9 +17,9 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 public class SplatcraftCommands
 {
     @SubscribeEvent
-    public static void registerCommands(FMLServerStartingEvent event)
+    public static void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getServer().getCommandManager().getDispatcher();
+        CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
 
         InkColorCommand.register(dispatcher);
         ScanTurfCommand.register(dispatcher);

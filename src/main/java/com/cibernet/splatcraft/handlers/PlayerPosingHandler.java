@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.handlers.client.RendererHandler;
 import com.cibernet.splatcraft.items.weapons.RollerItem;
 import com.cibernet.splatcraft.items.weapons.SlosherItem;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
@@ -31,9 +32,7 @@ public class PlayerPosingHandler
         PlayerModel<?> model = event.getModelPlayer();
 
         if (model == null || player == null || PlayerInfoCapability.isSquid(player))
-        {
             return;
-        }
 
         IPlayerInfo playerInfo = PlayerInfoCapability.get(player);
 
@@ -41,9 +40,7 @@ public class PlayerPosingHandler
         HandSide handSide = player.getPrimaryHand();
 
         if (activeHand == null)
-        {
             return;
-        }
 
         ModelRenderer mainHand = activeHand == Hand.MAIN_HAND && handSide == HandSide.LEFT || activeHand == Hand.OFF_HAND && handSide == HandSide.RIGHT ? model.bipedLeftArm : model.bipedRightArm;
         ModelRenderer offHand = mainHand.equals(model.bipedLeftArm) ? model.bipedRightArm : model.bipedLeftArm;
@@ -76,15 +73,18 @@ public class PlayerPosingHandler
                     mainHand.rotateAngleX = -((float) Math.PI / 2F) + model.getModelHead().rotateAngleX;
                     break;
                 case BUCKET_SWING:
-                    animTime = ((SlosherItem) mainStack.getItem()).startupTicks * 0.5f;
+                    animTime = ((SlosherItem) mainStack.getItem()).startupTicks;
                     mainHand.rotateAngleY = 0;
                     mainHand.rotateAngleX = -0.36f;
 
-                    angle = useTime / animTime + event.getPartialTicks();
+                    PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
+                    angle = (cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime;
 
-                    if (angle < 6.5f)
+                    if(PlayerCooldown.hasPlayerCooldown(player))
                     {
-                        mainHand.rotateAngleX = MathHelper.cos(angle * 0.6662F);
+                        angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI) + ((float) Math.PI) / 1.8f;
+                        if (angle < 6.5f)
+                            mainHand.rotateAngleX = MathHelper.cos(angle * 0.6662F);
                     }
                     break;
                 case BOW_CHARGE:
@@ -103,13 +103,13 @@ public class PlayerPosingHandler
                     }
                     break;
                 case ROLL:
-                    animTime = player.isOnGround() ? ((RollerItem) mainStack.getItem()).swingTime : ((RollerItem) mainStack.getItem()).flingTime;
                     mainHand.rotateAngleY = model.getModelHead().rotateAngleY;
 
 
                     if (PlayerCooldown.hasPlayerCooldown(player))
                     {
-                        PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
+                        cooldown = PlayerCooldown.getPlayerCooldown(player);
+                        animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).swingTime : ((RollerItem) mainStack.getItem()).flingTime;
                         angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
                         mainHand.rotateAngleX = MathHelper.cos(angle) + (0.1F * 0.5F - ((float) Math.PI / 10F));//+ 0.36f;
                     } else
@@ -118,20 +118,17 @@ public class PlayerPosingHandler
                     }
                     break;
                 case BRUSH:
-                    animTime = player.isOnGround() ? ((RollerItem) mainStack.getItem()).swingTime : ((RollerItem) mainStack.getItem()).flingTime;
                     mainHand.rotateAngleX = 0.1F * 0.5F - ((float) Math.PI / 10F);
 
 
                     if (PlayerCooldown.hasPlayerCooldown(player))
                     {
-                        PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
-                        angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
+                        cooldown = PlayerCooldown.getPlayerCooldown(player);
+                        animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).swingTime : ((RollerItem) mainStack.getItem()).flingTime;
+                        angle = (float) -((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
 
-                        mainHand.rotateAngleY = model.getModelHead().rotateAngleY + MathHelper.cos(angle);//+ 0.36f;
-                    } else
-                    {
-                        mainHand.rotateAngleY = model.getModelHead().rotateAngleY;
-                    }
+                        mainHand.rotateAngleY = model.getModelHead().rotateAngleY + MathHelper.cos(angle);
+                    } else mainHand.rotateAngleY = model.getModelHead().rotateAngleY;
                     break;
             }
         }

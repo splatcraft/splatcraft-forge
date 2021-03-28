@@ -2,7 +2,7 @@ package com.cibernet.splatcraft.handlers.client;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
-import com.cibernet.splatcraft.client.renderer.InkAccessoryLayer;
+import com.cibernet.splatcraft.client.layer.InkAccessoryLayer;
 import com.cibernet.splatcraft.client.renderer.PlayerSquidRenderer;
 import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.inkoverlay.IInkOverlayInfo;
@@ -36,6 +36,8 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.PhantomRenderer;
+import net.minecraft.client.renderer.entity.SlimeRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -52,6 +54,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
@@ -96,19 +100,19 @@ public class RendererHandler
     {
         PlayerEntity player = event.getPlayer();
 
+        /*
         if(!hasAccessoryLayer)
         {
             event.getRenderer().addLayer(new InkAccessoryLayer(event.getRenderer()));
             hasAccessoryLayer = true;
         }
+        */
 
         if (PlayerInfoCapability.isSquid(player))
         {
             event.setCanceled(true);
             if (squidRenderer == null)
-            {
                 squidRenderer = new PlayerSquidRenderer(event.getRenderer().getRenderManager());
-            }
             if (!InkBlockUtils.canSquidHide(player))
             {
                 squidRenderer.render(player, player.rotationYawHead, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
@@ -123,6 +127,9 @@ public class RendererHandler
     public static void livingRenderer(RenderLivingEvent.Post<?, ?> event)
     {
         LivingEntity entity = event.getEntity();
+
+        if(!entity.isAlive() || event.getRenderer() instanceof SlimeRenderer || event.getRenderer() instanceof PhantomRenderer)
+            return;
 
         int overlay = 0;
         int color = ColorUtils.DEFAULT;
@@ -203,7 +210,9 @@ public class RendererHandler
             return;
         }
 
-        if (PlayerCooldown.hasPlayerCooldown(player))
+
+
+        if (PlayerCooldown.hasPlayerCooldown(player) && PlayerCooldown.getPlayerCooldown(player).getHand().equals(event.getHand()))
         {
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
             float time = (float) cooldown.getTime();
@@ -224,7 +233,7 @@ public class RendererHandler
                         yOff = -((time - event.getPartialTicks()) / maxTime) + 0.5f;
                         break;
                     case BRUSH:
-                        event.getMatrixStack().rotate(Vector3f.YN.rotation(yOff));
+                        event.getMatrixStack().rotate(Vector3f.YN.rotation(yOff * ((player.getPrimaryHand() == HandSide.RIGHT ? event.getHand().equals(Hand.MAIN_HAND) : event.getHand().equals(Hand.OFF_HAND)) ? 1 : -1)));
                         yOff = 0;
                         break;
                 }
@@ -343,23 +352,18 @@ public class RendererHandler
             List<String> players = new ArrayList<>();
             ClientPlayNetHandler connection = Minecraft.getInstance().getConnection();
             if (connection != null)
-            {
                 connection.getPlayerInfoMap().forEach(info -> players.add(getDisplayName(info).getString()));
-            }
 
             for (Object obj : component.getFormatArgs())
             {
                 if (!(obj instanceof TextComponent))
-                {
                     continue;
-                }
+
                 TextComponent msgChildren = (TextComponent) obj;
                 String key = msgChildren.getString();
 
-                if (players.contains(key))
-                {
+                if (!msgChildren.getSiblings().isEmpty() && players.contains(key))
                     msgChildren.setStyle(Style.EMPTY.setColor(Color.fromInt(ClientUtils.getClientPlayerColor(key))));
-                }
             }
         }
     }
@@ -400,7 +404,7 @@ public class RendererHandler
         int width = Minecraft.getInstance().getMainWindow().getScaledWidth();
         int height = Minecraft.getInstance().getMainWindow().getScaledHeight();
 
-        if (event instanceof RenderGameOverlayEvent.Pre && event.getType().equals(RenderGameOverlayEvent.ElementType.CROSSHAIRS))
+        if (event instanceof RenderGameOverlayEvent.Pre && event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR))
         {
             if (player.getHeldItemMainhand().getItem() instanceof IChargeableWeapon || player.getHeldItemOffhand().getItem() instanceof IChargeableWeapon)
             {
@@ -445,9 +449,8 @@ public class RendererHandler
                     if (hasTank)
                     {
                         ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-
-                        player.getActiveHand();
-                        canUse = ((InkTankItem) stack.getItem()).canUse(player.getHeldItem(player.getActiveHand()).getItem());
+                        if(player.getActiveItemStack() != null)
+                            canUse = ((InkTankItem) stack.getItem()).canUse(player.getActiveItemStack().getItem());
                     }
 
                     MatrixStack matrixStack = event.getMatrixStack();

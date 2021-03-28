@@ -98,7 +98,7 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
         world.addEntity(proj);
         world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.chargerShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
         reduceInk(player, getInkConsumption(charge));
-        PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(10, player.inventory.currentItem, true, false, false, player.isOnGround()));
+        PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(10, player.inventory.currentItem, player.getActiveHand(), true, false, false, player.isOnGround()));
     }
 
     @Override
@@ -140,7 +140,7 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
             if (charge > 0.05f)
             {
                 PlayerCharge.reset((PlayerEntity) entity);
-                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(10, ((PlayerEntity) entity).inventory.currentItem, true, false, false, entity.isOnGround()));
+                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(10, ((PlayerEntity) entity).inventory.currentItem, entity.getActiveHand(), true, false, false, entity.isOnGround()));
                 SplatcraftPacketHandler.sendToServer(new ChargeableReleasePacket(charge, stack));
             }
             PlayerCharge.setCanDischarge((PlayerEntity) entity, true);
@@ -154,7 +154,7 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
     }
 
     @Override
-    public AttributeModifier getSpeedModifier(LivingEntity entity, int useTime)
+    public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack)
     {
         return SPEED_MODIFIER;
     }

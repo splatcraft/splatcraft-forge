@@ -71,20 +71,14 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
             f2 = f1 - f;
             float f3 = MathHelper.wrapDegrees(f2);
             if (f3 < -85.0F)
-            {
                 f3 = -85.0F;
-            }
 
             if (f3 >= 85.0F)
-            {
                 f3 = 85.0F;
-            }
 
             f = f1 - f3;
             if (f3 * f3 > 2500.0F)
-            {
                 f += f3 * 0.2F;
-            }
 
             f2 = f1 - f;
         }
@@ -112,14 +106,9 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
             f8 = MathHelper.lerp(partialTicks, entityIn.prevLimbSwingAmount, entityIn.limbSwingAmount);
             f5 = entityIn.limbSwing - entityIn.limbSwingAmount * (1.0F - partialTicks);
             if (entityIn.isChild())
-            {
                 f5 *= 3.0F;
-            }
-
             if (f8 > 1.0F)
-            {
                 f8 = 1.0F;
-            }
         }
 
         this.entityModel.setLivingAnimations(entityIn, f5, f8, partialTicks);
@@ -137,7 +126,7 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
 
             this.entityModel.renderBase(matrixStackIn, ivertexbuilder, packedLightIn, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F);
 
-            float scale = entityIn.getInkHealth() <= 0 ? (10 - Math.min(entityIn.getRespawnTime(), 10)) / 10f : 1;
+            float scale = entityIn.getInkHealth() <= 0 ? (10f - Math.min((float) entityIn.getRespawnTime(), 10f)) / 10f : 1f;
             matrixStackIn.push();
             matrixStackIn.scale(scale, scale, scale);
             this.entityModel.renderBumper(matrixStackIn, ivertexbuilder, packedLightIn, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F);
@@ -148,18 +137,14 @@ public class SquidBumperRenderer extends LivingRenderer<SquidBumperEntity, Squid
         if (!entityIn.isSpectator())
         {
             for (LayerRenderer<SquidBumperEntity, SquidBumperModel> layerrenderer : this.layerRenderers)
-            {
                 layerrenderer.render(matrixStackIn, bufferIn, packedLightIn, entityIn, f5, f8, partialTicks, f7, f2, f6);
-            }
         }
 
         matrixStackIn.pop();
         net.minecraftforge.client.event.RenderNameplateEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameplateEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
         if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.canRenderName(entityIn)))
-        {
             this.renderName(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
-        }
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post<>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
     }
 

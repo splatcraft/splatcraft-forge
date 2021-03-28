@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.items;
 
+import com.cibernet.splatcraft.blocks.InkedBlock;
 import com.cibernet.splatcraft.blocks.InkwellBlock;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
@@ -77,6 +78,11 @@ public class SquidBumperItem extends Item
                 ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColor(te));
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
+        }
+        else if(InkedBlock.causesClear(entity.world.getBlockState(pos)) && ColorUtils.isColorLocked(stack))
+        {
+            ColorUtils.setInkColor(stack, 0xFFFFFF);
+            ColorUtils.setColorLocked(stack, false);
         }
 
         return false;

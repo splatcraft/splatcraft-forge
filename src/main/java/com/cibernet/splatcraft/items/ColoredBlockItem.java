@@ -135,9 +135,7 @@ public class ColoredBlockItem extends BlockItem
         BlockPos pos = entity.getPosition();
 
         if (clearItem != null && InkedBlock.causesClear(entity.world.getBlockState(pos)))
-        {
             entity.setItem(new ItemStack(clearItem, stack.getCount()));
-        }
 
         return false;
     }

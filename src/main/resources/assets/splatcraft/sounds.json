@@ -34,6 +34,20 @@
       "splatcraft:roller_roll"
     ]
   },
+  "brush_fling": {
+    "category": "player",
+    "subtitle": "subtitle.brush_fling",
+    "sounds": [
+      "splatcraft:brush_fling"
+    ]
+  },
+  "brush_roll": {
+    "category": "player",
+    "subtitle": "subtitle.brush_roll",
+    "sounds": [
+      "splatcraft:brush_roll"
+    ]
+  },
   "charger_charge": {
     "category": "player",
     "subtitle": "subtitle.charger_charge",

@@ -165,7 +165,7 @@ public class ColorUtils
         {
             fallbackUnloc = "ink_color." + String.format("%06X", color).toLowerCase();
             fallbackName = new TranslationTextComponent(fallbackUnloc).getString();
-            if (!fallbackName.equals(fallbackUnloc))
+            if (!fallbackName.equals(fallbackName))
             {
                 return new StringTextComponent(fallbackUnloc);
             }
@@ -187,7 +187,7 @@ public class ColorUtils
 
             if (!fallbackName.equals(fallbackUnloc))
             {
-                return new TranslationTextComponent("ink_color.invert", fallbackUnloc);
+                return new TranslationTextComponent("ink_color.invert", fallbackName);
             }
         } catch (NoClassDefFoundError ignored)
         {
@@ -217,28 +217,29 @@ public class ColorUtils
                 : getColorName(color).setStyle(Style.EMPTY.setColor(Color.fromInt(color)));
     }
 
+    public static boolean colorEquals(World world, int colorA, int colorB)
+    {
+        return SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.UNIVERSAL_INK) || colorA == colorB;
+    }
+
     public static boolean colorEquals(LivingEntity entity, TileEntity te)
     {
         int entityColor = getEntityColor(entity);
         int inkColor = getInkColor(te);
 
         if (entityColor == -1 || inkColor == -1)
-        {
             return false;
-        }
-        return SplatcraftGameRules.getBooleanRuleValue(entity.world, SplatcraftGameRules.UNIVERSAL_INK) || entityColor == inkColor;
+        return colorEquals(entity.world, entityColor, inkColor);
     }
 
-    public static boolean colorEquals(LivingEntity entity, ItemStack te)
+    public static boolean colorEquals(LivingEntity entity, ItemStack stack)
     {
         int entityColor = getEntityColor(entity);
-        int inkColor = getInkColor(te);
+        int inkColor = getInkColor(stack);
 
         if (entityColor == -1 || inkColor == -1)
-        {
             return false;
-        }
-        return SplatcraftGameRules.getBooleanRuleValue(entity.world, SplatcraftGameRules.UNIVERSAL_INK) || entityColor == inkColor;
+        return colorEquals(entity.world, entityColor, inkColor);
     }
 
     public static ItemStack setColorLocked(ItemStack stack, boolean isLocked)
@@ -252,10 +253,7 @@ public class ColorUtils
         CompoundNBT nbt = stack.getTag();
 
         if (nbt == null || !nbt.contains("ColorLocked"))
-        {
             return false;
-        }
-
         return nbt.getBoolean("ColorLocked");
     }
 
@@ -302,7 +300,7 @@ public class ColorUtils
     public static void addStandingInkSplashParticle(World world, LivingEntity entity, float size)
     {
         int color = DEFAULT;
-        BlockPos pos = entity.getPosition().down();
+        BlockPos pos = InkBlockUtils.getBlockStandingOnPos(entity);
         if (entity.world.getBlockState(pos).getBlock() instanceof IColoredBlock)
         {
             color = ((IColoredBlock) entity.world.getBlockState(pos).getBlock()).getColor(world, pos);

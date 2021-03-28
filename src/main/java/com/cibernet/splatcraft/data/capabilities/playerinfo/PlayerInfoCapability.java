@@ -33,14 +33,7 @@ public class PlayerInfoCapability implements ICapabilitySerializable<CompoundNBT
 
     public static boolean hasCapability(LivingEntity entity)
     {
-        try
-        {
-            get(entity);
-            return true;
-        } catch (NullPointerException e)
-        {
-            return false;
-        }
+        return entity.getCapability(CAPABILITY).isPresent();
     }
 
     public static boolean isSquid(LivingEntity entity)

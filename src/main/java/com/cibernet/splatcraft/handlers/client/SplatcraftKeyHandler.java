@@ -7,7 +7,12 @@ import com.cibernet.splatcraft.network.PlayerSetSquidServerPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ReuseableStream;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.shapes.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,6 +21,9 @@ import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class SplatcraftKeyHandler
@@ -34,43 +42,37 @@ public class SplatcraftKeyHandler
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event)
     {
-        if (Minecraft.getInstance().player == null)
-        {
+        PlayerEntity player = Minecraft.getInstance().player;
+        if (player == null || ! PlayerInfoCapability.hasCapability(player))
             return;
-        }
 
-        if (KeyMode.HOLD.equals(SplatcraftConfig.Client.squidKeyMode.get()))
+        if(player.getRidingEntity() == null && player.world.getCollisionShapes(player,
+                new AxisAlignedBB(-0.3 + player.getPosX(), player.getPosY(), -0.3 + player.getPosZ(), 0.3 + player.getPosX(), 0.6 + player.getPosY(), 0.3 + player.getPosZ()))
+                .collect(Collectors.toList()).isEmpty())
         {
-            boolean isPlayerSquid = PlayerInfoCapability.isSquid(Minecraft.getInstance().player);
-
-            if (isPlayerSquid && !squidKey.isKeyDown() || !isPlayerSquid && squidKey.isKeyDown())
+            if (KeyMode.HOLD.equals(SplatcraftConfig.Client.squidKeyMode.get()))
             {
-                pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 2));
+                boolean isPlayerSquid = PlayerInfoCapability.isSquid(player);
+
+                if (isPlayerSquid && !squidKey.isKeyDown() || !isPlayerSquid && squidKey.isKeyDown())
+                    pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 1));
+                else pressState.put(squidKey, 0);
             } else
             {
-                pressState.put(squidKey, 0);
+                if (squidKey.isKeyDown())
+                    pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 2));
+                else pressState.put(squidKey, 0);
             }
-        } else
-        {
-            if (squidKey.isKeyDown())
-            {
-                pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 2));
-            } else
-            {
-                pressState.put(squidKey, 0);
-            }
-        }
 
-        if (pressState.get(squidKey) == 1)
-        {
-            onSquidKeyPress();
-        }
+            if (pressState.get(squidKey) == 1)
+                onSquidKeyPress();
+        } else pressState.put(squidKey, 0);
     }
 
     public static void onSquidKeyPress()
     {
         PlayerEntity player = Minecraft.getInstance().player;
-        if (player != null)
+        if (player != null && PlayerInfoCapability.hasCapability(player))
         {
             IPlayerInfo capability = PlayerInfoCapability.get(player);
             SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player));

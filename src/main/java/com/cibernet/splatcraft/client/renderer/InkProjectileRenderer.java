@@ -40,9 +40,12 @@ public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> i
     @Override
     public void render(InkProjectileEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
     {
+        if(entityIn.isInvisible())
+            return;
+
         if (entityIn.ticksExisted >= 3 || this.renderManager.info.getRenderViewEntity().getDistanceSq(entityIn) >= 12.25D)
         {
-            float scale = entityIn.getProjectileSize() * 2.5f;
+            float scale = entityIn.getProjectileSize() * (entityIn.getProjectileType().equals(InkProjectileEntity.Types.DEFAULT) ? 1 : 2.5f);
             int color = entityIn.getColor();
 
             if (SplatcraftConfig.Client.getColorLock())

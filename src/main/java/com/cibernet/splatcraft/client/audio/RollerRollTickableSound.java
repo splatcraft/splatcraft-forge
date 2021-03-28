@@ -1,14 +1,17 @@
 package com.cibernet.splatcraft.client.audio;
 
+import com.cibernet.splatcraft.handlers.WeaponHandler;
 import com.cibernet.splatcraft.items.weapons.RollerItem;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class RollerRollTickableSound extends TickableSound
 {
@@ -40,7 +43,6 @@ public class RollerRollTickableSound extends TickableSound
     {
         if (this.player.isAlive() && player.getActiveItemStack().getItem() instanceof RollerItem)
         {
-            System.out.println("roll");
             ItemStack roller = player.getActiveItemStack();
             if (WeaponBaseItem.getInkAmount(player, roller) < Math.max(((RollerItem) roller.getItem()).rollConsumptionMin, ((RollerItem) roller.getItem()).rollConsumptionMax))
             {
@@ -51,21 +53,20 @@ public class RollerRollTickableSound extends TickableSound
             this.x = (float) this.player.getPosX();
             this.y = (float) this.player.getPosY();
             this.z = (float) this.player.getPosZ();
-            float lvt_1_1_ = MathHelper.sqrt(Entity.horizontalMag(this.player.getMotion())) * 3f;
-            if ((double) lvt_1_1_ >= 0.01D)
+
+            Vector3d motion = player.equals(Minecraft.getInstance().player) ? player.getMotion() : player.getPositionVec().subtract(WeaponHandler.getPlayerPrevPos(player));
+            float vol = Math.max(Math.abs(player.prevRotationYawHead - player.rotationYawHead), MathHelper.sqrt(Entity.horizontalMag(motion))) * 3f;
+
+            if ((double) vol >= 0.01D)
             {
                 this.distance = MathHelper.clamp(this.distance + 0.0025F, 0.0F, 1.0F);
-                this.volume = MathHelper.lerp(MathHelper.clamp(lvt_1_1_, 0.0F, 0.5F), 0.0F, 1F);
+                this.volume = MathHelper.lerp(MathHelper.clamp(vol, 0.0F, 0.5F), 0.0F, 1F);
             } else
             {
                 this.distance = 0.0F;
                 this.volume = 0.0F;
             }
-            System.out.println(volume);
 
-        } else
-        {
-            finishPlaying();
-        }
+        } else finishPlaying();
     }
 }

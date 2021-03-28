@@ -8,6 +8,9 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collection;
@@ -29,7 +32,8 @@ public class InkColorCommand
     {
         ColorUtils.setPlayerColor(source.asPlayer(), color);
 
-        source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", source.asPlayer().getDisplayName(), ColorUtils.getFormatedColorName(color, false)), true);
+        //TODO server friendly feedback message
+        source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", source.asPlayer().getDisplayName(), new StringTextComponent("#" + String.format("%06X", color).toUpperCase()).setStyle(Style.EMPTY.setColor(Color.fromInt(color))))/*ColorUtils.getFormatedColorName(color, false)*/, true);
 
         return 1;
     }
@@ -40,10 +44,12 @@ public class InkColorCommand
 
         if (targets.size() == 1)
         {
-            source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", ColorUtils.getFormatedColorName(color, false), targets.iterator().next().getDisplayName()), true);
+            source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", new StringTextComponent("#" + String.format("%06X", color).toUpperCase()).setStyle(Style.EMPTY.setColor(Color.fromInt(color))),
+                    targets.iterator().next().getDisplayName()), true);
         } else
         {
-            source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.multiple", ColorUtils.getFormatedColorName(color, false), targets.size()), true);
+            source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.multiple", new StringTextComponent("#" + String.format("%06X", color).toUpperCase()).setStyle(Style.EMPTY.setColor(Color.fromInt(color))),
+                    targets.size()), true);
         }
 
         return targets.size();

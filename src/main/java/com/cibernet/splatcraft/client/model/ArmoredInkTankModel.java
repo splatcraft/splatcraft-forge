@@ -57,7 +57,7 @@ public class ArmoredInkTankModel extends AbstractInkTankModel
             ink.setRotationPoint(0.0F, inkBarY, -0.75F);
             Ink_Tank.addChild(ink);
 
-            ink.setTextureOffset(115, 0).addBox(-1.5F, -13.0F, 4.5F, 3, 1, 3, 0.0F);
+            ink.setTextureOffset(116, 0).addBox(-1.5F, -13.0F, 4.5F, 3, 1, 3, 0.0F);
 
             inkPieces.add(ink);
         }

@@ -2160,7 +2160,7 @@
   "overrides": [
     {
       "predicate": {
-        "unfolded": 1
+        "splatcraft:unfolded": 1
       },
       "model": "splatcraft:item/krak_on_splat_roller_unfolded"
     }

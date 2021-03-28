@@ -31,10 +31,8 @@ public class PlayerCharge
 
     public static boolean hasCharge(PlayerEntity player)
     {
-        if (player == null)
-        {
+        if (player == null || !PlayerInfoCapability.hasCapability(player))
             return false;
-        }
         IPlayerInfo capability = PlayerInfoCapability.get(player);
         return capability.getPlayerCharge() != null && capability.getPlayerCharge().charge > 0;
     }

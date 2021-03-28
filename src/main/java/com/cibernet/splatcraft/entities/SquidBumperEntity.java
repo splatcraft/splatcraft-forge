@@ -2,7 +2,10 @@ package com.cibernet.splatcraft.entities;
 
 import com.cibernet.splatcraft.client.particles.InkExplosionParticleData;
 import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
+import com.cibernet.splatcraft.data.capabilities.inkoverlay.IInkOverlayInfo;
 import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability;
+import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
+import com.cibernet.splatcraft.network.UpdateInkOverlayPacket;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
@@ -97,19 +100,16 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
         {
             InkColorTileEntity te = (InkColorTileEntity) world.getTileEntity(pos);
             if (te.getColor() != getColor())
-            {
                 setColor(te.getColor());
-            }
         }
     }
 
     @Override
     public boolean onEntityInked(InkDamageUtils.InkDamageSource source, float damage, int color)
     {
-
-        if (hurtResistantTime > 0 && getInkHealth() > 0 && !inkproof && (getColor() != color || SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_FRIENDLY_FIRE)))
+        if (hurtResistantTime <= 0 && getInkHealth() > 0 && !inkproof && InkDamageUtils.canDamageColor(world, getColor(), color))
         {
-            ink(damage);
+            ink(damage, color);
             if (getInkHealth() <= 0)
             {
                 this.world.setEntityState(this, (byte) 34);
@@ -367,17 +367,11 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
     {
         super.readAdditional(nbt);
         if (nbt.contains("Color"))
-        {
             setColor(nbt.getInt("Color"));
-        } else
-        {
-            setColor(ColorUtils.getRandomStarterColor());
-        }
+        else setColor(ColorUtils.getRandomStarterColor());
 
         if (nbt.contains("Inkproof"))
-        {
             inkproof = nbt.getBoolean("Inkproof");
-        }
     }
 
     @Override
@@ -385,7 +379,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
     {
         super.writeAdditional(nbt);
         nbt.putInt("Color", getColor());
-        nbt.putBoolean("Inkproof", true);
+        nbt.putBoolean("Inkproof", inkproof);
     }
 
     @Override
@@ -420,13 +414,27 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
         dataManager.set(RESPAWN_TIME, value);
     }
 
-    public void ink(float damage)
+    public void ink(float damage, int color)
     {
         setInkHealth(getInkHealth() - damage);
         setRespawnTime(maxRespawnTime);
         this.world.setEntityState(this, (byte) 31);
         hurtCooldown = world.getGameTime();
         hurtResistantTime = maxHurtResistantTime;
+
+        if(!isInWater())
+        {
+            if (InkOverlayCapability.hasCapability(this))
+            {
+                IInkOverlayInfo info = InkOverlayCapability.get(this);
+
+                if (info.getAmount() < maxInkHealth * 1.5)
+                    info.addAmount(damage);
+                info.setColor(color);
+                if (!world.isRemote)
+                    SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(this, info));
+            }
+        }
     }
 
 

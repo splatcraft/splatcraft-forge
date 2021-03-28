@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.client.renderer;
+package com.cibernet.splatcraft.client.layer;
 
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;

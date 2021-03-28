@@ -36,7 +36,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     private static final DataParameter<String> PROJ_TYPE = EntityDataManager.createKey(InkProjectileEntity.class, DataSerializers.STRING);
     private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(InkProjectileEntity.class, DataSerializers.VARINT);
     private static final DataParameter<Float> PROJ_SIZE = EntityDataManager.createKey(InkProjectileEntity.class, DataSerializers.FLOAT);
-    private static final DamageSource DAMAGE_SOURCE = new DamageSource("ink");
+    private static final DamageSource SPLASH_DAMAGE_SOURCE = new DamageSource("ink");
 
     public float gravityVelocity = 0.075f;
     public int lifespan = 600;
@@ -49,7 +49,11 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     public ItemStack sourceWeapon = ItemStack.EMPTY;
     public float trailSize;
     public float trailCooldown = 0;
+    public String damageType = "splat";
+    public boolean causesHurtCooldown = false;
+
     public InkBlockUtils.InkType inkType;
+
 
 
     public InkProjectileEntity(EntityType<? extends ProjectileItemEntity> type, World world)
@@ -105,6 +109,17 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         return this;
     }
 
+    public InkProjectileEntity setRollerSwingStats(boolean airborne)
+    {
+        setProjectileType(Types.ROLLER);
+        if(!airborne)
+        {
+            damageType = "roll";
+            causesHurtCooldown = true;
+        }
+        return this;
+    }
+
     @Override
     protected void registerData()
     {
@@ -135,9 +150,15 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     {
         super.tick();
 
+        if(isInWater())
+        {
+            setDead();
+            return;
+        }
+
         if (!world.isRemote && !persistent && lifespan-- <= 0)
         {
-            InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+            InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, getPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
             if (explodes)
             {
                 world.setEntityState(this, (byte) 3);
@@ -154,8 +175,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
                 if (!InkBlockUtils.canInkPassthrough(world, inkPos))
                 {
                     world.setEntityState(this, (byte) 1);
-                    InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, inkPos.up(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
-                    InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
+                    InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, inkPos.up(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
+                    InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, getPosition(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
                     break;
                 }
             }
@@ -171,12 +192,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         {
             case 1:
                 if (getProjectileType().equals(Types.CHARGER))
-                {
-                    world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getPosX() - this.getMotion().getX() * 0.25D, this.getPosY() - this.getMotion().getY() * 0.25D, this.getPosZ() - this.getMotion().getZ() * 0.25D, 0, -0.1, 0);
-                } else
-                {
-                    world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getPosX() - this.getMotion().getX() * 0.25D, this.getPosY() - this.getMotion().getY() * 0.25D, this.getPosZ() - this.getMotion().getZ() * 0.25D, this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
-                }
+                     world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getPosX() - this.getMotion().getX() * 0.25D, this.getPosY() - this.getMotion().getY() * 0.25D, this.getPosZ() - this.getMotion().getZ() * 0.25D, 0, -0.1, 0);
+                else world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getPosX() - this.getMotion().getX() * 0.25D, this.getPosY() - this.getMotion().getY() * 0.25D, this.getPosZ() - this.getMotion().getZ() * 0.25D, this.getMotion().getX(), this.getMotion().getY(), this.getMotion().getZ());
                 break;
             case 2:
                 world.addParticle(new InkSplashParticleData(getColor(), getProjectileSize() * 2), this.getPosX(), this.getPosY(), this.getPosZ(), 0, 0, 0);
@@ -196,21 +213,17 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         Entity target = result.getEntity();
 
         if (target instanceof LivingEntity)
-        {
-            InkDamageUtils.doSplatDamage(world, (LivingEntity) target, damage, getColor(), func_234616_v_(), sourceWeapon, damageMobs, inkType);
-        }
+            InkDamageUtils.doDamage(world, (LivingEntity) target, damage, getColor(), func_234616_v_(), sourceWeapon, damageMobs, inkType, damageType, causesHurtCooldown);
 
         if (!canPierce)
         {
             if (explodes)
             {
-                InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+                InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, getPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
                 world.setEntityState(this, (byte) 3);
                 world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
             } else
-            {
                 world.setEntityState(this, (byte) 2);
-            }
 
             remove();
         }
@@ -219,25 +232,19 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     protected void onBlockHit(BlockRayTraceResult result)
     {
         if (InkBlockUtils.canInkPassthrough(world, result.getPos()))
-        {
             return;
-        }
 
         this.func_230299_a_(result);
 
-        InkExplosion.createInkExplosion(world, func_234616_v_(), DAMAGE_SOURCE, getPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+        InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, getPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
         if (explodes)
         {
             world.setEntityState(this, (byte) 3);
             world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
         } else
-        {
             world.setEntityState(this, (byte) 2);
-        }
-        if (!world.isRemote)
-        {
-            this.remove();
-        }
+        //if (!world.isRemote)
+        this.remove();
     }
 
     public void shoot(Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy)
@@ -251,6 +258,9 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
             try
             {
                 posDiff = thrower.getPositionVec().subtract(WeaponHandler.getPlayerPrevPos((PlayerEntity) thrower));
+                if(thrower.isOnGround())
+                    posDiff.mul(1, 0, 1);
+
             } catch (NullPointerException ignored)
             {
             }
@@ -272,23 +282,30 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         {
             onBlockHit((BlockRayTraceResult) result);
         }
-
     }
 
     @Override
     public void readAdditional(CompoundNBT nbt)
     {
-        setProjectileSize(nbt.getFloat("Size"));
-        setColor(nbt.getInt("Color"));
+        if(nbt.contains("Size"))
+            setProjectileSize(nbt.getFloat("Size"));
+        if(nbt.contains("Color"))
+            setColor(nbt.getInt("Color"));
 
-        gravityVelocity = nbt.getFloat("GravityVelocity");
-        lifespan = nbt.getInt("Lifespan");
+        if(nbt.contains("GravityVelocity"))
+            gravityVelocity = nbt.getFloat("GravityVelocity");
+        if(nbt.contains("Lifespan"))
+            lifespan = nbt.getInt("Lifespan");
         damage = nbt.getFloat("Damage");
         splashDamage = nbt.getFloat("SplashDamage");
         damageMobs = nbt.getBoolean("DamageMobs");
         canPierce = nbt.getBoolean("CanPierce");
         explodes = nbt.getBoolean("Explodes");
         persistent = nbt.getBoolean("Persistent");
+        causesHurtCooldown = nbt.getBoolean("CausesHurtCooldown");
+        damageType = nbt.getString("DamageType");
+
+        setInvisible(nbt.getBoolean("Invisible"));
 
         String type = nbt.getString("ProjectileType");
         setProjectileType(type.isEmpty() ? Types.DEFAULT : type);
@@ -311,7 +328,11 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         nbt.putBoolean("CanPierce", canPierce);
         nbt.putBoolean("Explodes", explodes);
         nbt.putBoolean("Persistent", persistent);
+        nbt.putBoolean("CausesHurtCooldown", causesHurtCooldown);
 
+        nbt.putBoolean("Invisible", isInvisible());
+
+        nbt.putString("DamageType", damageType);
         nbt.putString("ProjectileType", getProjectileType());
         nbt.putInt("InkType", inkType.getIndex());
         nbt.put("SourceWeapon", sourceWeapon.write(new CompoundNBT()));
