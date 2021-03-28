@@ -5,16 +5,16 @@
     "block.splatcraft.inked_block": "Bloco com tinta",
     "block.splatcraft.inked_stairs": "Escadas com tinta",
     "block.splatcraft.inked_slab": "Laje com tinta",
-    "block.splatcraft.glowing_inked_block": "Glowing Inked Block",
-    "block.splatcraft.glowing_inked_stairs": "Glowing Inked Stairs",
-    "block.splatcraft.glowing_inked_slab": "Glowing Inked Slab",
+    "block.splatcraft.glowing_inked_block": "bloco com tinta brilhante",
+    "block.splatcraft.glowing_inked_stairs": "escadas com tinta brilhante",
+    "block.splatcraft.glowing_inked_slab": "placa com tinta brilhante",
     
     "block.splatcraft.inkwell": "Tinteiro",
     "block.splatcraft.canvas": "Tela de tinta",
     "block.splatcraft.inked_wool": "Lã coberta",
     
     "block.splatcraft.empty_inkwell": "Tinteiro vazio",
-    "block.splatcraft.grate": "Grate",
+    "block.splatcraft.grate": "Grade",
     "block.splatcraft.grate_ramp": "Grade inclinada",
     "block.splatcraft.barrier_bar": "Barreira",
     "block.splatcraft.crate": "Caixa",
@@ -167,7 +167,7 @@
     "death.attack.squish": "%1$s foi esmagado por %2$s",
     "death.attack.squish.item": "%1$s foi esmagado por %2$s usando %3$s",
     
-    "entity.splatcraft.ink_projectile": "Ink Projectile",
+    "entity.splatcraft.ink_projectile": "Projétil de tinta",
     "entity.splatcraft.ink_squid": "Lula de tinta",
     "entity.splatcraft.squid_bumper": "Squid Bumper",
     
