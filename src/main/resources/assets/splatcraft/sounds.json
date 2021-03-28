@@ -118,6 +118,13 @@
       "splatcraft:remote_use"
     ]
   },
+  "power_egg_can_open": {
+    "category": "player",
+    "subtitle": "subtitle.power_egg_can_open",
+    "sounds": [
+      "splatcraft:power_egg_can_open"
+    ]
+  },
   "no_ink": {
     "category": "player",
     "subtitle": "subtitle.no_ink",

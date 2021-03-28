@@ -40,6 +40,7 @@ public class SplatcraftSounds
     public static SoundEvent subDetonating;
     public static SoundEvent subDetonate;
     public static SoundEvent remoteUse;
+    public static SoundEvent powerEggCanOpen;
 
     public static void initSounds()
     {
@@ -66,6 +67,7 @@ public class SplatcraftSounds
         subDetonating = createSoundEvent("sub_detonating");
         subDetonate = createSoundEvent("sub_detonate");
         remoteUse = createSoundEvent("remote_use");
+        powerEggCanOpen = createSoundEvent("power_egg_can_open");
     }
 
     private static SoundEvent createSoundEvent(String id)
