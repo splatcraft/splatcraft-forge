@@ -15,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -86,18 +87,25 @@ public class InkedStairsBlock extends StairsBlock implements IColoredBlock
     public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader worldIn, BlockPos pos)
     {
         if (!(worldIn.getTileEntity(pos) instanceof InkedBlockTileEntity))
-        {
             return super.getPlayerRelativeBlockHardness(state, player, worldIn, pos);
-        }
         InkedBlockTileEntity te = (InkedBlockTileEntity) worldIn.getTileEntity(pos);
 
         if (te.getSavedState().getBlock() instanceof InkedBlock)
-        {
             return super.getPlayerRelativeBlockHardness(state, player, worldIn, pos);
-        }
-
-
         return te.getSavedState().getBlock().getPlayerRelativeBlockHardness(te.getSavedState(), player, worldIn, pos);
+    }
+
+    @Override
+    public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion)
+    {
+        if (!(world.getTileEntity(pos) instanceof InkedBlockTileEntity))
+            return super.getExplosionResistance(state, world, pos, explosion);
+        InkedBlockTileEntity te = (InkedBlockTileEntity) world.getTileEntity(pos);
+
+        if (te.getSavedState().getBlock() instanceof InkedBlock)
+            return super.getExplosionResistance(state, world, pos, explosion);
+
+        return te.getSavedState().getBlock().getExplosionResistance(te.getSavedState(), world, pos, explosion);
     }
 
     @Override
