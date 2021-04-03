@@ -1,8 +1,15 @@
 {
   "replace": false,
   "values": [
+    "#splatcraft:ink_clearing_blocks",
     "minecraft:soul_sand",
     "minecraft:grass_path",
-    "minecraft:wet_sponge"
+    "minecraft:observer",
+    "minecraft:note_block",
+    "minecraft:target",
+    "minecraft:redstone_lamp",
+    "minecraft:piston",
+    "minecraft:sticky_piston",
+    "splatcraft:sardinium_block"
   ]
 }

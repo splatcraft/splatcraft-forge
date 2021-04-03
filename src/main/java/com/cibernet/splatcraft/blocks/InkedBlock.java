@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.blocks;
 
+import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
@@ -69,16 +70,13 @@ public class InkedBlock extends Block implements IColoredBlock
 
         for (Direction direction : Direction.values())
         {
+            blockpos$mutable.setAndMove(pos, direction);
             BlockState blockstate = reader.getBlockState(blockpos$mutable);
-            if (direction != Direction.DOWN || causesClear(blockstate))
+
+            if (causesClear(blockstate, direction))
             {
-                blockpos$mutable.setAndMove(pos, direction);
-                blockstate = reader.getBlockState(blockpos$mutable);
-                if (causesClear(blockstate) && !blockstate.isSolidSide(reader, pos, direction.getOpposite()))
-                {
-                    flag = true;
-                    break;
-                }
+                flag = true;
+                break;
             }
         }
 
@@ -87,7 +85,12 @@ public class InkedBlock extends Block implements IColoredBlock
 
     public static boolean causesClear(BlockState state)
     {
-        return state.getFluidState().isTagged(FluidTags.WATER);
+        return causesClear(state, Direction.UP);
+    }
+
+    public static boolean causesClear(BlockState state, Direction dir)
+    {
+        return state.isIn(SplatcraftTags.Blocks.INK_CLEARING_BLOCKS) || (dir != Direction.DOWN && state.getFluidState().isTagged(FluidTags.WATER));
     }
 
     private static BlockState clearInk(IWorld world, BlockPos pos)
