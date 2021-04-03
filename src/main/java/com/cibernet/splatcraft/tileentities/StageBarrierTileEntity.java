@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.tileentities;
 
+import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.blocks.StageBarrierBlock;
 import com.cibernet.splatcraft.items.BlockItem;
@@ -15,9 +16,12 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nullable;
+
+import static com.cibernet.splatcraft.util.InkDamageUtils.VOID_DAMAGE;
 
 public class StageBarrierTileEntity extends TileEntity implements ITickableTileEntity
 {
@@ -45,7 +49,7 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
             if (getBlockState().getBlock() instanceof StageBarrierBlock && ((StageBarrierBlock) getBlockState().getBlock()).damagesPlayer &&
                     entity instanceof PlayerEntity)
             {
-                entity.attackEntityFrom(InkDamageUtils.VOID_DAMAGE, Float.MAX_VALUE);
+                entity.attackEntityFrom(VOID_DAMAGE, Float.MAX_VALUE);
             }
 
         }
@@ -53,16 +57,18 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
         if (world.isRemote && ClientUtils.getClientPlayer().isCreative())
         {
             boolean canRender = true;
-            if (SplatcraftConfig.Client.holdBarrierToRender.get())
+            PlayerEntity player = ClientUtils.getClientPlayer();
+            int renderDistance = SplatcraftConfig.Client.barrierRenderDistance.get();
+
+            if(player.getDistanceSq(getPos().getX(), getPos().getY(), getPos().getZ()) > renderDistance*renderDistance)
+                canRender = false;
+            else if (SplatcraftConfig.Client.holdBarrierToRender.get())
             {
-                PlayerEntity player = ClientUtils.getClientPlayer();
                 canRender = player.getHeldItemMainhand().getItem() instanceof BlockItem && player.getHeldItemMainhand().getItem() instanceof StageBarrierItem ||
                         player.getHeldItemOffhand().getItem() instanceof BlockItem && player.getHeldItemOffhand().getItem() instanceof StageBarrierItem;
             }
             if (canRender)
-            {
                 resetActiveTime();
-            }
         }
 
     }

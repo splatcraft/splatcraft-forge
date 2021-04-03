@@ -159,13 +159,13 @@
     
     "ink_color.splatcraft.default": "Undyed",
     
-    "death.attack.water": "%1$s dissolvido em água",
-    "death.attack.splat": "%1$s foi splatted por %2$s",
-    "death.attack.splat.item": "%1$s foi splatted por %2$s usando %3$s",
-    "death.attack.roll": "%1$s foi esmagado por %2$s",
-    "death.attack.roll.item": "%1$s foi esmagado por %2$s usando %3$s",
-    "death.attack.squish": "%1$s foi esmagado por %2$s",
-    "death.attack.squish.item": "%1$s foi esmagado por %2$s usando %3$s",
+    "death.attack.splatcraft:water": "%1$s dissolvido em água",
+    "death.attack.splatcraft:splat": "%1$s foi splatted por %2$s",
+    "death.attack.splatcraft:splat.item": "%1$s foi splatted por %2$s usando %3$s",
+    "death.attack.splatcraft:roll": "%1$s foi esmagado por %2$s",
+    "death.attack.splatcraft:roll.item": "%1$s foi esmagado por %2$s usando %3$s",
+    "death.attack.splatcraft:squish": "%1$s foi esmagado por %2$s",
+    "death.attack.splatcraft:squish.item": "%1$s foi esmagado por %2$s usando %3$s",
     
     "entity.splatcraft.ink_projectile": "Projétil de tinta",
     "entity.splatcraft.ink_squid": "Lula de tinta",

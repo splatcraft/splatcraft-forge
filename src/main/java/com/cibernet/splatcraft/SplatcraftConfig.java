@@ -42,6 +42,7 @@ public class SplatcraftConfig
         public static ForgeConfigSpec.EnumValue<InkIndicator> inkIndicator;
         public static ForgeConfigSpec.BooleanValue vanillaInkDurability;
         public static ForgeConfigSpec.BooleanValue holdBarrierToRender;
+        public static ForgeConfigSpec.IntValue barrierRenderDistance;
         //public static ForgeConfigSpec.BooleanValue colorLock; TODO
 
         public static void init(ForgeConfigSpec.Builder client)
@@ -53,6 +54,8 @@ public class SplatcraftConfig
                     .define("splatcraft.vanillaInkDurabilityColor", false);
             holdBarrierToRender = client.comment("Prevents Stage Barriers from rendering in creative mode unless the player is holding one in their hand.")
                     .define("splatcraft.holdBarrierToRender", false);
+            barrierRenderDistance = client.comment("How far away stage barriers or voids will render away from you.")
+                    .defineInRange("splatcraft.barrierRenderDistance", 16, 4, 80);
             //colorLock = client.comment("Color Lock Mode").define("splatcraft.colorLock", false);
         }
 

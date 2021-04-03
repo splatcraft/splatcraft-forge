@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.util;
 
+import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.data.capabilities.inkoverlay.IInkOverlayInfo;
 import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability;
 import com.cibernet.splatcraft.entities.IColoredEntity;
@@ -24,9 +25,10 @@ import java.util.Objects;
 public class InkDamageUtils
 {
 
-    public static final DamageSource VOID_DAMAGE = new DamageSource("outOfWorld").setDamageBypassesArmor();
-    public static final DamageSource ENEMY_INK = new DamageSource("enemyInk");
-    public static final DamageSource WATER = new DamageSource("water");
+    public static final DamageSource ENEMY_INK = new DamageSource(Splatcraft.MODID+":enemyInk");
+    public static final DamageSource WATER = new DamageSource(Splatcraft.MODID+":water");
+    public static final DamageSource VOID_DAMAGE = new DamageSource(Splatcraft.MODID+":outOfStage").setDamageBypassesArmor();
+
 
     public static boolean doSplatDamage(World world, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType)
     {
@@ -60,7 +62,7 @@ public class InkDamageUtils
             applyInkCoverage = doDamage;
         }
 
-        InkDamageSource damageSource = new InkDamageSource(name, source, source, sourceItem);
+        InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID+":"+name, source, source, sourceItem);
         if (target instanceof IColoredEntity)
         {
             doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
