@@ -2,8 +2,6 @@
   "replace": false,
   "values": [
     "#splatcraft:ink_clearing_blocks",
-    "minecraft:soul_sand",
-    "minecraft:grass_path",
     "minecraft:observer",
     "minecraft:note_block",
     "minecraft:target",

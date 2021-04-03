@@ -23,6 +23,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -128,6 +130,21 @@ public class InkedBlock extends Block implements IColoredBlock
         return ItemStack.EMPTY;
     }
 
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
+        if(!(worldIn.getTileEntity(pos) instanceof InkedBlockTileEntity))
+            return super.getCollisionShape(state, worldIn, pos, context);
+        BlockState savedState = ((InkedBlockTileEntity) worldIn.getTileEntity(pos)).getSavedState();
+
+        if(savedState == null || savedState.getBlock().equals(this))
+            return super.getCollisionShape(state, worldIn, pos, context);
+        return savedState.getBlock().getCollisionShape(savedState, worldIn, pos, context);
+
+
+    }
+
     /* TODO modular ink
     
     @Override
@@ -151,20 +168,7 @@ public class InkedBlock extends Block implements IColoredBlock
         return savedState.getBlock().getShape(savedState, worldIn, pos, context);
         
     }
-    
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
-    {
-        if(!(worldIn.getTileEntity(pos) instanceof InkedBlockTileEntity))
-            return super.getCollisionShape(state, worldIn, pos, context);
-        BlockState savedState = ((InkedBlockTileEntity) worldIn.getTileEntity(pos)).getSavedState();
-        
-        if(savedState == null || savedState.getBlock().equals(this))
-            return super.getCollisionShape(state, worldIn, pos, context);
-        return savedState.getBlock().getCollisionShape(savedState, worldIn, pos, context);
-        
-        
-    }
+
     
     @Override
     public boolean collisionExtendsVertically(BlockState state, IBlockReader world, BlockPos pos, Entity collidingEntity)
