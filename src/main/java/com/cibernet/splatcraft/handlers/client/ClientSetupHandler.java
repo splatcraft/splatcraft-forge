@@ -4,10 +4,13 @@ import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.client.gui.InkVatScreen;
 import com.cibernet.splatcraft.client.gui.WeaponWorkbenchScreen;
+import com.cibernet.splatcraft.data.SplatcraftTags;
+import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -76,7 +79,10 @@ public class ClientSetupHandler
         @Override
         public int getColor(ItemStack stack, int i)
         {
-            int color = i == 0 ? ColorUtils.getInkColor(stack) : -1;
+            int color = i == 0 ? ((!(stack.getItem().isIn(SplatcraftTags.Items.MATCH_ITEMS))
+                    && ColorUtils.getInkColor(stack) == -1 && !ColorUtils.isColorLocked(stack) && PlayerInfoCapability.hasCapability(Minecraft.getInstance().player))
+                    ? ColorUtils.getEntityColor(Minecraft.getInstance().player) : ColorUtils.getInkColor(stack)) : -1;
+
             if (SplatcraftConfig.Client.getColorLock())
             {
                 color = ColorUtils.getLockedColor(color);

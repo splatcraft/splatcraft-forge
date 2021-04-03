@@ -60,8 +60,8 @@
   "item.splatcraft.ink_cloth_chestplate": "Ink Cloth Shirt",
   "item.splatcraft.ink_cloth_leggings": "Ink Cloth Pants",
   "item.splatcraft.ink_cloth_boots": "Ink Cloth Shoes",
-  "item.splatcraft.ink_cloth_boots.colorless_tooltip": "matches your ink color!",
   "item.splatcraft.splatfest_band": "Splatfest Band",
+  "item.splatcraft.tooltip.matches_color": "matches your ink color!",
 
   "item.splatcraft.splattershot": "Splattershot",
   "item.splatcraft.tentatek_splattershot": "Tentatek Splattershot",

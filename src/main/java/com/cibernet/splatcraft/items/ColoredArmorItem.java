@@ -47,18 +47,14 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem
     {
         super.addInformation(stack, world, tooltip, flag);
 
+
         if (I18n.hasKey(getTranslationKey() + ".tooltip"))
-        {
             tooltip.add(new TranslationTextComponent(getTranslationKey() + ".tooltip").mergeStyle(TextFormatting.GRAY));
-        }
 
         if (ColorUtils.isColorLocked(stack))
-        {
             tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
-        } else if (I18n.hasKey(getTranslationKey() + ".colorless_tooltip"))
-        {
-            tooltip.add(new TranslationTextComponent(getTranslationKey() + ".colorless_tooltip").mergeStyle(TextFormatting.GRAY));
-        }
+        else
+            tooltip.add(new TranslationTextComponent( "item.splatcraft.tooltip.matches_color").mergeStyle(TextFormatting.GRAY));
     }
 
     @Override

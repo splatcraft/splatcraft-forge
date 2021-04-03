@@ -33,7 +33,7 @@ public class InkedWoolBlock extends Block implements IColoredBlock
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
     {
-        return ColorUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), getColor((World) world, pos));
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), getColor((World) world, pos)), true);
     }
 
     @Override
@@ -58,6 +58,18 @@ public class InkedWoolBlock extends Block implements IColoredBlock
     {
         return SplatcraftTileEntitites.colorTileEntity.create();
     }
+
+    @Override
+    public ItemStack getItem(IBlockReader reader, BlockPos pos, BlockState state)
+    {
+        ItemStack stack = super.getItem(reader, pos, state);
+
+        if (reader.getTileEntity(pos) instanceof InkColorTileEntity)
+            ColorUtils.setColorLocked(ColorUtils.setInkColor(stack, ColorUtils.getInkColor(reader.getTileEntity(pos))), true);
+
+        return stack;
+    }
+
 
     @Override
     public boolean canClimb()

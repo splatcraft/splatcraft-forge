@@ -121,7 +121,8 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     {
         if (hasRcipe())
         {
-            setInventorySlotContents(4, ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkwell, Math.min(SplatcraftItems.inkwell.getMaxStackSize(), Math.min(Math.min(inventory.get(0).getCount(), inventory.get(1).getCount()), inventory.get(2).getCount()))), getColor()));
+            setInventorySlotContents(4, ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkwell, Math.min(SplatcraftItems.inkwell.getMaxStackSize(),
+                    Math.min(Math.min(inventory.get(0).getCount(), inventory.get(1).getCount()), inventory.get(2).getCount()))), getColor()), true));
         } else
         {
             setInventorySlotContents(4, ItemStack.EMPTY);

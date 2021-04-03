@@ -6,6 +6,7 @@ import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.entities.IColoredEntity;
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
+import com.cibernet.splatcraft.items.ColoredBlockItem;
 import com.cibernet.splatcraft.network.PlayerColorPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
@@ -253,7 +254,7 @@ public class ColorUtils
         CompoundNBT nbt = stack.getTag();
 
         if (nbt == null || !nbt.contains("ColorLocked"))
-            return false;
+            return stack.getItem() instanceof ColoredBlockItem;
         return nbt.getBoolean("ColorLocked");
     }
 

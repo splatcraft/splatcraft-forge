@@ -27,7 +27,7 @@ public class InkwellTileEntity extends InkColorTileEntity implements ITickableTi
             ItemStack stack = entity.getItem();
             if (stack.getItem().equals(Items.WHITE_WOOL) || stack.getItem().equals(SplatcraftItems.inkedWool) && ColorUtils.getInkColor(stack) != getColor())
             {
-                entity.setItem(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool, stack.getCount(), stack.getTag()), getColor()));
+                entity.setItem(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool, stack.getCount(), stack.getTag()), getColor()), true));
             }
         }
     }

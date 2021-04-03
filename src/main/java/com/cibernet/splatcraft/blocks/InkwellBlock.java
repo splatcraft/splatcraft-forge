@@ -63,7 +63,7 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     @Override
     public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
     {
-        return ColorUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), getColor((World) world, pos));
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), getColor((World) world, pos)), true);
     }
 
     @Nullable
@@ -115,9 +115,7 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
         ItemStack stack = super.getItem(reader, pos, state);
 
         if (reader.getTileEntity(pos) instanceof InkColorTileEntity)
-        {
-            ColorUtils.setInkColor(stack, ColorUtils.getInkColor(reader.getTileEntity(pos)));
-        }
+            ColorUtils.setColorLocked(ColorUtils.setInkColor(stack, ColorUtils.getInkColor(reader.getTileEntity(pos))), true);
 
         return stack;
     }

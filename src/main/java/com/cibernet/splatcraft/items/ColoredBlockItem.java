@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.items;
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.InkedBlock;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
@@ -10,6 +11,7 @@ import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CauldronBlock;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -28,6 +30,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -73,11 +77,14 @@ public class ColoredBlockItem extends BlockItem
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
         super.addInformation(stack, world, tooltip, flag);
-        if (ColorUtils.getInkColor(stack) != -1)
-        {
-            tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
-        }
 
+        if (I18n.hasKey(getTranslationKey() + ".tooltip"))
+            tooltip.add(new TranslationTextComponent(getTranslationKey() + ".tooltip").mergeStyle(TextFormatting.GRAY));
+
+        if (ColorUtils.isColorLocked(stack))
+            tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
+        else
+            tooltip.add(new TranslationTextComponent( "item.splatcraft.tooltip.matches_color").mergeStyle(TextFormatting.GRAY));
     }
 
     @Override
@@ -107,15 +114,11 @@ public class ColoredBlockItem extends BlockItem
     {
         if (isInGroup(group))
         {
+            items.add(ColorUtils.setColorLocked(new ItemStack(this), false));
             if (addStartersToTab)
             {
                 for (int color : ColorUtils.STARTER_COLORS)
-                {
-                    items.add(ColorUtils.setInkColor(new ItemStack(this), color));
-                }
-            } else
-            {
-                super.fillItemGroup(group, items);
+                    items.add(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(this), color), true));
             }
         }
     }
@@ -125,12 +128,13 @@ public class ColoredBlockItem extends BlockItem
     {
         super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
 
-        if (ColorUtils.getInkColor(stack) == -1)
+        if (ColorUtils.getInkColor(stack) == -1 || !ColorUtils.isColorLocked(stack))
         {
             ColorUtils.setInkColor(stack, entityIn instanceof PlayerEntity && PlayerInfoCapability.hasCapability((LivingEntity) entityIn) ?
                     ColorUtils.getPlayerColor((PlayerEntity) entityIn) : ColorUtils.DEFAULT);
         }
     }
+
 
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity)

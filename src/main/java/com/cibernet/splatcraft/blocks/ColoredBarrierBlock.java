@@ -5,8 +5,11 @@ import com.cibernet.splatcraft.tileentities.ColoredBarrierTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
@@ -48,6 +51,13 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
         if(world.getTileEntity(pos) instanceof ColoredBarrierTileEntity)
             return ((ColoredBarrierTileEntity) world.getTileEntity(pos)).getColor();
         return -1;
+    }
+
+
+    @Override
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+    {
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), getColor((World) world, pos)), true);
     }
 
     @Override
