@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "splatcraft:block/allowed_color_barrier_fancy"
+    }
+  }
+}
