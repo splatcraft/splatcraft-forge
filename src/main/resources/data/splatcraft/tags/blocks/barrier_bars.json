@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "splatcraft:barrier_bar",
+    "splatcraft:plated_barrier_bar",
+    "splatcraft:plated_barrier_bar"
+  ]
+}

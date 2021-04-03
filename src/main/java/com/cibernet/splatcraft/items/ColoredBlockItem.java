@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.items;
 
+import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.InkedBlock;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
@@ -91,11 +92,13 @@ public class ColoredBlockItem extends BlockItem
         int color = ColorUtils.getInkColor(stack);
 
         TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if (color != -1 && tileEntity instanceof InkColorTileEntity)
+        if(color != -1)
         {
-            ((InkColorTileEntity) tileEntity).setColor(color);
+            if(getBlock() instanceof IColoredBlock)
+                ((IColoredBlock) getBlock()).setColor(worldIn, pos, color);
+            else if (tileEntity instanceof InkColorTileEntity)
+                ((InkColorTileEntity) tileEntity).setColor(color);
         }
-
         return super.onBlockPlaced(pos, worldIn, player, stack, state);
     }
 
@@ -181,5 +184,11 @@ public class ColoredBlockItem extends BlockItem
         }
 
         return super.onItemUse(context);
+    }
+
+    public ColoredBlockItem addStarters(boolean b)
+    {
+        addStartersToTab = b;
+        return this;
     }
 }

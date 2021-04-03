@@ -38,12 +38,12 @@ public class ClientSetupHandler
     public static void onTextureStitch(TextureStitchEvent.Pre event)
     {
         if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE))
-        {
             return;
-        }
 
         event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/stage_barrier_fancy"));
         event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/stage_void_fancy"));
+        event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/allowed_color_barrier_fancy"));
+        event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/denied_color_barrier_fancy"));
     }
 
     public static void bindScreenContainers()

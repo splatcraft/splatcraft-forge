@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "splatcraft:stage_barrier",
+    "splatcraft:stage_void",
+    "splatcraft:allowed_color_barrier",
+    "splatcraft:denied_color_barrier"
+  ]
+}

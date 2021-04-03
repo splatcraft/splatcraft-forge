@@ -6,6 +6,8 @@
     "splatcraft:pastel_filter",
     "splatcraft:organic_filter",
     "splatcraft:enchanted_filter",
+    "splatcraft:overgrown_filter",
+    "splatcraft:midnight_filter",
     "splatcraft:creative_filter"
   ]
 }

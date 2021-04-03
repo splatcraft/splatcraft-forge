@@ -33,8 +33,11 @@ public class SplatcraftTileEntitites
     public static final TileEntityType<InkedBlockTileEntity> inkedTileEntity = registerTileEntity("inked_block", InkedBlockTileEntity::new, inkedBlock);
     public static final TileEntityType<CrateTileEntity> crateTileEntity = registerTileEntity("crate", CrateTileEntity::new, crate, sunkenCrate);
     public static final TileEntityType<StageBarrierTileEntity> stageBarrierTileEntity = registerTileEntity("stage_barrier", StageBarrierTileEntity::new, stageBarrier, stageVoid);
+    public static final TileEntityType<ColoredBarrierTileEntity> colorBarrierTileEntity = registerTileEntity("color_barrier", ColoredBarrierTileEntity::new, allowedColorBarrier, deniedColorBarrier);
     public static final TileEntityType<InkVatTileEntity> inkVatTileEntity = registerTileEntity("ink_vat", InkVatTileEntity::new, inkVat);
+
     private static final List<ContainerType<?>> c_registry = new ArrayList<>();
+
     public static final ContainerType<InkVatContainer> inkVatContainer = registerContainer("ink_vat", InkVatContainer::new);
     public static final ContainerType<WeaponWorkbenchContainer> weaponWorkbenchContainer = registerMenu("weapon_workbench", WeaponWorkbenchContainer::new);
 
@@ -82,5 +85,6 @@ public class SplatcraftTileEntitites
     {
         //ClientRegistry.bindTileEntityRenderer(inkedTileEntity.get(), InkedBlockTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(stageBarrierTileEntity, StageBarrierTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(colorBarrierTileEntity, StageBarrierTileEntityRenderer::new);
     }
 }

@@ -29,6 +29,7 @@ public class SplatcraftTags
         public static final HashMap<InkTankItem, ITag.INamedTag<Item>> INK_TANK_BLACKLIST = new HashMap<>();
 
         public static final ITag.INamedTag<Item> MATCH_ITEMS = createTag("match_items");
+        public static final ITag.INamedTag<Item> REVEALS_BARRIERS = createTag("reveals_barriers");
 
         public static final ITag.INamedTag<Item> SHOOTERS = createTag("shooters");
         public static final ITag.INamedTag<Item> ROLLERS = createTag("rollers");

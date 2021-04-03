@@ -2,6 +2,7 @@
   "itemGroup.splatcraft_general": "Splatcraft",
   "itemGroup.splatcraft_weapons": "Splatcraft Weapons",
   "block.splatcraft.inked_block": "Inked Block",
+
   "block.splatcraft.inked_stairs": "Inked Stairs",
   "block.splatcraft.inked_slab": "Inked Slab",
   "block.splatcraft.glowing_inked_block": "Glowing Inked Block",
@@ -25,16 +26,24 @@
   "block.splatcraft.weapon_workbench": "Ammo Knights Weapon Workbench",
   "block.splatcraft.stage_barrier": "Stage Barrier",
   "block.splatcraft.stage_void": "Stage Void",
+  "block.splatcraft.allowed_color_barrier": "Colored Stage Barrier (Allow)",
+  "block.splatcraft.denied_color_barrier": "Colored Stage Barrier (Deny)",
+
   "item.splatcraft.sardinium": "Sardinium",
   "item.splatcraft.power_egg": "Power Egg",
   "item.splatcraft.power_egg_can": "Can of Power Eggs",
+  "item.splatcraft.toni_kensa_pin": "Toni Kensa Pin",
+
   "item.splatcraft.filter": "Filter",
   "item.splatcraft.organic_filter": "Organic Filter",
   "item.splatcraft.pastel_filter": "Pastel Filter",
   "item.splatcraft.neon_filter": "Neon Filter",
   "item.splatcraft.enchanted_filter": "Enchanted Filter",
+  "item.splatcraft.overgrown_filter": "Overgrown Filter",
+  "item.splatcraft.midnight_filter": "Midnight Filter",
   "item.splatcraft.creative_filter": "Creative Filter",
   "item.splatcraft.filter.tooltip": "Use it at an Ink Vat to get more colors!",
+
   "item.splatcraft.ink_disruptor": "Ink Disruptor",
   "item.splatcraft.turf_scanner": "Turf Scanner",
   "item.splatcraft.turf_scanner.mode.0": "Top-Down",
@@ -45,6 +54,7 @@
   "item.splatcraft.color_changer.mode.2": "Blacklist Player Color",
   "item.remote.coords.a": "(%s,%s,%s)",
   "item.remote.coords.b": "(%s,%s,%s) to (%s,%s,%s)",
+
   "item.splatcraft.squid_bumper": "Squid Bumper",
   "item.splatcraft.ink_cloth_helmet": "Ink Cloth Hat",
   "item.splatcraft.ink_cloth_chestplate": "Ink Cloth Shirt",
@@ -52,6 +62,7 @@
   "item.splatcraft.ink_cloth_boots": "Ink Cloth Shoes",
   "item.splatcraft.ink_cloth_boots.colorless_tooltip": "matches your ink color!",
   "item.splatcraft.splatfest_band": "Splatfest Band",
+
   "item.splatcraft.splattershot": "Splattershot",
   "item.splatcraft.tentatek_splattershot": "Tentatek Splattershot",
   "item.splatcraft.wasabi_splattershot": "Wasabi Splattershot",
@@ -68,6 +79,7 @@
   "item.splatcraft.96_gal": ".96 Gal",
   "item.splatcraft.96_gal_deco": ".96 Gal Deco",
   "item.splatcraft.kensa_96_gal": "Kensa .96 Gal",
+
   "item.splatcraft.blaster": "Blaster",
   "item.splatcraft.grim_blaster": "Grim Blaster",
   "item.splatcraft.custom_blaster": "Custom Blaster",
@@ -76,6 +88,7 @@
   "item.splatcraft.custom_range_blaster": "Custom Range Blaster",
   "item.splatcraft.clash_blaster": "Clash Blaster",
   "item.splatcraft.clash_blaster_neo": "Clash Blaster Neo",
+
   "item.splatcraft.splat_roller": "Splat Roller",
   "item.splatcraft.krak_on_splat_roller": "Krak-On Splat Roller",
   "item.splatcraft.corocoro_splat_roller": "CoroCoro Splat Roller",
@@ -91,6 +104,7 @@
   "item.splatcraft.octobrush": "Octobrush",
   "item.splatcraft.kensa_octobrush": "Kensa Octobrush",
   "item.splatcraft.octobrush_nouveau": "Octobrush Nouveau",
+
   "item.splatcraft.splat_charger": "Splat Charger",
   "item.splatcraft.bento_splat_charger": "Bento Splat Charger",
   "item.splatcraft.kelp_splat_charger": "Kelp Splat Charger",
@@ -104,6 +118,7 @@
   "item.splatcraft.bamboozler_14_mk1": "Bamboozler 14 MK I",
   "item.splatcraft.bamboozler_14_mk2": "Bamboozler 14 MK II",
   "item.splatcraft.bamboozler_14_mk3": "Bamboozler 14 MK III",
+
   "item.splatcraft.splat_dualies": "Splat Dualie",
   "item.splatcraft.splat_dualies.plural": "Splat Dualies",
   "item.splatcraft.enperry_splat_dualies": "Enperry Splat Dualie",
@@ -114,12 +129,14 @@
   "item.splatcraft.dualie_squelchers.plural": "Dualie Squelchers",
   "item.splatcraft.custom_dualie_squelchers": "Custom Dualie Squelcher",
   "item.splatcraft.custom_dualie_squelchers.plural": "Custom Dualie Squelchers",
+
   "item.splatcraft.slosher": "Slosher",
   "item.splatcraft.classic_slosher": "Classic Slosher",
   "item.splatcraft.soda_slosher": "Soda Slosher",
   "item.splatcraft.slosher_deco": "Slosher Deco",
   "item.splatcraft.tri_slosher": "Tri-Slosher",
   "item.splatcraft.tri_slosher_nouvueau": "Tri-Slosher Nouveau",
+
   "item.splatcraft.ink_tank": "Ink Tank",
   "item.splatcraft.ink_tank.ink": "%s / %s",
   "item.splatcraft.ink_tank.cant_recharge": "§7§oCan't Recharge",
@@ -128,6 +145,7 @@
   "item.splatcraft.ink_tank_jr.tooltip": "Only works with Junior weapons.",
   "item.splatcraft.armored_ink_tank": "Armored Ink Tank",
   "item.splatcraft.hero_ink_tank": "Hero Tank",
+
   "weaponStat.range": "Range: %s%%",
   "weaponStat.damage": "Damage: %s%%",
   "weaponStat.impact": "Impact: %s%%",
@@ -136,6 +154,7 @@
   "weaponStat.ink_speed": "Ink Speed: %s%%",
   "weaponStat.mobility": "Mobility: %s%%",
   "weaponStat.charge_speed": "Charge Speed: %s%%",
+
   "weaponTab.splatcraft:weapon_workbench_tabs/shooters": "Shooters",
   "weaponTab.splatcraft:weapon_workbench_tabs/rollers": "Rollers",
   "weaponTab.splatcraft:weapon_workbench_tabs/chargers": "Chargers",
@@ -146,9 +165,12 @@
   "weaponTab.splatcraft:weapon_workbench_tabs/sub_weapons": "Sub Weapons",
   "weaponTab.splatcraft:weapon_workbench_tabs/special_weapons": "Special Weapons",
   "weaponTab.splatcraft:weapon_workbench_tabs/ink_tanks": "Ink Tanks",
+  "weaponTab.splatcraft:weapon_workbench_tabs/sub_weapons": "Sub Weapons",
+
   "weaponRecipe.splatcraft:weapon_workbench/aerospray": "Aerospray",
   "weaponRecipe.splatcraft:weapon_workbench/e_liter": "E-Liter",
   "weaponRecipe.splatcraft:weapon_workbench/bamboozler_14": "Bamboozler 14",
+
   "weaponType.original": "Original",
   "weaponType.classic": "Classic",
   "weaponType.custom": "Custom",
@@ -177,6 +199,7 @@
   "weaponType.mk1": "Mk I",
   "weaponType.mk2": "Mk II",
   "weaponType.mk3": "Mk III",
+
   "subtitle.shooter_firing": "Shooter Firing",
   "subtitle.blaster_firing": "Blaster Firing",
   "subtitle.blaster_explosion": "Blaster Projectile Explodes",
@@ -201,34 +224,57 @@
   "subtitle.squid_revert": "Squid turns into Kid",
   "subtitle.ink_submerge": "Squid Submerges",
   "subtitle.ink_surface": "Squid Surfaces",
+
   "container.ink_vat": "Inkwell Crafting",
   "container.weapon_workbench": "Weapon Crafting",
+
   "gui.weapon_workbench.craft": "Craft",
+
   "ink_color.invert": "Inverted %s",
   "ink_color.splatcraft.orange": "Orange",
   "ink_color.splatcraft.blue": "Blue",
   "ink_color.splatcraft.green": "Green",
   "ink_color.splatcraft.pink": "Pink",
+
   "ink_color.splatcraft.light_blue": "Light Blue",
   "ink_color.splatcraft.turquoise": "Turquoise",
   "ink_color.splatcraft.yellow": "Yellow",
   "ink_color.splatcraft.lilac": "Lilac",
   "ink_color.splatcraft.lemon": "Lemon",
   "ink_color.splatcraft.plum": "Plum",
+
   "ink_color.splatcraft.mint": "Mint",
   "ink_color.splatcraft.cyan": "Cyan",
   "ink_color.splatcraft.cherry": "Cherry",
   "ink_color.splatcraft.peach": "Peach",
+
   "ink_color.splatcraft.neon_orange": "Neon Orange",
   "ink_color.splatcraft.neon_blue": "Neon Blue",
   "ink_color.splatcraft.neon_green": "Neon Green",
   "ink_color.splatcraft.neon_pink": "Neon Pink",
   "ink_color.splatcraft.hero_yellow": "Hero Yellow",
   "ink_color.splatcraft.octo_pink": "Octo Pink",
+
   "ink_color.splatcraft.cobalt": "Cobalt",
   "ink_color.splatcraft.mojang": "Red Thing",
   "ink_color.splatcraft.ice": "Icy Mint",
   "ink_color.splatcraft.floral": "Floral Pink",
+  "ink_color.splatcraft.omni_green": "Omni Green",
+  "ink_color.splatcraft.mana": "Mana Purple",
+
+  "ink_color.splatcraft.light_green": "Light Green",
+  "ink_color.splatcraft.purple": "Purple",
+  "ink_color.splatcraft.lilac_blue": "Lilac Blue",
+  "ink_color.splatcraft.moth_green": "Moth Green",
+  "ink_color.splatcraft.mustard": "Mustard",
+  "ink_color.splatcraft.lumigreen": "Lumigreen",
+  "ink_color.splatcraft.dark_blue": "Dark Blue",
+  "ink_color.splatcraft.soda": "Soda",
+  "ink_color.splatcraft.deep_blue": "Deep Blue",
+  "ink_color.splatcraft.fuchsia": "Fuchsia",
+  "ink_color.splatcraft.winter_green": "Winter Green",
+  "ink_color.splatcraft.pumpkin": "Pumpkin",
+
   "ink_color.splatcraft.dye_white": "Organic White",
   "ink_color.splatcraft.dye_orange": "Organic Orange",
   "ink_color.splatcraft.dye_magenta": "Organic Magenta",
@@ -245,18 +291,26 @@
   "ink_color.splatcraft.dye_green": "Organic Green",
   "ink_color.splatcraft.dye_red": "Organic Red",
   "ink_color.splatcraft.dye_black": "Organic Black",
+
+  "ink_color.splatcraft.color_lock_a": "Color Locked Friendly",
+  "ink_color.splatcraft.color_lock_b": "Color Locked Hostile",
   "ink_color.splatcraft.default": "Undyed",
-  "death.attack.water": "%s dissolved in water",
-  "death.attack.splat": "%s was splatted by %s",
-  "death.attack.splat.item": "%s was splatted by %s using %s",
-  "death.attack.roll": "%s was crushed by %s",
-  "death.attack.roll.item": "%s was crushed by %s using %s",
-  "death.attack.squish": "%s was squished by %s",
-  "death.attack.squish.item": "%s was squished by %s using %s",
+
+  "death.attack.splatcraft:water": "%s dissolved in water",
+  "death.attack.splatcraft:splat": "%s was splatted by %s",
+  "death.attack.splatcraft:splat.item": "%s was splatted by %s using %s",
+  "death.attack.splatcraft:roll": "%s was crushed by %s",
+  "death.attack.splatcraft:roll.item": "%s was crushed by %s using %s",
+  "death.attack.splatcraft:squish": "%s was squished by %s",
+  "death.attack.splatcraft:squish.item": "%s was squished by %s using %s",
+  "death.attack.splatcraft:outOfStage": "%s tried to escape the stage",
+  "death.attack.splatcraft:outOfStage.player": "%1$s was knocked out of the stage by %2$s",
+
   "entity.splatcraft.ink_projectile": "Ink Projectile",
   "entity.splatcraft.ink_squid": "Squid",
   "entity.splatcraft.squid_bumper": "Squid Bumper",
   "gamerule.splatcraft.inkDecay": "Ink decay",
+
   "gamerule.splatcraft.coloredPlayerNames": "Ink-colored player names",
   "gamerule.splatcraft.keepMatchItems": "Keep Match items after death",
   "gamerule.splatcraft.keepMatchItems.description": "Lets you keep certain items important to Splatcraft matches, such as main weapons, ink tanks and some cosmetics, after dying. These items can be specified with the splatcraft:match_items tag",
@@ -272,6 +326,7 @@
   "gamerule.splatcraft.inkDamageCooldown.description": "Prevents ink damage from bypassing hurt resistance time.",
   "gamerule.splatcraft.inkMobDamagePercentage": "Ink Mob Damage Percentage",
   "gamerule.splatcraft.inkMobDamagePercentage.description": "Determines how much damage is dealt by regular Splatcraft weapons against mobs.",
+
   "status.coord_set.a": "first position to X: %s Y: %s Z: %s",
   "status.coord_set.b": "Set second position to X: %s Y: %s Z: %s",
   "status.no_ink": "Low Ink!",
@@ -285,6 +340,7 @@
   "status.clear_ink.success": "Successfully cleared %s blocks",
   "status.change_color.out_of_world": "§cCannot clear ink outside of the world",
   "status.change_color.success": "Successfully recolored %s blocks to %s",
+
   "commands.scanturf.success": "Successfully scanned %s blocks of turf",
   "commands.inkcolor.success.single": "Changed %s's ink color to %s",
   "commands.inkcolor.success.multiple": "Changed the ink color of %s players to %s",
@@ -294,15 +350,19 @@
   "commands.colorscores.list.empty": "There are no registered color criteria",
   "commands.colorscores.list.count": "Showing %s registered color criteria:",
   "commands.colorscores.list.entry": "%s: displays as '%s'",
+
   "arg.colorCriterion.notFound": "No criteria were found by the color %s",
   "arg.inkColor.notFound": "Unknown color %s",
+
   "stat.splatcraft.squid_time": "Time as Squid",
   "stat.splatcraft.blocks_inked": "Blocks Inked",
   "stat.splatcraft.weapons_crafted": "Weapons Crafted",
   "stat.splatcraft.inkwells_crafted": "Inkwells Filled",
   "stat.splatcraft.subs_used": "Sub Weapons Used",
   "stat.splatcraft.specials_used": "Special Weapons Used",
+
   "key.categories.splatcraft": "Splatcraft",
   "key.squidForm": "Squid",
+
   "attribute.splatcraft.ink_swim_speed": "Ink Swim Speed Bonus"
 }

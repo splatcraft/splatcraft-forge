@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.tileentities;
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.blocks.StageBarrierBlock;
+import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.items.BlockItem;
 import com.cibernet.splatcraft.items.StageBarrierItem;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
@@ -16,6 +17,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -25,8 +27,8 @@ import static com.cibernet.splatcraft.util.InkDamageUtils.VOID_DAMAGE;
 
 public class StageBarrierTileEntity extends TileEntity implements ITickableTileEntity
 {
-    private final int maxActiveTime = 20;
-    private int activeTime = 0;
+    public final int maxActiveTime = 20;
+    protected int activeTime = maxActiveTime;
 
 
     public StageBarrierTileEntity()
@@ -34,6 +36,10 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
         super(SplatcraftTileEntitites.stageBarrierTileEntity);
     }
 
+    public StageBarrierTileEntity(TileEntityType<? extends StageBarrierTileEntity> type)
+    {
+        super(type);
+    }
 
     @Override
     public void tick()
@@ -64,8 +70,8 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
                 canRender = false;
             else if (SplatcraftConfig.Client.holdBarrierToRender.get())
             {
-                canRender = player.getHeldItemMainhand().getItem() instanceof BlockItem && player.getHeldItemMainhand().getItem() instanceof StageBarrierItem ||
-                        player.getHeldItemOffhand().getItem() instanceof BlockItem && player.getHeldItemOffhand().getItem() instanceof StageBarrierItem;
+                canRender = player.getHeldItemMainhand().getItem().isIn(SplatcraftTags.Items.REVEALS_BARRIERS) ||
+                        player.getHeldItemMainhand().getItem().isIn(SplatcraftTags.Items.REVEALS_BARRIERS);
             }
             if (canRender)
                 resetActiveTime();
@@ -73,7 +79,7 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
 
     }
 
-    private void resetActiveTime()
+    protected void resetActiveTime()
     {
         activeTime = maxActiveTime;
     }

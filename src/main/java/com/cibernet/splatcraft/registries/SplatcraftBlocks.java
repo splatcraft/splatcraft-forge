@@ -47,8 +47,12 @@ public class SplatcraftBlocks
     public static final Block grate = new GrateBlock("grate");
     public static final Block grateRamp = new GrateRampBlock("grate_ramp");
     public static final Block barrierBar = new BarrierBarBlock("barrier_bar");
+    public static final Block cautionBarrierBar = new BarrierBarBlock("caution_barrier_bar");
+    public static final Block platedBarrierBar = new BarrierBarBlock("plated_barrier_bar");
     public static final Block stageBarrier = new StageBarrierBlock("stage_barrier", false);
     public static final Block stageVoid = new StageBarrierBlock("stage_void", true);
+    public static final Block allowedColorBarrier = new ColoredBarrierBlock("allowed_color_barrier", false);
+    public static final Block deniedColorBarrier = new ColoredBarrierBlock("denied_color_barrier", true);
 
     @SubscribeEvent
     public static void blockInit(final RegistryEvent.Register<Block> event)
@@ -79,9 +83,13 @@ public class SplatcraftBlocks
         registry.register(grate);
         registry.register(grateRamp);
         registry.register(barrierBar);
+        registry.register(platedBarrierBar);
+        registry.register(cautionBarrierBar);
 
         registry.register(stageBarrier);
         registry.register(stageVoid);
+        registry.register(allowedColorBarrier);
+        registry.register(deniedColorBarrier);
 
         registry.register(new IronBarsBlockOverride());
         registry.register(new ChainBlockOverride());
