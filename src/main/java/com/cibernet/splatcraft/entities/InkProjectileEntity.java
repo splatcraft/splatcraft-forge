@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.entities;
 
+import com.cibernet.splatcraft.blocks.ColoredBarrierBlock;
 import com.cibernet.splatcraft.client.particles.InkExplosionParticleData;
 import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
 import com.cibernet.splatcraft.handlers.WeaponHandler;
@@ -235,6 +236,10 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         if (InkBlockUtils.canInkPassthrough(world, result.getPos()))
             return;
 
+        if(world.getBlockState(result.getPos()).getBlock() instanceof ColoredBarrierBlock &&
+            ((ColoredBarrierBlock) world.getBlockState(result.getPos()).getBlock()).canAllowThrough(result.getPos(), this))
+            return;
+        
         this.func_230299_a_(result);
 
         InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, getPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);

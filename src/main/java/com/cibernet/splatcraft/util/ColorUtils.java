@@ -13,6 +13,7 @@ import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftInkColors;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -39,7 +40,7 @@ public class ColorUtils
 
     public static final int[] STARTER_COLORS = new int[]{ORANGE, BLUE, GREEN, PINK};
 
-    public static int getEntityColor(LivingEntity entity)
+    public static int getEntityColor(Entity entity)
     {
         if (entity instanceof PlayerEntity)
         {
@@ -223,7 +224,7 @@ public class ColorUtils
         return SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.UNIVERSAL_INK) || colorA == colorB;
     }
 
-    public static boolean colorEquals(LivingEntity entity, TileEntity te)
+    public static boolean colorEquals(Entity entity, TileEntity te)
     {
         int entityColor = getEntityColor(entity);
         int inkColor = getInkColor(te);
