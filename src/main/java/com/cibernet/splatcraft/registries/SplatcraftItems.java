@@ -204,11 +204,11 @@ public class SplatcraftItems
         registry.register(barrierBar);
         registry.register(platedBarrierBar);
         registry.register(cautionBarrierBar);
+        registry.register(crate);
+        registry.register(sunkenCrate);
         registry.register(canvas);
         registry.register(inkedWool);
         registry.register(squidBumper);
-        registry.register(sunkenCrate);
-        registry.register(crate);
         registry.register(stageBarrier);
         registry.register(stageVoid);
         registry.register(allowedColorBarrier);
