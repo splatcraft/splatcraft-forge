@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#splatcraft:ink_clearing_blocks",
+    "#splatcraft:clears_ink",
     "minecraft:observer",
     "minecraft:note_block",
     "minecraft:target",
