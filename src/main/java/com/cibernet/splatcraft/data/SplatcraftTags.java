@@ -91,7 +91,7 @@ public class SplatcraftTags
 
         private static ITag<InkColor> createTag(String name)
         {
-            return ForgeTagHandler.makeWrapperTag(new ResourceLocation(Splatcraft.MODID, "ink_colors"), new ResourceLocation(name));
+            return ForgeTagHandler.makeWrapperTag(new ResourceLocation(Splatcraft.MODID, "ink_colors"), new ResourceLocation(Splatcraft.MODID, name));
         }
 
 
