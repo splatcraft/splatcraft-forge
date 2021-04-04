@@ -13,6 +13,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -130,21 +131,6 @@ public class InkedBlock extends Block implements IColoredBlock
         return ItemStack.EMPTY;
     }
 
-
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
-    {
-        if(!(worldIn.getTileEntity(pos) instanceof InkedBlockTileEntity))
-            return super.getCollisionShape(state, worldIn, pos, context);
-        BlockState savedState = ((InkedBlockTileEntity) worldIn.getTileEntity(pos)).getSavedState();
-
-        if(savedState == null || savedState.getBlock().equals(this))
-            return super.getCollisionShape(state, worldIn, pos, context);
-        return savedState.getBlock().getCollisionShape(savedState, worldIn, pos, context);
-
-
-    }
-
     /* TODO modular ink
     
     @Override
@@ -186,6 +172,25 @@ public class InkedBlock extends Block implements IColoredBlock
     }
     
     */
+
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
+        if(!(worldIn.getTileEntity(pos) instanceof InkedBlockTileEntity))
+            return super.getCollisionShape(state, worldIn, pos, context);
+        BlockState savedState = ((InkedBlockTileEntity) worldIn.getTileEntity(pos)).getSavedState();
+
+        if(savedState == null || savedState.getBlock().equals(this))
+            return super.getCollisionShape(state, worldIn, pos, context);
+        return savedState.getBlock().getCollisionShape(savedState, worldIn, pos, context);
+    }
+
+    @Override
+    public PushReaction getPushReaction(BlockState state)
+    {
+        return PushReaction.BLOCK;
+    }
 
     @Override
     public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader worldIn, BlockPos pos)

@@ -8,6 +8,7 @@ import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.StairsBlock;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.FluidTags;
@@ -81,6 +82,12 @@ public class InkedStairsBlock extends StairsBlock implements IColoredBlock
         }
 
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public PushReaction getPushReaction(BlockState state)
+    {
+        return PushReaction.BLOCK;
     }
 
     @Override
