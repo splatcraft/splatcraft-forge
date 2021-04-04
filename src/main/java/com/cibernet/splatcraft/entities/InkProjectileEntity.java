@@ -174,7 +174,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
                 BlockPos inkPos = new BlockPos(getPosX(), y, getPosZ());
                 if (!InkBlockUtils.canInkPassthrough(world, inkPos))
                 {
-                    world.setEntityState(this, (byte) 1);
+                    if(!isInvisible())
+                        world.setEntityState(this, (byte) 1);
                     InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, inkPos.up(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
                     InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, getPosition(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
                     break;
