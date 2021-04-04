@@ -3,7 +3,6 @@ package com.cibernet.splatcraft.commands.arguments;
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.registries.SplatcraftInkColors;
 import com.cibernet.splatcraft.util.InkColor;
-import com.cibernet.splatcraft.util.SplatcraftResourceLocation;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -85,7 +84,7 @@ public class InkColorArgument implements ArgumentType<Integer>
             }
 
             reader.setCursor(start);
-            ResourceLocation resourceLocation = SplatcraftResourceLocation.read(reader);
+            ResourceLocation resourceLocation = ResourceLocation.read(reader);
             InkColor color = SplatcraftInkColors.REGISTRY.getValue(resourceLocation);
 
             if (color == null)

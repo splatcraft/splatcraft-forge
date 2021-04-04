@@ -3,7 +3,6 @@ package com.cibernet.splatcraft.data;
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.util.InkColor;
-import com.cibernet.splatcraft.util.SplatcraftResourceLocation;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tags.BlockTags;
@@ -92,7 +91,7 @@ public class SplatcraftTags
 
         private static ITag<InkColor> createTag(String name)
         {
-            return ForgeTagHandler.makeWrapperTag(new ResourceLocation(Splatcraft.MODID, "ink_colors"), new SplatcraftResourceLocation(name));
+            return ForgeTagHandler.makeWrapperTag(new ResourceLocation(Splatcraft.MODID, "ink_colors"), new ResourceLocation(name));
         }
 
 

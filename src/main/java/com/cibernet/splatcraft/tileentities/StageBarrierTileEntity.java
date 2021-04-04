@@ -1,14 +1,10 @@
 package com.cibernet.splatcraft.tileentities;
 
-import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.blocks.StageBarrierBlock;
 import com.cibernet.splatcraft.data.SplatcraftTags;
-import com.cibernet.splatcraft.items.BlockItem;
-import com.cibernet.splatcraft.items.StageBarrierItem;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.util.ClientUtils;
-import com.cibernet.splatcraft.util.InkDamageUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,7 +14,6 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nullable;

@@ -239,7 +239,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         if(world.getBlockState(result.getPos()).getBlock() instanceof ColoredBarrierBlock &&
             ((ColoredBarrierBlock) world.getBlockState(result.getPos()).getBlock()).canAllowThrough(result.getPos(), this))
             return;
-        
+
         this.func_230299_a_(result);
 
         InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, getPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);

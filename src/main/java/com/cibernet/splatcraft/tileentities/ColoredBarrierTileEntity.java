@@ -2,10 +2,7 @@ package com.cibernet.splatcraft.tileentities;
 
 import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.blocks.ColoredBarrierBlock;
-import com.cibernet.splatcraft.blocks.StageBarrierBlock;
 import com.cibernet.splatcraft.data.SplatcraftTags;
-import com.cibernet.splatcraft.items.BlockItem;
-import com.cibernet.splatcraft.items.StageBarrierItem;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.util.ClientUtils;
 import com.cibernet.splatcraft.util.ColorUtils;
@@ -15,9 +12,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.shapes.VoxelShapes;
-
-import static com.cibernet.splatcraft.util.InkDamageUtils.VOID_DAMAGE;
 
 public class ColoredBarrierTileEntity extends StageBarrierTileEntity
 {
