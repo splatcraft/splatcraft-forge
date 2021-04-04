@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "BIB",
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "item": "splatcraft:barrier_bar"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "splatcraft:plated_barrier_bar",
+    "count": 8
+  }
+}

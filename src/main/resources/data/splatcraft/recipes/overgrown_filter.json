@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "splatcraft:filter"
+    },
+    {
+      "tag": "minecraft:leaves"
+    },
+    {
+      "item": "minecraft:pumpkin"
+    }
+  ],
+  "result": {
+    "item": "splatcraft:overgrown_filter"
+  }
+}

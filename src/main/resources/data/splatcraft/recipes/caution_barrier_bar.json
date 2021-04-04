@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "splatcraft:caution_barrier_bar",
+  "pattern": [
+    "byb",
+    "BBB",
+    "yby"
+  ],
+  "key": {
+    "B": {
+      "item": "splatcraft:barrier_bar"
+    },
+    "b": {
+      "item": "minecraft:black_carpet"
+    },
+    "y": {
+      "item": "minecraft:yellow_carpet"
+    }
+  },
+  "result": {
+    "item": "splatcraft:caution_barrier_bar",
+    "count": 3
+  }
+}
