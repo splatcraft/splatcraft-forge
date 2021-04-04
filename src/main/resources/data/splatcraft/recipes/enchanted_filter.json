@@ -5,8 +5,7 @@
       "item": "splatcraft:filter"
     },
     {
-      "item": "minecraft:golden_apple",
-      "data": 1
+      "item": "minecraft:enchanted_golden_apple"
     }
   ],
   "result": {
