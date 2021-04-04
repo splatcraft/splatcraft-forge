@@ -55,7 +55,7 @@ public class SplatcraftConfig
             holdBarrierToRender = client.comment("Prevents Stage Barriers from rendering in creative mode unless the player is holding one in their hand.")
                     .define("splatcraft.holdBarrierToRender", false);
             barrierRenderDistance = client.comment("How far away stage barriers or voids will render away from you.")
-                    .defineInRange("splatcraft.barrierRenderDistance", 16, 4, 80);
+                    .defineInRange("splatcraft.barrierRenderDistance", 40, 4, 80);
             //colorLock = client.comment("Color Lock Mode").define("splatcraft.colorLock", false);
         }
 
