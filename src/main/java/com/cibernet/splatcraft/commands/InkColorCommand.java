@@ -8,10 +8,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 
 import java.util.Collection;
 
@@ -32,10 +29,15 @@ public class InkColorCommand
     {
         ColorUtils.setPlayerColor(source.asPlayer(), color);
 
-        //TODO server friendly feedback message
-        source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", source.asPlayer().getDisplayName(), new StringTextComponent("#" + String.format("%06X", color).toUpperCase()).setStyle(Style.EMPTY.setColor(Color.fromInt(color))))/*ColorUtils.getFormatedColorName(color, false)*/, true);
+        source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", source.asPlayer().getDisplayName(), getColorName(color))/*ColorUtils.getFormatedColorName(color, false)*/, true);
 
         return 1;
+    }
+
+    //TODO server friendly feedback message
+    public static IFormattableTextComponent getColorName(int color)
+    {
+        return new StringTextComponent("#" + String.format("%06X", color).toUpperCase()).setStyle(Style.EMPTY.setColor(Color.fromInt(color)));
     }
 
     private static int setColor(CommandSource source, int color, Collection<ServerPlayerEntity> targets)
@@ -44,11 +46,11 @@ public class InkColorCommand
 
         if (targets.size() == 1)
         {
-            source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", new StringTextComponent("#" + String.format("%06X", color).toUpperCase()).setStyle(Style.EMPTY.setColor(Color.fromInt(color))),
+            source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", getColorName(color),
                     targets.iterator().next().getDisplayName()), true);
         } else
         {
-            source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.multiple", new StringTextComponent("#" + String.format("%06X", color).toUpperCase()).setStyle(Style.EMPTY.setColor(Color.fromInt(color))),
+            source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.multiple", getColorName(color),
                     targets.size()), true);
         }
 

@@ -4,6 +4,8 @@ import com.cibernet.splatcraft.commands.arguments.ColorCriterionArgument;
 import com.cibernet.splatcraft.commands.arguments.InkColorArgument;
 import com.cibernet.splatcraft.data.capabilities.saveinfo.SaveInfoCapability;
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
+import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
+import com.cibernet.splatcraft.network.UpdateColorScoresPacket;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -11,6 +13,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collection;
@@ -28,6 +31,15 @@ public class ColorScoresCommand
         );
     }
 
+    protected static void update()
+    {
+        int[] colors = new int[ScoreboardHandler.getCriteriaKeySet().size()];
+        int i = 0;
+        for (int c : ScoreboardHandler.getCriteriaKeySet())
+            colors[i++] = c;
+        SplatcraftPacketHandler.sendToAll(new UpdateColorScoresPacket(true, true, colors));
+    }
+
     protected static int add(CommandContext<CommandSource> context) throws CommandSyntaxException
     {
         int color = InkColorArgument.getInkColor(context, "color");
@@ -39,7 +51,9 @@ public class ColorScoresCommand
         }
         ScoreboardHandler.createColorCriterion(color);
         SaveInfoCapability.get(context.getSource().getServer()).addInitializedColorScores(color);
-        source.sendFeedback(new TranslationTextComponent("commands.colorscores.add.success", ColorUtils.getFormatedColorName(color, false)), true);
+        update();
+
+        source.sendFeedback(new TranslationTextComponent("commands.colorscores.add.success", InkColorCommand.getColorName(color)), true);
 
         return color;
     }
@@ -49,9 +63,9 @@ public class ColorScoresCommand
         int color = ColorCriterionArgument.getInkColor(context, "color");
         ScoreboardHandler.removeColorCriterion(color);
         SaveInfoCapability.get(context.getSource().getServer()).removeColorScore(color);
+        update();
 
-
-        context.getSource().sendFeedback(new TranslationTextComponent("commands.colorscores.remove.success", ColorUtils.getFormatedColorName(color, false)), true);
+        context.getSource().sendFeedback(new TranslationTextComponent("commands.colorscores.remove.success", InkColorCommand.getColorName(color)), true);
 
         return color;
     }
@@ -67,7 +81,7 @@ public class ColorScoresCommand
         {
             context.getSource().sendFeedback(new TranslationTextComponent("commands.colorscores.list.count", collection.size()), false);
             collection.forEach(color ->
-                    context.getSource().sendFeedback(new TranslationTextComponent("commands.colorscores.list.entry", ScoreboardHandler.getColorIdentifier(color), ColorUtils.getFormatedColorName(color, false)), false));
+                    context.getSource().sendFeedback(new TranslationTextComponent("commands.colorscores.list.entry", ScoreboardHandler.getColorIdentifier(color), InkColorCommand.getColorName(color)), false));
         }
 
         return collection.size();
