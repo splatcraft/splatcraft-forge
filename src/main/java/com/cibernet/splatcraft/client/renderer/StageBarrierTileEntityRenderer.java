@@ -6,16 +6,20 @@ import com.cibernet.splatcraft.tileentities.ColoredBarrierTileEntity;
 import com.cibernet.splatcraft.tileentities.StageBarrierTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -23,6 +27,16 @@ import net.minecraft.util.math.BlockPos;
 
 public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarrierTileEntity>
 {
+    protected static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency", () -> {
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+    }, () -> {
+        RenderSystem.disableBlend();
+        RenderSystem.defaultBlendFunc();
+    });
+    private static final RenderType BARRIER_RENDER = RenderType.makeType("splatcraft:stage_barriers", DefaultVertexFormats.BLOCK, 7, 262144, false, true, RenderType.State.getBuilder()
+            .shadeModel(new RenderState.ShadeModelState(true)).lightmap(new RenderState.LightmapState(true)).texture(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true))
+            .alpha(new RenderState.AlphaState(0.003921569F)).transparency(TRANSLUCENT_TRANSPARENCY).build(true));
     public StageBarrierTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
     {
         super(rendererDispatcherIn);
@@ -60,7 +74,7 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
         ResourceLocation textureLoc = new ResourceLocation(Splatcraft.MODID, "blocks/" + block.getRegistryName().getPath() + (Minecraft.getInstance().gameSettings.graphicFanciness.func_238162_a_() > 0 ? "_fancy" : ""));
 
         TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(textureLoc);
-        IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucentNoCrumbling());
+        IVertexBuilder builder = buffer.getBuffer(Minecraft.isFabulousGraphicsEnabled() ? BARRIER_RENDER : RenderType.getTranslucentNoCrumbling());
 
         float alpha = activeTime / tileEntity.getMaxActiveTime();
 
@@ -118,6 +132,5 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
             addVertex(builder, matrixStack, 1, 1, 0, sprite.getMaxU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 0, 1, 0, sprite.getMinU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
         }
-        matrixStack.pop();
     }
 }

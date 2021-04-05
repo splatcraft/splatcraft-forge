@@ -204,12 +204,8 @@ public class ColorUtils
     {
         InkColor colorObj = InkColor.getByHex(color);
         if (colorObj != null)
-        {
             return colorObj.getLocalizedName();
-        } else
-        {
-            return String.format("%06X", color).toLowerCase();
-        }
+        else return String.format("#%06X", color).toLowerCase();
     }
 
     public static ITextComponent getFormatedColorName(int color, boolean colorless)

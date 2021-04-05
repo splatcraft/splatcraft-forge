@@ -60,6 +60,8 @@ public class PlayerPosingHandler
             float animTime;
             float angle;
 
+            PlayerCooldown cooldown;
+
             switch (((WeaponBaseItem) mainStack.getItem()).getPose())
             {
                 case DUAL_FIRE:
@@ -77,11 +79,10 @@ public class PlayerPosingHandler
                     mainHand.rotateAngleY = 0;
                     mainHand.rotateAngleX = -0.36f;
 
-                    PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
-                    angle = (cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime;
-
                     if(PlayerCooldown.hasPlayerCooldown(player))
                     {
+                        cooldown = PlayerCooldown.getPlayerCooldown(player);
+                        angle = (cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime;
                         angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI) + ((float) Math.PI) / 1.8f;
                         if (angle < 6.5f)
                             mainHand.rotateAngleX = MathHelper.cos(angle * 0.6662F);

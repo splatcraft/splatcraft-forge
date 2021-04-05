@@ -41,6 +41,13 @@ public class SplatcraftSounds
     public static SoundEvent subDetonate;
     public static SoundEvent remoteUse;
     public static SoundEvent powerEggCanOpen;
+    public static SoundEvent squidBumperPlace;
+    public static SoundEvent squidBumperPop;
+    public static SoundEvent squidBumperRespawning;
+    public static SoundEvent squidBumperReady;
+    public static SoundEvent squidBumperHit;
+    public static SoundEvent squidBumperInk;
+    public static SoundEvent squidBumperBreak;
 
     public static void initSounds()
     {
@@ -68,6 +75,13 @@ public class SplatcraftSounds
         subDetonate = createSoundEvent("sub_detonate");
         remoteUse = createSoundEvent("remote_use");
         powerEggCanOpen = createSoundEvent("power_egg_can_open");
+        squidBumperPlace = createSoundEvent("squid_bumper_place");
+        squidBumperPop = createSoundEvent("squid_bumper_pop");
+        squidBumperRespawning = createSoundEvent("squid_bumper_respawning");
+        squidBumperReady = createSoundEvent("squid_bumper_ready");
+        squidBumperHit = createSoundEvent("squid_bumper_hit");
+        squidBumperInk = createSoundEvent("squid_bumper_ink");
+        squidBumperBreak = createSoundEvent("squid_bumper_break");
     }
 
     private static SoundEvent createSoundEvent(String id)
