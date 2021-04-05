@@ -108,7 +108,7 @@
     ]
   },
   "squid_bumper_place": {
-    "subtitle": "subtitle.block.generic.place",
+    "subtitle": "subtitles.block.generic.place",
     "sounds": [
       "minecraft:dig/stone1",
       "minecraft:dig/stone2",
@@ -141,7 +141,7 @@
     ]
   },
   "squid_bumper_hit": {
-    "subtitle": "subtitle.block.generic.hit",
+    "subtitle": "subtitles.block.generic.hit",
     "sounds": [
       "minecraft:entity/armorstand/hit1",
       "minecraft:entity/armorstand/hit2",
@@ -150,13 +150,13 @@
     ]
   },
   "squid_bumper_ink": {
-    "subtitle": "subtitle.block.generic.hit",
+    "subtitle": "subtitles.block.generic.hit",
     "sounds": [
       "splatcraft:squid_bumper_ink"
     ]
   },
   "squid_bumper_break": {
-    "subtitle": "subtitle.block.generic.break",
+    "subtitle": "subtitles.block.generic.break",
     "sounds": [
       "minecraft:entity/armorstand/break1",
       "minecraft:entity/armorstand/break2",

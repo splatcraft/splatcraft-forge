@@ -89,11 +89,10 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
         if (getRespawnTime() > 1)
         {
             setRespawnTime(getRespawnTime() - 1);
-        } else if (getRespawnTime() == 1)
-        {
+        } else if (getRespawnTime() == 10)
+            world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.squidBumperRespawning, getSoundCategory(), 1, 1);
+        else if(getRespawnTime() == 1)
             respawn();
-        }
-
 
         BlockPos pos = getPositionUnderneath();
 
@@ -443,9 +442,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
     public void respawn()
     {
         if (getInkHealth() <= 0)
-        {
             world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.squidBumperReady, getSoundCategory(), 1, 1);
-        }
         setInkHealth(maxInkHealth);
         setRespawnTime(0);
 
