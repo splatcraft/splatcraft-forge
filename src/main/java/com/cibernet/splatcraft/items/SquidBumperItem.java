@@ -7,10 +7,12 @@ import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.registries.SplatcraftEntities;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
+import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.item.ItemEntity;
@@ -22,9 +24,10 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -115,12 +118,13 @@ public class SquidBumperItem extends Item
                     bumper.prevRotationYawHead = f;
 
                     world.addEntity(bumper);
-                    world.playSound(null, bumper.getPosX(), bumper.getPosY(), bumper.getPosZ(), SoundEvents.ENTITY_ARMOR_STAND_PLACE, SoundCategory.BLOCKS, 0.75F, 0.8F);
+                    world.playSound(null, bumper.getPosX(), bumper.getPosY(), bumper.getPosZ(), SplatcraftSounds.squidBumperPlace, SoundCategory.BLOCKS, 0.75F, 0.8F);
                 }
                 stack.shrink(1);
                 return ActionResultType.func_233537_a_(world.isRemote);
             }
         }
+
 
         return ActionResultType.FAIL;
     }

@@ -1,167 +1,200 @@
 {
   "shooter_firing": {
-    "category": "player",
     "subtitle": "subtitle.shooter_firing",
     "sounds": [
       "splatcraft:shooter_firing"
     ]
   },
   "blaster_firing": {
-    "category": "player",
     "subtitle": "subtitle.blaster_firing",
     "sounds": [
       "splatcraft:blaster_firing"
     ]
   },
   "blaster_explosion": {
-    "category": "player",
     "subtitle": "subtitle.blaster_explosion",
     "sounds": [
       "splatcraft:blaster_explosion"
     ]
   },
   "roller_fling": {
-    "category": "player",
     "subtitle": "subtitle.roller_fling",
     "sounds": [
       "splatcraft:roller_fling"
     ]
   },
   "roller_roll": {
-    "category": "player",
     "subtitle": "subtitle.roller_roll",
     "sounds": [
       "splatcraft:roller_roll"
     ]
   },
   "brush_fling": {
-    "category": "player",
     "subtitle": "subtitle.brush_fling",
     "sounds": [
       "splatcraft:brush_fling"
     ]
   },
   "brush_roll": {
-    "category": "player",
     "subtitle": "subtitle.brush_roll",
     "sounds": [
       "splatcraft:brush_roll"
     ]
   },
   "charger_charge": {
-    "category": "player",
     "subtitle": "subtitle.charger_charge",
     "sounds": [
       "splatcraft:charger_charge"
     ]
   },
   "charger_ready": {
-    "category": "player",
     "subtitle": "subtitle.charger_ready",
     "sounds": [
       "splatcraft:charger_ready"
     ]
   },
   "charger_shot": {
-    "category": "player",
     "subtitle": "subtitle.charger_shot",
     "sounds": [
       "splatcraft:charger_shot"
     ]
   },
   "dualie_firing": {
-    "category": "player",
     "subtitle": "subtitle.dualie_firing",
     "sounds": [
       "splatcraft:shooter_firing"
     ]
   },
   "dualie_dodge": {
-    "category": "player",
     "subtitle": "subtitle.dualie_dodge",
     "sounds": [
       "splatcraft:dualie_dodge"
     ]
   },
   "slosher_shot": {
-    "category": "player",
     "subtitle": "subtitle.slosher_shot",
     "sounds": [
       "splatcraft:slosher_shot"
     ]
   },
   "sub_throw": {
-    "category": "player",
     "subtitle": "subtitle.slosher_shot",
     "sounds": [
       "splatcraft:slosher_shot"
     ]
   },
   "sub_detonating": {
-    "category": "player",
     "subtitle": "subtitle.sub_detonating",
     "sounds": [
       "splatcraft:sub_detonating"
     ]
   },
   "sub_detonate": {
-    "category": "player",
     "subtitle": "subtitle.sub_detonate",
     "sounds": [
       "splatcraft:sub_detonate"
     ]
   },
   "remote_use": {
-    "category": "player",
     "subtitle": "subtitle.remote_use",
     "sounds": [
       "splatcraft:remote_use"
     ]
   },
   "power_egg_can_open": {
-    "category": "player",
     "subtitle": "subtitle.power_egg_can_open",
     "sounds": [
       "splatcraft:power_egg_can_open"
     ]
   },
+  "squid_bumper_place": {
+    "subtitle": "subtitle.block.generic.place",
+    "sounds": [
+      "minecraft:dig/stone1",
+      "minecraft:dig/stone2",
+      "minecraft:dig/stone3",
+      "minecraft:dig/stone4"
+    ]
+  },
+  "squid_bumper_pop": {
+    "subtitle": "subtitle.squid_bumper.pop",
+    "sounds": [
+      "minecraft:random/explode1",
+      "minecraft:random/explode2",
+      "minecraft:random/explode3",
+      "minecraft:random/explode4"
+    ]
+  },
+  "squid_bumper_respawning": {
+    "subtitle": "subtitle.squid_bumper.respawning",
+    "sounds": [
+      "splatcraft:squid_bumper_respawning"
+    ]
+  },
+  "squid_bumper_ready": {
+    "subtitle": "subtitle.squid_bumper.ready",
+    "sounds": [
+      {
+        "name": "minecraft:note/icechime",
+        "pitch": 4
+      }
+    ]
+  },
+  "squid_bumper_hit": {
+    "subtitle": "subtitle.block.generic.hit",
+    "sounds": [
+      "minecraft:entity/armorstand/hit1",
+      "minecraft:entity/armorstand/hit2",
+      "minecraft:entity/armorstand/hit3",
+      "minecraft:entity/armorstand/hit4"
+    ]
+  },
+  "squid_bumper_ink": {
+    "subtitle": "subtitle.block.generic.hit",
+    "sounds": [
+      "splatcraft:squid_bumper_ink"
+    ]
+  },
+  "squid_bumper_break": {
+    "subtitle": "subtitle.block.generic.break",
+    "sounds": [
+      "minecraft:entity/armorstand/break1",
+      "minecraft:entity/armorstand/break2",
+      "minecraft:entity/armorstand/break3",
+      "minecraft:entity/armorstand/break4"
+    ]
+  },
   "no_ink": {
-    "category": "player",
     "subtitle": "subtitle.no_ink",
     "sounds": [
       "splatcraft:no_ink"
     ]
   },
   "no_ink_sub": {
-    "category": "player",
     "subtitle": "subtitle.no_ink_sub",
     "sounds": [
       "splatcraft:no_ink_sub"
     ]
   },
   "squid_transform": {
-    "category": "player",
     "subtitle": "subtitle.squid_transform",
     "sounds": [
       "splatcraft:squid_transform"
     ]
   },
   "squid_revert": {
-    "category": "player",
     "subtitle": "subtitle.squid_revert",
     "sounds": [
       "splatcraft:squid_revert"
     ]
   },
   "ink_submerge": {
-    "category": "player",
     "subtitle": "subtitle.ink_submerge",
     "sounds": [
       "splatcraft:ink_submerge"
     ]
   },
   "ink_surface": {
-    "category": "player",
     "subtitle": "subtitle.ink_surface",
     "sounds": [
       "splatcraft:ink_surface"

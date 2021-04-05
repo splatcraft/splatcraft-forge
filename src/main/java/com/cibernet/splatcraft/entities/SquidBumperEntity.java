@@ -9,6 +9,7 @@ import com.cibernet.splatcraft.network.UpdateInkOverlayPacket;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
+import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkDamageUtils;
@@ -218,7 +219,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 
     private void playBrokenSound()
     {
-        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_ARMOR_STAND_BREAK, this.getSoundCategory(), 1.0F, 1.0F);
+        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SplatcraftSounds.squidBumperBreak, this.getSoundCategory(), 1.0F, 1.0F);
     }
 
     private void damageBumper(DamageSource source, float dmg)
@@ -245,19 +246,20 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
                 if (this.world.isRemote)
                 {
                     hurtCooldown = world.getGameTime();
+                    this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), SplatcraftSounds.squidBumperInk, this.getSoundCategory(), 0.3F, 1.0F, false);
                 }
                 break;
             case 32:
                 if (this.world.isRemote)
                 {
-                    this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_ARMOR_STAND_HIT, this.getSoundCategory(), 0.3F, 1.0F, false);
+                    this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), SplatcraftSounds.squidBumperHit, this.getSoundCategory(), 0.3F, 1.0F, false);
                     this.punchCooldown = this.world.getGameTime();
                 }
                 break;
             case 34:
                 if (this.world.isRemote)
                 {
-                    this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, this.getSoundCategory(), 0.5F, 20.0F, false);
+                    this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), SplatcraftSounds.squidBumperPop, this.getSoundCategory(), 0.5F, 20.0F, false);
                     InkOverlayCapability.get(this).setAmount(0);
                     playPopParticles();
                 }
@@ -442,7 +444,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
     {
         if (getInkHealth() <= 0)
         {
-            world.playSound(null, getPosX(), getPosY(), getPosZ(), SoundEvents.BLOCK_NOTE_BLOCK_CHIME, getSoundCategory(), 1, 4);
+            world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.squidBumperReady, getSoundCategory(), 1, 1);
         }
         setInkHealth(maxInkHealth);
         setRespawnTime(0);
