@@ -38,10 +38,13 @@ public class SplatcraftBlocks
 
     public static final Block inkVat = new InkVatBlock("ink_vat");
 
-    public static final Block emptyInkwell = new EmptyInkwellBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS).harvestTool(ToolType.PICKAXE)).setRegistryName("empty_inkwell");
+    public static final Block emptyInkwell =new EmptyInkwellBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS).harvestTool(ToolType.PICKAXE)).setRegistryName("empty_inkwell");
     public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
     public static final Block weaponWorkbench = new WeaponWorkbenchBlock("weapon_workbench");
-    public static final Block inkedWool = new InkedWoolBlock("inked_wool");
+    public static final Block inkedWool = new InkCoatedBlock("inked_wool", AbstractBlock.Properties.create(Material.WOOL).hardnessAndResistance(0.8F).sound(SoundType.CLOTH));
+    public static final Block inkedCarpet = new InkedCarpetBlock("inked_carpet");
+    public static final Block inkedGlass = new InkedGlassBlock("inked_glass");
+    public static final Block inkedGlassPane = new InkedGlassPaneBlock("inked_glass_pane");
     public static final Block canvas = new CanvasBlock("canvas");
 
     public static final Block grate = new GrateBlock("grate");
@@ -78,6 +81,9 @@ public class SplatcraftBlocks
         registry.register(inkwell);
         registry.register(weaponWorkbench);
         registry.register(inkedWool);
+        registry.register(inkedCarpet);
+        registry.register(inkedGlass);
+        registry.register(inkedGlassPane);
         registry.register(canvas);
 
         registry.register(grate);
@@ -100,6 +106,8 @@ public class SplatcraftBlocks
         RenderTypeLookup.setRenderLayer(glowingInkedBlock, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(glowingInkedStairs, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(glowingInkedSlab, RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(inkedGlass, RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(inkedGlassPane, RenderType.getTranslucent());
 
         RenderTypeLookup.setRenderLayer(emptyInkwell, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(inkwell, RenderType.getCutout());

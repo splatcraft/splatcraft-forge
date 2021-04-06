@@ -1,8 +1,8 @@
 package com.cibernet.splatcraft.client.renderer;
 
 import com.cibernet.splatcraft.Splatcraft;
+import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.StageBarrierBlock;
-import com.cibernet.splatcraft.tileentities.ColoredBarrierTileEntity;
 import com.cibernet.splatcraft.tileentities.StageBarrierTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -37,6 +37,7 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
     private static final RenderType BARRIER_RENDER = RenderType.makeType("splatcraft:stage_barriers", DefaultVertexFormats.BLOCK, 7, 262144, false, true, RenderType.State.getBuilder()
             .shadeModel(new RenderState.ShadeModelState(true)).lightmap(new RenderState.LightmapState(true)).texture(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true))
             .alpha(new RenderState.AlphaState(0.003921569F)).transparency(TRANSLUCENT_TRANSPARENCY).build(true));
+
     public StageBarrierTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
     {
         super(rendererDispatcherIn);
@@ -77,13 +78,9 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
         IVertexBuilder builder = buffer.getBuffer(Minecraft.isFabulousGraphicsEnabled() ? BARRIER_RENDER : RenderType.getTranslucentNoCrumbling());
 
         float alpha = activeTime / tileEntity.getMaxActiveTime();
-
-        matrixStack.push();
-
-        float[] rgb = new float[] {1, 1, 1};
-
-        if(tileEntity instanceof ColoredBarrierTileEntity)
-            rgb = ColorUtils.hexToRGB(((ColoredBarrierTileEntity) tileEntity).getColor());
+        float[] rgb = new float[] {1,1,1};
+        if(tileEntity.getBlockState().getBlock() instanceof IColoredBlock)
+            rgb = ColorUtils.hexToRGB(((IColoredBlock) tileEntity.getBlockState().getBlock()).getColor(tileEntity.getWorld(), tileEntity.getPos()));
 
         if (canRenderSide(tileEntity, Direction.NORTH))
         {

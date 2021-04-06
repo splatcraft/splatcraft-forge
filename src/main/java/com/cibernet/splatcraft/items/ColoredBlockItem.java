@@ -2,11 +2,13 @@ package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.InkedBlock;
+import com.cibernet.splatcraft.blocks.InkwellBlock;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
+import com.cibernet.splatcraft.tileentities.InkwellTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -43,7 +45,6 @@ public class ColoredBlockItem extends BlockItem
     private final Item clearItem;
     private boolean addStartersToTab = true;
 
-
     public ColoredBlockItem(Block block, String name, Properties properties, Item clearItem, boolean addStartersToTab)
     {
         this(block, name, properties, clearItem);
@@ -54,6 +55,7 @@ public class ColoredBlockItem extends BlockItem
     {
         super(block, properties);
         SplatcraftItems.inkColoredItems.add(this);
+        InkwellTileEntity.inkCoatingRecipes.put(clearItem, this);
         setRegistryName(name);
         this.clearItem = clearItem;
     }
@@ -141,7 +143,17 @@ public class ColoredBlockItem extends BlockItem
     {
         BlockPos pos = entity.getPosition();
 
-        if (clearItem != null && InkedBlock.causesClear(entity.world.getBlockState(pos)))
+        if (entity.world.getBlockState(pos.down()).getBlock() instanceof InkwellBlock)
+        {
+            InkColorTileEntity te = (InkColorTileEntity) entity.world.getTileEntity(pos.down());
+
+            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te))
+            {
+                ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColor(te));
+                ColorUtils.setColorLocked(entity.getItem(), true);
+            }
+        }
+        else if (clearItem != null && InkedBlock.causesClear(entity.world.getBlockState(pos)))
             entity.setItem(new ItemStack(clearItem, stack.getCount()));
 
         return false;

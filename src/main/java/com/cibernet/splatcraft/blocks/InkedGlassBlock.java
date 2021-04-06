@@ -6,28 +6,49 @@ import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-public class InkedWoolBlock extends Block implements IColoredBlock
+public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock
 {
-    public InkedWoolBlock(String name)
+    public InkedGlassBlock(String name)
     {
-        super(Properties.create(Material.WOOL).hardnessAndResistance(0.8F).sound(SoundType.CLOTH));
+        super(AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS).notSolid()
+                .setAllowsSpawn((state, world, pos, entity) -> false)
+                .setOpaque((state, world, pos) -> false)
+                .setSuffocates((state, world, pos) -> false).setBlocksVision((state, world, pos) -> false)
+                .setBlocksVision((state, world, pos) -> false).setBlocksVision((state, world, pos) -> false));
         SplatcraftBlocks.inkColoredBlocks.add(this);
         setRegistryName(name);
+    }
+
+    @Override
+    public boolean isTransparent(BlockState p_220074_1_) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader world, BlockPos pos, BlockPos beaconPos)
+    {
+        return ColorUtils.hexToRGB(getColor((World) world, pos));
     }
 
     @Override

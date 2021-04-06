@@ -154,6 +154,9 @@ public class SplatcraftItems
     public static final Item platedBarrierBar = new BlockItem(SplatcraftBlocks.platedBarrierBar).setRegistryName("plated_barrier_bar");
     public static final Item cautionBarrierBar = new BlockItem(SplatcraftBlocks.cautionBarrierBar).setRegistryName("caution_barrier_bar");
     public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "inked_wool", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_WOOL, false);
+    public static final Item inkedCarpet = new ColoredBlockItem(SplatcraftBlocks.inkedCarpet, "inked_carpet", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_CARPET, false);
+    public static final Item inkedGlass = new ColoredBlockItem(SplatcraftBlocks.inkedGlass, "inked_glass", new Item.Properties().group(GROUP_GENERAL), Items.GLASS, false);
+    public static final Item inkedGlassPane = new ColoredBlockItem(SplatcraftBlocks.inkedGlassPane, "inked_glass_pane", new Item.Properties().group(GROUP_GENERAL), Items.GLASS_PANE, false);
     public static final Item canvas = new BlockItem(SplatcraftBlocks.canvas).setRegistryName("canvas");
     public static final Item squidBumper = new SquidBumperItem("squid_bumper");
     public static final Item sunkenCrate = new BlockItem(SplatcraftBlocks.sunkenCrate).setRegistryName("sunken_crate");
@@ -208,6 +211,9 @@ public class SplatcraftItems
         registry.register(sunkenCrate);
         registry.register(canvas);
         registry.register(inkedWool);
+        registry.register(inkedCarpet);
+        registry.register(inkedGlass);
+        registry.register(inkedGlassPane);
         registry.register(squidBumper);
         registry.register(stageBarrier);
         registry.register(stageVoid);
