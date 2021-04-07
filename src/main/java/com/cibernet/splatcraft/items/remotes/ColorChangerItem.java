@@ -125,8 +125,8 @@ public class ColorChangerItem extends RemoteItem
     }
 
     @Override
-    public RemoteResult onRemoteUse(World world, BlockPos from, BlockPos to, ItemStack stack, int colorIn, int mode)
+    public RemoteResult onRemoteUse(World usedOnWorld, BlockPos from, BlockPos to, ItemStack stack, int colorIn, int mode)
     {
-        return replaceColor(world, from, to, colorIn, mode, ColorUtils.getInkColor(stack));
+        return replaceColor(getWorld(usedOnWorld, stack), from, to, colorIn, mode, ColorUtils.getInkColor(stack));
     }
 }

@@ -29,7 +29,7 @@ public class TurfScannerItem extends RemoteItem
         super(name, new Properties().group(SplatcraftItemGroups.GROUP_GENERAL).maxStackSize(1), 2);
     }
 
-    public static RemoteResult scanTurf(World world, BlockPos blockpos, BlockPos blockpos1, int mode, ServerPlayerEntity target)
+    public static RemoteResult scanTurf(World world, World outputWorld, BlockPos blockpos, BlockPos blockpos1, int mode, ServerPlayerEntity target)
     {
         BlockPos blockpos2 = new BlockPos(Math.min(blockpos.getX(), blockpos1.getX()), Math.min(blockpos1.getY(), blockpos.getY()), Math.min(blockpos.getZ(), blockpos1.getZ()));
         BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos1.getY(), blockpos.getY()), Math.max(blockpos.getZ(), blockpos1.getZ()));
@@ -67,25 +67,17 @@ public class TurfScannerItem extends RemoteItem
                 {
                     int y = getTopSolidOrLiquidBlock(new BlockPos(x, 1, z), world, Math.min(blockpos3.getY() + 2, 255)).down().getY();
 
-
                     if (y > blockpos3.getY() || y < blockpos2.getY())
-                    {
                         continue;
-                    }
 
                     BlockPos checkPos = new BlockPos(x, y, z);
                     BlockState checkState = world.getBlockState(checkPos);
 
-
                     if (!InkBlockUtils.canInk(world, checkPos))
-                    {
                         continue;
-                    }
 
                     if (!checkState.getMaterial().blocksMovement() || checkState.getMaterial().isLiquid() || !InkBlockUtils.canInk(world, checkPos))
-                    {
                         continue;
-                    }
 
                     blockTotal++;
 
@@ -122,9 +114,7 @@ public class TurfScannerItem extends RemoteItem
                         for (int j = 1; j <= 2; j++)
                         {
                             if (World.isOutsideBuildHeight(checkPos.up(j)))
-                            {
                                 break;
-                            }
                             if (!InkBlockUtils.canInkPassthrough(world, checkPos.up(j)))
                             {
                                 isWall = true;
@@ -132,20 +122,14 @@ public class TurfScannerItem extends RemoteItem
                             }
 
                             if (j > blockpos3.getY())
-                            {
                                 break;
-                            }
                         }
 
                         if (isWall || !InkBlockUtils.canInk(world, checkPos))
-                        {
                             continue;
-                        }
 
                         if (!checkState.getMaterial().blocksMovement() || checkState.getMaterial().isLiquid() || !InkBlockUtils.canInk(world, checkPos))
-                        {
                             continue;
-                        }
 
                         blockTotal++;
 
@@ -177,7 +161,6 @@ public class TurfScannerItem extends RemoteItem
         int i = 0;
         for (Map.Entry<Integer, Integer> entry : scores.entrySet())
         {
-            //world.getMinecraftServer().getPlayerList().sendMessage(new TextComponentTranslation("commands.turfWar.score", SplatCraftUtils.getColorName(entry.getKey()), String.format("%.1f",(entry.getValue()/(float)blockTotal)*100)));
             colors[i] = entry.getKey();
             colorScores[i] = entry.getValue() / (float) blockTotal * 100;
 
@@ -191,36 +174,16 @@ public class TurfScannerItem extends RemoteItem
         }
 
 
-        for (PlayerEntity player : world.getPlayers())
+        for (PlayerEntity player : outputWorld.getPlayers())
         {
             int color = ColorUtils.getPlayerColor(player);
             if (!ScoreboardHandler.hasColorCriterion(color))
-            {
                 continue;
-            }
 
             ScoreCriteria criterion = color == winner ? ScoreboardHandler.getColorWins(color) : ScoreboardHandler.getColorLosses(color);
-            world.getScoreboard().forAllObjectives(criterion, player.getScoreboardName(), score -> score.increaseScore(1));
+            outputWorld.getScoreboard().forAllObjectives(criterion, player.getScoreboardName(), score -> score.increaseScore(1));
         }
 
-            /*
-            if(SplatcraftScoreboardHandler.hasGoal(entry.getKey()))
-            {
-                Iterator<ScoreObjective> iter;
-                if(entry.getKey() == winner)
-                    iter = world.getScoreboard().getObjectivesFromCriteria(SplatcraftScoreboardHandler.getColorWins(entry.getKey())).iterator();
-                else
-                    iter = world.getScoreboard().getObjectivesFromCriteria(SplatcraftScoreboardHandler.getColorLosses(entry.getKey())).iterator();
-                while(iter.hasNext())
-                {
-                    Iterator<Score> scoreIter = world.getScoreboard().getSortedScores(iter.next()).iterator();
-
-                    while(scoreIter.hasNext())
-                        scoreIter.next().increaseScore(1);
-
-                }
-            }
-            */
 
         if (scores.isEmpty())
         {
@@ -229,12 +192,8 @@ public class TurfScannerItem extends RemoteItem
         {
             SendScanTurfResultsPacket packet = new SendScanTurfResultsPacket(colors, colorScores);
             if (target == null)
-            {
-                SplatcraftPacketHandler.sendToDim(packet, world);
-            } else
-            {
-                SplatcraftPacketHandler.sendToPlayer(packet, target);
-            }
+                SplatcraftPacketHandler.sendToDim(packet, outputWorld);
+            else SplatcraftPacketHandler.sendToPlayer(packet, target);
 
         }
         return createResult(true, null).setIntResults(winner, (int) ((float) affectedBlockTotal / blockTotal * 15));
@@ -263,8 +222,8 @@ public class TurfScannerItem extends RemoteItem
     }
 
     @Override
-    public RemoteResult onRemoteUse(World world, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode)
+    public RemoteResult onRemoteUse(World usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode)
     {
-        return scanTurf(world, posA, posB, mode, null);
+        return scanTurf(getWorld(usedOnWorld, stack), usedOnWorld, posA, posB, mode, null);
     }
 }

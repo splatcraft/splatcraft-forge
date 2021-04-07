@@ -16,7 +16,12 @@ public class InkDisruptorItem extends RemoteItem
     }
 
     @Override
-    public RemoteResult onRemoteUse(World world, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode)
+    public RemoteResult onRemoteUse(World usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode)
+    {
+        return clearInk(getWorld(usedOnWorld, stack), posA, posB);
+    }
+
+    public static RemoteResult clearInk(World world, BlockPos posA, BlockPos posB)
     {
         BlockPos blockpos2 = new BlockPos(Math.min(posA.getX(), posB.getX()), Math.min(posB.getY(), posA.getY()), Math.min(posA.getZ(), posB.getZ()));
         BlockPos blockpos3 = new BlockPos(Math.max(posA.getX(), posB.getX()), Math.max(posB.getY(), posA.getY()), Math.max(posA.getZ(), posB.getZ()));

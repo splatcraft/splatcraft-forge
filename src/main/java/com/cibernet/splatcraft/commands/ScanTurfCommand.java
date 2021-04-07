@@ -31,7 +31,7 @@ public class ScanTurfCommand
 
     private static int execute(CommandSource source, BlockPos from, BlockPos to, int mode) throws CommandSyntaxException
     {
-        RemoteItem.RemoteResult result = TurfScannerItem.scanTurf(source.getWorld(), from, to, mode, source.getEntity() instanceof ServerPlayerEntity ? source.asPlayer() : null);
+        RemoteItem.RemoteResult result = TurfScannerItem.scanTurf(source.getWorld(), source.getWorld(), from, to, mode, source.getEntity() instanceof ServerPlayerEntity ? source.asPlayer() : null);
 
         source.sendFeedback(result.getOutput() == null ? new TranslationTextComponent("commands.scanturf.success", result.getCommandResult()) : result.getOutput(), true);
 

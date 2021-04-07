@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.commands;
 
+import com.cibernet.splatcraft.items.remotes.InkDisruptorItem;
 import com.cibernet.splatcraft.items.remotes.RemoteItem;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.mojang.brigadier.CommandDispatcher;
@@ -29,7 +30,7 @@ public class ClearInkCommand
 
     private static int execute(CommandSource source, BlockPos from, BlockPos to)
     {
-        RemoteItem.RemoteResult result = SplatcraftItems.inkDisruptor.onRemoteUse(source.getWorld(), from, to, ItemStack.EMPTY, -1, 0);
+        RemoteItem.RemoteResult result = InkDisruptorItem.clearInk(source.getWorld(), from, to);
 
         source.sendFeedback(result.getOutput(), true);
         return result.getCommandResult();

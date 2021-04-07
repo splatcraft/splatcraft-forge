@@ -10,11 +10,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -66,48 +65,38 @@ public abstract class RemoteItem extends Item
 
     public static boolean hasCoordSet(ItemStack stack)
     {
-        return hasCoordA(stack) && hasCoordB(stack);
+        return stack.getOrCreateTag().contains("PointA") && stack.getOrCreateTag().contains("PointB");
     }
 
-    public static boolean hasCoordA(ItemStack stack)
-    {
-        CompoundNBT nbt = stack.getTag();
-        return nbt != null && nbt.contains("PointAX") && nbt.contains("PointAY") && nbt.contains("PointAZ");
-    }
-
-    public static boolean hasCoordB(ItemStack stack)
-    {
-        CompoundNBT nbt = stack.getTag();
-        return nbt != null && nbt.contains("PointBX") && nbt.contains("PointBY") && nbt.contains("PointBZ");
-    }
-
-    public static BlockPos[] getCoordSet(ItemStack stack)
+    public static Tuple<BlockPos, BlockPos> getCoordSet(ItemStack stack)
     {
         if (!hasCoordSet(stack))
-        {
-            return new BlockPos[0];
-        }
+            return null;
         CompoundNBT nbt = stack.getTag();
-
-        return new BlockPos[]{new BlockPos(nbt.getInt("PointAX"), nbt.getInt("PointAY"), nbt.getInt("PointAZ")), new BlockPos(nbt.getInt("PointBX"), nbt.getInt("PointBY"), nbt.getInt("PointBZ"))};
+        return new Tuple<>(NBTUtil.readBlockPos(nbt.getCompound("PointA")), NBTUtil.readBlockPos(nbt.getCompound("PointB")));
     }
 
-    public static boolean addCoords(ItemStack stack, BlockPos pos)
+    public static boolean addCoords(World world, ItemStack stack, BlockPos pos)
     {
         if (hasCoordSet(stack))
-        {
             return false;
-        }
 
         CompoundNBT nbt = stack.getOrCreateTag();
 
-        String key = hasCoordA(stack) ? "B" : "A";
 
-        nbt.putInt("Point" + key + "X", pos.getX());
-        nbt.putInt("Point" + key + "Y", pos.getY());
-        nbt.putInt("Point" + key + "Z", pos.getZ());
+        if(!nbt.contains("Dimension"))
+            nbt.putString("Dimension", world.getDimensionKey().getLocation().toString());
+        else if(getWorld(world, stack) != world)
+            return false;
+
+        nbt.put("Point" + (stack.getOrCreateTag().contains("PointA") ? "B" : "A"), NBTUtil.writeBlockPos(pos));
 
         return true;
+    }
+
+    public static World getWorld(World world, ItemStack stack)
+    {
+        return world.getServer().getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(stack.getOrCreateTag().getString("Dimension"))));
     }
 
     public static RemoteResult createResult(boolean success, TextComponent output)
@@ -134,11 +123,13 @@ public abstract class RemoteItem extends Item
 
         if (hasCoordSet(stack))
         {
-            tooltip.add(new TranslationTextComponent("item.remote.coords.b", nbt.getInt("PointAX"), nbt.getInt("PointAY"), nbt.getInt("PointAZ"),
-                    nbt.getInt("PointBX"), nbt.getInt("PointBY"), nbt.getInt("PointBZ")));
-        } else if (hasCoordA(stack))
+            Tuple<BlockPos, BlockPos> set = getCoordSet(stack);
+            tooltip.add(new TranslationTextComponent("item.remote.coords.b", set.getA().getX(), set.getA().getY(), set.getA().getZ(),
+                    set.getB().getX(), set.getB().getY(), set.getB().getZ()));
+        } else if (stack.getOrCreateTag().contains("PointA"))
         {
-            tooltip.add(new TranslationTextComponent("item.remote.coords.a", nbt.getInt("PointAX"), nbt.getInt("PointAY"), nbt.getInt("PointAZ")));
+            BlockPos pos = NBTUtil.readBlockPos(nbt.getCompound("PosA"));
+            tooltip.add(new TranslationTextComponent("item.remote.coords.a", pos.getX(), pos.getY(), pos.getZ()));
         }
 
     }
@@ -151,9 +142,9 @@ public abstract class RemoteItem extends Item
             return ActionResultType.PASS;
         }
 
-        if (addCoords(context.getItem(), context.getPos()))
+        if (addCoords(context.getWorld(), context.getItem(), context.getPos()))
         {
-            String key = hasCoordA(context.getItem()) ? "b" : "a";
+            String key = context.getItem().getOrCreateTag().contains("PointA") ? "b" : "a";
             BlockPos pos = context.getPos();
 
             context.getPlayer().sendStatusMessage(new TranslationTextComponent("status.coord_set." + key, pos.getX(), pos.getY(), pos.getZ()), true);
@@ -193,15 +184,12 @@ public abstract class RemoteItem extends Item
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
-    public abstract RemoteResult onRemoteUse(World world, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode);
+    public abstract RemoteResult onRemoteUse(World usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode);
 
-    public RemoteResult onRemoteUse(World world, ItemStack stack, int colorIn, int mode)
+    public RemoteResult onRemoteUse(World usedOnWorld, ItemStack stack, int colorIn, int mode)
     {
-        BlockPos[] coordSet = getCoordSet(stack);
-        BlockPos blockpos = coordSet[0];
-        BlockPos blockpos1 = coordSet[1];
-
-        return onRemoteUse(world, blockpos, blockpos1, stack, colorIn, mode);
+        Tuple<BlockPos, BlockPos> coordSet = getCoordSet(stack);
+        return onRemoteUse(usedOnWorld, coordSet.getA(), coordSet.getB(), stack, colorIn, mode);
     }
 
     public static class RemoteResult
