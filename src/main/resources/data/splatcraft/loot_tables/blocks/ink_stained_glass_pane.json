@@ -6,6 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "name": "splatcraft:ink_stained_glass_pane",
           "functions": [
             {
               "function": "minecraft:copy_nbt",
@@ -18,8 +19,22 @@
                 }
               ]
             }
-          ],
-          "name": "splatcraft:inked_wool"
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:match_tool",
+          "predicate": {
+            "enchantments": [
+              {
+                "enchantment": "minecraft:silk_touch",
+                "levels": {
+                  "min": 1
+                }
+              }
+            ]
+          }
         }
       ]
     }
