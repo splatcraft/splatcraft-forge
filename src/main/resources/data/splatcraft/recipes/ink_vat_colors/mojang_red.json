@@ -1,6 +1,6 @@
 {
   "type": "splatcraft:ink_vat_color",
-  "color": "DF242F",
+  "color": "splatcraft:mojang",
   "filter": {
     "item": "splatcraft:enchanted_filter"
   }

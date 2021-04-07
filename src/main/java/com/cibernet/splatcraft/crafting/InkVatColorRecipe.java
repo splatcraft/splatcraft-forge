@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.crafting;
 
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
+import com.cibernet.splatcraft.registries.SplatcraftInkColors;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.google.common.collect.Lists;
@@ -8,15 +9,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.*;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -29,6 +29,8 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
     protected final int color;
     protected final boolean disableOmni;
     protected final ResourceLocation id;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public InkVatColorRecipe(ResourceLocation id, Ingredient input, int outputColor, boolean disableOmni)
     {
@@ -120,9 +122,22 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
             try
             {
                 color = JSONUtils.getInt(json, "color");
-            } catch (JsonSyntaxException e)
+            } catch (JsonSyntaxException jse)
             {
-                color = Integer.parseInt(JSONUtils.getString(json, "color"), 16);
+                String colorStr = JSONUtils.getString(json, "color");
+                try {
+                    color = Integer.parseInt(colorStr, 16);
+                } catch (NumberFormatException nfe)
+                {
+                    try
+                    {
+                        color = SplatcraftInkColors.REGISTRY.getValue(new ResourceLocation(colorStr)).getColor();
+                    } catch (NullPointerException npe)
+                    {
+                        LOGGER.error("Parsing error loading recipe {}", recipeId, npe);
+                        return null;
+                    }
+                }
             }
 
 

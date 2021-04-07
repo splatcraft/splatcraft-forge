@@ -1,6 +1,6 @@
 {
   "type": "splatcraft:ink_vat_color",
-  "color": "08B672",
+  "color": "splatcraft:mint",
   "filter": {
     "item": "splatcraft:pastel_filter"
   }

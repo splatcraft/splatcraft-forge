@@ -1,6 +1,6 @@
 {
   "type": "splatcraft:ink_vat_color",
-  "color": "88ffc1",
+  "color": "splatcraft:ice",
   "filter": {
     "item": "splatcraft:enchanted_filter"
   }
