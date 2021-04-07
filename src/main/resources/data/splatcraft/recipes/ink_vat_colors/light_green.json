@@ -1,0 +1,7 @@
+{
+  "type": "splatcraft:ink_vat_color",
+  "color": "splatcraft:light_green",
+  "filter": {
+    "item": "splatcraft:pastel_filter"
+  }
+}

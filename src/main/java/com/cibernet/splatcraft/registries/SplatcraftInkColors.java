@@ -54,7 +54,7 @@ public class SplatcraftInkColors
     public static final InkColor omniGreen = new InkColor("omni_green", 0x93E720);
     public static final InkColor mana = new InkColor("mana", 0xF33EF1);
 
-    //Color Lock
+    //Colorblind mode
     public static final InkColor colorLockA = new InkColor("color_lock_friendly", 0xDEA801);
     public static final InkColor colorLockB = new InkColor("color_lock_hostile", 0x4717A9);
 
@@ -75,7 +75,24 @@ public class SplatcraftInkColors
     public static final InkColor dyeGreen = new InkColor("dye_green", 6192150, DyeColor.GREEN);
     public static final InkColor dyeRed = new InkColor("dye_red", 11546150, DyeColor.RED);
     public static final InkColor dyeBlack = new InkColor("dye_black", 1908001, DyeColor.BLACK);
+
+    //3.0
+    public static final InkColor royalBlue = new InkColor("royal_blue", 0x525CF5);
+    public static final InkColor mothGreen = new InkColor("moth_green", 0x425113);
+    public static final InkColor lightGreen = new InkColor("light_green", 0x85E378);
+    public static final InkColor purple = new InkColor("purple", 0x6C0676);
+    public static final InkColor mustard = new InkColor("mustard", 0xCE8003);
+    public static final InkColor lumigreen = new InkColor("lumigreen", 0x60AB43);
+    public static final InkColor darkBlue = new InkColor("dark_blue", 0x0D195E);
+    public static final InkColor soda = new InkColor("soda", 0x65B799);
+    public static final InkColor deepBlue = new InkColor("deep_blue", 0x0D37C3);
+    public static final InkColor fuchsia = new InkColor("fuchsia", 0xE532D6);
+    public static final InkColor winterGreen = new InkColor("winter_green", 0x4DE29D);
+    public static final InkColor pumpkin = new InkColor("pumpkin", 0xDD6900);
+    public static final InkColor redwood = new InkColor("redwood", 0x5B342E);
+
     public static final InkColor undyed = new InkColor("default", ColorUtils.DEFAULT);
+
     public static IForgeRegistry<InkColor> REGISTRY;
 
     @SubscribeEvent
@@ -131,6 +148,20 @@ public class SplatcraftInkColors
         registry.register(dyeGreen);
         registry.register(dyeRed);
         registry.register(dyeBlack);
+
+        registry.register(lightGreen);
+        registry.register(purple);
+        registry.register(royalBlue);
+        registry.register(mothGreen);
+        registry.register(mustard);
+        registry.register(lumigreen);
+        registry.register(darkBlue);
+        registry.register(soda);
+        registry.register(deepBlue);
+        registry.register(fuchsia);
+        registry.register(winterGreen);
+        registry.register(pumpkin);
+        registry.register(redwood);
 
         registry.register(undyed);
 
