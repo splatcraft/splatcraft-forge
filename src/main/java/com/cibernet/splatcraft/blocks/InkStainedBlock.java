@@ -21,9 +21,9 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class InkCoatedBlock extends Block implements IColoredBlock
+public class InkStainedBlock extends Block implements IColoredBlock
 {
-    public InkCoatedBlock(String name, Properties properties)
+    public InkStainedBlock(String name, Properties properties)
     {
         super(properties);
         SplatcraftBlocks.inkColoredBlocks.add(this);

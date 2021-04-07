@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.registries;
 
+import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.blocks.*;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -16,6 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftBlocks
@@ -40,11 +42,12 @@ public class SplatcraftBlocks
 
     public static final Block emptyInkwell =new EmptyInkwellBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS).harvestTool(ToolType.PICKAXE)).setRegistryName("empty_inkwell");
     public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
-    public static final Block weaponWorkbench = new WeaponWorkbenchBlock("weapon_workbench");
-    public static final Block inkedWool = new InkCoatedBlock("inked_wool", AbstractBlock.Properties.create(Material.WOOL).hardnessAndResistance(0.8F).sound(SoundType.CLOTH));
-    public static final Block inkedCarpet = new InkedCarpetBlock("inked_carpet");
-    public static final Block inkedGlass = new InkedGlassBlock("inked_glass");
-    public static final Block inkedGlassPane = new InkedGlassPaneBlock("inked_glass_pane");
+    public static final Block weaponWorkbench = new WeaponWorkbenchBlock("ammo_knights_workbench");
+
+    public static final Block inkedWool = new InkStainedBlock("ink_stained_wool", AbstractBlock.Properties.create(Material.WOOL).hardnessAndResistance(0.8F).sound(SoundType.CLOTH));
+    public static final Block inkedCarpet = new InkedCarpetBlock("ink_stained_carpet");
+    public static final Block inkedGlass = new InkedGlassBlock("ink_stained_glass");
+    public static final Block inkedGlassPane = new InkedGlassPaneBlock("ink_stained_glass_pane");
     public static final Block canvas = new CanvasBlock("canvas");
 
     public static final Block grate = new GrateBlock("grate");
@@ -101,6 +104,7 @@ public class SplatcraftBlocks
         registry.register(new ChainBlockOverride());
     }
 
+
     public static void setRenderLayers()
     {
         RenderTypeLookup.setRenderLayer(glowingInkedBlock, RenderType.getTranslucent());
@@ -115,5 +119,30 @@ public class SplatcraftBlocks
         RenderTypeLookup.setRenderLayer(grateRamp, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(crate, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(sunkenCrate, RenderType.getCutout());
+    }
+
+
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+    public static class Missmaps
+    {
+        private static final HashMap<String, Block> remaps = new HashMap<String, Block>()
+        {{
+            put("inked_wool", inkedWool);
+            put("inked_carpet", inkedCarpet);
+            put("inked_glass", inkedGlass);
+            put("inked_glass_pane", inkedGlassPane);
+            put("weapon_workbench", weaponWorkbench);
+        }};
+
+        @SubscribeEvent
+        public static void onMissingMappings(final RegistryEvent.MissingMappings<Block> event)
+        {
+            for(RegistryEvent.MissingMappings.Mapping<Block> block : event.getMappings(Splatcraft.MODID))
+            {
+                String key = block.key.getPath();
+                if(remaps.containsKey(key))
+                    block.remap(remaps.get(key));
+            }
+        }
     }
 }

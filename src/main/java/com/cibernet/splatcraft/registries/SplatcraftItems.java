@@ -14,6 +14,7 @@ import com.cibernet.splatcraft.items.remotes.RemoteItem;
 import com.cibernet.splatcraft.items.remotes.TurfScannerItem;
 import com.cibernet.splatcraft.items.weapons.*;
 import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -30,6 +31,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -144,7 +146,7 @@ public class SplatcraftItems
 
     //Crafting Stations
     public static final Item inkVat = new BlockItem(SplatcraftBlocks.inkVat).setRegistryName("ink_vat");
-    public static final Item weaponWorkbench = new BlockItem(SplatcraftBlocks.weaponWorkbench).setRegistryName("weapon_workbench");
+    public static final Item weaponWorkbench = new BlockItem(SplatcraftBlocks.weaponWorkbench).setRegistryName("ammo_knights_workbench");
 
     //Map Items
     public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16, emptyInkwell);
@@ -153,14 +155,18 @@ public class SplatcraftItems
     public static final Item barrierBar = new BlockItem(SplatcraftBlocks.barrierBar).setRegistryName("barrier_bar");
     public static final Item platedBarrierBar = new BlockItem(SplatcraftBlocks.platedBarrierBar).setRegistryName("plated_barrier_bar");
     public static final Item cautionBarrierBar = new BlockItem(SplatcraftBlocks.cautionBarrierBar).setRegistryName("caution_barrier_bar");
-    public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "inked_wool", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_WOOL, false);
-    public static final Item inkedCarpet = new ColoredBlockItem(SplatcraftBlocks.inkedCarpet, "inked_carpet", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_CARPET, false);
-    public static final Item inkedGlass = new ColoredBlockItem(SplatcraftBlocks.inkedGlass, "inked_glass", new Item.Properties().group(GROUP_GENERAL), Items.GLASS, false);
-    public static final Item inkedGlassPane = new ColoredBlockItem(SplatcraftBlocks.inkedGlassPane, "inked_glass_pane", new Item.Properties().group(GROUP_GENERAL), Items.GLASS_PANE, false);
     public static final Item canvas = new BlockItem(SplatcraftBlocks.canvas).setRegistryName("canvas");
     public static final Item squidBumper = new SquidBumperItem("squid_bumper");
     public static final Item sunkenCrate = new BlockItem(SplatcraftBlocks.sunkenCrate).setRegistryName("sunken_crate");
     public static final Item crate = new BlockItem(SplatcraftBlocks.crate).setRegistryName("crate");
+
+    //Ink Stained Blocks
+    public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "ink_stained_wool", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_WOOL, false);
+    public static final Item inkedCarpet = new ColoredBlockItem(SplatcraftBlocks.inkedCarpet, "ink_stained_carpet", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_CARPET, false);
+    public static final Item inkedGlass = new ColoredBlockItem(SplatcraftBlocks.inkedGlass, "ink_stained_glass", new Item.Properties().group(GROUP_GENERAL), Items.GLASS, false);
+    public static final Item inkedGlassPane = new ColoredBlockItem(SplatcraftBlocks.inkedGlassPane, "ink_stained_glass_pane", new Item.Properties().group(GROUP_GENERAL), Items.GLASS_PANE, false);
+
+    //Barriers
     public static final Item stageBarrier = new BlockItem(SplatcraftBlocks.stageBarrier).setRegistryName("stage_barrier");
     public static final Item stageVoid = new BlockItem(SplatcraftBlocks.stageVoid).setRegistryName("stage_void");
     public static final Item allowedColorBarrier = new ColoredBlockItem(SplatcraftBlocks.allowedColorBarrier, "allowed_color_barrier").addStarters(false);
@@ -226,6 +232,31 @@ public class SplatcraftItems
 
         DispenserBlock.registerDispenseBehavior(inkwell, new PlaceBlockDispenseBehavior());
         DispenserBlock.registerDispenseBehavior(emptyInkwell, new PlaceBlockDispenseBehavior());
+    }
+
+
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+    public static class Missmaps
+    {
+        private static final HashMap<String, Item> remaps = new HashMap<String, Item>()
+        {{
+            put("inked_wool", inkedWool);
+            put("inked_carpet", inkedCarpet);
+            put("inked_glass", inkedGlass);
+            put("inked_glass_pane", inkedGlassPane);
+            put("weapon_workbench", weaponWorkbench);
+        }};
+
+        @SubscribeEvent
+        public static void onMissingMappings(final RegistryEvent.MissingMappings<Item> event)
+        {
+            for(RegistryEvent.MissingMappings.Mapping<Item> item : event.getMappings(Splatcraft.MODID))
+            {
+                String key = item.key.getPath();
+                if(remaps.containsKey(key))
+                    item.remap(remaps.get(key));
+            }
+        }
     }
 
     public static void registerModelProperties()

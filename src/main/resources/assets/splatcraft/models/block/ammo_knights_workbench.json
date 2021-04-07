@@ -6,8 +6,8 @@
     32
   ],
   "textures": {
-    "0": "splatcraft:blocks/weapon_workbench",
-    "particle": "splatcraft:blocks/weapon_workbench"
+    "0": "splatcraft:blocks/ammo_knights_workbench",
+    "particle": "splatcraft:blocks/ammo_knights_workbench"
   },
   "elements": [
     {
