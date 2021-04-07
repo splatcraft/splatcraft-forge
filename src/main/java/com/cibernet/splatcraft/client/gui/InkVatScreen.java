@@ -71,7 +71,7 @@ public class InkVatScreen extends ContainerScreen<InkVatContainer>
             int x = colorSelectionX + (i - sc) / 2 * 19;
             int y = colorSelectionY + (i - sc) % 2 * 18;
 
-            if (isPointInRegion(x, y, 18, 16, mouseX, mouseY))
+            if (isPointInRegion(x, y, 17, 16, mouseX, mouseY))
             {
                 renderTooltip(matrixStack, ColorUtils.getFormatedColorName(colorSelection.get(i), false), mouseX, mouseY);
             }
