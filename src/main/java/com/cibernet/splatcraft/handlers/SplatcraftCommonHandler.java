@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.handlers;
 
+import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
@@ -7,25 +8,26 @@ import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
+import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -51,6 +53,21 @@ public class SplatcraftCommonHandler
         if (InkBlockUtils.onEnemyInk(event.getEntityLiving()))
         {
             entity.setMotion(entity.getMotion().x, Math.min(entity.getMotion().y, 0.1f), entity.getMotion().z);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDestroyBlock(LivingDestroyBlockEvent event)
+    {
+        if(!(event.getEntity().world.getTileEntity(event.getPos()) instanceof InkedBlockTileEntity))
+            return;
+
+        InkedBlockTileEntity te = (InkedBlockTileEntity) event.getEntity().world.getTileEntity(event.getPos());
+        BlockState savedState = te.getSavedState();
+        if(event.getState().getBlock() instanceof IColoredBlock && (event.isCanceled() || (event.getEntityLiving() instanceof EnderDragonEntity && savedState.isIn(BlockTags.DRAGON_IMMUNE))))
+        {
+            ((IColoredBlock) event.getState().getBlock()).remoteInkClear(event.getEntityLiving().world, event.getPos());
+            event.setCanceled(true);
         }
     }
 
