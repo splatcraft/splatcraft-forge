@@ -150,8 +150,9 @@ public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock
         }
 
         BlockState state = world.getBlockState(pos);
-        world.setBlockState(pos, SplatcraftBlocks.inkedBlock.getDefaultState(), 3);
-        world.setTileEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(SplatcraftBlocks.inkedBlock.getDefaultState(), world));
+        BlockState inkState = InkBlockUtils.getInkState(inkType, state);
+        world.setBlockState(pos, inkState, 3);
+        world.setTileEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(inkState, world));
         InkedBlockTileEntity inkte = (InkedBlockTileEntity) world.getTileEntity(pos);
         if (inkte == null)
         {

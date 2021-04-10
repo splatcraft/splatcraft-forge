@@ -220,6 +220,7 @@ public class InkedSlabBlock extends SlabBlock implements IColoredBlock
             world.setBlockState(pos, state, 2);
             InkedBlockTileEntity newTe = (InkedBlockTileEntity) world.getTileEntity(pos);
             newTe.setSavedState(te.getSavedState());
+            newTe.setSavedColor(te.getSavedColor());
             newTe.setColor(te.getColor());
 
             world.setTileEntity(pos, newTe);

@@ -65,18 +65,15 @@ public class InkBlockUtils
         }
 
         if (state.getBlock() instanceof IColoredBlock)
-        {
             return ((IColoredBlock) state.getBlock()).inkBlock(world, pos, color, damage, inkType);
-        }
 
         if (!canInk(world, pos))
-        {
             return false;
-        }
 
-        world.setBlockState(pos, getInkState(inkType, state), 3);
+        BlockState inkState = getInkState(inkType, state);
+        world.setBlockState(pos, inkState, 3);
 
-        world.setTileEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(SplatcraftBlocks.inkedBlock.getDefaultState(), world));
+        world.setTileEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(inkState, world));
         InkedBlockTileEntity inkte = (InkedBlockTileEntity) world.getTileEntity(pos);
         if (inkte == null)
         {
