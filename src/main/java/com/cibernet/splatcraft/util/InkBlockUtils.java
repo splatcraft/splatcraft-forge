@@ -111,42 +111,27 @@ public class InkBlockUtils
     {
 
         if (InkedBlock.isTouchingLiquid(world, pos))
-        {
             return false;
-        }
 
         Block block = world.getBlockState(pos).getBlock();
 
         if (SplatcraftTags.Blocks.UNINKABLE_BLOCKS.contains(block))
-        {
             return false;
-        }
 
-        if (block instanceof StairsBlock || block instanceof SlabBlock || block instanceof BarrierBlock)
-        {
+        if (block instanceof StairsBlock || block instanceof SlabBlock)
             return true;
-        }
 
         if (!(world.getTileEntity(pos) instanceof InkColorTileEntity) && world.getTileEntity(pos) != null)
-        {
             return false;
-        }
-
 
         if (SplatcraftTags.Blocks.INKABLE_BLOCKS.contains(block))
-        {
             return true;
-        }
 
         if (canInkPassthrough(world, pos))
-        {
             return false;
-        }
 
         if (!world.getBlockState(pos).isOpaqueCube(world, pos))
-        {
             return false;
-        }
 
         return !block.isTransparent(world.getBlockState(pos));
     }
