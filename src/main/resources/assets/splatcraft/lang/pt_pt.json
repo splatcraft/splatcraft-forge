@@ -79,9 +79,9 @@
     "weaponStat.mobility": "Mobility: %s%%",
     "weaponStat.charge_speed": "Charge Speed: %s%%",
 
-    "weaponTab.splatcraft:ammo_knights_workbench_tabs/sub_weapons": "Armas secundárias",
-    "weaponTab.splatcraft:ammo_knights_workbench_tabs/special_weapons": "Armas especiais",
-    "weaponTab.splatcraft:ammo_knights_workbench_tabs/ink_tanks": "Tanques de tinta",
+    "weaponTab.weapon_workbench_tabs/sub_weapons": "Armas secundárias",
+    "weaponTab.weapon_workbench_tabs/special_weapons": "Armas especiais",
+    "weaponTab.weapon_workbench_tabs/ink_tanks": "Tanques de tinta",
 
     "subtitle.shooter_firing": "Shooter Firing",
     "subtitle.blaster_firing": "Blaster Firing",

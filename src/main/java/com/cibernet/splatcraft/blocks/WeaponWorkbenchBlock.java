@@ -45,7 +45,7 @@ public class WeaponWorkbenchBlock extends HorizontalBlock implements IWaterLogga
     protected static final VoxelShape DETAIL = makeCuboidShape(0, 8, 0, 16, 10, 16);
     protected static final VoxelShape HANDLE = makeCuboidShape(5, 11, 0, 11, 12, 1);
     public static final VoxelShape[] SHAPES = createVoxelShapes(BOTTOM_LEFT, BOTTOM_RIGHT, BASE, DETAIL, HANDLE);
-    private static final ITextComponent CONTAINER_NAME = new TranslationTextComponent("container.weapon_workbench");
+    private static final ITextComponent CONTAINER_NAME = new TranslationTextComponent("container.ammo_knights_workbench");
 
     public WeaponWorkbenchBlock(String name)
     {

@@ -313,7 +313,7 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
         }
 
         blit(matrixStack, 71, 93, 177, ty, 34, 12);
-        String craftStr = new TranslationTextComponent("gui.weapon_workbench.craft").getString();
+        String craftStr = new TranslationTextComponent("gui.ammo_knights_workbench.craft").getString();
 
         font.drawString(matrixStack, craftStr, (float) xSize / 2 - (float) font.getStringWidth(craftStr) / 2, 95, ty == 0 ? 0x999999 : 0xEFEFEF);
         minecraft.getTextureManager().bindTexture(TEXTURES);
