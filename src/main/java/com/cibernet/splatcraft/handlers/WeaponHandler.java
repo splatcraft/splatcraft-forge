@@ -77,9 +77,8 @@ public class WeaponHandler
             PlayerInfoCapability.get(player).setIsSquid(false);
             canUseWeapon = !cooldown.preventWeaponUse();
 
-            if (cooldown.getTime() == 1)
+            if (player.isHandActive() && cooldown.getTime() == 1)
             {
-                player.getActiveHand();
                 ItemStack stack = player.getHeldItem(player.getActiveHand());
                 if (stack.getItem() instanceof WeaponBaseItem)
                 {
