@@ -34,7 +34,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
     }
 
     @SuppressWarnings("deprecation")
-    public static RemoteResult replaceColor(World world, BlockPos from, BlockPos to, int affectedColor, int mode, int color)
+    public static RemoteResult replaceColor(World world, BlockPos from, BlockPos to, int color, int mode, int affectedColor)
     {
         BlockPos blockpos2 = new BlockPos(Math.min(from.getX(), to.getX()), Math.min(to.getY(), from.getY()), Math.min(from.getZ(), to.getZ()));
         BlockPos blockpos3 = new BlockPos(Math.max(from.getX(), to.getX()), Math.max(to.getY(), from.getY()), Math.max(from.getZ(), to.getZ()));
@@ -70,7 +70,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
                     {
                         int teColor = ((InkColorTileEntity) tileEntity).getColor();
 
-                        if (teColor != affectedColor && (mode == 0 || mode == 1 && teColor == color || mode == 2 && teColor != color) && ((IColoredBlock) block).remoteColorChange(world, pos, affectedColor))
+                        if (teColor != color && (mode == 0 || mode == 1 && teColor == affectedColor || mode == 2 && teColor != affectedColor) && ((IColoredBlock) block).remoteColorChange(world, pos, color))
                         {
                             count++;
                         }
@@ -80,7 +80,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
             }
         }
 
-        return createResult(true, new TranslationTextComponent("status.change_color.success", count, ColorUtils.getFormatedColorName(affectedColor, false))).setIntResults(count, count * 15 / blockTotal);
+        return createResult(true, new TranslationTextComponent("status.change_color.success", count, ColorUtils.getFormatedColorName(color, false))).setIntResults(count, count * 15 / blockTotal);
     }
 
     @Override
@@ -128,6 +128,6 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
     @Override
     public RemoteResult onRemoteUse(World usedOnWorld, BlockPos from, BlockPos to, ItemStack stack, int colorIn, int mode)
     {
-        return replaceColor(getWorld(usedOnWorld, stack), from, to, colorIn, mode, ColorUtils.getInkColor(stack));
+        return replaceColor(getWorld(usedOnWorld, stack), from, to, ColorUtils.getInkColor(stack), mode, colorIn);
     }
 }
