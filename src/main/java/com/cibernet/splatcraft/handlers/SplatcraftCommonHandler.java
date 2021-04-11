@@ -14,6 +14,7 @@ import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCooldown;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -64,7 +65,9 @@ public class SplatcraftCommonHandler
 
         InkedBlockTileEntity te = (InkedBlockTileEntity) event.getEntity().world.getTileEntity(event.getPos());
         BlockState savedState = te.getSavedState();
-        if(event.getState().getBlock() instanceof IColoredBlock && (event.isCanceled() || (event.getEntityLiving() instanceof EnderDragonEntity && savedState.isIn(BlockTags.DRAGON_IMMUNE))))
+        if(event.getState().getBlock() instanceof IColoredBlock && (event.isCanceled() ||
+                (event.getEntityLiving() instanceof EnderDragonEntity && savedState.isIn(BlockTags.DRAGON_IMMUNE)) ||
+                (event.getEntityLiving() instanceof WitherEntity && savedState.isIn(BlockTags.WITHER_IMMUNE))))
         {
             ((IColoredBlock) event.getState().getBlock()).remoteInkClear(event.getEntityLiving().world, event.getPos());
             event.setCanceled(true);
