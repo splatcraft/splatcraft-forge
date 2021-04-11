@@ -128,7 +128,7 @@ public abstract class RemoteItem extends Item
                     set.getB().getX(), set.getB().getY(), set.getB().getZ()));
         } else if (stack.getOrCreateTag().contains("PointA"))
         {
-            BlockPos pos = NBTUtil.readBlockPos(nbt.getCompound("PosA"));
+            BlockPos pos = NBTUtil.readBlockPos(nbt.getCompound("PointA"));
             tooltip.add(new TranslationTextComponent("item.remote.coords.a", pos.getX(), pos.getY(), pos.getZ()));
         }
 
