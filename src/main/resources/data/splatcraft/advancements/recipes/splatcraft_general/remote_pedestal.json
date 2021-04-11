@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "splatcraft:remote_pedestal"
+    ]
+  },
+  "criteria": {
+    "has_remote": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "splatcraft:remotes"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "splatcraft:remote_pedestal"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_remote",
+      "has_the_recipe"
+    ]
+  ]
+}

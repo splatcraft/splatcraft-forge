@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem
+public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IColoredItem
 {
     public ColoredArmorItem(String name, IArmorMaterial material, EquipmentSlotType slot, Properties properties)
     {

@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.blocks.InkedBlock;
 import com.cibernet.splatcraft.blocks.InkwellBlock;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.handlers.PlayerPosingHandler;
+import com.cibernet.splatcraft.items.IColoredItem;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
@@ -40,7 +41,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeaponBaseItem extends Item
+public class WeaponBaseItem extends Item implements IColoredItem
 {
     public static final int USE_DURATION = 72000;
     protected final List<WeaponStat> stats = new ArrayList<>();

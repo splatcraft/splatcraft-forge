@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InkTankItem extends ColoredArmorItem implements IDyeableArmorItem
+public class InkTankItem extends ColoredArmorItem
 {
     public static final ArrayList<InkTankItem> inkTanks = new ArrayList<>();
 

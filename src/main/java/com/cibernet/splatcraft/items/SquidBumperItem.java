@@ -35,7 +35,7 @@ import net.minecraft.world.server.ServerWorld;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SquidBumperItem extends Item
+public class SquidBumperItem extends Item implements IColoredItem
 {
     public SquidBumperItem(String name)
     {

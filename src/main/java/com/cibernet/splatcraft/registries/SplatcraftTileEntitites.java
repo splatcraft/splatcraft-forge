@@ -1,5 +1,6 @@
 package com.cibernet.splatcraft.registries;
 
+import com.cibernet.splatcraft.client.renderer.RemotePedestalTileEntityRenderer;
 import com.cibernet.splatcraft.client.renderer.StageBarrierTileEntityRenderer;
 import com.cibernet.splatcraft.tileentities.*;
 import com.cibernet.splatcraft.tileentities.container.InkVatContainer;
@@ -35,6 +36,7 @@ public class SplatcraftTileEntitites
     public static final TileEntityType<StageBarrierTileEntity> stageBarrierTileEntity = registerTileEntity("stage_barrier", StageBarrierTileEntity::new, stageBarrier, stageVoid);
     public static final TileEntityType<ColoredBarrierTileEntity> colorBarrierTileEntity = registerTileEntity("color_barrier", ColoredBarrierTileEntity::new, allowedColorBarrier, deniedColorBarrier);
     public static final TileEntityType<InkVatTileEntity> inkVatTileEntity = registerTileEntity("ink_vat", InkVatTileEntity::new, inkVat);
+    public static final TileEntityType<RemotePedestalTileEntity> remotePedestalTileEntity = registerTileEntity("remote_pedestal", RemotePedestalTileEntity::new, remotePedestal);
 
     private static final List<ContainerType<?>> c_registry = new ArrayList<>();
 
@@ -86,5 +88,6 @@ public class SplatcraftTileEntitites
         //ClientRegistry.bindTileEntityRenderer(inkedTileEntity.get(), InkedBlockTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(stageBarrierTileEntity, StageBarrierTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(colorBarrierTileEntity, StageBarrierTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(remotePedestalTileEntity, RemotePedestalTileEntityRenderer::new);
     }
 }

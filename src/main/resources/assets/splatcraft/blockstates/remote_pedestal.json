@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "splatcraft:block/remote_pedestal"
+    },
+    "powered=true": {
+      "model": "splatcraft:block/remote_pedestal_powered"
+    }
+  }
+}

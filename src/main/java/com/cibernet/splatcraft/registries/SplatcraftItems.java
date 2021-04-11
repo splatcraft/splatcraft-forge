@@ -133,6 +133,7 @@ public class SplatcraftItems
     public static final RemoteItem turfScanner = new TurfScannerItem("turf_scanner");
     public static final RemoteItem inkDisruptor = new InkDisruptorItem("ink_disruptor");
     public static final RemoteItem colorChanger = new ColorChangerItem("color_changer");
+    public static final Item remotePedestal = new ColoredBlockItem(SplatcraftBlocks.remotePedestal, "remote_pedestal");
 
     //Filters
     public static final FilterItem emptyFilter = new FilterItem("filter");
@@ -149,7 +150,7 @@ public class SplatcraftItems
     public static final Item weaponWorkbench = new BlockItem(SplatcraftBlocks.weaponWorkbench).setRegistryName("ammo_knights_workbench");
 
     //Map Items
-    public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16, emptyInkwell);
+    public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16, emptyInkwell).addStarterColors();
     public static final Item grate = new BlockItem(SplatcraftBlocks.grate).setRegistryName("grate");
     public static final Item grateRamp = new BlockItem(SplatcraftBlocks.grateRamp).setRegistryName("grate_ramp");
     public static final Item barrierBar = new BlockItem(SplatcraftBlocks.barrierBar).setRegistryName("barrier_bar");
@@ -161,10 +162,10 @@ public class SplatcraftItems
     public static final Item crate = new BlockItem(SplatcraftBlocks.crate).setRegistryName("crate");
 
     //Ink Stained Blocks
-    public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "ink_stained_wool", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_WOOL, false);
-    public static final Item inkedCarpet = new ColoredBlockItem(SplatcraftBlocks.inkedCarpet, "ink_stained_carpet", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_CARPET, false);
-    public static final Item inkedGlass = new ColoredBlockItem(SplatcraftBlocks.inkedGlass, "ink_stained_glass", new Item.Properties().group(GROUP_GENERAL), Items.GLASS, false);
-    public static final Item inkedGlassPane = new ColoredBlockItem(SplatcraftBlocks.inkedGlassPane, "ink_stained_glass_pane", new Item.Properties().group(GROUP_GENERAL), Items.GLASS_PANE, false);
+    public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "ink_stained_wool", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_WOOL);
+    public static final Item inkedCarpet = new ColoredBlockItem(SplatcraftBlocks.inkedCarpet, "ink_stained_carpet", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_CARPET);
+    public static final Item inkedGlass = new ColoredBlockItem(SplatcraftBlocks.inkedGlass, "ink_stained_glass", new Item.Properties().group(GROUP_GENERAL), Items.GLASS);
+    public static final Item inkedGlassPane = new ColoredBlockItem(SplatcraftBlocks.inkedGlassPane, "ink_stained_glass_pane", new Item.Properties().group(GROUP_GENERAL), Items.GLASS_PANE);
 
     //Barriers
     public static final Item stageBarrier = new BlockItem(SplatcraftBlocks.stageBarrier).setRegistryName("stage_barrier");
@@ -199,6 +200,7 @@ public class SplatcraftItems
         registry.register(turfScanner);
         registry.register(inkDisruptor);
         registry.register(colorChanger);
+        registry.register(remotePedestal);
 
         for (Item item : FilterItem.filters)
             registry.register(item);

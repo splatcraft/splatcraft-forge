@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.items.remotes;
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.InkwellBlock;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.items.IColoredItem;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
@@ -24,7 +25,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ColorChangerItem extends RemoteItem
+public class ColorChangerItem extends RemoteItem implements IColoredItem
 {
     public ColorChangerItem(String name)
     {

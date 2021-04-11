@@ -39,10 +39,11 @@ public class SplatcraftBlocks
     public static final Block sunkenCrate = new CrateBlock("sunken_crate", true);
 
     public static final Block inkVat = new InkVatBlock("ink_vat");
+    public static final Block weaponWorkbench = new WeaponWorkbenchBlock("ammo_knights_workbench");
+    public static final Block remotePedestal = new RemotePedestalBlock().setRegistryName("remote_pedestal");
 
     public static final Block emptyInkwell =new EmptyInkwellBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS).harvestTool(ToolType.PICKAXE)).setRegistryName("empty_inkwell");
     public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
-    public static final Block weaponWorkbench = new WeaponWorkbenchBlock("ammo_knights_workbench");
 
     public static final Block inkedWool = new InkStainedBlock("ink_stained_wool", AbstractBlock.Properties.create(Material.WOOL).hardnessAndResistance(0.8F).sound(SoundType.CLOTH));
     public static final Block inkedCarpet = new InkedCarpetBlock("ink_stained_carpet");
@@ -79,10 +80,11 @@ public class SplatcraftBlocks
         registry.register(crate);
 
         registry.register(inkVat);
+        registry.register(weaponWorkbench);
+        registry.register(remotePedestal);
 
         registry.register(emptyInkwell);
         registry.register(inkwell);
-        registry.register(weaponWorkbench);
         registry.register(inkedWool);
         registry.register(inkedCarpet);
         registry.register(inkedGlass);
@@ -119,6 +121,7 @@ public class SplatcraftBlocks
         RenderTypeLookup.setRenderLayer(grateRamp, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(crate, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(sunkenCrate, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(remotePedestal, RenderType.getCutout());
     }
 
 

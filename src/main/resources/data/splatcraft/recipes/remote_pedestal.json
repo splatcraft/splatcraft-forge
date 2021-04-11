@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ESE",
+    " S ",
+    "SRS"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "item": "splatcraft:sardinium"
+    },
+    "E": {
+      "item": "splatcraft:power_egg"
+    }
+  },
+  "result": {
+    "item": "splatcraft:remote_pedestal"
+  }
+}

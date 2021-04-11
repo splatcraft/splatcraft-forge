@@ -39,17 +39,11 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ColoredBlockItem extends BlockItem
+public class ColoredBlockItem extends BlockItem implements IColoredItem
 {
 
     private final Item clearItem;
-    private boolean addStartersToTab = true;
-
-    public ColoredBlockItem(Block block, String name, Properties properties, Item clearItem, boolean addStartersToTab)
-    {
-        this(block, name, properties, clearItem);
-        this.addStartersToTab = addStartersToTab;
-    }
+    private boolean addStartersToTab = false;
 
     public ColoredBlockItem(Block block, String name, Properties properties, Item clearItem)
     {
@@ -87,6 +81,12 @@ public class ColoredBlockItem extends BlockItem
             tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
         else
             tooltip.add(new TranslationTextComponent( "item.splatcraft.tooltip.matches_color").mergeStyle(TextFormatting.GRAY));
+    }
+
+    public ColoredBlockItem addStarterColors()
+    {
+        addStartersToTab = true;
+        return this;
     }
 
     @Override

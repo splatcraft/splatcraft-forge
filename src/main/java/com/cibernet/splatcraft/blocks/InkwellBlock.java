@@ -195,7 +195,8 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
         if (tileEntity instanceof InkColorTileEntity && ((InkColorTileEntity) tileEntity).getColor() != newColor)
         {
             ((InkColorTileEntity) tileEntity).setColor(newColor);
-            world.notifyBlockUpdate(pos, state, state, 2);
+            world.notifyBlockUpdate(pos, state, state, 3);
+            state.updateNeighbours(world, pos, 3);
             return true;
         }
         return false;

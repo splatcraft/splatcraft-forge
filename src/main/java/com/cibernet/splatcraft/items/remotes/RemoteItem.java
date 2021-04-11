@@ -170,7 +170,7 @@ public abstract class RemoteItem extends Item
             }
         } else if (hasCoordSet(stack) && !worldIn.isRemote)
         {
-            RemoteResult remoteResult = onRemoteUse(worldIn, stack, ColorUtils.getPlayerColor(playerIn), mode);
+            RemoteResult remoteResult = onRemoteUse(worldIn, stack, ColorUtils.getPlayerColor(playerIn));
 
             if (remoteResult.getOutput() != null)
             {
@@ -186,10 +186,10 @@ public abstract class RemoteItem extends Item
 
     public abstract RemoteResult onRemoteUse(World usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode);
 
-    public RemoteResult onRemoteUse(World usedOnWorld, ItemStack stack, int colorIn, int mode)
+    public RemoteResult onRemoteUse(World usedOnWorld, ItemStack stack, int colorIn)
     {
         Tuple<BlockPos, BlockPos> coordSet = getCoordSet(stack);
-        return onRemoteUse(usedOnWorld, coordSet.getA(), coordSet.getB(), stack, colorIn, mode);
+        return onRemoteUse(usedOnWorld, coordSet.getA(), coordSet.getB(), stack, colorIn, getRemoteMode(stack));
     }
 
     public static class RemoteResult
