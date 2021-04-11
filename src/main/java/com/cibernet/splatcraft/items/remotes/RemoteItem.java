@@ -139,12 +139,12 @@ public abstract class RemoteItem extends Item
     {
         if (context.getWorld().isRemote)
         {
-            return ActionResultType.PASS;
+            return hasCoordSet(context.getItem()) ? ActionResultType.PASS : ActionResultType.SUCCESS;
         }
 
         if (addCoords(context.getWorld(), context.getItem(), context.getPos()))
         {
-            String key = context.getItem().getOrCreateTag().contains("PointA") ? "b" : "a";
+            String key = context.getItem().getOrCreateTag().contains("PointB") ? "b" : "a";
             BlockPos pos = context.getPos();
 
             context.getPlayer().sendStatusMessage(new TranslationTextComponent("status.coord_set." + key, pos.getX(), pos.getY(), pos.getZ()), true);
