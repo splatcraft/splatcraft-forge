@@ -6,13 +6,12 @@ import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.PaneBlock;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -23,7 +22,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class InkedGlassPaneBlock extends PaneBlock  implements IColoredBlock
+public class InkedGlassPaneBlock extends PaneBlock  implements IColoredBlock, IWaterLoggable
 {
 
     public InkedGlassPaneBlock(String name)
@@ -59,6 +58,12 @@ public class InkedGlassPaneBlock extends PaneBlock  implements IColoredBlock
             ColorUtils.setInkColor(world.getTileEntity(pos), ColorUtils.getInkColor(stack));
         }
         super.onBlockPlacedBy(world, pos, state, entity, stack);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context)
+    {
+        return super.getStateForPlacement(context).with(WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
     }
 
     @Override
