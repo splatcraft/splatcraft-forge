@@ -60,9 +60,7 @@ public class InkBlockUtils
         TileEntity te = world.getTileEntity(pos);
 
         if (InkedBlock.isTouchingLiquid(world, pos))
-        {
             return false;
-        }
 
         if (state.getBlock() instanceof IColoredBlock)
             return ((IColoredBlock) state.getBlock()).inkBlock(world, pos, color, damage, inkType);

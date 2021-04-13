@@ -133,7 +133,6 @@ public class SplatcraftItems
     public static final RemoteItem turfScanner = new TurfScannerItem("turf_scanner");
     public static final RemoteItem inkDisruptor = new InkDisruptorItem("ink_disruptor");
     public static final RemoteItem colorChanger = new ColorChangerItem("color_changer");
-    public static final Item remotePedestal = new ColoredBlockItem(SplatcraftBlocks.remotePedestal, "remote_pedestal");
 
     //Filters
     public static final FilterItem emptyFilter = new FilterItem("filter");
@@ -160,6 +159,10 @@ public class SplatcraftItems
     public static final Item squidBumper = new SquidBumperItem("squid_bumper");
     public static final Item sunkenCrate = new BlockItem(SplatcraftBlocks.sunkenCrate).setRegistryName("sunken_crate");
     public static final Item crate = new BlockItem(SplatcraftBlocks.crate).setRegistryName("crate");
+
+    //Redstone Components
+    public static final Item remotePedestal = new ColoredBlockItem(SplatcraftBlocks.remotePedestal, "remote_pedestal");
+    public static final Item splatSwitch = new BlockItem(SplatcraftBlocks.splatSwitch).setRegistryName("splat_switch");
 
     //Ink Stained Blocks
     public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "ink_stained_wool", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_WOOL);
@@ -200,7 +203,6 @@ public class SplatcraftItems
         registry.register(turfScanner);
         registry.register(inkDisruptor);
         registry.register(colorChanger);
-        registry.register(remotePedestal);
 
         for (Item item : FilterItem.filters)
             registry.register(item);
@@ -215,14 +217,20 @@ public class SplatcraftItems
         registry.register(barrierBar);
         registry.register(platedBarrierBar);
         registry.register(cautionBarrierBar);
+
+        registry.register(remotePedestal);
+        registry.register(splatSwitch);
+
         registry.register(crate);
         registry.register(sunkenCrate);
         registry.register(canvas);
+
         registry.register(inkedWool);
         registry.register(inkedCarpet);
         registry.register(inkedGlass);
         registry.register(inkedGlassPane);
         registry.register(squidBumper);
+
         registry.register(stageBarrier);
         registry.register(stageVoid);
         registry.register(allowedColorBarrier);

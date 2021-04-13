@@ -29,7 +29,7 @@ public class SplatcraftTileEntitites
 {
 
     private static final List<TileEntityType<?>> te_registry = new ArrayList<>();
-    public static final TileEntityType<InkColorTileEntity> colorTileEntity = registerTileEntity("color", InkColorTileEntity::new, inkedWool, canvas);
+    public static final TileEntityType<InkColorTileEntity> colorTileEntity = registerTileEntity("color", InkColorTileEntity::new, inkedWool, canvas, splatSwitch);
     public static final TileEntityType<InkwellTileEntity> inkwellTileEntity = registerTileEntity("inkwell", InkwellTileEntity::new, inkwell);
     public static final TileEntityType<InkedBlockTileEntity> inkedTileEntity = registerTileEntity("inked_block", InkedBlockTileEntity::new, inkedBlock);
     public static final TileEntityType<CrateTileEntity> crateTileEntity = registerTileEntity("crate", CrateTileEntity::new, crate, sunkenCrate);

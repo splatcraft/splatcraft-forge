@@ -50,6 +50,7 @@ public class SplatcraftBlocks
     public static final Block inkedGlass = new InkedGlassBlock("ink_stained_glass");
     public static final Block inkedGlassPane = new InkedGlassPaneBlock("ink_stained_glass_pane");
     public static final Block canvas = new CanvasBlock("canvas");
+    public static final Block splatSwitch = new SplatSwitchBlock().setRegistryName("splat_switch");
 
     public static final Block grate = new GrateBlock("grate");
     public static final Block grateRamp = new GrateRampBlock("grate_ramp");
@@ -96,6 +97,7 @@ public class SplatcraftBlocks
         registry.register(barrierBar);
         registry.register(platedBarrierBar);
         registry.register(cautionBarrierBar);
+        registry.register(splatSwitch);
 
         registry.register(stageBarrier);
         registry.register(stageVoid);
@@ -122,6 +124,7 @@ public class SplatcraftBlocks
         RenderTypeLookup.setRenderLayer(crate, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(sunkenCrate, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(remotePedestal, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(splatSwitch, RenderType.getCutout());
     }
 
 

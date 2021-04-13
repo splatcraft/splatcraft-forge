@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "SPS"
+  ],
+  "key": {
+    "S": {
+      "item": "splatcraft:sardinium"
+    },
+    "P": {
+      "item": "splatcraft:power_egg"
+    },
+    "#": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "splatcraft:splat_switch",
+    "count": 1
+  }
+}
