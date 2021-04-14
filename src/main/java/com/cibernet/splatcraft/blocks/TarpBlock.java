@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
@@ -96,6 +97,12 @@ public class TarpBlock extends Block implements IWaterLoggable
         for(Direction dir : Direction.values())
             if(state.get(FACING_TO_PROPERTY_MAP.get(dir)))
                 spawnDrops(state, worldIn, pos, te, player, stack);
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState state)
+    {
+        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
     }
 
     @Override
