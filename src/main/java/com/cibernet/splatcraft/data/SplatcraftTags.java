@@ -71,6 +71,7 @@ public class SplatcraftTags
     public static class Blocks
     {
         public static final ITag<Block> UNINKABLE_BLOCKS = createTag("inkproof");
+        public static final ITag<Block> BLOCKS_INK = createTag("blocks_ink");
         public static final ITag<Block> INKABLE_BLOCKS = createTag("inkable_transparents");
         public static final ITag<Block> INK_CLEARING_BLOCKS = createTag("clears_ink");
 

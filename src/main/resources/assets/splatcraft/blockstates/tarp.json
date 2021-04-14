@@ -1,0 +1,56 @@
+{
+  "multipart": 
+  [
+  	{
+  	"when": {"down": "true"},
+  	"apply": {
+        "model": "splatcraft:block/tarp",
+        "uvlock": true
+    	}
+  	},
+  	{
+  	"when": {"up": "true"},
+  	"apply": {
+        "model": "splatcraft:block/tarp",
+        "uvlock": true,
+        "x": 180
+    	}
+  	},
+  	{
+  	"when": {"south": "true"},
+  	"apply": {
+        "model": "splatcraft:block/tarp",
+        "uvlock": true,
+        "x": 90
+    	}
+  	},
+  	{
+  	"when": {"west": "true"},
+  	"apply": {
+        "model": "splatcraft:block/tarp",
+        "uvlock": true,
+        "x": 90,
+        "y": 90
+    	}
+  	},
+  	{
+  	"when": {"north": "true"},
+  	"apply": {
+        "model": "splatcraft:block/tarp",
+        "uvlock": true,
+        "x": 90,
+        "y": 180
+    	}
+  	},
+  	{
+  	"when": {"east": "true"},
+  	"apply": {
+        "model": "splatcraft:block/tarp",
+        "uvlock": true,
+        "x": 90,
+        "y": 270
+    	}
+  	}
+  ]
+  
+}

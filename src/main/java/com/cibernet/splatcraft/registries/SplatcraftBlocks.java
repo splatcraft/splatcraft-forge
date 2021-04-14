@@ -57,6 +57,7 @@ public class SplatcraftBlocks
     public static final Block barrierBar = new BarrierBarBlock("barrier_bar");
     public static final Block cautionBarrierBar = new BarrierBarBlock("caution_barrier_bar");
     public static final Block platedBarrierBar = new BarrierBarBlock("plated_barrier_bar");
+    public static final Block tarp = new TarpBlock().setRegistryName("tarp");
     public static final Block stageBarrier = new StageBarrierBlock("stage_barrier", false);
     public static final Block stageVoid = new StageBarrierBlock("stage_void", true);
     public static final Block allowedColorBarrier = new ColoredBarrierBlock("allowed_color_barrier", false);
@@ -97,6 +98,7 @@ public class SplatcraftBlocks
         registry.register(barrierBar);
         registry.register(platedBarrierBar);
         registry.register(cautionBarrierBar);
+        registry.register(tarp);
         registry.register(splatSwitch);
 
         registry.register(stageBarrier);

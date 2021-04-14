@@ -186,8 +186,8 @@ public class InkExplosion
                             f -= 0.3f * 0.3F;
 
                             blockpos = raytrace.getPos();
-
-                            set.add(blockpos);
+                            if(InkBlockUtils.canInkFromFace(world, blockpos, raytrace.getFace()))
+                                set.add(blockpos);
 
 
                             d4 += d0 * (double) 0.3F;

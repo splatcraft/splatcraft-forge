@@ -155,6 +155,7 @@ public class SplatcraftItems
     public static final Item barrierBar = new BlockItem(SplatcraftBlocks.barrierBar).setRegistryName("barrier_bar");
     public static final Item platedBarrierBar = new BlockItem(SplatcraftBlocks.platedBarrierBar).setRegistryName("plated_barrier_bar");
     public static final Item cautionBarrierBar = new BlockItem(SplatcraftBlocks.cautionBarrierBar).setRegistryName("caution_barrier_bar");
+    public static final Item tarp = new BlockItem(SplatcraftBlocks.tarp).setRegistryName("tarp");
     public static final Item canvas = new BlockItem(SplatcraftBlocks.canvas).setRegistryName("canvas");
     public static final Item squidBumper = new SquidBumperItem("squid_bumper");
     public static final Item sunkenCrate = new BlockItem(SplatcraftBlocks.sunkenCrate).setRegistryName("sunken_crate");
@@ -217,6 +218,7 @@ public class SplatcraftItems
         registry.register(barrierBar);
         registry.register(platedBarrierBar);
         registry.register(cautionBarrierBar);
+        registry.register(tarp);
 
         registry.register(remotePedestal);
         registry.register(splatSwitch);

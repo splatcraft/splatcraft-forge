@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "#splatcraft:clears_ink",
+    "#splatcraft:blocks_ink",
     "minecraft:observer",
     "minecraft:note_block",
     "minecraft:target",

@@ -26,6 +26,7 @@ import net.minecraft.item.Items;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -104,6 +105,14 @@ public class InkBlockUtils
         return state.with(property, value);
     }
 
+
+    public static boolean canInkFromFace(World world, BlockPos pos, Direction face)
+    {
+        if(!(world.getBlockState(pos).getBlock() instanceof IColoredBlock) && !canInk(world, pos))
+            return false;
+
+        return canInkPassthrough(world, pos.offset(face)) || !world.getBlockState(pos.offset(face)).isIn(SplatcraftTags.Blocks.BLOCKS_INK);
+    }
 
     public static boolean canInk(World world, BlockPos pos)
     {
