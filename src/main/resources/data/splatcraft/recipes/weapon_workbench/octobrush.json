@@ -32,6 +32,44 @@
           "count": 16
         }
       ]
+    },
+    {
+      "name": "weaponType.kensa",
+      "result": {
+        "item": "splatcraft:kensa_octobrush",
+        "count": 1
+      },
+      "ingredients":
+      [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 4
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 20
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 12
+        },
+        {
+          "item": "minecraft:wheat",
+          "count": 5
+        },
+        {
+          "item": "minecraft:iron_nugget",
+          "count": 16
+        },
+        {
+          "item": "minecraft:black_dye",
+          "count": 8
+        },
+        {
+          "item": "splatcraft:toni_kensa_pin",
+          "count": 1
+        }
+      ]
     }
   ]
 }

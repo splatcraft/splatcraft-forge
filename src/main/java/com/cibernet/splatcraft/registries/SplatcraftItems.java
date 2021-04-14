@@ -126,7 +126,7 @@ public class SplatcraftItems
     public static final Item powerEgg = new Item(new Item.Properties().group(GROUP_GENERAL)).setRegistryName("power_egg");
     public static final Item powerEggCan = new PowerEggCanItem("power_egg_can");
     public static final Item powerEggBlock = new BlockItem(SplatcraftBlocks.powerEggBlock).setRegistryName("power_egg_block");
-    public static final Item kensaPin = new Item(new Item.Properties().group(GROUP_GENERAL)).setRegistryName("toni_kensa_pin");
+    public static final Item kensaPin = new Item(new Item.Properties().group(GROUP_GENERAL).rarity(Rarity.UNCOMMON)).setRegistryName("toni_kensa_pin");
     public static final Item emptyInkwell = new BlockItem(SplatcraftBlocks.emptyInkwell).setRegistryName("empty_inkwell");
 
     //Remotes

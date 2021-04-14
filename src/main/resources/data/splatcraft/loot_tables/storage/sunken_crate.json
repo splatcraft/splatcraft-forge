@@ -69,6 +69,11 @@
           "type": "minecraft:item",
           "name": "splatcraft:sardinium_block",
           "weight": 20
+        },
+        {
+          "type": "minecraft:item",
+          "name": "splatcraft:toni_kensa_pin",
+          "weight": 5
         }
       ]
     }

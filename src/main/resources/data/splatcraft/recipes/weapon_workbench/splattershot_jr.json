@@ -27,6 +27,39 @@
           "count": 4
         }
       ]
+    },
+    {
+      "name": "weaponType.kensa",
+      "result": {
+        "item": "splatcraft:kensa_splattershot_jr",
+        "count": 1
+      },
+      "ingredients": [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 4
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 8
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 4
+        },
+        {
+          "item": "minecraft:glass",
+          "count": 4
+        },
+        {
+          "item": "minecraft:black_dye",
+          "count": 8
+        },
+        {
+          "item": "splatcraft:toni_kensa_pin",
+          "count": 1
+        }
+      ]
     }
   ]
 }
