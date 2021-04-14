@@ -79,6 +79,29 @@ public class InkedSlabBlock extends SlabBlock implements IColoredBlock
     }
 
     @Override
+    public boolean canHarvestBlock(BlockState state, IBlockReader world, BlockPos pos, PlayerEntity player)
+    {
+        if(world.getTileEntity(pos) instanceof InkedBlockTileEntity)
+        {
+            BlockState savedState = ((InkedBlockTileEntity) world.getTileEntity(pos)).getSavedState();
+            return savedState.getBlock().canHarvestBlock(savedState, world, pos, player);
+        }
+        return super.canHarvestBlock(state, world, pos, player);
+    }
+
+    @Override
+    public void harvestBlock(World world, PlayerEntity playerEntity, BlockPos pos, BlockState state, @Nullable TileEntity tileEntity, ItemStack stack)
+    {
+        System.out.println(tileEntity);
+        if(tileEntity instanceof InkedBlockTileEntity)
+        {
+            BlockState savedState = ((InkedBlockTileEntity) tileEntity).getSavedState();
+            savedState.getBlock().harvestBlock(world, playerEntity, pos, savedState, null, stack);
+        }
+        super.harvestBlock(world, playerEntity, pos, state, tileEntity, stack);
+    }
+
+    @Override
     public PushReaction getPushReaction(BlockState state)
     {
         return PushReaction.BLOCK;
