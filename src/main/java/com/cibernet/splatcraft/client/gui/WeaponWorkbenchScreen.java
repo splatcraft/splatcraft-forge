@@ -376,7 +376,7 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
         if (selectedRecipe != null)
         {
             //Draw Ingredient Tooltips
-            for (int i = ingredientPos * 6; i < selectedRecipe.getInput().size() && i < ingredientPos * 6 + 6; i++)
+            for (int i = ingredientPos * 8; i < selectedRecipe.getInput().size() && i < ingredientPos * 8 + 8; i++)
             {
                 Ingredient ingredient = selectedRecipe.getInput().get(i).getIngredient();
                 ItemStack displayStack = ingredient.getMatchingStacks()[tickTime / 20 % ingredient.getMatchingStacks().length];
