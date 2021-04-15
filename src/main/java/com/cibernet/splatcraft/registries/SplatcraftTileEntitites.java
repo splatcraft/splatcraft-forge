@@ -1,7 +1,7 @@
 package com.cibernet.splatcraft.registries;
 
-import com.cibernet.splatcraft.client.renderer.RemotePedestalTileEntityRenderer;
-import com.cibernet.splatcraft.client.renderer.StageBarrierTileEntityRenderer;
+import com.cibernet.splatcraft.client.renderer.tileentity.RemotePedestalTileEntityRenderer;
+import com.cibernet.splatcraft.client.renderer.tileentity.StageBarrierTileEntityRenderer;
 import com.cibernet.splatcraft.tileentities.*;
 import com.cibernet.splatcraft.tileentities.container.InkVatContainer;
 import com.cibernet.splatcraft.tileentities.container.WeaponWorkbenchContainer;

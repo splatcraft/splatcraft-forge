@@ -4,9 +4,11 @@ import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.client.renderer.InkProjectileRenderer;
 import com.cibernet.splatcraft.client.renderer.InkSquidRenderer;
 import com.cibernet.splatcraft.client.renderer.SquidBumperRenderer;
+import com.cibernet.splatcraft.client.renderer.subs.BurstBombRenderer;
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.entities.InkSquidEntity;
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
+import com.cibernet.splatcraft.entities.subs.BurstBombEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -34,6 +36,10 @@ public class SplatcraftEntities
     public static final EntityType<InkSquidEntity> INK_SQUID = create("ink_squid", InkSquidEntity::new, EntityClassification.AMBIENT, 0.6f, 0.5f);
     public static final EntityType<SquidBumperEntity> SQUID_BUMPER = create("squid_bumper", SquidBumperEntity::new, EntityClassification.MISC, 0.6f, 1.8f);
 
+    //Sub Weapons
+    public static final EntityType<BurstBombEntity> BURST_BOMB = create("burst_bomb", BurstBombEntity::new, EntityClassification.MISC, 0.5f, 0.5f);
+
+
     @SubscribeEvent
     public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event)
     {
@@ -42,6 +48,7 @@ public class SplatcraftEntities
         registry.register(INK_PROJECTILE);
         registry.register(INK_SQUID);
         registry.register(SQUID_BUMPER);
+        registry.register(BURST_BOMB);
     }
 
     private static <T extends Entity> EntityType<T> create(String name, EntityType.IFactory<T> supplier, EntityClassification classification, float width, float height)
@@ -69,6 +76,7 @@ public class SplatcraftEntities
         RenderingRegistry.registerEntityRenderingHandler(INK_PROJECTILE, InkProjectileRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(INK_SQUID, InkSquidRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SQUID_BUMPER, SquidBumperRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(BURST_BOMB, BurstBombRenderer::new);
     }
 
     public static void setEntityAttributes()

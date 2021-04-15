@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.client.model;
+package com.cibernet.splatcraft.client.model.inktanks;
 
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;

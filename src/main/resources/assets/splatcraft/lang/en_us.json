@@ -146,6 +146,12 @@
   "item.splatcraft.tri_slosher": "Tri-Slosher",
   "item.splatcraft.tri_slosher_nouvueau": "Tri-Slosher Nouveau",
 
+  "item.splatcraft.splat_bomb": "Splat Bomb",
+  "item.splatcraft.burst_bomb": "Burst Bomb",
+  "item.splatcraft.suction_bomb": "Suction Bomb",
+  "item.splatcraft.curling_bomb": "Curling Bomb",
+  "item.splatcraft.splash_wall": "Splash Wall",
+
   "item.splatcraft.ink_tank": "Ink Tank",
   "item.splatcraft.ink_tank.ink": "%s / %s",
   "item.splatcraft.ink_tank.cant_recharge": "§7§oCan't Recharge",
@@ -224,7 +230,7 @@
   "subtitle.slosher_shot": "Slosher Fired",
   "subtitle.sub_throw": "Sub Weapon Thrown",
   "subtitle.sub_detonating": "Sub Weapon Detonating",
-  "subtitle.sub_detonated": "Sub Weapon Detonated",
+  "subtitle.sub_detonate": "Sub Weapon Detonated",
   "subtitle.remote_use": "Remote Buzzing",
   "subtitle.power_egg_can_opened": "Can of Power Eggs opens",
   "subtitle.squid_bumper.pop": "Squid Bumper Popped",

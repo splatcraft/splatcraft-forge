@@ -1,10 +1,10 @@
 package com.cibernet.splatcraft.registries;
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.client.model.ArmoredInkTankModel;
-import com.cibernet.splatcraft.client.model.ClassicInkTankModel;
-import com.cibernet.splatcraft.client.model.InkTankJrModel;
-import com.cibernet.splatcraft.client.model.InkTankModel;
+import com.cibernet.splatcraft.client.model.inktanks.ArmoredInkTankModel;
+import com.cibernet.splatcraft.client.model.inktanks.ClassicInkTankModel;
+import com.cibernet.splatcraft.client.model.inktanks.InkTankJrModel;
+import com.cibernet.splatcraft.client.model.inktanks.InkTankModel;
 import com.cibernet.splatcraft.dispenser.PlaceBlockDispenseBehavior;
 import com.cibernet.splatcraft.items.BlockItem;
 import com.cibernet.splatcraft.items.*;
@@ -13,8 +13,8 @@ import com.cibernet.splatcraft.items.remotes.InkDisruptorItem;
 import com.cibernet.splatcraft.items.remotes.RemoteItem;
 import com.cibernet.splatcraft.items.remotes.TurfScannerItem;
 import com.cibernet.splatcraft.items.weapons.*;
+import com.cibernet.splatcraft.items.weapons.SubWeaponItem;
 import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -111,6 +111,9 @@ public class SplatcraftItems
     public static final InkTankItem armoredInkTank = new InkTankItem("armored_ink_tank", 85, ARMORED_INK_TANK);
 
     //Sub Weapons
+    public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.BURST_BOMB,70);
+    public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB,40);
+    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.BURST_BOMB,70);
 
     //Vanity
     public static final Item inkClothHelmet = new ColoredArmorItem("ink_cloth_helmet", INK_CLOTH, EquipmentSlotType.HEAD);

@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.client.renderer;
+package com.cibernet.splatcraft.client.renderer.tileentity;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;

@@ -212,12 +212,17 @@ public class WeaponBaseItem extends Item implements IColoredItem
         return USE_DURATION;
     }
 
+    public final ActionResult<ItemStack> onItemRightClickSuper(World world, PlayerEntity player, Hand hand)
+    {
+        return super.onItemRightClick(world, player, hand);
+    }
+
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
     {
         if(!(player.isActualySwimming() && !player.isInWater()))
             player.setActiveHand(hand);
-        return super.onItemRightClick(world, player, hand);
+        return onItemRightClickSuper(world, player, hand);
     }
 
     @Override

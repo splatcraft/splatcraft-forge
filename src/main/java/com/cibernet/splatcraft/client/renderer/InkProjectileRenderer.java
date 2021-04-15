@@ -2,10 +2,10 @@ package com.cibernet.splatcraft.client.renderer;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
-import com.cibernet.splatcraft.client.model.BlasterInkProjectileModel;
-import com.cibernet.splatcraft.client.model.InkProjectileModel;
-import com.cibernet.splatcraft.client.model.RollerInkProjectileModel;
-import com.cibernet.splatcraft.client.model.ShooterInkProjectileModel;
+import com.cibernet.splatcraft.client.model.projectiles.BlasterInkProjectileModel;
+import com.cibernet.splatcraft.client.model.projectiles.InkProjectileModel;
+import com.cibernet.splatcraft.client.model.projectiles.RollerInkProjectileModel;
+import com.cibernet.splatcraft.client.model.projectiles.ShooterInkProjectileModel;
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -49,9 +49,7 @@ public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> i
             int color = entityIn.getColor();
 
             if (SplatcraftConfig.Client.getColorLock())
-            {
                 color = ColorUtils.getLockedColor(color);
-            }
 
             float r = (float) (Math.floor((float) color / (256 * 256)) / 255f);
             float g = (float) (Math.floor((float) color / 256) % 256 / 255f);

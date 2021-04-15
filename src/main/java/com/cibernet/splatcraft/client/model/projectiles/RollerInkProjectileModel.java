@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.client.model;// Made with Blockbench 3.8.0
+package com.cibernet.splatcraft.client.model.projectiles;// Made with Blockbench 3.8.2
 // Exported for Minecraft version 1.15
 // Paste this class into your mod and generate all required imports
 
@@ -8,30 +8,21 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
-public class ShooterInkProjectileModel extends InkProjectileModel
+public class RollerInkProjectileModel extends InkProjectileModel
 {
     private final ModelRenderer main;
-    private final ModelRenderer middle;
-    private final ModelRenderer back;
 
-    public ShooterInkProjectileModel()
+    public RollerInkProjectileModel()
     {
         textureWidth = 16;
         textureHeight = 16;
 
         main = new ModelRenderer(this);
         main.setRotationPoint(0.0F, 0.0F, 0.0F);
-        main.setTextureOffset(0, 5).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 2.0F, 3.0F, 0.0F, false);
-
-        middle = new ModelRenderer(this);
-        middle.setRotationPoint(0.0F, -1.0F, 1.5F);
-        main.addChild(middle);
-        middle.setTextureOffset(0, 0).addBox(-1.0F, -1.0F, -0.75F, 2.0F, 2.0F, 3.0F, -0.3F, false);
-
-        back = new ModelRenderer(this);
-        back.setRotationPoint(0.0F, 0.0F, 2.0F);
-        middle.addChild(back);
-        back.setTextureOffset(7, 0).addBox(-0.5F, -0.5F, -0.75F, 1.0F, 1.0F, 2.0F, -0.15F, false);
+        main.setTextureOffset(6, 6).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 2.0F, 2.0F, 0.0F, false);
+        main.setTextureOffset(5, 0).addBox(-0.75F, -1.25F, 1.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        main.setTextureOffset(0, 4).addBox(1.0F, -2.0F, -0.5F, 1.0F, 1.0F, 3.0F, 0.0F, false);
+        main.setTextureOffset(0, 0).addBox(-1.75F, -3.0F, -0.5F, 1.0F, 1.0F, 3.0F, -0.25F, false);
     }
 
     @Override

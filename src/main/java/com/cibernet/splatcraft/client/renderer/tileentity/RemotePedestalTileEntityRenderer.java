@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.client.renderer;
+package com.cibernet.splatcraft.client.renderer.tileentity;
 
 import com.cibernet.splatcraft.tileentities.RemotePedestalTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;

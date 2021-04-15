@@ -1,4 +1,4 @@
-package com.cibernet.splatcraft.client.model;// Made with Blockbench 3.8.0
+package com.cibernet.splatcraft.client.model.projectiles;// Made with Blockbench 3.8.0
 // Exported for Minecraft version 1.15
 // Paste this class into your mod and generate all required imports
 

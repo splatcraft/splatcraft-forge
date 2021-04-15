@@ -1,7 +1,7 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.SplatcraftConfig;
-import com.cibernet.splatcraft.client.model.AbstractInkTankModel;
+import com.cibernet.splatcraft.client.model.inktanks.AbstractInkTankModel;
 import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.weapons.IChargeableWeapon;
@@ -18,7 +18,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.IDyeableArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
