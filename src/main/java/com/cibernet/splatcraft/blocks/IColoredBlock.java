@@ -24,6 +24,11 @@ public interface IColoredBlock
         return -1;
     }
 
+    default boolean canRemoteColorChange(World world, BlockPos pos, int color, int newColor)
+    {
+        return color != newColor;
+    }
+
     boolean remoteColorChange(World world, BlockPos pos, int newColor);
 
     boolean remoteInkClear(World world, BlockPos pos);

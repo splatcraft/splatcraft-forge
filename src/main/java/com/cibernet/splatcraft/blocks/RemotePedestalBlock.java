@@ -182,6 +182,15 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
     }
 
     @Override
+    public boolean canRemoteColorChange(World world, BlockPos pos, int color, int newColor)
+    {
+        RemotePedestalTileEntity te = (RemotePedestalTileEntity) world.getTileEntity(pos);
+        if(!te.isEmpty() && te.getStackInSlot(0).getItem() instanceof IColoredItem)
+            return ColorUtils.getInkColor(te.getStackInSlot(0)) != newColor;
+        return false;
+    }
+
+    @Override
     public boolean remoteColorChange(World world, BlockPos pos, int newColor)
     {
         if(world.getTileEntity(pos) instanceof RemotePedestalTileEntity)

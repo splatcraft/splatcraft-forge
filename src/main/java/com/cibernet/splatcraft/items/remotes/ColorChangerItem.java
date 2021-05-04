@@ -2,6 +2,7 @@ package com.cibernet.splatcraft.items.remotes;
 
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.blocks.InkwellBlock;
+import com.cibernet.splatcraft.commands.InkColorCommand;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.IColoredItem;
 import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
@@ -70,7 +71,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
                     {
                         int teColor = ((InkColorTileEntity) tileEntity).getColor();
 
-                        if (teColor != color && (mode == 0 || mode == 1 && teColor == affectedColor || mode == 2 && teColor != affectedColor) && ((IColoredBlock) block).remoteColorChange(world, pos, color))
+                        if (((IColoredBlock) block).canRemoteColorChange(world, pos, teColor, color) && (mode == 0 || mode == 1 && teColor == affectedColor || mode == 2 && teColor != affectedColor) && ((IColoredBlock) block).remoteColorChange(world, pos, color))
                         {
                             count++;
                         }
@@ -80,7 +81,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
             }
         }
 
-        return createResult(true, new TranslationTextComponent("status.change_color.success", count, ColorUtils.getFormatedColorName(color, false))).setIntResults(count, count * 15 / blockTotal);
+        return createResult(true, new TranslationTextComponent("status.change_color.success", count, world.isRemote ? ColorUtils.getFormatedColorName(color, false) : InkColorCommand.getColorName(color))).setIntResults(count, count * 15 / blockTotal);
     }
 
     @Override
