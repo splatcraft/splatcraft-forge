@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "splatcraft:items/clear_ink_band_overlay",
+    "layer1": "splatcraft:items/clear_ink_band"
+  }
+}

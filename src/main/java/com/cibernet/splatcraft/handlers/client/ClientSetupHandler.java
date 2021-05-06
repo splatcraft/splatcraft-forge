@@ -7,6 +7,7 @@ import com.cibernet.splatcraft.client.gui.WeaponWorkbenchScreen;
 import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.items.SquidBumperItem;
+import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
@@ -61,6 +62,9 @@ public class ClientSetupHandler
     public static void initItemColors(ColorHandlerEvent.Item event)
     {
         ItemColors colors = event.getItemColors();
+
+        inkColoredItems.add(SplatcraftItems.splatfestBand);
+        inkColoredItems.add(SplatcraftItems.clearBand);
 
         colors.register(new InkItemColor(), inkColoredItems.toArray(new Item[0]));
 
