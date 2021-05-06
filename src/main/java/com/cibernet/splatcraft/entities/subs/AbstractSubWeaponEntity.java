@@ -21,6 +21,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -60,6 +61,13 @@ public abstract class AbstractSubWeaponEntity extends ProjectileItemEntity imple
         result.sourceWeapon = sourceWeapon;
 
         return result;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        Vector3d motion = this.getMotion();
     }
 
     public void shoot(Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy)

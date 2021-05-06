@@ -5,10 +5,12 @@ import com.cibernet.splatcraft.client.renderer.InkProjectileRenderer;
 import com.cibernet.splatcraft.client.renderer.InkSquidRenderer;
 import com.cibernet.splatcraft.client.renderer.SquidBumperRenderer;
 import com.cibernet.splatcraft.client.renderer.subs.BurstBombRenderer;
+import com.cibernet.splatcraft.client.renderer.subs.SuctionBombRenderer;
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.entities.InkSquidEntity;
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.entities.subs.BurstBombEntity;
+import com.cibernet.splatcraft.entities.subs.SuctionBombEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -38,6 +40,7 @@ public class SplatcraftEntities
 
     //Sub Weapons
     public static final EntityType<BurstBombEntity> BURST_BOMB = create("burst_bomb", BurstBombEntity::new, EntityClassification.MISC, 0.5f, 0.5f);
+    public static final EntityType<SuctionBombEntity> SUCTION_BOMB = create("suction_bomb", SuctionBombEntity::new, EntityClassification.MISC, 0.5f, 0.5f);
 
 
     @SubscribeEvent
@@ -49,6 +52,7 @@ public class SplatcraftEntities
         registry.register(INK_SQUID);
         registry.register(SQUID_BUMPER);
         registry.register(BURST_BOMB);
+        registry.register(SUCTION_BOMB);
     }
 
     private static <T extends Entity> EntityType<T> create(String name, EntityType.IFactory<T> supplier, EntityClassification classification, float width, float height)
@@ -77,6 +81,7 @@ public class SplatcraftEntities
         RenderingRegistry.registerEntityRenderingHandler(INK_SQUID, InkSquidRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SQUID_BUMPER, SquidBumperRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(BURST_BOMB, BurstBombRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(SUCTION_BOMB, SuctionBombRenderer::new);
     }
 
     public static void setEntityAttributes()

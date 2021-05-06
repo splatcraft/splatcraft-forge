@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
@@ -36,9 +37,16 @@ public abstract class SubWeaponRenderer<E extends AbstractSubWeaponEntity, M ext
 
         M model = getModel();
         model.setRotationAngles(entityIn, 0, 0, this.handleRotationFloat(entityIn, partialTicks), entityYaw, entityIn.rotationPitch);
-        model.render(matrixStackIn, bufferIn.getBuffer(model.getRenderType(getOverlayTexture(entityIn))), packedLightIn, OverlayTexture.NO_OVERLAY, r, g, b, 1);
-        model.render(matrixStackIn, bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))), packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+        model.setLivingAnimations(entityIn, 0, 0, partialTicks);
+        int i = OverlayTexture.getPackedUV(OverlayTexture.getU(getOverlayProgress(entityIn, partialTicks)), OverlayTexture.getV(false));
+        model.render(matrixStackIn, bufferIn.getBuffer(model.getRenderType(getOverlayTexture(entityIn))), packedLightIn, i, r, g, b, 1);
+        model.render(matrixStackIn, bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))), packedLightIn, i, 1, 1, 1, 1);
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+    }
+
+    protected float getOverlayProgress(E entity, float partialTicks)
+    {
+        return 0;
     }
 
 

@@ -45,17 +45,18 @@ public class InkExplosion
     private final int color;
     private final InkBlockUtils.InkType inkType;
     private final boolean damageMobs;
-    private final float damage;
+    private final float minDamage;
+    private final float maxDamage;
     private final float blockDamage;
     private final ItemStack weapon;
 
     @OnlyIn(Dist.CLIENT)
-    public InkExplosion(World worldIn, @Nullable Entity exploderIn, double xIn, double yIn, double zIn, float blockDamage, float damage, boolean damageMobs, float sizeIn, int color, InkBlockUtils.InkType inkType, ItemStack weapon)
+    public InkExplosion(World worldIn, @Nullable Entity exploderIn, double xIn, double yIn, double zIn, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, float sizeIn, int color, InkBlockUtils.InkType inkType, ItemStack weapon)
     {
-        this(worldIn, exploderIn, null, xIn, yIn, zIn, blockDamage, damage, damageMobs, sizeIn, color, inkType, weapon);
+        this(worldIn, exploderIn, null, xIn, yIn, zIn, blockDamage, minDamage, maxDamage, damageMobs, sizeIn, color, inkType, weapon);
     }
 
-    public InkExplosion(World world, @Nullable Entity source, @Nullable DamageSource damageSource, double x, double y, double z, float blockDamage, float damage, boolean damageMobs, float size, int color, InkBlockUtils.InkType inkType, ItemStack weapon)
+    public InkExplosion(World world, @Nullable Entity source, @Nullable DamageSource damageSource, double x, double y, double z, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, float size, int color, InkBlockUtils.InkType inkType, ItemStack weapon)
     {
         this.world = world;
         this.exploder = source;
@@ -70,20 +71,24 @@ public class InkExplosion
         this.color = color;
         this.inkType = inkType;
         this.damageMobs = damageMobs;
-        this.damage = damage;
+        this.minDamage = minDamage;
+        this.maxDamage = maxDamage;
         this.blockDamage = blockDamage;
         this.weapon = weapon;
     }
 
     public static void createInkExplosion(World world, Entity source, DamageSource damageSource, BlockPos pos, float size, float blockDamage, float damage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon)
     {
+        createInkExplosion(world, source, damageSource, pos, size, blockDamage, damage, damage, damageMobs, color, type, weapon);
+    }
+
+    public static void createInkExplosion(World world, Entity source, DamageSource damageSource, BlockPos pos, float size, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon)
+    {
 
         if (world.isRemote)
-        {
             return;
-        }
 
-        InkExplosion inksplosion = new InkExplosion(world, source, damageSource, pos.getX(), pos.getY(), pos.getZ(), blockDamage, damage, damageMobs, size, color, type, weapon);
+        InkExplosion inksplosion = new InkExplosion(world, source, damageSource, pos.getX(), pos.getY(), pos.getZ(), blockDamage, minDamage, maxDamage, damageMobs, size, color, type, weapon);
 
         inksplosion.doExplosionA();
         inksplosion.doExplosionB(false);
@@ -214,26 +219,22 @@ public class InkExplosion
         {
             int targetColor = -2;
             if (entity instanceof LivingEntity)
-            {
                 targetColor = ColorUtils.getEntityColor((LivingEntity) entity);
-            }
 
             if (targetColor == -1 && damageMobs || color != targetColor && targetColor > -1)
             {
-                InkDamageUtils.doSplatDamage(world, (LivingEntity) entity, damage, color, exploder, weapon, damageMobs, inkType);
+                float pctg = Math.max(0, (float) (entity.getDistanceSq(x, y, z)/Math.pow(f2, 2)));
+
+                InkDamageUtils.doSplatDamage(world, (LivingEntity) entity, MathHelper.lerp(pctg, maxDamage, minDamage), color, exploder, weapon, damageMobs, inkType);
             }
 
             DyeColor dyeColor = null;
 
             if (InkColor.getByHex(color) != null)
-            {
                 dyeColor = InkColor.getByHex(color).getDyeColor();
-            }
 
             if (dyeColor != null && entity instanceof SheepEntity)
-            {
                 ((SheepEntity) entity).setFleeceColor(dyeColor);
-            }
 
             /*
             if (!entity.isImmuneToExplosions())

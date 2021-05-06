@@ -113,7 +113,7 @@ public class SplatcraftItems
     //Sub Weapons
     public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.BURST_BOMB,70);
     public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB,40);
-    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.BURST_BOMB,70);
+    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB,70);
 
     //Vanity
     public static final Item inkClothHelmet = new ColoredArmorItem("ink_cloth_helmet", INK_CLOTH, EquipmentSlotType.HEAD);
