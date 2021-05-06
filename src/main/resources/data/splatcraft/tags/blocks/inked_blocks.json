@@ -2,10 +2,10 @@
   "replace": false,
   "values": [
     "splatcraft:inked_block",
-    "splatcraft:inked_stairs",
-    "splatcraft:inked_slab",
+    "splatcraft:tall_inked_block",
     "splatcraft:glowing_inked_block",
-    "splatcraft:glowing_inked_stairs",
-    "splatcraft:glowing_inked_slab"
+    "splatcraft:tall_glowing_inked_block",
+    "splatcraft:clear_inked_block",
+    "splatcraft:tall_clear_inked_block"
   ]
 }

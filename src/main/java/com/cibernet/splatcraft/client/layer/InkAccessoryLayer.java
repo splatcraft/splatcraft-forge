@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.client.layer;
 
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -45,15 +46,21 @@ public class InkAccessoryLayer extends LayerRenderer<AbstractClientPlayerEntity,
 
         ResourceLocation stackLoc = inkType.getName();
         ResourceLocation texture = new ResourceLocation(stackLoc.getNamespace(), "textures/models/" + stackLoc.getPath() + ".png");
+        ResourceLocation coloredTexture = new ResourceLocation(stackLoc.getNamespace(), "textures/models/" + stackLoc.getPath() + "_colored.png");
 
         MODEL.bipedLeftArm.showModel = entity.getPrimaryHand() == HandSide.LEFT;
         MODEL.bipedLeftLeg.showModel = entity.getPrimaryHand() == HandSide.LEFT;
         MODEL.bipedRightArm.showModel = entity.getPrimaryHand() == HandSide.RIGHT;
         MODEL.bipedRightLeg.showModel = entity.getPrimaryHand() == HandSide.RIGHT;
 
+        int color = ColorUtils.getPlayerColor(entity);
+        float r = ((color & 16711680) >> 16) / 255.0f;
+        float g = ((color & '\uff00') >> 8) / 255.0f;
+        float b = (color & 255) / 255.0f;
 
         this.getEntityModel().setModelAttributes(MODEL);
         this.func_241738_a_(matrixStack, iRenderTypeBuffer, i, false, MODEL, 1.0F, 1.0F, 1.0F, texture);
+        this.func_241738_a_(matrixStack, iRenderTypeBuffer, i, false, MODEL, r, g, b, coloredTexture);
     }
 
     private void func_241738_a_(MatrixStack p_241738_1_, IRenderTypeBuffer p_241738_2_, int p_241738_3_, boolean p_241738_5_, BipedModel p_241738_6_, float p_241738_8_, float p_241738_9_, float p_241738_10_, ResourceLocation armorResource) {

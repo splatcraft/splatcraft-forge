@@ -9,6 +9,7 @@ import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -26,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -154,7 +156,7 @@ public class InkedBlock extends Block implements IColoredBlock
         super.harvestBlock(world, playerEntity, pos, state, tileEntity, stack);
     }
 
-    /* TODO modular ink
+    //* TODO modular ink
     
     @Override
     public BlockRenderType getRenderType(BlockState state)
@@ -166,7 +168,7 @@ public class InkedBlock extends Block implements IColoredBlock
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
         //return VoxelShapes.empty();
-        
+
         if(!(worldIn.getTileEntity(pos) instanceof InkedBlockTileEntity))
             //return super.getShape(state, worldIn, pos, context);
             return VoxelShapes.empty();
@@ -175,10 +177,23 @@ public class InkedBlock extends Block implements IColoredBlock
         if(savedState == null || savedState.getBlock().equals(this))
             return super.getShape(state, worldIn, pos, context);
         return savedState.getBlock().getShape(savedState, worldIn, pos, context);
-        
+
     }
 
-    
+    protected boolean isTall = false;
+    public InkedBlock setTall()
+    {
+        isTall = true;
+        return this;
+    }
+    public boolean isTall() {return isTall;}
+
+    @Override
+    public boolean collisionExtendsVertically(BlockState state, IBlockReader world, BlockPos pos, Entity collidingEntity) {
+        return isTall();
+    }
+
+    /*
     @Override
     public boolean collisionExtendsVertically(BlockState state, IBlockReader world, BlockPos pos, Entity collidingEntity)
     {
@@ -187,13 +202,13 @@ public class InkedBlock extends Block implements IColoredBlock
         if(!(world.getTileEntity(pos) instanceof InkedBlockTileEntity))
         return super.collisionExtendsVertically(state, world, pos, collidingEntity);
         BlockState savedState = ((InkedBlockTileEntity) world.getTileEntity(pos)).getSavedState();
-        
+
         if(savedState == null || savedState.getBlock().equals(this))
             return super.collisionExtendsVertically(state, world, pos, collidingEntity);
         return savedState.getBlock().collisionExtendsVertically(savedState, world, pos, collidingEntity);
         //
     }
-    
+
     */
 
 
@@ -278,15 +293,15 @@ public class InkedBlock extends Block implements IColoredBlock
         }
     }
 
+
+
     @Override
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
     {
         if (isTouchingLiquid(worldIn, currentPos))
         {
             if (worldIn.getTileEntity(currentPos) instanceof InkedBlockTileEntity)
-            {
                 return clearInk(worldIn, currentPos);
-            }
         }
 
         if (worldIn.getTileEntity(currentPos) instanceof InkedBlockTileEntity)
@@ -295,6 +310,11 @@ public class InkedBlock extends Block implements IColoredBlock
 
             if (savedState != null && !savedState.getBlock().equals(this))
             {
+                System.out.println(worldIn.getTileEntity(facingPos));
+                if(facingState != null && worldIn.getTileEntity(facingPos) instanceof InkedBlockTileEntity)
+                    facingState = ((InkedBlockTileEntity) worldIn.getTileEntity(facingPos)).getSavedState();
+                System.out.println(facingState);
+
                 ((InkedBlockTileEntity) worldIn.getTileEntity(currentPos)).setSavedState(savedState.getBlock().updatePostPlacement(savedState, facing, facingState, worldIn, currentPos, facingPos));
             }
         }
@@ -367,9 +387,11 @@ public class InkedBlock extends Block implements IColoredBlock
 
         if (te.getColor() != color)
             te.setColor(color);
-        if (InkBlockUtils.getInkBlock(inkType, state.getBlock()) != state.getBlock())
+        BlockState inkState = InkBlockUtils.getInkState(inkType, world, pos);
+
+        if (inkState.getBlock() != state.getBlock())
         {
-            state = InkBlockUtils.getInkState(inkType, state);
+            state = inkState;
             world.setBlockState(pos, state, 2);
             InkedBlockTileEntity newTe = (InkedBlockTileEntity) world.getTileEntity(pos);
             newTe.setSavedState(te.getSavedState());
@@ -379,6 +401,6 @@ public class InkedBlock extends Block implements IColoredBlock
             world.setTileEntity(pos, newTe);
         } else
             world.notifyBlockUpdate(pos, oldState, state, 2);
-        return !(te.getColor() == color && InkBlockUtils.getInkBlock(inkType, state.getBlock()) == state.getBlock());
+        return !(te.getColor() == color && inkState.getBlock() == state.getBlock());
     }
 }

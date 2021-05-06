@@ -24,13 +24,18 @@ public class SplatcraftBlocks
 {
     public static final ArrayList<Block> inkColoredBlocks = new ArrayList<>();
 
-    public static final Block inkedBlock = new InkedBlock("inked_block");
-    public static final Block inkedStairs = new InkedStairsBlock("inked_stairs");
-    public static final Block inkedSlab = new InkedSlabBlock("inked_slab");
+    public static final InkedBlock inkedBlock = new InkedBlock("inked_block");
+    public static final InkedBlock tallInkedBlock = new InkedBlock("tall_inked_block").setTall();
+    //public static final Block inkedStairs = new InkedStairsBlock("inked_stairs");
+    //public static final Block inkedSlab = new InkedSlabBlock("inked_slab");
 
-    public static final Block glowingInkedBlock = InkedBlock.glowing("glowing_inked_block");
-    public static final Block glowingInkedStairs = InkedStairsBlock.glowing("glowing_inked_stairs");
-    public static final Block glowingInkedSlab = InkedSlabBlock.glowing("glowing_inked_slab");
+    public static final InkedBlock glowingInkedBlock = InkedBlock.glowing("glowing_inked_block");
+    public static final InkedBlock tallGlowingInkedBlock = InkedBlock.glowing("tall_glowing_inked_block").setTall();
+    //public static final Block glowingInkedStairs = InkedStairsBlock.glowing("glowing_inked_stairs");
+    //public static final Block glowingInkedSlab = InkedSlabBlock.glowing("glowing_inked_slab");
+
+    public static final InkedBlock clearInkedBlock = InkedBlock.glowing("clear_inked_block");
+    public static final InkedBlock tallClearInkedBlock = InkedBlock.glowing("tall_clear_inked_block").setTall();
 
     public static final Block sardiniumBlock = new MetalBlock(Material.IRON, MaterialColor.WHITE_TERRACOTTA).setRegistryName("sardinium_block");
     public static final Block sardiniumOre = new OreBlock(0).setRegistryName("sardinium_ore");
@@ -69,11 +74,11 @@ public class SplatcraftBlocks
         IForgeRegistry<Block> registry = event.getRegistry();
 
         registry.register(inkedBlock);
-        registry.register(inkedStairs);
-        registry.register(inkedSlab);
+        registry.register(tallInkedBlock);
         registry.register(glowingInkedBlock);
-        registry.register(glowingInkedStairs);
-        registry.register(glowingInkedSlab);
+        registry.register(tallGlowingInkedBlock);
+        registry.register(clearInkedBlock);
+        registry.register(tallClearInkedBlock);
 
         registry.register(sardiniumBlock);
         registry.register(sardiniumOre);
@@ -114,8 +119,6 @@ public class SplatcraftBlocks
     public static void setRenderLayers()
     {
         RenderTypeLookup.setRenderLayer(glowingInkedBlock, RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(glowingInkedStairs, RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(glowingInkedSlab, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(inkedGlass, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(inkedGlassPane, RenderType.getTranslucent());
 
@@ -140,6 +143,11 @@ public class SplatcraftBlocks
             put("inked_glass", inkedGlass);
             put("inked_glass_pane", inkedGlassPane);
             put("weapon_workbench", weaponWorkbench);
+
+            put("inked_stairs", inkedBlock);
+            put("inked_slab", inkedBlock);
+            put("glowing_inked_stairs", glowingInkedBlock);
+            put("glowing_inked_slab", glowingInkedBlock);
         }};
 
         @SubscribeEvent

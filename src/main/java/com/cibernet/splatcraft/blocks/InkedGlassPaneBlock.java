@@ -148,7 +148,7 @@ public class InkedGlassPaneBlock extends PaneBlock  implements IColoredBlock, IW
             woolColor = ((InkColorTileEntity) world.getTileEntity(pos)).getColor();
         }
         BlockState state = world.getBlockState(pos);
-        BlockState inkState = InkBlockUtils.getInkState(inkType, state);
+        BlockState inkState = InkBlockUtils.getInkState(inkType, world, pos);
         world.setBlockState(pos, inkState, 3);
         world.setTileEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(inkState, world));
         InkedBlockTileEntity inkte = (InkedBlockTileEntity) world.getTileEntity(pos);

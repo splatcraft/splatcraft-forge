@@ -230,33 +230,6 @@ public class InkedStairsBlock extends StairsBlock implements IColoredBlock
     @Override
     public boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
-        if (!(world.getTileEntity(pos) instanceof InkedBlockTileEntity))
-        {
-            return false;
-        }
-
-        InkedBlockTileEntity te = (InkedBlockTileEntity) world.getTileEntity(pos);
-        BlockState oldState = world.getBlockState(pos);
-        BlockState state = world.getBlockState(pos);
-
-        if (te.getColor() != color)
-        {
-            te.setColor(color);
-        }
-        if (InkBlockUtils.getInkBlock(inkType, state.getBlock()) != state.getBlock())
-        {
-            state = InkBlockUtils.getInkState(inkType, state);
-            world.setBlockState(pos, state, 2);
-            InkedBlockTileEntity newTe = (InkedBlockTileEntity) world.getTileEntity(pos);
-            newTe.setSavedState(te.getSavedState());
-            newTe.setSavedColor(te.getSavedColor());
-            newTe.setColor(te.getColor());
-
-            world.setTileEntity(pos, newTe);
-        } else
-        {
-            world.notifyBlockUpdate(pos, oldState, state, 2);
-        }
-        return !(te.getColor() == color && InkBlockUtils.getInkBlock(inkType, state.getBlock()) == state.getBlock());
+        return false;
     }
 }
