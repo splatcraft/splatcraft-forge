@@ -119,6 +119,7 @@ public class SplatcraftBlocks
     public static void setRenderLayers()
     {
         RenderTypeLookup.setRenderLayer(glowingInkedBlock, RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(tallGlowingInkedBlock, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(inkedGlass, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(inkedGlassPane, RenderType.getTranslucent());
 

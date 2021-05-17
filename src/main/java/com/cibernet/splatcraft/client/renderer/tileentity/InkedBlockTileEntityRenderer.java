@@ -12,6 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -71,11 +72,11 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
         //f1 = 1;
         //f2 = 1;
 
-        renderModel(matrixStackIn.getLast(), bufferTypeIn.getBuffer(RenderTypeLookup.func_239220_a_(blockStateIn, false)), blockStateIn, ibakedmodel, f, f1, f2, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
+        renderModel(matrixStackIn.getLast(), bufferTypeIn, blockStateIn, ibakedmodel, f, f1, f2, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
 
     }
 
-    private static void renderModel(MatrixStack.Entry matrixEntry, IVertexBuilder buffer, @Nullable BlockState state, IBakedModel modelIn, float red, float green, float blue, int combinedLightIn, int combinedOverlayIn, net.minecraftforge.client.model.data.IModelData modelData)
+    private static void renderModel(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, @Nullable BlockState state, IBakedModel modelIn, float red, float green, float blue, int combinedLightIn, int combinedOverlayIn, net.minecraftforge.client.model.data.IModelData modelData)
     {
         Random random = new Random();
         long i = 42L;
@@ -83,15 +84,17 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
         for (Direction direction : Direction.values())
         {
             random.setSeed(42L);
-            renderModelBrightnessColorQuads(matrixEntry, buffer, red, green, blue, modelIn.getQuads(state, direction, random, modelData), combinedLightIn, combinedOverlayIn);
+            renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, direction, random, modelData), combinedLightIn, combinedOverlayIn);
         }
 
         random.setSeed(42L);
-        renderModelBrightnessColorQuads(matrixEntry, buffer, red, green, blue, modelIn.getQuads(state, null, random, modelData), combinedLightIn, combinedOverlayIn);
+        renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, null, random, modelData), combinedLightIn, combinedOverlayIn);
     }
 
-    private static void renderModelBrightnessColorQuads(MatrixStack.Entry matrixEntry, IVertexBuilder buffer, float red, float green, float blue, List<BakedQuad> quads, int combinedLightIn, int combinedOverlayIn)
+    private static void renderModelBrightnessColorQuads(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, BlockState state, float red, float green, float blue, List<BakedQuad> quads, int combinedLightIn, int combinedOverlayIn)
     {
+        IVertexBuilder builder =  type.equals(InkBlockUtils.InkType.GLOWING) ? buffer.getBuffer(RenderType.getTranslucent()) : buffer.getBuffer(RenderTypeLookup.func_239220_a_(state, false));
+
         for (BakedQuad bakedquad : quads)
         {
             float f = MathHelper.clamp(red, 0.0F, 1.0F);
@@ -99,12 +102,12 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
             float f2 = MathHelper.clamp(blue, 0.0F, 1.0F);
 
             if(type.equals(InkBlockUtils.InkType.CLEAR))
-                buffer.addQuad(matrixEntry, bakedquad, f, f1, f2, combinedLightIn, combinedOverlayIn);
+                builder.addQuad(matrixEntry, bakedquad, f, f1, f2, combinedLightIn, combinedOverlayIn);
             else
             {
+                addQuad(builder, Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(TEXTURE), matrixEntry, bakedquad, f, f1, f2, combinedLightIn, combinedOverlayIn);
                 if (type.equals(InkBlockUtils.InkType.GLOWING))
-                    addQuad(buffer, Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(TEXTURE_GLOWING), matrixEntry, bakedquad, f, f1, f2, combinedLightIn, combinedOverlayIn);
-                addQuad(buffer, Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(TEXTURE), matrixEntry, bakedquad, f, f1, f2, combinedLightIn, combinedOverlayIn);
+                    addQuad(builder, Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(TEXTURE_GLOWING), matrixEntry, bakedquad, 1, 1, 1, combinedLightIn, combinedOverlayIn);
             }
         }
 
