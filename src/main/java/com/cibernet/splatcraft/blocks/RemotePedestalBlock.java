@@ -202,6 +202,7 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
                 ColorUtils.setColorLocked(stack, true);
                 if (ColorUtils.getInkColor(stack) != newColor) {
                     ColorUtils.setInkColor(stack, newColor);
+                    world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
                     return true;
                 }
             }
