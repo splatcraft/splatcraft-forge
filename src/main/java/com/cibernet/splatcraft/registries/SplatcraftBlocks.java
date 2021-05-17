@@ -25,13 +25,7 @@ public class SplatcraftBlocks
     public static final ArrayList<Block> inkColoredBlocks = new ArrayList<>();
 
     public static final InkedBlock inkedBlock = new InkedBlock("inked_block");
-    //public static final Block inkedStairs = new InkedStairsBlock("inked_stairs");
-    //public static final Block inkedSlab = new InkedSlabBlock("inked_slab");
-
     public static final InkedBlock glowingInkedBlock = InkedBlock.glowing("glowing_inked_block");
-    //public static final Block glowingInkedStairs = InkedStairsBlock.glowing("glowing_inked_stairs");
-    //public static final Block glowingInkedSlab = InkedSlabBlock.glowing("glowing_inked_slab");
-
     public static final InkedBlock clearInkedBlock = InkedBlock.glowing("clear_inked_block");
 
     public static final Block sardiniumBlock = new MetalBlock(Material.IRON, MaterialColor.WHITE_TERRACOTTA).setRegistryName("sardinium_block");

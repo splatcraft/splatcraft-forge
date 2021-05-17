@@ -27,7 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class InkBlockUtils
 {
@@ -86,13 +86,6 @@ public class InkBlockUtils
             return inkType.block.getDefaultState();
         return inkType.block.getDefaultState();
 
-    }
-
-
-    private static <T extends Comparable<T>> BlockState mergeProperty(BlockState state, BlockState baseState, Property<T> property)
-    {
-        T value = baseState.get(property);
-        return state.with(property, value);
     }
 
 

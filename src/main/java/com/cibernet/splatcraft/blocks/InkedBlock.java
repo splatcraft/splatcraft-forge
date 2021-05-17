@@ -40,7 +40,7 @@ import java.util.Random;
 
 public class InkedBlock extends Block implements IColoredBlock
 {
-    public static final Properties DEFAULT_PROPERTIES = Properties.create(Material.CLAY, MaterialColor.BLACK_TERRACOTTA).tickRandomly().harvestTool(ToolType.PICKAXE).setRequiresTool().sound(SoundType.SLIME);
+    public static final Properties DEFAULT_PROPERTIES = Properties.create(Material.CLAY, MaterialColor.BLACK_TERRACOTTA).tickRandomly().harvestTool(ToolType.PICKAXE).setRequiresTool().sound(SoundType.SLIME).notSolid().variableOpacity();
     public static final int GLOWING_LIGHT_LEVEL = 6;
 
 
@@ -147,7 +147,6 @@ public class InkedBlock extends Block implements IColoredBlock
     @Override
     public void harvestBlock(World world, PlayerEntity playerEntity, BlockPos pos, BlockState state, @Nullable TileEntity tileEntity, ItemStack stack)
     {
-        System.out.println(tileEntity);
         if(tileEntity instanceof InkedBlockTileEntity)
         {
             BlockState savedState = ((InkedBlockTileEntity) tileEntity).getSavedState();
@@ -155,7 +154,9 @@ public class InkedBlock extends Block implements IColoredBlock
         }
         super.harvestBlock(world, playerEntity, pos, state, tileEntity, stack);
     }
-    
+
+
+
     @Override
     public BlockRenderType getRenderType(BlockState state)
     {
@@ -185,12 +186,6 @@ public class InkedBlock extends Block implements IColoredBlock
         if(savedState == null || savedState.getBlock().equals(this))
             return super.collisionExtendsVertically(state, world, pos, collidingEntity);
         return savedState.getBlock().collisionExtendsVertically(savedState, world, pos, collidingEntity);
-    }
-
-
-    @Override
-    public boolean isVariableOpacity() {
-        return true;
     }
 
     @Override
