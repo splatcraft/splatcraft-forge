@@ -81,8 +81,7 @@ public class InkVatScreen extends ContainerScreen<InkVatContainer>
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
-
+        this.font.func_243248_b(matrixStack, this.playerInventory.getDisplayName(), (float)this.playerInventoryTitleX, (float)this.playerInventoryTitleY, 4210752);
         font.drawString(matrixStack, title.getUnformattedComponentText(), (float) xSize / 2 - (float) font.getStringWidth(title.getUnformattedComponentText()) / 2, 4, 4210752);
 
         List<Integer> colors = container.sortRecipeList();
