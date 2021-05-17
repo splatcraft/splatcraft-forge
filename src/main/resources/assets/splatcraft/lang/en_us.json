@@ -152,6 +152,7 @@
   "item.splatcraft.suction_bomb": "Suction Bomb",
   "item.splatcraft.curling_bomb": "Curling Bomb",
   "item.splatcraft.splash_wall": "Splash Wall",
+  "item.splatcraft.tooltip.single_use":"§7§oSingle Use",
 
   "item.splatcraft.ink_tank": "Ink Tank",
   "item.splatcraft.ink_tank.ink": "%s / %s",

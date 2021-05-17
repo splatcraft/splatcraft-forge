@@ -66,6 +66,8 @@ public class SplatcraftItems
     public static final ShooterItem gal96 = new ShooterItem("96_gal", 1.3f, 0.85f, 12.5f, 11, 12.4f, 2.5f);
     public static final ShooterItem gal96Deco = new ShooterItem("96_gal_deco", gal96);
 
+
+
     //Blasters
     public static final BlasterItem blaster = new BlasterItem("blaster", 2.3f, 1f, 5f, 4, 20, 25f, 10f, 10f, 6);
     public static final BlasterItem grimBlaster = new BlasterItem("grim_blaster", blaster);
@@ -249,6 +251,9 @@ public class SplatcraftItems
 
         DispenserBlock.registerDispenseBehavior(inkwell, new PlaceBlockDispenseBehavior());
         DispenserBlock.registerDispenseBehavior(emptyInkwell, new PlaceBlockDispenseBehavior());
+
+        for(SubWeaponItem sub : SubWeaponItem.subs)
+            DispenserBlock.registerDispenseBehavior(sub, new SubWeaponItem.DispenseBehavior());
     }
 
 

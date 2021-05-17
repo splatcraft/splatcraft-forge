@@ -53,9 +53,15 @@ public abstract class AbstractSubWeaponEntity extends ProjectileItemEntity imple
 
     public static <A extends AbstractSubWeaponEntity> A create(EntityType<A> type, World world, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, ItemStack sourceWeapon)
     {
-        A result = type.create(world);
-        result.setPosition(thrower.getPosX(), thrower.getPosYEye() - (double)0.1F, thrower.getPosZ());
+        A result = create(type, world, thrower.getPosX(), thrower.getPosYEye() - (double)0.1F, thrower.getPosZ(), color, inkType, sourceWeapon);
         result.setShooter(thrower);
+
+        return result;
+    }
+    public static <A extends AbstractSubWeaponEntity> A create(EntityType<A> type, World world, double x, double y, double z, int color, InkBlockUtils.InkType inkType, ItemStack sourceWeapon)
+    {
+        A result = type.create(world);
+        result.setPosition(x, y, z);
         result.setColor(color);
         result.inkType = inkType;
         result.sourceWeapon = sourceWeapon;
