@@ -155,8 +155,6 @@ public class InkedBlock extends Block implements IColoredBlock
         }
         super.harvestBlock(world, playerEntity, pos, state, tileEntity, stack);
     }
-
-    //* TODO modular ink
     
     @Override
     public BlockRenderType getRenderType(BlockState state)
@@ -167,10 +165,7 @@ public class InkedBlock extends Block implements IColoredBlock
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        //return VoxelShapes.empty();
-
         if(!(worldIn.getTileEntity(pos) instanceof InkedBlockTileEntity))
-            //return super.getShape(state, worldIn, pos, context);
             return VoxelShapes.empty();
         BlockState savedState = ((InkedBlockTileEntity) worldIn.getTileEntity(pos)).getSavedState();
         
@@ -180,25 +175,9 @@ public class InkedBlock extends Block implements IColoredBlock
 
     }
 
-    protected boolean isTall = false;
-    public InkedBlock setTall()
-    {
-        isTall = true;
-        return this;
-    }
-    public boolean isTall() {return isTall;}
-
-    @Override
-    public boolean collisionExtendsVertically(BlockState state, IBlockReader world, BlockPos pos, Entity collidingEntity) {
-        return isTall();
-    }
-
-    /*
     @Override
     public boolean collisionExtendsVertically(BlockState state, IBlockReader world, BlockPos pos, Entity collidingEntity)
     {
-        return true;
-        /*
         if(!(world.getTileEntity(pos) instanceof InkedBlockTileEntity))
         return super.collisionExtendsVertically(state, world, pos, collidingEntity);
         BlockState savedState = ((InkedBlockTileEntity) world.getTileEntity(pos)).getSavedState();
@@ -206,11 +185,13 @@ public class InkedBlock extends Block implements IColoredBlock
         if(savedState == null || savedState.getBlock().equals(this))
             return super.collisionExtendsVertically(state, world, pos, collidingEntity);
         return savedState.getBlock().collisionExtendsVertically(savedState, world, pos, collidingEntity);
-        //
     }
 
-    */
 
+    @Override
+    public boolean isVariableOpacity() {
+        return true;
+    }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
@@ -310,10 +291,8 @@ public class InkedBlock extends Block implements IColoredBlock
 
             if (savedState != null && !savedState.getBlock().equals(this))
             {
-                System.out.println(worldIn.getTileEntity(facingPos));
                 if(facingState != null && worldIn.getTileEntity(facingPos) instanceof InkedBlockTileEntity)
                     facingState = ((InkedBlockTileEntity) worldIn.getTileEntity(facingPos)).getSavedState();
-                System.out.println(facingState);
 
                 ((InkedBlockTileEntity) worldIn.getTileEntity(currentPos)).setSavedState(savedState.getBlock().updatePostPlacement(savedState, facing, facingState, worldIn, currentPos, facingPos));
             }

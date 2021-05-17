@@ -12,19 +12,14 @@ import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftStats;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.Property;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -88,9 +83,8 @@ public class InkBlockUtils
     public static BlockState getInkState(InkType inkType, World world, BlockPos pos)
     {
         if(world.getBlockState(pos).getBlock() instanceof InkedBlock)
-            return (((InkedBlock) world.getBlockState(pos).getBlock()).isTall() ? inkType.tallInk : inkType.normalInk).getDefaultState();
-        return (!world.getBlockState(pos).getCollisionShape(world, pos).isEmpty() &&
-                 world.getBlockState(pos).getCollisionShape(world, pos).getBoundingBox().maxY > 1 ? inkType.tallInk : inkType.normalInk).getDefaultState();
+            return inkType.block.getDefaultState();
+        return inkType.block.getDefaultState();
 
     }
 
@@ -172,10 +166,16 @@ public class InkBlockUtils
 
     public static BlockPos getBlockStandingOnPos(Entity entity)
     {
-        BlockPos result = new BlockPos(entity.getPosX(), entity.getPosY()-0.4, entity.getPosZ());
-        if(entity.world.getBlockState(result).getMaterial().equals(Material.AIR) || entity.world.getBlockState(result).allowsMovement(entity.world, result, PathType.LAND))
-            result = new BlockPos(entity.getPosX(), entity.getPosY()-0.5001, entity.getPosZ());
-        return result;
+        BlockPos result;
+        for(double i = 0; i >= -0.5; i-=0.1)
+        {
+            result = new BlockPos(entity.getPosX(), entity.getPosY()+i, entity.getPosZ());
+
+            if(!(entity.world.getBlockState(result).getMaterial().equals(Material.AIR) || entity.world.getBlockState(result).getBlock().getCollisionShape(entity.world.getBlockState(result), entity.world, result).isEmpty()))
+                return result;
+        }
+
+        return new BlockPos(entity.getPosX(), entity.getPosY()-0.6, entity.getPosZ());
     }
 
     public static boolean onEnemyInk(LivingEntity entity)
@@ -229,7 +229,7 @@ public class InkBlockUtils
     {
         for(InkType type : InkType.values)
         {
-            if(type.normalInk.equals(state.getBlock()) || type.tallInk.equals(state.getBlock()))
+            if(type.block.equals(state.getBlock()))
                 return type;
         }
         return InkType.NORMAL;
@@ -239,28 +239,26 @@ public class InkBlockUtils
     {
         public static final ArrayList<InkType> values = new ArrayList<>();
 
-        public static final InkType NORMAL = new InkType(new ResourceLocation(Splatcraft.MODID, "normal"), SplatcraftBlocks.inkedBlock, SplatcraftBlocks.tallInkedBlock);
-        public static final InkType GLOWING = new InkType(new ResourceLocation(Splatcraft.MODID, "splatfest_band"), SplatcraftItems.splatfestBand, SplatcraftBlocks.glowingInkedBlock, SplatcraftBlocks.tallGlowingInkedBlock);
-        public static final InkType CLEAR = new InkType(new ResourceLocation(Splatcraft.MODID, "clear_band"), SplatcraftItems.clearBand, SplatcraftBlocks.clearInkedBlock, SplatcraftBlocks.tallClearInkedBlock);
+        public static final InkType NORMAL = new InkType(new ResourceLocation(Splatcraft.MODID, "normal"), SplatcraftBlocks.inkedBlock);
+        public static final InkType GLOWING = new InkType(new ResourceLocation(Splatcraft.MODID, "splatfest_band"), SplatcraftItems.splatfestBand, SplatcraftBlocks.glowingInkedBlock);
+        public static final InkType CLEAR = new InkType(new ResourceLocation(Splatcraft.MODID, "clear_band"), SplatcraftItems.clearBand, SplatcraftBlocks.clearInkedBlock);
 
         private final ResourceLocation name;
         private final Item repItem;
 
-        private final InkedBlock normalInk;
-        private final InkedBlock tallInk;
+        private final InkedBlock block;
 
-        public InkType(ResourceLocation name, Item repItem, InkedBlock inkedBlock, InkedBlock tallInkedBlock)
+        public InkType(ResourceLocation name, Item repItem, InkedBlock inkedBlock)
         {
             values.add(this);
             this.name = name;
             this.repItem = repItem;
-            this.normalInk = inkedBlock;
-            this.tallInk = tallInkedBlock;
+            this.block = inkedBlock;
         }
 
-        public InkType(ResourceLocation name, InkedBlock inkedBlock, InkedBlock tallInkedBlock)
+        public InkType(ResourceLocation name, InkedBlock inkedBlock)
         {
-            this(name, Items.AIR, inkedBlock, tallInkedBlock);
+            this(name, Items.AIR, inkedBlock);
         }
 
         @Override
