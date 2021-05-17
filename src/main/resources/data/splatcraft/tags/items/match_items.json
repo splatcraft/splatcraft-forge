@@ -5,8 +5,9 @@
     "splatcraft:ink_cloth_chestplate",
     "splatcraft:ink_cloth_leggings",
     "splatcraft:ink_cloth_boots",
-    "splatcraft:splatfest_band",
+    "#splatcraft:ink_bands",
     "#splatcraft:main_weapons",
+    "#splatcraft:sub_weapons",
     "#splatcraft:ink_tanks"
   ]
 }
