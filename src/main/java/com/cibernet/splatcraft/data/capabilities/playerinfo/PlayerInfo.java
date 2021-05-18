@@ -8,6 +8,7 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 
 public class PlayerInfo implements IPlayerInfo
 {
@@ -123,7 +124,7 @@ public class PlayerInfo implements IPlayerInfo
     {
         nbt.putInt("Color", getColor());
         nbt.putBoolean("IsSquid", isSquid());
-        nbt.putInt("InkType", getInkType().getIndex());
+        nbt.putString("InkType", getInkType().getString());
         nbt.putBoolean("Initialized", initialized);
 
         if (!matchInventory.isEmpty())
@@ -148,7 +149,7 @@ public class PlayerInfo implements IPlayerInfo
     {
         setColor(nbt.getInt("Color"));
         setIsSquid(nbt.getBoolean("IsSquid"));
-        setInkType(InkBlockUtils.InkType.values.get(nbt.getInt("InkType")));
+        setInkType(InkBlockUtils.InkType.values.getOrDefault(new ResourceLocation(nbt.getString("InkType")), InkBlockUtils.InkType.NORMAL));
         setInitialized(nbt.getBoolean("Initialized"));
 
         if (nbt.contains("MatchInventory"))

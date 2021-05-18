@@ -22,12 +22,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class InkBlockUtils
 {
@@ -220,7 +222,7 @@ public class InkBlockUtils
 
     public static InkType getInkType(BlockState state)
     {
-        for(InkType type : InkType.values)
+        for(InkType type : InkType.values.values())
         {
             if(type.block.equals(state.getBlock()))
                 return type;
@@ -228,9 +230,9 @@ public class InkBlockUtils
         return InkType.NORMAL;
     }
 
-    public static class InkType implements Comparable<InkType>
+    public static class InkType implements Comparable<InkType>, IStringSerializable
     {
-        public static final ArrayList<InkType> values = new ArrayList<>();
+        public static final HashMap<ResourceLocation, InkType> values = new HashMap<>();
 
         public static final InkType NORMAL = new InkType(new ResourceLocation(Splatcraft.MODID, "normal"), SplatcraftBlocks.inkedBlock);
         public static final InkType GLOWING = new InkType(new ResourceLocation(Splatcraft.MODID, "splatfest_band"), SplatcraftItems.splatfestBand, SplatcraftBlocks.glowingInkedBlock);
@@ -243,7 +245,7 @@ public class InkBlockUtils
 
         public InkType(ResourceLocation name, Item repItem, InkedBlock inkedBlock)
         {
-            values.add(this);
+            values.put(name, this);
             this.name = name;
             this.repItem = repItem;
             this.block = inkedBlock;
@@ -257,12 +259,7 @@ public class InkBlockUtils
         @Override
         public int compareTo(InkType o)
         {
-            return values.indexOf(this) - values.indexOf(o);
-        }
-
-        public int getIndex()
-        {
-            return values.indexOf(this);
+            return getName().compareTo(o.getName());
         }
 
         public ResourceLocation getName()
@@ -278,6 +275,11 @@ public class InkBlockUtils
         @Override
         public String toString() {
             return name.toString();
+        }
+
+        @Override
+        public String getString() {
+            return getName().toString();
         }
     }
 }

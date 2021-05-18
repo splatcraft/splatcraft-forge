@@ -19,6 +19,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
@@ -110,7 +111,7 @@ public abstract class AbstractSubWeaponEntity extends ProjectileItemEntity imple
     {
         nbt.putInt("Color", getColor());
         nbt.putBoolean("DamageMobs", damageMobs);
-        nbt.putInt("InkType", inkType.getIndex());
+        nbt.putString("InkType", inkType.getString());
         nbt.put("SourceWeapon", sourceWeapon.write(new CompoundNBT()));
     }
 
@@ -121,7 +122,7 @@ public abstract class AbstractSubWeaponEntity extends ProjectileItemEntity imple
         if(nbt.contains("Color"))
             setColor(nbt.getInt("Color"));
         damageMobs = nbt.getBoolean("DamageMobs");
-        inkType = InkBlockUtils.InkType.values.get(nbt.getInt("InkType"));
+        inkType = InkBlockUtils.InkType.values.getOrDefault(new ResourceLocation(nbt.getString("InkType")), InkBlockUtils.InkType.NORMAL);
         sourceWeapon = ItemStack.read(nbt.getCompound("SourceWeapon"));
     }
 

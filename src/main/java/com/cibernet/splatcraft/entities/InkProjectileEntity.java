@@ -22,6 +22,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -315,7 +316,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 
         String type = nbt.getString("ProjectileType");
         setProjectileType(type.isEmpty() ? Types.DEFAULT : type);
-        inkType = InkBlockUtils.InkType.values.get(nbt.getInt("InkType"));
+        inkType = InkBlockUtils.InkType.values.getOrDefault(new ResourceLocation(nbt.getString("InkType")), InkBlockUtils.InkType.NORMAL);
 
         sourceWeapon = ItemStack.read(nbt.getCompound("SourceWeapon"));
     }
@@ -340,7 +341,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 
         nbt.putString("DamageType", damageType);
         nbt.putString("ProjectileType", getProjectileType());
-        nbt.putInt("InkType", inkType.getIndex());
+        nbt.putString("InkType", inkType.getString());
         nbt.put("SourceWeapon", sourceWeapon.write(new CompoundNBT()));
     }
 
