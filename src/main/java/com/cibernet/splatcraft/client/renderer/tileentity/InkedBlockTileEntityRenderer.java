@@ -125,14 +125,16 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
         Vector3f vector3f = new Vector3f((float) vector3i.getX(), (float) vector3i.getY(), (float) vector3i.getZ());
         Matrix4f matrix4f = matrixEntryIn.getMatrix();
         vector3f.transform(matrixEntryIn.getNormal());
-        int i = 8;
         int j = aint.length / 8;
 
         try (MemoryStack memorystack = MemoryStack.stackPush()) {
             ByteBuffer bytebuffer = memorystack.malloc(DefaultVertexFormats.BLOCK.getSize());
             IntBuffer intbuffer = bytebuffer.asIntBuffer();
 
-            for (int k = 0; k < j; ++k) {
+            VertexData[] vertexArray = new VertexData[j];
+
+            for (int k = 0; k < j; ++k)
+            {
                 ((Buffer) intbuffer).clear();
                 intbuffer.put(aint, k * 8, 8);
                 float f = bytebuffer.getFloat(0);
@@ -155,14 +157,62 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
                 }
 
                 int l = bufferIn.applyBakedLighting(combinedLights[k], bytebuffer);
-                float texU = (((k+1)/2) % (j/2)) == 0 ? sprite.getMinU() : sprite.getMaxU();//bytebuffer.getFloat(16);
-                float texV = (k / (j/2)) == 1 ? sprite.getMinV() : sprite.getMaxV();//bytebuffer.getFloat(16);
 
                 Vector4f vector4f = new Vector4f(f, f1, f2, 1.0F);
-                vector4f.transform(matrix4f);
-                bufferIn.applyBakedNormals(vector3f, bytebuffer, matrixEntryIn.getNormal());
-                bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), f3, f4, f5, 1.0F, texU, texV, combinedOverlayIn, l, vector3f.getX(), vector3f.getY(), vector3f.getZ());
+
+                vertexArray[k] = new VertexData(vector4f, f3, f4, f5, 1.0F, l, vector3f.getX(), vector3f.getY(), vector3f.getZ());
+
             }
+
+            if (vertexArray.length <= 0)
+                return;
+
+            boolean matchesX = true;
+            boolean matchesY = true;
+            Direction.Axis axis;
+
+            for(int i = 0; i < vertexArray.length-1; i++)
+            {
+                if(matchesX && vertexArray[i].pos.getX() != vertexArray[i+1].pos.getX())
+                    matchesX = false;
+                if(matchesY && vertexArray[i].pos.getY() != vertexArray[i+1].pos.getY())
+                    matchesY = false;
+            }
+
+            if(matchesX)
+                axis = Direction.Axis.X;
+            else if(matchesY)
+                axis = Direction.Axis.Y;
+            else axis = Direction.Axis.Z;
+
+            for (int k = 0; k < j; ++k)
+            {
+                VertexData vertex = vertexArray[k];
+
+                float texU = sprite.getMinU() + (axis.equals(Direction.Axis.X) ? vertex.pos.getZ() : vertex.pos.getX())*(sprite.getMaxU()-sprite.getMinU());
+                float texV = sprite.getMinV() + (axis.equals(Direction.Axis.Y) ? vertex.pos.getZ() : vertex.pos.getY())*(sprite.getMaxV()-sprite.getMinV());
+
+                vertex.pos.transform(matrix4f);
+                bufferIn.applyBakedNormals(vertex.normal, bytebuffer, matrixEntryIn.getNormal());
+                bufferIn.addVertex(vertex.pos.getX(), vertex.pos.getY(), vertex.pos.getZ(), vertex.rgba.getX(), vertex.rgba.getY(), vertex.rgba.getZ(), vertex.rgba.getW(), texU, texV, combinedOverlayIn, vertex.lightmapUV, vertex.normal.getX(), vertex.normal.getY(), vertex.normal.getZ());
+            }
+
+        }
+    }
+
+    private static final class VertexData
+    {
+        final Vector4f pos;
+        final Vector4f rgba;
+        final int lightmapUV;
+        final Vector3f normal;
+
+        VertexData(Vector4f pos, float red, float green, float blue, float alpha, int lightmapUV, float normalX, float normalY, float normalZ)
+        {
+            this.pos = pos;
+            rgba = new Vector4f(red, green, blue, alpha);
+            this.lightmapUV = lightmapUV;
+            normal = new Vector3f(normalX, normalY, normalZ);
         }
     }
 

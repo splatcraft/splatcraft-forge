@@ -101,7 +101,27 @@ public class InkedBlock extends Block implements IColoredBlock
     private static BlockState clearInk(IWorld world, BlockPos pos)
     {
         InkedBlockTileEntity te = (InkedBlockTileEntity) world.getTileEntity(pos);
-        if (te.hasSavedState())
+        int color = te.getPermanentColor();
+        if(te.hasPermanentColor())
+        {
+            if(te.getColor() == color)
+                return world.getBlockState(pos);
+
+            if(!InkBlockUtils.getInkType(world.getBlockState(pos)).equals(te.getPermanentInkType()) && (world instanceof World))
+            {
+                world.setBlockState(pos, InkBlockUtils.getInkState(te.getPermanentInkType(), (World) world, pos), 2);
+                InkedBlockTileEntity newTe = (InkedBlockTileEntity) world.getTileEntity(pos);
+                newTe.setSavedState(te.getSavedState());
+                newTe.setSavedColor(te.getSavedColor());
+                newTe.setPermanentInkType(te.getPermanentInkType());
+                newTe.setPermanentColor(te.getPermanentColor());
+                ((World)world).setTileEntity(pos, newTe);
+                te = newTe;
+            }
+            te.setColor(color);
+
+        }
+        else if (te.hasSavedState())
         {
             world.setBlockState(pos, te.getSavedState(), 3);
 
@@ -172,7 +192,11 @@ public class InkedBlock extends Block implements IColoredBlock
         
         if(savedState == null || savedState.getBlock().equals(this))
             return super.getShape(state, worldIn, pos, context);
-        return savedState.getBlock().getShape(savedState, worldIn, pos, context);
+
+        VoxelShape result = savedState.getBlock().getShape(savedState, worldIn, pos, context);
+        if(!result.isEmpty())
+            return result;
+        return super.getShape(state, worldIn, pos, context);
 
     }
 
@@ -196,8 +220,13 @@ public class InkedBlock extends Block implements IColoredBlock
         BlockState savedState = ((InkedBlockTileEntity) worldIn.getTileEntity(pos)).getSavedState();
 
         if(savedState == null || savedState.getBlock().equals(this))
+        {
             return super.getCollisionShape(state, worldIn, pos, context);
-        return savedState.getBlock().getCollisionShape(savedState, worldIn, pos, context);
+        }
+        VoxelShape result = savedState.getBlock().getCollisionShape(savedState, worldIn, pos, context);
+        if(!result.isEmpty())
+            return result;
+        return super.getCollisionShape(state, worldIn, pos, context);
     }
 
     @Override
@@ -254,22 +283,11 @@ public class InkedBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public float getJumpFactor()
-    {
-
-        return super.getJumpFactor();
-    }
-
-    @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random rand)
     {
         if (world.getGameRules().getBoolean(SplatcraftGameRules.INK_DECAY) && world.getTileEntity(pos) instanceof InkedBlockTileEntity)
-        {
-            clearInk(world, pos);
-        }
+            world.notifyBlockUpdate(pos, world.getBlockState(pos), clearInk(world, pos), 3);
     }
-
-
 
     @Override
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
@@ -344,7 +362,10 @@ public class InkedBlock extends Block implements IColoredBlock
         BlockState oldState = world.getBlockState(pos);
         if (world.getTileEntity(pos) instanceof InkedBlockTileEntity)
         {
-            return !clearInk(world, pos).equals(oldState);
+            if(clearInk(world, pos).equals(oldState))
+                return false;
+            world.notifyBlockUpdate(pos, oldState, world.getBlockState(pos), 3);
+            return true;
         }
         return false;
     }
@@ -371,6 +392,8 @@ public class InkedBlock extends Block implements IColoredBlock
             newTe.setSavedState(te.getSavedState());
             newTe.setSavedColor(te.getSavedColor());
             newTe.setColor(te.getColor());
+            newTe.setPermanentInkType(te.getPermanentInkType());
+            newTe.setPermanentColor(te.getPermanentColor());
 
             world.setTileEntity(pos, newTe);
         } else
