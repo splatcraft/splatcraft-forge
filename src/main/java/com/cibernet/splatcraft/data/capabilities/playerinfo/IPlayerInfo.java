@@ -24,6 +24,10 @@ public interface IPlayerInfo
     InkBlockUtils.InkType getInkType();
     void setInkType(InkBlockUtils.InkType type);
 
+    int getInkTypeData();
+    void setInkTypeData(int data);
+    boolean hasInkTypeData();
+
     NonNullList<ItemStack> getMatchInventory();
 
     void setMatchInventory(NonNullList<ItemStack> inventory);

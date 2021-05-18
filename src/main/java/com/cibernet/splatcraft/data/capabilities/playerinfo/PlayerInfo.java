@@ -18,7 +18,9 @@ public class PlayerInfo implements IPlayerInfo
     private NonNullList<ItemStack> matchInventory = NonNullList.create();
     private PlayerCooldown playerCooldown = null;
     private PlayerCharge playerCharge = null;
+
     private InkBlockUtils.InkType inkType = InkBlockUtils.InkType.NORMAL;
+    private int inkTypeData = 0;
 
     public PlayerInfo(int defaultColor)
     {
@@ -78,6 +80,24 @@ public class PlayerInfo implements IPlayerInfo
     }
 
     @Override
+    public int getInkTypeData()
+    {
+        return inkTypeData;
+    }
+
+    @Override
+    public void setInkTypeData(int data)
+    {
+        inkTypeData = data;
+    }
+
+    @Override
+    public boolean hasInkTypeData()
+    {
+        return inkTypeData != 0;
+    }
+
+    @Override
     public NonNullList<ItemStack> getMatchInventory()
     {
         return matchInventory;
@@ -127,6 +147,9 @@ public class PlayerInfo implements IPlayerInfo
         nbt.putString("InkType", getInkType().getString());
         nbt.putBoolean("Initialized", initialized);
 
+        if(hasInkTypeData())
+            nbt.putInt("InkTypeData", getInkTypeData());
+
         if (!matchInventory.isEmpty())
         {
             CompoundNBT invNBT = new CompoundNBT();
@@ -151,6 +174,9 @@ public class PlayerInfo implements IPlayerInfo
         setIsSquid(nbt.getBoolean("IsSquid"));
         setInkType(InkBlockUtils.InkType.values.getOrDefault(new ResourceLocation(nbt.getString("InkType")), InkBlockUtils.InkType.NORMAL));
         setInitialized(nbt.getBoolean("Initialized"));
+
+        if(nbt.contains("InkTypeData"))
+            setInkTypeData(nbt.getInt("InkTypeData"));
 
         if (nbt.contains("MatchInventory"))
         {

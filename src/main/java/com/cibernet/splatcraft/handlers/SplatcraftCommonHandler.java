@@ -226,13 +226,28 @@ public class SplatcraftCommonHandler
         IPlayerInfo info = PlayerInfoCapability.get(event.player);
         if(PlayerInfoCapability.hasCapability(event.player))
         {
-            InkBlockUtils.InkType checkedInkType = InkBlockUtils.checkInkType(event.player);
-            if(!event.player.world.isRemote && !checkedInkType.equals(info.getInkType()))
+            if(!event.player.world.isRemote)
             {
-                info.setInkType(checkedInkType);
-                SplatcraftPacketHandler.sendToDim(new UpdatePlayerInfoPacket(event.player), event.player.world);
-            }
+                ItemStack inkTypeStack = InkBlockUtils.checkInkTypeStack(event.player);
+                InkBlockUtils.InkType checkedInkType = InkBlockUtils.checkInkType(inkTypeStack);
+                boolean updateType = false;
 
+                if (!checkedInkType.equals(info.getInkType())) {
+                    info.setInkType(checkedInkType);
+                    updateType = true;
+                }
+
+                int data = inkTypeStack.getOrCreateTag().getInt("CustomModelData");
+
+                if(data != info.getInkTypeData())
+                {
+                    info.setInkTypeData(data);
+                    updateType = true;
+                }
+
+                if (updateType)
+                    SplatcraftPacketHandler.sendToDim(new UpdatePlayerInfoPacket(event.player), event.player.world);
+                }
             try
             {
                 if (event.player.deathTime <= 0 && !info.isInitialized())

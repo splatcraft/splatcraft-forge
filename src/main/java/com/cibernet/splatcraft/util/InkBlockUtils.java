@@ -12,17 +12,20 @@ import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftStats;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -30,6 +33,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InkBlockUtils
 {
@@ -213,11 +217,41 @@ public class InkBlockUtils
 
     public static InkType checkInkType(LivingEntity entity)
     {
-        if (entity instanceof PlayerEntity && ((PlayerEntity) entity).inventory.hasItemStack(new ItemStack(SplatcraftItems.splatfestBand)))
-            return InkType.GLOWING;
-        if (entity instanceof PlayerEntity && ((PlayerEntity) entity).inventory.hasItemStack(new ItemStack(SplatcraftItems.clearBand)))
-            return InkType.CLEAR;
+        return checkInkType(checkInkTypeStack(entity));
+    }
+
+    public static InkType checkInkType(ItemStack stack)
+    {
+        if(!stack.isEmpty())
+            for(InkType t : InkType.values.values())
+                if(t.getRepItem().equals(stack.getItem()))
+                    return t;
+
         return InkType.NORMAL;
+    }
+
+    public static ItemStack checkInkTypeStack(LivingEntity entity)
+    {
+
+        if(entity instanceof PlayerEntity)
+        {
+            PlayerInventory inv = ((PlayerEntity) entity).inventory;
+            final List<NonNullList<ItemStack>> allInventories = ImmutableList.of(inv.offHandInventory, inv.armorInventory, inv.mainInventory);
+
+            for(List<ItemStack> list : allInventories)
+            {
+                for(ItemStack stack : list)
+                    if (stack.getItem().isIn(SplatcraftTags.Items.INK_BANDS))
+                    {
+                        for(InkType t : InkType.values.values())
+                            if(t.getRepItem().equals(stack.getItem()))
+                                return stack;
+                    }
+            }
+
+        }
+
+        return ItemStack.EMPTY;
     }
 
     public static InkType getInkType(BlockState state)
