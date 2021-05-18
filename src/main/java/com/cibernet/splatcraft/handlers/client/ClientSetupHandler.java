@@ -85,7 +85,7 @@ public class ClientSetupHandler
         public int getColor(ItemStack stack, int i)
         {
             boolean isDefault = ColorUtils.getInkColor(stack) == -1 && !ColorUtils.isColorLocked(stack);
-            int color = i == 0 ? ((!(stack.getItem().isIn(SplatcraftTags.Items.MATCH_ITEMS))
+            int color = i == 0 ? (((stack.getItem().isIn(SplatcraftTags.Items.INK_BANDS) || !stack.getItem().isIn(SplatcraftTags.Items.MATCH_ITEMS))
                     && isDefault && PlayerInfoCapability.hasCapability(Minecraft.getInstance().player))
                     ? ColorUtils.getEntityColor(Minecraft.getInstance().player) : ColorUtils.getInkColor(stack)) : -1;
 

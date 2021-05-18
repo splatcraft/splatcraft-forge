@@ -41,6 +41,7 @@ public class SplatcraftTags
         public static final ITag.INamedTag<Item> SUB_WEAPONS = createTag("sub_weapons");
         //public static final ITag.INamedTag<Item> SPECIAL_WEAPONS = createTag("special_weapons");
         public static final ITag.INamedTag<Item> INK_TANKS = createTag("ink_tanks");
+        public static final ITag.INamedTag<Item> INK_BANDS = createTag("ink_bands");
 
         public static final ITag.INamedTag<Item> FILTERS = createTag("filters");
         public static final ITag.INamedTag<Item> REMOTES = createTag("remotes");
