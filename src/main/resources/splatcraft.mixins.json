@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.cibernet.splatcraft.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "splatcraft.refmap.json",
+  "mixins": [
+    "FenceConnectionMixin",
+    "PaneConnectionMixin",
+    "WallConnectionMixin"
+  ],
+  "minVersion": "0.8"
+}
