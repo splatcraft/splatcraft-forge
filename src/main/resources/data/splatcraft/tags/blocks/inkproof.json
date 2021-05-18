@@ -3,6 +3,7 @@
   "values": [
     "#splatcraft:clears_ink",
     "#splatcraft:blocks_ink",
+    "#minecraft:doors",
     "minecraft:observer",
     "minecraft:note_block",
     "minecraft:target",
