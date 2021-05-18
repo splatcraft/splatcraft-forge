@@ -362,7 +362,9 @@ public class InkedBlock extends Block implements IColoredBlock
         BlockState oldState = world.getBlockState(pos);
         if (world.getTileEntity(pos) instanceof InkedBlockTileEntity)
         {
-            if(clearInk(world, pos).equals(oldState))
+            int color = ((InkedBlockTileEntity) world.getTileEntity(pos)).getColor();
+
+            if(clearInk(world, pos).equals(oldState) && (!(world.getTileEntity(pos) instanceof InkedBlockTileEntity) || ((InkedBlockTileEntity) world.getTileEntity(pos)).getColor() == color))
                 return false;
             world.notifyBlockUpdate(pos, oldState, world.getBlockState(pos), 3);
             return true;

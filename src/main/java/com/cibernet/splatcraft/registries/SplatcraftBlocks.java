@@ -26,7 +26,7 @@ public class SplatcraftBlocks
 
     public static final InkedBlock inkedBlock = new InkedBlock("inked_block");
     public static final InkedBlock glowingInkedBlock = InkedBlock.glowing("glowing_inked_block");
-    public static final InkedBlock clearInkedBlock = InkedBlock.glowing("clear_inked_block");
+    public static final InkedBlock clearInkedBlock = new InkedBlock("clear_inked_block");
 
     public static final Block sardiniumBlock = new MetalBlock(Material.IRON, MaterialColor.WHITE_TERRACOTTA).setRegistryName("sardinium_block");
     public static final Block sardiniumOre = new OreBlock(0).setRegistryName("sardinium_ore");

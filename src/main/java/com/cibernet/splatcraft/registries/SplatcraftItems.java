@@ -37,7 +37,7 @@ import java.util.UUID;
 
 import static com.cibernet.splatcraft.registries.SplatcraftItemGroups.GROUP_GENERAL;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftItems
 {
     public static final List<Item> weapons = new ArrayList<>();
@@ -122,8 +122,6 @@ public class SplatcraftItems
     public static final Item inkClothChestplate = new ColoredArmorItem("ink_cloth_chestplate", INK_CLOTH, EquipmentSlotType.CHEST);
     public static final Item inkClothLeggings = new ColoredArmorItem("ink_cloth_leggings", INK_CLOTH, EquipmentSlotType.LEGS);
     public static final Item inkClothBoots = new ColoredArmorItem("ink_cloth_boots", INK_CLOTH, EquipmentSlotType.FEET);
-    public static final Item splatfestBand = new Item(new Item.Properties().maxStackSize(1)).setRegistryName("splatfest_band");
-    public static final Item clearBand = new Item(new Item.Properties().maxStackSize(1)).setRegistryName("clear_ink_band");
 
     //Materials
     public static final Item sardinium = new Item(new Item.Properties().group(GROUP_GENERAL)).setRegistryName("sardinium");
@@ -182,6 +180,11 @@ public class SplatcraftItems
     public static final Item stageVoid = new BlockItem(SplatcraftBlocks.stageVoid).setRegistryName("stage_void");
     public static final Item allowedColorBarrier = new ColoredBlockItem(SplatcraftBlocks.allowedColorBarrier, "allowed_color_barrier").addStarters(false);
     public static final Item deniedColorBarrier = new ColoredBlockItem(SplatcraftBlocks.deniedColorBarrier, "denied_color_barrier").addStarters(false);
+
+    //Octarian Gear
+    public static final Item splatfestBand = new Item(new Item.Properties().maxStackSize(1)).setRegistryName("splatfest_band");
+    public static final Item clearBand = new Item(new Item.Properties().maxStackSize(1)).setRegistryName("clear_ink_band");
+    public static final Item waxApplicator = new InkWaxerItem().setRegistryName("wax_applicator");
 
     //Misc
 
@@ -245,6 +248,8 @@ public class SplatcraftItems
         registry.register(allowedColorBarrier);
         registry.register(deniedColorBarrier);
 
+        registry.register(waxApplicator);
+
         registry.register(new net.minecraft.item.BlockItem(Blocks.IRON_BARS, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("minecraft", "iron_bars"));
         registry.register(new net.minecraft.item.BlockItem(Blocks.CHAIN, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("minecraft", "chain"));
 
@@ -267,6 +272,7 @@ public class SplatcraftItems
             put("inked_glass", inkedGlass);
             put("inked_glass_pane", inkedGlassPane);
             put("weapon_workbench", weaponWorkbench);
+            put("ink_polisher", waxApplicator);
         }};
 
         @SubscribeEvent

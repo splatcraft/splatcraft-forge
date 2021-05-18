@@ -42,6 +42,7 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
 {
     public static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "blocks/inked_block");
     public static final ResourceLocation TEXTURE_GLOWING = new ResourceLocation(Splatcraft.MODID, "blocks/glitter");
+    public static final ResourceLocation TEXTURE_PERMANENT = new ResourceLocation(Splatcraft.MODID, "blocks/permanent_ink_overlay");
 
     protected static InkBlockUtils.InkType type;
 
@@ -72,11 +73,11 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
         //f1 = 1;
         //f2 = 1;
 
-        renderModel(matrixStackIn.getLast(), bufferTypeIn, blockStateIn, ibakedmodel, f, f1, f2, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
+        renderModel(matrixStackIn.getLast(), bufferTypeIn, blockStateIn, ibakedmodel, f, f1, f2, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE, te);
 
     }
 
-    private static void renderModel(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, @Nullable BlockState state, IBakedModel modelIn, float red, float green, float blue, int combinedLightIn, int combinedOverlayIn, net.minecraftforge.client.model.data.IModelData modelData)
+    private static void renderModel(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, @Nullable BlockState state, IBakedModel modelIn, float red, float green, float blue, int combinedLightIn, int combinedOverlayIn, net.minecraftforge.client.model.data.IModelData modelData, InkedBlockTileEntity te)
     {
         Random random = new Random();
         long i = 42L;
@@ -84,14 +85,14 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
         for (Direction direction : Direction.values())
         {
             random.setSeed(42L);
-            renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, direction, random, modelData), combinedLightIn, combinedOverlayIn);
+            renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, direction, random, modelData), combinedLightIn, combinedOverlayIn, te);
         }
 
         random.setSeed(42L);
-        renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, null, random, modelData), combinedLightIn, combinedOverlayIn);
+        renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, null, random, modelData), combinedLightIn, combinedOverlayIn, te);
     }
 
-    private static void renderModelBrightnessColorQuads(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, BlockState state, float red, float green, float blue, List<BakedQuad> quads, int combinedLightIn, int combinedOverlayIn)
+    private static void renderModelBrightnessColorQuads(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, BlockState state, float red, float green, float blue, List<BakedQuad> quads, int combinedLightIn, int combinedOverlayIn, InkedBlockTileEntity te)
     {
         IVertexBuilder builder =  type.equals(InkBlockUtils.InkType.GLOWING) ? buffer.getBuffer(RenderType.getTranslucent()) : buffer.getBuffer(RenderTypeLookup.func_239220_a_(state, false));
 
@@ -109,6 +110,9 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
                 if (type.equals(InkBlockUtils.InkType.GLOWING))
                     addQuad(builder, Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(TEXTURE_GLOWING), matrixEntry, bakedquad, 1, 1, 1, combinedLightIn, combinedOverlayIn);
             }
+
+            if(Minecraft.getInstance().gameSettings.showDebugInfo && te.getColor() == te.getPermanentColor())
+                addQuad(builder, Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(TEXTURE_PERMANENT), matrixEntry, bakedquad, 1, 1, 1, combinedLightIn, combinedOverlayIn);
         }
 
     }

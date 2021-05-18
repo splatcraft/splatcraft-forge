@@ -28,8 +28,11 @@ public class InkedBlockTileEntity extends InkColorTileEntity
         savedState = NBTUtil.readBlockState(nbt.getCompound("SavedState"));
         savedColor = nbt.getInt("SavedColor");
 
-        setPermanentColor(nbt.getInt("PermanentColor"));
-        setPermanentInkType(InkBlockUtils.InkType.values.getOrDefault(new ResourceLocation(nbt.getString("PermanentInkType")), InkBlockUtils.InkType.NORMAL));
+        if(nbt.contains("PermanentColor"))
+        {
+            setPermanentColor(nbt.getInt("PermanentColor"));
+            setPermanentInkType(InkBlockUtils.InkType.values.getOrDefault(new ResourceLocation(nbt.getString("PermanentInkType")), InkBlockUtils.InkType.NORMAL));
+        }
     }
 
     @Override
@@ -58,7 +61,7 @@ public class InkedBlockTileEntity extends InkColorTileEntity
 
     public boolean hasSavedState()
     {
-        return savedState.getBlock() != Blocks.AIR;
+        return savedState != null && savedState.getBlock() != Blocks.AIR;
     }
 
     public int getSavedColor()

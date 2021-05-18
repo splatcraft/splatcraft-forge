@@ -49,6 +49,7 @@ public class ClientSetupHandler
         event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/stage_void_fancy"));
         event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/allowed_color_barrier_fancy"));
         event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/denied_color_barrier_fancy"));
+        event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/permanent_ink_overlay"));
     }
 
     public static void bindScreenContainers()

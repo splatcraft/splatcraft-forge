@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
+import com.cibernet.splatcraft.items.InkWaxerItem;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.network.*;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
@@ -30,6 +31,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -277,6 +279,13 @@ public class SplatcraftCommonHandler
                 InkOverlayCapability.get(entity).addAmount(-0.01f);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onBlockLeftClick(PlayerInteractEvent.LeftClickBlock event)
+    {
+        if(event.getItemStack().getItem() instanceof InkWaxerItem)
+            ((InkWaxerItem)event.getItemStack().getItem()).onBlockStartBreak(event.getItemStack(), event.getPos(), event.getWorld());
     }
 
 }
