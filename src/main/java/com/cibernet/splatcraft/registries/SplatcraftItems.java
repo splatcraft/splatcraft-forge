@@ -182,8 +182,8 @@ public class SplatcraftItems
     public static final Item deniedColorBarrier = new ColoredBlockItem(SplatcraftBlocks.deniedColorBarrier, "denied_color_barrier").addStarters(false);
 
     //Octarian Gear
-    public static final Item splatfestBand = new Item(new Item.Properties().maxStackSize(1)).setRegistryName("splatfest_band");
-    public static final Item clearBand = new Item(new Item.Properties().maxStackSize(1)).setRegistryName("clear_ink_band");
+    public static final Item splatfestBand = new Item(new Item.Properties().maxStackSize(1).group(SplatcraftItemGroups.GROUP_GENERAL)).setRegistryName("splatfest_band");
+    public static final Item clearBand = new Item(new Item.Properties().maxStackSize(1).group(SplatcraftItemGroups.GROUP_GENERAL)).setRegistryName("clear_ink_band");
     public static final Item waxApplicator = new InkWaxerItem().setRegistryName("wax_applicator");
 
     //Misc
@@ -195,13 +195,6 @@ public class SplatcraftItems
 
         for (Item item : weapons)
             registry.register(item);
-
-        registry.register(inkClothHelmet);
-        registry.register(inkClothChestplate);
-        registry.register(inkClothLeggings);
-        registry.register(inkClothBoots);
-        registry.register(splatfestBand);
-        registry.register(clearBand);
 
         registry.register(sardinium);
         registry.register(sardiniumBlock);
@@ -249,6 +242,13 @@ public class SplatcraftItems
         registry.register(deniedColorBarrier);
 
         registry.register(waxApplicator);
+
+        registry.register(inkClothHelmet);
+        registry.register(inkClothChestplate);
+        registry.register(inkClothLeggings);
+        registry.register(inkClothBoots);
+        registry.register(splatfestBand);
+        registry.register(clearBand);
 
         registry.register(new net.minecraft.item.BlockItem(Blocks.IRON_BARS, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("minecraft", "iron_bars"));
         registry.register(new net.minecraft.item.BlockItem(Blocks.CHAIN, new Item.Properties().group(ItemGroup.DECORATIONS)).setRegistryName("minecraft", "chain"));

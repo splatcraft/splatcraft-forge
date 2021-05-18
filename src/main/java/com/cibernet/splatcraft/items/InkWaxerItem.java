@@ -1,6 +1,8 @@
 package com.cibernet.splatcraft.items;
 
 import com.cibernet.splatcraft.blocks.IColoredBlock;
+import com.cibernet.splatcraft.registries.SplatcraftItemGroups;
+import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.Block;
@@ -17,7 +19,7 @@ public class InkWaxerItem extends Item
 {
     public InkWaxerItem()
     {
-        super(new Properties().maxStackSize(1));
+        super(new Properties().maxStackSize(1).group(SplatcraftItemGroups.GROUP_GENERAL));
     }
 
     public void onBlockStartBreak(ItemStack itemstack, BlockPos pos, World world)
