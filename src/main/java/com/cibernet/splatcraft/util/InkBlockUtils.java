@@ -129,13 +129,6 @@ public class InkBlockUtils
         if (!(world.getTileEntity(pos) instanceof InkColorTileEntity) && world.getTileEntity(pos) != null)
             return false;
 
-
-        if(world.getBlockState(pos).getBlock() instanceof  StairsBlock || world.getBlockState(pos).getBlock() instanceof SlabBlock)
-            return true;
-
-        if (SplatcraftTags.Blocks.INKABLE_BLOCKS.contains(block))
-            return true;
-
         if (canInkPassthrough(world, pos))
             return false;
 
