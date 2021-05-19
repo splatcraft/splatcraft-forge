@@ -38,7 +38,7 @@ public class InkColorTileEntity extends TileEntity
     public void read(BlockState state, CompoundNBT nbt)
     {
         super.read(state, nbt);
-        color = nbt.getInt("Color");
+        color = ColorUtils.getColorFromNbt(nbt);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.cibernet.splatcraft.util;
 
+import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
+import com.cibernet.splatcraft.commands.arguments.InkColorArgument;
 import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.entities.IColoredEntity;
@@ -19,12 +21,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Objects;
 import java.util.Random;
@@ -39,6 +43,34 @@ public class ColorUtils
     public static final int DEFAULT = 0x1F1F2D;
 
     public static final int[] STARTER_COLORS = new int[]{ORANGE, BLUE, GREEN, PINK};
+
+    public static int getColorFromNbt(CompoundNBT nbt)
+    {
+        if(!nbt.contains("Color"))
+            return DEFAULT;
+
+        String str = nbt.getString("Color");
+
+        if(ResourceLocation.isResouceNameValid(str))
+        {
+            if(str.indexOf(':') <= 0)
+            {
+                if(str.indexOf(':') < 0)
+                    str = ':' + str;
+                str = Splatcraft.MODID + str;
+            }
+
+            InkColor colorObj = SplatcraftInkColors.REGISTRY.getValue(new ResourceLocation(str));
+
+            if(colorObj != null)
+                return colorObj.getColor();
+        }
+
+        if(str.charAt(0) == '#')
+            return Integer.parseInt(str.substring(1), 16);
+
+        return nbt.getInt("Color");
+    }
 
     public static int getEntityColor(Entity entity)
     {
@@ -87,14 +119,7 @@ public class ColorUtils
 
     public static int getInkColor(ItemStack stack)
     {
-        CompoundNBT nbt = stack.getTag();
-
-        if (nbt == null || !nbt.contains("Color"))
-        {
-            return -1;
-        }
-
-        return nbt.getInt("Color");
+        return getColorFromNbt(stack.getOrCreateTag());
     }
 
     public static ItemStack setInkColor(ItemStack stack, int color)

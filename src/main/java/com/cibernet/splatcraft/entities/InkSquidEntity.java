@@ -113,12 +113,8 @@ public class InkSquidEntity extends CreatureEntity implements IColoredEntity
     {
         super.readAdditional(nbt);
         if (nbt.contains("Color"))
-        {
-            setColor(nbt.getInt("Color"));
-        } else
-        {
-            setColor(ColorUtils.getRandomStarterColor());
-        }
+            setColor(ColorUtils.getColorFromNbt(nbt));
+        else setColor(ColorUtils.getRandomStarterColor());
     }
 
     @Override

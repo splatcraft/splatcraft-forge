@@ -228,7 +228,7 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     public void read(BlockState state, CompoundNBT nbt)
     {
         super.read(state, nbt);
-        color = nbt.getInt("Color");
+        color = ColorUtils.getColorFromNbt(nbt);
         pointer = nbt.getInt("Pointer");
         recipeEntries = nbt.getInt("RecipeEntries");
 

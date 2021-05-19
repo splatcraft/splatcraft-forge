@@ -53,7 +53,7 @@ public class InkOverlayInfo implements IInkOverlayInfo
     @Override
     public void readNBT(CompoundNBT nbt)
     {
-        setColor(nbt.getInt("Color"));
+        setColor(ColorUtils.getColorFromNbt(nbt));
         setAmount(nbt.getFloat("Amount"));
     }
 

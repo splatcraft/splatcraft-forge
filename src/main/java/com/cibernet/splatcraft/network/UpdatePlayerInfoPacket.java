@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.network;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.network.base.PlayToClientPacket;
 import com.cibernet.splatcraft.util.ClientUtils;
+import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -45,7 +46,7 @@ public class UpdatePlayerInfoPacket extends PlayToClientPacket
         PlayerEntity target = Minecraft.getInstance().world.getPlayerByUuid(this.target);
 
         PlayerInfoCapability.get(target).readNBT(nbt);
-        ClientUtils.setClientPlayerColor(target.getDisplayName().getString(), this.nbt.getInt("Color"));
+        ClientUtils.setClientPlayerColor(target.getDisplayName().getString(), ColorUtils.getColorFromNbt(this.nbt));
     }
 
 }

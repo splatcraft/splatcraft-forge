@@ -71,7 +71,7 @@ public class ColoredBarrierTileEntity extends StageBarrierTileEntity
     public void read(BlockState state, CompoundNBT nbt)
     {
         super.read(state, nbt);
-        setColor(nbt.getInt("Color"));
+        setColor(ColorUtils.getColorFromNbt(nbt));
     }
 
     @Override

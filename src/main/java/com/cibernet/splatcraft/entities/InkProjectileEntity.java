@@ -297,7 +297,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         if(nbt.contains("Size"))
             setProjectileSize(nbt.getFloat("Size"));
         if(nbt.contains("Color"))
-            setColor(nbt.getInt("Color"));
+            setColor(ColorUtils.getColorFromNbt(nbt));
 
         if(nbt.contains("GravityVelocity"))
             gravityVelocity = nbt.getFloat("GravityVelocity");

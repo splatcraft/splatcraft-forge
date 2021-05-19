@@ -120,7 +120,7 @@ public abstract class AbstractSubWeaponEntity extends ProjectileItemEntity imple
     public void readAdditional(CompoundNBT nbt)
     {
         if(nbt.contains("Color"))
-            setColor(nbt.getInt("Color"));
+            setColor(ColorUtils.getColorFromNbt(nbt));
         damageMobs = nbt.getBoolean("DamageMobs");
         inkType = InkBlockUtils.InkType.values.getOrDefault(new ResourceLocation(nbt.getString("InkType")), InkBlockUtils.InkType.NORMAL);
         sourceWeapon = ItemStack.read(nbt.getCompound("SourceWeapon"));

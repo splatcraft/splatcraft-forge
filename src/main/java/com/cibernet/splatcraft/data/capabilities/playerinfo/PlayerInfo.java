@@ -1,6 +1,7 @@
 package com.cibernet.splatcraft.data.capabilities.playerinfo;
 
 import com.cibernet.splatcraft.registries.SplatcraftInkColors;
+import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import com.cibernet.splatcraft.util.PlayerCharge;
 import com.cibernet.splatcraft.util.PlayerCooldown;
@@ -170,7 +171,7 @@ public class PlayerInfo implements IPlayerInfo
     @Override
     public void readNBT(CompoundNBT nbt)
     {
-        setColor(nbt.getInt("Color"));
+        setColor(ColorUtils.getColorFromNbt(nbt));
         setIsSquid(nbt.getBoolean("IsSquid"));
         setInkType(InkBlockUtils.InkType.values.getOrDefault(new ResourceLocation(nbt.getString("InkType")), InkBlockUtils.InkType.NORMAL));
         setInitialized(nbt.getBoolean("Initialized"));
