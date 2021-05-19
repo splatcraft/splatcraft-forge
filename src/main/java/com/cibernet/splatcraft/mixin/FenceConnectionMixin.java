@@ -63,8 +63,6 @@ public class FenceConnectionMixin
         BlockState state = te.getSavedState();
         Block block = state.getBlock();
 
-        System.out.println(pos + " " +  state);
-
         boolean flag = this.isWoodenFence(block);
         boolean flag1 = block instanceof FenceGateBlock && FenceGateBlock.isParallel(state, direction);
         return !Block.cannotAttach(block) && (flag || flag1);

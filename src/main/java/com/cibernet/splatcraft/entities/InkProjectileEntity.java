@@ -49,8 +49,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     public boolean canPierce = false;
     public boolean persistent = false;
     public ItemStack sourceWeapon = ItemStack.EMPTY;
-    public float trailSize;
-    public float trailCooldown = 0;
+    public float trailSize = 0;
+    public int trailCooldown = 0;
     public String damageType = "splat";
     public boolean causesHurtCooldown = false;
 
@@ -303,6 +303,9 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
             gravityVelocity = nbt.getFloat("GravityVelocity");
         if(nbt.contains("Lifespan"))
             lifespan = nbt.getInt("Lifespan");
+
+        trailCooldown = nbt.getInt("TrailCooldown");
+        trailSize = nbt.getFloat("TrailSize");
         damage = nbt.getFloat("Damage");
         splashDamage = nbt.getFloat("SplashDamage");
         damageMobs = nbt.getBoolean("DamageMobs");
@@ -329,6 +332,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 
         nbt.putFloat("GravityVelocity", gravityVelocity);
         nbt.putInt("Lifespan", lifespan);
+        nbt.putFloat("TrailSize", trailSize);
+        nbt.putInt("TrailCooldown", trailCooldown);
         nbt.putFloat("Damage", damage);
         nbt.putFloat("SplashDamage", splashDamage);
         nbt.putBoolean("DamageMobs", damageMobs);

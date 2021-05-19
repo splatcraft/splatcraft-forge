@@ -20,6 +20,8 @@ public class InkedBlockTileEntity extends InkColorTileEntity
         super(SplatcraftTileEntitites.inkedTileEntity);
     }
 
+    
+
     //Read NBT
     @Override
     public void read(BlockState state, CompoundNBT nbt)

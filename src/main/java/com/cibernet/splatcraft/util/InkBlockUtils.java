@@ -72,16 +72,28 @@ public class InkBlockUtils
             return false;
 
         BlockState inkState = getInkState(inkType, world, pos);
-        world.setBlockState(pos, inkState, 3);
 
-        world.setTileEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(inkState, world));
-        InkedBlockTileEntity inkte = (InkedBlockTileEntity) world.getTileEntity(pos);
+        InkedBlockTileEntity inkte = (InkedBlockTileEntity) SplatcraftBlocks.inkedBlock.createTileEntity(inkState, world);
         if (inkte == null)
         {
             return false;
         }
         inkte.setColor(color);
         inkte.setSavedState(state);
+
+        world.setBlockState(pos, inkState, 0);
+        world.setTileEntity(pos, inkte);
+        world.notifyBlockUpdate(pos, inkState, inkState, 3);
+
+        for(Direction facing : Direction.values())
+        {
+            if(world.getTileEntity(pos.offset(facing)) instanceof InkedBlockTileEntity)
+            {
+                InkedBlockTileEntity otherTe = (InkedBlockTileEntity) world.getTileEntity(pos.offset(facing));
+                otherTe.setSavedState(otherTe.getSavedState().getBlock().updatePostPlacement(otherTe.getSavedState(), facing.getOpposite(), inkState, world, pos.offset(facing), pos));
+            }
+        }
+
         return true;
     }
 

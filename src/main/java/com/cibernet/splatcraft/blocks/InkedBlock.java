@@ -298,6 +298,8 @@ public class InkedBlock extends Block implements IColoredBlock
                 return clearInk(worldIn, currentPos);
         }
 
+
+
         if (worldIn.getTileEntity(currentPos) instanceof InkedBlockTileEntity)
         {
             BlockState savedState = ((InkedBlockTileEntity) worldIn.getTileEntity(currentPos)).getSavedState();
@@ -397,9 +399,10 @@ public class InkedBlock extends Block implements IColoredBlock
             newTe.setPermanentInkType(te.getPermanentInkType());
             newTe.setPermanentColor(te.getPermanentColor());
 
-            world.setTileEntity(pos, newTe);
-        } else
-            world.notifyBlockUpdate(pos, oldState, state, 2);
+            //world.setTileEntity(pos, newTe);
+        }
+        world.notifyBlockUpdate(pos, oldState, state, 2);
+
         return !(te.getColor() == color && inkState.getBlock() == state.getBlock());
     }
 }
