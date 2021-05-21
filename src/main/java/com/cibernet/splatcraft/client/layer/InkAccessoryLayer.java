@@ -61,11 +61,14 @@ public class InkAccessoryLayer extends LayerRenderer<AbstractClientPlayerEntity,
         float r = ((color & 16711680) >> 16) / 255.0f;
         float g = ((color & '\uff00') >> 8) / 255.0f;
         float b = (color & 255) / 255.0f;
-
-        this.getEntityModel().setModelAttributes(MODEL);
-        this.render(matrixStack, iRenderTypeBuffer, i, false, MODEL, 1.0F, 1.0F, 1.0F, texture);
-        if(Minecraft.getInstance().getTextureManager().getTexture(coloredTexture) != null)
-            this.render(matrixStack, iRenderTypeBuffer, i, false, MODEL, r, g, b, coloredTexture);
+        
+        if(Minecraft.getInstance().getTextureManager().getTexture(texture) != null)
+        {
+            this.getEntityModel().setModelAttributes(MODEL);
+            this.render(matrixStack, iRenderTypeBuffer, i, false, MODEL, 1.0F, 1.0F, 1.0F, texture);
+            if(Minecraft.getInstance().getTextureManager().getTexture(coloredTexture) != null)
+                this.render(matrixStack, iRenderTypeBuffer, i, false, MODEL, r, g, b, coloredTexture);
+        }
     }
 
     private void render(MatrixStack p_241738_1_, IRenderTypeBuffer p_241738_2_, int p_241738_3_, boolean p_241738_5_, BipedModel p_241738_6_, float p_241738_8_, float p_241738_9_, float p_241738_10_, ResourceLocation armorResource) {
