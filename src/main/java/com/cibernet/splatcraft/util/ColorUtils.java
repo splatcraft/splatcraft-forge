@@ -47,7 +47,7 @@ public class ColorUtils
     public static int getColorFromNbt(CompoundNBT nbt)
     {
         if(!nbt.contains("Color"))
-            return DEFAULT;
+            return -1;
 
         String str = nbt.getString("Color");
 
@@ -88,13 +88,9 @@ public class ColorUtils
 
     public static int getPlayerColor(PlayerEntity player)
     {
-        try
-        {
+        if(PlayerInfoCapability.hasCapability(player))
             return PlayerInfoCapability.get(player).getColor();
-        } catch (NullPointerException e)
-        {
-            return 0;
-        }
+        return 0;
     }
 
     public static void setPlayerColor(PlayerEntity player, int color, boolean updateClient)

@@ -94,9 +94,7 @@ public class ClientSetupHandler
                 color = 0xFFFFFF - color;
 
             if (SplatcraftConfig.Client.getColorLock())
-            {
                 color = ColorUtils.getLockedColor(color);
-            }
             return color;
         }
     }
@@ -108,21 +106,15 @@ public class ClientSetupHandler
         public int getColor(BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int i)
         {
             if (iBlockDisplayReader == null || blockPos == null)
-            {
                 return -1;
-            }
 
             int color = ColorUtils.getInkColor(iBlockDisplayReader.getTileEntity(blockPos));
 
             if (SplatcraftConfig.Client.getColorLock())
-            {
                 color = ColorUtils.getLockedColor(color);
-            }
 
             if (color == -1)
-            {
                 return 0xFFFFFF;
-            }
 
             return color;
         }
