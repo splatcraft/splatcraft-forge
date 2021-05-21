@@ -8,9 +8,11 @@ import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -19,7 +21,7 @@ public class InkWaxerItem extends Item
 {
     public InkWaxerItem()
     {
-        super(new Properties().maxStackSize(1).group(SplatcraftItemGroups.GROUP_GENERAL));
+        super(new Properties().maxDamage(256).group(SplatcraftItemGroups.GROUP_GENERAL));
     }
 
     public void onBlockStartBreak(ItemStack itemstack, BlockPos pos, World world)
@@ -49,6 +51,8 @@ public class InkWaxerItem extends Item
                 te.setPermanentInkType(InkBlockUtils.getInkType(context.getWorld().getBlockState(context.getPos())));
 
                 context.getWorld().playEvent(2005, context.getPos(), 0);
+                if(context.getPlayer() instanceof ServerPlayerEntity && !context.getPlayer().isCreative())
+                    context.getItem().attemptDamageItem(1, context.getWorld().rand, (ServerPlayerEntity) context.getPlayer());
                 return ActionResultType.SUCCESS;
             }
         }
@@ -63,5 +67,10 @@ public class InkWaxerItem extends Item
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
         return 0;
+    }
+
+    @Override
+    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
+        return repair.getItem().equals(Items.HONEYCOMB) || super.getIsRepairable(toRepair, repair);
     }
 }
