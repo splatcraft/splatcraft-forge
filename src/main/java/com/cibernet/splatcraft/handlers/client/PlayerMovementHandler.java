@@ -87,7 +87,7 @@ public class PlayerMovementHandler
         if (!player.abilities.isFlying)
         {
             if (speedAttribute.hasModifier(INK_SWIM_SPEED))
-                player.moveRelative((float) player.getAttributeValue(SplatcraftItems.INK_SWIM_SPEED) * (player.isOnGround() ? 1 : 0.75f), new Vector3d(player.moveStrafing, 0.0f, player.moveForward));
+                player.moveRelative((float) player.getAttributeValue(SplatcraftItems.INK_SWIM_SPEED) * (player.isOnGround() ? 1 : 0.75f), new Vector3d(player.moveStrafing, 0.0f, player.moveForward).normalize());
 
         }
 
@@ -123,7 +123,7 @@ public class PlayerMovementHandler
             //if((player.isOnGround() && player.world.getCollisionShapes(player, player.getBoundingBox().offset(xOff, (double)(player.stepHeight), zOff)).toArray().length == 0) || !player.isOnGround())
             {
                 if (player.getMotion().getY() < (input.jump ? 0.46f : 0.4f))
-                    player.moveRelative(0.055f * (input.jump ? 1.9f : 1.7f), new Vector3d(0.0f, player.moveForward, -Math.min(0, player.moveForward)));
+                    player.moveRelative(0.055f * (input.jump ? 1.9f : 1.7f), new Vector3d(0.0f, player.moveForward, -Math.min(0, player.moveForward)).normalize());
                 if (player.getMotion().getY() <= 0 && !input.sneaking)
                     player.moveRelative(0.035f, new Vector3d(0.0f, 1, 0.0f));
 
