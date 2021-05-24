@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
@@ -36,16 +37,19 @@ public class InkAccessoryLayer extends LayerRenderer<AbstractClientPlayerEntity,
             return;
         IPlayerInfo info = PlayerInfoCapability.get(entity);
         InkBlockUtils.InkType inkType = info.getInkType();
+        ItemStack repStack = InkBlockUtils.checkInkTypeStack(entity, inkType);
 
-        if(!inkType.getRepItem().equals(Items.AIR) && ((entity.getHeldItemMainhand().getItem().equals(inkType.getRepItem()) || entity.getHeldItemOffhand().getItem().equals(inkType.getRepItem()))))
+        if(!inkType.getRepItem().equals(Items.AIR) && ((entity.getHeldItemMainhand().equals(repStack) || entity.getHeldItemOffhand().equals(repStack))))
             return;
 
         ResourceLocation stackLoc = inkType.getName();
 
         String customModelData = "";
 
-        if(info.hasInkTypeData() && Minecraft.getInstance().getTextureManager().getTexture(new ResourceLocation(stackLoc.getNamespace(), "textures/models/" + stackLoc.getPath() + customModelData + ".png")) != null)
+        if(info.hasInkTypeData() && Minecraft.getInstance().getResourceManager().hasResource(new ResourceLocation(stackLoc.getNamespace(), "textures/models/" + stackLoc.getPath() + "_" + info.getInkTypeData() + ".png")))
+        {
             customModelData = "_" + info.getInkTypeData();
+        }
 
         ResourceLocation texture = new ResourceLocation(stackLoc.getNamespace(), "textures/models/" + stackLoc.getPath() + customModelData + ".png");
         ResourceLocation coloredTexture = new ResourceLocation(stackLoc.getNamespace(), "textures/models/" + stackLoc.getPath() + customModelData + "_colored.png");
@@ -61,12 +65,13 @@ public class InkAccessoryLayer extends LayerRenderer<AbstractClientPlayerEntity,
         float r = ((color & 16711680) >> 16) / 255.0f;
         float g = ((color & '\uff00') >> 8) / 255.0f;
         float b = (color & 255) / 255.0f;
-        
-        if(Minecraft.getInstance().getTextureManager().getTexture(texture) != null)
+
+
+        if(Minecraft.getInstance().getResourceManager().hasResource(texture))
         {
             this.getEntityModel().setModelAttributes(MODEL);
             this.render(matrixStack, iRenderTypeBuffer, i, false, MODEL, 1.0F, 1.0F, 1.0F, texture);
-            if(Minecraft.getInstance().getTextureManager().getTexture(coloredTexture) != null)
+            if(Minecraft.getInstance().getResourceManager().hasResource(coloredTexture))
                 this.render(matrixStack, iRenderTypeBuffer, i, false, MODEL, r, g, b, coloredTexture);
         }
     }

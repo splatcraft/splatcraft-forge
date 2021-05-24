@@ -258,6 +258,28 @@ public class InkBlockUtils
 
         return ItemStack.EMPTY;
     }
+    public static ItemStack checkInkTypeStack(LivingEntity entity, InkType type)
+    {
+
+        if(entity instanceof PlayerEntity)
+        {
+            PlayerInventory inv = ((PlayerEntity) entity).inventory;
+            final List<NonNullList<ItemStack>> allInventories = ImmutableList.of(inv.offHandInventory, inv.armorInventory, inv.mainInventory);
+
+            for(List<ItemStack> list : allInventories)
+            {
+                for(ItemStack stack : list)
+                    if (stack.getItem().isIn(SplatcraftTags.Items.INK_BANDS))
+                    {
+                        if(type.getRepItem().equals(stack.getItem()))
+                            return stack;
+                    }
+            }
+
+        }
+
+        return ItemStack.EMPTY;
+    }
 
     public static InkType getInkType(BlockState state)
     {

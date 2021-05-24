@@ -148,8 +148,7 @@ public class PlayerInfo implements IPlayerInfo
         nbt.putString("InkType", getInkType().getString());
         nbt.putBoolean("Initialized", initialized);
 
-        if(hasInkTypeData())
-            nbt.putInt("InkTypeData", getInkTypeData());
+        nbt.putInt("InkTypeData", getInkTypeData());
 
         if (!matchInventory.isEmpty())
         {
