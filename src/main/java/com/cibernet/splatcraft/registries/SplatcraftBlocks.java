@@ -98,9 +98,6 @@ public class SplatcraftBlocks
         registry.register(stageVoid);
         registry.register(allowedColorBarrier);
         registry.register(deniedColorBarrier);
-
-        registry.register(new IronBarsBlockOverride());
-        registry.register(new ChainBlockOverride());
     }
 
 

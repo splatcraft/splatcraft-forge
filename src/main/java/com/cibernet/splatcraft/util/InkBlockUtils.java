@@ -1,9 +1,7 @@
 package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.blocks.AbstractSquidPassthroughBlock;
 import com.cibernet.splatcraft.blocks.IColoredBlock;
-import com.cibernet.splatcraft.blocks.IInkPassthrough;
 import com.cibernet.splatcraft.blocks.InkedBlock;
 import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
@@ -13,7 +11,9 @@ import com.cibernet.splatcraft.registries.SplatcraftStats;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -31,7 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -139,12 +138,7 @@ public class InkBlockUtils
     {
         BlockState state = world.getBlockState(pos);
 
-        if (state.getBlock() instanceof AbstractSquidPassthroughBlock || state.getBlock() instanceof IInkPassthrough)
-        {
-            return true;
-        }
-
-        return state.getCollisionShape(world, pos).isEmpty();
+        return state.getCollisionShape(world, pos).isEmpty() || world.getBlockState(pos).isIn(SplatcraftTags.Blocks.INK_PASSTHROUGH);
     }
 
     public static boolean canSquidHide(LivingEntity entity)

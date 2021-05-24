@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "splatcraft:grate",
+    "splatcraft:grate_ramp",
+    "minecraft:iron_bars",
+    "minecraft:chain"
+  ]
+}

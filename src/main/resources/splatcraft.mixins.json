@@ -6,7 +6,8 @@
   "mixins": [
     "FenceConnectionMixin",
     "PaneConnectionMixin",
-    "WallConnectionMixin"
+    "WallConnectionMixin",
+    "SquidPassthroughMixin"
   ],
   "minVersion": "0.8"
 }
