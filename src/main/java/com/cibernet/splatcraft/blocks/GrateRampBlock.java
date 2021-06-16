@@ -21,7 +21,7 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
-public class GrateRampBlock extends AbstractSquidPassthroughBlock implements IWaterLoggable
+public class GrateRampBlock extends Block implements IWaterLoggable
 {
 
     public static final EnumProperty<Direction> FACING = HorizontalBlock.HORIZONTAL_FACING;

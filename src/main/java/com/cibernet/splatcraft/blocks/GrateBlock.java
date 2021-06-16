@@ -22,7 +22,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.common.ToolType;
 
-public class GrateBlock extends AbstractSquidPassthroughBlock implements IWaterLoggable
+public class GrateBlock extends Block implements IWaterLoggable
 {
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
