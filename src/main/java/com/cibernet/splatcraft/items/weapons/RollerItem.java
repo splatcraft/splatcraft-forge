@@ -10,8 +10,6 @@ import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.*;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.PhantomRenderer;
-import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;

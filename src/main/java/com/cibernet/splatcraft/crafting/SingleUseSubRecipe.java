@@ -5,7 +5,6 @@ import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

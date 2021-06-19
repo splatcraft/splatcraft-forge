@@ -2,20 +2,14 @@ package com.cibernet.splatcraft.client.renderer.subs;
 
 import com.cibernet.splatcraft.SplatcraftConfig;
 import com.cibernet.splatcraft.client.model.subs.AbstractSubWeaponModel;
-import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.entities.subs.AbstractSubWeaponEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.List;
 
 public abstract class SubWeaponRenderer<E extends AbstractSubWeaponEntity, M extends AbstractSubWeaponModel<E>> extends EntityRenderer<E>
 {

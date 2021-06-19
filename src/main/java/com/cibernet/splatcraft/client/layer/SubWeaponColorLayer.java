@@ -2,7 +2,6 @@ package com.cibernet.splatcraft.client.layer;
 
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.SplatcraftConfig;
-import com.cibernet.splatcraft.client.model.InkSquidModel;
 import com.cibernet.splatcraft.client.model.subs.AbstractSubWeaponModel;
 import com.cibernet.splatcraft.entities.subs.AbstractSubWeaponEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
@@ -11,10 +10,8 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class SubWeaponColorLayer< M extends AbstractSubWeaponModel<AbstractSubWeaponEntity>> extends LayerRenderer<AbstractSubWeaponEntity, M>

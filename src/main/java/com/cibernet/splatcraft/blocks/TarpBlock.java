@@ -1,12 +1,11 @@
 package com.cibernet.splatcraft.blocks;
 
-import com.cibernet.splatcraft.registries.SplatcraftGameRules;
-import com.cibernet.splatcraft.tileentities.CrateTileEntity;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.IWaterLoggable;
+import net.minecraft.block.SixWayBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;

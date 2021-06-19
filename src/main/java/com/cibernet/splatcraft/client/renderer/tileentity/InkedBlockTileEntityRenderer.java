@@ -1,7 +1,6 @@
 package com.cibernet.splatcraft.client.renderer.tileentity;
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;

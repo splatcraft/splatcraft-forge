@@ -1,14 +1,11 @@
 package com.cibernet.splatcraft.client.renderer.subs;
 
 import com.cibernet.splatcraft.Splatcraft;
-import com.cibernet.splatcraft.client.model.subs.BurstBombModel;
 import com.cibernet.splatcraft.client.model.subs.SuctionBombModel;
-import com.cibernet.splatcraft.entities.subs.BurstBombEntity;
 import com.cibernet.splatcraft.entities.subs.SuctionBombEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;

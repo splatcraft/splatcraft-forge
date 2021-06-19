@@ -7,7 +7,6 @@ import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.network.UpdateInkOverlayPacket;
 import com.cibernet.splatcraft.registries.SplatcraftBlocks;
-import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
@@ -34,7 +33,6 @@ import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.HandSide;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;

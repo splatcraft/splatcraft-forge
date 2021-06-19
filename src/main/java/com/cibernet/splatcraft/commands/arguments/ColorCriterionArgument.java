@@ -2,7 +2,6 @@ package com.cibernet.splatcraft.commands.arguments;
 
 import com.cibernet.splatcraft.commands.InkColorCommand;
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
-import com.cibernet.splatcraft.util.ColorUtils;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;

@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Vector3f;
 
 public class RemotePedestalTileEntityRenderer extends TileEntityRenderer<RemotePedestalTileEntity>
 {

@@ -2,7 +2,6 @@ package com.cibernet.splatcraft.handlers;
 
 import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
-import com.cibernet.splatcraft.handlers.client.RendererHandler;
 import com.cibernet.splatcraft.items.weapons.RollerItem;
 import com.cibernet.splatcraft.items.weapons.SlosherItem;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
