@@ -36,14 +36,6 @@ import java.util.List;
 
 public class InkBlockUtils
 {
-    /*
-    public static TreeMap<InkType, InkBlocks> inkTypeMap = new TreeMap<InkType, InkBlocks>()
-    {{
-        put(InkType.NORMAL, new InkBlocks(SplatcraftBlocks.inkedBlock).put(StairsBlock.class, SplatcraftBlocks.inkedStairs).put(SlabBlock.class, SplatcraftBlocks.inkedSlab));
-        put(InkType.GLOWING, new InkBlocks(SplatcraftBlocks.glowingInkedBlock).put(StairsBlock.class, SplatcraftBlocks.glowingInkedStairs).put(SlabBlock.class, SplatcraftBlocks.glowingInkedSlab));
-    }};
-    */
-
     public static boolean playerInkBlock(PlayerEntity player, World world, BlockPos pos, int color, float damage, InkType inkType)
     {
         boolean inked = inkBlock(world, pos, color, damage, inkType);
@@ -128,10 +120,7 @@ public class InkBlockUtils
         if (!(world.getTileEntity(pos) instanceof InkColorTileEntity) && world.getTileEntity(pos) != null)
             return false;
 
-        if (canInkPassthrough(world, pos))
-            return false;
-
-        return !block.isTransparent(world.getBlockState(pos));
+        return !canInkPassthrough(world, pos);
     }
 
     public static boolean canInkPassthrough(World world, BlockPos pos)
