@@ -19,8 +19,8 @@ build
 
 # other
 eclipse
-run
 logs
+run
 server
 
 # Files from Forge MDK
