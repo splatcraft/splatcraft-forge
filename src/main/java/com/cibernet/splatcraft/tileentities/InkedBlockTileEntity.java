@@ -4,9 +4,13 @@ import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class InkedBlockTileEntity extends InkColorTileEntity
 {
@@ -20,7 +24,11 @@ public class InkedBlockTileEntity extends InkColorTileEntity
         super(SplatcraftTileEntitites.inkedTileEntity);
     }
 
-    
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public double getMaxRenderDistanceSquared() {
+        return Minecraft.getInstance().gameSettings.renderDistanceChunks*12D; //probably a bad idea
+    }
 
     //Read NBT
     @Override

@@ -74,6 +74,11 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
 
     }
 
+    @Override
+    public double getMaxRenderDistanceSquared() {
+        return SplatcraftConfig.Client.barrierRenderDistance.get();
+    }
+
     protected void resetActiveTime()
     {
         activeTime = maxActiveTime;
