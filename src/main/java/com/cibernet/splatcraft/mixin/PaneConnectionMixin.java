@@ -1,7 +1,10 @@
 package com.cibernet.splatcraft.mixin;
 
 import com.cibernet.splatcraft.tileentities.InkedBlockTileEntity;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.PaneBlock;
+import net.minecraft.block.SixWayBlock;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.tags.BlockTags;
@@ -21,23 +24,20 @@ import java.util.Map;
 public class PaneConnectionMixin
 {
 
-    private static final Map<Direction, BooleanProperty> FACING_TO_PROPERTY_MAP = SixWayBlock.FACING_TO_PROPERTY_MAP.entrySet().stream().filter((facingProperty) -> {
-        return facingProperty.getKey().getAxis().isHorizontal();
-    }).collect(Util.toMapCollector());
+    private static final Map<Direction, BooleanProperty> FACING_TO_PROPERTY_MAP = SixWayBlock.FACING_TO_PROPERTY_MAP.entrySet().stream().filter((facingProperty) -> facingProperty.getKey().getAxis().isHorizontal()).collect(Util.toMapCollector());
 
-    @Inject(at= @At("TAIL"), method = "updatePostPlacement", cancellable = true)
+    @Inject(at= @At("TAIL"), method = "updatePostPlacement", cancellable = true, remap = false)
     private void updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos, CallbackInfoReturnable<BlockState> callback)
     {
         BlockState state = callback.getReturnValue();
 
         if(worldIn instanceof World)
         {
-            callback.setReturnValue(facing.getAxis().getPlane() == Direction.Plane.HORIZONTAL ? state.with(FACING_TO_PROPERTY_MAP.get(facing), state.get(FACING_TO_PROPERTY_MAP.get(facing)) ||
-                    Boolean.valueOf(this.canConnect((World) worldIn, facingPos, facing))) : state);
+            callback.setReturnValue(facing.getAxis().getPlane() == Direction.Plane.HORIZONTAL ? state.with(FACING_TO_PROPERTY_MAP.get(facing), state.get(FACING_TO_PROPERTY_MAP.get(facing)) || this.canConnect((World) worldIn, facingPos, facing)) : state);
         }
     }
 
-    @Inject(at= @At("TAIL"), method = "getStateForPlacement", cancellable = true)
+    @Inject(at= @At("TAIL"), method = "getStateForPlacement", cancellable = true, remap = false)
     private void getStateForPlacement(BlockItemUseContext context, CallbackInfoReturnable<BlockState> callback)
     {
         BlockState state = callback.getReturnValue();

@@ -3,12 +3,9 @@ package com.cibernet.splatcraft.mixin;
 import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FourWayBlock;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -23,8 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class SquidPassthroughMixin
 {
 
-    @Inject(at = @At("TAIL"), method = "getCollisionShape(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IBlockReader;" +
-            "Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/shapes/ISelectionContext;)Lnet/minecraft/util/math/shapes/VoxelShape;", cancellable = true)
+    @Inject(at = @At("TAIL"), method = "getCollisionShape(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IBlockReader;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/shapes/ISelectionContext;)Lnet/minecraft/util/math/shapes/VoxelShape;", cancellable = true, remap = false)
     private void getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context, CallbackInfoReturnable<VoxelShape> callback)
     {
         try
@@ -32,6 +28,6 @@ public class SquidPassthroughMixin
             if(state.isIn(SplatcraftTags.Blocks.SQUID_PASSTHROUGH) && context.getEntity() instanceof LivingEntity && PlayerInfoCapability.isSquid((LivingEntity) context.getEntity()))
                 callback.setReturnValue(VoxelShapes.empty());
         }
-        catch (IllegalStateException e) {}
+        catch (IllegalStateException ignored) {}
     }
 }

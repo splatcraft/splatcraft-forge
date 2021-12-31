@@ -16,12 +16,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.minecraft.block.WallBlock.*;
+import static net.minecraft.block.WallBlock.WALL_HEIGHT_NORTH;
+import static net.minecraft.block.WallBlock.cannotAttach;
 
 @Mixin(WallBlock.class)
 public abstract class WallConnectionMixin
 {
-    @Shadow protected abstract boolean shouldConnect(BlockState state, boolean sideSolid, Direction direction);
 
     @Shadow protected abstract BlockState func_235626_a_(IWorldReader reader, BlockState state, BlockPos pos, BlockState collisionState, boolean connectedSouth, boolean connectedWest, boolean connectedNorth, boolean connectedEast);
 
@@ -31,7 +31,7 @@ public abstract class WallConnectionMixin
 
     @Shadow @Final public static EnumProperty<WallHeight> WALL_HEIGHT_WEST;
 
-    @Inject(at=@At("TAIL"), method = "func_235627_a_", cancellable = true)
+    @Inject(at=@At("TAIL"), method = "func_235627_a_", cancellable = true, remap = false)
     private void func_235627_a_(IWorldReader reader, BlockPos pos, BlockState state, BlockPos facingPos, BlockState facingState, Direction facing, CallbackInfoReturnable<BlockState> callback)
     {
 

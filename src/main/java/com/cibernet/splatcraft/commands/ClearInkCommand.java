@@ -2,14 +2,12 @@ package com.cibernet.splatcraft.commands;
 
 import com.cibernet.splatcraft.items.remotes.InkDisruptorItem;
 import com.cibernet.splatcraft.items.remotes.RemoteItem;
-import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
 public class ClearInkCommand

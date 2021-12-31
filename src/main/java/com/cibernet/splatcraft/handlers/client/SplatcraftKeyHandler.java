@@ -7,12 +7,8 @@ import com.cibernet.splatcraft.network.PlayerSetSquidServerPacket;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ReuseableStream;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.shapes.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,9 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class SplatcraftKeyHandler

@@ -3,11 +3,9 @@ package com.cibernet.splatcraft.client.model.subs;// Made with Blockbench 3.8.4
 // Paste this class into your mod and generate all required imports
 
 
-import com.cibernet.splatcraft.client.model.subs.AbstractSubWeaponModel;
 import com.cibernet.splatcraft.entities.subs.SuctionBombEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 

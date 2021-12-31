@@ -3,7 +3,6 @@ package com.cibernet.splatcraft.util;
 import com.cibernet.splatcraft.Splatcraft;
 import com.cibernet.splatcraft.blocks.IColoredBlock;
 import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
-import com.cibernet.splatcraft.commands.arguments.InkColorArgument;
 import com.cibernet.splatcraft.data.SplatcraftTags;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.entities.IColoredEntity;
@@ -28,7 +27,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Objects;
 import java.util.Random;

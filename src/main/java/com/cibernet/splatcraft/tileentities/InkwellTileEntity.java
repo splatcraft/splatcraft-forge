@@ -1,14 +1,11 @@
 package com.cibernet.splatcraft.tileentities;
 
 import com.cibernet.splatcraft.items.ColoredBlockItem;
-import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.util.ColorUtils;
-import net.minecraft.block.Block;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 

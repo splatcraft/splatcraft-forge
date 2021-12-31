@@ -6,9 +6,7 @@ package com.cibernet.splatcraft.client.model.subs;// Made with Blockbench 3.8.3
 import com.cibernet.splatcraft.entities.subs.BurstBombEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 public class BurstBombModel extends AbstractSubWeaponModel<BurstBombEntity>
 {

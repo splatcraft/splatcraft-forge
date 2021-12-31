@@ -2,7 +2,6 @@ package com.cibernet.splatcraft.blocks;
 
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.tileentities.ColoredBarrierTileEntity;
-import com.cibernet.splatcraft.tileentities.InkColorTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;

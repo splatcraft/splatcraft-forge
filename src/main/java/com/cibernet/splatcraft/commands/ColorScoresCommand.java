@@ -6,14 +6,12 @@ import com.cibernet.splatcraft.data.capabilities.saveinfo.SaveInfoCapability;
 import com.cibernet.splatcraft.handlers.ScoreboardHandler;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.network.UpdateColorScoresPacket;
-import com.cibernet.splatcraft.util.ColorUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collection;

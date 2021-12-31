@@ -1,8 +1,6 @@
 package com.cibernet.splatcraft.entities.subs;
 
 import com.cibernet.splatcraft.client.particles.InkExplosionParticleData;
-import com.cibernet.splatcraft.client.particles.InkSplashParticleData;
-import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.InkDamageUtils;
@@ -10,9 +8,7 @@ import com.cibernet.splatcraft.util.InkExplosion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
