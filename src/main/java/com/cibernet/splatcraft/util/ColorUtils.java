@@ -44,30 +44,24 @@ public class ColorUtils
 
     public static final int[] STARTER_COLORS = new int[]{ORANGE, BLUE, GREEN, PINK};
 
-    public static int getColorFromNbt(CompoundNBT nbt)
-    {
-        if(!nbt.contains("Color"))
+    public static int getColorFromNbt(CompoundNBT nbt) {
+        if (!nbt.contains("Color"))
             return -1;
 
         String str = nbt.getString("Color");
 
-        if(ResourceLocation.isResouceNameValid(str))
+        if(!str.isEmpty())
         {
-            if(str.indexOf(':') <= 0)
-            {
-                if(str.indexOf(':') < 0)
-                    str = ':' + str;
-                str = Splatcraft.MODID + str;
+            if (CommonUtils.isResourceNameValid(str)) {
+                InkColor colorObj = SplatcraftInkColors.REGISTRY.getValue(new ResourceLocation(str));
+
+                if (colorObj != null)
+                    return colorObj.getColor();
             }
 
-            InkColor colorObj = SplatcraftInkColors.REGISTRY.getValue(new ResourceLocation(str));
-
-            if(colorObj != null)
-                return colorObj.getColor();
+            if (str.charAt(0) == '#')
+                return Integer.parseInt(str.substring(1), 16);
         }
-
-        if(str.charAt(0) == '#')
-            return Integer.parseInt(str.substring(1), 16);
 
         return nbt.getInt("Color");
     }
