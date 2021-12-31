@@ -189,6 +189,10 @@ public abstract class RemoteItem extends Item
     public RemoteResult onRemoteUse(World usedOnWorld, ItemStack stack, int colorIn)
     {
         Tuple<BlockPos, BlockPos> coordSet = getCoordSet(stack);
+
+        if(coordSet == null)
+            return new RemoteResult(false, null);
+
         return onRemoteUse(usedOnWorld, coordSet.getA(), coordSet.getB(), stack, colorIn, getRemoteMode(stack));
     }
 
