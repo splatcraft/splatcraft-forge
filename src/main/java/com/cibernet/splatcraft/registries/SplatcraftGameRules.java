@@ -39,7 +39,7 @@ public class SplatcraftGameRules
         WATER_DAMAGE = createBooleanRule("waterDamage", Category.PLAYER, false);
         REQUIRE_INK_TANK = createBooleanRule("requireInkTank", Category.PLAYER, true);
         INK_FRIENDLY_FIRE = createBooleanRule("inkFriendlyFire", Category.PLAYER, false);
-        INK_REGEN = createBooleanRule("inkRegeneration", Category.PLAYER, true);
+        INK_REGEN = createBooleanRule("inkHealing", Category.PLAYER, true);
         INK_DAMAGE_COOLDOWN = createBooleanRule("inkDamageCooldown", Category.PLAYER, false);
         INK_MOB_DAMAGE_PERCENTAGE = createIntRule("inkMobDamagePercentage", Category.MOBS, 0);
     }
