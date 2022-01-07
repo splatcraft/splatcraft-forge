@@ -50,9 +50,9 @@ public class BaseLootModifier extends LootModifier
         @Override
         public BaseLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] ailootcondition)
         {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getString(object, "item")));
-            int countMin = JSONUtils.getInt(object, "countMin");
-            int countMax = JSONUtils.getInt(object, "countMax");
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(object, "item")));
+            int countMin = JSONUtils.getAsInt(object, "countMin");
+            int countMax = JSONUtils.getAsInt(object, "countMax");
             return new BaseLootModifier(ailootcondition, item, countMin, countMax);
         }
 

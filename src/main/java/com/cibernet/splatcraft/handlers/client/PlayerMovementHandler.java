@@ -58,36 +58,36 @@ public class PlayerMovementHandler
 
         if (InkBlockUtils.onEnemyInk(player))
         {
-            //player.setMotion(player.getMotion().x, Math.min(player.getMotion().y, 0.05f), player.getMotion().z);
+            //player.setDeltaMovement(player.getDeltaMovement().x, Math.min(player.getDeltaMovement().y, 0.05f), player.getDeltaMovement().z);
             if (!speedAttribute.hasModifier(ENEMY_INK_SPEED))
-                speedAttribute.applyNonPersistentModifier(ENEMY_INK_SPEED);
+                speedAttribute.addTransientModifier(ENEMY_INK_SPEED);
         }
 
-        if (player.getActiveItemStack().getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) player.getActiveItemStack().getItem()).hasSpeedModifier(player, player.getActiveItemStack()))
+        if (player.getUseItem().getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) player.getUseItem().getItem()).hasSpeedModifier(player, player.getUseItem()))
         {
-            AttributeModifier mod = ((WeaponBaseItem) player.getActiveItemStack().getItem()).getSpeedModifier(player, player.getActiveItemStack());
+            AttributeModifier mod = ((WeaponBaseItem) player.getUseItem().getItem()).getSpeedModifier(player, player.getUseItem());
             if (!speedAttribute.hasModifier(mod))
-                speedAttribute.applyNonPersistentModifier(mod);
+                speedAttribute.addTransientModifier(mod);
         }
 
         if (PlayerInfoCapability.isSquid(player))
         {
             if (InkBlockUtils.canSquidSwim(player) && !speedAttribute.hasModifier(INK_SWIM_SPEED))
-                speedAttribute.applyNonPersistentModifier(INK_SWIM_SPEED);
+                speedAttribute.addTransientModifier(INK_SWIM_SPEED);
             if (!swimAttribute.hasModifier(SQUID_SWIM_SPEED))
-                swimAttribute.applyNonPersistentModifier(SQUID_SWIM_SPEED);
+                swimAttribute.addTransientModifier(SQUID_SWIM_SPEED);
         }
 
         if (PlayerCooldown.hasPlayerCooldown(player))
         {
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
-            player.inventory.currentItem = cooldown.getSlotIndex();
+            player.inventory.selected = cooldown.getSlotIndex();
         }
 
-        if (!player.abilities.isFlying)
+        if (!player.abilities.flying)
         {
             if (speedAttribute.hasModifier(INK_SWIM_SPEED))
-                player.moveRelative((float) player.getAttributeValue(SplatcraftItems.INK_SWIM_SPEED) * (player.isOnGround() ? 1 : 0.75f), new Vector3d(player.moveStrafing, 0.0f, player.moveForward).normalize());
+                player.moveRelative((float) player.getAttributeValue(SplatcraftItems.INK_SWIM_SPEED) * (player.isOnGround() ? 1 : 0.75f), new Vector3d(player.xxa, 0.0f, player.zza).normalize());
 
         }
 
@@ -100,49 +100,49 @@ public class PlayerMovementHandler
         MovementInput input = event.getMovementInput();
         PlayerEntity player = event.getPlayer();
 
-        float speedMod = !input.sneaking ? InkBlockUtils.canSquidHide(player) ? 35f : 2f : 1f;
+        float speedMod = !input.shiftKeyDown ? InkBlockUtils.canSquidHide(player) ? 35f : 2f : 1f;
 
-        input.moveForward *= speedMod;
+        input.forwardImpulse *= speedMod;
         //input = player.movementInput;
-        input.moveStrafe *= speedMod;
+        input.leftImpulse *= speedMod;
         //input = player.movementInput;
 
-        if (PlayerInfoCapability.isSquid(player) && InkBlockUtils.canSquidClimb(player) && !player.abilities.isFlying)
+        if (PlayerInfoCapability.isSquid(player) && InkBlockUtils.canSquidClimb(player) && !player.abilities.flying)
         {
             ModifiableAttributeInstance gravity = player.getAttribute(net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get());
-            boolean flag = player.getMotion().y <= 0.0D;
-            if (flag && player.isPotionActive(Effects.SLOW_FALLING))
+            boolean flag = player.getDeltaMovement().y <= 0.0D;
+            if (flag && player.hasEffect(Effects.SLOW_FALLING))
             {
                 if (!gravity.hasModifier(SLOW_FALLING))
-                    gravity.applyNonPersistentModifier(SLOW_FALLING);
+                    gravity.addTransientModifier(SLOW_FALLING);
                 player.fallDistance = 0.0F;
             } else if (gravity.hasModifier(SLOW_FALLING))
                 gravity.removeModifier(SLOW_FALLING);
-            //player.setMotion(player.getMotion().add(0.0D, d0 / 4.0D, 0.0D));
+            //player.setDeltaMovement(player.getDeltaMovement().add(0.0D, d0 / 4.0D, 0.0D));
 
-            //if((player.isOnGround() && player.world.getCollisionShapes(player, player.getBoundingBox().offset(xOff, (double)(player.stepHeight), zOff)).toArray().length == 0) || !player.isOnGround())
+            //if((player.isOnGround() && player.level.getCollisionShapes(player, player.getBoundingBox().offset(xOff, (double)(player.stepHeight), zOff)).toArray().length == 0) || !player.isOnGround())
             {
-                if (player.getMotion().getY() < (input.jump ? 0.46f : 0.4f))
-                    player.moveRelative(0.055f * (input.jump ? 1.9f : 1.7f), new Vector3d(0.0f, player.moveForward, -Math.min(0, player.moveForward)).normalize());
-                if (player.getMotion().getY() <= 0 && !input.sneaking)
+                if (player.getDeltaMovement().y() < (input.jumping ? 0.46f : 0.4f))
+                    player.moveRelative(0.055f * (input.jumping ? 1.9f : 1.7f), new Vector3d(0.0f, player.zza, -Math.min(0, player.zza)).normalize());
+                if (player.getDeltaMovement().y() <= 0 && !input.shiftKeyDown)
                     player.moveRelative(0.035f, new Vector3d(0.0f, 1, 0.0f));
 
-                if (input.sneaking)
-                    player.setMotion(player.getMotion().x, Math.max(0, player.getMotion().getY()), player.getMotion().z);
+                if (input.shiftKeyDown)
+                    player.setDeltaMovement(player.getDeltaMovement().x, Math.max(0, player.getDeltaMovement().y()), player.getDeltaMovement().z);
             }
         }
 
 
-        if (player.isHandActive())
+        if (player.isUsingItem())
         {
-            ItemStack stack = player.getActiveItemStack();
+            ItemStack stack = player.getUseItem();
             if (!stack.isEmpty())
             {
                 if (stack.getItem() instanceof WeaponBaseItem)
                 {
-                    input.moveStrafe *= 5.0F;
+                    input.leftImpulse *= 5.0F;
                     //input = player.movementInput;
-                    input.moveForward *= 5.0F;
+                    input.forwardImpulse *= 5.0F;
                     //input = player.movementInput;
                 }
             }
@@ -153,21 +153,21 @@ public class PlayerMovementHandler
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
 
             if(cooldown.storedItem instanceof RollerItem)
-                input.jump = false;
+                input.jumping = false;
 
             if (!cooldown.canMove())
             {
-                input.moveForward = 0;
-                input.moveStrafe = 0;
-                input.jump = false;
+                input.forwardImpulse = 0;
+                input.leftImpulse = 0;
+                input.jumping = false;
             } else if (cooldown.storedItem instanceof RollerItem)
             {
-                input.moveForward = Math.min(1, Math.abs(input.moveForward)) * Math.signum(input.moveForward) * (float) ((RollerItem) cooldown.storedItem).swingMobility;
-                input.moveStrafe = Math.min(1, Math.abs(input.moveStrafe)) * Math.signum(input.moveStrafe) * (float) ((RollerItem) cooldown.storedItem).swingMobility;
+                input.forwardImpulse = Math.min(1, Math.abs(input.forwardImpulse)) * Math.signum(input.forwardImpulse) * (float) ((RollerItem) cooldown.storedItem).swingMobility;
+                input.leftImpulse = Math.min(1, Math.abs(input.leftImpulse)) * Math.signum(input.leftImpulse) * (float) ((RollerItem) cooldown.storedItem).swingMobility;
             }
             if (cooldown.forceCrouch() && cooldown.getTime() > 1)
             {
-                input.sneaking = !player.abilities.isFlying;
+                input.shiftKeyDown = !player.abilities.flying;
             }
 
         }

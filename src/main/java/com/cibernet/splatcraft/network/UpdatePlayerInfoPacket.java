@@ -25,25 +25,25 @@ public class UpdatePlayerInfoPacket extends PlayToClientPacket
 
     public UpdatePlayerInfoPacket(PlayerEntity target)
     {
-        this(target.getUniqueID(), PlayerInfoCapability.get(target).writeNBT(new CompoundNBT()));
+        this(target.getUUID(), PlayerInfoCapability.get(target).writeNBT(new CompoundNBT()));
     }
 
     public static UpdatePlayerInfoPacket decode(PacketBuffer buffer)
     {
-        return new UpdatePlayerInfoPacket(UUID.fromString(buffer.readString()), buffer.readCompoundTag());
+        return new UpdatePlayerInfoPacket(UUID.fromString(buffer.readUtf()), buffer.readNbt());
     }
 
     @Override
     public void encode(PacketBuffer buffer)
     {
-        buffer.writeString(target.toString());
-        buffer.writeCompoundTag(nbt);
+        buffer.writeUtf(target.toString());
+        buffer.writeNbt(nbt);
     }
 
     @Override
     public void execute()
     {
-        PlayerEntity target = Minecraft.getInstance().world.getPlayerByUuid(this.target);
+        PlayerEntity target = Minecraft.getInstance().level.getPlayerByUUID(this.target);
 
         PlayerInfoCapability.get(target).readNBT(nbt);
         ClientUtils.setClientPlayerColor(target.getDisplayName().getString(), ColorUtils.getColorFromNbt(this.nbt));

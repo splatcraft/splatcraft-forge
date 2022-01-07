@@ -40,20 +40,20 @@ public class SplatcraftKeyHandler
         if (player == null || ! PlayerInfoCapability.hasCapability(player))
             return;
 
-        if(player.getRidingEntity() == null && player.world.getCollisionShapes(player,
-                new AxisAlignedBB(-0.3 + player.getPosX(), player.getPosY(), -0.3 + player.getPosZ(), 0.3 + player.getPosX(), 0.6 + player.getPosY(), 0.3 + player.getPosZ()))
+        if(player.getVehicle() == null && player.level.getBlockCollisions(player,
+                new AxisAlignedBB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ()))
                 .collect(Collectors.toList()).isEmpty())
         {
             if (KeyMode.HOLD.equals(SplatcraftConfig.Client.squidKeyMode.get()))
             {
                 boolean isPlayerSquid = PlayerInfoCapability.isSquid(player);
 
-                if (isPlayerSquid && !squidKey.isKeyDown() || !isPlayerSquid && squidKey.isKeyDown())
+                if (isPlayerSquid && !squidKey.isDown() || !isPlayerSquid && squidKey.isDefault())
                     pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 1));
                 else pressState.put(squidKey, 0);
             } else
             {
-                if (squidKey.isKeyDown())
+                if (squidKey.isDown())
                     pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 2));
                 else pressState.put(squidKey, 0);
             }

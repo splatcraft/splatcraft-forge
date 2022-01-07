@@ -54,7 +54,7 @@ public class InkTankItem extends ColoredArmorItem
 
     public InkTankItem(String name, float capacity, IArmorMaterial material)
     {
-        this(name, capacity, material, new Properties().group(SplatcraftItemGroups.GROUP_WEAPONS).maxStackSize(1));
+        this(name, capacity, material, new Properties().tab(SplatcraftItemGroups.GROUP_WEAPONS).stacksTo(1));
 
     }
 
@@ -65,7 +65,7 @@ public class InkTankItem extends ColoredArmorItem
 
     public InkTankItem(String name, float capacity)
     {
-        this(name, capacity, new SplatcraftArmorMaterial(name, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0, 0, 0));
+        this(name, capacity, new SplatcraftArmorMaterial(name, SoundEvents.ARMOR_EQUIP_CHAIN, 0, 0, 0));
     }
 
     public static float getInkAmount(ItemStack stack)
@@ -95,17 +95,17 @@ public class InkTankItem extends ColoredArmorItem
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(ItemStack stack, World level, Entity entity, int itemSlot, boolean isSelected)
     {
-        super.inventoryTick(stack, world, entity, itemSlot, isSelected);
+        super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
         if (entity instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity) entity;
             float ink = getInkAmount(stack);
 
-            if (canRecharge(stack) && player.getItemStackFromSlot(EquipmentSlotType.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
-                    && (!(player.getActiveItemStack().getItem() instanceof WeaponBaseItem) || player.getActiveItemStack().getItem() instanceof IChargeableWeapon))
+            if (canRecharge(stack) && player.getItemBySlot(EquipmentSlotType.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
+                    && (!(player.getUseItem().getItem() instanceof WeaponBaseItem) || player.getUseItem().getItem() instanceof IChargeableWeapon))
             {
                 setInkAmount(stack, Math.min(capacity, ink + (InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player) ? 1 : 0.1f)));
             }
@@ -113,9 +113,9 @@ public class InkTankItem extends ColoredArmorItem
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, level, tooltip, flag);
         if (!canRecharge(stack))
         {
             tooltip.add(new TranslationTextComponent("item.splatcraft.ink_tank.cant_recharge"));
@@ -132,7 +132,7 @@ public class InkTankItem extends ColoredArmorItem
     @Override
     public <A extends BipedModel<?>> A getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlotType armorSlot, A _default)
     {
-        if (entity.getEntityWorld().isRemote)
+        if (entity.level.isClientSide)
         {
             BipedModel<?> model = getInkTankModel(entity, stack, slot, _default);
             return model != null ? (A) model : super.getArmorModel(entity, stack, slot, _default);
@@ -158,19 +158,19 @@ public class InkTankItem extends ColoredArmorItem
         {
             if (stack.getItem() instanceof InkTankItem)
             {
-                model.bipedRightLeg.showModel = slot == EquipmentSlotType.LEGS || slot == EquipmentSlotType.FEET;
-                model.bipedLeftLeg.showModel = slot == EquipmentSlotType.LEGS || slot == EquipmentSlotType.FEET;
+                model.rightLeg.visible = slot == EquipmentSlotType.LEGS || slot == EquipmentSlotType.FEET;
+                model.leftLeg.visible = slot == EquipmentSlotType.LEGS || slot == EquipmentSlotType.FEET;
 
-                model.bipedBody.showModel = slot == EquipmentSlotType.CHEST;
-                model.bipedLeftArm.showModel = slot == EquipmentSlotType.CHEST;
-                model.bipedRightArm.showModel = slot == EquipmentSlotType.CHEST;
+                model.body.visible = slot == EquipmentSlotType.CHEST;
+                model.leftArm.visible = slot == EquipmentSlotType.CHEST;
+                model.rightArm.visible = slot == EquipmentSlotType.CHEST;
 
-                model.bipedHead.showModel = slot == EquipmentSlotType.HEAD;
-                model.bipedHeadwear.showModel = slot == EquipmentSlotType.HEAD;
+                model.head.visible = slot == EquipmentSlotType.HEAD;
+                model.hat.visible = slot == EquipmentSlotType.HEAD;
 
-                model.isSneak = _default.isSneak;
-                model.isSitting = _default.isSitting;
-                model.isChild = _default.isChild;
+                model.crouching = _default.crouching;
+                model.riding = _default.riding;
+                model.young = _default.young;
 
                 model.rightArmPose = _default.rightArmPose;
                 model.leftArmPose = _default.leftArmPose;
@@ -218,7 +218,7 @@ public class InkTankItem extends ColoredArmorItem
 
     public boolean canUse(Item item)
     {
-        boolean hasWhitelist = SplatcraftTags.Items.INK_TANK_WHITELIST.get(this).getAllElements().size() > 0;
+        boolean hasWhitelist = SplatcraftTags.Items.INK_TANK_WHITELIST.get(this).getValues().size() > 0;
         boolean inWhitelist = SplatcraftTags.Items.INK_TANK_WHITELIST.get(this).contains(item);
         boolean inBlacklist = SplatcraftTags.Items.INK_TANK_BLACKLIST.get(this).contains(item);
 

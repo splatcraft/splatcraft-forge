@@ -29,9 +29,9 @@ public class SquidBumperColorLayer extends LayerRenderer<SquidBumperEntity, Squi
     {
         if (!entityIn.isInvisible())
         {
-            modelParentIn.copyModelAttributesTo(modelIn);
-            modelIn.setLivingAnimations(entityIn, limbSwing, limbSwingAmount, partialTicks);
-            modelIn.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+            modelParentIn.copyPropertiesTo(modelIn);
+            modelIn.prepareMobModel(entityIn, limbSwing, limbSwingAmount, partialTicks);
+            modelIn.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
             renderCutoutModel(modelIn, textureLocationIn, matrixStackIn, bufferIn, packedLightIn, entityIn, red, green, blue);
         }
 
@@ -39,14 +39,14 @@ public class SquidBumperColorLayer extends LayerRenderer<SquidBumperEntity, Squi
 
     protected static <T extends LivingEntity> void renderCutoutModel(SquidBumperModel modelIn, ResourceLocation textureLocationIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, SquidBumperEntity entityIn, float red, float green, float blue)
     {
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityCutoutNoCull(textureLocationIn));
-        modelIn.renderBase(matrixStackIn, ivertexbuilder, packedLightIn, LivingRenderer.getPackedOverlay(entityIn, 0.0F), red, green, blue, 1.0F);
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(textureLocationIn));
+        modelIn.renderBase(matrixStackIn, ivertexbuilder, packedLightIn, LivingRenderer.getOverlayCoords(entityIn, 0.0F), red, green, blue, 1.0F);
 
         float scale = entityIn.getInkHealth() <= 0 ? (10 - Math.min(entityIn.getRespawnTime(), 10)) / 10f : 1;
-        matrixStackIn.push();
+        matrixStackIn.pushPose();
         matrixStackIn.scale(scale, scale, scale);
-        modelIn.renderBumper(matrixStackIn, ivertexbuilder, packedLightIn, LivingRenderer.getPackedOverlay(entityIn, 0.0F), red, green, blue, 1.0F);
-        matrixStackIn.pop();
+        modelIn.renderBumper(matrixStackIn, ivertexbuilder, packedLightIn, LivingRenderer.getOverlayCoords(entityIn, 0.0F), red, green, blue, 1.0F);
+        matrixStackIn.popPose();
 
 
     }
@@ -63,7 +63,7 @@ public class SquidBumperColorLayer extends LayerRenderer<SquidBumperEntity, Squi
         float g = ((color & '\uff00') >> 8) / 255.0f;
         float b = (color & 255) / 255.0f;
 
-        renderCopyCutoutModel(getEntityModel(), MODEL, TEXTURE, matrixStack, bufferIn, packedLightIn, entity, v, v1, v2, v3, v4, v5, r, g, b);
+        renderCopyCutoutModel(getParentModel(), MODEL, TEXTURE, matrixStack, bufferIn, packedLightIn, entity, v, v1, v2, v3, v4, v5, r, g, b);
     }
 
 }

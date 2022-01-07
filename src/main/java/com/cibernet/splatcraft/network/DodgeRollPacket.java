@@ -16,7 +16,7 @@ public class DodgeRollPacket extends PlayToServerPacket
 
     public DodgeRollPacket(PlayerEntity player, ItemStack mainDualie, ItemStack offhandDualie)
     {
-        this(player.getUniqueID(), mainDualie, offhandDualie);
+        this(player.getUUID(), mainDualie, offhandDualie);
     }
 
     public DodgeRollPacket(UUID target, ItemStack mainDualie, ItemStack offhandDualie)
@@ -28,21 +28,21 @@ public class DodgeRollPacket extends PlayToServerPacket
 
     public static DodgeRollPacket decode(PacketBuffer buffer)
     {
-        return new DodgeRollPacket(buffer.readUniqueId(), buffer.readItemStack(), buffer.readItemStack());
+        return new DodgeRollPacket(buffer.readUUID(), buffer.readItem(), buffer.readItem());
     }
 
     @Override
     public void execute(PlayerEntity player)
     {
-        PlayerEntity target = player.world.getPlayerByUuid(this.target);
+        PlayerEntity target = player.level.getPlayerByUUID(this.target);
         DualieItem.performRoll(target, mainDualie, offhandDualie);
     }
 
     @Override
     public void encode(PacketBuffer buffer)
     {
-        buffer.writeUniqueId(target);
-        buffer.writeItemStack(mainDualie);
-        buffer.writeItemStack(offhandDualie);
+        buffer.writeUUID(target);
+        buffer.writeItem(mainDualie);
+        buffer.writeItem(offhandDualie);
     }
 }

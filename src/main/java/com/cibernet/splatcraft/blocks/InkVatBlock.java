@@ -30,21 +30,21 @@ import javax.annotation.Nullable;
 public class InkVatBlock extends ContainerBlock implements IColoredBlock
 {
 
-    public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = HorizontalBlock.FACING;
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public InkVatBlock(String name)
     {
-        super(Properties.create(Material.IRON).hardnessAndResistance(2.0f).harvestTool(ToolType.PICKAXE).setRequiresTool());
+        super(Properties.of(Material.METAL).strength(2.0f).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops());
         setRegistryName(name);
         SplatcraftBlocks.inkColoredBlocks.add(this);
 
-        setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(ACTIVE, false).with(POWERED, false));
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(ACTIVE, false).setValue(POWERED, false));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
         builder.add(FACING, ACTIVE, POWERED);
     }
@@ -53,20 +53,20 @@ public class InkVatBlock extends ContainerBlock implements IColoredBlock
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        return getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
+    public ActionResultType use(BlockState state, World levelIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
-        if (worldIn.isRemote)
+        if (levelIn.isClientSide)
         {
             return ActionResultType.SUCCESS;
         }
 
-        if (worldIn.getTileEntity(pos) instanceof InkVatTileEntity)
+        if (levelIn.getBlockEntity(pos) instanceof InkVatTileEntity)
         {
-            NetworkHooks.openGui((ServerPlayerEntity) player, (InkVatTileEntity) worldIn.getTileEntity(pos), pos);
+            NetworkHooks.openGui((ServerPlayerEntity) player, (InkVatTileEntity) levelIn.getBlockEntity(pos), pos);
             return ActionResultType.SUCCESS;
         }
 
@@ -81,7 +81,7 @@ public class InkVatBlock extends ContainerBlock implements IColoredBlock
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
         return SplatcraftTileEntitites.inkVatTileEntity.create();
     }
@@ -105,23 +105,23 @@ public class InkVatBlock extends ContainerBlock implements IColoredBlock
     }
 
     @Override
-    public boolean remoteColorChange(World world, BlockPos pos, int newColor)
+    public boolean remoteColorChange(World level, BlockPos pos, int newColor)
     {
         return false;
     }
 
     @Override
-    public boolean remoteInkClear(World world, BlockPos pos)
+    public boolean remoteInkClear(World level, BlockPos pos)
     {
         return false;
     }
 
     @Override
-    public int getColor(World world, BlockPos pos)
+    public int getColor(World level, BlockPos pos)
     {
-        if (world.getTileEntity(pos) instanceof InkVatTileEntity)
+        if (level.getBlockEntity(pos) instanceof InkVatTileEntity)
         {
-            InkVatTileEntity tileEntity = (InkVatTileEntity) world.getTileEntity(pos);
+            InkVatTileEntity tileEntity = (InkVatTileEntity) level.getBlockEntity(pos);
             if (tileEntity != null)
             {
                 return tileEntity.getColor();
@@ -131,31 +131,32 @@ public class InkVatBlock extends ContainerBlock implements IColoredBlock
     }
 
     @Override
-    public boolean setColor(World world, BlockPos pos, int color)
+    public boolean setColor(World level, BlockPos pos, int color)
     {
-        if (!(world.getTileEntity(pos) instanceof InkVatTileEntity))
+        if (!(level.getBlockEntity(pos) instanceof InkVatTileEntity))
         {
             return false;
         }
-        InkVatTileEntity tileEntity = (InkVatTileEntity) world.getTileEntity(pos);
+        InkVatTileEntity tileEntity = (InkVatTileEntity) level.getBlockEntity(pos);
         if (tileEntity != null)
         {
             tileEntity.setColor(color);
         }
-        world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
+        level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 2);
         return true;
     }
 
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(IBlockReader worldIn)
+    public TileEntity newBlockEntity(IBlockReader levelIn)
     {
         return new InkVatTileEntity();
     }
 
 
+
     @Override
-    public BlockRenderType getRenderType(BlockState state)
+    public BlockRenderType getRenderShape(BlockState state)
     {
         return BlockRenderType.MODEL;
     }
@@ -163,21 +164,21 @@ public class InkVatBlock extends ContainerBlock implements IColoredBlock
     @Override
     public BlockState rotate(BlockState state, Rotation rot)
     {
-        return state.with(FACING, rot.rotate(state.get(FACING)));
+        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
     public BlockState mirror(BlockState state, Mirror mirrorIn)
     {
-        return state.rotate(mirrorIn.toRotation(state.get(FACING)));
+        return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World levelIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-        if (stack.hasDisplayName())
+        if (stack.hasCustomHoverName())
         {
-            TileEntity tileentity = worldIn.getTileEntity(pos);
+            TileEntity tileentity = levelIn.getBlockEntity(pos);
             if (tileentity instanceof InkVatTileEntity)
             {
                 ((InkVatTileEntity) tileentity).setCustomName(stack.getDisplayName());
@@ -187,49 +188,49 @@ public class InkVatBlock extends ContainerBlock implements IColoredBlock
     }
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving)
+    public void onRemove(BlockState state, World levelIn, BlockPos pos, BlockState newState, boolean isMoving)
     {
-        if (!state.isIn(newState.getBlock()))
+        if (!state.is(newState.getBlock()))
         {
-            TileEntity tileentity = worldIn.getTileEntity(pos);
+            TileEntity tileentity = levelIn.getBlockEntity(pos);
             if (tileentity instanceof InkVatTileEntity)
             {
-                InventoryHelper.dropInventoryItems(worldIn, pos, (InkVatTileEntity) tileentity);
-                worldIn.updateComparatorOutputLevel(pos, this);
+                InventoryHelper.dropContents(levelIn, pos, (InkVatTileEntity) tileentity);
+                levelIn.updateNeighbourForOutputSignal(pos, this);
             }
 
-            super.onReplaced(state, worldIn, pos, newState, isMoving);
+            super.onRemove(state, levelIn, pos, newState, isMoving);
         }
     }
 
     @Override
-    public boolean hasComparatorInputOverride(BlockState state)
+    public boolean hasAnalogOutputSignal(BlockState state)
     {
         return true;
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos)
+    public int getAnalogOutputSignal(BlockState blockState, World levelIn, BlockPos pos)
     {
-        return Container.calcRedstone(worldIn.getTileEntity(pos));
+        return Container.getRedstoneSignalFromBlockEntity(levelIn.getBlockEntity(pos));
     }
 
     @Override
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving)
+    public void neighborChanged(BlockState state, World levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving)
     {
-        boolean isPowered = worldIn.isBlockPowered(pos);
-        if (isPowered != state.get(POWERED))
+        boolean isPowered = levelIn.hasNeighborSignal(pos);
+        if (isPowered != state.getValue(POWERED))
         {
-            if (isPowered && worldIn.getTileEntity(pos) instanceof InkVatTileEntity)
+            if (isPowered && levelIn.getBlockEntity(pos) instanceof InkVatTileEntity)
             {
-                InkVatTileEntity tileEntity = (InkVatTileEntity) worldIn.getTileEntity(pos);
+                InkVatTileEntity tileEntity = (InkVatTileEntity) levelIn.getBlockEntity(pos);
                 if (tileEntity != null)
                 {
                     tileEntity.onRedstonePulse();
                 }
             }
 
-            worldIn.setBlockState(pos, state.with(POWERED, isPowered), 3);
+            levelIn.setBlock(pos, state.setValue(POWERED, isPowered), 3);
         }
 
     }

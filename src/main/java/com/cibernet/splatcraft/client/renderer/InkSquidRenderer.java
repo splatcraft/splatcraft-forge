@@ -5,6 +5,7 @@ import com.cibernet.splatcraft.client.layer.InkSquidColorLayer;
 import com.cibernet.splatcraft.client.model.InkSquidModel;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.ZombieRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 
@@ -19,13 +20,13 @@ public class InkSquidRenderer extends LivingRenderer<LivingEntity, InkSquidModel
     }
 
     @Override
-    protected boolean canRenderName(LivingEntity entity)
+    protected boolean shouldShowName(LivingEntity entity)
     {
-        return super.canRenderName(entity) && (entity.getAlwaysRenderNameTagForRender() || entity.hasCustomName() && entity == this.renderManager.pointedEntity);
+        return super.shouldShowName(entity) && (entity.shouldShowName() || entity.hasCustomName() && entity == this.entityRenderDispatcher.crosshairPickEntity);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(LivingEntity entity)
+    public ResourceLocation getTextureLocation(LivingEntity entity)
     {
         return TEXTURE;
     }

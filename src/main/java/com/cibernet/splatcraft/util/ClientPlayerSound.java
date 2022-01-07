@@ -18,18 +18,18 @@ public class ClientPlayerSound extends SimpleSound
     @Override
     public double getX()
     {
-        return Objects.requireNonNull(Minecraft.getInstance().player).getPosX();
+        return Objects.requireNonNull(Minecraft.getInstance().player).getX();
     }
 
     @Override
     public double getY()
     {
-        return Objects.requireNonNull(Minecraft.getInstance().player).getPosY();
+        return Objects.requireNonNull(Minecraft.getInstance().player).getY();
     }
 
     @Override
     public double getZ()
     {
-        return Objects.requireNonNull(Minecraft.getInstance().player).getPosZ();
+        return Objects.requireNonNull(Minecraft.getInstance().player).getZ();
     }
 }

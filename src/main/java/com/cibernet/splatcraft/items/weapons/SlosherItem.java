@@ -36,9 +36,9 @@ public class SlosherItem extends WeaponBaseItem
         this.inkConsumption = inkConsumption;
 
 
-        addStat(new WeaponStat("range", (stack, world) -> (int) (projectileSpeed / 1.2f * 100)));
-        addStat(new WeaponStat("damage", (stack, world) -> (int) (damage / 20 * 100)));
-        addStat(new WeaponStat("handling", (stack, world) -> (11 - startupTicks) * 10));
+        addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / 1.2f * 100)));
+        addStat(new WeaponStat("damage", (stack, level) -> (int) (damage / 20 * 100)));
+        addStat(new WeaponStat("handling", (stack, level) -> (11 - startupTicks) * 10));
     }
 
     public SlosherItem(String name, SlosherItem parent)
@@ -47,13 +47,13 @@ public class SlosherItem extends WeaponBaseItem
     }
 
     @Override
-    public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
+    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
     {
         if (getInkAmount(entity, stack) >= inkConsumption)
         {
             if (entity instanceof PlayerEntity && getUseDuration(stack) - timeLeft < startupTicks)
             {
-                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, entity.getActiveHand(), true, false, true, entity.isOnGround()));
+                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
             }
         } else
         {
@@ -62,23 +62,23 @@ public class SlosherItem extends WeaponBaseItem
     }
 
     @Override
-    public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
+    public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
     {
         if (getInkAmount(player, stack) >= inkConsumption)
         {
-            if (!world.isRemote)
+            if (!level.isClientSide)
             {
                 for (int i = 0; i < projectileCount; i++)
                 {
                     boolean hasTrail = i == Math.floor((projectileCount - 1) / 2f) || i == Math.ceil((projectileCount - 1) / 2f);
                     float angle = diffAngle * i - diffAngle * (projectileCount - 1) / 2;
 
-                    InkProjectileEntity proj = new InkProjectileEntity(world, player, stack, InkBlockUtils.getInkType(player), projectileSize * (hasTrail ? 1 : 0.8f), damage);
+                    InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), projectileSize * (hasTrail ? 1 : 0.8f), damage);
                     proj.setShooterTrail();
-                    proj.shoot(player, player.rotationPitch, player.rotationYaw + angle, 0.0f, projectileSpeed, 2);
-                    world.addEntity(proj);
+                    proj.shootFromRotation(player, player.xRot, player.yRot + angle, 0.0f, projectileSpeed, 2);
+                    level.addFreshEntity(proj);
                 }
-                world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.slosherShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.slosherShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 reduceInk(player, inkConsumption);
             }
         } else

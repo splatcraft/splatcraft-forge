@@ -60,9 +60,9 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
         this.maxConsumption = maxConsumption;
         this.minConsumption = minConsumption;
 
-        addStat(new WeaponStat("range", (stack, world) -> (int) (projectileSpeed / projectileLifespan * 100)));
-        addStat(new WeaponStat("charge_speed", (stack, world) -> (int) ((40 - chargeTime) * 100 / 40f)));
-        addStat(new WeaponStat("mobility", (stack, world) -> (int) (mobility * 100)));
+        addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / projectileLifespan * 100)));
+        addStat(new WeaponStat("charge_speed", (stack, level) -> (int) ((40 - chargeTime) * 100 / 40f)));
+        addStat(new WeaponStat("mobility", (stack, level) -> (int) (mobility * 100)));
     }
 
     public ChargerItem(String name, ChargerItem parent)
@@ -74,7 +74,7 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
     protected static void playChargingSound(PlayerEntity player)
     {
 
-        Minecraft.getInstance().getSoundHandler().play(new ChargerChargingTickableSound(player));
+        Minecraft.getInstance().getSoundManager().play(new ChargerChargingTickableSound(player));
     }
 
     @Override
@@ -90,23 +90,23 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
     }
 
     @Override
-    public void onRelease(World world, PlayerEntity player, ItemStack stack, float charge)
+    public void onRelease(World level, PlayerEntity player, ItemStack stack, float charge)
     {
-        InkProjectileEntity proj = new InkProjectileEntity(world, player, stack, InkBlockUtils.getInkType(player), projectileSize, charge > 0.95f ? damage : damage * charge / 4f + damage / 4f);
+        InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), projectileSize, charge > 0.95f ? damage : damage * charge / 4f + damage / 4f);
         proj.setChargerStats((int) (projectileLifespan * charge), charge >= pierceCharge);
-        proj.shoot(player, player.rotationPitch, player.rotationYaw, 0.0f, projectileSpeed, 0.1f);
-        world.addEntity(proj);
-        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.chargerShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+        proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, projectileSpeed, 0.1f);
+        level.addFreshEntity(proj);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
         reduceInk(player, getInkConsumption(charge));
-        PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(10, player.inventory.currentItem, player.getActiveHand(), true, false, false, player.isOnGround()));
+        PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(10, player.inventory.selected, player.getUsedItemHand(), true, false, false, player.isOnGround()));
     }
 
     @Override
-    public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
+    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
     {
         if (entity instanceof PlayerEntity && getInkAmount(entity, stack) >= getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack)))
         {
-            if (world.isRemote)
+            if (level.isClientSide)
             {
                 PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1));
             }
@@ -117,28 +117,28 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
+    public ActionResult<ItemStack> use(World level, PlayerEntity player, Hand hand)
     {
-        ActionResult<ItemStack> result = super.onItemRightClick(world, player, hand);
+        ActionResult<ItemStack> result = super.use(level, player, hand);
 
-        if (world.isRemote && !(player.isActualySwimming() && !player.isInWater()))
+        if (level.isClientSide && !(player.isSwimming() && !player.isInWater()))
             playChargingSound(player);
 
         return result;
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft)
+    public void releaseUsing(ItemStack stack, World level, LivingEntity entity, int timeLeft)
     {
-        super.onPlayerStoppedUsing(stack, world, entity, timeLeft);
+        super.releaseUsing(stack, level, entity, timeLeft);
 
-        if (world.isRemote && !PlayerInfoCapability.isSquid(entity) && entity instanceof PlayerEntity)
+        if (level.isClientSide && !PlayerInfoCapability.isSquid(entity) && entity instanceof PlayerEntity)
         {
             float charge = PlayerCharge.getChargeValue((PlayerEntity) entity, stack);
             if (charge > 0.05f)
             {
                 PlayerCharge.reset((PlayerEntity) entity);
-                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(10, ((PlayerEntity) entity).inventory.currentItem, entity.getActiveHand(), true, false, false, entity.isOnGround()));
+                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(10, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, false, entity.isOnGround()));
                 SplatcraftPacketHandler.sendToServer(new ChargeableReleasePacket(charge, stack));
             }
             PlayerCharge.setCanDischarge((PlayerEntity) entity, true);

@@ -43,11 +43,11 @@ public class SplatcraftItems
     public static final UUID SPEED_MOD_UUID = UUID.fromString("dc65cedb-19d2-4731-a492-ee930c8234df");
 
     //Attributes
-    public static final Attribute INK_SWIM_SPEED = createAttribute("ink_swim_speed", new RangedAttribute("attribute.splatcraft.ink_swim_speed", 0.7F, 0.0D, 1024.0D).setShouldWatch(true));
+    public static final Attribute INK_SWIM_SPEED = createAttribute("ink_swim_speed", new RangedAttribute("attribute.splatcraft.ink_swim_speed", 0.7F, 0.0D, 1024.0D).setSyncable(true));
 
     //Armor Materials
-    public static final IArmorMaterial INK_CLOTH = new SplatcraftArmorMaterial("ink_cloth", SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0, 0, 0);
-    public static final IArmorMaterial ARMORED_INK_TANK = new SplatcraftArmorMaterial("armored_ink_tank", SoundEvents.ITEM_ARMOR_EQUIP_IRON, 3, 0, 0.05f);
+    public static final IArmorMaterial INK_CLOTH = new SplatcraftArmorMaterial("ink_cloth", SoundEvents.ARMOR_EQUIP_LEATHER, 0, 0, 0);
+    public static final IArmorMaterial ARMORED_INK_TANK = new SplatcraftArmorMaterial("armored_ink_tank", SoundEvents.ARMOR_EQUIP_IRON, 3, 0, 0.05f);
 
     //Shooters
     public static final ShooterItem splattershot = new ShooterItem("splattershot", 1.05f, 0.75f, 12f, 4, 8f, 0.9f);
@@ -111,7 +111,7 @@ public class SplatcraftItems
     public static final InkTankItem armoredInkTank = new InkTankItem("armored_ink_tank", 85, ARMORED_INK_TANK);
 
     //Sub Weapons
-    public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.BURST_BOMB,70);
+    public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.SPLAT_BOMB,70);
     public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB,40);
     public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB,70);
 
@@ -122,13 +122,13 @@ public class SplatcraftItems
     public static final Item inkClothBoots = new ColoredArmorItem("ink_cloth_boots", INK_CLOTH, EquipmentSlotType.FEET);
 
     //Materials
-    public static final Item sardinium = new Item(new Item.Properties().group(GROUP_GENERAL)).setRegistryName("sardinium");
+    public static final Item sardinium = new Item(new Item.Properties().tab(GROUP_GENERAL)).setRegistryName("sardinium");
     public static final Item sardiniumBlock = new BlockItem(SplatcraftBlocks.sardiniumBlock).setRegistryName("sardinium_block");
     public static final Item sardiniumOre = new BlockItem(SplatcraftBlocks.sardiniumOre).setRegistryName("sardinium_ore");
-    public static final Item powerEgg = new Item(new Item.Properties().group(GROUP_GENERAL)).setRegistryName("power_egg");
+    public static final Item powerEgg = new Item(new Item.Properties().tab(GROUP_GENERAL)).setRegistryName("power_egg");
     public static final Item powerEggCan = new PowerEggCanItem("power_egg_can");
     public static final Item powerEggBlock = new BlockItem(SplatcraftBlocks.powerEggBlock).setRegistryName("power_egg_block");
-    public static final Item kensaPin = new Item(new Item.Properties().group(GROUP_GENERAL).rarity(Rarity.UNCOMMON)).setRegistryName("toni_kensa_pin");
+    public static final Item kensaPin = new Item(new Item.Properties().tab(GROUP_GENERAL).rarity(Rarity.UNCOMMON)).setRegistryName("toni_kensa_pin");
     public static final Item emptyInkwell = new BlockItem(SplatcraftBlocks.emptyInkwell).setRegistryName("empty_inkwell");
 
     //Remotes
@@ -168,10 +168,10 @@ public class SplatcraftItems
     public static final Item splatSwitch = new BlockItem(SplatcraftBlocks.splatSwitch).setRegistryName("splat_switch");
 
     //Ink Stained Blocks
-    public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "ink_stained_wool", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_WOOL);
-    public static final Item inkedCarpet = new ColoredBlockItem(SplatcraftBlocks.inkedCarpet, "ink_stained_carpet", new Item.Properties().group(GROUP_GENERAL), Items.WHITE_CARPET);
-    public static final Item inkedGlass = new ColoredBlockItem(SplatcraftBlocks.inkedGlass, "ink_stained_glass", new Item.Properties().group(GROUP_GENERAL), Items.GLASS);
-    public static final Item inkedGlassPane = new ColoredBlockItem(SplatcraftBlocks.inkedGlassPane, "ink_stained_glass_pane", new Item.Properties().group(GROUP_GENERAL), Items.GLASS_PANE);
+    public static final Item inkedWool = new ColoredBlockItem(SplatcraftBlocks.inkedWool, "ink_stained_wool", new Item.Properties().tab(GROUP_GENERAL), Items.WHITE_WOOL);
+    public static final Item inkedCarpet = new ColoredBlockItem(SplatcraftBlocks.inkedCarpet, "ink_stained_carpet", new Item.Properties().tab(GROUP_GENERAL), Items.WHITE_CARPET);
+    public static final Item inkedGlass = new ColoredBlockItem(SplatcraftBlocks.inkedGlass, "ink_stained_glass", new Item.Properties().tab(GROUP_GENERAL), Items.GLASS);
+    public static final Item inkedGlassPane = new ColoredBlockItem(SplatcraftBlocks.inkedGlassPane, "ink_stained_glass_pane", new Item.Properties().tab(GROUP_GENERAL), Items.GLASS_PANE);
 
     //Barriers
     public static final Item stageBarrier = new BlockItem(SplatcraftBlocks.stageBarrier).setRegistryName("stage_barrier");
@@ -180,8 +180,8 @@ public class SplatcraftItems
     public static final Item deniedColorBarrier = new ColoredBlockItem(SplatcraftBlocks.deniedColorBarrier, "denied_color_barrier").addStarters(false);
 
     //Octarian Gear
-    public static final Item splatfestBand = new Item(new Item.Properties().maxStackSize(1).group(SplatcraftItemGroups.GROUP_GENERAL)).setRegistryName("splatfest_band");
-    public static final Item clearBand = new Item(new Item.Properties().maxStackSize(1).group(SplatcraftItemGroups.GROUP_GENERAL)).setRegistryName("clear_ink_band");
+    public static final Item splatfestBand = new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)).setRegistryName("splatfest_band");
+    public static final Item clearBand = new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)).setRegistryName("clear_ink_band");
     public static final Item waxApplicator = new InkWaxerItem().setRegistryName("wax_applicator");
 
     //Misc
@@ -248,11 +248,11 @@ public class SplatcraftItems
         registry.register(splatfestBand);
         registry.register(clearBand);
 
-        DispenserBlock.registerDispenseBehavior(inkwell, new PlaceBlockDispenseBehavior());
-        DispenserBlock.registerDispenseBehavior(emptyInkwell, new PlaceBlockDispenseBehavior());
+        DispenserBlock.registerBehavior(inkwell, new PlaceBlockDispenseBehavior());
+        DispenserBlock.registerBehavior(emptyInkwell, new PlaceBlockDispenseBehavior());
 
         for(SubWeaponItem sub : SubWeaponItem.subs)
-            DispenserBlock.registerDispenseBehavior(sub, new SubWeaponItem.DispenseBehavior());
+            DispenserBlock.registerBehavior(sub, new SubWeaponItem.DispenseBehavior());
     }
 
 
@@ -291,22 +291,22 @@ public class SplatcraftItems
 
         for (RemoteItem remote : RemoteItem.remotes)
         {
-            ItemModelsProperties.registerProperty(remote, activeProperty, remote.getActiveProperty());
-            ItemModelsProperties.registerProperty(remote, modeProperty, remote.getModeProperty());
+            ItemModelsProperties.register(remote, activeProperty, remote.getActiveProperty());
+            ItemModelsProperties.register(remote, modeProperty, remote.getModeProperty());
         }
 
         for (InkTankItem tank : InkTankItem.inkTanks)
         {
-            ItemModelsProperties.registerProperty(tank, inkProperty, (stack, world, entity) -> InkTankItem.getInkAmount(stack) / tank.capacity);
+            ItemModelsProperties.register(tank, inkProperty, (stack, level, entity) -> InkTankItem.getInkAmount(stack) / tank.capacity);
         }
 
         for (DualieItem dualie : DualieItem.dualies)
         {
-            ItemModelsProperties.registerProperty(dualie, isLeftProperty, dualie.getIsLeft());
+            ItemModelsProperties.register(dualie, isLeftProperty, dualie.getIsLeft());
         }
         for (RollerItem roller : RollerItem.rollers)
         {
-            ItemModelsProperties.registerProperty(roller, unfoldedProperty, roller.getUnfolded());
+            ItemModelsProperties.register(roller, unfoldedProperty, roller.getUnfolded());
         }
     }
 

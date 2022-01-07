@@ -20,12 +20,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class SquidPassthroughMixin
 {
 
-    @Inject(at = @At("TAIL"), method = "getCollisionShape(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IBlockReader;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/shapes/ISelectionContext;)Lnet/minecraft/util/math/shapes/VoxelShape;", cancellable = true, remap = false)
-    private void getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context, CallbackInfoReturnable<VoxelShape> callback)
+    @Inject(at = @At("TAIL"), method = "getCollisionShape", cancellable = true, remap = false)
+    private void getCollisionShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context, CallbackInfoReturnable<VoxelShape> callback)
     {
         try
         {
-            if(state.isIn(SplatcraftTags.Blocks.SQUID_PASSTHROUGH) && context.getEntity() instanceof LivingEntity && PlayerInfoCapability.isSquid((LivingEntity) context.getEntity()))
+            if(state.is(SplatcraftTags.Blocks.SQUID_PASSTHROUGH) && context.getEntity() instanceof LivingEntity && PlayerInfoCapability.isSquid((LivingEntity) context.getEntity()))
                 callback.setReturnValue(VoxelShapes.empty());
         }
         catch (IllegalStateException ignored) {}

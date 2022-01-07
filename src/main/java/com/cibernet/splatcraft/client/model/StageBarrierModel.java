@@ -15,18 +15,18 @@ public class StageBarrierModel extends Model
 
     public StageBarrierModel()
     {
-        super(RenderType::getEntityCutoutNoCull);
-        textureWidth = 64;
-        textureHeight = 64;
+        super(RenderType::entityCutoutNoCull);
+        texWidth = 64;
+        texHeight = 64;
 
         bb_main = new ModelRenderer(this);
-        bb_main.setRotationPoint(0.0F, 24.0F, 0.0F);
+        bb_main.setPos(0.0F, 24.0F, 0.0F);
 
     }
 
 
     @Override
-    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
+    public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
     {
         bb_main.render(matrixStack, buffer, packedLight, packedOverlay);
     }

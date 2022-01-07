@@ -26,30 +26,24 @@ import net.minecraft.world.World;
 
 public class InkSquidEntity extends CreatureEntity implements IColoredEntity
 {
-    private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(InkSquidEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> COLOR = EntityDataManager.defineId(InkSquidEntity.class, DataSerializers.INT);
 
 
-    public InkSquidEntity(EntityType<? extends CreatureEntity> type, World world)
+    public InkSquidEntity(EntityType<? extends CreatureEntity> type, World level)
     {
-        super(type, world);
+        super(type, level);
     }
 
     public static AttributeModifierMap.MutableAttribute setCustomAttributes()
     {
-        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 20).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.23D);
+        return MobEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 20).add(Attributes.MOVEMENT_SPEED, 0.23D);
     }
 
     @Override
-    protected void registerData()
+    protected void defineSynchedData()
     {
-        super.registerData();
-        dataManager.register(COLOR, ColorUtils.DEFAULT);
-    }
-
-    @Override
-    public AttributeModifierManager getAttributeManager()
-    {
-        return super.getAttributeManager();
+        super.defineSynchedData();
+        entityData.define(COLOR, ColorUtils.DEFAULT);
     }
 
     @Override
@@ -60,41 +54,50 @@ public class InkSquidEntity extends CreatureEntity implements IColoredEntity
         goalSelector.addGoal(11, new LookAtGoal(this, PlayerEntity.class, 10.0F));
     }
 
+
+
     @Override
-    public void onDeath(DamageSource p_70645_1_)
+    public void die(DamageSource source)
     {
-        world.setEntityState(this, (byte) 60);
-        super.onDeath(p_70645_1_);
+        level.broadcastEntityEvent(this, (byte) 60);
+        super.die(source);
     }
 
     @Override
-    public void handleStatusUpdate(byte id)
+    public void handleEntityEvent(byte id)
     {
         if (id == 60)
         {
-            world.addParticle(new SquidSoulParticleData(getColor()), this.getPosX(), this.getPosY(), this.getPosZ(), 0, 1, 0);
+            level.addParticle(new SquidSoulParticleData(getColor()), this.getX(), this.getY(), this.getZ(), 0, 1, 0);
         } else
         {
-            super.handleStatusUpdate(id);
+            super.handleEntityEvent(id);
         }
     }
 
     @Override
-    protected int getExperiencePoints(PlayerEntity player)
+    protected int getExperienceReward(PlayerEntity player)
     {
         return 0;
     }
 
     @Override
-    public void livingTick()
+    protected boolean shouldDropExperience() {
+        return false;
+    }
+
+
+
+    @Override
+    public void tick()
     {
-        super.livingTick();
+        super.tick();
 
-        BlockPos pos = getPositionUnderneath();
+        BlockPos pos = getBlockPosBelowThatAffectsMyMovement();
 
-        if (world.getBlockState(pos).getBlock() == SplatcraftBlocks.inkwell && world.getTileEntity(pos) instanceof InkColorTileEntity)
+        if (level.getBlockState(pos).getBlock() == SplatcraftBlocks.inkwell && level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
-            InkColorTileEntity te = (InkColorTileEntity) world.getTileEntity(pos);
+            InkColorTileEntity te = (InkColorTileEntity) level.getBlockEntity(pos);
             if (te.getColor() != getColor())
             {
                 setColor(te.getColor());
@@ -105,39 +108,39 @@ public class InkSquidEntity extends CreatureEntity implements IColoredEntity
     @Override
     protected void playStepSound(BlockPos pos, BlockState state)
     {
-        playSound(SoundEvents.BLOCK_HONEY_BLOCK_FALL, 0.15F, 1.0F);
+        playSound(SoundEvents.HONEY_BLOCK_FALL, 0.15F, 1.0F);
     }
 
     @Override
-    public void readAdditional(CompoundNBT nbt)
+    public void readAdditionalSaveData(CompoundNBT nbt)
     {
-        super.readAdditional(nbt);
+        super.readAdditionalSaveData(nbt);
         if (nbt.contains("Color"))
             setColor(ColorUtils.getColorFromNbt(nbt));
         else setColor(ColorUtils.getRandomStarterColor());
     }
 
     @Override
-    public void writeAdditional(CompoundNBT nbt)
+    public void addAdditionalSaveData(CompoundNBT nbt)
     {
-        super.writeAdditional(nbt);
+        super.addAdditionalSaveData(nbt);
         nbt.putInt("Color", getColor());
     }
 
     @Override
     public int getColor()
     {
-        return dataManager.get(COLOR);
+        return entityData.get(COLOR);
     }
 
     @Override
     public void setColor(int color)
     {
-        dataManager.set(COLOR, color);
+        entityData.set(COLOR, color);
     }
 
     @Override
-    public boolean canDespawn(double distanceToClosestPlayer)
+    public boolean removeWhenFarAway(double distanceToClosestPlayer)
     {
         return false;
     }

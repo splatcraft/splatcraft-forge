@@ -9,18 +9,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.item.TNTEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,7 +27,7 @@ import java.util.*;
 public class InkExplosion
 {
     private final Random random = new Random();
-    private final World world;
+    private final World level;
     private final double x;
     private final double y;
     private final double z;
@@ -51,14 +48,14 @@ public class InkExplosion
     private final ItemStack weapon;
 
     @OnlyIn(Dist.CLIENT)
-    public InkExplosion(World worldIn, @Nullable Entity exploderIn, double xIn, double yIn, double zIn, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, float sizeIn, int color, InkBlockUtils.InkType inkType, ItemStack weapon)
+    public InkExplosion(World levelIn, @Nullable Entity exploderIn, double xIn, double yIn, double zIn, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, float sizeIn, int color, InkBlockUtils.InkType inkType, ItemStack weapon)
     {
-        this(worldIn, exploderIn, null, xIn, yIn, zIn, blockDamage, minDamage, maxDamage, damageMobs, sizeIn, color, inkType, weapon);
+        this(levelIn, exploderIn, null, xIn, yIn, zIn, blockDamage, minDamage, maxDamage, damageMobs, sizeIn, color, inkType, weapon);
     }
 
-    public InkExplosion(World world, @Nullable Entity source, @Nullable DamageSource damageSource, double x, double y, double z, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, float size, int color, InkBlockUtils.InkType inkType, ItemStack weapon)
+    public InkExplosion(World level, @Nullable Entity source, @Nullable DamageSource damageSource, double x, double y, double z, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, float size, int color, InkBlockUtils.InkType inkType, ItemStack weapon)
     {
-        this.world = world;
+        this.level = level;
         this.exploder = source;
         this.size = size;
         this.x = x;
@@ -77,18 +74,18 @@ public class InkExplosion
         this.weapon = weapon;
     }
 
-    public static void createInkExplosion(World world, Entity source, DamageSource damageSource, BlockPos pos, float size, float blockDamage, float damage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon)
+    public static void createInkExplosion(World level, Entity source, DamageSource damageSource, BlockPos pos, float size, float blockDamage, float damage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon)
     {
-        createInkExplosion(world, source, damageSource, pos, size, blockDamage, damage, damage, damageMobs, color, type, weapon);
+        createInkExplosion(level, source, damageSource, pos, size, blockDamage, damage, damage, damageMobs, color, type, weapon);
     }
 
-    public static void createInkExplosion(World world, Entity source, DamageSource damageSource, BlockPos pos, float size, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon)
+    public static void createInkExplosion(World level, Entity source, DamageSource damageSource, BlockPos pos, float size, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon)
     {
 
-        if (world.isRemote)
+        if (level.isClientSide)
             return;
 
-        InkExplosion inksplosion = new InkExplosion(world, source, damageSource, pos.getX(), pos.getY(), pos.getZ(), blockDamage, minDamage, maxDamage, damageMobs, size, color, type, weapon);
+        InkExplosion inksplosion = new InkExplosion(level, source, damageSource, pos.getX(), pos.getY(), pos.getZ(), blockDamage, minDamage, maxDamage, damageMobs, size, color, type, weapon);
 
         inksplosion.doExplosionA();
         inksplosion.doExplosionB(false);
@@ -117,7 +114,7 @@ public class InkExplosion
                         double d6 = MathHelper.lerp(f1, axisalignedbb.minY, axisalignedbb.maxY);
                         double d7 = MathHelper.lerp(f2, axisalignedbb.minZ, axisalignedbb.maxZ);
                         Vector3d vector3d = new Vector3d(d5 + d3, d6, d7 + d4);
-                        if (p_222259_1_.world.rayTraceBlocks(new RayTraceContext(vector3d, p_222259_0_, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, p_222259_1_)).getType() == RayTraceResult.Type.MISS)
+                        if (p_222259_1_.level.clip(new RayTraceContext(vector3d, p_222259_0_, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, p_222259_1_)).getType() == RayTraceResult.Type.MISS)
                         {
                             ++i;
                         }
@@ -132,28 +129,6 @@ public class InkExplosion
         {
             return 0.0F;
         }
-    }
-
-    private static void func_229976_a_(ObjectArrayList<Pair<ItemStack, BlockPos>> p_229976_0_, ItemStack p_229976_1_, BlockPos p_229976_2_)
-    {
-        int i = p_229976_0_.size();
-
-        for (int j = 0; j < i; ++j)
-        {
-            Pair<ItemStack, BlockPos> pair = p_229976_0_.get(j);
-            ItemStack itemstack = pair.getFirst();
-            if (ItemEntity.canMergeStacks(itemstack, p_229976_1_))
-            {
-                ItemStack itemstack1 = ItemEntity.mergeStacks(itemstack, p_229976_1_, 16);
-                p_229976_0_.set(j, Pair.of(itemstack1, pair.getSecond()));
-                if (p_229976_1_.isEmpty())
-                {
-                    return;
-                }
-            }
-        }
-
-        p_229976_0_.add(Pair.of(p_229976_1_, p_229976_2_));
     }
 
     /**
@@ -179,19 +154,19 @@ public class InkExplosion
                         d0 = d0 / d3;
                         d1 = d1 / d3;
                         d2 = d2 / d3;
-                        float f = this.size * (0.7F + this.world.rand.nextFloat() * 0.6F);
+                        float f = this.size * (0.7F + this.level.getRandom().nextFloat() * 0.6F);
                         double d4 = this.x;
                         double d6 = this.y;
                         double d8 = this.z;
 
                         for (float f1 = 0.3F; f > 0.0F; f -= 0.22500001F)
                         {
-                            BlockRayTraceResult raytrace = world.rayTraceBlocks(new RayTraceContext(new Vector3d(x + 0.5f, y + 0.5f, z + 0.5f), new Vector3d(d4 + 0.5f, d6 + 0.5f, d8 + 0.5f), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, null));
+                            BlockRayTraceResult raytrace = level.clip(new RayTraceContext(new Vector3d(x + 0.5f, y + 0.5f, z + 0.5f), new Vector3d(d4 + 0.5f, d6 + 0.5f, d8 + 0.5f), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, null));
                             BlockPos blockpos = new BlockPos(d4, d6, d8);
                             f -= 0.3f * 0.3F;
 
-                            blockpos = raytrace.getPos();
-                            if(InkBlockUtils.canInkFromFace(world, blockpos, raytrace.getFace()))
+                            blockpos = raytrace.getBlockPos();
+                            if(InkBlockUtils.canInkFromFace(level, blockpos, raytrace.getDirection()))
                                 set.add(blockpos);
 
 
@@ -212,7 +187,7 @@ public class InkExplosion
         int i1 = MathHelper.floor(this.y + (double) f2 + 1.0D);
         int j2 = MathHelper.floor(this.z - (double) f2 - 1.0D);
         int j1 = MathHelper.floor(this.z + (double) f2 + 1.0D);
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this.exploder, new AxisAlignedBB(k1, i2, j2, l1, i1, j1));
+        List<Entity> list = this.level.getEntities(this.exploder, new AxisAlignedBB(k1, i2, j2, l1, i1, j1));
         Vector3d vector3d = new Vector3d(this.x, this.y, this.z);
 
         for (Entity entity : list)
@@ -223,9 +198,9 @@ public class InkExplosion
 
             if (targetColor == -1 && damageMobs || color != targetColor && targetColor > -1)
             {
-                float pctg = Math.max(0, (float) (entity.getDistanceSq(x, y, z)/Math.pow(f2, 2)));
+                float pctg = Math.max(0, (float) (entity.distanceToSqr(x, y, z)/Math.pow(f2, 2)));
 
-                InkDamageUtils.doSplatDamage(world, (LivingEntity) entity, MathHelper.lerp(pctg, maxDamage, minDamage), color, exploder, weapon, damageMobs, inkType);
+                InkDamageUtils.doSplatDamage(level, (LivingEntity) entity, MathHelper.lerp(pctg, maxDamage, minDamage), color, exploder, weapon, damageMobs, inkType);
             }
 
             DyeColor dyeColor = null;
@@ -234,17 +209,17 @@ public class InkExplosion
                 dyeColor = InkColor.getByHex(color).getDyeColor();
 
             if (dyeColor != null && entity instanceof SheepEntity)
-                ((SheepEntity) entity).setFleeceColor(dyeColor);
+                ((SheepEntity) entity).setColor(dyeColor);
 
             /*
             if (!entity.isImmuneToExplosions())
             {
-                double d12 = (double)(MathHelper.sqrt(entity.getDistanceSq(vector3d)) / f2);
+                double d12 = (double)(MathHelper.sqrt(entity.distanceToSqr(vector3d)) / f2);
                 if (d12 <= 1.0D)
                 {
-                    double d5 = entity.getPosX() - this.x;
-                    double d7 = (entity instanceof TNTEntity ? entity.getPosY() : entity.getPosYEye()) - this.y;
-                    double d9 = entity.getPosZ() - this.z;
+                    double d5 = entity.getX() - this.x;
+                    double d7 = (entity instanceof TNTEntity ? entity.getY() : entity.getEyeY()) - this.y;
+                    double d9 = entity.getZ() - this.z;
                     double d13 = (double)MathHelper.sqrt(d5 * d5 + d7 * d7 + d9 * d9);
                     if (d13 != 0.0D) {
                         d5 = d5 / d13;
@@ -252,7 +227,7 @@ public class InkExplosion
                         d9 = d9 / d13;
                         double d14 = (double)getBlockDensity(vector3d, entity);
                         double d10 = (1.0D - d12) * d14;
-                        entity.attackEntityFrom(this.getDamageSource(), (float)((int)((d10 * d10 + d10) / 2.0D * 7.0D * (double)f2 + 1.0D)));
+                        entity.hurt(this.getDamageSource(), (float)((int)((d10 * d10 + d10) / 2.0D * 7.0D * (double)f2 + 1.0D)));
                         double d11 = d10;
                         if (entity instanceof LivingEntity) {
                             d11 = ProtectionEnchantment.getBlastDamageReduction((LivingEntity)entity, d10);
@@ -271,8 +246,8 @@ public class InkExplosion
     public void doExplosionB(boolean spawnParticles)
     {
         /*
-        if (this.world.isRemote) {
-            this.world.playSound(this.x, this.y, this.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 0.7F, false);
+        if (this.level.isClientSide) {
+            this.level.playSound(this.x, this.y, this.z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (this.level.getRandom().nextFloat() - this.level.getRandom().nextFloat()) * 0.2F) * 0.7F, false);
         }
         boolean flag = this.mode != Explosion.Mode.NONE;
         */
@@ -280,54 +255,36 @@ public class InkExplosion
         {
             if (!(this.size < 2.0F))
             {
-                this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+                this.level.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
             } else
             {
-                this.world.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+                this.level.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
             }
         }
 
         ObjectArrayList<Pair<ItemStack, BlockPos>> objectarraylist = new ObjectArrayList<>();
-        Collections.shuffle(this.affectedBlockPositions, this.world.rand);
+        Collections.shuffle(this.affectedBlockPositions, this.level.random);
 
         for (BlockPos blockpos : this.affectedBlockPositions)
         {
-            BlockState blockstate = this.world.getBlockState(blockpos);
+            BlockState blockstate = this.level.getBlockState(blockpos);
             Block block = blockstate.getBlock();
-            if (!blockstate.isAir(this.world, blockpos))
+            if (!blockstate.isAir(this.level, blockpos))
             {
                 if (exploder instanceof PlayerEntity)
                 {
-                    InkBlockUtils.playerInkBlock((PlayerEntity) exploder, world, blockpos, color, blockDamage, inkType);
+                    InkBlockUtils.playerInkBlock((PlayerEntity) exploder, level, blockpos, color, blockDamage, inkType);
                 } else
                 {
-                    InkBlockUtils.inkBlock(world, blockpos, color, blockDamage, inkType);
+                    InkBlockUtils.inkBlock(level, blockpos, color, blockDamage, inkType);
                 }
-                /*
-                BlockPos blockpos1 = blockpos.toImmutable();
-                this.world.getProfiler().startSection("explosion_blocks");
-                if (blockstate.canDropFromExplosion(this.world, blockpos, this) && this.world instanceof ServerWorld) {
-                    TileEntity tileentity = blockstate.hasTileEntity() ? this.world.getTileEntity(blockpos) : null;
-                    LootContext.Builder lootcontext$builder = (new LootContext.Builder((ServerWorld)this.world)).withRandom(this.world.rand).withParameter(LootParameters.POSITION, blockpos).withParameter(LootParameters.TOOL, ItemStack.EMPTY).withNullableParameter(LootParameters.BLOCK_ENTITY, tileentity).withNullableParameter(LootParameters.THIS_ENTITY, this.exploder);
-                    if (this.mode == Explosion.Mode.DESTROY) {
-                        lootcontext$builder.withParameter(LootParameters.EXPLOSION_RADIUS, this.size);
-                    }
-
-                    blockstate.getDrops(lootcontext$builder).forEach((p_229977_2_) -> {
-                        func_229976_a_(objectarraylist, p_229977_2_, blockpos1);
-                    });
-                }
-
-                blockstate.onBlockExploded(this.world, blockpos, this);
-                this.world.getProfiler().endSection();
-                */
             }
 
         }
 
         for (Pair<ItemStack, BlockPos> pair : objectarraylist)
         {
-            Block.spawnAsEntity(this.world, pair.getSecond(), pair.getFirst());
+            CommonUtils.blockDrop(this.level, pair.getSecond(), pair.getFirst());
         }
 
     }
@@ -340,36 +297,6 @@ public class InkExplosion
     public Map<PlayerEntity, Vector3d> getPlayerKnockbackMap()
     {
         return this.playerKnockbackMap;
-    }
-
-    /**
-     * Returns either the entity that placed the explosive block, the entity that caused the explosion or null.
-     */
-    @Nullable
-    public LivingEntity getExplosivePlacedBy()
-    {
-        if (this.exploder == null)
-        {
-            return null;
-        } else if (this.exploder instanceof TNTEntity)
-        {
-            return ((TNTEntity) this.exploder).getTntPlacedBy();
-        } else if (this.exploder instanceof LivingEntity)
-        {
-            return (LivingEntity) this.exploder;
-        } else
-        {
-            if (this.exploder instanceof ProjectileEntity)
-            {
-                Entity entity = ((ProjectileEntity) this.exploder).func_234616_v_();
-                if (entity instanceof LivingEntity)
-                {
-                    return (LivingEntity) entity;
-                }
-            }
-
-            return null;
-        }
     }
 
     public void clearAffectedBlockPositions()

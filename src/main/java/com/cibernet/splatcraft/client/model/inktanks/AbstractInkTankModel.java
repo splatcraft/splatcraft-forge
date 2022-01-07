@@ -19,12 +19,6 @@ public class AbstractInkTankModel extends BipedModel<LivingEntity>
         super(1);
     }
 
-    @Override
-    public void setLivingAnimations(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float partialTick)
-    {
-        super.setLivingAnimations(entityIn, limbSwing, limbSwingAmount, partialTick);
-
-    }
 
     public void setInkLevels(float inkPctg)
     {
@@ -33,18 +27,17 @@ public class AbstractInkTankModel extends BipedModel<LivingEntity>
             ModelRenderer box = inkPieces.get(i - 1);
             if (inkPctg == 0)
             {
-                box.showModel = false;
+                box.visible = false;
                 continue;
             }
-            box.showModel = true;
-            box.rotationPointY = 23.25F - Math.min(i * inkPctg, i);
+            box.visible = true;
+            box.yRot = 23.25F - Math.min(i * inkPctg, i);
         }
     }
 
     @Override
-    public void setRotationAngles(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+    public void setupAnim(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-
+        super.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
 }

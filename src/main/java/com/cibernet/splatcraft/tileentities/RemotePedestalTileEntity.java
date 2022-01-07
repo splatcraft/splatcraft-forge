@@ -30,7 +30,7 @@ public class RemotePedestalTileEntity extends InkColorTileEntity implements ISid
             return;
         }
 
-        RemoteItem.RemoteResult result = ((RemoteItem) remote.getItem()).onRemoteUse(world, remote, getColor());
+        RemoteItem.RemoteResult result = ((RemoteItem) remote.getItem()).onRemoteUse(level, remote, getColor());
         signal = result.getComparatorResult();
 
     }
@@ -38,20 +38,20 @@ public class RemotePedestalTileEntity extends InkColorTileEntity implements ISid
     @Override
     public CompoundNBT getUpdateTag()
     {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag)
     {
-        this.read(state, tag);
+        this.load(state, tag);
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
-        return new SUpdateTileEntityPacket(getPos(), 2, getUpdateTag());
+        return new SUpdateTileEntityPacket(getBlockPos(), 2, getUpdateTag());
     }
 
 
@@ -61,17 +61,17 @@ public class RemotePedestalTileEntity extends InkColorTileEntity implements ISid
     }
 
     @Override
-    public boolean canInsertItem(int i, ItemStack itemStack, @Nullable Direction direction) {
-        return itemStack.getItem().isIn(SplatcraftTags.Items.REMOTES);
+    public boolean canPlaceItemThroughFace(int i, ItemStack itemStack, @Nullable Direction direction) {
+        return itemStack.getItem().is(SplatcraftTags.Items.REMOTES);
     }
 
     @Override
-    public boolean canExtractItem(int i, ItemStack itemStack, Direction direction) {
+    public boolean canTakeItemThroughFace(int i, ItemStack itemStack, Direction direction) {
         return true;
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return 1;
     }
 
@@ -81,17 +81,17 @@ public class RemotePedestalTileEntity extends InkColorTileEntity implements ISid
     }
 
     @Override
-    public ItemStack getStackInSlot(int i) {
+    public ItemStack getItem(int i) {
         return remote;
     }
 
     @Override
-    public ItemStack decrStackSize(int i, int count) {
+    public ItemStack removeItem(int i, int count) {
         return remote.split(count);
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int i)
+    public ItemStack removeItemNoUpdate(int i)
     {
         ItemStack copy = remote.copy();
         remote = ItemStack.EMPTY;
@@ -99,43 +99,43 @@ public class RemotePedestalTileEntity extends InkColorTileEntity implements ISid
     }
 
     @Override
-    public void setInventorySlotContents(int i, ItemStack itemStack) {
+    public void setItem(int i, ItemStack itemStack) {
         remote = itemStack;
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player)
+    public boolean stillValid(PlayerEntity player)
     {
-        if (this.world.getTileEntity(this.pos) != this)
+        if (this.level.getBlockEntity(this.getBlockPos()) != this)
             return false;
-        return !(player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) > 64.0D);
+        return !(player.distanceToSqr((double) this.getBlockPos().getX() + 0.5D, (double) this.getBlockPos().getY() + 0.5D, (double) this.getBlockPos().getZ() + 0.5D) > 64.0D);
     }
 
     @Override
-    public void clear()
+    public void clearContent()
     {
         remote = ItemStack.EMPTY;
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
+    public void load(BlockState state, CompoundNBT nbt)
     {
-        super.read(state, nbt);
+        super.load(state, nbt);
 
         signal = nbt.getInt("Signal");
 
         if(nbt.contains("Remote"))
-            remote = ItemStack.read(nbt.getCompound("Remote"));
+            remote = ItemStack.of(nbt.getCompound("Remote"));
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
+    public CompoundNBT save(CompoundNBT nbt)
     {
         nbt.putInt("Signal", signal);
 
         if(!remote.isEmpty())
-            nbt.put("Remote", remote.write(new CompoundNBT()));
-        return super.write(nbt);
+            nbt.put("Remote", remote.save(new CompoundNBT()));
+        return super.save(nbt);
     }
 
     public int getSignal() {

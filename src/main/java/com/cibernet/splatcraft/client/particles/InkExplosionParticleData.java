@@ -23,7 +23,7 @@ public class InkExplosionParticleData extends InkSplashParticleData
     public static final IDeserializer<InkExplosionParticleData> DESERIALIZER = new IDeserializer<InkExplosionParticleData>()
     {
         @Override
-        public InkExplosionParticleData deserialize(ParticleType<InkExplosionParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException
+        public InkExplosionParticleData fromCommand(ParticleType<InkExplosionParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException
         {
             reader.expect(' ');
             Integer color = InkColorArgument.parseStatic(reader);
@@ -32,7 +32,7 @@ public class InkExplosionParticleData extends InkSplashParticleData
         }
 
         @Override
-        public InkExplosionParticleData read(ParticleType<InkExplosionParticleData> particleTypeIn, PacketBuffer buffer)
+        public InkExplosionParticleData fromNetwork(ParticleType<InkExplosionParticleData> particleTypeIn, PacketBuffer buffer)
         {
             return new InkExplosionParticleData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
@@ -46,12 +46,6 @@ public class InkExplosionParticleData extends InkSplashParticleData
     public InkExplosionParticleData(float red, float green, float blue, float scale)
     {
         super(red, green, blue, scale);
-    }
-
-    @Override
-    public void write(PacketBuffer buffer)
-    {
-        super.write(buffer);
     }
 
     @Override

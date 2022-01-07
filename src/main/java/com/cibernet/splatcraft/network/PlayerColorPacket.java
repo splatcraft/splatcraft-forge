@@ -24,14 +24,14 @@ public class PlayerColorPacket extends PlayToClientPacket
 
     public PlayerColorPacket(PlayerEntity player, int color)
     {
-        this(player.getUniqueID(), player.getDisplayName().getString(), color);
+        this(player.getUUID(), player.getDisplayName().getString(), color);
     }
 
     public static PlayerColorPacket decode(PacketBuffer buffer)
     {
         int color = buffer.readInt();
-        String name = buffer.readString();
-        UUID player = buffer.readUniqueId();
+        String name = buffer.readUtf();
+        UUID player = buffer.readUUID();
         return new PlayerColorPacket(player, name, color);
     }
 
@@ -39,14 +39,14 @@ public class PlayerColorPacket extends PlayToClientPacket
     public void encode(PacketBuffer buffer)
     {
         buffer.writeInt(color);
-        buffer.writeString(playerName);
-        buffer.writeUniqueId(target);
+        buffer.writeUtf(playerName);
+        buffer.writeUUID(target);
     }
 
     @Override
     public void execute()
     {
-        PlayerEntity player = Minecraft.getInstance().world.getPlayerByUuid(target);
+        PlayerEntity player = Minecraft.getInstance().level.getPlayerByUUID(target);
         if (player != null)
         {
             ColorUtils.setPlayerColor(player, color, false);

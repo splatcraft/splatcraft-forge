@@ -14,23 +14,23 @@ public class BlasterInkProjectileModel extends InkProjectileModel
 
     public BlasterInkProjectileModel()
     {
-        textureWidth = 16;
-        textureHeight = 16;
+        texWidth = 16;
+        texHeight = 16;
 
         main = new ModelRenderer(this);
-        main.setRotationPoint(0.0F, -1.0F, 0.0F);
-        main.setTextureOffset(0, 0).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, -0.5F, false);
-        main.setTextureOffset(0, 8).addBox(-1.5F, -1.5F, 1.25F, 3.0F, 3.0F, 1.0F, -0.2F, false);
+        main.setPos(0.0F, -1.0F, 0.0F);
+        main.texOffs(0, 0).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, -0.5F, false);
+        main.texOffs(0, 8).addBox(-1.5F, -1.5F, 1.25F, 3.0F, 3.0F, 1.0F, -0.2F, false);
     }
 
     @Override
-    public void setRotationAngles(InkProjectileEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+    public void setupAnim(InkProjectileEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        main.rotateAngleZ = ageInTicks * 0.6f;
+        main.zRot = ageInTicks * 0.6f;
     }
 
     @Override
-    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
+    public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
     {
         main.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
@@ -38,8 +38,8 @@ public class BlasterInkProjectileModel extends InkProjectileModel
     @Override
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
     {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
+        modelRenderer.xRot = x;
+        modelRenderer.yRot = y;
+        modelRenderer.zRot = z;
     }
 }

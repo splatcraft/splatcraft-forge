@@ -23,14 +23,14 @@ public class ClearInkCommand
 
     private static int execute(CommandContext<CommandSource> context) throws CommandSyntaxException
     {
-        return execute(context.getSource(), BlockPosArgument.getBlockPos(context, "from"), BlockPosArgument.getBlockPos(context, "to"));
+        return execute(context.getSource(), BlockPosArgument.getLoadedBlockPos(context, "from"), BlockPosArgument.getLoadedBlockPos(context, "to"));
     }
 
     private static int execute(CommandSource source, BlockPos from, BlockPos to)
     {
-        RemoteItem.RemoteResult result = InkDisruptorItem.clearInk(source.getWorld(), from, to);
+        RemoteItem.RemoteResult result = InkDisruptorItem.clearInk(source.getLevel(), from, to);
 
-        source.sendFeedback(result.getOutput(), true);
+        source.sendSuccess(result.getOutput(), true);
         return result.getCommandResult();
     }
 }

@@ -60,7 +60,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
     public ColoredBlockItem(Block block, String name, int stackSize, Item clearItem)
     {
-        this(block, name, new Properties().maxStackSize(stackSize).group(SplatcraftItemGroups.GROUP_GENERAL), clearItem);
+        this(block, name, new Properties().stacksTo(stackSize).tab(SplatcraftItemGroups.GROUP_GENERAL), clearItem);
     }
 
     public ColoredBlockItem(Block block, String name)
@@ -69,17 +69,17 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, level, tooltip, flag);
 
-        if (I18n.hasKey(getTranslationKey() + ".tooltip"))
-            tooltip.add(new TranslationTextComponent(getTranslationKey() + ".tooltip").mergeStyle(TextFormatting.GRAY));
+        if (I18n.exists(getDescriptionId() + ".tooltip"))
+            tooltip.add(new TranslationTextComponent(getDescriptionId() + ".tooltip").withStyle(TextFormatting.GRAY));
 
         if (ColorUtils.isColorLocked(stack))
             tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
         else
-            tooltip.add(new TranslationTextComponent( "item.splatcraft.tooltip.matches_color").mergeStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent( "item.splatcraft.tooltip.matches_color").withStyle(TextFormatting.GRAY));
     }
 
     public ColoredBlockItem addStarterColors()
@@ -89,9 +89,9 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     }
 
     @Override
-    protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state)
+    protected boolean updateCustomBlockEntityTag(BlockPos pos, World levelIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state)
     {
-        MinecraftServer server = worldIn.getServer();
+        MinecraftServer server = levelIn.getServer();
         if (server == null)
         {
             return false;
@@ -99,21 +99,21 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
         int color = ColorUtils.getInkColor(stack);
 
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        TileEntity tileEntity = levelIn.getBlockEntity(pos);
         if(color != -1)
         {
             if(getBlock() instanceof IColoredBlock)
-                ((IColoredBlock) getBlock()).setColor(worldIn, pos, color);
+                ((IColoredBlock) getBlock()).setColor(levelIn, pos, color);
             else if (tileEntity instanceof InkColorTileEntity)
                 ((InkColorTileEntity) tileEntity).setColor(color);
         }
-        return super.onBlockPlaced(pos, worldIn, player, stack, state);
+        return super.updateCustomBlockEntityTag(pos, levelIn, player, stack, state);
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items)
     {
-        if (isInGroup(group))
+        if (allowdedIn(group))
         {
             items.add(ColorUtils.setColorLocked(new ItemStack(this), false));
             if (addStartersToTab)
@@ -125,9 +125,9 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
+    public void inventoryTick(ItemStack stack, World levelIn, Entity entityIn, int itemSlot, boolean isSelected)
     {
-        super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
+        super.inventoryTick(stack, levelIn, entityIn, itemSlot, isSelected);
 
         if (ColorUtils.getInkColor(stack) == -1 || !ColorUtils.isColorLocked(stack))
         {
@@ -140,11 +140,11 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity)
     {
-        BlockPos pos = entity.getPosition();
+        BlockPos pos = entity.blockPosition();
 
-        if (entity.world.getBlockState(pos.down()).getBlock() instanceof InkwellBlock)
+        if (entity.level.getBlockState(pos.below()).getBlock() instanceof InkwellBlock)
         {
-            InkColorTileEntity te = (InkColorTileEntity) entity.world.getTileEntity(pos.down());
+            InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos.below());
 
             if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te))
             {
@@ -152,45 +152,45 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
         }
-        else if (clearItem != null && InkedBlock.causesClear(entity.world.getBlockState(pos)))
+        else if (clearItem != null && InkedBlock.causesClear(entity.level.getBlockState(pos)))
             entity.setItem(new ItemStack(clearItem, stack.getCount()));
 
         return false;
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context)
+    public ActionResultType useOn(ItemUseContext context)
     {
-        BlockState state = context.getWorld().getBlockState(context.getPos());
-        if (state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && context.getPlayer().isSneaking())
+        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+        if (state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && context.getPlayer().isCrouching())
         {
-            int i = state.get(CauldronBlock.LEVEL);
+            int i = state.getValue(CauldronBlock.LEVEL);
 
             if (i > 0)
             {
                 ItemStack itemstack1 = new ItemStack(clearItem, 1);
-                World world = context.getWorld();
+                World level = context.getLevel();
                 PlayerEntity player = context.getPlayer();
-                ItemStack stack = context.getItem();
+                ItemStack stack = context.getItemInHand();
 
-                context.getPlayer().addStat(Stats.USE_CAULDRON);
+                context.getPlayer().awardStat(Stats.USE_CAULDRON);
 
-                if (!player.abilities.isCreativeMode)
+                if (!player.isCreative())
                 {
                     stack.shrink(1);
-                    world.setBlockState(context.getPos(), state.with(CauldronBlock.LEVEL, MathHelper.clamp(i - 1, 0, 3)), 2);
-                    world.updateComparatorOutputLevel(context.getPos(), state.getBlock());
+                    level.setBlock(context.getClickedPos(), state.setValue(CauldronBlock.LEVEL, MathHelper.clamp(i - 1, 0, 3)), 2);
+                    level.updateNeighbourForOutputSignal(context.getClickedPos(), state.getBlock());
                 }
 
                 if (stack.isEmpty())
                 {
-                    player.setHeldItem(context.getHand(), itemstack1);
-                } else if (!player.inventory.addItemStackToInventory(itemstack1))
+                    player.setItemInHand(context.getHand(), itemstack1);
+                } else if (!player.inventory.add(itemstack1))
                 {
-                    player.dropItem(itemstack1, false);
+                    player.drop(itemstack1, false);
                 } else if (player instanceof ServerPlayerEntity)
                 {
-                    ((ServerPlayerEntity) player).sendContainerToPlayer(player.container);
+                    ((ServerPlayerEntity) player).refreshContainer(player.containerMenu);
                 }
 
                 return ActionResultType.SUCCESS;
@@ -198,7 +198,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
         }
 
-        return super.onItemUse(context);
+        return super.useOn(context);
     }
 
     public ColoredBlockItem addStarters(boolean b)

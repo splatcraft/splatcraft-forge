@@ -22,6 +22,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -93,8 +94,8 @@ public class ColorUtils
             ScoreboardHandler.updatePlayerColorScore(player, color);
         }
 
-        World world = player.world;
-        if (!world.isRemote && updateClient)
+        World level = player.level;
+        if (!level.isClientSide && updateClient)
         {
             SplatcraftPacketHandler.sendToAll(new PlayerColorPacket(player, color));
         }
@@ -131,7 +132,7 @@ public class ColorUtils
         te.getBlockState();
         if (te.getBlockState().getBlock() instanceof IColoredBlock)
         {
-            return ((IColoredBlock) te.getBlockState().getBlock()).getColor(Objects.requireNonNull(te.getWorld()), te.getPos());
+            return ((IColoredBlock) te.getBlockState().getBlock()).getColor(Objects.requireNonNull(te.getLevel()), te.getBlockPos());
         }
         return -1;
     }
@@ -147,7 +148,7 @@ public class ColorUtils
         te.getBlockState();
         if (te.getBlockState().getBlock() instanceof IColoredBlock)
         {
-            return ((IColoredBlock) te.getBlockState().getBlock()).setColor(te.getWorld(), te.getPos(), color);
+            return ((IColoredBlock) te.getBlockState().getBlock()).setColor(te.getLevel(), te.getBlockPos(), color);
         }
         return false;
     }
@@ -225,12 +226,12 @@ public class ColorUtils
     {
         return color == ColorUtils.DEFAULT
                 ? new StringTextComponent((colorless ? TextFormatting.GRAY : "") + getColorName(color).getString())
-                : getColorName(color).setStyle(Style.EMPTY.setColor(Color.fromInt(color)));
+                :getColorName(color).withStyle(getColorName(color).getStyle().withColor(Color.fromRgb(color)));
     }
 
-    public static boolean colorEquals(World world, int colorA, int colorB)
+    public static boolean colorEquals(World level, int colorA, int colorB)
     {
-        return SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.UNIVERSAL_INK) || colorA == colorB;
+        return SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.UNIVERSAL_INK) || colorA == colorB;
     }
 
     public static boolean colorEquals(Entity entity, TileEntity te)
@@ -240,7 +241,7 @@ public class ColorUtils
 
         if (entityColor == -1 || inkColor == -1)
             return false;
-        return colorEquals(entity.world, entityColor, inkColor);
+        return colorEquals(entity.level, entityColor, inkColor);
     }
 
     public static boolean colorEquals(LivingEntity entity, ItemStack stack)
@@ -250,7 +251,7 @@ public class ColorUtils
 
         if (entityColor == -1 || inkColor == -1)
             return false;
-        return colorEquals(entity.world, entityColor, inkColor);
+        return colorEquals(entity.level, entityColor, inkColor);
     }
 
     public static ItemStack setColorLocked(ItemStack stack, boolean isLocked)
@@ -279,12 +280,12 @@ public class ColorUtils
 
     public static int getRandomStarterColor()
     {
-        return SplatcraftTags.InkColors.STARTER_COLORS.getAllElements().isEmpty()
+        return SplatcraftTags.InkColors.STARTER_COLORS.getValues().isEmpty()
                 ? SplatcraftInkColors.undyed.getColor()
                 : SplatcraftTags.InkColors.STARTER_COLORS.getRandomElement(new Random()).getColor();
     }
 
-    public static void addInkSplashParticle(World world, LivingEntity source, float size)
+    public static void addInkSplashParticle(World level, LivingEntity source, float size)
     {
         int color = DEFAULT;
         if (PlayerInfoCapability.hasCapability(source))
@@ -293,10 +294,10 @@ public class ColorUtils
         }
 
 
-        addInkSplashParticle(world, color, source.getPosX(), source.getPosYHeight(world.rand.nextDouble() * 0.3), source.getPosZ(), size + (world.rand.nextFloat() * 0.2f - 0.1f));
+        addInkSplashParticle(level, color, source.getX(), source.getEyePosition((level.getRandom().nextFloat() * 0.3f)), source.getZ(), size + (level.getRandom().nextFloat() * 0.2f - 0.1f));
     }
 
-    public static void addInkSplashParticle(ServerWorld world, LivingEntity source, float size)
+    public static void addInkSplashParticle(ServerWorld level, LivingEntity source, float size)
     {
         int color = DEFAULT;
         if (PlayerInfoCapability.hasCapability(source))
@@ -305,30 +306,30 @@ public class ColorUtils
         }
 
 
-        addInkSplashParticle(world, color, source.getPosX(), source.getPosYHeight(world.rand.nextDouble() * 0.3), source.getPosZ(), size + (world.rand.nextFloat() * 0.2f - 0.1f));
+        addInkSplashParticle(level, color, source.getX(), source.getEyePosition(level.getRandom().nextFloat() * 0.3f), source.getZ(), size + (level.getRandom().nextFloat() * 0.2f - 0.1f));
     }
 
-    public static void addStandingInkSplashParticle(World world, LivingEntity entity, float size)
+    public static void addStandingInkSplashParticle(World level, LivingEntity entity, float size)
     {
         int color = DEFAULT;
         BlockPos pos = InkBlockUtils.getBlockStandingOnPos(entity);
-        if (entity.world.getBlockState(pos).getBlock() instanceof IColoredBlock)
+        if (entity.level.getBlockState(pos).getBlock() instanceof IColoredBlock)
         {
-            color = ((IColoredBlock) entity.world.getBlockState(pos).getBlock()).getColor(world, pos);
+            color = ((IColoredBlock) entity.level.getBlockState(pos).getBlock()).getColor(level, pos);
         }
-        addInkSplashParticle(world, color, entity.getPosX() + (world.rand.nextFloat() * 0.8 - 0.4), entity.getPosYHeight(world.rand.nextDouble() * 0.3), entity.getPosZ() + (world.rand.nextFloat() * 0.8 - 0.4), size + (world.rand.nextFloat() * 0.2f - 0.1f));
+        addInkSplashParticle(level, color, entity.getX() + (level.getRandom().nextFloat() * 0.8 - 0.4), entity.getEyePosition(level.getRandom().nextFloat() * 0.3f), entity.getZ() + (level.getRandom().nextFloat() * 0.8 - 0.4), size + (level.getRandom().nextFloat() * 0.2f - 0.1f));
     }
 
-    public static void addInkSplashParticle(World world, int color, double x, double y, double z, float size)
+    public static void addInkSplashParticle(World level, int color, double x, double y, double z, float size)
     {
         float[] rgb = hexToRGB(color);
-        world.addParticle(new InkSplashParticleData(rgb[0], rgb[1], rgb[2], size), x, y, z, 0.0D, 0.0D, 0.0D);
+        level.addParticle(new InkSplashParticleData(rgb[0], rgb[1], rgb[2], size), x, y, z, 0.0D, 0.0D, 0.0D);
     }
 
-    public static void addInkSplashParticle(ServerWorld world, int color, double x, double y, double z, float size)
+    public static void addInkSplashParticle(World level, int color, double x, Vector3d y, double z, float size)
     {
         float[] rgb = hexToRGB(color);
-        world.spawnParticle(new InkSplashParticleData(rgb[0], rgb[1], rgb[2], size), x, y, z, 1, 0, 0, 0, 0);
+        level.addParticle(new InkSplashParticleData(rgb[0], rgb[1], rgb[2], size), x, y.y, z, 0.0D, 0.0D, 0.0D);
     }
 
 }

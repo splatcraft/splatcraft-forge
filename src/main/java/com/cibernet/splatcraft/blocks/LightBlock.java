@@ -16,7 +16,7 @@ public class LightBlock extends Block
     }
 
     @Override
-    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos)
+    public int getLightValue(BlockState state, IBlockReader level, BlockPos pos)
     {
         return lightLevel;
     }

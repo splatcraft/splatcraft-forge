@@ -44,6 +44,9 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            arg "-mixin.config=splatcraft.mixins.json"
+            arg '--uuid 42941b8f-d0c3-45dd-8cbb-1f6f388de45e'
+            arg '--username Cibernet'
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
@@ -59,7 +62,8 @@ minecraft {
         }
 
         server {
-            workingDirectory project.file('run')
+            workingDirectory project.file('server')
+            arg "-mixin.config=splatcraft.mixins.json"
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'

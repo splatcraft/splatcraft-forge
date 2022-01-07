@@ -6,6 +6,7 @@ import com.cibernet.splatcraft.registries.SplatcraftBlocks;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
 import com.cibernet.splatcraft.tileentities.RemotePedestalTileEntity;
 import com.cibernet.splatcraft.util.ColorUtils;
+import com.cibernet.splatcraft.util.CommonUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -36,121 +37,122 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
 {
 
     private static final VoxelShape SHAPE = VoxelShapes.or(
-      makeCuboidShape(3, 0, 3, 13, 2, 13),
-      makeCuboidShape(4, 2, 4, 12, 3, 12),
-      makeCuboidShape(5, 3, 5, 11, 11, 11),
-      makeCuboidShape(4, 11, 4, 12, 13, 12)
+      box(3, 0, 3, 13, 2, 13),
+      box(4, 2, 4, 12, 3, 12),
+      box(5, 3, 5, 11, 11, 11),
+      box(4, 11, 4, 12, 13, 12)
     );
 
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public RemotePedestalBlock()
     {
-        super(Properties.create(Material.IRON).hardnessAndResistance(2.0f).harvestTool(ToolType.PICKAXE).setRequiresTool());
+        super(Properties.of(Material.METAL).strength(2.0f).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops());
         SplatcraftBlocks.inkColoredBlocks.add(this);
-        setDefaultState(getDefaultState().with(POWERED, false));
+        registerDefaultState(defaultBlockState().setValue(POWERED, false));
     }
     
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
         return SHAPE;
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader level, BlockPos pos, PlayerEntity player)
     {
-        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), getColor((World) world, pos)), true);
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, level, pos, player), getColor((World) level, pos)), true);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> container) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> container) {
         container.add(POWERED);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace)
+    public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace)
     {
 
-        if(world.getTileEntity(pos) instanceof RemotePedestalTileEntity)
+        if(level.getBlockEntity(pos) instanceof RemotePedestalTileEntity)
         {
-            RemotePedestalTileEntity te = (RemotePedestalTileEntity) world.getTileEntity(pos);
-            if(te.isEmpty() && player.getHeldItem(hand).getItem().isIn(SplatcraftTags.Items.REMOTES))
+            RemotePedestalTileEntity te = (RemotePedestalTileEntity) level.getBlockEntity(pos);
+            if(te.isEmpty() && player.getItemInHand(hand).getItem().is(SplatcraftTags.Items.REMOTES))
             {
-                te.setInventorySlotContents(0, player.getHeldItem(hand).copy());
-                player.getHeldItem(hand).setCount(0);
-                return ActionResultType.func_233537_a_(world.isRemote);
+                te.setItem(0, player.getItemInHand(hand).copy());
+                player.getItemInHand(hand).setCount(0);
+                return ActionResultType.sidedSuccess(level.isClientSide);
             }
             else if(!te.isEmpty())
             {
-                ItemStack remote = te.removeStackFromSlot(0);
-                if(!player.addItemStackToInventory(remote))
-                    spawnAsEntity(world, pos.up(), remote);
-                return ActionResultType.func_233537_a_(world.isRemote);
+                ItemStack remote = te.removeItemNoUpdate(0);
+                if(!player.addItem(remote))
+                    CommonUtils.spawnItem(level, pos.above(), remote);
+                return ActionResultType.sidedSuccess(level.isClientSide);
             }
         }
 
-        return super.onBlockActivated(state, world, pos, player, hand, rayTrace);
+        return super.use(state, level, pos, player, hand, rayTrace);
     }
 
 
     @Override
-    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving)
+    public void neighborChanged(BlockState state, World levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving)
     {
-        boolean isPowered = worldIn.isBlockPowered(pos);
+        boolean isPowered = levelIn.hasNeighborSignal(pos);
 
-        if (isPowered != state.get(POWERED))
+        if (isPowered != state.getValue(POWERED))
         {
-            if (isPowered && worldIn.getTileEntity(pos) instanceof RemotePedestalTileEntity)
+            if (isPowered && levelIn.getBlockEntity(pos) instanceof RemotePedestalTileEntity)
             {
-                RemotePedestalTileEntity tileEntity = (RemotePedestalTileEntity) worldIn.getTileEntity(pos);
+                RemotePedestalTileEntity tileEntity = (RemotePedestalTileEntity) levelIn.getBlockEntity(pos);
                 if (tileEntity != null)
                     tileEntity.onPowered();
             }
 
-            worldIn.setBlockState(pos, state.with(POWERED, isPowered), 3);
-            updateColor(worldIn, pos, pos.down());
+            levelIn.setBlock(pos, state.setValue(POWERED, isPowered), 3);
+            updateColor(levelIn, pos, pos.below());
         }
 
     }
 
     @Override
-    public void onBlockAdded(BlockState p_220082_1_, World world, BlockPos pos, BlockState p_220082_4_, boolean p_220082_5_)
+    public void onPlace(BlockState p_220082_1_, World level, BlockPos pos, BlockState p_220082_4_, boolean p_220082_5_)
     {
-        super.onBlockAdded(p_220082_1_, world, pos, p_220082_4_, p_220082_5_);
-        updateColor(world, pos, pos.down());
+        super.onPlace(p_220082_1_, level, pos, p_220082_4_, p_220082_5_);
+        updateColor(level, pos, pos.below());
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
     {
 
-        if(facing.equals(Direction.DOWN) && worldIn instanceof World)
-            updateColor((World) worldIn, currentPos, facingPos);
+        if(facing.equals(Direction.DOWN) && levelIn instanceof World)
+            updateColor((World) levelIn, currentPos, facingPos);
         return stateIn;
     }
 
-    public void updateColor(World worldIn, BlockPos currentPos, BlockPos facingPos)
+    public void updateColor(World levelIn, BlockPos currentPos, BlockPos facingPos)
     {
-        if(worldIn.getBlockState(facingPos).getBlock() instanceof InkwellBlock)
-            setColor(worldIn, currentPos, ((InkwellBlock) worldIn.getBlockState(facingPos).getBlock()).getColor(worldIn, facingPos));
+        if(levelIn.getBlockState(facingPos).getBlock() instanceof InkwellBlock)
+            setColor(levelIn, currentPos, ((InkwellBlock) levelIn.getBlockState(facingPos).getBlock()).getColor(levelIn, facingPos));
     }
+
     @Override
-    public boolean hasComparatorInputOverride(BlockState p_149740_1_) {
+    public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {
         return true;
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
+    public int getAnalogOutputSignal(BlockState state, World level, BlockPos pos)
     {
-        if(state.get(POWERED) && world.getTileEntity(pos) instanceof RemotePedestalTileEntity)
-            return ((RemotePedestalTileEntity) world.getTileEntity(pos)).getSignal();
+        if(state.getValue(POWERED) && level.getBlockEntity(pos) instanceof RemotePedestalTileEntity)
+            return ((RemotePedestalTileEntity) level.getBlockEntity(pos)).getSignal();
 
         return 0;
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, @Nullable Direction side) {
+    public boolean canConnectRedstone(BlockState state, IBlockReader level, BlockPos pos, @Nullable Direction side) {
         return true;
     }
 
@@ -161,7 +163,7 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public TileEntity createTileEntity(BlockState state, IBlockReader level) {
         return SplatcraftTileEntitites.remotePedestalTileEntity.create();
     }
 
@@ -182,27 +184,27 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean canRemoteColorChange(World world, BlockPos pos, int color, int newColor)
+    public boolean canRemoteColorChange(World level, BlockPos pos, int color, int newColor)
     {
-        RemotePedestalTileEntity te = (RemotePedestalTileEntity) world.getTileEntity(pos);
-        if(!te.isEmpty() && te.getStackInSlot(0).getItem() instanceof IColoredItem)
-            return ColorUtils.getInkColor(te.getStackInSlot(0)) != newColor;
+        RemotePedestalTileEntity te = (RemotePedestalTileEntity) level.getBlockEntity(pos);
+        if(!te.isEmpty() && te.getItem(0).getItem() instanceof IColoredItem)
+            return ColorUtils.getInkColor(te.getItem(0)) != newColor;
         return false;
     }
 
     @Override
-    public boolean remoteColorChange(World world, BlockPos pos, int newColor)
+    public boolean remoteColorChange(World level, BlockPos pos, int newColor)
     {
-        if(world.getTileEntity(pos) instanceof RemotePedestalTileEntity)
+        if(level.getBlockEntity(pos) instanceof RemotePedestalTileEntity)
         {
-            RemotePedestalTileEntity te = (RemotePedestalTileEntity) world.getTileEntity(pos);
-            if(!te.isEmpty() && te.getStackInSlot(0).getItem() instanceof IColoredItem)
+            RemotePedestalTileEntity te = (RemotePedestalTileEntity) level.getBlockEntity(pos);
+            if(!te.isEmpty() && te.getItem(0).getItem() instanceof IColoredItem)
             {
-                ItemStack stack = te.getStackInSlot(0);
+                ItemStack stack = te.getItem(0);
                 ColorUtils.setColorLocked(stack, true);
                 if (ColorUtils.getInkColor(stack) != newColor) {
                     ColorUtils.setInkColor(stack, newColor);
-                    world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
+                    level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
                     return true;
                 }
             }
@@ -212,36 +214,35 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean setColor(World world, BlockPos pos, int color)
+    public boolean setColor(World level, BlockPos pos, int color)
     {
-        if (!(world.getTileEntity(pos) instanceof RemotePedestalTileEntity))
+        if (!(level.getBlockEntity(pos) instanceof RemotePedestalTileEntity))
             return false;
-        RemotePedestalTileEntity tileEntity = (RemotePedestalTileEntity) world.getTileEntity(pos);
+        RemotePedestalTileEntity tileEntity = (RemotePedestalTileEntity) level.getBlockEntity(pos);
         if (tileEntity != null)
             tileEntity.setColor(color);
-        world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
+        level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 2);
         return true;
     }
 
     @Override
-    public boolean remoteInkClear(World world, BlockPos pos) {
+    public boolean remoteInkClear(World level, BlockPos pos) {
         return false;
     }
 
-
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving)
+    public void onRemove(BlockState state, World levelIn, BlockPos pos, BlockState newState, boolean isMoving)
     {
-        if (!state.isIn(newState.getBlock()))
+        if (!state.is(newState.getBlock()))
         {
-            TileEntity tileentity = worldIn.getTileEntity(pos);
+            TileEntity tileentity = levelIn.getBlockEntity(pos);
             if (tileentity instanceof RemotePedestalTileEntity)
             {
-                InventoryHelper.dropInventoryItems(worldIn, pos, (RemotePedestalTileEntity) tileentity);
-                worldIn.updateComparatorOutputLevel(pos, this);
+                InventoryHelper.dropContents(levelIn, pos, (RemotePedestalTileEntity) tileentity);
+                levelIn.updateNeighbourForOutputSignal(pos, this);
             }
 
-            super.onReplaced(state, worldIn, pos, newState, isMoving);
+            super.onRemove(state, levelIn, pos, newState, isMoving);
         }
     }
 }

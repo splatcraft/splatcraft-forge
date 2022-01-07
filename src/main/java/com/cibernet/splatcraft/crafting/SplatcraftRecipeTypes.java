@@ -25,9 +25,9 @@ public class SplatcraftRecipeTypes
 
     public static boolean getItem(PlayerEntity player, Ingredient ingredient, int count, boolean takeItems)
     {
-        for (int i = 0; i < player.inventory.getSizeInventory(); ++i)
+        for (int i = 0; i < player.inventory.getContainerSize(); ++i)
         {
-            ItemStack invStack = player.inventory.getStackInSlot(i);
+            ItemStack invStack = player.inventory.getItem(i);
             if (!takeItems)
             {
                 invStack = invStack.copy();

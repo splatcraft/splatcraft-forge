@@ -14,25 +14,25 @@ public class RollerInkProjectileModel extends InkProjectileModel
 
     public RollerInkProjectileModel()
     {
-        textureWidth = 16;
-        textureHeight = 16;
+        texWidth = 16;
+        texHeight = 16;
 
         main = new ModelRenderer(this);
-        main.setRotationPoint(0.0F, 0.0F, 0.0F);
-        main.setTextureOffset(6, 6).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 2.0F, 2.0F, 0.0F, false);
-        main.setTextureOffset(5, 0).addBox(-0.75F, -1.25F, 1.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
-        main.setTextureOffset(0, 4).addBox(1.0F, -2.0F, -0.5F, 1.0F, 1.0F, 3.0F, 0.0F, false);
-        main.setTextureOffset(0, 0).addBox(-1.75F, -3.0F, -0.5F, 1.0F, 1.0F, 3.0F, -0.25F, false);
+        main.setPos(0.0F, 0.0F, 0.0F);
+        main.texOffs(6, 6).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 2.0F, 2.0F, 0.0F, false);
+        main.texOffs(5, 0).addBox(-0.75F, -1.25F, 1.5F, 1.0F, 1.0F, 1.0F, 0.0F, false);
+        main.texOffs(0, 4).addBox(1.0F, -2.0F, -0.5F, 1.0F, 1.0F, 3.0F, 0.0F, false);
+        main.texOffs(0, 0).addBox(-1.75F, -3.0F, -0.5F, 1.0F, 1.0F, 3.0F, -0.25F, false);
     }
 
     @Override
-    public void setRotationAngles(InkProjectileEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+    public void setupAnim(InkProjectileEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
     {
         //previously the render function, render code was moved to a method below
     }
 
     @Override
-    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
+    public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
     {
         main.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
@@ -40,8 +40,8 @@ public class RollerInkProjectileModel extends InkProjectileModel
     @Override
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z)
     {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
+        modelRenderer.xRot = x;
+        modelRenderer.yRot = y;
+        modelRenderer.zRot = z;
     }
 }

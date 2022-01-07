@@ -40,24 +40,24 @@ public class TarpBlock extends Block implements IWaterLoggable
     public static final BooleanProperty EAST = SixWayBlock.EAST;
     public static final BooleanProperty SOUTH = SixWayBlock.SOUTH;
     public static final BooleanProperty WEST = SixWayBlock.WEST;
-    public static final Map<Direction, BooleanProperty> FACING_TO_PROPERTY_MAP = SixWayBlock.FACING_TO_PROPERTY_MAP.entrySet().stream().collect(Util.toMapCollector());
-    private static final VoxelShape UP_AABB = Block.makeCuboidShape(0.0D, 15.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-    private static final VoxelShape DOWN_AABB = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
-    private static final VoxelShape EAST_AABB = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 1.0D, 16.0D, 16.0D);
-    private static final VoxelShape WEST_AABB = Block.makeCuboidShape(15.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-    private static final VoxelShape SOUTH_AABB = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 1.0D);
-    private static final VoxelShape NORTH_AABB = Block.makeCuboidShape(0.0D, 0.0D, 15.0D, 16.0D, 16.0D, 16.0D);
+    public static final Map<Direction, BooleanProperty> FACING_TO_PROPERTY_MAP = SixWayBlock.PROPERTY_BY_DIRECTION.entrySet().stream().collect(Util.toMap());
+    private static final VoxelShape UP_AABB = Block.box(0.0D, 15.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    private static final VoxelShape DOWN_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
+    private static final VoxelShape EAST_AABB = Block.box(0.0D, 0.0D, 0.0D, 1.0D, 16.0D, 16.0D);
+    private static final VoxelShape WEST_AABB = Block.box(15.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    private static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 1.0D);
+    private static final VoxelShape NORTH_AABB = Block.box(0.0D, 0.0D, 15.0D, 16.0D, 16.0D, 16.0D);
     private final Map<BlockState, VoxelShape> stateToShapeMap;
 
     public TarpBlock()
     {
-        super(Properties.create(Material.WOOL));
-        this.setDefaultState(getDefaultState().with(WATERLOGGED, Boolean.valueOf(false)).with(DOWN, Boolean.valueOf(false)).with(UP, Boolean.valueOf(false)).with(NORTH, Boolean.valueOf(false)).with(EAST, Boolean.valueOf(false)).with(SOUTH, Boolean.valueOf(false)).with(WEST, Boolean.valueOf(false)));
-        this.stateToShapeMap = ImmutableMap.copyOf(this.stateContainer.getValidStates().stream().collect(Collectors.toMap(Function.identity(), TarpBlock::getShapeForState)));
+        super(Properties.of(Material.WOOL));
+        this.registerDefaultState(defaultBlockState().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(DOWN, Boolean.valueOf(false)).setValue(UP, Boolean.valueOf(false)).setValue(NORTH, Boolean.valueOf(false)).setValue(EAST, Boolean.valueOf(false)).setValue(SOUTH, Boolean.valueOf(false)).setValue(WEST, Boolean.valueOf(false)));
+        this.stateToShapeMap = ImmutableMap.copyOf(this.getStateDefinition().getPossibleStates().stream().collect(Collectors.toMap(Function.identity(), TarpBlock::getShapeForState)));
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(UP, DOWN, NORTH, SOUTH, WEST, EAST, WATERLOGGED);
     }
 
@@ -65,47 +65,47 @@ public class TarpBlock extends Block implements IWaterLoggable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        BlockState state = context.getWorld().getBlockState(context.getPos()).isIn(this) ? context.getWorld().getBlockState(context.getPos()) :
-                super.getStateForPlacement(context).with(WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
+        BlockState state = context.getLevel().getBlockState(context.getClickedPos()).is(this) ? context.getLevel().getBlockState(context.getClickedPos()) :
+                super.getStateForPlacement(context).setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 
-        state = state.with(FACING_TO_PROPERTY_MAP.get(context.getFace().getOpposite()), true);
+        state = state.setValue(FACING_TO_PROPERTY_MAP.get(context.getClickedFace().getOpposite()), true);
 
         for(Direction direction : Direction.values())
-            if(state.get(FACING_TO_PROPERTY_MAP.get(direction)))
+            if(state.getValue(FACING_TO_PROPERTY_MAP.get(direction)))
                 return state;
 
-        return state.with(DOWN, true);
+        return state.setValue(DOWN, true);
     }
 
     @Override
-    public boolean isReplaceable(BlockState state, BlockItemUseContext context)
+    public boolean canBeReplaced(BlockState state, BlockItemUseContext context)
     {
         for(Direction direction : Direction.values())
-            if(state.get(FACING_TO_PROPERTY_MAP.get(direction)))
-                return (context.getItem().getItem().equals(asItem()) && !state.get(FACING_TO_PROPERTY_MAP.get(context.getFace().getOpposite()))) ? true : super.isReplaceable(state, context);
+            if(state.getValue(FACING_TO_PROPERTY_MAP.get(direction)))
+                return (context.getItemInHand().getItem().equals(asItem()) && !state.getValue(FACING_TO_PROPERTY_MAP.get(context.getClickedFace().getOpposite()))) ? true : state.canBeReplaced(context);
         return true;
     }
 
 
     @Override
-    public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack)
+    public void playerDestroy(World levelIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack)
     {
-        player.addStat(Stats.BLOCK_MINED.get(this));
-        player.addExhaustion(0.005F);
+        player.awardStat(Stats.BLOCK_MINED.get(this));
+        player.causeFoodExhaustion(0.005F);
 
         for(Direction dir : Direction.values())
-            if(state.get(FACING_TO_PROPERTY_MAP.get(dir)))
-                spawnDrops(state, worldIn, pos, te, player, stack);
+            if(state.getValue(FACING_TO_PROPERTY_MAP.get(dir)))
+                dropResources(state, levelIn, pos, te, player, stack);
     }
 
     @Override
     public FluidState getFluidState(BlockState state)
     {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext context)
     {
         return stateToShapeMap.get(state);
     }
@@ -114,22 +114,22 @@ public class TarpBlock extends Block implements IWaterLoggable
     {
         VoxelShape voxelshape = VoxelShapes.empty();
 
-        if (state.get(UP))
+        if (state.getValue(UP))
             voxelshape = UP_AABB;
 
-        if (state.get(DOWN))
+        if (state.getValue(DOWN))
             voxelshape = VoxelShapes.or(voxelshape, DOWN_AABB);
 
-        if (state.get(NORTH))
+        if (state.getValue(NORTH))
             voxelshape = VoxelShapes.or(voxelshape, SOUTH_AABB);
 
-        if (state.get(SOUTH))
+        if (state.getValue(SOUTH))
             voxelshape = VoxelShapes.or(voxelshape, NORTH_AABB);
 
-        if (state.get(EAST))
+        if (state.getValue(EAST))
             voxelshape = VoxelShapes.or(voxelshape, WEST_AABB);
 
-        if (state.get(WEST))
+        if (state.getValue(WEST))
             voxelshape = VoxelShapes.or(voxelshape, EAST_AABB);
 
         return voxelshape;

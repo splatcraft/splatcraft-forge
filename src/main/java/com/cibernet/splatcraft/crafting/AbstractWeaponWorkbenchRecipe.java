@@ -35,14 +35,14 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
 
 
     @Override
-    public boolean matches(IInventory inv, World worldIn)
+    public boolean matches(IInventory inv, World levelIn)
     {
         java.util.List<ItemStack> inputs = new java.util.ArrayList<>();
         int i = 0;
 
-        for (int j = 0; j < inv.getSizeInventory(); ++j)
+        for (int j = 0; j < inv.getContainerSize(); ++j)
         {
-            ItemStack itemstack = inv.getStackInSlot(j);
+            ItemStack itemstack = inv.getItem(j);
             if (!itemstack.isEmpty())
             {
                 ++i;
@@ -59,19 +59,19 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv)
+    public ItemStack assemble(IInventory inv)
     {
         return recipeOutput;
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return false;
     }
 
     @Override
-    public ItemStack getRecipeOutput()
+    public ItemStack getResultItem()
     {
         return recipeOutput;
     }
@@ -112,7 +112,7 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
         for (int i = 0; i < p_199568_0_.size(); ++i)
         {
             StackedIngredient ingredient = StackedIngredient.deserialize(p_199568_0_.get(i));
-            if (!ingredient.getIngredient().hasNoMatchingItems() && ingredient.getCount() > 0)
+            if (!ingredient.getIngredient().isEmpty() && ingredient.getCount() > 0)
             {
                 nonnulllist.add(ingredient);
             }
@@ -132,20 +132,20 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
         }
 
         @Override
-        public T read(ResourceLocation recipeId, JsonObject json)
+        public T fromJson(ResourceLocation recipeId, JsonObject json)
         {
             return null;
         }
 
         @Nullable
         @Override
-        public T read(ResourceLocation recipeId, PacketBuffer buffer)
+        public T fromNetwork(ResourceLocation recipeId, PacketBuffer buffer)
         {
             return null;
         }
 
         @Override
-        public void write(PacketBuffer buffer, T recipe)
+        public void toNetwork(PacketBuffer buffer, T recipe)
         {
 
         }

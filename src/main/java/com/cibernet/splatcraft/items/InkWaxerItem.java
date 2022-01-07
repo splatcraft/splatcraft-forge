@@ -20,46 +20,46 @@ public class InkWaxerItem extends Item
 {
     public InkWaxerItem()
     {
-        super(new Properties().maxDamage(256).group(SplatcraftItemGroups.GROUP_GENERAL));
+        super(new Properties().durability(256).tab(SplatcraftItemGroups.GROUP_GENERAL));
     }
 
-    public void onBlockStartBreak(ItemStack itemstack, BlockPos pos, World world)
+    public void onBlockStartBreak(ItemStack itemstack, BlockPos pos, World level)
     {
-        if(world.getTileEntity(pos) instanceof InkedBlockTileEntity)
+        if(level.getBlockEntity(pos) instanceof InkedBlockTileEntity)
         {
-            InkedBlockTileEntity te = (InkedBlockTileEntity) world.getTileEntity(pos);
+            InkedBlockTileEntity te = (InkedBlockTileEntity) level.getBlockEntity(pos);
             te.setPermanentColor(-1);
 
-            world.playEvent(2001, pos, Block.getStateId(world.getBlockState(pos)));
+            level.globalLevelEvent(2001, pos, Block.getId(level.getBlockState(pos)));
 
-            if(world.getBlockState(pos).getBlock() instanceof IColoredBlock)
-                ((IColoredBlock) world.getBlockState(pos).getBlock()).remoteInkClear(world, pos);
+            if(level.getBlockState(pos).getBlock() instanceof IColoredBlock)
+                ((IColoredBlock) level.getBlockState(pos).getBlock()).remoteInkClear(level, pos);
         }
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context)
+    public ActionResultType useOn(ItemUseContext context)
     {
-        if(context.getWorld().getTileEntity(context.getPos()) instanceof InkedBlockTileEntity)
+        if(context.getLevel().getBlockEntity(context.getClickedPos()) instanceof InkedBlockTileEntity)
         {
-            InkedBlockTileEntity te = (InkedBlockTileEntity) context.getWorld().getTileEntity(context.getPos());
+            InkedBlockTileEntity te = (InkedBlockTileEntity) context.getLevel().getBlockEntity(context.getClickedPos());
 
             if(te.getPermanentColor() != te.getColor())
             {
                 te.setPermanentColor(te.getColor());
-                te.setPermanentInkType(InkBlockUtils.getInkType(context.getWorld().getBlockState(context.getPos())));
+                te.setPermanentInkType(InkBlockUtils.getInkType(context.getLevel().getBlockState(context.getClickedPos())));
 
-                context.getWorld().playEvent(2005, context.getPos(), 0);
+                context.getLevel().globalLevelEvent(2005, context.getClickedPos(), 0);
                 if(context.getPlayer() instanceof ServerPlayerEntity && !context.getPlayer().isCreative())
-                    context.getItem().attemptDamageItem(1, context.getWorld().rand, (ServerPlayerEntity) context.getPlayer());
+                    context.getItemInHand().hurtAndBreak(1, context.getPlayer(), player -> player.broadcastBreakEvent(context.getHand()));
                 return ActionResultType.SUCCESS;
             }
         }
-        return super.onItemUse(context);
+        return super.useOn(context);
     }
 
     @Override
-    public boolean canPlayerBreakBlockWhileHolding(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
+    public boolean canAttackBlock(BlockState state, World levelIn, BlockPos pos, PlayerEntity player) {
         return false;
     }
 
@@ -69,7 +69,7 @@ public class InkWaxerItem extends Item
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        return repair.getItem().equals(Items.HONEYCOMB) || super.getIsRepairable(toRepair, repair);
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+        return repair.getItem().equals(Items.HONEYCOMB) || super.isValidRepairItem(toRepair, repair);
     }
 }

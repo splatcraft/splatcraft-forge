@@ -5,11 +5,13 @@ import com.cibernet.splatcraft.client.renderer.InkProjectileRenderer;
 import com.cibernet.splatcraft.client.renderer.InkSquidRenderer;
 import com.cibernet.splatcraft.client.renderer.SquidBumperRenderer;
 import com.cibernet.splatcraft.client.renderer.subs.BurstBombRenderer;
+import com.cibernet.splatcraft.client.renderer.subs.SplatBombRenderer;
 import com.cibernet.splatcraft.client.renderer.subs.SuctionBombRenderer;
 import com.cibernet.splatcraft.entities.InkProjectileEntity;
 import com.cibernet.splatcraft.entities.InkSquidEntity;
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.entities.subs.BurstBombEntity;
+import com.cibernet.splatcraft.entities.subs.SplatBombEntity;
 import com.cibernet.splatcraft.entities.subs.SuctionBombEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -21,6 +23,7 @@ import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -41,6 +44,7 @@ public class SplatcraftEntities
     //Sub Weapons
     public static final EntityType<BurstBombEntity> BURST_BOMB = create("burst_bomb", BurstBombEntity::new, EntityClassification.MISC, 0.5f, 0.5f);
     public static final EntityType<SuctionBombEntity> SUCTION_BOMB = create("suction_bomb", SuctionBombEntity::new, EntityClassification.MISC, 0.5f, 0.5f);
+    public static final EntityType<SplatBombEntity> SPLAT_BOMB = create("splat_bomb", SplatBombEntity::new, EntityClassification.MISC, 0.5f, 0.5f);
 
 
     @SubscribeEvent
@@ -51,13 +55,15 @@ public class SplatcraftEntities
         registry.register(INK_PROJECTILE);
         registry.register(INK_SQUID);
         registry.register(SQUID_BUMPER);
+
         registry.register(BURST_BOMB);
         registry.register(SUCTION_BOMB);
+        registry.register(SPLAT_BOMB);
     }
 
     private static <T extends Entity> EntityType<T> create(String name, EntityType.IFactory<T> supplier, EntityClassification classification, float width, float height)
     {
-        EntityType<T> type = EntityType.Builder.create(supplier, classification).size(width, height).build(new ResourceLocation(Splatcraft.MODID, name).toString());
+        EntityType<T> type = EntityType.Builder.of(supplier, classification).sized(width, height).build(new ResourceLocation(Splatcraft.MODID, name).toString());
 
         type.setRegistryName(name);
         return type;
@@ -65,7 +71,7 @@ public class SplatcraftEntities
 
     private static <T extends LivingEntity> EntityType<T> createLiving(String name, EntityType.IFactory<T> supplier, EntityClassification classification, float width, float height, Consumer<AttributeModifierMap> map)
     {
-        EntityType<T> type = EntityType.Builder.create(supplier, classification).size(width, height).build(new ResourceLocation(Splatcraft.MODID, name).toString());
+        EntityType<T> type = EntityType.Builder.of(supplier, classification).sized(width, height).build(new ResourceLocation(Splatcraft.MODID, name).toString());
         type.setRegistryName(name);
         return type;
     }
@@ -80,33 +86,38 @@ public class SplatcraftEntities
         RenderingRegistry.registerEntityRenderingHandler(INK_PROJECTILE, InkProjectileRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(INK_SQUID, InkSquidRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SQUID_BUMPER, SquidBumperRenderer::new);
+
         RenderingRegistry.registerEntityRenderingHandler(BURST_BOMB, BurstBombRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SUCTION_BOMB, SuctionBombRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(SPLAT_BOMB, SplatBombRenderer::new);
     }
 
-    public static void setEntityAttributes()
+    //@SubscribeEvent
+    public static void setEntityAttributes(/*EntityAttributeCreationEvent event*/)
     {
-        GlobalEntityTypeAttributes.put(SplatcraftEntities.INK_SQUID, InkSquidEntity.setCustomAttributes().create());
-        GlobalEntityTypeAttributes.put(SplatcraftEntities.SQUID_BUMPER, SquidBumperEntity.setCustomAttributes().create());
+        GlobalEntityTypeAttributes.put(SplatcraftEntities.INK_SQUID, InkSquidEntity.setCustomAttributes().build());
+        GlobalEntityTypeAttributes.put(SplatcraftEntities.SQUID_BUMPER, SquidBumperEntity.setCustomAttributes().build());
 
-        GlobalEntityTypeAttributes.put(EntityType.PLAYER, getAttributeMutableMap(EntityType.PLAYER).createMutableAttribute(SplatcraftItems.INK_SWIM_SPEED, 0.075).create());
+        GlobalEntityTypeAttributes.put(EntityType.PLAYER, getAttributeMutableMap(EntityType.PLAYER).add(SplatcraftItems.INK_SWIM_SPEED, 0.075).build());
     }
 
     protected static AttributeModifierMap.MutableAttribute getAttributeMutableMap(EntityType<? extends LivingEntity> entityType)
     {
         AttributeModifierMap.MutableAttribute result = new AttributeModifierMap.MutableAttribute();
 
-        Object obj = ObfuscationReflectionHelper.getPrivateValue(AttributeModifierMap.class, GlobalEntityTypeAttributes.getAttributesForEntity(entityType), "field_233802_a_");
+        Object obj = ObfuscationReflectionHelper.getPrivateValue(AttributeModifierMap.class, GlobalEntityTypeAttributes.getSupplier(entityType), "field_233802_a_");
 
         if (obj instanceof Map)
         {
             Map<Attribute, ModifiableAttributeInstance> map = (Map<Attribute, ModifiableAttributeInstance>) obj;
             for (Map.Entry<Attribute, ModifiableAttributeInstance> entry : map.entrySet())
             {
-                result.createMutableAttribute(entry.getKey(), entry.getValue().getValue());
+                result.add(entry.getKey(), entry.getValue().getValue());
             }
         }
 
         return result;
     }
+
+
 }

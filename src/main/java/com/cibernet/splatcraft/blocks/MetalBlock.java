@@ -9,6 +9,6 @@ public class MetalBlock extends Block
 {
     public MetalBlock(Material material, MaterialColor color)
     {
-        super(Properties.create(material, color).hardnessAndResistance(5.0F, 6.0F).sound(SoundType.METAL));
+        super(Properties.of(material, color).strength(5.0F, 6.0F).sound(SoundType.METAL));
     }
 }

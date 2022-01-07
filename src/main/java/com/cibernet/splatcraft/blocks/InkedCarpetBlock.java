@@ -17,19 +17,19 @@ public class InkedCarpetBlock extends InkStainedBlock
 {
     public InkedCarpetBlock(String name)
     {
-        super(name, Properties.create(Material.CARPET).hardnessAndResistance(0.1F).sound(SoundType.CLOTH));
+        super(name, Properties.of(Material.CLOTH_DECORATION).strength(0.1F).sound(SoundType.WOOL));
     }
 
-    protected static final VoxelShape SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
-    public VoxelShape getShape(BlockState st, IBlockReader world, BlockPos pos, ISelectionContext context) {
+    protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
+    public VoxelShape getShape(BlockState st, IBlockReader level, BlockPos pos, ISelectionContext context) {
         return SHAPE;
     }
 
-    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
-        return !state.isValidPosition(world, pos) ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(state, direction, facingState, world, pos, facingPos);
+    public BlockState updateShape(BlockState state, Direction direction, BlockState facingState, IWorld level, BlockPos pos, BlockPos facingPos) {
+        return !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, facingState, level, pos, facingPos);
     }
 
     public boolean isValidPosition(BlockState p_196260_1_, IWorldReader p_196260_2_, BlockPos p_196260_3_) {
-        return !p_196260_2_.isAirBlock(p_196260_3_.down());
+        return !p_196260_2_.isEmptyBlock(p_196260_3_.below());
     }
 }

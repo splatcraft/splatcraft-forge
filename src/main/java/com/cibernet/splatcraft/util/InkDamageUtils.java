@@ -27,38 +27,38 @@ public class InkDamageUtils
 
     public static final DamageSource ENEMY_INK = new DamageSource(Splatcraft.MODID+":enemyInk");
     public static final DamageSource WATER = new DamageSource(Splatcraft.MODID+":water");
-    public static final DamageSource VOID_DAMAGE = new DamageSource(Splatcraft.MODID+":outOfStage").setDamageBypassesArmor();
+    public static final DamageSource VOID_DAMAGE = new DamageSource(Splatcraft.MODID+":outOfStage").bypassArmor();
 
 
-    public static boolean doSplatDamage(World world, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType)
+    public static boolean doSplatDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType)
     {
-        return doDamage(world, target, damage, color, source, sourceItem, damageMobs, inkType, "splat", false);
+        return doDamage(level, target, damage, color, source, sourceItem, damageMobs, inkType, "splat", false);
     }
 
-    public static boolean doRollDamage(World world, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType)
+    public static boolean doRollDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType)
     {
-        return doDamage(world, target, damage, color, source, sourceItem, damageMobs, inkType, "roll", true);
+        return doDamage(level, target, damage, color, source, sourceItem, damageMobs, inkType, "roll", true);
     }
 
-    public static boolean canDamageColor(World world, int targetColor, int sourceColor)
+    public static boolean canDamageColor(World level, int targetColor, int sourceColor)
     {
-        return SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_FRIENDLY_FIRE) || !ColorUtils.colorEquals(world, targetColor, sourceColor);
+        return SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_FRIENDLY_FIRE) || !ColorUtils.colorEquals(level, targetColor, sourceColor);
     }
 
-    public static boolean doDamage(World world, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType, String name, boolean applyHurtCooldown)
+    public static boolean doDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType, String name, boolean applyHurtCooldown)
     {
 
         if (damage == 0)
             return false;
 
-        float mobDmgPctg = SplatcraftGameRules.getIntRuleValue(world, SplatcraftGameRules.INK_MOB_DAMAGE_PERCENTAGE) * 0.01f;
+        float mobDmgPctg = SplatcraftGameRules.getIntRuleValue(level, SplatcraftGameRules.INK_MOB_DAMAGE_PERCENTAGE) * 0.01f;
         boolean doDamage = target instanceof PlayerEntity || damageMobs || mobDmgPctg > 0;
         boolean applyInkCoverage = true;
         int targetColor = ColorUtils.getEntityColor(target);
 
         if (targetColor > -1)
         {
-            doDamage = canDamageColor(world, color, targetColor);
+            doDamage = canDamageColor(level, color, targetColor);
             applyInkCoverage = doDamage;
         }
 
@@ -70,7 +70,7 @@ public class InkDamageUtils
         }
         else if (target instanceof SheepEntity)
         {
-            if (!((SheepEntity) target).getSheared())
+            if (!((SheepEntity) target).isSheared())
             {
                 doDamage = false;
                 applyInkCoverage = false;
@@ -78,7 +78,7 @@ public class InkDamageUtils
         }
 
         if (doDamage)
-            target.attackEntityFrom(damageSource, damage * (target instanceof PlayerEntity || target instanceof IColoredEntity || damageMobs ? 1 : mobDmgPctg));
+            target.hurt(damageSource, damage * (target instanceof PlayerEntity || target instanceof IColoredEntity || damageMobs ? 1 : mobDmgPctg));
 
         if (applyInkCoverage && !target.isInWater())
         {
@@ -89,20 +89,20 @@ public class InkDamageUtils
                 if (info.getAmount() < (target instanceof SquidBumperEntity ? SquidBumperEntity.maxInkHealth : target.getMaxHealth()) * 1.5)
                     info.addAmount(damage * (target instanceof IColoredEntity || damageMobs ? 1 : Math.max(0.5f, mobDmgPctg)));
                 info.setColor(color);
-                if (!world.isRemote)
+                if (!level.isClientSide)
                     SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
             }
         }
 
 
 
-        if (!applyHurtCooldown && !SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.INK_DAMAGE_COOLDOWN))
-            target.hurtResistantTime = 1;
+        if (!applyHurtCooldown && !SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_DAMAGE_COOLDOWN))
+            target.hurtTime = 1;
 
         return doDamage;
     }
 
-    public static boolean isSplatted(World world, LivingEntity target)
+    public static boolean isSplatted(World level, LivingEntity target)
     {
         return target instanceof SquidBumperEntity ? ((SquidBumperEntity) target).getInkHealth() <= 0 : target.getHealth() <= 0;
     }
@@ -118,12 +118,12 @@ public class InkDamageUtils
         }
 
         @Override
-        public ITextComponent getDeathMessage(LivingEntity entityLivingBaseIn)
+        public ITextComponent getLocalizedDeathMessage(LivingEntity entityLivingBaseIn)
         {
-            ITextComponent itextcomponent = this.getTrueSource() == null ? Objects.requireNonNull(this.damageSourceEntity).getDisplayName() : this.getTrueSource().getDisplayName();
-            String s = "death.attack." + this.damageType;
+            ITextComponent itextcomponent = this.getEntity() == null ? Objects.requireNonNull(this.entity).getDisplayName() : this.getEntity().getDisplayName();
+            String s = "death.attack." + this.msgId;
             String s1 = s + ".item";
-            return !weapon.isEmpty() ? new TranslationTextComponent(s1, entityLivingBaseIn.getDisplayName(), itextcomponent, weapon.getTextComponent()) : new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName(), itextcomponent);
+            return !weapon.isEmpty() ? new TranslationTextComponent(s1, entityLivingBaseIn.getDisplayName(), itextcomponent, weapon.getDisplayName()) : new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName(), itextcomponent);
         }
     }
 }

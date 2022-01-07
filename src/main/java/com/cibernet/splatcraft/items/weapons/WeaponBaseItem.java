@@ -48,19 +48,19 @@ public class WeaponBaseItem extends Item implements IColoredItem
 
     public WeaponBaseItem()
     {
-        super(new Properties().maxStackSize(1).group(SplatcraftItemGroups.GROUP_WEAPONS));
+        super(new Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_WEAPONS));
         SplatcraftItems.inkColoredItems.add(this);
         SplatcraftItems.weapons.add(this);
     }
 
     public static float getInkAmount(LivingEntity player, ItemStack weapon)
     {
-        if (!SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK))
+        if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK))
         {
             return Float.MAX_VALUE;
         }
 
-        ItemStack tank = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
         if (!(tank.getItem() instanceof InkTankItem))
         {
             return 0;
@@ -76,8 +76,8 @@ public class WeaponBaseItem extends Item implements IColoredItem
 
     public static void reduceInk(LivingEntity player, float amount)
     {
-        ItemStack tank = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-        if (!SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK))
+        ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
+        if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK))
         {
             return;
         }
@@ -98,20 +98,22 @@ public class WeaponBaseItem extends Item implements IColoredItem
     {
         if (entity instanceof PlayerEntity)
         {
-            ((PlayerEntity) entity).sendStatusMessage(new TranslationTextComponent("status.no_ink").mergeStyle(TextFormatting.RED), true);
+            ((PlayerEntity) entity).displayClientMessage(new TranslationTextComponent("status.no_ink").withStyle(TextFormatting.RED), true);
             if (sound != null)
             {
-                entity.world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), sound, SoundCategory.PLAYERS, 0.8F,
-                        ((entity.world.rand.nextFloat() - entity.world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+                entity.level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundCategory.PLAYERS, 0.8F,
+                        ((entity.level.getRandom().nextFloat() - entity.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }
         }
 
     }
 
+
+
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, level, tooltip, flag);
 
         if (ColorUtils.isColorLocked(stack))
         {
@@ -123,7 +125,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
 
         for (WeaponStat stat : stats)
         {
-            tooltip.add(stat.getTextComponent(stack, world).setStyle(Style.EMPTY.setFormatting(TextFormatting.DARK_GREEN)));
+            tooltip.add(stat.getTextComponent(stack, level).withStyle(TextFormatting.DARK_GREEN));
         }
     }
 
@@ -133,18 +135,18 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list)
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> list)
     {
         if (!secret)
         {
-            super.fillItemGroup(group, list);
+            super.fillItemCategory(group, list);
         }
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(ItemStack stack, World level, Entity entity, int itemSlot, boolean isSelected)
     {
-        super.inventoryTick(stack, world, entity, itemSlot, isSelected);
+        super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
         if (entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity)
                 && PlayerInfoCapability.hasCapability((LivingEntity) entity))
@@ -154,11 +156,11 @@ public class WeaponBaseItem extends Item implements IColoredItem
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity)
     {
-        BlockPos pos = entity.getPosition().down();
+        BlockPos pos = entity.blockPosition().below();
 
-        if (entity.world.getBlockState(pos).getBlock() instanceof InkwellBlock)
+        if (entity.level.getBlockState(pos).getBlock() instanceof InkwellBlock)
         {
-            InkColorTileEntity te = (InkColorTileEntity) entity.world.getTileEntity(pos);
+            InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos);
 
             if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te))
             {
@@ -167,7 +169,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
             }
         }
         else if((stack.getItem() instanceof SubWeaponItem && !stack.getOrCreateTag().getBoolean("SingleUse") || !(stack.getItem() instanceof SubWeaponItem))
-        && InkedBlock.causesClear(entity.world.getBlockState(pos)) && ColorUtils.getInkColor(stack) != 0xFFFFFF)
+        && InkedBlock.causesClear(entity.level.getBlockState(pos)) && ColorUtils.getInkColor(stack) != 0xFFFFFF)
         {
             ColorUtils.setInkColor(stack, 0xFFFFFF);
             ColorUtils.setColorLocked(stack, false);
@@ -212,38 +214,39 @@ public class WeaponBaseItem extends Item implements IColoredItem
         return USE_DURATION;
     }
 
-    public final ActionResult<ItemStack> onItemRightClickSuper(World world, PlayerEntity player, Hand hand)
+    public final ActionResult<ItemStack> useSuper(World level, PlayerEntity player, Hand hand)
     {
-        return super.onItemRightClick(world, player, hand);
+        return super.use(level, player, hand);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
+    public ActionResult<ItemStack> use(World level, PlayerEntity player, Hand hand)
     {
-        if(!(player.isActualySwimming() && !player.isInWater()))
-            player.setActiveHand(hand);
-        return onItemRightClickSuper(world, player, hand);
+        if(!(player.isSwimming() && !player.isInWater()))
+            player.startUsingItem(hand);
+        return useSuper(level, player, hand);
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context)
+    public ActionResultType useOn(ItemUseContext context)
     {
-        BlockState state = context.getWorld().getBlockState(context.getPos());
-        if (ColorUtils.isColorLocked(context.getItem()) && state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && !context.getPlayer().isSneaking())
+        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+        if (ColorUtils.isColorLocked(context.getItemInHand()) && state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && !context.getPlayer().isCrouching())
         {
-            int i = state.get(CauldronBlock.LEVEL);
+            int i = state.getValue(CauldronBlock.LEVEL);
 
             if (i > 0)
             {
-                World world = context.getWorld();
+                World level = context.getLevel();
                 PlayerEntity player = context.getPlayer();
-                ColorUtils.setColorLocked(context.getItem(), false);
+                ColorUtils.setColorLocked(context.getItemInHand(), false);
 
-                context.getPlayer().addStat(Stats.USE_CAULDRON);
+                context.getPlayer().awardStat(Stats.USE_CAULDRON);
 
-                if (!player.abilities.isCreativeMode)
-                {world.setBlockState(context.getPos(), state.with(CauldronBlock.LEVEL, MathHelper.clamp(i - 1, 0, 3)), 2);
-                    world.updateComparatorOutputLevel(context.getPos(), state.getBlock());
+                if (!player.isCreative())
+                {
+                    level.setBlock(context.getClickedPos(), state.setValue(CauldronBlock.LEVEL, MathHelper.clamp(i - 1, 0, 3)), 2);
+                    level.updateNeighbourForOutputSignal(context.getClickedPos(), state.getBlock());
                 }
 
                 return ActionResultType.SUCCESS;
@@ -251,22 +254,22 @@ public class WeaponBaseItem extends Item implements IColoredItem
 
         }
 
-        return super.onItemUse(context);
+        return super.useOn(context);
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft)
+    public void releaseUsing(ItemStack stack, World level, LivingEntity entity, int timeLeft)
     {
-        entity.resetActiveHand();
-        super.onPlayerStoppedUsing(stack, world, entity, timeLeft);
+        entity.stopUsingItem();
+        super.releaseUsing(stack, level, entity, timeLeft);
     }
 
-    public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
+    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
     {
 
     }
 
-    public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
+    public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
     {
 
     }

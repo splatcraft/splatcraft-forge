@@ -18,35 +18,35 @@ public class PowerEggCanItem extends Item
 {
     public PowerEggCanItem(String name)
     {
-        super(new Properties().maxStackSize(16).group(SplatcraftItemGroups.GROUP_GENERAL));
+        super(new Properties().stacksTo(16).tab(SplatcraftItemGroups.GROUP_GENERAL));
         setRegistryName(name);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+    public ActionResult<ItemStack> use(World levelIn, PlayerEntity playerIn, Hand handIn)
     {
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
-        worldIn.playSound(null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SplatcraftSounds.powerEggCanOpen, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
-        if (!worldIn.isRemote)
+        ItemStack itemstack = playerIn.getItemInHand(handIn);
+        levelIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SplatcraftSounds.powerEggCanOpen, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+        if (!levelIn.isClientSide)
         {
-            double d0 = playerIn.getPosYEye() - (double) 0.3F;
-            ItemEntity itementity = new ItemEntity(worldIn, playerIn.getPosX(), d0, playerIn.getPosZ(), new ItemStack(SplatcraftItems.powerEgg, (worldIn.rand.nextInt(4) + 1) * 10));
-            itementity.setPickupDelay(0);
-            itementity.setThrowerId(playerIn.getUniqueID());
+            double d0 = playerIn.getEyeY() - (double) 0.3F;
+            ItemEntity itementity = new ItemEntity(levelIn, playerIn.getX(), d0, playerIn.getZ(), new ItemStack(SplatcraftItems.powerEgg, (levelIn.random.nextInt(4) + 1) * 10));
+            itementity.setNoPickUpDelay();
+            itementity.setThrower(playerIn.getUUID());
 
-            float f = worldIn.rand.nextFloat() * 0.5F;
-            float f1 = worldIn.rand.nextFloat() * ((float) Math.PI * 2F);
-            itementity.setMotion(-MathHelper.sin(f1) * f, 0.2F, MathHelper.cos(f1) * f);
+            float f = levelIn.random.nextFloat() * 0.5F;
+            float f1 = levelIn.random.nextFloat() * ((float) Math.PI * 2F);
+            itementity.setDeltaMovement(-MathHelper.sin(f1) * f, 0.2F, MathHelper.cos(f1) * f);
 
-            worldIn.addEntity(itementity);
+            levelIn.addFreshEntity(itementity);
         }
 
-        playerIn.addStat(Stats.ITEM_USED.get(this));
-        if (!playerIn.abilities.isCreativeMode)
+        playerIn.awardStat(Stats.ITEM_USED.get(this));
+        if (!playerIn.isCreative())
         {
             itemstack.shrink(1);
         }
 
-        return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
+        return ActionResult.sidedSuccess(itemstack, levelIn.isClientSide());
     }
 }

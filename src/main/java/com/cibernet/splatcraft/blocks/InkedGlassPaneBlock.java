@@ -27,43 +27,43 @@ public class InkedGlassPaneBlock extends PaneBlock  implements IColoredBlock, IW
 
     public InkedGlassPaneBlock(String name)
     {
-        super(AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS).notSolid());
+        super(AbstractBlock.Properties.of(Material.GLASS).strength(0.3F).sound(SoundType.GLASS).noOcclusion());
         SplatcraftBlocks.inkColoredBlocks.add(this);
         setRegistryName(name);
     }
 
     @Override
-    public boolean isTransparent(BlockState state) {
+    public boolean useShapeForLightOcclusion(BlockState state) {
         return true;
     }
 
     @Nullable
     @Override
-    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader world, BlockPos pos, BlockPos beaconPos)
+    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader level, BlockPos pos, BlockPos beaconPos)
     {
-        return ColorUtils.hexToRGB(getColor((World) world, pos));
+        return ColorUtils.hexToRGB(getColor((World) level, pos));
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader level, BlockPos pos, PlayerEntity player)
     {
-        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), getColor((World) world, pos)), true);
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, level, pos, player), getColor((World) level, pos)), true);
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
+    public void setPlacedBy(World level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
     {
-        if (!world.isRemote && stack.getTag() != null && world.getTileEntity(pos) instanceof InkColorTileEntity)
+        if (!level.isClientSide && stack.getTag() != null && level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
-            ColorUtils.setInkColor(world.getTileEntity(pos), ColorUtils.getInkColor(stack));
+            ColorUtils.setInkColor(level.getBlockEntity(pos), ColorUtils.getInkColor(stack));
         }
-        super.onBlockPlacedBy(world, pos, state, entity, stack);
+        super.setPlacedBy(level, pos, state, entity, stack);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        return super.getStateForPlacement(context).with(WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
+        return super.getStateForPlacement(context).setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
     }
 
     @Override
@@ -74,18 +74,18 @@ public class InkedGlassPaneBlock extends PaneBlock  implements IColoredBlock, IW
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
         return SplatcraftTileEntitites.colorTileEntity.create();
     }
 
     @Override
-    public ItemStack getItem(IBlockReader reader, BlockPos pos, BlockState state)
+    public ItemStack getCloneItemStack(IBlockReader reader, BlockPos pos, BlockState state)
     {
-        ItemStack stack = super.getItem(reader, pos, state);
+        ItemStack stack = super.getCloneItemStack(reader, pos, state);
 
-        if (reader.getTileEntity(pos) instanceof InkColorTileEntity)
-            ColorUtils.setColorLocked(ColorUtils.setInkColor(stack, ColorUtils.getInkColor(reader.getTileEntity(pos))), true);
+        if (reader.getBlockEntity(pos) instanceof InkColorTileEntity)
+            ColorUtils.setColorLocked(ColorUtils.setInkColor(stack, ColorUtils.getInkColor(reader.getBlockEntity(pos))), true);
 
         return stack;
     }
@@ -111,47 +111,47 @@ public class InkedGlassPaneBlock extends PaneBlock  implements IColoredBlock, IW
 
 
     @Override
-    public int getColor(World world, BlockPos pos)
+    public int getColor(World level, BlockPos pos)
     {
-        if (world.getTileEntity(pos) instanceof InkColorTileEntity)
+        if (level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
-            return ((InkColorTileEntity) world.getTileEntity(pos)).getColor();
+            return ((InkColorTileEntity) level.getBlockEntity(pos)).getColor();
         }
         return -1;
     }
 
     @Override
-    public boolean remoteColorChange(World world, BlockPos pos, int newColor)
+    public boolean remoteColorChange(World level, BlockPos pos, int newColor)
     {
-        BlockState state = world.getBlockState(pos);
-        if (world.getTileEntity(pos) instanceof InkColorTileEntity && ((InkColorTileEntity) world.getTileEntity(pos)).getColor() != newColor)
+        BlockState state = level.getBlockState(pos);
+        if (level.getBlockEntity(pos) instanceof InkColorTileEntity && ((InkColorTileEntity) level.getBlockEntity(pos)).getColor() != newColor)
         {
-            ((InkColorTileEntity) world.getTileEntity(pos)).setColor(newColor);
-            world.notifyBlockUpdate(pos, state, state, 2);
+            ((InkColorTileEntity) level.getBlockEntity(pos)).setColor(newColor);
+            level.sendBlockUpdated(pos, state, state, 2);
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    public boolean inkBlock(World level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
-        if (InkedBlock.isTouchingLiquid(world, pos))
+        if (InkedBlock.isTouchingLiquid(level, pos))
         {
             return false;
         }
 
         int woolColor = -1;
 
-        if (world.getTileEntity(pos) instanceof InkColorTileEntity)
+        if (level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
-            woolColor = ((InkColorTileEntity) world.getTileEntity(pos)).getColor();
+            woolColor = ((InkColorTileEntity) level.getBlockEntity(pos)).getColor();
         }
-        BlockState state = world.getBlockState(pos);
-        BlockState inkState = InkBlockUtils.getInkState(inkType, world, pos);
-        world.setBlockState(pos, inkState, 3);
-        world.setTileEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(inkState, world));
-        InkedBlockTileEntity inkte = (InkedBlockTileEntity) world.getTileEntity(pos);
+        BlockState state = level.getBlockState(pos);
+        BlockState inkState = InkBlockUtils.getInkState(inkType, level, pos);
+        level.setBlock(pos, inkState, 3);
+        level.setBlockEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(inkState, level));
+        InkedBlockTileEntity inkte = (InkedBlockTileEntity) level.getBlockEntity(pos);
         if (inkte == null)
         {
             return false;
@@ -164,7 +164,7 @@ public class InkedGlassPaneBlock extends PaneBlock  implements IColoredBlock, IW
     }
 
     @Override
-    public boolean remoteInkClear(World world, BlockPos pos)
+    public boolean remoteInkClear(World level, BlockPos pos)
     {
         return false;
     }

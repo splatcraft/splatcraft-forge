@@ -51,7 +51,7 @@ public class ColorScoresCommand
         SaveInfoCapability.get(context.getSource().getServer()).addInitializedColorScores(color);
         update();
 
-        source.sendFeedback(new TranslationTextComponent("commands.colorscores.add.success", InkColorCommand.getColorName(color)), true);
+        source.sendSuccess(new TranslationTextComponent("commands.colorscores.add.success", InkColorCommand.getColorName(color)), true);
 
         return color;
     }
@@ -63,7 +63,7 @@ public class ColorScoresCommand
         SaveInfoCapability.get(context.getSource().getServer()).removeColorScore(color);
         update();
 
-        context.getSource().sendFeedback(new TranslationTextComponent("commands.colorscores.remove.success", InkColorCommand.getColorName(color)), true);
+        context.getSource().sendSuccess(new TranslationTextComponent("commands.colorscores.remove.success", InkColorCommand.getColorName(color)), true);
 
         return color;
     }
@@ -74,12 +74,12 @@ public class ColorScoresCommand
 
         if (collection.isEmpty())
         {
-            context.getSource().sendFeedback(new TranslationTextComponent("commands.colorscores.list.empty"), false);
+            context.getSource().sendSuccess(new TranslationTextComponent("commands.colorscores.list.empty"), false);
         } else
         {
-            context.getSource().sendFeedback(new TranslationTextComponent("commands.colorscores.list.count", collection.size()), false);
+            context.getSource().sendSuccess(new TranslationTextComponent("commands.colorscores.list.count", collection.size()), false);
             collection.forEach(color ->
-                    context.getSource().sendFeedback(new TranslationTextComponent("commands.colorscores.list.entry", ScoreboardHandler.getColorIdentifier(color), InkColorCommand.getColorName(color)), false));
+                    context.getSource().sendSuccess(new TranslationTextComponent("commands.colorscores.list.entry", ScoreboardHandler.getColorIdentifier(color), InkColorCommand.getColorName(color)), false));
         }
 
         return collection.size();

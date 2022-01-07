@@ -76,7 +76,7 @@ public abstract class RemoteItem extends Item
         return new Tuple<>(NBTUtil.readBlockPos(nbt.getCompound("PointA")), NBTUtil.readBlockPos(nbt.getCompound("PointB")));
     }
 
-    public static boolean addCoords(World world, ItemStack stack, BlockPos pos)
+    public static boolean addCoords(World level, ItemStack stack, BlockPos pos)
     {
         if (hasCoordSet(stack))
             return false;
@@ -85,8 +85,8 @@ public abstract class RemoteItem extends Item
 
 
         if(!nbt.contains("Dimension"))
-            nbt.putString("Dimension", world.getDimensionKey().getLocation().toString());
-        else if(getWorld(world, stack) != world)
+            nbt.putString("Dimension", level.dimension().getRegistryName().toString());
+        else if(getLevel(level, stack) != level)
             return false;
 
         nbt.put("Point" + (stack.getOrCreateTag().contains("PointA") ? "B" : "A"), NBTUtil.writeBlockPos(pos));
@@ -94,9 +94,9 @@ public abstract class RemoteItem extends Item
         return true;
     }
 
-    public static World getWorld(World world, ItemStack stack)
+    public static World getLevel(World level, ItemStack stack)
     {
-        return world.getServer().getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(stack.getOrCreateTag().getString("Dimension"))));
+        return level.getServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(stack.getOrCreateTag().getString("Dimension"))));
     }
 
     public static RemoteResult createResult(boolean success, TextComponent output)
@@ -106,18 +106,18 @@ public abstract class RemoteItem extends Item
 
     public IItemPropertyGetter getActiveProperty()
     {
-        return (stack, world, entity) -> hasCoordSet(stack) ? 1 : 0;
+        return (stack, level, entity) -> hasCoordSet(stack) ? 1 : 0;
     }
 
     public IItemPropertyGetter getModeProperty()
     {
-        return (stack, world, entity) -> getRemoteMode(stack);
+        return (stack, level, entity) -> getRemoteMode(stack);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    public void appendHoverText(ItemStack stack, @Nullable World levelIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, levelIn, tooltip, flagIn);
 
         CompoundNBT nbt = stack.getOrCreateTag();
 
@@ -135,53 +135,53 @@ public abstract class RemoteItem extends Item
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context)
+    public ActionResultType useOn(ItemUseContext context)
     {
-        if (context.getWorld().isRemote)
+        if (context.getLevel().isClientSide)
         {
-            return hasCoordSet(context.getItem()) ? ActionResultType.PASS : ActionResultType.SUCCESS;
+            return hasCoordSet(context.getItemInHand()) ? ActionResultType.PASS : ActionResultType.SUCCESS;
         }
 
-        if (addCoords(context.getWorld(), context.getItem(), context.getPos()))
+        if (addCoords(context.getLevel(), context.getItemInHand(), context.getClickedPos()))
         {
-            String key = context.getItem().getOrCreateTag().contains("PointB") ? "b" : "a";
-            BlockPos pos = context.getPos();
+            String key = context.getItemInHand().getOrCreateTag().contains("PointB") ? "b" : "a";
+            BlockPos pos = context.getClickedPos();
 
-            context.getPlayer().sendStatusMessage(new TranslationTextComponent("status.coord_set." + key, pos.getX(), pos.getY(), pos.getZ()), true);
+            context.getPlayer().displayClientMessage(new TranslationTextComponent("status.coord_set." + key, pos.getX(), pos.getY(), pos.getZ()), true);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+    public ActionResult<ItemStack> use(World levelIn, PlayerEntity playerIn, Hand handIn)
     {
-        ItemStack stack = playerIn.getHeldItem(handIn);
+        ItemStack stack = playerIn.getItemInHand(handIn);
         int mode = getRemoteMode(stack);
 
-        if (playerIn.isSneaking() && totalModes > 1)
+        if (playerIn.isCrouching() && totalModes > 1)
         {
             mode = cycleRemoteMode(stack);
-            String statusMsg = getTranslationKey() + ".mode." + mode;
+            String statusMsg = getDescriptionId() + ".mode." + mode;
 
-            if (worldIn.isRemote && I18n.hasKey(statusMsg))
+            if (levelIn.isClientSide && I18n.exists(statusMsg))
             {
-                playerIn.sendStatusMessage(new TranslationTextComponent("status.remote_mode", new TranslationTextComponent(statusMsg)), true);
+                playerIn.displayClientMessage(new TranslationTextComponent("status.remote_mode", new TranslationTextComponent(statusMsg)), true);
             }
-        } else if (hasCoordSet(stack) && !worldIn.isRemote)
+        } else if (hasCoordSet(stack) && !levelIn.isClientSide)
         {
-            RemoteResult remoteResult = onRemoteUse(worldIn, stack, ColorUtils.getPlayerColor(playerIn));
+            RemoteResult remoteResult = onRemoteUse(levelIn, stack, ColorUtils.getPlayerColor(playerIn));
 
             if (remoteResult.getOutput() != null)
             {
-                playerIn.sendStatusMessage(remoteResult.getOutput(), true);
+                playerIn.displayClientMessage(remoteResult.getOutput(), true);
             }
-            worldIn.playSound(playerIn, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SplatcraftSounds.remoteUse, SoundCategory.BLOCKS, 0.8f, 1);
+            levelIn.playSound(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SplatcraftSounds.remoteUse, SoundCategory.BLOCKS, 0.8f, 1);
             return new ActionResult<>(remoteResult.wasSuccessful() ? ActionResultType.SUCCESS : ActionResultType.FAIL, stack);
         }
 
 
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+        return super.use(levelIn, playerIn, handIn);
     }
 
     public abstract RemoteResult onRemoteUse(World usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode);

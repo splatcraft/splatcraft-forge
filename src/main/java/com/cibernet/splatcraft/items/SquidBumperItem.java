@@ -38,15 +38,15 @@ public class SquidBumperItem extends Item implements IColoredItem
 {
     public SquidBumperItem(String name)
     {
-        super(new Properties().maxStackSize(16).group(SplatcraftItemGroups.GROUP_GENERAL));
+        super(new Properties().stacksTo(16).tab(SplatcraftItemGroups.GROUP_GENERAL));
         SplatcraftItems.inkColoredItems.add(this);
         setRegistryName(name);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, level, tooltip, flag);
 
         if (ColorUtils.isColorLocked(stack))
         {
@@ -55,9 +55,9 @@ public class SquidBumperItem extends Item implements IColoredItem
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(ItemStack stack, World level, Entity entity, int itemSlot, boolean isSelected)
     {
-        super.inventoryTick(stack, world, entity, itemSlot, isSelected);
+        super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
         if (entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != 0xFFFFFF - ColorUtils.getPlayerColor((PlayerEntity) entity)
                 && PlayerInfoCapability.hasCapability((LivingEntity) entity))
@@ -69,11 +69,11 @@ public class SquidBumperItem extends Item implements IColoredItem
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity)
     {
-        BlockPos pos = entity.getPosition().down();
+        BlockPos pos = entity.blockPosition().below();
 
-        if (entity.world.getBlockState(pos).getBlock() instanceof InkwellBlock)
+        if (entity.level.getBlockState(pos).getBlock() instanceof InkwellBlock)
         {
-            InkColorTileEntity te = (InkColorTileEntity) entity.world.getTileEntity(pos);
+            InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos);
 
             if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te))
             {
@@ -81,7 +81,7 @@ public class SquidBumperItem extends Item implements IColoredItem
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
         }
-        else if(InkedBlock.causesClear(entity.world.getBlockState(pos)) && ColorUtils.isColorLocked(stack))
+        else if(InkedBlock.causesClear(entity.level.getBlockState(pos)) && ColorUtils.isColorLocked(stack))
         {
             ColorUtils.setInkColor(stack, 0xFFFFFF);
             ColorUtils.setColorLocked(stack, false);
@@ -91,36 +91,36 @@ public class SquidBumperItem extends Item implements IColoredItem
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context)
+    public ActionResultType useOn(ItemUseContext context)
     {
-        if (context.getFace() == Direction.DOWN)
+        if (context.getClickedFace() == Direction.DOWN)
             return ActionResultType.FAIL;
 
-        World world = context.getWorld();
-        BlockPos pos = new BlockItemUseContext(context).getPos();
-        ItemStack stack = context.getItem();
+        World level = context.getLevel();
+        BlockPos pos = new BlockItemUseContext(context).getClickedPos();
+        ItemStack stack = context.getItemInHand();
 
-        Vector3d vector3d = Vector3d.copyCenteredHorizontally(pos);
-        AxisAlignedBB axisalignedbb = SplatcraftEntities.SQUID_BUMPER.getSize().func_242285_a(vector3d.getX(), vector3d.getY(), vector3d.getZ());
-        if (world.hasNoCollisions(null, axisalignedbb, (entity) -> true) && world.getEntitiesWithinAABBExcludingEntity(null, axisalignedbb).isEmpty())
+        Vector3d vector3d = Vector3d.atBottomCenterOf(pos);
+        AxisAlignedBB axisalignedbb = SplatcraftEntities.SQUID_BUMPER.getDimensions().makeBoundingBox(vector3d.x(), vector3d.y(), vector3d.z());
+        if (level.noCollision(null, axisalignedbb, (entity) -> true) && level.getEntities(null, axisalignedbb).isEmpty())
         {
-            if (world instanceof ServerWorld)
+            if (level instanceof ServerWorld)
             {
-                SquidBumperEntity bumper = SplatcraftEntities.SQUID_BUMPER.create((ServerWorld) world, stack.getTag(), null, context.getPlayer(), pos, SpawnReason.SPAWN_EGG, true, true);
+                SquidBumperEntity bumper = SplatcraftEntities.SQUID_BUMPER.create((ServerWorld) level, stack.getTag(), null, context.getPlayer(), pos, SpawnReason.SPAWN_EGG, true, true);
                 if(bumper != null)
                 {
                     bumper.setColor(ColorUtils.getInkColor(stack));
-                    float f = (float) MathHelper.floor((MathHelper.wrapDegrees(context.getPlacementYaw() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
-                    bumper.setPositionAndRotation(bumper.getPosX(), bumper.getPosY(), bumper.getPosZ(), f, 0);
-                    bumper.setRotationYawHead(f);
-                    bumper.prevRotationYawHead = f;
+                    float f = (float) MathHelper.floor((MathHelper.wrapDegrees(context.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
+                    bumper.moveTo(bumper.getX(), bumper.getY(), bumper.getZ(), f, 0);
+                    bumper.setYHeadRot(f);
+                    bumper.yHeadRotO = f;
 
-                    world.addEntity(bumper);
-                    world.playSound(null, bumper.getPosX(), bumper.getPosY(), bumper.getPosZ(), SplatcraftSounds.squidBumperPlace, SoundCategory.BLOCKS, 0.75F, 0.8F);
+                    level.addFreshEntity(bumper);
+                    level.playSound(null, bumper.getX(), bumper.getY(), bumper.getZ(), SplatcraftSounds.squidBumperPlace, SoundCategory.BLOCKS, 0.75F, 0.8F);
                 }
             }
             stack.shrink(1);
-            return ActionResultType.func_233537_a_(world.isRemote);
+            return ActionResultType.sidedSuccess(level.isClientSide);
         }
 
 

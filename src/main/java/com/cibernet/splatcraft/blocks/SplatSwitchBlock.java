@@ -27,12 +27,12 @@ public class SplatSwitchBlock extends Block implements IColoredBlock, IWaterLogg
 {
     private static final VoxelShape[] SHAPES = new VoxelShape[]
             {
-            makeCuboidShape(1, 14, 1, 15, 16, 15),
-            makeCuboidShape(1, 0, 1, 15, 2, 15),
-                    makeCuboidShape(1, 1, 14, 15, 15, 16),
-            makeCuboidShape(1, 1, 0, 15, 15, 2),
-                    makeCuboidShape(14, 1, 1, 16, 15, 15),
-            makeCuboidShape(0, 1, 1, 2, 15, 15)
+            box(1, 14, 1, 15, 16, 15),
+            box(1, 0, 1, 15, 2, 15),
+                    box(1, 1, 14, 15, 15, 16),
+            box(1, 1, 0, 15, 15, 2),
+                    box(14, 1, 1, 16, 15, 15),
+            box(0, 1, 1, 2, 15, 15)
     };
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
@@ -41,40 +41,40 @@ public class SplatSwitchBlock extends Block implements IColoredBlock, IWaterLogg
 
     public SplatSwitchBlock()
     {
-        super((AbstractBlock.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0F).sound(SoundType.METAL).notSolid()));
-        setDefaultState(getDefaultState().with(FACING, Direction.UP).with(POWERED, false));
+        super((AbstractBlock.Properties.of(Material.METAL).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).noOcclusion()));
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.UP).setValue(POWERED, false));
 
         SplatcraftBlocks.inkColoredBlocks.add(this);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> containter) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> containter) {
         containter.add(FACING, POWERED, WATERLOGGED);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return SHAPES[state.get(FACING).ordinal()];
+    public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext context) {
+        return SHAPES[state.getValue(FACING).ordinal()];
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, @Nullable Direction side) {
+    public boolean canConnectRedstone(BlockState state, IBlockReader level, BlockPos pos, @Nullable Direction side) {
         return true;
     }
 
     @Override
-    public boolean canProvidePower(BlockState state) {
+    public boolean isSignalSource(BlockState state) {
         return true;
     }
 
     @Override
-    public int getWeakPower(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
-        return state.get(POWERED) ? 15 : 0;
+    public int getSignal(BlockState state, IBlockReader level, BlockPos pos, Direction face) {
+        return state.getValue(POWERED) ? 15 : 0;
     }
 
     @Override
-    public int getStrongPower(BlockState state, IBlockReader world, BlockPos pos, Direction face) {
-        return state.get(POWERED) ? 15 : 0;
+    public int getDirectSignal(BlockState state, IBlockReader level, BlockPos pos, Direction face) {
+        return state.getValue(POWERED) ? 15 : 0;
     }
 
     @Override
@@ -84,41 +84,41 @@ public class SplatSwitchBlock extends Block implements IColoredBlock, IWaterLogg
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public TileEntity createTileEntity(BlockState state, IBlockReader level) {
         return SplatcraftTileEntitites.colorTileEntity.create();
     }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        BlockState state = super.getStateForPlacement(context).with(FACING, context.getFace());
-        return state.with(WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
+        BlockState state = super.getStateForPlacement(context).setValue(FACING, context.getClickedFace());
+        return state.setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
     {
-        if(InkedBlock.isTouchingLiquid(worldIn, currentPos) && worldIn instanceof World)
+        if(InkedBlock.isTouchingLiquid(levelIn, currentPos) && levelIn instanceof World)
         {
-            stateIn = stateIn.with(POWERED, false);
-            worldIn.setBlockState(currentPos, stateIn, 3);
-            updateNeighbors(stateIn, (World) worldIn, currentPos);
+            stateIn = stateIn.setValue(POWERED, false);
+            levelIn.setBlock(currentPos, stateIn, 3);
+            updateNeighbors(stateIn, (World) levelIn, currentPos);
             return stateIn;
         }
-        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, levelIn, currentPos, facingPos);
     }
 
     @Override
-    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
+    public void onRemove(BlockState state, World level, BlockPos pos, BlockState newState, boolean isMoving)
     {
-        if(state.get(POWERED))
-            updateNeighbors(state, world, pos);
-        super.onReplaced(state, world, pos, newState, isMoving);
+        if(state.getValue(POWERED))
+            updateNeighbors(state, level, pos);
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 
-    private void updateNeighbors(BlockState state, World world, BlockPos pos) {
-        world.notifyNeighborsOfStateChange(pos, this);
-        world.notifyNeighborsOfStateChange(pos.offset(state.get(FACING).getOpposite()), this);
+    private void updateNeighbors(BlockState state, World level, BlockPos pos) {
+        level.updateNeighborsAt(pos, this);
+        level.updateNeighborsAt(pos.relative(state.getValue(FACING).getOpposite()), this);
     }
 
     @Override
@@ -137,41 +137,41 @@ public class SplatSwitchBlock extends Block implements IColoredBlock, IWaterLogg
     }
 
     @Override
-    public boolean remoteColorChange(World world, BlockPos pos, int newColor) {
+    public boolean remoteColorChange(World level, BlockPos pos, int newColor) {
         return false;
     }
 
     @Override
-    public int getColor(World world, BlockPos pos)
+    public int getColor(World level, BlockPos pos)
     {
-        BlockState state = world.getBlockState(pos);
-        return state.get(POWERED) && world.getTileEntity(pos) instanceof InkColorTileEntity ?
-                ((InkColorTileEntity) world.getTileEntity(pos)).getColor() : -1;
+        BlockState state = level.getBlockState(pos);
+        return state.getValue(POWERED) && level.getBlockEntity(pos) instanceof InkColorTileEntity ?
+                ((InkColorTileEntity) level.getBlockEntity(pos)).getColor() : -1;
     }
 
     @Override
-    public boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    public boolean inkBlock(World level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
-        if(!(world.getBlockState(pos).getBlock().equals(this)) || !(world.getTileEntity(pos) instanceof InkColorTileEntity))
+        if(!(level.getBlockState(pos).getBlock().equals(this)) || !(level.getBlockEntity(pos) instanceof InkColorTileEntity))
             return false;
 
-        BlockState state = world.getBlockState(pos);
-        InkColorTileEntity te = (InkColorTileEntity) world.getTileEntity(pos);
+        BlockState state = level.getBlockState(pos);
+        InkColorTileEntity te = (InkColorTileEntity) level.getBlockEntity(pos);
         int switchColor = te.getColor();
 
         te.setColor(color);
-        world.setBlockState(pos, state.with(POWERED, true), 3);
-        updateNeighbors(state, world, pos);
+        level.setBlock(pos, state.setValue(POWERED, true), 3);
+        updateNeighbors(state, level, pos);
         return color != switchColor;
     }
 
     @Override
-    public boolean remoteInkClear(World world, BlockPos pos)
+    public boolean remoteInkClear(World level, BlockPos pos)
     {
-        BlockState state = world.getBlockState(pos);
-        if(state.get(POWERED))
+        BlockState state = level.getBlockState(pos);
+        if(state.getValue(POWERED))
         {
-            world.setBlockState(pos, state.with(POWERED, false), 3);
+            level.setBlock(pos, state.setValue(POWERED, false), 3);
             return true;
         }
         return false;

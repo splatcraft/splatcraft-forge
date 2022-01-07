@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.FurnaceContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,7 +39,7 @@ public class InkVatContainer extends Container
     {
         super(SplatcraftTileEntitites.inkVatContainer, windowId);
         this.te = te;
-        this.callableInteract = IWorldPosCallable.of(te.getWorld(), te.getPos());
+        this.callableInteract = IWorldPosCallable.create(te.getLevel(), te.getBlockPos());
 
         addSlot(new SlotInput(new ItemStack(Items.INK_SAC, 1), te, 0, 26, 70));
         addSlot(new SlotInput(new ItemStack(SplatcraftItems.powerEgg), te, 1, 46, 70));
@@ -66,15 +67,15 @@ public class InkVatContainer extends Container
 
     public InkVatContainer(final int windowId, final PlayerInventory inv, final PacketBuffer buffer)
     {
-        this(windowId, inv, getTileEntity(inv, buffer), true);
+        this(windowId, inv, getBlockEntity(inv, buffer), true);
     }
 
-    private static InkVatTileEntity getTileEntity(PlayerInventory inventory, PacketBuffer buffer)
+    private static InkVatTileEntity getBlockEntity(PlayerInventory inventory, PacketBuffer buffer)
     {
         Objects.requireNonNull(inventory);
         Objects.requireNonNull(buffer);
 
-        final TileEntity te = inventory.player.world.getTileEntity(buffer.readBlockPos());
+        final TileEntity te = inventory.player.level.getBlockEntity(buffer.readBlockPos());
 
         if (te instanceof InkVatTileEntity)
         {
@@ -90,7 +91,7 @@ public class InkVatContainer extends Container
 
     public static boolean hasIngredients(InkVatTileEntity te)
     {
-        return !te.getStackInSlot(0).isEmpty() && !te.getStackInSlot(1).isEmpty() && !te.getStackInSlot(2).isEmpty();
+        return !te.getItem(0).isEmpty() && !te.getItem(1).isEmpty() && !te.getItem(2).isEmpty();
     }
 
     public static List<Integer> sortRecipeList(List<Integer> list)
@@ -122,9 +123,9 @@ public class InkVatContainer extends Container
             recipes = getOmniList();
         } else
         {
-            for (InkVatColorRecipe recipe : te.getWorld().getRecipeManager().getRecipes(SplatcraftRecipeTypes.INK_VAT_COLOR_CRAFTING_TYPE, te, te.getWorld()))
+            for (InkVatColorRecipe recipe : te.getLevel().getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.INK_VAT_COLOR_CRAFTING_TYPE, te, te.getLevel()))
             {
-                if (recipe.matches(te, te.getWorld()))
+                if (recipe.matches(te, te.getLevel()))
                 {
                     recipes.add(recipe.getOutputColor());
                 }
@@ -152,7 +153,7 @@ public class InkVatContainer extends Container
     }
 
     @Override
-    public boolean enchantItem(PlayerEntity playerIn, int id)
+    public boolean clickMenuButton(PlayerEntity playerIn, int id)
     {
         if (this.isIndexInBounds(id))
         {
@@ -175,12 +176,12 @@ public class InkVatContainer extends Container
     {
         te.pointer = pointer;
 
-        if (te.getWorld().isRemote)
+        if (te.getLevel().isClientSide)
         {
-            SplatcraftPacketHandler.sendToServer(new UpdateBlockColorPacket(te.getPos(), color, pointer));
+            SplatcraftPacketHandler.sendToServer(new UpdateBlockColorPacket(te.getBlockPos(), color, pointer));
         } else if (te.getBlockState().getBlock() instanceof InkVatBlock)
         {
-            ((InkVatBlock) te.getBlockState().getBlock()).setColor(te.getWorld(), te.getPos(), color);
+            ((InkVatBlock) te.getBlockState().getBlock()).setColor(te.getLevel(), te.getBlockPos(), color);
         }
 
     }
@@ -224,7 +225,7 @@ public class InkVatContainer extends Container
             te.setColorAndUpdate(-1);
         }
 
-        this.detectAndSendChanges();
+        this.broadcastChanges();
     }
 
     private boolean isIndexInBounds(int i)
@@ -233,68 +234,56 @@ public class InkVatContainer extends Container
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn)
+    public boolean stillValid(PlayerEntity playerIn)
     {
-        return isWithinUsableDistance(callableInteract, playerIn, SplatcraftBlocks.inkVat);
+        return stillValid(callableInteract, playerIn, SplatcraftBlocks.inkVat);
     }
 
     @Override
-    public void updateProgressBar(int id, int data)
-    {
-        super.updateProgressBar(id, data);
-    }
-
-    @Override
-    public void onCraftMatrixChanged(IInventory inventoryIn)
-    {
-        super.onCraftMatrixChanged(inventoryIn);
-    }
-
-    @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index)
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index)
     {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
+        Slot slot = this.slots.get(index);
 
-        if (slot != null && slot.getHasStack())
+        if (slot != null && slot.hasItem())
         {
-            ItemStack itemstack1 = slot.getStack();
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
 
             if (index == 4)
             {
-                NonNullList<ItemStack> inv = getInventory();
+                NonNullList<ItemStack> inv = getItems();
                 int countA = inv.get(0).getCount();
                 int countB = inv.get(1).getCount();
                 int countC = inv.get(2).getCount();
-                int itemCount = Math.min(Math.max(0, Math.min(countA, Math.min(countB, countC))), Item.getItemFromBlock(SplatcraftBlocks.inkwell).getMaxStackSize());
+                int itemCount = Math.min(Math.max(0, Math.min(countA, Math.min(countB, countC))), new ItemStack(SplatcraftBlocks.inkwell).getMaxStackSize());
                 itemstack1.setCount(itemCount);
 
-                if (this.mergeItemStack(itemstack1, 5, this.inventorySlots.size(), true) && itemCount > 0)
+                if (this.moveItemStackTo(itemstack1, 5, this.slots.size(), true) && itemCount > 0)
                 {
-                    te.decrStackSize(0, itemCount);
-                    te.decrStackSize(1, itemCount);
-                    te.decrStackSize(2, itemCount);
-                    playerIn.addStat(SplatcraftStats.INKWELLS_CRAFTED, itemCount);
+                    te.removeItem(0, itemCount);
+                    te.removeItem(1, itemCount);
+                    te.removeItem(2, itemCount);
+                    playerIn.awardStat(SplatcraftStats.INKWELLS_CRAFTED, itemCount);
                 }
                 return ItemStack.EMPTY;
             } else if (index < 4)
             {
-                if (!this.mergeItemStack(itemstack1, 5, this.inventorySlots.size(), true))
+                if (!this.moveItemStackTo(itemstack1, 5, this.slots.size(), true))
                 {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, 5, false))
+            } else if (!this.moveItemStackTo(itemstack1, 0, 5, false))
             {
                 return ItemStack.EMPTY;
             }
 
             if (itemstack1.isEmpty())
             {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else
             {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
         }
 
@@ -312,9 +301,9 @@ public class InkVatContainer extends Container
         }
 
         @Override
-        public boolean isItemValid(ItemStack stack)
+        public boolean mayPlace(ItemStack stack)
         {
-            return stack.isItemEqual(validItem);
+            return stack.equals(validItem, false);
         }
     }
 
@@ -329,16 +318,16 @@ public class InkVatContainer extends Container
         }
 
         @Override
-        public boolean isItemValid(ItemStack stack)
+        public boolean mayPlace(ItemStack stack)
         {
             return false;
         }
 
         @Override
-        public ItemStack decrStackSize(int amount)
+        public ItemStack remove(int amount)
         {
-            player.addStat(SplatcraftStats.INKWELLS_CRAFTED, amount);
-            return super.decrStackSize(amount);
+            player.awardStat(SplatcraftStats.INKWELLS_CRAFTED, amount);
+            return super.remove(amount);
         }
     }
 
@@ -350,15 +339,15 @@ public class InkVatContainer extends Container
         }
 
         @Override
-        public boolean isItemValid(ItemStack stack)
+        public boolean mayPlace(ItemStack stack)
         {
             return SplatcraftTags.Items.FILTERS.contains(stack.getItem());
         }
 
         @Override
-        public void onSlotChanged()
+        public void setChanged()
         {
-            super.onSlotChanged();
+            super.setChanged();
             updateAvailableRecipes();
         }
     }

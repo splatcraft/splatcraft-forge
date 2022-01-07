@@ -52,7 +52,7 @@ public class CrateBlock extends Block implements IColoredBlock
 
     public CrateBlock(String name, boolean hasLoot)
     {
-        super(Properties.create(Material.WOOD).harvestTool(ToolType.AXE).setRequiresTool().sound(SoundType.WOOD).hardnessAndResistance(2.0f));
+        super(Properties.of(Material.WOOD).harvestTool(ToolType.AXE).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(2.0f));
 
         setRegistryName(name);
         this.hasLoot = hasLoot;
@@ -60,23 +60,23 @@ public class CrateBlock extends Block implements IColoredBlock
         SplatcraftBlocks.inkColoredBlocks.add(this);
     }
 
-    public static List<ItemStack> generateLoot(World world, BlockPos pos, BlockState state, float luckValue)
+    public static List<ItemStack> generateLoot(World level, BlockPos pos, BlockState state, float luckValue)
     {
-        if (world == null || world.isRemote)
+        if (level == null || level.isClientSide)
             return Collections.emptyList();
 
-        TileEntity crate = world.getTileEntity(pos);
+        TileEntity crate = level.getBlockEntity(pos);
 
-        LootContext.Builder contextBuilder = new LootContext.Builder((ServerWorld) world);
-        return world.getServer().getLootTableManager().getLootTableFromLocation((crate instanceof  CrateTileEntity) ? ((CrateTileEntity) crate).getLootTable() : STORAGE_SUNKEN_CRATE).generate(contextBuilder.withLuck(luckValue)
-                .withParameter(LootParameters.BLOCK_STATE, state).withParameter(LootParameters.TOOL, ItemStack.EMPTY).withParameter(LootParameters.field_237457_g_, new Vector3d(pos.getX(), pos.getY(), pos.getZ())).build(LootParameterSets.BLOCK));
+        LootContext.Builder contextBuilder = new LootContext.Builder((ServerWorld) level);
+        return level.getServer().getLootTables().get((crate instanceof  CrateTileEntity) ? ((CrateTileEntity) crate).getLootTable() : STORAGE_SUNKEN_CRATE).getRandomItems(contextBuilder.withLuck(luckValue)
+                .withParameter(LootParameters.BLOCK_STATE, state).withParameter(LootParameters.TOOL, ItemStack.EMPTY).withParameter(LootParameters.ORIGIN, new Vector3d(pos.getX(), pos.getY(), pos.getZ())).create(LootParameterSets.BLOCK));
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    public void appendHoverText(ItemStack stack, @Nullable IBlockReader levelIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        CompoundNBT compoundnbt = stack.getChildTag("BlockEntityTag");
+        super.appendHoverText(stack, levelIn, tooltip, flagIn);
+        CompoundNBT compoundnbt = stack.getTagElement("BlockEntityTag");
 
         if (compoundnbt != null && !hasLoot && compoundnbt.contains("Items", 9))
         {
@@ -93,8 +93,8 @@ public class CrateBlock extends Block implements IColoredBlock
                     if (i <= 4)
                     {
                         ++i;
-                        IFormattableTextComponent iformattabletextcomponent = itemstack.getDisplayName().deepCopy();
-                        iformattabletextcomponent.appendString(" x").appendString(String.valueOf(itemstack.getCount()));
+                        IFormattableTextComponent iformattabletextcomponent = itemstack.getDisplayName().copy();
+                        iformattabletextcomponent.append(" x").append(String.valueOf(itemstack.getCount()));
                         tooltip.add(iformattabletextcomponent);
                     }
                 }
@@ -102,26 +102,26 @@ public class CrateBlock extends Block implements IColoredBlock
 
             if (j - i > 0)
             {
-                tooltip.add(new TranslationTextComponent("container.shulkerBox.more", j - i).mergeStyle(TextFormatting.ITALIC));
+                tooltip.add(new TranslationTextComponent("container.shulkerBox.more", j - i).withStyle(TextFormatting.ITALIC));
             }
         }
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
         builder.add(STATE);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
     {
-        if (worldIn.getTileEntity(currentPos) instanceof CrateTileEntity)
+        if (levelIn.getBlockEntity(currentPos) instanceof CrateTileEntity)
         {
-            return stateIn.with(STATE, ((CrateTileEntity) worldIn.getTileEntity(currentPos)).getState());
+            return stateIn.setValue(STATE, ((CrateTileEntity) levelIn.getBlockEntity(currentPos)).getState());
         }
 
-        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, levelIn, currentPos, facingPos);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class CrateBlock extends Block implements IColoredBlock
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
         CrateTileEntity te = SplatcraftTileEntitites.crateTileEntity.create();
         if (te != null)
@@ -147,60 +147,54 @@ public class CrateBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean hasComparatorInputOverride(BlockState state)
+    public boolean hasAnalogOutputSignal(BlockState state)
     {
         return !hasLoot;
     }
 
     @Override
-    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos)
+    public int getAnalogOutputSignal(BlockState blockState, World levelIn, BlockPos pos)
     {
 
-        if (hasLoot || !(worldIn.getTileEntity(pos) instanceof CrateTileEntity))
+        if (hasLoot || !(levelIn.getBlockEntity(pos) instanceof CrateTileEntity))
         {
             return 0;
         }
-        ItemStack stack = ((CrateTileEntity) worldIn.getTileEntity(pos)).getStackInSlot(0);
+        ItemStack stack = ((CrateTileEntity) levelIn.getBlockEntity(pos)).getItem(0);
         return (int) Math.ceil(stack.getCount() / (float) stack.getMaxStackSize() * 15);
     }
 
     @Override
-    public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving)
+    public void playerDestroy(World levelIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack)
     {
-        super.onBlockAdded(state, worldIn, pos, oldState, isMoving);
-    }
-
-    @Override
-    public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack)
-    {
-        player.addStat(Stats.BLOCK_MINED.get(this));
-        player.addExhaustion(0.005F);
+        player.awardStat(Stats.BLOCK_MINED.get(this));
+        player.causeFoodExhaustion(0.005F);
 
 
-        if (worldIn.getGameRules().getBoolean(SplatcraftGameRules.DROP_CRATE_LOOT) && EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, stack) <= 0 && worldIn.getTileEntity(pos) instanceof CrateTileEntity)
+        if (levelIn.getGameRules().getBoolean(SplatcraftGameRules.DROP_CRATE_LOOT) && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) <= 0 && levelIn.getBlockEntity(pos) instanceof CrateTileEntity)
         {
-            ((CrateTileEntity) worldIn.getTileEntity(pos)).dropInventory();
+            ((CrateTileEntity) levelIn.getBlockEntity(pos)).dropInventory();
         } else
         {
-            spawnDrops(state, worldIn, pos, te, player, stack);
+            dropResources(state, levelIn, pos, te, player, stack);
         }
     }
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
     {
-        ItemStack tool = builder.get(LootParameters.TOOL);
-        World world = builder.getWorld();
+        ItemStack tool = builder.getOptionalParameter(LootParameters.TOOL);
+        World level = builder.getLevel();
 
-        TileEntity te = builder.get(LootParameters.BLOCK_ENTITY);
+        TileEntity te = builder.getOptionalParameter(LootParameters.BLOCK_ENTITY);
 
         if (te instanceof CrateTileEntity)
         {
             CrateTileEntity crate = (CrateTileEntity) te;
 
-            boolean silkTouched = tool != null && EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, tool) > 0;
+            boolean silkTouched = tool != null && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, tool) > 0;
 
-            if (world.getGameRules().getBoolean(SplatcraftGameRules.DROP_CRATE_LOOT) && !silkTouched)
+            if (level.getGameRules().getBoolean(SplatcraftGameRules.DROP_CRATE_LOOT) && !silkTouched)
             {
                 return crate.getDrops();
             }
@@ -210,11 +204,11 @@ public class CrateBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    public boolean inkBlock(World level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
-        if (world.getTileEntity(pos) instanceof CrateTileEntity)
+        if (level.getBlockEntity(pos) instanceof CrateTileEntity)
         {
-            ((CrateTileEntity) world.getTileEntity(pos)).ink(color, damage);
+            ((CrateTileEntity) level.getBlockEntity(pos)).ink(color, damage);
         }
 
         return false;
@@ -239,23 +233,23 @@ public class CrateBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean remoteColorChange(World world, BlockPos pos, int newColor)
+    public boolean remoteColorChange(World level, BlockPos pos, int newColor)
     {
         return false;
     }
 
     @Override
-    public boolean remoteInkClear(World world, BlockPos pos)
+    public boolean remoteInkClear(World level, BlockPos pos)
     {
-        if (world.getTileEntity(pos) instanceof CrateTileEntity)
+        if (level.getBlockEntity(pos) instanceof CrateTileEntity)
         {
-            CrateTileEntity crate = (CrateTileEntity) world.getTileEntity(pos);
+            CrateTileEntity crate = (CrateTileEntity) level.getBlockEntity(pos);
             if (crate.getHealth() == crate.getMaxHealth())
             {
                 return false;
             }
             crate.resetHealth();
-            world.setBlockState(pos, crate.getBlockState().with(STATE, crate.getState()), 2);
+            level.setBlock(pos, crate.getBlockState().setValue(STATE, crate.getState()), 2);
             return true;
         }
         return false;

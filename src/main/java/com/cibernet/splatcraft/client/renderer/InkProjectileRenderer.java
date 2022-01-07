@@ -43,7 +43,7 @@ public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> i
         if(entityIn.isInvisible())
             return;
 
-        if (entityIn.ticksExisted >= 3 || this.renderManager.info.getRenderViewEntity().getDistanceSq(entityIn) >= 12.25D)
+        if (entityIn.tickCount >= 3 || this.entityRenderDispatcher.camera.getEntity().distanceToSqr(entityIn) >= 12.25D)
         {
             float scale = entityIn.getProjectileSize() * (entityIn.getProjectileType().equals(InkProjectileEntity.Types.DEFAULT) ? 1 : 2.5f);
             int color = entityIn.getColor();
@@ -56,17 +56,17 @@ public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> i
             float b = (color % 256) / 255f;
 
             //0.30000001192092896D
-            matrixStackIn.push();
+            matrixStackIn.pushPose();
             matrixStackIn.translate(0.0D, 0.4d/*0.15000000596046448D*/, 0.0D);
-            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.prevRotationYaw, entityIn.rotationYaw) - 180.0F));
-            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch)));
+            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 180.0F));
+            matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot)));
             matrixStackIn.scale(scale, scale, scale);
 
             InkProjectileModel model = MODELS.getOrDefault(entityIn.getProjectileType(), MODELS.get(InkProjectileEntity.Types.DEFAULT));
 
-            model.setRotationAngles(entityIn, 0, 0, this.handleRotationFloat(entityIn, partialTicks), entityYaw, entityIn.rotationPitch);
-            model.render(matrixStackIn, bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))), packedLightIn, OverlayTexture.NO_OVERLAY, r, g, b, 1);
-            matrixStackIn.pop();
+            model.setupAnim(entityIn, 0, 0, this.handleRotationFloat(entityIn, partialTicks), entityYaw, entityIn.xRot);
+            model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(model.renderType(getTextureLocation(entityIn))), packedLightIn, OverlayTexture.NO_OVERLAY, r, g, b, 1);
+            matrixStackIn.popPose();
 
             super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         }
@@ -75,17 +75,17 @@ public class InkProjectileRenderer extends EntityRenderer<InkProjectileEntity> i
 
     protected float handleRotationFloat(InkProjectileEntity livingBase, float partialTicks)
     {
-        return (float) livingBase.ticksExisted + partialTicks;
+        return (float) livingBase.tickCount + partialTicks;
     }
 
     @Override
-    public InkProjectileModel getEntityModel()
+    public InkProjectileModel getModel()
     {
         return MODELS.get(InkProjectileEntity.Types.DEFAULT);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(InkProjectileEntity entity)
+    public ResourceLocation getTextureLocation(InkProjectileEntity entity)
     {
         return new ResourceLocation(Splatcraft.MODID, "textures/entity/" + entity.getProjectileType() + "_projectile.png");
     }

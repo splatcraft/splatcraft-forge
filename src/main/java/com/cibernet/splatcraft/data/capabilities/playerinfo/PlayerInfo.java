@@ -145,7 +145,7 @@ public class PlayerInfo implements IPlayerInfo
     {
         nbt.putInt("Color", getColor());
         nbt.putBoolean("IsSquid", isSquid());
-        nbt.putString("InkType", getInkType().getString());
+        nbt.putString("InkType", getInkType().getSerializedName());
         nbt.putBoolean("Initialized", initialized);
 
         nbt.putInt("InkTypeData", getInkTypeData());

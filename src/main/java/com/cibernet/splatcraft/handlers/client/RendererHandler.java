@@ -45,6 +45,7 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
@@ -113,10 +114,10 @@ public class RendererHandler
         {
             event.setCanceled(true);
             if (squidRenderer == null)
-                squidRenderer = new PlayerSquidRenderer(event.getRenderer().getRenderManager());
+                squidRenderer = new PlayerSquidRenderer(event.getRenderer().getDispatcher());
             if (!InkBlockUtils.canSquidHide(player))
             {
-                squidRenderer.render(player, player.rotationYawHead, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
+                squidRenderer.render(player, player.yHeadRot, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
                 net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(player, squidRenderer, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight()));
             }
             //else player.setInvisible(true);
@@ -148,14 +149,14 @@ public class RendererHandler
         }
 
         MatrixStack matrixStack = event.getMatrixStack();
-        float f = MathHelper.interpolateAngle(event.getPartialRenderTick(), entity.prevRenderYawOffset, entity.renderYawOffset);
+        float f = MathHelper.lerp(event.getPartialRenderTick(), entity.yBodyRotO, entity.yBodyRot);
 
-        matrixStack.push();
+        matrixStack.pushPose();
 
         try
         {
             ObfuscationReflectionHelper.findMethod(LivingRenderer.class, "func_225621_a_", LivingEntity.class, MatrixStack.class, float.class, float.class, float.class)
-                    .invoke(event.getRenderer(), entity, matrixStack, (float) entity.ticksExisted + event.getPartialRenderTick(), f, event.getPartialRenderTick());
+                    .invoke(event.getRenderer(), entity, matrixStack, (float) entity.tickCount + event.getPartialRenderTick(), f, event.getPartialRenderTick());
             ObfuscationReflectionHelper.findMethod(LivingRenderer.class, "func_225620_a_", LivingEntity.class, MatrixStack.class, float.class)
                     .invoke(event.getRenderer(), entity, matrixStack, event.getPartialRenderTick());
         } catch (IllegalAccessException | InvocationTargetException e)
@@ -165,25 +166,25 @@ public class RendererHandler
 
         if (entity.getPose() == Pose.SLEEPING)
         {
-            Direction direction = entity.getBedDirection();
+            Direction direction = entity.getBedOrientation();
             if (direction != null)
             {
                 float f4 = entity.getEyeHeight(Pose.STANDING) - 0.1F;
-                matrixStack.translate((float) -direction.getXOffset() * f4, 0.0D, (float) -direction.getZOffset() * f4);
+                matrixStack.translate((float) -direction.getStepX() * f4, 0.0D, (float) -direction.getStepZ() * f4);
             }
         }
 
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
         matrixStack.translate(0.0D, -1.501F, 0.0D);
 
-        EntityModel<?> model = event.getRenderer().getEntityModel();
-        RenderType rendertype = model.getRenderType(new ResourceLocation(Splatcraft.MODID, "textures/entity/ink_overlay_" + overlay + ".png"));
+        EntityModel<?> model = event.getRenderer().getModel();
+        RenderType rendertype = model.renderType(new ResourceLocation(Splatcraft.MODID, "textures/entity/ink_overlay_" + overlay + ".png"));
         IVertexBuilder ivertexbuilder = event.getBuffers().getBuffer(rendertype);
-        int i = LivingRenderer.getPackedOverlay(entity, 0);
+        int i = LivingRenderer.getOverlayCoords(entity, 0);
 
         float[] rgb = ColorUtils.hexToRGB(color);
-        model.render(matrixStack, ivertexbuilder, event.getLight(), i, rgb[0], rgb[1], rgb[2], 1);
-        matrixStack.pop();
+        model.renderToBuffer(matrixStack, ivertexbuilder, event.getLight(), i, rgb[0], rgb[1], rgb[2], 1);
+        matrixStack.popPose();
     }
 
     @SubscribeEvent
@@ -192,7 +193,7 @@ public class RendererHandler
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null && PlayerCooldown.hasPlayerCooldown(player))
         {
-            player.inventory.currentItem = PlayerCooldown.getPlayerCooldown(player).getSlotIndex();
+            player.inventory.selected = PlayerCooldown.getPlayerCooldown(player).getSlotIndex();
         }
     }
 
@@ -226,15 +227,15 @@ public class RendererHandler
             tickTime = (tickTime + 1) % 10;
             float yOff = -0.5f * ((time - event.getPartialTicks()) / maxTime);// - (tickTime/20f));
 
-            if (player != null && player.getHeldItem(event.getHand()).getItem() instanceof WeaponBaseItem)
+            if (player != null && player.getItemInHand(event.getHand()).getItem() instanceof WeaponBaseItem)
             {
-                switch (((WeaponBaseItem) player.getHeldItem(event.getHand()).getItem()).getPose())
+                switch (((WeaponBaseItem) player.getItemInHand(event.getHand()).getItem()).getPose())
                 {
                     case ROLL:
                         yOff = -((time - event.getPartialTicks()) / maxTime) + 0.5f;
                         break;
                     case BRUSH:
-                        event.getMatrixStack().rotate(Vector3f.YN.rotation(yOff * ((player.getPrimaryHand() == HandSide.RIGHT ? event.getHand().equals(Hand.MAIN_HAND) : event.getHand().equals(Hand.OFF_HAND)) ? 1 : -1)));
+                        event.getMatrixStack().mulPose(Vector3f.YN.rotation(yOff * ((player.getMainArm() == HandSide.RIGHT ? event.getHand().equals(Hand.MAIN_HAND) : event.getHand().equals(Hand.OFF_HAND)) ? 1 : -1)));
                         yOff = 0;
                         break;
                 }
@@ -252,7 +253,7 @@ public class RendererHandler
     {
         if (event.getItem().getItem().equals(SplatcraftItems.powerEgg))
         {
-            IBakedModel modelIn = Minecraft.getInstance().getItemRenderer().getItemModelMesher().getModelManager().getModel(new ModelResourceLocation(event.getItem().getItem().getRegistryName() + "#inventory"));
+            IBakedModel modelIn = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(event.getItem().getItem().getRegistryName() + "#inventory"));
             renderItem(event.getItem(), event.getTransformType(), true, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getOverlay(), modelIn);
             event.setCanceled(true);
         }
@@ -264,19 +265,19 @@ public class RendererHandler
         {
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
-            matrixStackIn.push();
+            matrixStackIn.pushPose();
             boolean flag = transformTypeIn == ItemCameraTransforms.TransformType.GUI || transformTypeIn == ItemCameraTransforms.TransformType.GROUND || transformTypeIn == ItemCameraTransforms.TransformType.FIXED;
             if (itemStackIn.getItem() == Items.TRIDENT && flag)
             {
-                modelIn = itemRenderer.getItemModelMesher().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
+                modelIn = itemRenderer.getItemModelShaper().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
             }
 
             modelIn = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStackIn, modelIn, transformTypeIn, leftHand);
             matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
-            if (!modelIn.isBuiltInRenderer() && (itemStackIn.getItem() != Items.TRIDENT || flag))
+            if (!modelIn.isCustomRenderer() && (itemStackIn.getItem() != Items.TRIDENT || flag))
             {
                 boolean flag1;
-                if (transformTypeIn != ItemCameraTransforms.TransformType.GUI && !transformTypeIn.isFirstPerson() && itemStackIn.getItem() instanceof BlockItem)
+                if (transformTypeIn != ItemCameraTransforms.TransformType.GUI && !transformTypeIn.firstPerson() && itemStackIn.getItem() instanceof BlockItem)
                 {
                     Block block = ((BlockItem) itemStackIn.getItem()).getBlock();
                     flag1 = !(block instanceof BreakableBlock) && !(block instanceof StainedGlassPaneBlock);
@@ -289,73 +290,73 @@ public class RendererHandler
                     net.minecraftforge.client.ForgeHooksClient.drawItemLayered(itemRenderer, modelIn, itemStackIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, flag1);
                 } else
                 {
-                    RenderType rendertype = getItemEntityTranslucent(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+                    RenderType rendertype = getItemEntityTranslucent(PlayerContainer.BLOCK_ATLAS);
                     IVertexBuilder ivertexbuilder;
-                    if (itemStackIn.getItem() == Items.COMPASS && itemStackIn.hasEffect())
+                    if (itemStackIn.getItem() == Items.COMPASS && itemStackIn.hasFoil())
                     {
-                        matrixStackIn.push();
-                        MatrixStack.Entry matrixstack$entry = matrixStackIn.getLast();
+                        matrixStackIn.pushPose();
+                        MatrixStack.Entry matrixstack$entry = matrixStackIn.last();
                         if (transformTypeIn == ItemCameraTransforms.TransformType.GUI)
                         {
-                            matrixstack$entry.getMatrix().mul(0.5F);
-                        } else if (transformTypeIn.isFirstPerson())
+                            matrixstack$entry.pose().multiply(0.5F);
+                        } else if (transformTypeIn.firstPerson())
                         {
-                            matrixstack$entry.getMatrix().mul(0.75F);
+                            matrixstack$entry.pose().multiply(0.75F);
                         }
 
                         if (flag1)
                         {
-                            ivertexbuilder = ItemRenderer.getDirectGlintVertexBuilder(bufferIn, rendertype, matrixstack$entry);
+                            ivertexbuilder = ItemRenderer.getCompassFoilBufferDirect(bufferIn, rendertype, matrixstack$entry);
                         } else
                         {
-                            ivertexbuilder = ItemRenderer.getGlintVertexBuilder(bufferIn, rendertype, matrixstack$entry);
+                            ivertexbuilder = ItemRenderer.getCompassFoilBuffer(bufferIn, rendertype, matrixstack$entry);
                         }
 
-                        matrixStackIn.pop();
+                        matrixStackIn.popPose();
                     } else if (flag1)
                     {
-                        ivertexbuilder = ItemRenderer.getEntityGlintVertexBuilder(bufferIn, rendertype, true, itemStackIn.hasEffect());
+                        ivertexbuilder = ItemRenderer.getFoilBufferDirect(bufferIn, rendertype, true, itemStackIn.hasFoil());
                     } else
                     {
-                        ivertexbuilder = ItemRenderer.getBuffer(bufferIn, rendertype, true, itemStackIn.hasEffect());
+                        ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, rendertype, true, itemStackIn.hasFoil());
                     }
 
-                    itemRenderer.renderModel(modelIn, itemStackIn, combinedLightIn, combinedOverlayIn, matrixStackIn, ivertexbuilder);
+                    itemRenderer.renderModelLists(modelIn, itemStackIn, combinedLightIn, combinedOverlayIn, matrixStackIn, ivertexbuilder);
                 }
             } else
             {
-                itemStackIn.getItem().getItemStackTileEntityRenderer().func_239207_a_(itemStackIn, transformTypeIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
+                itemStackIn.getItem().getItemStackTileEntityRenderer().renderByItem(itemStackIn, transformTypeIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
             }
 
-            matrixStackIn.pop();
+            matrixStackIn.popPose();
         }
     }
 
     protected static RenderType getItemEntityTranslucent(ResourceLocation locationIn)
     {
-        RenderType.State rendertype$state = RenderType.State.getBuilder().texture(new RenderState.TextureState(locationIn, false, false)).transparency(TRANSLUCENT_TRANSPARENCY)
-                /*.target(field_241712_U_)*/.diffuseLighting(new RenderState.DiffuseLightingState(true)).alpha(new RenderState.AlphaState(0.003921569F)).lightmap(new RenderState.LightmapState(true))
-                .overlay(new RenderState.OverlayState(true)).build(true);
-        return RenderType.makeType("item_entity_translucent", DefaultVertexFormats.ENTITY, 7, 256, true, false, rendertype$state);
+        RenderType.State rendertype$state = RenderType.State.builder().setTextureState(new RenderState.TextureState(locationIn, false, false)).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                /*.target(field_241712_U_)*/.setDiffuseLightingState(new RenderState.DiffuseLightingState(true)).setAlphaState(new RenderState.AlphaState(0.003921569F)).setLightmapState(new RenderState.LightmapState(true))
+                .setOverlayState(new RenderState.OverlayState(true)).createCompositeState(true);
+        return RenderType.create("item_entity_translucent", DefaultVertexFormats.NEW_ENTITY, 7, 256, true, false, rendertype$state);
     }
 
     @SubscribeEvent
     public static void onChatMessage(ClientChatReceivedEvent event)
     {
-        ClientWorld world = Minecraft.getInstance().world;
-        if (world != null && SplatcraftGameRules.getBooleanRuleValue(world, SplatcraftGameRules.COLORED_PLAYER_NAMES) && event.getMessage() instanceof TranslationTextComponent)
+        ClientWorld level = Minecraft.getInstance().level;
+        if (level != null && SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.COLORED_PLAYER_NAMES) && event.getMessage() instanceof TranslationTextComponent)
         {
             TranslationTextComponent component = (TranslationTextComponent) event.getMessage();
             //TreeMap<String, AbstractClientPlayerEntity> players = Maps.newTreeMap();
-            //Minecraft.getInstance().world.getPlayers().forEach(player -> players.put(player.getDisplayName().getString(), player));
+            //Minecraft.getInstance().level.getPlayers().forEach(player -> players.put(player.getDisplayName().getString(), player));
 
 
             List<String> players = new ArrayList<>();
             ClientPlayNetHandler connection = Minecraft.getInstance().getConnection();
             if (connection != null)
-                connection.getPlayerInfoMap().forEach(info -> players.add(getDisplayName(info).getString()));
+                connection.getOnlinePlayers().forEach(info -> players.add(getDisplayName(info).getString()));
 
-            for (Object obj : component.getFormatArgs())
+            for (Object obj : component.getArgs())
             {
                 if (!(obj instanceof TextComponent))
                     continue;
@@ -364,7 +365,7 @@ public class RendererHandler
                 String key = msgChildren.getString();
 
                 if (!msgChildren.getSiblings().isEmpty() && players.contains(key))
-                    msgChildren.setStyle(Style.EMPTY.setColor(Color.fromInt(ClientUtils.getClientPlayerColor(key))));
+                    msgChildren.setStyle(msgChildren.getStyle().withColor(Color.fromRgb(ClientUtils.getClientPlayerColor(key))));
             }
         }
     }
@@ -372,7 +373,7 @@ public class RendererHandler
     @SubscribeEvent
     public static void renderNameplate(RenderNameplateEvent event)
     {
-        if (SplatcraftGameRules.getBooleanRuleValue(event.getEntity().world, SplatcraftGameRules.COLORED_PLAYER_NAMES) && event.getEntity() instanceof LivingEntity)
+        if (SplatcraftGameRules.getBooleanRuleValue(event.getEntity().level, SplatcraftGameRules.COLORED_PLAYER_NAMES) && event.getEntity() instanceof LivingEntity)
         {
             int color = ColorUtils.getEntityColor((LivingEntity) event.getEntity());
             if (SplatcraftConfig.Client.getColorLock())
@@ -381,14 +382,14 @@ public class RendererHandler
             }
             if (color != -1)
             {
-                event.setContent(((TextComponent) event.getContent()).setStyle(Style.EMPTY.setColor(Color.fromInt(color))));
+                event.setContent(((TextComponent) event.getContent()).setStyle(Style.EMPTY.withColor(Color.fromRgb(color))));
             }
         }
     }
 
     public static ITextComponent getDisplayName(NetworkPlayerInfo info)
     {
-        return info.getDisplayName() != null ? info.getDisplayName().deepCopy() : ScorePlayerTeam.func_237500_a_(info.getPlayerTeam(), new StringTextComponent(info.getGameProfile().getName()));
+        return info.getTabListDisplayName() != null ? info.getTabListDisplayName().copy() : ScorePlayerTeam.formatNameForTeam(info.getTeam(), new StringTextComponent(info.getProfile().getName()));
     }
 
     @SuppressWarnings("deprecation")
@@ -402,18 +403,18 @@ public class RendererHandler
         }
         IPlayerInfo info = PlayerInfoCapability.get(player);
 
-        int width = Minecraft.getInstance().getMainWindow().getScaledWidth();
-        int height = Minecraft.getInstance().getMainWindow().getScaledHeight();
+        int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+        int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 
         if (event instanceof RenderGameOverlayEvent.Pre && event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR))
         {
-            if (player.getHeldItemMainhand().getItem() instanceof IChargeableWeapon || player.getHeldItemOffhand().getItem() instanceof IChargeableWeapon)
+            if (player.getMainHandItem().getItem() instanceof IChargeableWeapon || player.getOffhandItem().getItem() instanceof IChargeableWeapon)
             {
 
                 MatrixStack matrixStack = event.getMatrixStack();
-                matrixStack.push();
+                matrixStack.pushPose();
                 RenderSystem.enableBlend();
-                Minecraft.getInstance().getTextureManager().bindTexture(WIDGETS);
+                Minecraft.getInstance().getTextureManager().bind(WIDGETS);
 
                 AbstractGui.blit(matrixStack, width / 2 - 15, height / 2 + 14, 30, 9, 88, 0, 30, 9, 256, 256);
                 if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).getPlayerCharge() != null)
@@ -422,7 +423,7 @@ public class RendererHandler
                     AbstractGui.blit(matrixStack, width / 2 - 15, height / 2 + 14, (int) (30 * charge), 9, 88, 9, (int) (30 * charge), 9, 256, 256);
                 }
 
-                matrixStack.pop();
+                matrixStack.popPose();
             }
         }
 
@@ -432,10 +433,10 @@ public class RendererHandler
             {
                 squidTime++;
                 float inkPctg = 0;
-                boolean hasTank = player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof InkTankItem;
+                boolean hasTank = player.getItemBySlot(EquipmentSlotType.CHEST).getItem() instanceof InkTankItem;
                 if (hasTank)
                 {
-                    ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+                    ItemStack stack = player.getItemBySlot(EquipmentSlotType.CHEST);
                     inkPctg = InkTankItem.getInkAmount(stack) / ((InkTankItem) stack.getItem()).capacity;
                 }
 
@@ -449,17 +450,17 @@ public class RendererHandler
 
                     if (hasTank)
                     {
-                        ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-                        if(player.getActiveItemStack() != null)
-                            canUse = ((InkTankItem) stack.getItem()).canUse(player.getHeldItemMainhand().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getHeldItemOffhand().getItem());
+                        ItemStack stack = player.getItemBySlot(EquipmentSlotType.CHEST);
+                        if(player.getUseItem() != null)
+                            canUse = ((InkTankItem) stack.getItem()).canUse(player.getMainHandItem().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getOffhandItem().getItem());
                     }
 
                     MatrixStack matrixStack = event.getMatrixStack();
-                    matrixStack.push();
+                    matrixStack.pushPose();
                     RenderSystem.enableBlend();
-                    Minecraft.getInstance().getTextureManager().bindTexture(WIDGETS);
+                    Minecraft.getInstance().getTextureManager().bind(WIDGETS);
 
-                    if (SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK))
+                    if (SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK))
                     {
                         AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 2, 0, 95, 18, 2, 256, 256);
                         AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 4 + heightAnim, 0, 95, 18, 4 + heightAnim, 256, 256);
@@ -480,7 +481,7 @@ public class RendererHandler
 
                         if (SplatcraftConfig.Client.vanillaInkDurability.get())
                         {
-                            float[] durRgb = ColorUtils.hexToRGB(MathHelper.hsvToRGB(Math.max(0.0F, inkPctgLerp) / 3.0F, 1.0F, 1.0F));
+                            float[] durRgb = ColorUtils.hexToRGB(MathHelper.hsvToRgb(Math.max(0.0F, inkPctgLerp) / 3.0F, 1.0F, 1.0F));
                             RenderSystem.color3f(durRgb[0], durRgb[1], durRgb[2]);
                         } else
                         {
@@ -490,7 +491,7 @@ public class RendererHandler
                         AbstractGui.blit(matrixStack, width / 2 + 9 + 18 - glowAnim, height / 2 - 9, glowAnim, 18, 18 - glowAnim, 113, glowAnim, 18, 256, 256);
 
                         RenderSystem.color3f(1, 1, 1);
-                        if (glowAnim >= 18 && (SplatcraftTags.Items.MATCH_ITEMS.contains(player.getHeldItemMainhand().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getHeldItemOffhand().getItem())))
+                        if (glowAnim >= 18 && (SplatcraftTags.Items.MATCH_ITEMS.contains(player.getMainHandItem().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getOffhandItem().getItem())))
                         {
                             if (!hasTank)
                             {
@@ -510,7 +511,7 @@ public class RendererHandler
                         AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 4 + heightAnim, 18, 131, 18, 4 + heightAnim, 256, 256);
                         AbstractGui.blit(matrixStack, width / 2 + 9 + 18 - glowAnim, height / 2 - 9, glowAnim, 18, 18 - glowAnim, 149, glowAnim, 18, 256, 256);
                     }
-                    matrixStack.pop();
+                    matrixStack.popPose();
                 }
                 prevInkPctg = inkPctg;
             }

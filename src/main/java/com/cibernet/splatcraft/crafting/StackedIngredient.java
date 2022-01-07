@@ -25,7 +25,7 @@ public class StackedIngredient implements Predicate<ItemStack>
     {
         if (json != null && !json.isJsonNull() && json.isJsonObject())
         {
-            return new StackedIngredient(Ingredient.deserialize(json), JSONUtils.getInt(json.getAsJsonObject(), "count"));
+            return new StackedIngredient(Ingredient.fromJson(json), JSONUtils.getAsInt(json.getAsJsonObject(), "count"));
         } else
         {
             throw new JsonSyntaxException("Item cannot be null");

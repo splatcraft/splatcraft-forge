@@ -23,19 +23,19 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
     public static WeaponWorkbenchSubtypeRecipe fromJson(ResourceLocation recipeId, JsonObject json)
     {
 
-        JsonObject resultJson = JSONUtils.getJsonObject(json, "result");
-        ItemStack output = ShapedRecipe.deserializeItem(resultJson);
+        JsonObject resultJson = JSONUtils.getAsJsonObject(json, "result");
+        ItemStack output = ShapedRecipe.itemFromJson(resultJson);
         try
         {
-            if (JSONUtils.hasField(resultJson, "nbt"))
-                output.setTag(new JsonToNBT(new StringReader(JSONUtils.toString(JSONUtils.getJsonObject(resultJson, "nbt")))).readStruct());
+            if (resultJson.has("nbt"))
+                output.setTag(new JsonToNBT(new StringReader(JSONUtils.convertToString(JSONUtils.getAsJsonObject(resultJson, "nbt"), "nbt"))).readStruct());
         } catch (CommandSyntaxException e)
         {
             e.printStackTrace();
         }
 
         NonNullList<StackedIngredient> input = readIngredients(json.getAsJsonArray("ingredients"));
-        String name = JSONUtils.hasField(json, "name") ? JSONUtils.getString(json, "name") : "null";
+        String name = json.has("name") ? JSONUtils.getAsString(json, "name") : "null";
 
         return new WeaponWorkbenchSubtypeRecipe(recipeId, name, output, input);
     }
@@ -47,10 +47,10 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
 
         for (int j = 0; j < input.size(); ++j)
         {
-            input.set(j, new StackedIngredient(Ingredient.read(buffer), buffer.readInt()));
+            input.set(j, new StackedIngredient(Ingredient.fromNetwork(buffer), buffer.readInt()));
         }
 
-        return new WeaponWorkbenchSubtypeRecipe(recipeId, buffer.readString(), buffer.readItemStack(), input);
+        return new WeaponWorkbenchSubtypeRecipe(recipeId, buffer.readUtf(), buffer.readItem(), input);
     }
 
     public void toBuffer(PacketBuffer buffer)
@@ -58,11 +58,11 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
         buffer.writeVarInt(this.recipeItems.size());
         for (StackedIngredient ingredient : this.recipeItems)
         {
-            ingredient.getIngredient().write(buffer);
+            ingredient.getIngredient().toNetwork(buffer);
             buffer.writeInt(ingredient.getCount());
         }
-        buffer.writeString(this.name);
-        buffer.writeItemStack(this.recipeOutput);
+        buffer.writeUtf(this.name);
+        buffer.writeItem(this.recipeOutput);
 
 
     }

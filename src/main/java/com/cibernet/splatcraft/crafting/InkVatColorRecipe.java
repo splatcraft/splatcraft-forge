@@ -54,25 +54,25 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn)
+    public boolean matches(IInventory inv, World levelIn)
     {
-        return ingredient.test(inv.getStackInSlot(3));
+        return ingredient.test(inv.getItem(3));
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv)
+    public ItemStack assemble(IInventory inv)
     {
-        return inv.getStackInSlot(0);
+        return inv.getItem(0);
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput()
+    public ItemStack getResultItem()
     {
         return ColorUtils.setInkColor(new ItemStack(SplatcraftBlocks.inkwell), color);
     }
@@ -101,7 +101,7 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
     }
 
     @Override
-    public ItemStack getIcon()
+    public ItemStack getToastSymbol()
     {
         return new ItemStack(SplatcraftItems.inkVat);
     }
@@ -116,18 +116,18 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
         }
 
         @Override
-        public InkVatColorRecipe read(ResourceLocation recipeId, JsonObject json)
+        public InkVatColorRecipe fromJson(ResourceLocation recipeId, JsonObject json)
         {
-            Ingredient ingredient = json.has("filter") ? Ingredient.deserialize(json.get("filter")) : Ingredient.EMPTY;
-            boolean disableOmni = json.has("not_on_omni_filter") && JSONUtils.getBoolean(json, "not_on_omni_filter");
+            Ingredient ingredient = json.has("filter") ? Ingredient.fromJson(json.get("filter")) : Ingredient.EMPTY;
+            boolean disableOmni = json.has("not_on_omni_filter") && JSONUtils.getAsBoolean(json, "not_on_omni_filter");
             int color;
 
             try
             {
-                color = JSONUtils.getInt(json, "color");
+                color = JSONUtils.getAsInt(json, "color");
             } catch (JsonSyntaxException jse)
             {
-                String colorStr = JSONUtils.getString(json, "color");
+                String colorStr = JSONUtils.getAsString(json, "color");
                 try {
                     color = Integer.parseInt(colorStr, 16);
                 } catch (NumberFormatException nfe)
@@ -149,15 +149,15 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
 
         @Nullable
         @Override
-        public InkVatColorRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+        public InkVatColorRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer)
         {
-            return new InkVatColorRecipe(recipeId, Ingredient.read(buffer), buffer.readInt(), buffer.readBoolean());
+            return new InkVatColorRecipe(recipeId, Ingredient.fromNetwork(buffer), buffer.readInt(), buffer.readBoolean());
         }
 
         @Override
-        public void write(PacketBuffer buffer, InkVatColorRecipe recipe)
+        public void toNetwork(PacketBuffer buffer, InkVatColorRecipe recipe)
         {
-            recipe.ingredient.write(buffer);
+            recipe.ingredient.toNetwork(buffer);
             buffer.writeInt(recipe.color);
             buffer.writeBoolean(recipe.disableOmni);
         }

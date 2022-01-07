@@ -42,31 +42,31 @@ public class SplatcraftArmorMaterial implements IArmorMaterial
     }
 
     @Override
-    public int getDurability(EquipmentSlotType slotIn)
+    public int getDurabilityForSlot(EquipmentSlotType slotIn)
     {
         return durability;
     }
 
     @Override
-    public int getDamageReductionAmount(EquipmentSlotType slotIn)
+    public int getDefenseForSlot(EquipmentSlotType slotIn)
     {
         return damageReduction;
     }
 
     @Override
-    public int getEnchantability()
+    public int getEnchantmentValue()
     {
         return enchantability;
     }
 
     @Override
-    public SoundEvent getSoundEvent()
+    public SoundEvent getEquipSound()
     {
         return soundEvent;
     }
 
     @Override
-    public Ingredient getRepairMaterial()
+    public Ingredient getRepairIngredient()
     {
         return repairMaterial;
     }

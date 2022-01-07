@@ -47,7 +47,7 @@ public class SplatcraftTileEntitites
     @SuppressWarnings("ConstantConditions")
     private static <T extends TileEntity> TileEntityType<T> registerTileEntity(String name, Supplier<T> factoryIn, Block... allowedBlocks)
     {
-        TileEntityType<T> te = TileEntityType.Builder.create(factoryIn, allowedBlocks).build(null);
+        TileEntityType<T> te = TileEntityType.Builder.of(factoryIn, allowedBlocks).build(null);
         te.setRegistryName(name);
         te_registry.add(te);
         return te;

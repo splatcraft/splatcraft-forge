@@ -32,25 +32,25 @@ public class WeaponWorkbenchTab implements IRecipe<IInventory>, Comparable<Weapo
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn)
+    public boolean matches(IInventory inv, World levelIn)
     {
         return true;
     }
 
     @Override
-    public ItemStack getCraftingResult(IInventory inv)
+    public ItemStack assemble(IInventory inv)
     {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return false;
     }
 
     @Override
-    public ItemStack getRecipeOutput()
+    public ItemStack getResultItem()
     {
         return ItemStack.EMPTY;
     }
@@ -73,9 +73,9 @@ public class WeaponWorkbenchTab implements IRecipe<IInventory>, Comparable<Weapo
         return SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE;
     }
 
-    public List<WeaponWorkbenchRecipe> getTabRecipes(World world)
+    public List<WeaponWorkbenchRecipe> getTabRecipes(World level)
     {
-        List<IRecipe<?>> stream = world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe instanceof WeaponWorkbenchRecipe && ((WeaponWorkbenchRecipe) recipe).getTab(world).equals(this)).collect(Collectors.toList());
+        List<IRecipe<?>> stream = level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe instanceof WeaponWorkbenchRecipe && ((WeaponWorkbenchRecipe) recipe).getTab(level).equals(this)).collect(Collectors.toList());
         ArrayList<WeaponWorkbenchRecipe> recipes = Lists.newArrayList();
 
         stream.forEach(recipe -> recipes.add((WeaponWorkbenchRecipe) recipe));
@@ -110,20 +110,20 @@ public class WeaponWorkbenchTab implements IRecipe<IInventory>, Comparable<Weapo
         }
 
         @Override
-        public WeaponWorkbenchTab read(ResourceLocation recipeId, JsonObject json)
+        public WeaponWorkbenchTab fromJson(ResourceLocation recipeId, JsonObject json)
         {
-            return new WeaponWorkbenchTab(recipeId, new ResourceLocation(JSONUtils.getString(json, "icon")), json.has("pos") ? JSONUtils.getInt(json, "pos") : Integer.MAX_VALUE);
+            return new WeaponWorkbenchTab(recipeId, new ResourceLocation(JSONUtils.getAsString(json, "icon")), json.has("pos") ? JSONUtils.getAsInt(json, "pos") : Integer.MAX_VALUE);
         }
 
         @Nullable
         @Override
-        public WeaponWorkbenchTab read(ResourceLocation recipeId, PacketBuffer buffer)
+        public WeaponWorkbenchTab fromNetwork(ResourceLocation recipeId, PacketBuffer buffer)
         {
             return new WeaponWorkbenchTab(recipeId, buffer.readResourceLocation(), buffer.readInt());
         }
 
         @Override
-        public void write(PacketBuffer buffer, WeaponWorkbenchTab recipe)
+        public void toNetwork(PacketBuffer buffer, WeaponWorkbenchTab recipe)
         {
             buffer.writeResourceLocation(recipe.iconLoc);
             buffer.writeInt(recipe.pos);

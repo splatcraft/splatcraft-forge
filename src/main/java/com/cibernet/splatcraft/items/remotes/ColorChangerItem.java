@@ -30,19 +30,19 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
 {
     public ColorChangerItem(String name)
     {
-        super(name, new Properties().group(SplatcraftItemGroups.GROUP_GENERAL).maxStackSize(1).rarity(Rarity.UNCOMMON), 3);
+        super(name, new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1).rarity(Rarity.UNCOMMON), 3);
         SplatcraftItems.inkColoredItems.add(this);
     }
 
     @SuppressWarnings("deprecation")
-    public static RemoteResult replaceColor(World world, BlockPos from, BlockPos to, int color, int mode, int affectedColor)
+    public static RemoteResult replaceColor(World level, BlockPos from, BlockPos to, int color, int mode, int affectedColor)
     {
         BlockPos blockpos2 = new BlockPos(Math.min(from.getX(), to.getX()), Math.min(to.getY(), from.getY()), Math.min(from.getZ(), to.getZ()));
         BlockPos blockpos3 = new BlockPos(Math.max(from.getX(), to.getX()), Math.max(to.getY(), from.getY()), Math.max(from.getZ(), to.getZ()));
 
         if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
         {
-            return createResult(false, new TranslationTextComponent("status.change_color.out_of_world"));
+            return createResult(false, new TranslationTextComponent("status.change_color.out_of_level"));
         }
 
 
@@ -50,9 +50,9 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
         {
             for (int k = blockpos2.getX(); k <= blockpos3.getX(); k += 16)
             {
-                if (!world.isBlockLoaded(new BlockPos(k, blockpos3.getY() - blockpos2.getY(), j)))
+                if (!level.isLoaded(new BlockPos(k, blockpos3.getY() - blockpos2.getY(), j)))
                 {
-                    return createResult(false, new TranslationTextComponent("status.change_color.out_of_world"));
+                    return createResult(false, new TranslationTextComponent("status.change_color.out_of_level"));
                 }
             }
         }
@@ -65,13 +65,13 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
                 for (int z = blockpos2.getZ(); z <= blockpos3.getZ(); z++)
                 {
                     BlockPos pos = new BlockPos(x, y, z);
-                    Block block = world.getBlockState(pos).getBlock();
-                    TileEntity tileEntity = world.getTileEntity(pos);
+                    Block block = level.getBlockState(pos).getBlock();
+                    TileEntity tileEntity = level.getBlockEntity(pos);
                     if (block instanceof IColoredBlock && tileEntity instanceof InkColorTileEntity)
                     {
                         int teColor = ((InkColorTileEntity) tileEntity).getColor();
 
-                        if (((IColoredBlock) block).canRemoteColorChange(world, pos, teColor, color) && (mode == 0 || mode == 1 && teColor == affectedColor || mode == 2 && teColor != affectedColor) && ((IColoredBlock) block).remoteColorChange(world, pos, color))
+                        if (((IColoredBlock) block).canRemoteColorChange(level, pos, teColor, color) && (mode == 0 || mode == 1 && teColor == affectedColor || mode == 2 && teColor != affectedColor) && ((IColoredBlock) block).remoteColorChange(level, pos, color))
                         {
                             count++;
                         }
@@ -81,13 +81,13 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
             }
         }
 
-        return createResult(true, new TranslationTextComponent("status.change_color.success", count, world.isRemote ? ColorUtils.getFormatedColorName(color, false) : InkColorCommand.getColorName(color))).setIntResults(count, count * 15 / blockTotal);
+        return createResult(true, new TranslationTextComponent("status.change_color.success", count, level.isClientSide ? ColorUtils.getFormatedColorName(color, false) : InkColorCommand.getColorName(color))).setIntResults(count, count * 15 / blockTotal);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, level, tooltip, flag);
 
         if (ColorUtils.isColorLocked(stack))
         {
@@ -96,9 +96,9 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(ItemStack stack, World level, Entity entity, int itemSlot, boolean isSelected)
     {
-        super.inventoryTick(stack, world, entity, itemSlot, isSelected);
+        super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
         if (entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity)
                 && PlayerInfoCapability.hasCapability((LivingEntity) entity))
@@ -110,11 +110,11 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity)
     {
-        BlockPos pos = entity.getPosition().down();
+        BlockPos pos = entity.blockPosition().below();
 
-        if (entity.world.getBlockState(pos).getBlock() instanceof InkwellBlock)
+        if (entity.level.getBlockState(pos).getBlock() instanceof InkwellBlock)
         {
-            InkColorTileEntity te = (InkColorTileEntity) entity.world.getTileEntity(pos);
+            InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos);
 
             if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te))
             {
@@ -129,6 +129,6 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
     @Override
     public RemoteResult onRemoteUse(World usedOnWorld, BlockPos from, BlockPos to, ItemStack stack, int colorIn, int mode)
     {
-        return replaceColor(getWorld(usedOnWorld, stack), from, to, ColorUtils.getInkColor(stack), mode, colorIn);
+        return replaceColor(getLevel(usedOnWorld, stack), from, to, ColorUtils.getInkColor(stack), mode, colorIn);
     }
 }

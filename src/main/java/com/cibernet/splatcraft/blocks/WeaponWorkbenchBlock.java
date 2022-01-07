@@ -37,26 +37,26 @@ import javax.annotation.Nullable;
 public class WeaponWorkbenchBlock extends HorizontalBlock implements IWaterLoggable
 {
 
-    public static final EnumProperty<Direction> FACING = HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    protected static final VoxelShape BOTTOM_LEFT = makeCuboidShape(2, 0, 0, 5, 4, 16);
-    protected static final VoxelShape BOTTOM_RIGHT = makeCuboidShape(11, 0, 0, 14, 4, 16);
-    protected static final VoxelShape BASE = makeCuboidShape(1, 1, 1, 15, 16, 15);
-    protected static final VoxelShape DETAIL = makeCuboidShape(0, 8, 0, 16, 10, 16);
-    protected static final VoxelShape HANDLE = makeCuboidShape(5, 11, 0, 11, 12, 1);
+    protected static final VoxelShape BOTTOM_LEFT = box(2, 0, 0, 5, 4, 16);
+    protected static final VoxelShape BOTTOM_RIGHT = box(11, 0, 0, 14, 4, 16);
+    protected static final VoxelShape BASE = box(1, 1, 1, 15, 16, 15);
+    protected static final VoxelShape DETAIL = box(0, 8, 0, 16, 10, 16);
+    protected static final VoxelShape HANDLE = box(5, 11, 0, 11, 12, 1);
     public static final VoxelShape[] SHAPES = createVoxelShapes(BOTTOM_LEFT, BOTTOM_RIGHT, BASE, DETAIL, HANDLE);
     private static final ITextComponent CONTAINER_NAME = new TranslationTextComponent("container.ammo_knights_workbench");
 
     public WeaponWorkbenchBlock(String name)
     {
-        super(Properties.create(Material.ROCK).hardnessAndResistance(2.0f).harvestTool(ToolType.PICKAXE).setRequiresTool());
+        super(Properties.of(Material.STONE).strength(2.0f).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops());
         setRegistryName(name);
-        setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
     protected static VoxelShape modifyShapeForDirection(Direction facing, VoxelShape shape)
     {
-        AxisAlignedBB bb = shape.getBoundingBox();
+        AxisAlignedBB bb = shape.bounds();
 
         switch (facing)
         {
@@ -79,7 +79,7 @@ public class WeaponWorkbenchBlock extends HorizontalBlock implements IWaterLogga
             result[i] = VoxelShapes.empty();
             for (VoxelShape shape : shapes)
             {
-                result[i] = VoxelShapes.or(result[i], modifyShapeForDirection(Direction.byHorizontalIndex(i), shape));
+                result[i] = VoxelShapes.or(result[i], modifyShapeForDirection(Direction.from2DDataValue(i), shape));
             }
 
         }
@@ -88,25 +88,25 @@ public class WeaponWorkbenchBlock extends HorizontalBlock implements IWaterLogga
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
+    public ActionResultType use(BlockState state, World levelIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit)
     {
-        if (worldIn.isRemote)
+        if (levelIn.isClientSide)
         {
             return ActionResultType.SUCCESS;
         }
-        player.openContainer(getContainer(state, worldIn, pos));
+        player.openMenu(getMenuProvider(state, levelIn, pos));
         return ActionResultType.CONSUME;
 
     }
 
     @Override
-    public INamedContainerProvider getContainer(BlockState state, World worldIn, BlockPos pos)
+    public INamedContainerProvider getMenuProvider(BlockState state, World levelIn, BlockPos pos)
     {
-        return new SimpleNamedContainerProvider((id, inventory, player) -> new WeaponWorkbenchContainer(inventory, IWorldPosCallable.of(worldIn, pos), id), CONTAINER_NAME);
+        return new SimpleNamedContainerProvider((id, inventory, player) -> new WeaponWorkbenchContainer(inventory, IWorldPosCallable.create(levelIn, pos), id), CONTAINER_NAME);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
         builder.add(FACING, WATERLOGGED);
     }
@@ -115,20 +115,20 @@ public class WeaponWorkbenchBlock extends HorizontalBlock implements IWaterLogga
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        BlockPos blockpos = context.getPos();
-        FluidState fluidstate = context.getWorld().getFluidState(blockpos);
-        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite()).with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER);
+        BlockPos blockpos = context.getClickedPos();
+        FluidState fluidstate = context.getLevel().getFluidState(blockpos);
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     @Override
     public FluidState getFluidState(BlockState state)
     {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
-        return SHAPES[state.get(FACING).getHorizontalIndex()];
+        return SHAPES[state.getValue(FACING).get2DDataValue()];
     }
 }

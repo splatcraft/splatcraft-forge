@@ -58,9 +58,9 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
     {
         super(screenContainer, inv, titleIn);
 
-        ySize = 226;
-        this.playerInventoryTitleX = 8;
-        this.playerInventoryTitleY = this.ySize - 92;
+        imageHeight = 226;
+        this.titleLabelX = 8;
+        this.titleLabelY = this.imageHeight - 92;
         this.player = inv.player;
     }
 
@@ -69,40 +69,40 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
     {
         renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        renderTooltip(matrixStack, mouseX, mouseY);
 
         tickTime++;
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
     {
         RenderSystem.color4f(1, 1, 1, 1);
         if (minecraft != null)
         {
-            minecraft.getTextureManager().bindTexture(TEXTURES);
-            int x = (width - xSize) / 2;
-            int y = (height - ySize) / 2;
+            minecraft.getTextureManager().bind(TEXTURES);
+            int x = (width - imageWidth) / 2;
+            int y = (height - imageHeight) / 2;
 
-            blit(matrixStack, x, y, 0, 0, xSize, ySize);
+            blit(matrixStack, x, y, 0, 0, imageWidth, imageHeight);
 
-            World world = player.world;
-            List<WeaponWorkbenchTab> tabList = world.getRecipeManager().getRecipes(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, playerInventory, world);
+            World level = player.level;
+            List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
             tabList.sort(WeaponWorkbenchTab::compareTo);
-            List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(world);
+            List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level);
             recipeList.sort(WeaponWorkbenchRecipe::compareTo);
 
             if (!recipeList.isEmpty())
             {
                 if (recipeList.get(typePos).getTotalRecipes() == 1)
                 {
-                    drawRecipeStack(world, matrixStack, recipeList, x, y, 0);
+                    drawRecipeStack(level, matrixStack, recipeList, x, y, 0);
                 } else
                 {
                     for (int i = -1; i <= 1; i++)
                     {
-                        drawRecipeStack(world, matrixStack, recipeList, x, y, i);
+                        drawRecipeStack(level, matrixStack, recipeList, x, y, i);
                     }
                 }
             }
@@ -110,40 +110,40 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void drawRecipeStack(World world, MatrixStack matrixStack, List<WeaponWorkbenchRecipe> recipeList, int x, int y, int i)
+    private void drawRecipeStack(World level, MatrixStack matrixStack, List<WeaponWorkbenchRecipe> recipeList, int x, int y, int i)
     {
         WeaponWorkbenchSubtypeRecipe selectedRecipe = recipeList.get(typePos).getRecipeFromIndex(subTypePos + i < 0 ? recipeList.get(typePos).getTotalRecipes() - 1 : (subTypePos + i) % recipeList.get(typePos).getTotalRecipes());
         ItemStack displayStack = selectedRecipe.getOutput().copy();
         ColorUtils.setInkColor(displayStack, PlayerInfoCapability.get(player).getColor());
 
-        matrixStack.push();
+        matrixStack.pushPose();
         float scale = i == 0 ? -28F : -14F;
-        RenderHelper.enableStandardItemLighting();
+        RenderHelper.setupFor3DItems();
         MatrixStack displayStackMatrix = new MatrixStack();
         displayStackMatrix.translate(x + 88 + i * 26, y + 73, 100);
         displayStackMatrix.scale(scale, scale, scale);
-        displayStackMatrix.rotate(new Quaternion(0, 1, 0, 0));
-        IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        displayStackMatrix.mulPose(new Quaternion(0, 1, 0, 0));
+        IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().renderBuffers().bufferSource();
         ItemRenderer itemRenderer = minecraft.getItemRenderer();
         if (itemRenderer != null)
         {
-            minecraft.getItemRenderer().renderItem(displayStack, ItemCameraTransforms.TransformType.GUI, false, displayStackMatrix, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, minecraft.getItemRenderer().getItemModelWithOverrides(displayStack, world, player));
+            minecraft.getItemRenderer().render(displayStack, ItemCameraTransforms.TransformType.GUI, false, displayStackMatrix, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, minecraft.getItemRenderer().getModel(displayStack, level, player));
         }
-        irendertypebuffer$impl.finish();
-        matrixStack.pop();
+        irendertypebuffer$impl.endBatch();
+        matrixStack.popPose();
     }
 
     @SuppressWarnings({"ConstantConditions", "deprecation"})
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
+    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        font.drawString(matrixStack, title.getString(), (float) xSize / 2 - (float) font.getStringWidth(title.getString()) / 2, 22, 4210752);
-        this.font.func_243248_b(matrixStack, this.playerInventory.getDisplayName(), (float) this.playerInventoryTitleX, (float) this.playerInventoryTitleY, 4210752);
+        font.draw(matrixStack, title.getString(), (float) imageWidth / 2 - (float) font.width(title.getString()) / 2, 22, 4210752);
+        this.font.draw(matrixStack, this.inventory.getDisplayName(), (float) this.titleLabelX, (float) this.titleLabelY, 4210752);
 
-        World world = player.world;
-        List<WeaponWorkbenchTab> tabList = world.getRecipeManager().getRecipes(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, playerInventory, world);
+        World level = player.level;
+        List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
         tabList.sort(WeaponWorkbenchTab::compareTo);
-        List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(world);
+        List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level);
         recipeList.sort(WeaponWorkbenchRecipe::compareTo);
         selectedWeapon = null;
         selectedRecipe = null;
@@ -183,40 +183,40 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
             //Draw Tab Buttons
             for (int i = 0; i < tabList.size(); i++)
             {
-                int ix = xSize / 2 - (tabList.size() - 1) * 11 + i * 22;
+                int ix = imageWidth / 2 - (tabList.size() - 1) * 11 + i * 22;
                 int iy = -5;
                 int ty = tabPos == i ? 8 : 28;
 
-                minecraft.getTextureManager().bindTexture(TEXTURES);
+                minecraft.getTextureManager().bind(TEXTURES);
                 blit(matrixStack, ix - 10, iy, 211, ty, 20, 20);
 
                 ResourceLocation tabIcon = tabList.get(i).getTabIcon();
-                Item itemIcon = Registry.ITEM.getOrDefault(tabIcon);
+                Item itemIcon = Registry.ITEM.get(tabIcon);
 
                 if (!itemIcon.equals(Items.AIR))
                 {
-                    minecraft.getItemRenderer().renderItemAndEffectIntoGUI(new ItemStack(itemIcon), ix - 8, iy + 2);
+                    minecraft.getItemRenderer().renderGuiItem(new ItemStack(itemIcon), ix - 8, iy + 2);
                 } else
                 {
-                    minecraft.getTextureManager().bindTexture(tabIcon);
+                    minecraft.getTextureManager().bind(tabIcon);
                     blit(matrixStack, ix - 8, iy + 2, 16, 16, 0, 0, 256, 256, 256, 256);
                 }
 
             }
-            minecraft.getTextureManager().bindTexture(TEXTURES);
+            minecraft.getTextureManager().bind(TEXTURES);
         }
 
         //Draw Weapon Selection
         for (int i = sectionPos * 8; i < recipeList.size() && i < sectionPos * 8 + 8; i++)
         {
-            ItemStack displayStack = recipeList.get(i).getRecipeOutput();
+            ItemStack displayStack = recipeList.get(i).getResultItem();
 
             int j = i - sectionPos * 8;
             int ix = 17 + j * 18;
             int iy = 34;
 
-            minecraft.getItemRenderer().renderItemAndEffectIntoGUI(displayStack, ix, iy);
-            if (isPointInRegion(ix, iy, 16, 16, mouseX, mouseY))
+            minecraft.getItemRenderer().renderGuiItem(displayStack, ix, iy);
+            if (isHovering(ix, iy, 16, 16, mouseX, mouseY))
             {
                 RenderSystem.disableDepthTest();
                 RenderSystem.colorMask(true, true, true, false);
@@ -234,20 +234,20 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
             {
                 Ingredient ingredient = selectedRecipe.getInput().get(i).getIngredient();
                 int count = selectedRecipe.getInput().get(i).getCount();
-                ItemStack displayStack = ingredient.getMatchingStacks()[tickTime / 20 % ingredient.getMatchingStacks().length];
+                ItemStack displayStack = ingredient.getItems()[tickTime / 20 % ingredient.getItems().length];
 
                 int j = i - ingredientPos * 6;
                 int ix = 17 + j * 18;
                 int iy = 108;
 
 
-                IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+                IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
 
                 boolean hasMaterial = SplatcraftRecipeTypes.getItem(player, ingredient, count, false);
                 int color = hasMaterial ? 0xFFFFFF : 0xFF5555;
                 String s = String.valueOf(count);
 
-                minecraft.getItemRenderer().renderItemAndEffectIntoGUI(displayStack, ix, iy);
+                minecraft.getItemRenderer().renderGuiItem(displayStack, ix, iy);
 
                 if (!hasMaterial)
                 {
@@ -261,17 +261,17 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
 
                 if (count != 1)
                 {
-                    float zLevel = minecraft.getItemRenderer().zLevel;
+                    float zLevel = minecraft.getItemRenderer().blitOffset;
                     matrixStack.translate(0.0D, 0.0D, zLevel + 200.0F);
-                    font.renderString(s, (float) (ix + 19 - 2 - font.getStringWidth(s)), (float) (iy + 6 + 3), color, true, matrixStack.getLast().getMatrix(), irendertypebuffer$impl, false, 0, 15728880);
+                    font.drawInBatch(s, (float) (ix + 19 - 2 - font.width(s)), (float) (iy + 6 + 3), color, true, matrixStack.last().pose(), irendertypebuffer$impl, false, 0, 15728880);
                     matrixStack.translate(0.0D, 0.0D, -(zLevel + 200.0F));
-                    irendertypebuffer$impl.finish();
+                    irendertypebuffer$impl.endBatch();
                 }
 
 
             }
         }
-        minecraft.getTextureManager().bindTexture(TEXTURES);
+        minecraft.getTextureManager().bind(TEXTURES);
 
         //Tab Arrows TODO
 
@@ -279,26 +279,26 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
         int maxSections = (int) Math.ceil(recipeList.size() / 8f);
         if (maxSections > 1)
         {
-            int ty = sectionPos + 1 < maxSections ? isPointInRegion(162, 36, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
+            int ty = sectionPos + 1 < maxSections ? isHovering(162, 36, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
             blit(matrixStack, 162, 36, 231, ty, 7, 11);
-            ty = sectionPos - 1 >= 0 ? isPointInRegion(7, 36, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
+            ty = sectionPos - 1 >= 0 ? isHovering(7, 36, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
             blit(matrixStack, 7, 36, 239, ty, 7, 11);
         }
 
         //Subtype Arrows
         boolean hasSubtypes = !recipeList.isEmpty() && recipeList.get(typePos).getTotalRecipes() > 1;
-        int ty = hasSubtypes ? isPointInRegion(126, 67, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
+        int ty = hasSubtypes ? isHovering(126, 67, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
         blit(matrixStack, 126, 67, 231, ty, 7, 11);
-        ty = hasSubtypes ? isPointInRegion(43, 67, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
+        ty = hasSubtypes ? isHovering(43, 67, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
         blit(matrixStack, 43, 67, 239, ty, 7, 11);
 
         //Ingredient Arrows
         maxSections = selectedRecipe == null ? 0 : (int) Math.ceil(selectedRecipe.getInput().size() / 8f);
         if (selectedRecipe != null && maxSections > 1)
         {
-            ty = sectionPos + 1 <= maxSections ? isPointInRegion(162, 110, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
+            ty = sectionPos + 1 <= maxSections ? isHovering(162, 110, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
             blit(matrixStack, 162, 110, 231, ty, 7, 11);
-            ty = sectionPos - 1 >= 0 ? isPointInRegion(7, 110, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
+            ty = sectionPos - 1 >= 0 ? isHovering(7, 110, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
             blit(matrixStack, 7, 110, 239, ty, 7, 11);
         }
 
@@ -309,14 +309,14 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
             ty = 12;
         } else if (craftButtonState == 0)
         {
-            ty = isPointInRegion(71, 93, 34, 12, mouseX, mouseY) ? 24 : 36;
+            ty = isHovering(71, 93, 34, 12, mouseX, mouseY) ? 24 : 36;
         }
 
         blit(matrixStack, 71, 93, 177, ty, 34, 12);
         String craftStr = new TranslationTextComponent("gui.ammo_knights_workbench.craft").getString();
 
-        font.drawString(matrixStack, craftStr, (float) xSize / 2 - (float) font.getStringWidth(craftStr) / 2, 95, ty == 0 ? 0x999999 : 0xEFEFEF);
-        minecraft.getTextureManager().bindTexture(TEXTURES);
+        font.draw(matrixStack, craftStr, (float) imageWidth / 2 - (float) font.width(craftStr) / 2, 95, ty == 0 ? 0x999999 : 0xEFEFEF);
+        minecraft.getTextureManager().bind(TEXTURES);
 
         //Selected Pointer
         int selectedPos = typePos - sectionPos * 8;
@@ -329,14 +329,14 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
         //Tab Button Tooltips
         for (int i = 0; i < tabList.size(); i++)
         {
-            int ix = xSize / 2 - (tabList.size() - 1) * 11 + i * 22;
+            int ix = imageWidth / 2 - (tabList.size() - 1) * 11 + i * 22;
             int iy = -5;
             //matrixStack.translate(0,0,500);
-            if (isPointInRegion(ix - 10, iy, 18, 18, mouseX, mouseY))
+            if (isHovering(ix - 10, iy, 18, 18, mouseX, mouseY))
             {
                 ArrayList<ITextComponent> tooltip = new ArrayList<>();
                 tooltip.add(new TranslationTextComponent("weaponTab." + tabList.get(i).getId().toString()));
-                func_243308_b(matrixStack, tooltip, mouseX - guiLeft, mouseY - guiTop);
+                renderWrappedToolTip(matrixStack, tooltip, mouseX - leftPos, mouseY - topPos, font);
             }
             //matrixStack.translate(0,0,-500);
         }
@@ -345,14 +345,14 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
         //Draw Recipe Tooltips
         for (int i = sectionPos * 8; i < recipeList.size() && i < sectionPos * 8 + 8; i++)
         {
-            ItemStack displayStack = recipeList.get(i).getRecipeOutput();
+            ItemStack displayStack = recipeList.get(i).getResultItem();
             displayStack.getOrCreateTag().putBoolean("IsPlural", true);
 
             int j = i - sectionPos * 8;
             int ix = 17 + j * 18;
             int iy = 34;
 
-            if (isPointInRegion(ix, iy, 16, 16, mouseX, mouseY))
+            if (isHovering(ix, iy, 16, 16, mouseX, mouseY))
             {
 
                 ArrayList<ITextComponent> tooltip = new ArrayList<>();
@@ -365,10 +365,10 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
                     tooltip.add(t);
                 }
 
-                //if(minecraft.gameSettings.advancedItemTooltips)
+                //if(minecraft.options.advancedItemTooltips)
                 //    tooltip.add(new StringTextComponent(recipeList.get(i).getId().toString()).mergeStyle(TextFormatting.DARK_GRAY));
 
-                func_243308_b(matrixStack, tooltip, mouseX - guiLeft, mouseY - guiTop);
+                renderWrappedToolTip(matrixStack, tooltip, mouseX - leftPos, mouseY - topPos, font);
             }
         }
 
@@ -379,22 +379,22 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
             for (int i = ingredientPos * 8; i < selectedRecipe.getInput().size() && i < ingredientPos * 8 + 8; i++)
             {
                 Ingredient ingredient = selectedRecipe.getInput().get(i).getIngredient();
-                ItemStack displayStack = ingredient.getMatchingStacks()[tickTime / 20 % ingredient.getMatchingStacks().length];
+                ItemStack displayStack = ingredient.getItems()[tickTime / 20 % ingredient.getItems().length];
 
                 int j = i - ingredientPos * 6;
                 int ix = 17 + j * 18;
                 int iy = 108;
 
-                if (isPointInRegion(ix, iy, 16, 16, mouseX, mouseY))
+                if (isHovering(ix, iy, 16, 16, mouseX, mouseY))
                 {
-                    renderTooltip(matrixStack, displayStack, mouseX - guiLeft, mouseY - guiTop);
+                    renderTooltip(matrixStack, displayStack, mouseX - leftPos, mouseY - topPos);
                 }
             }
 
             //Draw Selected Weapon Tooltip
-            if (isPointInRegion(74, 59, 28, 28, mouseX, mouseY))
+            if (isHovering(74, 59, 28, 28, mouseX, mouseY))
             {
-                renderTooltip(matrixStack, selectedRecipe.getOutput(), mouseX - guiLeft, mouseY - guiTop);
+                renderTooltip(matrixStack, selectedRecipe.getOutput(), mouseX - leftPos, mouseY - topPos);
             }
 
 
@@ -408,7 +408,7 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
         if (craftButtonState == 1)
         {
             craftButtonState = 0;
-            if (selectedRecipe != null && isPointInRegion(71, 93, 34, 12, mouseX, mouseY))
+            if (selectedRecipe != null && isHovering(71, 93, 34, 12, mouseX, mouseY))
             {
                 SplatcraftPacketHandler.sendToServer(new CraftWeaponPacket(selectedWeapon.getId(), subTypePos));
             }
@@ -420,23 +420,23 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        World world = player.world;
-        List<WeaponWorkbenchTab> tabList = world.getRecipeManager().getRecipes(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, playerInventory, world);
+        World level = player.level;
+        List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
         tabList.sort(WeaponWorkbenchTab::compareTo);
-        List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(world);
+        List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level);
         recipeList.sort(WeaponWorkbenchRecipe::compareTo);
 
         //Tab Buttons
         for (int i = 0; i < tabList.size(); i++)
         {
-            int ix = xSize / 2 - (tabList.size() - 1) * 11 + i * 22;
+            int ix = imageWidth / 2 - (tabList.size() - 1) * 11 + i * 22;
             int iy = -4;
 
             TextureManager textureManager = minecraft.getTextureManager();
             if (textureManager != null)
             {
-                minecraft.getTextureManager().bindTexture(TEXTURES);
-                if (tabPos != i && isPointInRegion(ix - 10, iy, 20, 20, mouseX, mouseY))
+                minecraft.getTextureManager().bind(TEXTURES);
+                if (tabPos != i && isHovering(ix - 10, iy, 20, 20, mouseX, mouseY))
                 {
                     tabPos = i;
                     typePos = 0;
@@ -457,7 +457,7 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
             int ix = 17 + j * 18;
             int iy = 34;
 
-            if (typePos != i && isPointInRegion(ix, iy, 16, 16, mouseX, mouseY))
+            if (typePos != i && isHovering(ix, iy, 16, 16, mouseX, mouseY))
             {
                 typePos = i;
                 subTypePos = 0;
@@ -470,13 +470,13 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
         int maxSections = (int) Math.ceil(recipeList.size() / 8f);
         if (maxSections > 1)
         {
-            if (sectionPos + 1 < maxSections && isPointInRegion(162, 36, 7, 11, mouseX, mouseY))
+            if (sectionPos + 1 < maxSections && isHovering(162, 36, 7, 11, mouseX, mouseY))
             {
                 subTypePos = 0;
                 sectionPos++;
                 ingredientPos = 0;
                 playButtonSound();
-            } else if (sectionPos - 1 >= 0 && isPointInRegion(7, 36, 7, 11, mouseX, mouseY))
+            } else if (sectionPos - 1 >= 0 && isHovering(7, 36, 7, 11, mouseX, mouseY))
             {
                 subTypePos = 0;
                 sectionPos--;
@@ -489,14 +489,14 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
         int totalSubtypes = recipeList.isEmpty() ? 0 : recipeList.get(typePos).getTotalRecipes();
         if (!recipeList.isEmpty() && totalSubtypes > 1)
         {
-            if (isPointInRegion(126, 67, 7, 11, mouseX, mouseY) || isPointInRegion(107, 66, 14, 14, mouseX, mouseY))
+            if (isHovering(126, 67, 7, 11, mouseX, mouseY) || isHovering(107, 66, 14, 14, mouseX, mouseY))
             {
                 ingredientPos = 0;
                 subTypePos = (subTypePos + 1) % totalSubtypes;
 
 
                 playButtonSound();
-            } else if (isPointInRegion(43, 67, 7, 11, mouseX, mouseY) || isPointInRegion(55, 66, 14, 14, mouseX, mouseY))
+            } else if (isHovering(43, 67, 7, 11, mouseX, mouseY) || isHovering(55, 66, 14, 14, mouseX, mouseY))
             {
                 ingredientPos = 0;
                 subTypePos--;
@@ -512,11 +512,11 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
         maxSections = selectedRecipe == null ? 0 : (int) Math.ceil(selectedRecipe.getInput().size() / 8f);
         if (selectedRecipe != null && maxSections > 1)
         {
-            if (sectionPos + 1 <= maxSections && isPointInRegion(162, 110, 7, 11, mouseX, mouseY))
+            if (sectionPos + 1 <= maxSections && isHovering(162, 110, 7, 11, mouseX, mouseY))
             {
                 ingredientPos++;
                 playButtonSound();
-            } else if (sectionPos - 1 >= 0 && isPointInRegion(7, 110, 7, 11, mouseX, mouseY))
+            } else if (sectionPos - 1 >= 0 && isHovering(7, 110, 7, 11, mouseX, mouseY))
             {
                 ingredientPos--;
                 playButtonSound();
@@ -524,7 +524,7 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
         }
 
         //Craft Button
-        if (craftButtonState != -1 && isPointInRegion(71, 93, 34, 12, mouseX, mouseY))
+        if (craftButtonState != -1 && isHovering(71, 93, 34, 12, mouseX, mouseY))
         {
             craftButtonState = 1;
             playButtonSound();
@@ -536,10 +536,10 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
     @SuppressWarnings("ConstantConditions")
     private void playButtonSound()
     {
-        SoundHandler soundHandler = minecraft.getSoundHandler();
+        SoundHandler soundHandler = minecraft.getSoundManager();
         if (soundHandler != null)
         {
-            minecraft.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            soundHandler.play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
     }
 }

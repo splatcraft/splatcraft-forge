@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -34,9 +35,9 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
         RenderSystem.disableBlend();
         RenderSystem.defaultBlendFunc();
     });
-    private static final RenderType BARRIER_RENDER = RenderType.makeType("splatcraft:stage_barriers", DefaultVertexFormats.BLOCK, 7, 262144, false, true, RenderType.State.getBuilder()
-            .shadeModel(new RenderState.ShadeModelState(true)).lightmap(new RenderState.LightmapState(true)).texture(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true))
-            .alpha(new RenderState.AlphaState(0.003921569F)).transparency(TRANSLUCENT_TRANSPARENCY).build(true));
+    private static final RenderType BARRIER_RENDER = RenderType.create("splatcraft:stage_barriers", DefaultVertexFormats.BLOCK, 7, 262144, false, true, RenderType.State.builder()
+            .setShadeModelState(new RenderState.ShadeModelState(true)).setLightmapState(new RenderState.LightmapState(true)).setTextureState(new RenderState.TextureState(PlayerContainer.BLOCK_ATLAS, false, true))
+            .setAlphaState(new RenderState.AlphaState(0.003921569F)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).createCompositeState(true));
 
     public StageBarrierTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
     {
@@ -45,17 +46,17 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
 
     private static boolean canRenderSide(TileEntity te, Direction side)
     {
-        BlockPos pos = te.getPos().offset(side);
-        BlockState state = te.getWorld().getBlockState(pos);
+        BlockPos pos = te.getBlockPos().relative(side);
+        BlockState state = te.getLevel().getBlockState(pos);
         return !(state.getBlock() instanceof StageBarrierBlock);
     }
 
     private void addVertex(IVertexBuilder builder, MatrixStack matrixStack, float x, float y, float z, float textureX, float textureY, float r, float g, float b, float a)
     {
-        builder.pos(matrixStack.getLast().getMatrix(), x, y, z)
+        builder.vertex(matrixStack.last().pose(), x, y, z)
                 .color(r, g, b, a)
-                .tex(textureX, textureY)
-                .lightmap(0, 240)
+                .uv(textureX, textureY)
+                .uv2(0, 240)
                 .normal(1, 0, 0)
                 .endVertex();
     }
@@ -72,62 +73,62 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
             return;
         }
 
-        ResourceLocation textureLoc = new ResourceLocation(Splatcraft.MODID, "blocks/" + block.getRegistryName().getPath() + (Minecraft.getInstance().gameSettings.graphicFanciness.func_238162_a_() > 0 ? "_fancy" : ""));
+        ResourceLocation textureLoc = new ResourceLocation(Splatcraft.MODID, "blocks/" + block.getRegistryName().getPath() + (Minecraft.getInstance().options.graphicsMode.getId() > 0 ? "_fancy" : ""));
 
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(textureLoc);
-        IVertexBuilder builder = buffer.getBuffer(Minecraft.isFabulousGraphicsEnabled() ? BARRIER_RENDER : RenderType.getTranslucentNoCrumbling());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(textureLoc);
+        IVertexBuilder builder = buffer.getBuffer(Minecraft.useShaderTransparency() ? BARRIER_RENDER : RenderType.translucentNoCrumbling());
 
         float alpha = activeTime / tileEntity.getMaxActiveTime();
         float[] rgb = new float[] {1,1,1};
         if(tileEntity.getBlockState().getBlock() instanceof IColoredBlock)
-            rgb = ColorUtils.hexToRGB(((IColoredBlock) tileEntity.getBlockState().getBlock()).getColor(tileEntity.getWorld(), tileEntity.getPos()));
+            rgb = ColorUtils.hexToRGB(((IColoredBlock) tileEntity.getBlockState().getBlock()).getColor(tileEntity.getLevel(), tileEntity.getBlockPos()));
 
         if (canRenderSide(tileEntity, Direction.NORTH))
         {
-            addVertex(builder, matrixStack, 0, 1, 0, sprite.getMinU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 1, 1, 0, sprite.getMaxU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 1, 0, 0, sprite.getMaxU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 0, 0, 0, sprite.getMinU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 1, 0, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 1, 0, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 0, 0, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 0, 0, sprite.getU0(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
         }
 
         if (canRenderSide(tileEntity, Direction.SOUTH))
         {
-            addVertex(builder, matrixStack, 0, 0, 1, sprite.getMinU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 1, 0, 1, sprite.getMaxU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 1, 1, 1, sprite.getMaxU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 0, 1, 1, sprite.getMinU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 0, 1, sprite.getU0(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 0, 1, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 1, 1, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 1, 1, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
         }
 
         if (canRenderSide(tileEntity, Direction.WEST))
         {
-            addVertex(builder, matrixStack, 0, 0, 0, sprite.getMinU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 0, 0, 1, sprite.getMinU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 0, 1, 1, sprite.getMaxU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 0, 1, 0, sprite.getMaxU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 0, 0, sprite.getU0(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 0, 1, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 1, 1, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 1, 0, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
         }
 
         if (canRenderSide(tileEntity, Direction.EAST))
         {
-            addVertex(builder, matrixStack, 1, 0, 0, sprite.getMinU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 1, 1, 0, sprite.getMaxU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 1, 1, 1, sprite.getMaxU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 1, 0, 1, sprite.getMinU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 0, 0, sprite.getU0(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 1, 0, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 1, 1, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 0, 1, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
         }
 
         if (canRenderSide(tileEntity, Direction.DOWN))
         {
-            addVertex(builder, matrixStack, 0, 0, 0, sprite.getMinU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 1, 0, 0, sprite.getMaxU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 1, 0, 1, sprite.getMaxU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 0, 0, 1, sprite.getMinU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 0, 0, sprite.getU0(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 0, 0, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 0, 1, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 0, 1, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
         }
 
         if (canRenderSide(tileEntity, Direction.UP))
         {
-            addVertex(builder, matrixStack, 0, 1, 1, sprite.getMinU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 1, 1, 1, sprite.getMaxU(), sprite.getMaxV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 1, 1, 0, sprite.getMaxU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
-            addVertex(builder, matrixStack, 0, 1, 0, sprite.getMinU(), sprite.getMinV(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 1, 1, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 1, 1, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 1, 1, 0, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
+            addVertex(builder, matrixStack, 0, 1, 0, sprite.getU0(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
         }
     }
 }

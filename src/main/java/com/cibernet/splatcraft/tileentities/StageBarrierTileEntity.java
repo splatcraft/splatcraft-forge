@@ -44,29 +44,29 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
             activeTime--;
         }
 
-        for (Entity entity : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos).grow(0.05)))
+        for (Entity entity : level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(getBlockPos()).inflate(0.05)))
         {
             resetActiveTime();
             if (getBlockState().getBlock() instanceof StageBarrierBlock && ((StageBarrierBlock) getBlockState().getBlock()).damagesPlayer &&
                     entity instanceof PlayerEntity)
             {
-                entity.attackEntityFrom(VOID_DAMAGE, Float.MAX_VALUE);
+                entity.hurt(VOID_DAMAGE, Float.MAX_VALUE);
             }
 
         }
 
-        if (world.isRemote && ClientUtils.getClientPlayer().isCreative())
+        if (level.isClientSide && ClientUtils.getClientPlayer().isCreative())
         {
             boolean canRender = true;
             PlayerEntity player = ClientUtils.getClientPlayer();
             int renderDistance = SplatcraftConfig.Client.barrierRenderDistance.get();
 
-            if(player.getDistanceSq(getPos().getX(), getPos().getY(), getPos().getZ()) > renderDistance*renderDistance)
+            if(player.distanceToSqr(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()) > renderDistance*renderDistance)
                 canRender = false;
             else if (SplatcraftConfig.Client.holdBarrierToRender.get())
             {
-                canRender = player.getHeldItemMainhand().getItem().isIn(SplatcraftTags.Items.REVEALS_BARRIERS) ||
-                        player.getHeldItemMainhand().getItem().isIn(SplatcraftTags.Items.REVEALS_BARRIERS);
+                canRender = player.getMainHandItem().getItem().is(SplatcraftTags.Items.REVEALS_BARRIERS) ||
+                        player.getMainHandItem().getItem().is(SplatcraftTags.Items.REVEALS_BARRIERS);
             }
             if (canRender)
                 resetActiveTime();
@@ -75,7 +75,7 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
     }
 
     @Override
-    public double getMaxRenderDistanceSquared() {
+    public double getViewDistance() {
         return SplatcraftConfig.Client.barrierRenderDistance.get();
     }
 
@@ -85,9 +85,9 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
+    public void load(BlockState state, CompoundNBT nbt)
     {
-        super.read(state, nbt);
+        super.load(state, nbt);
 
         if (nbt.contains("ActiveTime"))
         {
@@ -96,40 +96,40 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
+    public CompoundNBT save(CompoundNBT compound)
     {
         compound.putInt("ActiveTime", activeTime);
-        return super.write(compound);
+        return super.save(compound);
     }
 
 
     @Override
     public CompoundNBT getUpdateTag()
     {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag)
     {
-        this.read(state, tag);
+        this.load(state, tag);
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
-        return new SUpdateTileEntityPacket(getPos(), 2, getUpdateTag());
+        return new SUpdateTileEntityPacket(getBlockPos(), 2, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
     {
-        if (world != null)
+        if (level != null)
         {
-            BlockState state = world.getBlockState(pos);
-            world.notifyBlockUpdate(pos, state, state, 2);
-            handleUpdateTag(state, pkt.getNbtCompound());
+            BlockState state = level.getBlockState(getBlockPos());
+            level.sendBlockUpdated(getBlockPos(), state, state, 2);
+            handleUpdateTag(state, pkt.getTag());
         }
     }
 

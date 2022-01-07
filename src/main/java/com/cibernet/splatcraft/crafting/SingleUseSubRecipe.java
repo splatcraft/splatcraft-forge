@@ -21,22 +21,22 @@ public class SingleUseSubRecipe extends SpecialRecipe
     }
 
     @Override
-    public boolean matches(CraftingInventory inv, World worldIn) {
+    public boolean matches(CraftingInventory inv, World levelIn) {
         int sub = 0;
         int inkwell = 0;
         int sardinium = 0;
 
-        for(int k = 0; k < inv.getSizeInventory(); ++k) {
-            ItemStack itemstack = inv.getStackInSlot(k);
+        for(int k = 0; k < inv.getContainerSize(); ++k) {
+            ItemStack itemstack = inv.getItem(k);
             if (!itemstack.isEmpty()) {
-                if (Block.getBlockFromItem(itemstack.getItem()) instanceof InkwellBlock)
+                if (Block.byItem(itemstack.getItem()) instanceof InkwellBlock)
                     ++inkwell;
                 else
                 if (itemstack.getItem().equals(SplatcraftItems.sardinium))
                     ++sardinium;
                 else
                 {
-                    if (!itemstack.getItem().isIn(SplatcraftTags.Items.SUB_WEAPONS))
+                    if (!itemstack.getItem().is(SplatcraftTags.Items.SUB_WEAPONS))
                         return false;
                     ++sub;
                 }
@@ -50,19 +50,19 @@ public class SingleUseSubRecipe extends SpecialRecipe
     }
 
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv)
+    public ItemStack assemble(CraftingInventory inv)
     {
 
         ItemStack itemstack = ItemStack.EMPTY;
         int color = 0xFFFFFF;
 
-        for(int i = 0; i < inv.getSizeInventory(); ++i) {
-            ItemStack itemstack1 = inv.getStackInSlot(i);
+        for(int i = 0; i < inv.getContainerSize(); ++i) {
+            ItemStack itemstack1 = inv.getItem(i);
             if (!itemstack1.isEmpty()) {
                 Item item = itemstack1.getItem();
-                if (item.isIn(SplatcraftTags.Items.SUB_WEAPONS))
+                if (item.is(SplatcraftTags.Items.SUB_WEAPONS))
                     itemstack = itemstack1;
-                else if(Block.getBlockFromItem(item) instanceof InkwellBlock)
+                else if(Block.byItem(item) instanceof InkwellBlock)
                     color = ColorUtils.getInkColor(itemstack1);
             }
         }
@@ -77,15 +77,15 @@ public class SingleUseSubRecipe extends SpecialRecipe
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
     {
-        NonNullList<ItemStack> restult = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+        NonNullList<ItemStack> restult = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
-        for(int i = 0; i < inv.getSizeInventory(); ++i)
+        for(int i = 0; i < inv.getContainerSize(); ++i)
         {
-            ItemStack stack = inv.getStackInSlot(i);
+            ItemStack stack = inv.getItem(i);
             Item item = stack.getItem();
-            if(Block.getBlockFromItem(item) instanceof InkwellBlock)
+            if(Block.byItem(item) instanceof InkwellBlock)
                 restult.set(i, new ItemStack(SplatcraftItems.emptyInkwell));
-            else if(item.isIn(SplatcraftTags.Items.SUB_WEAPONS))
+            else if(item.is(SplatcraftTags.Items.SUB_WEAPONS))
                 restult.set(i, stack.copy());
         }
 
@@ -93,7 +93,7 @@ public class SingleUseSubRecipe extends SpecialRecipe
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width * height >= 3;
     }
 

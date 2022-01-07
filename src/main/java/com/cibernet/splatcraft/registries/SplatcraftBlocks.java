@@ -28,9 +28,9 @@ public class SplatcraftBlocks
     public static final InkedBlock glowingInkedBlock = InkedBlock.glowing("glowing_inked_block");
     public static final InkedBlock clearInkedBlock = new InkedBlock("clear_inked_block");
 
-    public static final Block sardiniumBlock = new MetalBlock(Material.IRON, MaterialColor.WHITE_TERRACOTTA).setRegistryName("sardinium_block");
+    public static final Block sardiniumBlock = new MetalBlock(Material.METAL, MaterialColor.TERRACOTTA_WHITE).setRegistryName("sardinium_block");
     public static final Block sardiniumOre = new OreBlock(0).setRegistryName("sardinium_ore");
-    public static final Block powerEggBlock = new LightBlock(9, AbstractBlock.Properties.create(Material.GOURD, DyeColor.ORANGE).harvestTool(ToolType.SHOVEL).sound(SoundType.SLIME).hardnessAndResistance(0.2f, 0)).setRegistryName("power_egg_block");
+    public static final Block powerEggBlock = new LightBlock(9, AbstractBlock.Properties.of(Material.VEGETABLE, DyeColor.ORANGE).harvestTool(ToolType.SHOVEL).sound(SoundType.SLIME_BLOCK).strength(0.2f, 0)).setRegistryName("power_egg_block");
     public static final Block crate = new CrateBlock("crate", false);
     public static final Block sunkenCrate = new CrateBlock("sunken_crate", true);
 
@@ -38,10 +38,10 @@ public class SplatcraftBlocks
     public static final Block weaponWorkbench = new WeaponWorkbenchBlock("ammo_knights_workbench");
     public static final Block remotePedestal = new RemotePedestalBlock().setRegistryName("remote_pedestal");
 
-    public static final Block emptyInkwell =new EmptyInkwellBlock(Block.Properties.create(Material.GLASS).hardnessAndResistance(0.3F).sound(SoundType.GLASS).harvestTool(ToolType.PICKAXE)).setRegistryName("empty_inkwell");
+    public static final Block emptyInkwell =new EmptyInkwellBlock(Block.Properties.of(Material.GLASS).strength(0.3F).sound(SoundType.GLASS).harvestTool(ToolType.PICKAXE)).setRegistryName("empty_inkwell");
     public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
 
-    public static final Block inkedWool = new InkStainedBlock("ink_stained_wool", AbstractBlock.Properties.create(Material.WOOL).hardnessAndResistance(0.8F).sound(SoundType.CLOTH));
+    public static final Block inkedWool = new InkStainedBlock("ink_stained_wool", AbstractBlock.Properties.of(Material.WOOL).strength(0.8F).sound(SoundType.WOOL));
     public static final Block inkedCarpet = new InkedCarpetBlock("ink_stained_carpet");
     public static final Block inkedGlass = new InkedGlassBlock("ink_stained_glass");
     public static final Block inkedGlassPane = new InkedGlassPaneBlock("ink_stained_glass_pane");
@@ -103,18 +103,18 @@ public class SplatcraftBlocks
 
     public static void setRenderLayers()
     {
-        RenderTypeLookup.setRenderLayer(glowingInkedBlock, RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(inkedGlass, RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(inkedGlassPane, RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(glowingInkedBlock, RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(inkedGlass, RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(inkedGlassPane, RenderType.translucent());
 
-        RenderTypeLookup.setRenderLayer(emptyInkwell, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(inkwell, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(grate, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(grateRamp, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(crate, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(sunkenCrate, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(remotePedestal, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(splatSwitch, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(emptyInkwell, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(inkwell, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(grate, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(grateRamp, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(crate, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(sunkenCrate, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(remotePedestal, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(splatSwitch, RenderType.cutout());
     }
 
 

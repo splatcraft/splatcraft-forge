@@ -60,12 +60,12 @@ public class SplatcraftTags
 
         public static ITag<Item> getTag(ResourceLocation location)
         {
-            return ItemTags.getCollection().get(location);
+            return ItemTags.getAllTags().getTag(location);
         }
 
         private static ITag.INamedTag<Item> createTag(String name)
         {
-            return ItemTags.makeWrapperTag(new ResourceLocation(Splatcraft.MODID, name).toString());
+            return ItemTags.bind(new ResourceLocation(Splatcraft.MODID, name).toString());
         }
     }
 
@@ -84,7 +84,7 @@ public class SplatcraftTags
 
         private static ITag<Block> createTag(String name)
         {
-            return BlockTags.makeWrapperTag(new ResourceLocation(Splatcraft.MODID, name).toString());
+            return BlockTags.bind(new ResourceLocation(Splatcraft.MODID, name).toString());
         }
     }
 

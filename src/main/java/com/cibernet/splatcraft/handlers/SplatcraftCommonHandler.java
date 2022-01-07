@@ -55,23 +55,23 @@ public class SplatcraftCommonHandler
 
         if (InkBlockUtils.onEnemyInk(event.getEntityLiving()))
         {
-            entity.setMotion(entity.getMotion().x, Math.min(entity.getMotion().y, 0.1f), entity.getMotion().z);
+            entity.setDeltaMovement(entity.getDeltaMovement().x, Math.min(entity.getDeltaMovement().y, 0.1f), entity.getDeltaMovement().z);
         }
     }
 
     @SubscribeEvent
     public static void onLivingDestroyBlock(LivingDestroyBlockEvent event)
     {
-        if(!(event.getEntity().world.getTileEntity(event.getPos()) instanceof InkedBlockTileEntity))
+        if(!(event.getEntity().level.getBlockEntity(event.getPos()) instanceof InkedBlockTileEntity))
             return;
 
-        InkedBlockTileEntity te = (InkedBlockTileEntity) event.getEntity().world.getTileEntity(event.getPos());
+        InkedBlockTileEntity te = (InkedBlockTileEntity) event.getEntity().level.getBlockEntity(event.getPos());
         BlockState savedState = te.getSavedState();
         if(event.getState().getBlock() instanceof IColoredBlock && (event.isCanceled() ||
-                (event.getEntityLiving() instanceof EnderDragonEntity && savedState.isIn(BlockTags.DRAGON_IMMUNE)) ||
-                (event.getEntityLiving() instanceof WitherEntity && savedState.isIn(BlockTags.WITHER_IMMUNE))))
+                (event.getEntityLiving() instanceof EnderDragonEntity && savedState.is(BlockTags.DRAGON_IMMUNE)) ||
+                (event.getEntityLiving() instanceof WitherEntity && savedState.is(BlockTags.WITHER_IMMUNE))))
         {
-            ((IColoredBlock) event.getState().getBlock()).remoteInkClear(event.getEntityLiving().world, event.getPos());
+            ((IColoredBlock) event.getState().getBlock()).remoteInkClear(event.getEntityLiving().level, event.getPos());
             event.setCanceled(true);
         }
     }
@@ -89,9 +89,9 @@ public class SplatcraftCommonHandler
             for (int i = 0; i < matchInv.size(); i++)
             {
                 ItemStack stack = matchInv.get(i);
-                if (!stack.isEmpty() && !putStackInSlot(player.inventory, stack, i) && !player.inventory.addItemStackToInventory(stack))
+                if (!stack.isEmpty() && !putStackInSlot(player.inventory, stack, i) && !player.inventory.add(stack))
                 {
-                    player.dropItem(stack, true, true);
+                    player.drop(stack, true, true);
                 }
             }
 
@@ -102,14 +102,14 @@ public class SplatcraftCommonHandler
 
     private static boolean putStackInSlot(PlayerInventory inventory, ItemStack stack, int i)
     {
-        ItemStack invStack = inventory.getStackInSlot(i);
+        ItemStack invStack = inventory.getItem(i);
 
         if (invStack.isEmpty())
         {
-            inventory.setInventorySlotContents(i, stack);
+            inventory.setItem(i, stack);
             return true;
         }
-        if (invStack.isItemEqual(stack))
+        if (invStack.sameItem(stack))
         {
             int invCount = invStack.getCount();
             int count = Math.min(invStack.getMaxStackSize(), stack.getCount() + invStack.getCount());
@@ -125,7 +125,7 @@ public class SplatcraftCommonHandler
     public static void onLivingDeath(final LivingDeathEvent event)
     {
         LivingEntity entity = event.getEntityLiving();
-        ItemStack stack = entity.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        ItemStack stack = entity.getItemBySlot(EquipmentSlotType.CHEST);
 
         if (stack.getItem() instanceof InkTankItem)
         {
@@ -148,7 +148,7 @@ public class SplatcraftCommonHandler
                 ItemStack stack = matchInv.get(i);
                 if (!stack.isEmpty() && !putStackInSlot(player.inventory, stack, i))
                 {
-                    player.inventory.addItemStackToInventory(stack);
+                    player.inventory.add(stack);
                 }
             }
 
@@ -164,7 +164,7 @@ public class SplatcraftCommonHandler
         }
 
         PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-        if (!player.world.getGameRules().getBoolean(GameRules.KEEP_INVENTORY) && SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.KEEP_MATCH_ITEMS))
+        if (!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.KEEP_MATCH_ITEMS))
         {
             IPlayerInfo playerCapability;
             try
@@ -175,11 +175,11 @@ public class SplatcraftCommonHandler
                 return;
             }
 
-            NonNullList<ItemStack> matchInv = NonNullList.withSize(player.inventory.getSizeInventory(), ItemStack.EMPTY);
+            NonNullList<ItemStack> matchInv = NonNullList.withSize(player.inventory.getContainerSize(), ItemStack.EMPTY);
 
             for (int i = 0; i < matchInv.size(); i++)
             {
-                ItemStack stack = player.inventory.getStackInSlot(i);
+                ItemStack stack = player.inventory.getItem(i);
                 if (SplatcraftTags.Items.MATCH_ITEMS.contains(stack.getItem()))
                 {
                     matchInv.set(i, stack);
@@ -203,7 +203,7 @@ public class SplatcraftCommonHandler
 
         TreeMap<String, Integer> playerColors = new TreeMap<>();
 
-        for (PlayerEntity p : event.getPlayer().world.getPlayers())
+        for (PlayerEntity p : event.getPlayer().level.players())
         {
             if (PlayerInfoCapability.hasCapability(p))
                 playerColors.put(p.getDisplayName().getString(), PlayerInfoCapability.get(p).getColor());
@@ -226,7 +226,7 @@ public class SplatcraftCommonHandler
         IPlayerInfo info = PlayerInfoCapability.get(event.player);
         if(PlayerInfoCapability.hasCapability(event.player))
         {
-            if(!event.player.world.isRemote)
+            if(!event.player.level.isClientSide)
             {
                 ItemStack inkTypeStack = InkBlockUtils.checkInkTypeStack(event.player);
                 InkBlockUtils.InkType checkedInkType = InkBlockUtils.checkInkType(inkTypeStack);
@@ -246,7 +246,7 @@ public class SplatcraftCommonHandler
                 }
 
                 if (updateType)
-                    SplatcraftPacketHandler.sendToDim(new UpdatePlayerInfoPacket(event.player), event.player.world);
+                    SplatcraftPacketHandler.sendToDim(new UpdatePlayerInfoPacket(event.player), event.player.level);
                 }
             try
             {
@@ -254,7 +254,7 @@ public class SplatcraftCommonHandler
                 {
                     PlayerInfoCapability.get(event.player).setInitialized(true);
                     PlayerInfoCapability.get(event.player).setColor(ColorUtils.getRandomStarterColor());
-                    if (event.player.world.isRemote)
+                    if (event.player.level.isClientSide)
                         SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
                 }
             } catch (NullPointerException ignored) {}
@@ -264,17 +264,17 @@ public class SplatcraftCommonHandler
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event)
     {
-        World world = event.world;
-        if (world.isRemote)
+        World level = event.world;
+        if (level.isClientSide)
         {
             return;
         }
         for (Map.Entry<Integer, Boolean> rule : SplatcraftGameRules.booleanRules.entrySet())
         {
-            boolean worldValue = world.getGameRules().getBoolean(SplatcraftGameRules.getRuleFromIndex(rule.getKey()));
-            if (rule.getValue() != worldValue)
+            boolean levelValue = level.getGameRules().getBoolean(SplatcraftGameRules.getRuleFromIndex(rule.getKey()));
+            if (rule.getValue() != levelValue)
             {
-                SplatcraftGameRules.booleanRules.put(rule.getKey(), worldValue);
+                SplatcraftGameRules.booleanRules.put(rule.getKey(), levelValue);
                 SplatcraftPacketHandler.sendToAll(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.getRuleFromIndex(rule.getKey()), rule.getValue()));
             }
         }

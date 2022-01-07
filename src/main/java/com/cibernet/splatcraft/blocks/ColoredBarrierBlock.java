@@ -30,50 +30,50 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
         return SplatcraftTileEntitites.colorBarrierTileEntity.create();
     }
 
     @Override
-    public boolean setColor(World world, BlockPos pos, int color)
+    public boolean setColor(World level, BlockPos pos, int color)
     {
-        BlockState state = world.getBlockState(pos);
-        if(world.getTileEntity(pos) instanceof ColoredBarrierTileEntity)
+        BlockState state = level.getBlockState(pos);
+        if(level.getBlockEntity(pos) instanceof ColoredBarrierTileEntity)
         {
-            ((ColoredBarrierTileEntity) world.getTileEntity(pos)).setColor(color);
-            world.notifyBlockUpdate(pos, state, state, 2);
+            ((ColoredBarrierTileEntity) level.getBlockEntity(pos)).setColor(color);
+            level.sendBlockUpdated(pos, state, state, 2);
             return true;
         }
         return false;
     }
 
     @Override
-    public int getColor(World world, BlockPos pos)
+    public int getColor(World level, BlockPos pos)
     {
-        if(world.getTileEntity(pos) instanceof ColoredBarrierTileEntity)
-            return ((ColoredBarrierTileEntity) world.getTileEntity(pos)).getColor();
+        if(level.getBlockEntity(pos) instanceof ColoredBarrierTileEntity)
+            return ((ColoredBarrierTileEntity) level.getBlockEntity(pos)).getColor();
         return -1;
     }
 
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader level, BlockPos pos, PlayerEntity player)
     {
-        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), getColor((World) world, pos)), true);
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, level, pos, player), getColor((World) level, pos)), true);
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
         if(context.getEntity() instanceof LivingEntity && ColorUtils.getEntityColor((LivingEntity) context.getEntity()) > -1)
-            return !canAllowThrough(pos, context.getEntity()) ? super.getCollisionShape(state, worldIn, pos, context) : VoxelShapes.empty();
-        return blocksColor ? super.getCollisionShape(state, worldIn, pos, context) : VoxelShapes.empty();
+            return !canAllowThrough(pos, context.getEntity()) ? super.getCollisionShape(state, levelIn, pos, context) : VoxelShapes.empty();
+        return blocksColor ? super.getCollisionShape(state, levelIn, pos, context) : VoxelShapes.empty();
     }
 
     public boolean canAllowThrough(BlockPos pos, Entity entity)
     {
-        return blocksColor != ColorUtils.colorEquals(entity, entity.world.getTileEntity(pos));
+        return blocksColor != ColorUtils.colorEquals(entity, entity.level.getBlockEntity(pos));
     }
 
     @Override
@@ -92,14 +92,14 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
     }
 
     @Override
-    public boolean remoteColorChange(World world, BlockPos pos, int newColor)
+    public boolean remoteColorChange(World level, BlockPos pos, int newColor)
     {
-        return setColor(world, pos, newColor);
+        return setColor(level, pos, newColor);
     }
 
 
     @Override
-    public boolean remoteInkClear(World world, BlockPos pos) {
+    public boolean remoteInkClear(World level, BlockPos pos) {
         return false;
     }
 }

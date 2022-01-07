@@ -19,16 +19,16 @@ public class RemotePedestalTileEntityRenderer extends TileEntityRenderer<RemoteP
     public void render(RemotePedestalTileEntity remotePedestalTileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay)
     {
 
-        ItemStack stack = remotePedestalTileEntity.getStackInSlot(0);
+        ItemStack stack = remotePedestalTileEntity.getItem(0);
 
         if(!stack.isEmpty())
         {
 
-            matrixStack.push();
+            matrixStack.pushPose();
             matrixStack.translate(0.5F, 1F, 0.5F);
             //matrixStack.rotate(Vector3f.YP.rotation(f);
-            Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffer);
-            matrixStack.pop();
+            Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemCameraTransforms.TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffer);
+            matrixStack.popPose();
         }
     }
 }

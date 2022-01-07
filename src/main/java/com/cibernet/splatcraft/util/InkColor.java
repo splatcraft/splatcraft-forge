@@ -40,7 +40,7 @@ public class InkColor extends ForgeRegistryEntry<InkColor> implements Comparable
 
     public String getLocalizedName()
     {
-        return I18n.format(getUnlocalizedName());
+        return I18n.get(getUnlocalizedName());
     }
 
     public String getUnlocalizedName()

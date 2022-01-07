@@ -13,6 +13,6 @@ public class WeaponWorkbenchContainer extends PlayerInventoryContainer<WeaponWor
 
     public WeaponWorkbenchContainer(int id, PlayerInventory playerInventory)
     {
-        this(playerInventory, IWorldPosCallable.DUMMY, id);
+        this(playerInventory, IWorldPosCallable.NULL, id);
     }
 }

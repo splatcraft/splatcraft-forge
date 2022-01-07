@@ -97,14 +97,14 @@ public class SplatcraftGameRules
         return ruleList.get(index);
     }
 
-    public static boolean getBooleanRuleValue(World world, GameRules.RuleKey<GameRules.BooleanValue> rule)
+    public static boolean getBooleanRuleValue(World level, GameRules.RuleKey<GameRules.BooleanValue> rule)
     {
-        return world.isRemote ? getClientsideBooleanValue(rule) : world.getGameRules().getBoolean(rule);
+        return level.isClientSide ? getClientsideBooleanValue(rule) : level.getGameRules().getBoolean(rule);
     }
 
-    public static int getIntRuleValue(World world, GameRules.RuleKey<GameRules.IntegerValue> rule)
+    public static int getIntRuleValue(World level, GameRules.RuleKey<GameRules.IntegerValue> rule)
     {
-        return world.isRemote ? getClientsideIntValue(rule) : world.getGameRules().getInt(rule);
+        return level.isClientSide ? getClientsideIntValue(rule) : level.getGameRules().getInt(rule);
     }
 
     public static boolean getClientsideBooleanValue(GameRules.RuleKey<GameRules.BooleanValue> rule)

@@ -56,7 +56,7 @@ public class SendScanTurfResultsPacket extends PlayToClientPacket
 
         for (int i = 0; i < colors.length; i++)
         {
-            player.sendStatusMessage(new TranslationTextComponent("status.scan_turf.score", ColorUtils.getFormatedColorName(colors[i], false), String.format("%.1f", scores[i])), false);
+            player.displayClientMessage(new TranslationTextComponent("status.scan_turf.score", ColorUtils.getFormatedColorName(colors[i], false), String.format("%.1f", scores[i])), false);
             if (winnerScore < scores[i])
             {
                 winnerScore = scores[i];
@@ -66,7 +66,7 @@ public class SendScanTurfResultsPacket extends PlayToClientPacket
 
         if (winner != -1)
         {
-            player.sendStatusMessage(new TranslationTextComponent("status.scan_turf.winner", ColorUtils.getFormatedColorName(winner, false)), false);
+            player.displayClientMessage(new TranslationTextComponent("status.scan_turf.winner", ColorUtils.getFormatedColorName(winner, false)), false);
         }
 
     }

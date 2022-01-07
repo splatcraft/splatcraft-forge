@@ -11,14 +11,14 @@ import net.minecraft.util.IWorldPosCallable;
 
 public abstract class PlayerInventoryContainer<T extends PlayerInventoryContainer<?>> extends Container
 {
-    protected final IWorldPosCallable worldPosCallable;
+    protected final IWorldPosCallable levelPosCallable;
     int xPos;
     int yPos;
 
-    public PlayerInventoryContainer(ContainerType<T> containerType, PlayerInventory player, IWorldPosCallable worldPosCallable, int invX, int invY, int id)
+    public PlayerInventoryContainer(ContainerType<T> containerType, PlayerInventory player, IWorldPosCallable levelPosCallable, int invX, int invY, int id)
     {
         super(containerType, id);
-        this.worldPosCallable = worldPosCallable;
+        this.levelPosCallable = levelPosCallable;
         this.xPos = invX;
         this.yPos = invY;
 
@@ -37,31 +37,31 @@ public abstract class PlayerInventoryContainer<T extends PlayerInventoryContaine
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn)
+    public boolean stillValid(PlayerEntity playerIn)
     {
-        return isWithinUsableDistance(this.worldPosCallable, playerIn, SplatcraftBlocks.weaponWorkbench);
+        return stillValid(this.levelPosCallable, playerIn, SplatcraftBlocks.weaponWorkbench);
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index)
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index)
     {
-        Slot slot = this.inventorySlots.get(index);
-        ItemStack stack = slot.getStack();
+        Slot slot = this.slots.get(index);
+        ItemStack stack = slot.getItem();
 
-        if (!slot.getHasStack())
+        if (!slot.hasItem())
         {
             return ItemStack.EMPTY;
         }
 
-        if (index < this.inventorySlots.size() - 9)
+        if (index < this.slots.size() - 9)
         {
-            if (!this.mergeItemStack(stack, this.inventorySlots.size() - 9, this.inventorySlots.size(), true))
+            if (!this.moveItemStackTo(stack, this.slots.size() - 9, this.slots.size(), true))
             {
                 return ItemStack.EMPTY;
             }
         } else
         {
-            if (!this.mergeItemStack(stack, 0, this.inventorySlots.size() - 9, false))
+            if (!this.moveItemStackTo(stack, 0, this.slots.size() - 9, false))
             {
                 return ItemStack.EMPTY;
             }

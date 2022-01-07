@@ -28,6 +28,7 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 
@@ -36,35 +37,35 @@ import java.util.List;
 
 public class InkBlockUtils
 {
-    public static boolean playerInkBlock(PlayerEntity player, World world, BlockPos pos, int color, float damage, InkType inkType)
+    public static boolean playerInkBlock(PlayerEntity player, World level, BlockPos pos, int color, float damage, InkType inkType)
     {
-        boolean inked = inkBlock(world, pos, color, damage, inkType);
+        boolean inked = inkBlock(level, pos, color, damage, inkType);
 
         if (inked)
         {
-            player.addStat(SplatcraftStats.BLOCKS_INKED);
+            player.awardStat(SplatcraftStats.BLOCKS_INKED);
         }
 
         return inked;
     }
 
-    public static boolean inkBlock(World world, BlockPos pos, int color, float damage, InkType inkType)
+    public static boolean inkBlock(World level, BlockPos pos, int color, float damage, InkType inkType)
     {
-        BlockState state = world.getBlockState(pos);
-        TileEntity te = world.getTileEntity(pos);
+        BlockState state = level.getBlockState(pos);
+        TileEntity te = level.getBlockEntity(pos);
 
-        if (InkedBlock.isTouchingLiquid(world, pos))
+        if (InkedBlock.isTouchingLiquid(level, pos))
             return false;
 
         if (state.getBlock() instanceof IColoredBlock)
-            return ((IColoredBlock) state.getBlock()).inkBlock(world, pos, color, damage, inkType);
+            return ((IColoredBlock) state.getBlock()).inkBlock(level, pos, color, damage, inkType);
 
-        if (!canInk(world, pos))
+        if (!canInk(level, pos))
             return false;
 
-        BlockState inkState = getInkState(inkType, world, pos);
+        BlockState inkState = getInkState(inkType, level, pos);
 
-        InkedBlockTileEntity inkte = (InkedBlockTileEntity) SplatcraftBlocks.inkedBlock.createTileEntity(inkState, world);
+        InkedBlockTileEntity inkte = (InkedBlockTileEntity) SplatcraftBlocks.inkedBlock.createTileEntity(inkState, level);
         if (inkte == null)
         {
             return false;
@@ -72,16 +73,16 @@ public class InkBlockUtils
         inkte.setColor(color);
         inkte.setSavedState(state);
 
-        world.setBlockState(pos, inkState, 0);
-        world.setTileEntity(pos, inkte);
-        world.notifyBlockUpdate(pos, inkState, inkState, 3);
+        level.setBlock(pos, inkState, 0);
+        level.setBlockEntity(pos, inkte);
+        level.markAndNotifyBlock(pos, level.getChunkAt(pos), inkState, inkState, 3, 512);
 
         for(Direction facing : Direction.values())
         {
-            if(world.getTileEntity(pos.offset(facing)) instanceof InkedBlockTileEntity)
+            if(level.getBlockEntity(pos.relative(facing)) instanceof InkedBlockTileEntity)
             {
-                InkedBlockTileEntity otherTe = (InkedBlockTileEntity) world.getTileEntity(pos.offset(facing));
-                otherTe.setSavedState(otherTe.getSavedState().getBlock().updatePostPlacement(otherTe.getSavedState(), facing.getOpposite(), inkState, world, pos.offset(facing), pos));
+                InkedBlockTileEntity otherTe = (InkedBlockTileEntity) level.getBlockEntity(pos.relative(facing));
+                otherTe.setSavedState(otherTe.getSavedState().getBlock().updateShape(otherTe.getSavedState(), facing.getOpposite(), inkState, level, pos.relative(facing), pos));
             }
         }
 
@@ -89,50 +90,50 @@ public class InkBlockUtils
     }
 
 
-    public static BlockState getInkState(InkType inkType, World world, BlockPos pos)
+    public static BlockState getInkState(InkType inkType, World level, BlockPos pos)
     {
-        if(world.getBlockState(pos).getBlock() instanceof InkedBlock)
-            return inkType.block.getDefaultState();
-        return inkType.block.getDefaultState();
+        if(level.getBlockState(pos).getBlock() instanceof InkedBlock)
+            return inkType.block.defaultBlockState();
+        return inkType.block.defaultBlockState();
 
     }
 
 
-    public static boolean canInkFromFace(World world, BlockPos pos, Direction face)
+    public static boolean canInkFromFace(World level, BlockPos pos, Direction face)
     {
-        if(!(world.getBlockState(pos).getBlock() instanceof IColoredBlock) && !canInk(world, pos))
+        if(!(level.getBlockState(pos).getBlock() instanceof IColoredBlock) && !canInk(level, pos))
             return false;
 
-        return canInkPassthrough(world, pos.offset(face)) || !world.getBlockState(pos.offset(face)).isIn(SplatcraftTags.Blocks.BLOCKS_INK);
+        return canInkPassthrough(level, pos.relative(face)) || !level.getBlockState(pos.relative(face)).is(SplatcraftTags.Blocks.BLOCKS_INK);
     }
 
-    public static boolean canInk(World world, BlockPos pos)
+    public static boolean canInk(World level, BlockPos pos)
     {
 
-        if (InkedBlock.isTouchingLiquid(world, pos))
+        if (InkedBlock.isTouchingLiquid(level, pos))
             return false;
 
-        Block block = world.getBlockState(pos).getBlock();
+        Block block = level.getBlockState(pos).getBlock();
 
         if (SplatcraftTags.Blocks.UNINKABLE_BLOCKS.contains(block))
             return false;
 
-        if (!(world.getTileEntity(pos) instanceof InkColorTileEntity) && world.getTileEntity(pos) != null)
+        if (!(level.getBlockEntity(pos) instanceof InkColorTileEntity) && level.getBlockEntity(pos) != null)
             return false;
 
-        return !canInkPassthrough(world, pos);
+        return !canInkPassthrough(level, pos);
     }
 
-    public static boolean canInkPassthrough(World world, BlockPos pos)
+    public static boolean canInkPassthrough(World level, BlockPos pos)
     {
-        BlockState state = world.getBlockState(pos);
+        BlockState state = level.getBlockState(pos);
 
-        return state.getCollisionShape(world, pos).isEmpty() || world.getBlockState(pos).isIn(SplatcraftTags.Blocks.INK_PASSTHROUGH);
+        return state.getCollisionShape(level, pos).isEmpty() || level.getBlockState(pos).is(SplatcraftTags.Blocks.INK_PASSTHROUGH);
     }
 
     public static boolean canSquidHide(LivingEntity entity)
     {
-        return (entity.isOnGround() || !entity.world.getBlockState(new BlockPos(entity.getPosX(), entity.getPosY() - 0.1, entity.getPosZ())).getBlock().equals(Blocks.AIR))
+        return (entity.isOnGround() || !entity.level.getBlockState(new BlockPos(entity.getX(), entity.getY() - 0.1, entity.getZ())).getBlock().equals(Blocks.AIR))
                 && canSquidSwim(entity) || canSquidClimb(entity);
     }
 
@@ -142,12 +143,12 @@ public class InkBlockUtils
 
         BlockPos down = getBlockStandingOnPos(entity);
 
-        Block standingBlock = entity.world.getBlockState(down).getBlock();
+        Block standingBlock = entity.level.getBlockState(down).getBlock();
         if (standingBlock instanceof IColoredBlock)
             canSwim = ((IColoredBlock) standingBlock).canSwim();
 
         if (canSwim)
-            return ColorUtils.colorEquals(entity, entity.world.getTileEntity(down));
+            return ColorUtils.colorEquals(entity, entity.level.getBlockEntity(down));
         return false;
     }
 
@@ -156,13 +157,13 @@ public class InkBlockUtils
         BlockPos result;
         for(double i = 0; i >= -0.5; i-=0.1)
         {
-            result = new BlockPos(entity.getPosX(), entity.getPosY()+i, entity.getPosZ());
+            result = new BlockPos(entity.getX(), entity.getY()+i, entity.getZ());
 
-            if(!(entity.world.getBlockState(result).getMaterial().equals(Material.AIR) || entity.world.getBlockState(result).getBlock().getCollisionShape(entity.world.getBlockState(result), entity.world, result).isEmpty()))
+            if(!(entity.level.getBlockState(result).getMaterial().equals(Material.AIR) || entity.level.getBlockState(result).getCollisionShape(entity.level, result, ISelectionContext.of(entity)).isEmpty()))
                 return result;
         }
 
-        return new BlockPos(entity.getPosX(), entity.getPosY()-0.6, entity.getPosZ());
+        return new BlockPos(entity.getX(), entity.getY()-0.6, entity.getZ());
     }
 
     public static boolean onEnemyInk(LivingEntity entity)
@@ -172,10 +173,10 @@ public class InkBlockUtils
         boolean canDamage = false;
         BlockPos pos = getBlockStandingOnPos(entity);
 
-        if (entity.world.getBlockState(pos).getBlock() instanceof IColoredBlock)
-            canDamage = ((IColoredBlock) entity.world.getBlockState(pos).getBlock()).canDamage();
+        if (entity.level.getBlockState(pos).getBlock() instanceof IColoredBlock)
+            canDamage = ((IColoredBlock) entity.level.getBlockState(pos).getBlock()).canDamage();
 
-        return canDamage && ColorUtils.getInkColor(entity.world.getTileEntity(pos)) != -1 && !canSquidSwim(entity);
+        return canDamage && ColorUtils.getInkColor(entity.level.getBlockEntity(pos)) != -1 && !canSquidSwim(entity);
     }
 
     public static boolean canSquidClimb(LivingEntity entity)
@@ -185,14 +186,14 @@ public class InkBlockUtils
         for (int i = 0; i < 4; i++)
         {
             float xOff = (i < 2 ? .32f : 0) * (i % 2 == 0 ? 1 : -1), zOff = (i < 2 ? 0 : .32f) * (i % 2 == 0 ? 1 : -1);
-            BlockPos pos = new BlockPos(entity.getPosX() - xOff, entity.getPosY(), entity.getPosZ() - zOff);
-            Block block = entity.world.getBlockState(pos).getBlock();
-            VoxelShape shape = block.getCollisionShape(entity.world.getBlockState(pos), entity.world, pos);
+            BlockPos pos = new BlockPos(entity.getX() - xOff, entity.getY(), entity.getZ() - zOff);
+            Block block = entity.level.getBlockState(pos).getBlock();
+            VoxelShape shape = entity.level.getBlockState(pos).getCollisionShape(entity.level, pos, ISelectionContext.of(entity));
 
-            if(pos.equals(getBlockStandingOnPos(entity)) || (shape != null && !shape.isEmpty() && shape.getBoundingBox().maxY <= (entity.getPosY()-entity.getPosition().getY())))
+            if(pos.equals(getBlockStandingOnPos(entity)) || (shape != null && !shape.isEmpty() && shape.bounds().maxY <= (entity.getY()-entity.position().y())))
                 continue;
 
-            if ((!(block instanceof IColoredBlock) || ((IColoredBlock) block).canClimb()) && entity.world.getTileEntity(pos) instanceof InkColorTileEntity && ColorUtils.colorEquals(entity, entity.world.getTileEntity(pos)) && !entity.isPassenger())
+            if ((!(block instanceof IColoredBlock) || ((IColoredBlock) block).canClimb()) && entity.level.getBlockEntity(pos) instanceof InkColorTileEntity && ColorUtils.colorEquals(entity, entity.level.getBlockEntity(pos)) && !entity.isPassenger())
                 return true;
         }
         return false;
@@ -224,12 +225,12 @@ public class InkBlockUtils
         if(entity instanceof PlayerEntity)
         {
             PlayerInventory inv = ((PlayerEntity) entity).inventory;
-            final List<NonNullList<ItemStack>> allInventories = ImmutableList.of(inv.offHandInventory, inv.armorInventory, inv.mainInventory);
+            final List<NonNullList<ItemStack>> allInventories = ImmutableList.of(inv.offhand, inv.armor, inv.items);
 
             for(List<ItemStack> list : allInventories)
             {
                 for(ItemStack stack : list)
-                    if (stack.getItem().isIn(SplatcraftTags.Items.INK_BANDS))
+                    if (stack.getItem().is(SplatcraftTags.Items.INK_BANDS))
                     {
                         for(InkType t : InkType.values.values())
                             if(t.getRepItem().equals(stack.getItem()))
@@ -247,12 +248,12 @@ public class InkBlockUtils
         if(entity instanceof PlayerEntity)
         {
             PlayerInventory inv = ((PlayerEntity) entity).inventory;
-            final List<NonNullList<ItemStack>> allInventories = ImmutableList.of(inv.offHandInventory, inv.armorInventory, inv.mainInventory);
+            final List<NonNullList<ItemStack>> allInventories = ImmutableList.of(inv.offhand, inv.armor, inv.items);
 
             for(List<ItemStack> list : allInventories)
             {
                 for(ItemStack stack : list)
-                    if (stack.getItem().isIn(SplatcraftTags.Items.INK_BANDS))
+                    if (stack.getItem().is(SplatcraftTags.Items.INK_BANDS))
                     {
                         if(type.getRepItem().equals(stack.getItem()))
                             return stack;
@@ -322,7 +323,7 @@ public class InkBlockUtils
         }
 
         @Override
-        public String getString() {
+        public String getSerializedName() {
             return getName().toString();
         }
     }

@@ -22,7 +22,7 @@ public class FilterItem extends Item
 
     public FilterItem(String name, boolean isGlowing, boolean isOmni)
     {
-        super(new Properties().group(SplatcraftItemGroups.GROUP_GENERAL).maxStackSize(1));
+        super(new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1));
         setRegistryName(name);
 
         this.isGlowing = isGlowing;
@@ -37,14 +37,14 @@ public class FilterItem extends Item
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag isAdvanced)
     {
-        super.addInformation(stack, world, tooltip, isAdvanced);
-        tooltip.add(new TranslationTextComponent("item.splatcraft.filter.tooltip").mergeStyle(TextFormatting.GRAY));
+        super.appendHoverText(stack, level, tooltip, isAdvanced);
+        tooltip.add(new TranslationTextComponent("item.splatcraft.filter.tooltip").withStyle(TextFormatting.GRAY));
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack)
+    public boolean isFoil(ItemStack stack)
     {
         return isGlowing;
     }

@@ -28,9 +28,9 @@ public class BlasterItem extends ShooterItem
         this.splashDamage = splashDamage;
 
 
-        addStat(new WeaponStat("range", (stack, world) -> (int) (projectileSpeed / projectileLifespan * 100)));
-        addStat(new WeaponStat("impact", (stack, world) -> (int) (damage / 20 * 100)));
-        addStat(new WeaponStat("fire_rate", (stack, world) -> (int) ((11 - cooldown * 0.5f) * 10)));
+        addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / projectileLifespan * 100)));
+        addStat(new WeaponStat("impact", (stack, level) -> (int) (damage / 20 * 100)));
+        addStat(new WeaponStat("fire_rate", (stack, level) -> (int) ((11 - cooldown * 0.5f) * 10)));
     }
 
     public BlasterItem(String name, BlasterItem parent)
@@ -39,17 +39,17 @@ public class BlasterItem extends ShooterItem
     }
 
     @Override
-    public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
+    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
     {
-        CooldownTracker cooldownTracker = ((PlayerEntity) entity).getCooldownTracker();
-        if (!cooldownTracker.hasCooldown(this))
+        CooldownTracker cooldownTracker = ((PlayerEntity) entity).getCooldowns();
+        if (!cooldownTracker.isOnCooldown(this))
         {
             if (getInkAmount(entity, stack) > inkConsumption)
             {
-                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.currentItem, entity.getActiveHand(), true, false, true, entity.isOnGround()));
-                if (!world.isRemote)
+                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
+                if (!level.isClientSide)
                 {
-                    cooldownTracker.setCooldown(this, cooldown);
+                    cooldownTracker.addCooldown(this, cooldown);
                 }
             } else if (timeLeft % cooldown == 0)
             {
@@ -59,17 +59,17 @@ public class BlasterItem extends ShooterItem
     }
 
     @Override
-    public void onPlayerCooldownEnd(World world, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
+    public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
     {
         if (getInkAmount(player, stack) >= inkConsumption)
         {
-            if (!world.isRemote)
+            if (!level.isClientSide)
             {
-                InkProjectileEntity proj = new InkProjectileEntity(world, player, stack, InkBlockUtils.getInkType(player), projectileSize, damage).setShooterTrail();
+                InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), projectileSize, damage).setShooterTrail();
                 proj.setBlasterStats(projLifespan, splashDamage);
-                proj.shoot(player, player.rotationPitch, player.rotationYaw, 0.0f, projectileSpeed, inaccuracy);
-                world.addEntity(proj);
-                world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.blasterShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+                proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, projectileSpeed, inaccuracy);
+                level.addFreshEntity(proj);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.blasterShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 reduceInk(player, inkConsumption);
 
             }

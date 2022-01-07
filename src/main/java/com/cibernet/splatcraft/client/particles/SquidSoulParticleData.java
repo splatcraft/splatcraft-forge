@@ -21,14 +21,14 @@ public class SquidSoulParticleData implements IParticleData
     public static final IDeserializer<SquidSoulParticleData> DESERIALIZER = new IDeserializer<SquidSoulParticleData>()
     {
         @Override
-        public SquidSoulParticleData deserialize(ParticleType<SquidSoulParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException
+        public SquidSoulParticleData fromCommand(ParticleType<SquidSoulParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException
         {
             reader.expect(' ');
             return new SquidSoulParticleData(InkColorArgument.parseStatic(reader));
         }
 
         @Override
-        public SquidSoulParticleData read(ParticleType<SquidSoulParticleData> particleTypeIn, PacketBuffer buffer)
+        public SquidSoulParticleData fromNetwork(ParticleType<SquidSoulParticleData> particleTypeIn, PacketBuffer buffer)
         {
             return new SquidSoulParticleData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
@@ -68,7 +68,7 @@ public class SquidSoulParticleData implements IParticleData
     }
 
     @Override
-    public void write(PacketBuffer buffer)
+    public void writeToNetwork(PacketBuffer buffer)
     {
         buffer.writeFloat(red);
         buffer.writeFloat(green);
@@ -76,7 +76,7 @@ public class SquidSoulParticleData implements IParticleData
     }
 
     @Override
-    public String getParameters()
+    public String writeToString()
     {
         return String.format(Locale.ROOT, "%s %.2f %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()), this.red, this.green, this.blue);
     }

@@ -36,7 +36,7 @@ public class SplatcraftCapabilities
     @SubscribeEvent
     public static void attachWorldCapabilities(final AttachCapabilitiesEvent<World> event)
     {
-        if (event.getObject().getDimensionKey() == World.OVERWORLD)
+        if (event.getObject().dimension() == World.OVERWORLD)
         {
             event.addCapability(new ResourceLocation(Splatcraft.MODID, "save_info"), new SaveInfoCapability());
         }

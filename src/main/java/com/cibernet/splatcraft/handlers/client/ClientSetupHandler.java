@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -42,7 +43,7 @@ public class ClientSetupHandler
     @SubscribeEvent
     public static void onTextureStitch(TextureStitchEvent.Pre event)
     {
-        if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE))
+        if (!event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS))
             return;
 
         event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/stage_barrier_fancy"));
@@ -54,8 +55,8 @@ public class ClientSetupHandler
 
     public static void bindScreenContainers()
     {
-        ScreenManager.registerFactory(SplatcraftTileEntitites.inkVatContainer, InkVatScreen::new);
-        ScreenManager.registerFactory(SplatcraftTileEntitites.weaponWorkbenchContainer, WeaponWorkbenchScreen::new);
+        ScreenManager.register(SplatcraftTileEntitites.inkVatContainer, InkVatScreen::new);
+        ScreenManager.register(SplatcraftTileEntitites.weaponWorkbenchContainer, WeaponWorkbenchScreen::new);
     }
 
 
@@ -86,7 +87,7 @@ public class ClientSetupHandler
         public int getColor(ItemStack stack, int i)
         {
             boolean isDefault = ColorUtils.getInkColor(stack) == -1 && !ColorUtils.isColorLocked(stack);
-            int color = i == 0 ? (((stack.getItem().isIn(SplatcraftTags.Items.INK_BANDS) || !stack.getItem().isIn(SplatcraftTags.Items.MATCH_ITEMS))
+            int color = i == 0 ? (((stack.getItem().is(SplatcraftTags.Items.INK_BANDS) || !stack.getItem().is(SplatcraftTags.Items.MATCH_ITEMS))
                     && isDefault && PlayerInfoCapability.hasCapability(Minecraft.getInstance().player))
                     ? ColorUtils.getEntityColor(Minecraft.getInstance().player) : ColorUtils.getInkColor(stack)) : -1;
 
@@ -108,7 +109,7 @@ public class ClientSetupHandler
             if (iBlockDisplayReader == null || blockPos == null)
                 return -1;
 
-            int color = ColorUtils.getInkColor(iBlockDisplayReader.getTileEntity(blockPos));
+            int color = ColorUtils.getInkColor(iBlockDisplayReader.getBlockEntity(blockPos));
 
             if (SplatcraftConfig.Client.getColorLock())
                 color = ColorUtils.getLockedColor(color);

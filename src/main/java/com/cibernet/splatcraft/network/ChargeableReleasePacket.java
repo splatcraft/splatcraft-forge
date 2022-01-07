@@ -20,7 +20,7 @@ public class ChargeableReleasePacket extends PlayToServerPacket
 
     public static ChargeableReleasePacket decode(PacketBuffer buffer)
     {
-        return new ChargeableReleasePacket(buffer.readFloat(), buffer.readItemStack());
+        return new ChargeableReleasePacket(buffer.readFloat(), buffer.readItem());
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ChargeableReleasePacket extends PlayToServerPacket
         if (stack.getItem() instanceof IChargeableWeapon)
         {
             IChargeableWeapon weapon = (IChargeableWeapon) stack.getItem();
-            weapon.onRelease(player.world, player, stack, charge);
+            weapon.onRelease(player.level, player, stack, charge);
         }
     }
 
@@ -39,6 +39,6 @@ public class ChargeableReleasePacket extends PlayToServerPacket
     public void encode(PacketBuffer buffer)
     {
         buffer.writeFloat(charge);
-        buffer.writeItemStack(stack);
+        buffer.writeItem(stack);
     }
 }

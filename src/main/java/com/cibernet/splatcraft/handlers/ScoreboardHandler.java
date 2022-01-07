@@ -17,7 +17,7 @@ public class ScoreboardHandler
 
     public static void updatePlayerColorScore(PlayerEntity player, int color)
     {
-        player.getWorldScoreboard().forAllObjectives(COLOR, player.getScoreboardName(), p_195397_1_ -> p_195397_1_.setScorePoints(color));
+        player.getScoreboard().forAllObjectives(COLOR, player.getScoreboardName(), p_195397_1_ -> p_195397_1_.setScore(color));
     }
 
     public static void createColorCriterion(int color)
@@ -145,7 +145,7 @@ public class ScoreboardHandler
 
         public void remove()
         {
-            INSTANCES.remove(name);
+            ScoreCriteria.CRITERIA_BY_NAME.remove(name);
         }
     }
 }

@@ -27,47 +27,47 @@ public class InkColorTileEntity extends TileEntity
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
+    public CompoundNBT save(CompoundNBT nbt)
     {
         nbt.putInt("Color", color);
-        return super.write(nbt);
+        return super.save(nbt);
     }
 
     //Nbt Read
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
+    public void load(BlockState state, CompoundNBT nbt)
     {
-        super.read(state, nbt);
+        super.load(state, nbt);
         color = ColorUtils.getColorFromNbt(nbt);
     }
 
     @Override
     public CompoundNBT getUpdateTag()
     {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag)
     {
-        this.read(state, tag);
+        this.load(state, tag);
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
-        return new SUpdateTileEntityPacket(getPos(), 2, getUpdateTag());
+        return new SUpdateTileEntityPacket(getBlockPos(), 2, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
     {
-        if (world != null)
+        if (level != null)
         {
-            BlockState state = world.getBlockState(pos);
-            world.notifyBlockUpdate(pos, state, state, 2);
-            handleUpdateTag(state, pkt.getNbtCompound());
+            BlockState state = level.getBlockState(getBlockPos());
+            level.sendBlockUpdated(getBlockPos(), state, state, 2);
+            handleUpdateTag(state, pkt.getTag());
         }
     }
 

@@ -59,14 +59,14 @@ public class SplatcraftPacketHandler
         INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
 
-    public static <MSG> void sendToDim(MSG message, RegistryKey<World> world)
+    public static <MSG> void sendToDim(MSG message, RegistryKey<World> level)
     {
-        INSTANCE.send(PacketDistributor.DIMENSION.with(() -> world), message);
+        INSTANCE.send(PacketDistributor.DIMENSION.with(() -> level), message);
     }
 
-    public static <MSG> void sendToDim(MSG message, World world)
+    public static <MSG> void sendToDim(MSG message, World level)
     {
-        sendToDim(message, world.getDimensionKey());
+        sendToDim(message, level.dimension());
     }
 
     public static <MSG> void sendToAll(MSG message)

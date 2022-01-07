@@ -43,14 +43,14 @@ public class SquidFormHandler
 
         if (InkBlockUtils.onEnemyInk(player))
         {
-            if (player.ticksExisted % 20 == 0 && player.getHealth() > 4 && player.world.getDifficulty() != Difficulty.PEACEFUL)
-                player.attackEntityFrom(InkDamageUtils.ENEMY_INK, 2f);
-            if (player.world.rand.nextFloat() < 0.7f)
-                ColorUtils.addStandingInkSplashParticle(player.world, player, 1);
+            if (player.tickCount % 20 == 0 && player.getHealth() > 4 && player.level.getDifficulty() != Difficulty.PEACEFUL)
+                player.hurt(InkDamageUtils.ENEMY_INK, 2f);
+            if (player.level.getRandom().nextFloat() < 0.7f)
+                ColorUtils.addStandingInkSplashParticle(player.level, player, 1);
         }
 
-        if (player.world.getGameRules().getBoolean(SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.ticksExisted % 10 == 0)
-            player.attackEntityFrom(InkDamageUtils.WATER, 8f);
+        if (player.level.getGameRules().getBoolean(SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.tickCount % 10 == 0)
+            player.hurt(InkDamageUtils.WATER, 8f);
 
 
         IPlayerInfo info = PlayerInfoCapability.get(player);
@@ -70,31 +70,31 @@ public class SquidFormHandler
 
             if (squidSubmergeMode.get(player) == 1)
             {
-                player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.inkSubmerge, SoundCategory.PLAYERS, 0.5F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F + 1.0F) * 0.95F);
+                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.inkSubmerge, SoundCategory.PLAYERS, 0.5F, ((player.level.getRandom().nextFloat() - player.level.getRandom().nextFloat()) * 0.2F + 1.0F) * 0.95F);
 
-                if (player.world instanceof ServerWorld)
+                if (player.level instanceof ServerWorld)
                 {
                     for (int i = 0; i < 2; i++)
-                        ColorUtils.addInkSplashParticle((ServerWorld) player.world, player, 1.4f);
+                        ColorUtils.addInkSplashParticle((ServerWorld) player.level, player, 1.4f);
                 }
             } else if (squidSubmergeMode.get(player) == -1)
-                player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.inkSurface, SoundCategory.PLAYERS, 0.5F, ((player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F + 1.0F) * 0.95F);
+                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.inkSurface, SoundCategory.PLAYERS, 0.5F, ((player.level.getRandom().nextFloat() - player.level.getRandom().nextFloat()) * 0.2F + 1.0F) * 0.95F);
         }
 
         if (PlayerInfoCapability.isSquid(player))
         {
             player.setSprinting(player.isInWater());
-            player.distanceWalkedModified = player.prevDistanceWalkedModified;
+            player.walkDist = player.walkDistO;
 
             player.setPose(Pose.SWIMMING);
-            player.stopActiveHand();
+            player.stopUsingItem();
 
-            player.addStat(SplatcraftStats.SQUID_TIME);
+            player.awardStat(SplatcraftStats.SQUID_TIME);
 
             if (InkBlockUtils.canSquidHide(player))
             {
                 player.fallDistance = 0;
-                if (player.world.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN) && player.ticksExisted % 5 == 0 && player.getActivePotionEffect(Effects.POISON) == null && player.getActivePotionEffect(Effects.WITHER) == null)
+                if (player.level.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN) && player.tickCount % 5 == 0 && !player.hasEffect(Effects.POISON) && !player.hasEffect(Effects.WITHER))
                 {
                     player.heal(0.5f);
                     if (InkOverlayCapability.hasCapability(player))
@@ -103,16 +103,16 @@ public class SquidFormHandler
                     }
                 }
 
-                if (player.world.rand.nextFloat() <= 0.6f && (Math.abs(player.getPosX() - player.prevPosX) > 0.14 || Math.abs(player.getPosY() - player.prevPosY) > 0.07 || Math.abs(player.getPosZ() - player.prevPosZ) > 0.14))
+                if (player.level.getRandom().nextFloat() <= 0.6f && (Math.abs(player.getX() - player.xo) > 0.14 || Math.abs(player.getY() - player.yo) > 0.07 || Math.abs(player.getZ() - player.zo) > 0.14))
                 {
-                    ColorUtils.addInkSplashParticle(player.world, player, 1.1f);
+                    ColorUtils.addInkSplashParticle(player.level, player, 1.1f);
                 }
 
             }
 
-            if (player.world.getBlockState(player.getPosition().down()).getBlock() instanceof InkwellBlock)
+            if (player.level.getBlockState(player.blockPosition().below()).getBlock() instanceof InkwellBlock)
             {
-                InkColorTileEntity inkwell = (InkColorTileEntity) player.world.getTileEntity(player.getPosition().down());
+                InkColorTileEntity inkwell = (InkColorTileEntity) player.level.getBlockEntity(player.blockPosition().below());
 
                 ColorUtils.setPlayerColor(player, inkwell.getColor());
             }
@@ -135,8 +135,8 @@ public class SquidFormHandler
 
         if (PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidSwim(player))
         {
-            player.addExhaustion(1F);
-            player.setMotion(player.getMotion().getX(), player.getMotion().getY() * 1.1, player.getMotion().getZ());
+            player.causeFoodExhaustion(1F);
+            player.setDeltaMovement(player.getDeltaMovement().x(), player.getDeltaMovement().y() * 1.1, player.getDeltaMovement().z());
         }
     }
 
@@ -157,7 +157,7 @@ public class SquidFormHandler
 
     protected static boolean shouldBeInvisible(PlayerEntity playerEntity)
     {
-        return playerEntity.isPotionActive(Effects.INVISIBILITY);
+        return playerEntity.hasEffect(Effects.INVISIBILITY);
     }
 
 
@@ -173,7 +173,7 @@ public class SquidFormHandler
 
         if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidHide(player))
         {
-            event.modifyVisibility(Math.abs(player.getPosX() - player.prevPosX) > 0.14 || Math.abs(player.getPosY() - player.prevPosY) > 0.07 || Math.abs(player.getPosZ() - player.prevPosZ) > 0.14 ? 0.7 : 0);
+            event.modifyVisibility(Math.abs(player.getX() - player.xo) > 0.14 || Math.abs(player.getY() - player.yo) > 0.07 || Math.abs(player.getZ() - player.zo) > 0.14 ? 0.7 : 0);
         }
     }
 

@@ -34,7 +34,7 @@ public class UpdateBlockColorPacket extends PlayToServerPacket
     @Override
     public void execute(PlayerEntity player)
     {
-        TileEntity te = player.world.getTileEntity(pos);
+        TileEntity te = player.level.getBlockEntity(pos);
 
         if (te instanceof InkVatTileEntity)
         {

@@ -22,7 +22,7 @@ public class InkSplashParticleData implements IParticleData
     public static final IDeserializer<InkSplashParticleData> DESERIALIZER = new IDeserializer<InkSplashParticleData>()
     {
         @Override
-        public InkSplashParticleData deserialize(ParticleType<InkSplashParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException
+        public InkSplashParticleData fromCommand(ParticleType<InkSplashParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException
         {
             reader.expect(' ');
             Integer color = InkColorArgument.parseStatic(reader);
@@ -31,7 +31,7 @@ public class InkSplashParticleData implements IParticleData
         }
 
         @Override
-        public InkSplashParticleData read(ParticleType<InkSplashParticleData> particleTypeIn, PacketBuffer buffer)
+        public InkSplashParticleData fromNetwork(ParticleType<InkSplashParticleData> particleTypeIn, PacketBuffer buffer)
         {
             return new InkSplashParticleData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
@@ -74,7 +74,7 @@ public class InkSplashParticleData implements IParticleData
     }
 
     @Override
-    public void write(PacketBuffer buffer)
+    public void writeToNetwork(PacketBuffer buffer)
     {
         buffer.writeFloat(red);
         buffer.writeFloat(green);
@@ -83,7 +83,7 @@ public class InkSplashParticleData implements IParticleData
     }
 
     @Override
-    public String getParameters()
+    public String writeToString()
     {
         return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()), this.red, this.green, this.blue, this.scale);
     }

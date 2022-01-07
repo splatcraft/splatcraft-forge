@@ -30,16 +30,16 @@ public class ReplaceColorCommand
     {
         if (mode == 0)
         {
-            return execute(context.getSource(), BlockPosArgument.getBlockPos(context, "from"), BlockPosArgument.getBlockPos(context, "to"), InkColorArgument.getInkColor(context, "color"), -1, mode);
+            return execute(context.getSource(), BlockPosArgument.getLoadedBlockPos(context, "from"), BlockPosArgument.getLoadedBlockPos(context, "to"), InkColorArgument.getInkColor(context, "color"), -1, mode);
         }
-        return execute(context.getSource(), BlockPosArgument.getBlockPos(context, "from"), BlockPosArgument.getBlockPos(context, "to"), InkColorArgument.getInkColor(context, "color"), InkColorArgument.getInkColor(context, "affectedColor"), mode);
+        return execute(context.getSource(), BlockPosArgument.getLoadedBlockPos(context, "from"), BlockPosArgument.getLoadedBlockPos(context, "to"), InkColorArgument.getInkColor(context, "color"), InkColorArgument.getInkColor(context, "affectedColor"), mode);
     }
 
     public static int execute(CommandSource source, BlockPos from, BlockPos to, int color, int affectedColor, int mode)
     {
-        RemoteItem.RemoteResult result = ColorChangerItem.replaceColor(source.getWorld(), from, to, color, mode, affectedColor);
+        RemoteItem.RemoteResult result = ColorChangerItem.replaceColor(source.getLevel(), from, to, color, mode, affectedColor);
 
-        source.sendFeedback(result.getOutput(), true);
+        source.sendSuccess(result.getOutput(), true);
         return result.getCommandResult();
     }
 }

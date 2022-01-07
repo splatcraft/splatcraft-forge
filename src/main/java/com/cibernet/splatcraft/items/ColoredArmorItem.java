@@ -39,28 +39,28 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IC
 
     public ColoredArmorItem(String name, IArmorMaterial material, EquipmentSlotType slot)
     {
-        this(name, material, slot, new Properties().group(SplatcraftItemGroups.GROUP_WEAPONS).maxStackSize(1));
+        this(name, material, slot, new Properties().tab(SplatcraftItemGroups.GROUP_WEAPONS).stacksTo(1));
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, level, tooltip, flag);
 
 
-        if (I18n.hasKey(getTranslationKey() + ".tooltip"))
-            tooltip.add(new TranslationTextComponent(getTranslationKey() + ".tooltip").mergeStyle(TextFormatting.GRAY));
+        if (I18n.exists(getDescriptionId() + ".tooltip"))
+            tooltip.add(new TranslationTextComponent(getDescriptionId() + ".tooltip").withStyle(TextFormatting.GRAY));
 
         if (ColorUtils.isColorLocked(stack))
             tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
         else
-            tooltip.add(new TranslationTextComponent( "item.splatcraft.tooltip.matches_color").mergeStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslationTextComponent( "item.splatcraft.tooltip.matches_color").withStyle(TextFormatting.GRAY));
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(ItemStack stack, World level, Entity entity, int itemSlot, boolean isSelected)
     {
-        super.inventoryTick(stack, world, entity, itemSlot, isSelected);
+        super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
         if (entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity)
                 && PlayerInfoCapability.hasCapability((LivingEntity) entity))
@@ -72,11 +72,11 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IC
     @Override
     public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity)
     {
-        BlockPos pos = entity.getPosition().down();
+        BlockPos pos = entity.blockPosition().below();
 
-        if (entity.world.getBlockState(pos).getBlock() instanceof InkwellBlock)
+        if (entity.level.getBlockState(pos).getBlock() instanceof InkwellBlock)
         {
-            InkColorTileEntity te = (InkColorTileEntity) entity.world.getTileEntity(pos);
+            InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos);
 
             if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te))
             {
@@ -90,24 +90,24 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IC
 
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context)
+    public ActionResultType useOn(ItemUseContext context)
     {
-        BlockState state = context.getWorld().getBlockState(context.getPos());
-        if (ColorUtils.isColorLocked(context.getItem()) && state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && !context.getPlayer().isSneaking())
+        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+        if (ColorUtils.isColorLocked(context.getItemInHand()) && state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && !context.getPlayer().isCrouching())
         {
-            int i = state.get(CauldronBlock.LEVEL);
+            int i = state.getValue(CauldronBlock.LEVEL);
 
             if (i > 0)
             {
-                World world = context.getWorld();
+                World level = context.getLevel();
                 PlayerEntity player = context.getPlayer();
-                ColorUtils.setColorLocked(context.getItem(), false);
+                ColorUtils.setColorLocked(context.getItemInHand(), false);
 
-                context.getPlayer().addStat(Stats.USE_CAULDRON);
+                context.getPlayer().awardStat(Stats.USE_CAULDRON);
 
-                if (!player.abilities.isCreativeMode)
-                {world.setBlockState(context.getPos(), state.with(CauldronBlock.LEVEL, MathHelper.clamp(i - 1, 0, 3)), 2);
-                    world.updateComparatorOutputLevel(context.getPos(), state.getBlock());
+                if (!player.isCreative())
+                {level.setBlock(context.getClickedPos(), state.setValue(CauldronBlock.LEVEL, MathHelper.clamp(i - 1, 0, 3)), 2);
+                    level.updateNeighbourForOutputSignal(context.getClickedPos(), state.getBlock());
                 }
 
                 return ActionResultType.SUCCESS;
@@ -115,11 +115,11 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IC
 
         }
 
-        return super.onItemUse(context);
+        return super.useOn(context);
     }
 
     @Override
-    public boolean hasColor(ItemStack stack)
+    public boolean hasCustomColor(ItemStack stack)
     {
         return true;
     }
@@ -137,7 +137,7 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IC
     }
 
     @Override
-    public void removeColor(ItemStack stack)
+    public void clearColor(ItemStack stack)
     {
         ColorUtils.setInkColor(stack, -1);
         ColorUtils.setColorLocked(stack, false);

@@ -17,7 +17,7 @@ public class InkColorCommand
     public static void register(CommandDispatcher<CommandSource> dispatcher)
     {
 
-        dispatcher.register(Commands.literal("inkcolor").requires(commandSource -> commandSource.hasPermissionLevel(2))
+        dispatcher.register(Commands.literal("inkcolor").requires(commandSource -> commandSource.hasPermission(2))
                 .then(Commands.argument("color", InkColorArgument.inkColor()).executes(
                         context -> setColor(context.getSource(), InkColorArgument.getInkColor(context, "color"))
                 ).then(Commands.argument("targets", EntityArgument.players()).executes(
@@ -27,9 +27,9 @@ public class InkColorCommand
 
     private static int setColor(CommandSource source, int color) throws CommandSyntaxException
     {
-        ColorUtils.setPlayerColor(source.asPlayer(), color);
+        ColorUtils.setPlayerColor(source.getPlayerOrException(), color);
 
-        source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", source.asPlayer().getDisplayName(), getColorName(color))/*ColorUtils.getFormatedColorName(color, false)*/, true);
+        source.sendSuccess(new TranslationTextComponent("commands.inkcolor.success.single", source.getPlayerOrException().getDisplayName(), getColorName(color))/*ColorUtils.getFormatedColorName(color, false)*/, true);
 
         return 1;
     }
@@ -37,7 +37,7 @@ public class InkColorCommand
     //TODO server friendly feedback message
     public static IFormattableTextComponent getColorName(int color)
     {
-        return new StringTextComponent("#" + String.format("%06X", color).toUpperCase()).setStyle(Style.EMPTY.setColor(Color.fromInt(color)));
+        return new StringTextComponent("#" + String.format("%06X", color).toUpperCase()).setStyle(Style.EMPTY.withColor(Color.fromRgb(color)));
     }
 
     private static int setColor(CommandSource source, int color, Collection<ServerPlayerEntity> targets)
@@ -46,11 +46,11 @@ public class InkColorCommand
 
         if (targets.size() == 1)
         {
-            source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.single", getColorName(color),
+            source.sendSuccess(new TranslationTextComponent("commands.inkcolor.success.single", getColorName(color),
                     targets.iterator().next().getDisplayName()), true);
         } else
         {
-            source.sendFeedback(new TranslationTextComponent("commands.inkcolor.success.multiple", getColorName(color),
+            source.sendSuccess(new TranslationTextComponent("commands.inkcolor.success.multiple", getColorName(color),
                     targets.size()), true);
         }
 

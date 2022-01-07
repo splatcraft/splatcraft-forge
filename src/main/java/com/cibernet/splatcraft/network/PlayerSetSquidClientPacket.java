@@ -16,13 +16,13 @@ public class PlayerSetSquidClientPacket extends PlayToClientPacket
 
     public PlayerSetSquidClientPacket(PlayerEntity player)
     {
-        target = player.getUniqueID();
+        target = player.getUUID();
     }
 
     public PlayerSetSquidClientPacket(PlayerEntity player, boolean set)
     {
         squid = set ? 1 : 0;
-        target = player.getUniqueID();
+        target = player.getUUID();
     }
 
     protected PlayerSetSquidClientPacket(UUID player, int squid)
@@ -33,24 +33,24 @@ public class PlayerSetSquidClientPacket extends PlayToClientPacket
 
     public static PlayerSetSquidClientPacket decode(PacketBuffer buffer)
     {
-        return new PlayerSetSquidClientPacket(buffer.readUniqueId(), buffer.readInt());
+        return new PlayerSetSquidClientPacket(buffer.readUUID(), buffer.readInt());
     }
 
     @Override
     public void encode(PacketBuffer buffer)
     {
-        buffer.writeUniqueId(target);
+        buffer.writeUUID(target);
         buffer.writeInt(squid);
     }
 
     @Override
     public void execute()
     {
-        if (Minecraft.getInstance().world.getPlayerByUuid(this.target) == null)
+        if (Minecraft.getInstance().level.getPlayerByUUID(this.target) == null)
         {
             return;
         }
-        IPlayerInfo target = PlayerInfoCapability.get(Minecraft.getInstance().world.getPlayerByUuid(this.target));
+        IPlayerInfo target = PlayerInfoCapability.get(Minecraft.getInstance().level.getPlayerByUUID(this.target));
 
         if (squid == -1)
         {

@@ -52,17 +52,17 @@ public class FishingLootModifier extends LootModifier
     @Override
     protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context)
     {
-        if (!(context.get(LootParameters.THIS_ENTITY) instanceof FishingBobberEntity) || isTreasure && !FishingPredicate.func_234640_a_(true).func_234638_a_(Objects.requireNonNull(context.get(LootParameters.THIS_ENTITY))))
+        if (!(context.getParamOrNull(LootParameters.THIS_ENTITY) instanceof FishingBobberEntity) || isTreasure && !FishingPredicate.inOpenWater(true).matches(Objects.requireNonNull(context.getParamOrNull(LootParameters.THIS_ENTITY))))
         {
             return generatedLoot;
         }
 
         float chanceMod = 0;
-        if (context.get(LootParameters.KILLER_ENTITY) instanceof LivingEntity)
+        if (context.getParamOrNull(LootParameters.KILLER_ENTITY) instanceof LivingEntity)
         {
-            LivingEntity entity = (LivingEntity) context.get(LootParameters.KILLER_ENTITY);
+            LivingEntity entity = (LivingEntity) context.getParamOrNull(LootParameters.KILLER_ENTITY);
             assert entity != null;
-            ItemStack stack = entity.getActiveItemStack();
+            ItemStack stack = entity.getUseItem();
             int fishingLuck = EnchantmentHelper.getFishingLuckBonus(stack);
             float luck = entity instanceof PlayerEntity ? ((PlayerEntity) entity).getLuck() : 0;
 
@@ -102,7 +102,7 @@ public class FishingLootModifier extends LootModifier
 
         protected static boolean isBoolean(JsonObject json, String memberName)
         {
-            return JSONUtils.isJsonPrimitive(json, memberName) && json.getAsJsonPrimitive(memberName).isBoolean();
+            return JSONUtils.isValidPrimitive(json, memberName) && json.getAsJsonPrimitive(memberName).isBoolean();
         }
 
         protected static int getInt(JsonElement json, String memberName)
@@ -112,19 +112,19 @@ public class FishingLootModifier extends LootModifier
                 return json.getAsInt();
             } else
             {
-                throw new JsonSyntaxException("Expected " + memberName + " to be a Int, was " + JSONUtils.toString(json));
+                throw new JsonSyntaxException("Expected " + memberName + " to be a Int, was " + JSONUtils.convertToString(json, "???"));
             }
         }
 
         @Override
         public FishingLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] ailootcondition)
         {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getString(object, "item")));
-            int countMin = JSONUtils.getInt(object, "countMin");
-            int countMax = JSONUtils.getInt(object, "countMax");
-            float chance = JSONUtils.getFloat(object, "chance");
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(object, "item")));
+            int countMin = JSONUtils.getAsInt(object, "countMin");
+            int countMax = JSONUtils.getAsInt(object, "countMax");
+            float chance = JSONUtils.getAsFloat(object, "chance");
             int quality = getInt(object, "quality");
-            boolean isTreasure = isBoolean(object, "isTreasure") && JSONUtils.getBoolean(object, "isTreasure");
+            boolean isTreasure = isBoolean(object, "isTreasure") && JSONUtils.getAsBoolean(object, "isTreasure");
             return new FishingLootModifier(ailootcondition, item, countMin, countMax, chance, quality, isTreasure);
         }
 

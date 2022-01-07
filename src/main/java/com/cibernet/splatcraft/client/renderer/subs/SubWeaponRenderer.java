@@ -30,11 +30,11 @@ public abstract class SubWeaponRenderer<E extends AbstractSubWeaponEntity, M ext
         float b = (color % 256) / 255f;
 
         M model = getModel();
-        model.setRotationAngles(entityIn, 0, 0, this.handleRotationFloat(entityIn, partialTicks), entityYaw, entityIn.rotationPitch);
-        model.setLivingAnimations(entityIn, 0, 0, partialTicks);
-        int i = OverlayTexture.getPackedUV(OverlayTexture.getU(getOverlayProgress(entityIn, partialTicks)), OverlayTexture.getV(false));
-        model.render(matrixStackIn, bufferIn.getBuffer(model.getRenderType(getOverlayTexture(entityIn))), packedLightIn, i, r, g, b, 1);
-        model.render(matrixStackIn, bufferIn.getBuffer(model.getRenderType(getEntityTexture(entityIn))), packedLightIn, i, 1, 1, 1, 1);
+        model.setupAnim(entityIn, 0, 0, this.handleRotationFloat(entityIn, partialTicks), entityYaw, entityIn.xRot);
+        model.prepareMobModel(entityIn, 0, 0, partialTicks);
+        int i = OverlayTexture.pack(OverlayTexture.u(getOverlayProgress(entityIn, partialTicks)), OverlayTexture.v(false));
+        model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(model.renderType(getOverlayTexture(entityIn))), packedLightIn, i, r, g, b, 1);
+        model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(model.renderType(getTextureLocation(entityIn))), packedLightIn, i, 1, 1, 1, 1);
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
@@ -49,6 +49,6 @@ public abstract class SubWeaponRenderer<E extends AbstractSubWeaponEntity, M ext
 
     protected float handleRotationFloat(E livingBase, float partialTicks)
     {
-        return (float) livingBase.ticksExisted + partialTicks;
+        return (float) livingBase.tickCount + partialTicks;
     }
 }

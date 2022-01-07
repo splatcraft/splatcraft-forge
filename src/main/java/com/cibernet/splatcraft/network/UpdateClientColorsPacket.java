@@ -37,7 +37,7 @@ public class UpdateClientColorsPacket extends PlayToClientPacket
         int size = buffer.readVarInt();
         for (int i = 0; i < size; i++)
         {
-            colors.put(buffer.readString(), buffer.readInt());
+            colors.put(buffer.readUtf(), buffer.readInt());
         }
         return new UpdateClientColorsPacket(colors, reset);
     }
@@ -59,7 +59,7 @@ public class UpdateClientColorsPacket extends PlayToClientPacket
         buffer.writeVarInt(colors.entrySet().size());
         colors.forEach((key, value) ->
         {
-            buffer.writeString(key);
+            buffer.writeUtf(key);
             buffer.writeInt(value);
         });
     }

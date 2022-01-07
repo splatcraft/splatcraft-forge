@@ -43,24 +43,24 @@ public class SubWeaponItem extends WeaponBaseItem
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
         if(stack.getOrCreateTag().getBoolean("SingleUse"))
             tooltip.add(new TranslationTextComponent("item.splatcraft.tooltip.single_use"));
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, level, tooltip, flag);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
+    public ActionResult<ItemStack> use(World level, PlayerEntity player, Hand hand)
     {
 
-        if(!(player.isActualySwimming() && !player.isInWater()))
+        if(!(player.isSwimming() && !player.isInWater()))
         {
-            if(getInkAmount(player, player.getHeldItem(hand)) >= inkConsumption)
-                player.setActiveHand(hand);
+            if(getInkAmount(player, player.getItemInHand(hand)) >= inkConsumption)
+                player.startUsingItem(hand);
             else sendNoInkMessage(player, SplatcraftSounds.noInkSub);
         }
-        return onItemRightClickSuper(world, player, hand);
+        return useSuper(level, player, hand);
     }
 
     @Override
@@ -74,16 +74,16 @@ public class SubWeaponItem extends WeaponBaseItem
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entity, int timeLeft)
+    public void releaseUsing(ItemStack stack, World level, LivingEntity entity, int timeLeft)
     {
-        super.onPlayerStoppedUsing(stack, world, entity, timeLeft);
+        super.releaseUsing(stack, level, entity, timeLeft);
 
-        entity.swing(entity.getHeldItemOffhand().equals(this) ? Hand.OFF_HAND : Hand.MAIN_HAND, false);
+        entity.swing(entity.getOffhandItem().equals(this) ? Hand.OFF_HAND : Hand.MAIN_HAND, false);
 
-        AbstractSubWeaponEntity proj = AbstractSubWeaponEntity.create(entityType, world, entity, stack);
-        proj.shoot(entity, entity.rotationPitch, entity.rotationYaw, -30f, 0.5f, 0);
-        world.addEntity(proj);
-        world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), SplatcraftSounds.subThrow, SoundCategory.PLAYERS, 0.7F, 1);
+        AbstractSubWeaponEntity proj = AbstractSubWeaponEntity.create(entityType, level, entity, stack);
+        proj.shoot(entity, entity.xRot, entity.yRot, -30f, 0.5f, 0);
+        level.addFreshEntity(proj);
+        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.subThrow, SoundCategory.PLAYERS, 0.7F, 1);
         if(stack.getOrCreateTag().getBoolean("SingleUse"))
         {
             if(entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative())
@@ -96,39 +96,39 @@ public class SubWeaponItem extends WeaponBaseItem
     public static class DispenseBehavior extends ProjectileDispenseBehavior
     {
         @Override
-        public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
+        public ItemStack execute(IBlockSource source, ItemStack stack)
         {
             if(stack.getOrCreateTag().getBoolean("SingleUse"))
-                return super.dispenseStack(source, stack);
+                return super.execute(source, stack);
 
-            Direction direction = source.getBlockState().get(DispenserBlock.FACING);
+            Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
             IPosition iposition = DispenserBlock.getDispensePosition(source);
             ItemStack itemstack = stack.split(1);
-            doDispense(source.getWorld(), itemstack, 6, direction, iposition);
+            spawnItem(source.getLevel(), itemstack, 6, direction, iposition);
             return stack;
         }
 
         @Override
-        protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn)
+        protected ProjectileEntity getProjectile(World levelIn, IPosition position, ItemStack stackIn)
         {
             if(!(stackIn.getItem() instanceof SubWeaponItem))
                 return null;
 
-            return AbstractSubWeaponEntity.create(((SubWeaponItem) stackIn.getItem()).entityType,  worldIn, position.getX(), position.getY(), position.getZ(), ColorUtils.getInkColor(stackIn), InkBlockUtils.InkType.NORMAL, stackIn);
+            return AbstractSubWeaponEntity.create(((SubWeaponItem) stackIn.getItem()).entityType,  levelIn, position.x(), position.y(), position.z(), ColorUtils.getInkColor(stackIn), InkBlockUtils.InkType.NORMAL, stackIn);
         }
 
         @Override
-        protected void playDispenseSound(IBlockSource source) {
-            source.getWorld().playSound(null, source.getX(), source.getY(), source.getZ(), SplatcraftSounds.subThrow, SoundCategory.PLAYERS, 0.7F, 1);
+        protected void playSound(IBlockSource source) {
+            source.getLevel().playSound(null, source.x(), source.y(), source.z(), SplatcraftSounds.subThrow, SoundCategory.PLAYERS, 0.7F, 1);
         }
 
         @Override
-        protected float getProjectileVelocity() {
+        protected float getPower() {
             return 0.7f;
         }
 
         @Override
-        protected float getProjectileInaccuracy() {
+        protected float getUncertainty() {
             return 0;
         }
     }

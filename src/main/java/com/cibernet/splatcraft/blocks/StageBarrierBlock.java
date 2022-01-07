@@ -20,56 +20,58 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
 public class StageBarrierBlock extends Block
 {
-    public static final VoxelShape COLLISION = makeCuboidShape(0.0, 0.01, 0.0, 16, 15.99, 16);
+    public static final VoxelShape COLLISION = box(0.0, 0.01, 0.0, 16, 15.99, 16);
     public final boolean damagesPlayer;
 
     public StageBarrierBlock(String name, boolean damagesPlayer)
     {
-        super(Properties.create(Material.BARRIER, MaterialColor.AIR).hardnessAndResistance(-1.0F, 3600000.8F).noDrops().notSolid());
+        super(Properties.of(Material.BARRIER, MaterialColor.NONE).strength(-1.0F, 3600000.8F).noDrops().noOcclusion());
         setRegistryName(name);
         this.damagesPlayer = damagesPlayer;
 
     }
 
     @Override
-    public boolean addLandingEffects(BlockState state1, ServerWorld worldserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles)
+    public boolean addLandingEffects(BlockState state1, ServerWorld levelserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles)
     {
         return true;
     }
 
     @Override
-    public boolean addHitEffects(BlockState state, World worldObj, RayTraceResult target, ParticleManager manager)
+    public boolean addHitEffects(BlockState state, World levelObj, RayTraceResult target, ParticleManager manager)
     {
         return true;
     }
 
     @Override
-    public boolean addRunningEffects(BlockState state, World world, BlockPos pos, Entity entity)
+    public boolean addRunningEffects(BlockState state, World level, BlockPos pos, Entity entity)
     {
         return true;
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
-        if (Minecraft.getInstance().player.isCreative() || !(worldIn.getTileEntity(pos) instanceof StageBarrierTileEntity))
+        if (Minecraft.getInstance().player.isCreative() || !(levelIn.getBlockEntity(pos) instanceof StageBarrierTileEntity))
         {
-            return VoxelShapes.fullCube();
+            return VoxelShapes.block();
         }
 
-        StageBarrierTileEntity te = (StageBarrierTileEntity) worldIn.getTileEntity(pos);
+        StageBarrierTileEntity te = (StageBarrierTileEntity) levelIn.getBlockEntity(pos);
 
-        return te.getActiveTime() > 5 ? super.getShape(state, worldIn, pos, context) : VoxelShapes.empty();
+        return te.getActiveTime() > 5 ? super.getShape(state, levelIn, pos, context) : VoxelShapes.empty();
     }
 
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
         return COLLISION;
     }
@@ -82,19 +84,13 @@ public class StageBarrierBlock extends Block
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
         return SplatcraftTileEntitites.stageBarrierTileEntity.create();
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos)
-    {
-        return super.getRenderShape(state, worldIn, pos);
-    }
-
-    @Override
-    public BlockRenderType getRenderType(BlockState state)
+    public BlockRenderType getRenderShape(BlockState state)
     {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
@@ -105,9 +101,9 @@ public class StageBarrierBlock extends Block
         return true;
     }
 
-    @Override
-    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos)
-    {
+
+    @OnlyIn(Dist.CLIENT)
+    public float getShadeBrightness(BlockState p_220080_1_, IBlockReader p_220080_2_, BlockPos p_220080_3_) {
         return 1.0F;
     }
 

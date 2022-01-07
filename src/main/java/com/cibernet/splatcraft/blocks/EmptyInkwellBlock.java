@@ -3,6 +3,7 @@ package com.cibernet.splatcraft.blocks;
 import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.GlassBlock;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -24,31 +25,31 @@ public class EmptyInkwellBlock extends AbstractGlassBlock
 {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private static final VoxelShape SHAPE = VoxelShapes.or(
-            makeCuboidShape(0, 0, 0, 16, 12, 16),
-            makeCuboidShape(1, 12, 1, 14 / 16f, 13, 14),
-            makeCuboidShape(0, 13, 0, 16, 16, 16));
+            box(0, 0, 0, 16, 12, 16),
+            box(1, 12, 1, 14 / 16f, 13, 14),
+            box(0, 13, 0, 16, 16, 16));
 
 
     public EmptyInkwellBlock(Properties properties)
     {
-        super(properties.notSolid());
-        this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, false));
+        super(properties.noOcclusion());
+        this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false));
     }
 
     @Override
-    public boolean isTransparent(BlockState state)
+    public boolean useShapeForLightOcclusion(BlockState state)
     {
         return true;
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
         return SHAPE;
     }
 
     @Override
-    public PushReaction getPushReaction(BlockState state)
+    public PushReaction getPistonPushReaction(BlockState state)
     {
         return PushReaction.DESTROY;
     }
@@ -59,11 +60,11 @@ public class EmptyInkwellBlock extends AbstractGlassBlock
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
 
-        return getDefaultState().with(WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
+        return defaultBlockState().setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
         builder.add(WATERLOGGED);
     }
@@ -71,18 +72,18 @@ public class EmptyInkwellBlock extends AbstractGlassBlock
     @Override
     public FluidState getFluidState(BlockState state)
     {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
     {
-        if (stateIn.get(WATERLOGGED))
+        if (stateIn.getValue(WATERLOGGED))
         {
-            worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+            levelIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelIn));
         }
 
-        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, levelIn, currentPos, facingPos);
     }
 
 }

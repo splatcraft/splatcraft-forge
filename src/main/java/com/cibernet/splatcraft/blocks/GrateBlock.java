@@ -14,6 +14,7 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.Half;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -26,52 +27,46 @@ public class GrateBlock extends Block implements IWaterLoggable
 {
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    public static final Properties PROPERTIES = Properties.create(Material.IRON).notSolid().setRequiresTool().harvestTool(ToolType.PICKAXE).hardnessAndResistance(4.0f).sound(SoundType.METAL);
-    protected static final VoxelShape BOTTOM_AABB = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 3.0D, 16.0D);
-    protected static final VoxelShape TOP_AABB = Block.makeCuboidShape(0.0D, 13.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    public static final Properties PROPERTIES = Properties.of(Material.METAL).noOcclusion().requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).strength(4.0f).sound(SoundType.METAL);
+    protected static final VoxelShape BOTTOM_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 3.0D, 16.0D);
+    protected static final VoxelShape TOP_AABB = Block.box(0.0D, 13.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 
     public GrateBlock(String name)
     {
         super(PROPERTIES);
-        this.setDefaultState(this.stateContainer.getBaseState().with(HALF, Half.BOTTOM).with(WATERLOGGED, false));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(HALF, Half.BOTTOM).setValue(WATERLOGGED, false));
         setRegistryName(name);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
-        return state.get(HALF) == Half.TOP ? TOP_AABB : BOTTOM_AABB;
+        return state.getValue(HALF) == Half.TOP ? TOP_AABB : BOTTOM_AABB;
     }
 
-    @Override
-    public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type)
-    {
-        if (type == PathType.WATER)
-        {
-            return state.get(WATERLOGGED);
-        }
-        return true;
+    public boolean isPathfindable(BlockState state, IBlockReader levelIn, BlockPos pos, PathType type) {
+        return type == PathType.WATER && levelIn.getFluidState(pos).is(FluidTags.WATER);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        BlockState blockstate = this.getDefaultState();
-        FluidState fluidstate = context.getWorld().getFluidState(context.getPos());
-        Direction direction = context.getFace();
+        BlockState blockstate = this.defaultBlockState();
+        FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
+        Direction direction = context.getClickedFace();
         if (!context.replacingClickedOnBlock() && direction.getAxis().isHorizontal())
         {
-            blockstate = blockstate.with(HALF, context.getHitVec().y - (double) context.getPos().getY() > 0.5D ? Half.TOP : Half.BOTTOM);
+            blockstate = blockstate.setValue(HALF, context.getClickLocation().y - (double) context.getClickedPos().getY() > 0.5D ? Half.TOP : Half.BOTTOM);
         } else
         {
-            blockstate = blockstate.with(HALF, direction == Direction.UP ? Half.BOTTOM : Half.TOP);
+            blockstate = blockstate.setValue(HALF, direction == Direction.UP ? Half.BOTTOM : Half.TOP);
         }
 
-        return blockstate.with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER);
+        return blockstate.setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
         builder.add(HALF, WATERLOGGED);
     }
@@ -79,7 +74,7 @@ public class GrateBlock extends Block implements IWaterLoggable
     @Override
     public FluidState getFluidState(BlockState state)
     {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     /**
@@ -89,14 +84,14 @@ public class GrateBlock extends Block implements IWaterLoggable
      * Note that this method should ideally consider only the specific face passed in.
      */
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
     {
-        if (stateIn.get(WATERLOGGED))
+        if (stateIn.getValue(WATERLOGGED))
         {
-            worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+            levelIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelIn));
         }
 
-        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, levelIn, currentPos, facingPos);
     }
 
 }

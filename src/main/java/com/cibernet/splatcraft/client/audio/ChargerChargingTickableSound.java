@@ -20,15 +20,15 @@ public class ChargerChargingTickableSound extends TickableSound
     public ChargerChargingTickableSound(PlayerEntity player)
     {
         super(SplatcraftSounds.chargerCharge, SoundCategory.PLAYERS);
-        this.attenuationType = AttenuationType.NONE;
-        this.repeat = true;
-        this.repeatDelay = 0;
+        this.attenuation = AttenuationType.NONE;
+        this.looping = true;
+        this.delay = 0;
 
         this.player = player;
     }
 
     @Override
-    public boolean canBeSilent()
+    public boolean canStartSilent()
     {
         return true;
     }
@@ -36,29 +36,29 @@ public class ChargerChargingTickableSound extends TickableSound
     @Override
     public void tick()
     {
-        x = player.getPosX();
-        y = player.getPosY();
-        z = player.getPosZ();
+        x = player.getX();
+        y = player.getY();
+        z = player.getZ();
 
-        if (player.isAlive() && player.getActiveItemStack().getItem() instanceof ChargerItem && PlayerInfoCapability.hasCapability(player))
+        if (player.isAlive() && player.getUseItem().getItem() instanceof ChargerItem && PlayerInfoCapability.hasCapability(player))
         {
             IPlayerInfo info = PlayerInfoCapability.get(player);
             if (!info.isSquid())
             {
-                volume = WeaponBaseItem.hasInk(player, player.getActiveItemStack()) ? 1 : 0;
+                volume = WeaponBaseItem.hasInk(player, player.getUseItem()) ? 1 : 0;
 
-                if (PlayerCharge.getChargeValue(player, player.getActiveItemStack()) >= 1 && !isDonePlaying())
+                if (PlayerCharge.getChargeValue(player, player.getUseItem()) >= 1 && !isStopped())
                 {
-                    player.world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SplatcraftSounds.chargerReady, SoundCategory.PLAYERS, 1, 1);
-                    finishPlaying();
+                    player.level.playSound(player, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerReady, SoundCategory.PLAYERS, 1, 1);
+                    stop();
                     return;
                 }
-                pitch = PlayerCharge.getChargeValue(player, player.getActiveItemStack()) + 0.5f;
-                pitch = MathHelper.lerp(Minecraft.getInstance().getRenderPartialTicks(), pitch, prevPitch);
+                pitch = PlayerCharge.getChargeValue(player, player.getUseItem()) + 0.5f;
+                pitch = MathHelper.lerp(Minecraft.getInstance().getDeltaFrameTime(), pitch, prevPitch);
                 prevPitch = pitch;
                 return;
             }
         }
-        finishPlaying();
+        stop();
     }
 }

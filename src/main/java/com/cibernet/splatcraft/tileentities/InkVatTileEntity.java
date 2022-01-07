@@ -47,31 +47,25 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     }
 
     @Override
-    public void markDirty()
-    {
-        super.markDirty();
-    }
-
-    @Override
     public int[] getSlotsForFace(Direction side)
     {
         return side == Direction.UP ? INPUT_SLOTS : OUTPUT_SLOTS;
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, @Nullable Direction direction)
+    public boolean canPlaceItemThroughFace(int index, ItemStack itemStackIn, @Nullable Direction direction)
     {
-        return isItemValidForSlot(index, itemStackIn);
+        return canPlaceItem(index, itemStackIn);
     }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack stack, Direction direction)
+    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction)
     {
         return index == 4;
     }
 
     @Override
-    public int getSizeInventory()
+    public int getContainerSize()
     {
         return inventory.size();
     }
@@ -83,23 +77,23 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     }
 
     @Override
-    public ItemStack getStackInSlot(int index)
+    public ItemStack getItem(int index)
     {
         return inventory.get(index);
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
+    public ItemStack removeItem(int index, int count)
     {
         if (index == 4 && !consumeIngredients(count))
         {
             return ItemStack.EMPTY;
         }
 
-        ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
+        ItemStack itemstack = ItemStackHelper.removeItem(inventory, index, count);
         if (!itemstack.isEmpty())
         {
-            this.markDirty();
+            this.setChanged();
         }
 
         return itemstack;
@@ -109,9 +103,9 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     {
         if (inventory.get(0).getCount() >= count && inventory.get(1).getCount() >= count && inventory.get(2).getCount() >= count)
         {
-            decrStackSize(0, count);
-            decrStackSize(1, count);
-            decrStackSize(2, count);
+            removeItem(0, count);
+            removeItem(1, count);
+            removeItem(2, count);
             return true;
         }
         return false;
@@ -121,12 +115,9 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     {
         if (hasRcipe())
         {
-            setInventorySlotContents(4, ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkwell, Math.min(SplatcraftItems.inkwell.getMaxStackSize(),
+            setItem(4, ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkwell, Math.min(SplatcraftItems.inkwell.getMaxStackSize(),
                     Math.min(Math.min(inventory.get(0).getCount(), inventory.get(1).getCount()), inventory.get(2).getCount()))), getColor()), true));
-        } else
-        {
-            setInventorySlotContents(4, ItemStack.EMPTY);
-        }
+        } else setItem(4, ItemStack.EMPTY);
     }
 
     public boolean hasRcipe()
@@ -145,50 +136,50 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index)
+    public ItemStack removeItemNoUpdate(int index)
     {
-        return ItemStackHelper.getAndRemove(inventory, index);
+        return ItemStackHelper.takeItem(inventory, index);
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
+    public void setItem(int index, ItemStack stack)
     {
         inventory.set(index, stack);
-        if (stack.getCount() > this.getInventoryStackLimit())
+        if (stack.getCount() > this.getMaxStackSize())
         {
-            stack.setCount(this.getInventoryStackLimit());
+            stack.setCount(this.getMaxStackSize());
         }
 
-        this.markDirty();
+        this.setChanged();
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player)
+    public boolean stillValid(PlayerEntity player)
     {
-        if (this.world.getTileEntity(this.pos) != this)
+        if (this.level.getBlockEntity(this.getBlockPos()) != this)
         {
             return false;
         }
-        return !(player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) > 64.0D);
+        return !(player.distanceToSqr((double) this.getBlockPos().getX() + 0.5D, (double) this.getBlockPos().getY() + 0.5D, (double) this.getBlockPos().getZ() + 0.5D) > 64.0D);
     }
 
     @Override
-    public void clear()
+    public void clearContent()
     {
         inventory.clear();
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
+    public boolean canPlaceItem(int index, ItemStack stack)
     {
         switch (index)
         {
             case 0:
-                return ItemStack.areItemsEqual(stack, new ItemStack(Items.INK_SAC));
+                return ItemStack.isSame(stack, new ItemStack(Items.INK_SAC));
             case 1:
-                return ItemStack.areItemsEqual(stack, new ItemStack(SplatcraftItems.powerEgg));
+                return ItemStack.isSame(stack, new ItemStack(SplatcraftItems.powerEgg));
             case 2:
-                return ItemStack.areItemsEqual(stack, new ItemStack(SplatcraftItems.emptyInkwell));
+                return ItemStack.isSame(stack, new ItemStack(SplatcraftItems.emptyInkwell));
             case 3:
                 return SplatcraftTags.Items.FILTERS.contains(stack.getItem());
         }
@@ -202,13 +193,13 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
+    public CompoundNBT save(CompoundNBT nbt)
     {
         nbt.putInt("Color", color);
         nbt.putInt("Pointer", pointer);
         nbt.putInt("RecipeEntries", recipeEntries);
         ItemStackHelper.saveAllItems(nbt, inventory);
-        return super.write(nbt);
+        return super.save(nbt);
     }
 
     @Override
@@ -225,44 +216,44 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
 
     //Nbt Read
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
+    public void load(BlockState state, CompoundNBT nbt)
     {
-        super.read(state, nbt);
+        super.load(state, nbt);
         color = ColorUtils.getColorFromNbt(nbt);
         pointer = nbt.getInt("Pointer");
         recipeEntries = nbt.getInt("RecipeEntries");
 
-        clear();
+        clearContent();
         ItemStackHelper.loadAllItems(nbt, inventory);
     }
 
     @Override
     public CompoundNBT getUpdateTag()
     {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag)
     {
-        this.read(state, tag);
+        this.load(state, tag);
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
-        return new SUpdateTileEntityPacket(getPos(), 2, getUpdateTag());
+        return new SUpdateTileEntityPacket(getBlockPos(), 2, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
     {
-        if (world != null)
+        if (level != null)
         {
-            BlockState state = world.getBlockState(pos);
-            world.notifyBlockUpdate(pos, state, state, 2);
-            handleUpdateTag(state, pkt.getNbtCompound());
+            BlockState state = level.getBlockState(getBlockPos());
+            level.sendBlockUpdated(getBlockPos(), state, state, 2);
+            handleUpdateTag(state, pkt.getTag());
         }
     }
 
@@ -270,7 +261,7 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     {
         if (hasRcipe())
         {
-            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
             if (pointer != -1 && recipeEntries > 0)
             {
                 pointer = (pointer + 1) % recipeEntries;
@@ -293,9 +284,9 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     public void tick()
     {
         updateRecipeOutput();
-        if (!world.isRemote)
+        if (!level.isClientSide)
         {
-            world.setBlockState(pos, getBlockState().with(InkVatBlock.ACTIVE, hasRcipe()));
+            level.setBlock(getBlockPos(), getBlockState().setValue(InkVatBlock.ACTIVE, hasRcipe()), 3);
         }
     }
 
@@ -312,7 +303,7 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     @Override
     public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing)
     {
-        if (!this.removed && facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        if (!this.isRemoved() && facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
             if (facing == Direction.UP)
             {
@@ -332,9 +323,9 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
      * invalidates a tile entity
      */
     @Override
-    public void remove()
+    public void setRemoved()
     {
-        super.remove();
+        super.setRemoved();
         for (LazyOptional<? extends IItemHandler> handler : handlers)
         {
             handler.invalidate();
@@ -345,14 +336,14 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     {
         boolean changeState = Math.min(color, 0) != Math.min(getColor(), 0);
         setColor(color);
-        if (world != null)
+        if (level != null)
         {
             if (changeState)
             {
-                world.setBlockState(pos, getBlockState().with(InkVatBlock.ACTIVE, hasRcipe()), 2);
+                level.setBlock(getBlockPos(), getBlockState().setValue(InkVatBlock.ACTIVE, hasRcipe()), 2);
             } else
             {
-                world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 2);
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
             }
         }
         return true;

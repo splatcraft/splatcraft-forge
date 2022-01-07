@@ -27,25 +27,25 @@ public class CanvasBlock extends Block implements IColoredBlock
 
     public CanvasBlock(String name)
     {
-        super(Properties.create(Material.WOOL).hardnessAndResistance(0.8f).sound(SoundType.CLOTH));
+        super(Properties.of(Material.WOOL).strength(0.8f).sound(SoundType.WOOL));
         SplatcraftBlocks.inkColoredBlocks.add(this);
         setRegistryName(name);
-        setDefaultState(getDefaultState().with(INKED, false));
+        registerDefaultState(defaultBlockState().setValue(INKED, false));
     }
 
-    private static BlockState clearInk(IWorld world, BlockPos pos)
+    private static BlockState clearInk(IWorld level, BlockPos pos)
     {
-        InkedBlockTileEntity te = (InkedBlockTileEntity) world.getTileEntity(pos);
+        InkedBlockTileEntity te = (InkedBlockTileEntity) level.getBlockEntity(pos);
         if (te != null && te.hasSavedState())
         {
-            world.setBlockState(pos, te.getSavedState(), 3);
+            level.setBlock(pos, te.getSavedState(), 3);
 
             if (te.hasSavedColor() && te.getSavedState().getBlock() instanceof IColoredBlock)
             {
-                ((World) world).setTileEntity(pos, te.getSavedState().getBlock().createTileEntity(te.getSavedState(), world));
-                if (world.getTileEntity(pos) instanceof InkColorTileEntity)
+                ((World) level).setBlockEntity(pos, te.getSavedState().getBlock().createTileEntity(te.getSavedState(), level));
+                if (level.getBlockEntity(pos) instanceof InkColorTileEntity)
                 {
-                    InkColorTileEntity newte = (InkColorTileEntity) world.getTileEntity(pos);
+                    InkColorTileEntity newte = (InkColorTileEntity) level.getBlockEntity(pos);
                     if (newte != null)
                         newte.setColor(te.getSavedColor());
                 }
@@ -54,7 +54,7 @@ public class CanvasBlock extends Block implements IColoredBlock
             return te.getSavedState();
         }
 
-        return world.getBlockState(pos);
+        return level.getBlockState(pos);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class CanvasBlock extends Block implements IColoredBlock
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
         InkColorTileEntity te = SplatcraftTileEntitites.colorTileEntity.create();
         if (te != null)
@@ -74,42 +74,42 @@ public class CanvasBlock extends Block implements IColoredBlock
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
         builder.add(INKED);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
     {
-        int color = getColor((World) worldIn, currentPos);
+        int color = getColor((World) levelIn, currentPos);
 
-        if (InkedBlock.isTouchingLiquid(worldIn, currentPos))
+        if (InkedBlock.isTouchingLiquid(levelIn, currentPos))
         {
-            TileEntity tileEntity = worldIn.getTileEntity(currentPos);
+            TileEntity tileEntity = levelIn.getBlockEntity(currentPos);
             if (tileEntity instanceof InkColorTileEntity)
                 ((InkColorTileEntity) tileEntity).setColor(-1);
         }
 
-        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos).with(INKED, color != -1);
+        return super.updateShape(stateIn, facing, facingState, levelIn, currentPos, facingPos).setValue(INKED, color != -1);
     }
 
     @Override
-    public boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    public boolean inkBlock(World level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
-        if (InkedBlock.isTouchingLiquid(world, pos))
+        if (InkedBlock.isTouchingLiquid(level, pos))
             return false;
 
-        if (color == getColor(world, pos))
+        if (color == getColor(level, pos))
             return false;
 
-        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity tileEntity = level.getBlockEntity(pos);
         if (tileEntity instanceof InkColorTileEntity)
         {
-            BlockState state = world.getBlockState(pos);
+            BlockState state = level.getBlockState(pos);
             ((InkColorTileEntity) tileEntity).setColor(color);
-            world.setBlockState(pos, state.with(INKED, true), 2);
-            world.notifyBlockUpdate(pos, state, state.with(INKED, true), 2);
+            level.setBlock(pos, state.setValue(INKED, true), 2);
+            level.sendBlockUpdated(pos, state, state.setValue(INKED, true), 2);
             return true;
         }
 
@@ -135,21 +135,21 @@ public class CanvasBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean remoteColorChange(World world, BlockPos pos, int newColor)
+    public boolean remoteColorChange(World level, BlockPos pos, int newColor)
     {
-        BlockState state = world.getBlockState(pos);
-        TileEntity tileEntity = world.getTileEntity(pos);
+        BlockState state = level.getBlockState(pos);
+        TileEntity tileEntity = level.getBlockEntity(pos);
         if (tileEntity instanceof InkColorTileEntity && ((InkColorTileEntity) tileEntity).getColor() != newColor)
         {
             ((InkColorTileEntity) tileEntity).setColor(newColor);
-            world.setBlockState(pos, state.with(INKED, true), 2);
+            level.setBlock(pos, state.setValue(INKED, true), 2);
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean remoteInkClear(World world, BlockPos pos)
+    public boolean remoteInkClear(World level, BlockPos pos)
     {
         return false;
     }

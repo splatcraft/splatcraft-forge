@@ -21,16 +21,16 @@ import java.util.Map;
 public class FenceConnectionMixin
 {
 
-    private static final Map<Direction, BooleanProperty> FACING_TO_PROPERTY_MAP = SixWayBlock.FACING_TO_PROPERTY_MAP.entrySet().stream().filter((facingProperty) -> facingProperty.getKey().getAxis().isHorizontal()).collect(Util.toMapCollector());
+    private static final Map<Direction, BooleanProperty> FACING_TO_PROPERTY_MAP = SixWayBlock.PROPERTY_BY_DIRECTION.entrySet().stream().filter((facingProperty) -> facingProperty.getKey().getAxis().isHorizontal()).collect(Util.toMap());
 
-    @Inject(at= @At("TAIL"), method = "updatePostPlacement", cancellable = true, remap = false)
-    private void updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos, CallbackInfoReturnable<BlockState> callback)
+    @Inject(at= @At("TAIL"), method = "updateShape", cancellable = true, remap = false)
+    private void updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos, CallbackInfoReturnable<BlockState> callback)
     {
         BlockState state = callback.getReturnValue();
 
-        if(worldIn instanceof World)
+        if(levelIn instanceof World)
         {
-            callback.setReturnValue(facing.getAxis().getPlane() == Direction.Plane.HORIZONTAL ? state.with(FACING_TO_PROPERTY_MAP.get(facing), state.get(FACING_TO_PROPERTY_MAP.get(facing)) || this.canConnect((World) worldIn, facingPos, facing)) : state);
+            callback.setReturnValue(facing.getAxis().getPlane() == Direction.Plane.HORIZONTAL ? state.setValue(FACING_TO_PROPERTY_MAP.get(facing), state.getValue(FACING_TO_PROPERTY_MAP.get(facing)) || this.canConnect((World) levelIn, facingPos, facing)) : state);
         }
     }
 
@@ -44,29 +44,29 @@ public class FenceConnectionMixin
             if(dir.getAxis().getPlane() == Direction.Plane.VERTICAL)
                 continue;
 
-            state = state.with(FACING_TO_PROPERTY_MAP.get(dir), state.get(FACING_TO_PROPERTY_MAP.get(dir)) || this.canConnect(context.getWorld(), context.getPos().offset(dir), dir));
+            state = state.setValue(FACING_TO_PROPERTY_MAP.get(dir), state.getValue(FACING_TO_PROPERTY_MAP.get(dir)) || this.canConnect(context.getLevel(), context.getClickedPos().relative(dir), dir));
         }
 
         callback.setReturnValue(state);
     }
 
-    private boolean canConnect(World world, BlockPos pos, Direction direction)
+    private boolean canConnect(World level, BlockPos pos, Direction direction)
     {
 
-        if(!(world.getTileEntity(pos) instanceof InkedBlockTileEntity))
+        if(!(level.getBlockEntity(pos) instanceof InkedBlockTileEntity))
             return false;
 
-        InkedBlockTileEntity te = (InkedBlockTileEntity) world.getTileEntity(pos);
+        InkedBlockTileEntity te = (InkedBlockTileEntity) level.getBlockEntity(pos);
         BlockState state = te.getSavedState();
         Block block = state.getBlock();
 
-        boolean flag = this.isWoodenFence(block);
-        boolean flag1 = block instanceof FenceGateBlock && FenceGateBlock.isParallel(state, direction);
-        return !Block.cannotAttach(block) && (flag || flag1);
+        boolean flag = this.isSameFence(block);
+        boolean flag1 = block instanceof FenceGateBlock && FenceGateBlock.connectsToDirection(state, direction);
+        return !Block.isExceptionForConnection(block) && (flag || flag1);
     }
 
     @Shadow
-    private boolean isWoodenFence(Block block)
+    private boolean isSameFence(Block block)
     {
         throw new IllegalStateException("Mixin failed to shadow isWoodenFence()");
     }

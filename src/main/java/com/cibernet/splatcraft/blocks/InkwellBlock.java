@@ -40,31 +40,31 @@ import javax.annotation.Nullable;
 public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
 {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    public static final SoundType SOUND_TYPE = new ForgeSoundType(1.0F, 1.0F, () -> SoundEvents.BLOCK_STONE_BREAK, () -> SoundEvents.BLOCK_SLIME_BLOCK_STEP, () -> SoundEvents.BLOCK_GLASS_PLACE, () -> SoundEvents.BLOCK_GLASS_HIT, () -> SoundEvents.BLOCK_SLIME_BLOCK_FALL);
+    public static final SoundType SOUND_TYPE = new ForgeSoundType(1.0F, 1.0F, () -> SoundEvents.STONE_BREAK, () -> SoundEvents.SLIME_BLOCK_STEP, () -> SoundEvents.GLASS_PLACE, () -> SoundEvents.GLASS_HIT, () -> SoundEvents.SLIME_BLOCK_FALL);
     private static final VoxelShape SHAPE = VoxelShapes.or(
-            makeCuboidShape(0, 0, 0, 16, 12, 16),
-            makeCuboidShape(1, 12, 1, 14 / 16f, 13, 14),
-            makeCuboidShape(0, 13, 0, 16, 16, 16));
+            box(0, 0, 0, 16, 12, 16),
+            box(1, 12, 1, 14 / 16f, 13, 14),
+            box(0, 13, 0, 16, 16, 16));
 
     public InkwellBlock()
     {
-        super(Properties.create(Material.GLASS).hardnessAndResistance(0.35f).harvestTool(ToolType.PICKAXE).sound(SOUND_TYPE));
-        this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, false));
+        super(Properties.of(Material.GLASS).strength(0.35f).harvestTool(ToolType.PICKAXE).sound(SOUND_TYPE));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false));
 
         SplatcraftBlocks.inkColoredBlocks.add(this);
     }
 
     @Nullable
     @Override
-    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader world, BlockPos pos, BlockPos beaconPos)
+    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader level, BlockPos pos, BlockPos beaconPos)
     {
-        return ColorUtils.hexToRGB(getColor((World) world, pos));
+        return ColorUtils.hexToRGB(getColor((World) level, pos));
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader level, BlockPos pos, PlayerEntity player)
     {
-        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, world, pos, player), getColor((World) world, pos)), true);
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, level, pos, player), getColor((World) level, pos)), true);
     }
 
     @Nullable
@@ -72,11 +72,11 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
 
-        return getDefaultState().with(WATERLOGGED, context.getWorld().getFluidState(context.getPos()).getFluid() == Fluids.WATER);
+        return defaultBlockState().setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
         builder.add(WATERLOGGED);
     }
@@ -84,60 +84,66 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     @Override
     public FluidState getFluidState(BlockState state)
     {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
     {
-        if (stateIn.get(WATERLOGGED))
+        if (stateIn.getValue(WATERLOGGED))
         {
-            worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+            levelIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelIn));
         }
 
-        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, levelIn, currentPos, facingPos);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
         return SHAPE;
     }
 
     @Override
-    public PushReaction getPushReaction(BlockState state)
+    public PushReaction getPistonPushReaction(BlockState state)
     {
         return PushReaction.DESTROY;
     }
 
     @Override
-    public ItemStack getItem(IBlockReader reader, BlockPos pos, BlockState state)
+    public ItemStack getCloneItemStack(IBlockReader reader, BlockPos pos, BlockState state)
     {
-        ItemStack stack = super.getItem(reader, pos, state);
+        ItemStack stack = super.getCloneItemStack(reader, pos, state);
 
-        if (reader.getTileEntity(pos) instanceof InkColorTileEntity)
-            ColorUtils.setColorLocked(ColorUtils.setInkColor(stack, ColorUtils.getInkColor(reader.getTileEntity(pos))), true);
+        if (reader.getBlockEntity(pos) instanceof InkColorTileEntity)
+            ColorUtils.setColorLocked(ColorUtils.setInkColor(stack, ColorUtils.getInkColor(reader.getBlockEntity(pos))), true);
 
         return stack;
     }
 
     @Override
-    public boolean allowsMovement(BlockState p_196266_1_, IBlockReader p_196266_2_, BlockPos p_196266_3_, PathType p_196266_4_) {
+    public boolean isPathfindable(BlockState p_196266_1_, IBlockReader p_196266_2_, BlockPos p_196266_3_, PathType p_196266_4_) {
         return false;
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
+    public boolean isPossibleToRespawnInThis()
     {
-        if (!world.isRemote && stack.getTag() != null && world.getTileEntity(pos) instanceof InkColorTileEntity)
-        {
-            ColorUtils.setInkColor(world.getTileEntity(pos), ColorUtils.getInkColor(stack));
-        }
-        super.onBlockPlacedBy(world, pos, state, entity, stack);
+        return true;
     }
 
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, IWorldReader world, BlockPos pos, Direction side)
+    public void setPlacedBy(World level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
+    {
+        if (!level.isClientSide && stack.getTag() != null && level.getBlockEntity(pos) instanceof InkColorTileEntity)
+        {
+            ColorUtils.setInkColor(level.getBlockEntity(pos), ColorUtils.getInkColor(stack));
+        }
+        super.setPlacedBy(level, pos, state, entity, stack);
+    }
+
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader level, BlockPos pos, Direction side)
     {
         return true;
     }
@@ -150,7 +156,7 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
         return SplatcraftTileEntitites.inkwellTileEntity.create();
     }
@@ -174,11 +180,11 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     }
 
     @Override
-    public int getColor(World world, BlockPos pos)
+    public int getColor(World level, BlockPos pos)
     {
-        if (world.getTileEntity(pos) instanceof InkColorTileEntity)
+        if (level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
-            InkColorTileEntity tileEntity = (InkColorTileEntity) world.getTileEntity(pos);
+            InkColorTileEntity tileEntity = (InkColorTileEntity) level.getBlockEntity(pos);
             if (tileEntity != null)
             {
                 return tileEntity.getColor();
@@ -188,22 +194,22 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     }
 
     @Override
-    public boolean remoteColorChange(World world, BlockPos pos, int newColor)
+    public boolean remoteColorChange(World level, BlockPos pos, int newColor)
     {
-        BlockState state = world.getBlockState(pos);
-        TileEntity tileEntity = world.getTileEntity(pos);
+        BlockState state = level.getBlockState(pos);
+        TileEntity tileEntity = level.getBlockEntity(pos);
         if (tileEntity instanceof InkColorTileEntity && ((InkColorTileEntity) tileEntity).getColor() != newColor)
         {
             ((InkColorTileEntity) tileEntity).setColor(newColor);
-            world.notifyBlockUpdate(pos, state, state, 3);
-            state.updateNeighbours(world, pos, 3);
+            level.sendBlockUpdated(pos, state, state, 3);
+            state.updateNeighbourShapes(level, pos, 3);
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean remoteInkClear(World world, BlockPos pos)
+    public boolean remoteInkClear(World level, BlockPos pos)
     {
         return false;
     }

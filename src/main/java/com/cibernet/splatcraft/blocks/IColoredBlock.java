@@ -14,9 +14,9 @@ public interface IColoredBlock
 
     boolean canDamage();
 
-    default int getColor(World world, BlockPos pos)
+    default int getColor(World level, BlockPos pos)
     {
-        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity tileEntity = level.getBlockEntity(pos);
         if (tileEntity instanceof InkColorTileEntity)
         {
             return ((InkColorTileEntity) tileEntity).getColor();
@@ -24,21 +24,21 @@ public interface IColoredBlock
         return -1;
     }
 
-    default boolean canRemoteColorChange(World world, BlockPos pos, int color, int newColor)
+    default boolean canRemoteColorChange(World level, BlockPos pos, int color, int newColor)
     {
         return color != newColor;
     }
 
-    boolean remoteColorChange(World world, BlockPos pos, int newColor);
+    boolean remoteColorChange(World level, BlockPos pos, int newColor);
 
-    boolean remoteInkClear(World world, BlockPos pos);
+    boolean remoteInkClear(World level, BlockPos pos);
 
-    default boolean setColor(World world, BlockPos pos, int color)
+    default boolean setColor(World level, BlockPos pos, int color)
     {
         return false;
     }
 
-    default boolean inkBlock(World world, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    default boolean inkBlock(World level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
         return false;
     }

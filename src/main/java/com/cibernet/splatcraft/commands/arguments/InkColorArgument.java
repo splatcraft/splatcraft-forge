@@ -122,11 +122,11 @@ public class InkColorArgument implements ArgumentType<Integer>
             if (flag)
             {
                 String s = resourcelocation.toString();
-                if (ISuggestionProvider.func_237256_a_(p_210512_1_, s))
+                if (ISuggestionProvider.matchesSubStr(p_210512_1_, s))
                 {
                     p_210512_3_.accept(t);
                 }
-            } else if (ISuggestionProvider.func_237256_a_(p_210512_1_, resourcelocation.getNamespace()) || resourcelocation.getNamespace().equals(Splatcraft.MODID) && ISuggestionProvider.func_237256_a_(p_210512_1_, resourcelocation.getPath()))
+            } else if (ISuggestionProvider.matchesSubStr(p_210512_1_, resourcelocation.getNamespace()) || resourcelocation.getNamespace().equals(Splatcraft.MODID) && ISuggestionProvider.matchesSubStr(p_210512_1_, resourcelocation.getPath()))
             {
                 p_210512_3_.accept(t);
             }
@@ -167,19 +167,19 @@ public class InkColorArgument implements ArgumentType<Integer>
     {
 
         @Override
-        public void write(InkColorArgument argument, PacketBuffer buffer)
+        public void serializeToNetwork(InkColorArgument argument, PacketBuffer buffer)
         {
 
         }
 
         @Override
-        public InkColorArgument read(PacketBuffer buffer)
+        public InkColorArgument deserializeFromNetwork(PacketBuffer buffer)
         {
             return null;
         }
 
         @Override
-        public void write(InkColorArgument p_212244_1_, JsonObject p_212244_2_)
+        public void serializeToJson(InkColorArgument p_212244_1_, JsonObject p_212244_2_)
         {
 
         }

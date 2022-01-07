@@ -25,15 +25,15 @@ public class ScanTurfCommand
 
     private static int execute(CommandContext<CommandSource> context, int mode) throws CommandSyntaxException
     {
-        return execute(context.getSource(), BlockPosArgument.getBlockPos(context, "from"), BlockPosArgument.getBlockPos(context, "to"), mode);
+        return execute(context.getSource(), BlockPosArgument.getLoadedBlockPos(context, "from"), BlockPosArgument.getLoadedBlockPos(context, "to"), mode);
     }
 
 
     private static int execute(CommandSource source, BlockPos from, BlockPos to, int mode) throws CommandSyntaxException
     {
-        RemoteItem.RemoteResult result = TurfScannerItem.scanTurf(source.getWorld(), source.getWorld(), from, to, mode, source.getEntity() instanceof ServerPlayerEntity ? source.asPlayer() : null);
+        RemoteItem.RemoteResult result = TurfScannerItem.scanTurf(source.getLevel(), source.getLevel(), from, to, mode, source.getEntity() instanceof ServerPlayerEntity ? source.getPlayerOrException() : null);
 
-        source.sendFeedback(result.getOutput() == null ? new TranslationTextComponent("commands.scanturf.success", result.getCommandResult()) : result.getOutput(), true);
+        source.sendSuccess(result.getOutput() == null ? new TranslationTextComponent("commands.scanturf.success", result.getCommandResult()) : result.getOutput(), true);
 
         return result.getCommandResult();
     }

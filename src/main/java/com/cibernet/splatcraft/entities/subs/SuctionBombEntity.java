@@ -28,7 +28,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
     public static final float DIRECT_DAMAGE = 44;
     public static final float EXPLOSION_SIZE = 3.5f;
 
-    private static final DataParameter<Boolean> ACTIVATED = EntityDataManager.createKey(SuctionBombEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> ACTIVATED = EntityDataManager.defineId(SuctionBombEntity.class, DataSerializers.BOOLEAN);
 
     public static final int FUSE_START = 10;
 
@@ -41,14 +41,14 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
     protected boolean inGround;
     public int shakeTime;
 
-    public SuctionBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, World world) {
-        super(type, world);
+    public SuctionBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, World level) {
+        super(type, level);
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        dataManager.register(ACTIVATED, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        entityData.define(ACTIVATED, false);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
     public void tick()
     {
         super.tick();
-        BlockState state = this.world.getBlockState(getPosition());
+        BlockState state = this.level.getBlockState(blockPosition());
 
         if(shakeTime > 0)
             --shakeTime;
@@ -72,23 +72,23 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
                 --fuseTime;
             else
             {
-                InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, getPosition(), EXPLOSION_SIZE, DAMAGE, DAMAGE, DIRECT_DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
-                world.setEntityState(this, (byte) 1);
-                world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
-                setDead();
+                InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), EXPLOSION_SIZE, DAMAGE, DAMAGE, DIRECT_DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
+                level.broadcastEntityEvent(this, (byte) 1);
+                level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+                remove();
                 return;
             }
 
         if(inGround)
-            if(inBlockState != state && this.world.hasNoCollisions((new AxisAlignedBB(this.getPositionVec(), this.getPositionVec())).grow(0.06D)))
+            if(inBlockState != state && this.level.noCollision((new AxisAlignedBB(this.position(), this.position())).inflate(0.06D)))
             {
                 this.inGround = false;
-                Vector3d vector3d = this.getMotion();
-                this.setMotion(vector3d.mul((double)(this.rand.nextFloat() * 0.2F), (double)(this.rand.nextFloat() * 0.2F), (double)(this.rand.nextFloat() * 0.2F)));
+                Vector3d vector3d = this.getDeltaMovement();
+                this.setDeltaMovement(vector3d.multiply((double)(this.random.nextFloat() * 0.2F), (double)(this.random.nextFloat() * 0.2F), (double)(this.random.nextFloat() * 0.2F)));
             }
             else
             {
-                setMotion(0, 0, 0);
+                setDeltaMovement(0, 0, 0);
                 setStickFacing();
             }
         else
@@ -96,18 +96,18 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
 
         }
 
-        doBlockCollisions();
+        checkInsideBlocks();
     }
 
 
     @Override
-    public void handleStatusUpdate(byte id)
+    public void handleEntityEvent(byte id)
     {
-        super.handleStatusUpdate(id);
+        super.handleEntityEvent(id);
         switch (id)
         {
             case 1:
-                world.addParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getPosX(), this.getPosY(), this.getPosZ(), 0, 0, 0);
+                level.addParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 break;
         }
 
@@ -116,16 +116,16 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
     public void setStickFacing()
     {
 
-        if(stickFacing.getHorizontalIndex() >= 0)
+        if(stickFacing.get2DDataValue() >= 0)
         {
-            rotationYaw = 180- stickFacing.getHorizontalAngle();
-            prevRotationYaw = rotationYaw;
+            yRot = 180- stickFacing.get2DDataValue();
+            yRotO = yRot;
         }
         else
         {
-            rotationPitch = stickFacing.equals(Direction.UP) ? -90 : 90;
-            rotationYaw = prevRotationYaw;
-            prevRotationPitch = rotationPitch;
+            xRotO = stickFacing.equals(Direction.UP) ? -90 : 90;
+            yRot = yRotO;
+            xRotO = xRot;
         }
 
     }
@@ -144,30 +144,30 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
         {
             shakeTime = 7;
             inGround = true;
-            inBlockState = world.getBlockState(result.getPos());
+            inBlockState = level.getBlockState(result.getBlockPos());
 
             setActivated(true);
 
-            Vector3d vector3d = result.getHitVec().subtract(this.getPosX(), this.getPosY(), this.getPosZ());
-            this.setMotion(vector3d);
+            Vector3d vector3d = result.getLocation().subtract(this.getX(), this.getY(), this.getZ());
+            this.setDeltaMovement(vector3d);
             Vector3d vector3d1 = vector3d.normalize().scale((double) 0.05F);
-            this.setRawPosition(this.getPosX() - vector3d1.x, this.getPosY() - vector3d1.y, this.getPosZ() - vector3d1.z);
+            this.setPosRaw(this.getX() - vector3d1.x, this.getY() - vector3d1.y, this.getZ() - vector3d1.z);
 
-            stickFacing = result.getFace();
+            stickFacing = result.getDirection();
             setStickFacing();
         }
     }
 
     public void setActivated(boolean v)
     {
-        dataManager.set(ACTIVATED, v);
+        entityData.set(ACTIVATED, v);
     }
-    public boolean isActivated() { return dataManager.get(ACTIVATED);}
+    public boolean isActivated() { return entityData.get(ACTIVATED);}
 
     @Override
-    public void readAdditional(CompoundNBT nbt)
+    public void readAdditionalSaveData(CompoundNBT nbt)
     {
-        super.readAdditional(nbt);
+        super.readAdditionalSaveData(nbt);
         setActivated(nbt.getBoolean("Activated"));
         if(nbt.contains("StickFacing"))
             stickFacing = Direction.byName(nbt.getString("StickFacing"));
@@ -182,9 +182,9 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
     }
 
     @Override
-    public void writeAdditional(CompoundNBT nbt)
+    public void addAdditionalSaveData(CompoundNBT nbt)
     {
-        super.writeAdditional(nbt);
+        super.addAdditionalSaveData(nbt);
         nbt.putBoolean("Activated", isActivated());
         if(stickFacing != null)
             nbt.putString("StickFacing", stickFacing.name());

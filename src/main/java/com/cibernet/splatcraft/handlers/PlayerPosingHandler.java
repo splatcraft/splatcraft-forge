@@ -35,18 +35,18 @@ public class PlayerPosingHandler
 
         IPlayerInfo playerInfo = PlayerInfoCapability.get(player);
 
-        Hand activeHand = player.getActiveHand();
-        HandSide handSide = player.getPrimaryHand();
+        Hand activeHand = player.getUsedItemHand();
+        HandSide handSide = player.getMainArm();
 
         if (activeHand == null)
             return;
 
-        ModelRenderer mainHand = activeHand == Hand.MAIN_HAND && handSide == HandSide.LEFT || activeHand == Hand.OFF_HAND && handSide == HandSide.RIGHT ? model.bipedLeftArm : model.bipedRightArm;
-        ModelRenderer offHand = mainHand.equals(model.bipedLeftArm) ? model.bipedRightArm : model.bipedLeftArm;
+        ModelRenderer mainHand = activeHand == Hand.MAIN_HAND && handSide == HandSide.LEFT || activeHand == Hand.OFF_HAND && handSide == HandSide.RIGHT ? model.leftArm : model.rightArm;
+        ModelRenderer offHand = mainHand.equals(model.leftArm) ? model.rightArm : model.leftArm;
 
-        ItemStack mainStack = player.getHeldItem(activeHand);
-        ItemStack offStack = player.getHeldItem(Hand.values()[(activeHand.ordinal() + 1) % Hand.values().length]);
-        int useTime = player.getItemInUseCount();
+        ItemStack mainStack = player.getItemInHand(activeHand);
+        ItemStack offStack = player.getItemInHand(Hand.values()[(activeHand.ordinal() + 1) % Hand.values().length]);
+        int useTime = player.getUseItemRemainingTicks();
 
         if (!(mainStack.getItem() instanceof WeaponBaseItem))
         {
@@ -66,17 +66,17 @@ public class PlayerPosingHandler
                 case DUAL_FIRE:
                     if (offStack.getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) offStack.getItem()).getPose().equals(WeaponPose.DUAL_FIRE))
                     {
-                        offHand.rotateAngleY = -0.1F + model.getModelHead().rotateAngleY;
-                        offHand.rotateAngleX = -((float) Math.PI / 2F) + model.getModelHead().rotateAngleX;
+                        offHand.yRot = -0.1F + model.getHead().yRot;
+                        offHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
                     }
                 case FIRE:
-                    mainHand.rotateAngleY = -0.1F + model.getModelHead().rotateAngleY;
-                    mainHand.rotateAngleX = -((float) Math.PI / 2F) + model.getModelHead().rotateAngleX;
+                    mainHand.yRot = -0.1F + model.getHead().yRot;
+                    mainHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
                     break;
                 case BUCKET_SWING:
                     animTime = ((SlosherItem) mainStack.getItem()).startupTicks;
-                    mainHand.rotateAngleY = 0;
-                    mainHand.rotateAngleX = -0.36f;
+                    mainHand.yRot = 0;
+                    mainHand.xRot = -0.36f;
 
                     if(PlayerCooldown.hasPlayerCooldown(player))
                     {
@@ -84,26 +84,26 @@ public class PlayerPosingHandler
                         angle = (cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime;
                         angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI) + ((float) Math.PI) / 1.8f;
                         if (angle < 6.5f)
-                            mainHand.rotateAngleX = MathHelper.cos(angle * 0.6662F);
+                            mainHand.xRot = MathHelper.cos(angle * 0.6662F);
                     }
                     break;
                 case BOW_CHARGE:
-                    if (mainHand == model.bipedRightArm)
+                    if (mainHand == model.rightArm)
                     {
-                        mainHand.rotateAngleY = -0.1F + model.getModelHead().rotateAngleY;
-                        offHand.rotateAngleY = 0.1F + model.getModelHead().rotateAngleY + 0.4F;
-                        mainHand.rotateAngleX = (-(float) Math.PI / 2F) + model.getModelHead().rotateAngleX;
-                        offHand.rotateAngleX = (-(float) Math.PI / 2F) + model.getModelHead().rotateAngleX;
+                        mainHand.yRot = -0.1F + model.getHead().yRot;
+                        offHand.yRot = 0.1F + model.getHead().yRot + 0.4F;
+                        mainHand.xRot = (-(float) Math.PI / 2F) + model.getHead().xRot;
+                        offHand.xRot = (-(float) Math.PI / 2F) + model.getHead().xRot;
                     } else
                     {
-                        offHand.rotateAngleY = -0.1F + model.getModelHead().rotateAngleY - 0.4F;
-                        mainHand.rotateAngleY = 0.1F + model.getModelHead().rotateAngleY;
-                        offHand.rotateAngleX = (-(float) Math.PI / 2F) + model.getModelHead().rotateAngleX;
-                        mainHand.rotateAngleX = (-(float) Math.PI / 2F) + model.getModelHead().rotateAngleX;
+                        offHand.yRot = -0.1F + model.getHead().yRot - 0.4F;
+                        mainHand.yRot = 0.1F + model.getHead().yRot;
+                        offHand.xRot = (-(float) Math.PI / 2F) + model.getHead().xRot;
+                        mainHand.xRot = (-(float) Math.PI / 2F) + model.getHead().xRot;
                     }
                     break;
                 case ROLL:
-                    mainHand.rotateAngleY = model.getModelHead().rotateAngleY;
+                    mainHand.yRot = model.getHead().yRot;
 
 
                     if (PlayerCooldown.hasPlayerCooldown(player))
@@ -111,14 +111,14 @@ public class PlayerPosingHandler
                         cooldown = PlayerCooldown.getPlayerCooldown(player);
                         animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).swingTime : ((RollerItem) mainStack.getItem()).flingTime;
                         angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
-                        mainHand.rotateAngleX = MathHelper.cos(angle) + (0.1F * 0.5F - ((float) Math.PI / 10F));//+ 0.36f;
+                        mainHand.xRot = MathHelper.cos(angle) + (0.1F * 0.5F - ((float) Math.PI / 10F));//+ 0.36f;
                     } else
                     {
-                        mainHand.rotateAngleX = 0.1F * 0.5F - ((float) Math.PI / 10F);
+                        mainHand.xRot = 0.1F * 0.5F - ((float) Math.PI / 10F);
                     }
                     break;
                 case BRUSH:
-                    mainHand.rotateAngleX = 0.1F * 0.5F - ((float) Math.PI / 10F);
+                    mainHand.xRot = 0.1F * 0.5F - ((float) Math.PI / 10F);
 
 
                     if (PlayerCooldown.hasPlayerCooldown(player))
@@ -127,8 +127,8 @@ public class PlayerPosingHandler
                         animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).swingTime : ((RollerItem) mainStack.getItem()).flingTime;
                         angle = (float) -((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
 
-                        mainHand.rotateAngleY = model.getModelHead().rotateAngleY + MathHelper.cos(angle);
-                    } else mainHand.rotateAngleY = model.getModelHead().rotateAngleY;
+                        mainHand.yRot = model.getHead().yRot + MathHelper.cos(angle);
+                    } else mainHand.yRot = model.getHead().yRot;
                     break;
             }
         }

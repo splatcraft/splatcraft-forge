@@ -13,39 +13,39 @@ public class InkExplosionParticle extends SpriteTexturedParticle
 {
     private final IAnimatedSprite spriteProvider;
 
-    public InkExplosionParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, InkExplosionParticleData data, IAnimatedSprite sprite)
+    public InkExplosionParticle(ClientWorld level, double x, double y, double z, double motionX, double motionY, double motionZ, InkExplosionParticleData data, IAnimatedSprite sprite)
     {
-        super(world, x, y, z, motionX, motionY, motionZ);
+        super(level, x, y, z, motionX, motionY, motionZ);
 
-        this.motionX = motionX;
-        this.motionY = motionY;
-        this.motionZ = motionZ;
+        this.xd = motionX;
+        this.yd = motionY;
+        this.zd = motionZ;
 
-        particleRed = Math.max(0.018f, data.getRed() - 0.018f);
-        particleGreen = Math.max(0.018f, data.getGreen() - 0.018f);
-        particleBlue = Math.max(0.018f, data.getBlue() - 0.018f);
+        rCol = Math.max(0.018f, data.getRed() - 0.018f);
+        gCol = Math.max(0.018f, data.getGreen() - 0.018f);
+        bCol = Math.max(0.018f, data.getBlue() - 0.018f);
 
-        this.particleScale = 0.33F * (this.rand.nextFloat() * 0.5F + 0.5F) * 2.0F * data.getScale();
-        this.particleGravity = 0;
-        this.maxAge = 6 + this.rand.nextInt(4);
+        this.quadSize = 0.33F * (this.random.nextFloat() * 0.5F + 0.5F) * 2.0F * data.getScale();
+        this.gravity = 0;
+        this.lifetime = 6 + this.random.nextInt(4);
 
 
         spriteProvider = sprite;
-        this.selectSpriteWithAge(sprite);
+        this.setSpriteFromAge(sprite);
     }
 
     @Override
     public void tick()
     {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
-        if (this.age++ >= this.maxAge || this.world.getBlockState(new BlockPos(this.posX, this.posY, this.posZ)).getMaterial() == Material.WATER)
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
+        if (this.age++ >= this.lifetime || this.level.getBlockState(new BlockPos(this.x, this.y, this.z)).getMaterial() == Material.WATER)
         {
-            this.setExpired();
+            this.remove();
         } else
         {
-            this.selectSpriteWithAge(this.spriteProvider);
+            this.setSpriteFromAge(this.spriteProvider);
         }
     }
 
@@ -69,9 +69,9 @@ public class InkExplosionParticle extends SpriteTexturedParticle
 
         @Nullable
         @Override
-        public Particle makeParticle(InkExplosionParticleData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+        public Particle createParticle(InkExplosionParticleData typeIn, ClientWorld levelIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
         {
-            return new InkExplosionParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn, this.spriteSet);
+            return new InkExplosionParticle(levelIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn, this.spriteSet);
         }
     }
 

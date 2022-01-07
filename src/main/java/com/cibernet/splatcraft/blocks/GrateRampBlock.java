@@ -7,6 +7,7 @@ import net.minecraft.block.IWaterLoggable;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
@@ -24,18 +25,18 @@ import javax.annotation.Nullable;
 public class GrateRampBlock extends Block implements IWaterLoggable
 {
 
-    public static final EnumProperty<Direction> FACING = HorizontalBlock.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    private static final VoxelShape START = makeCuboidShape(0, 0, 0, 3, 3, 16);
-    private static final VoxelShape END = makeCuboidShape(13, 13, 0, 16, 16, 16);
-    private static final VoxelShape SEGMENT = makeCuboidShape(1, 2, 0, 4, 5, 16);
+    private static final VoxelShape START = box(0, 0, 0, 3, 3, 16);
+    private static final VoxelShape END = box(13, 13, 0, 16, 16, 16);
+    private static final VoxelShape SEGMENT = box(1, 2, 0, 4, 5, 16);
     public static final VoxelShape[] SHAPES = makeVoxelShape(START, END, SEGMENT);
 
     public GrateRampBlock(String name)
     {
         super(GrateBlock.PROPERTIES);
         setRegistryName(name);
-        setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
     private static VoxelShape[] makeVoxelShape(VoxelShape start, VoxelShape end, VoxelShape segment)
@@ -44,7 +45,7 @@ public class GrateRampBlock extends Block implements IWaterLoggable
 
         for (int i = 0; i < 6; i++)
         {
-            shapes[i] = segment.withOffset(.125 * i, .125 * i, 0);
+            shapes[i] = segment.move(.125 * i, .125 * i, 0);
         }
 
         shapes[6] = start;
@@ -55,7 +56,7 @@ public class GrateRampBlock extends Block implements IWaterLoggable
 
     protected static VoxelShape modifyShapeForDirection(Direction facing, VoxelShape shape)
     {
-        AxisAlignedBB bb = shape.getBoundingBox();
+        AxisAlignedBB bb = shape.bounds();
 
         switch (facing)
         {
@@ -78,7 +79,7 @@ public class GrateRampBlock extends Block implements IWaterLoggable
             result[i] = VoxelShapes.empty();
             for (VoxelShape shape : shapes)
             {
-                result[i] = VoxelShapes.or(result[i], modifyShapeForDirection(Direction.byHorizontalIndex(i), shape));
+                result[i] = VoxelShapes.or(result[i], modifyShapeForDirection(Direction.from2DDataValue(i), shape));
             }
 
         }
@@ -87,31 +88,36 @@ public class GrateRampBlock extends Block implements IWaterLoggable
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
         builder.add(FACING, WATERLOGGED);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
-        return SHAPES[state.get(FACING).ordinal() - 2];
+        return SHAPES[state.getValue(FACING).ordinal() - 2];
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        BlockPos blockPos = context.getPos();
-        Direction direction = context.getFace();
-        FluidState fluidstate = context.getWorld().getFluidState(blockPos);
-        boolean flip = direction != Direction.DOWN && (direction == Direction.UP || !(context.getHitVec().y - (double) blockPos.getY() > 0.5D));
-        return getDefaultState().with(FACING, flip ? context.getPlacementHorizontalFacing().getOpposite() : context.getPlacementHorizontalFacing()).with(WATERLOGGED, fluidstate.getFluid() == Fluids.WATER);
+        BlockPos blockPos = context.getClickedPos();
+        Direction direction = context.getClickedFace();
+        FluidState fluidstate = context.getLevel().getFluidState(blockPos);
+        boolean flip = direction != Direction.DOWN && (direction == Direction.UP || !(context.getClickLocation().y - (double) blockPos.getY() <= 0.5D));
+        return defaultBlockState().setValue(FACING, flip ? context.getHorizontalDirection().getOpposite() : context.getHorizontalDirection()).setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
 
     @Override
     public FluidState getFluidState(BlockState state)
     {
-        return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @Override
+    public boolean isPathfindable(BlockState state, IBlockReader levelIn, BlockPos pos, PathType type) {
+        return false;
     }
 }

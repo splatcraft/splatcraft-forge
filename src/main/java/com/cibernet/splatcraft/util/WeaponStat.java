@@ -18,18 +18,18 @@ public class WeaponStat
         this.valueGetter = valueGetter;
     }
 
-    public int getStatValue(ItemStack stack, @Nullable World world)
+    public int getStatValue(ItemStack stack, @Nullable World level)
     {
-        return valueGetter.get(stack, world);
+        return valueGetter.get(stack, level);
     }
 
-    public TextComponent getTextComponent(ItemStack stack, World world)
+    public TextComponent getTextComponent(ItemStack stack, World level)
     {
-        return new TranslationTextComponent("weaponStat." + name, getStatValue(stack, world));
+        return new TranslationTextComponent("weaponStat." + name, getStatValue(stack, level));
     }
 
     public interface IStatValueGetter
     {
-        int get(ItemStack stack, @Nullable World world);
+        int get(ItemStack stack, @Nullable World level);
     }
 }

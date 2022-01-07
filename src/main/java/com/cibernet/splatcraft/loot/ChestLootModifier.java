@@ -61,11 +61,11 @@ public class ChestLootModifier extends LootModifier
         @Override
         public ChestLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] ailootcondition)
         {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getString(object, "item")));
-            int countMin = JSONUtils.getInt(object, "countMin");
-            int countMax = JSONUtils.getInt(object, "countMax");
-            float chance = JSONUtils.getFloat(object, "chance");
-            ResourceLocation partentTable = new ResourceLocation(JSONUtils.getString(object, "parent"));
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(object, "item")));
+            int countMin = JSONUtils.getAsInt(object, "countMin");
+            int countMax = JSONUtils.getAsInt(object, "countMax");
+            float chance = JSONUtils.getAsFloat(object, "chance");
+            ResourceLocation partentTable = new ResourceLocation(JSONUtils.getAsString(object, "parent"));
             return new ChestLootModifier(ailootcondition, item, countMin, countMax, chance, partentTable);
         }
 

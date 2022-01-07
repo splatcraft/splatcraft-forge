@@ -39,7 +39,7 @@ public class SubWeaponColorLayer< M extends AbstractSubWeaponModel<AbstractSubWe
         float g = ((color & '\uff00') >> 8) / 255.0f;
         float b = (color & 255) / 255.0f;
 
-        IVertexBuilder builder = iRenderTypeBuffer.getBuffer(RenderType.getEntityCutoutNoCull(TEXTURE));
-        MODEL.render(matrixStack, builder, i, OverlayTexture.getPackedUV(OverlayTexture.getU(1.0f), OverlayTexture.getV(false)), r, g, b, 1.0F);
+        IVertexBuilder builder = iRenderTypeBuffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
+        MODEL.renderToBuffer(matrixStack, builder, i, OverlayTexture.pack(OverlayTexture.u(1.0f), OverlayTexture.v(false)), r, g, b, 1.0F);
     }
 }

@@ -2,7 +2,7 @@ package com.cibernet.splatcraft.tileentities;
 
 import com.cibernet.splatcraft.blocks.CrateBlock;
 import com.cibernet.splatcraft.registries.SplatcraftTileEntitites;
-import net.minecraft.block.Block;
+import com.cibernet.splatcraft.util.CommonUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -30,7 +30,7 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
 
     public void ink(int color, float damage)
     {
-        if (world != null && world.isRemote)
+        if (level != null && level.isClientSide)
         {
             return;
         }
@@ -39,12 +39,12 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
         health -= damage;
         if (health <= 0)
         {
-            world.destroyBlock(getPos(), false);
+            level.destroyBlock(getBlockPos(), false);
 
             dropInventory();
         } else
         {
-            world.setBlockState(pos, getBlockState().with(CrateBlock.STATE, getState()), 2);
+            level.setBlock(getBlockPos(), getBlockState().setValue(CrateBlock.STATE, getState()), 2);
         }
 
     }
@@ -57,15 +57,15 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
 
     public void dropInventory()
     {
-        if (world != null && world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+        if (level != null && level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS))
         {
-            getDrops().forEach(stack -> Block.spawnAsEntity(world, pos, stack));
+            getDrops().forEach(stack -> CommonUtils.blockDrop(level, getBlockPos(), stack));
         }
     }
 
     public List<ItemStack> getDrops()
     {
-        return hasLoot ? CrateBlock.generateLoot(world, getPos(), getBlockState(), 0f) : getInventory();
+        return hasLoot ? CrateBlock.generateLoot(level, getBlockPos(), getBlockState(), 0f) : getInventory();
     }
 
     public ResourceLocation getLootTable()
@@ -74,9 +74,9 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
+    public void load(BlockState state, CompoundNBT nbt)
     {
-        super.read(state, nbt);
+        super.load(state, nbt);
 
         health = nbt.getFloat("Health");
         maxHealth = nbt.getFloat("MaxHealth");
@@ -91,7 +91,7 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
+    public CompoundNBT save(CompoundNBT nbt)
     {
         nbt.putFloat("Health", health);
         nbt.putFloat("MaxHealth", maxHealth);
@@ -100,11 +100,11 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
         if(hasLoot)
             nbt.putString("LootTable", lootTable.toString());
 
-        return super.write(nbt);
+        return super.save(nbt);
     }
 
     @Override
-    public int getSizeInventory()
+    public int getContainerSize()
     {
         return getBlockState().getBlock() instanceof CrateBlock && ((CrateBlock) getBlockState().getBlock()).hasLoot ? 0 : 1;
     }
@@ -116,54 +116,54 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
     }
 
     @Override
-    public ItemStack getStackInSlot(int index)
+    public ItemStack getItem(int index)
     {
         return inventory.get(index);
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
+    public ItemStack removeItem(int index, int count)
     {
         if (getBlockState().getBlock() instanceof CrateBlock && ((CrateBlock) getBlockState().getBlock()).hasLoot)
         {
             return ItemStack.EMPTY;
         }
 
-        ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
+        ItemStack itemstack = ItemStackHelper.removeItem(inventory, index, count);
         if (!itemstack.isEmpty())
         {
-            this.markDirty();
+            this.setChanged();
         }
 
         return itemstack;
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index)
+    public ItemStack removeItemNoUpdate(int index)
     {
-        return ItemStackHelper.getAndRemove(inventory, index);
+        return ItemStackHelper.takeItem(inventory, index);
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
+    public void setItem(int index, ItemStack stack)
     {
         inventory.set(index, stack);
-        if (stack.getCount() > this.getInventoryStackLimit())
+        if (stack.getCount() > this.getMaxStackSize())
         {
-            stack.setCount(this.getInventoryStackLimit());
+            stack.setCount(this.getMaxStackSize());
         }
 
-        this.markDirty();
+        this.setChanged();
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player)
+    public boolean stillValid(PlayerEntity player)
     {
         return false;
     }
 
     @Override
-    public void clear()
+    public void clearContent()
     {
         inventory.clear();
     }

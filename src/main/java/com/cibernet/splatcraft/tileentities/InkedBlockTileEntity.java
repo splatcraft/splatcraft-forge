@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class InkedBlockTileEntity extends InkColorTileEntity
 {
-    private BlockState savedState = Blocks.AIR.getDefaultState();
+    private BlockState savedState = Blocks.AIR.defaultBlockState();
     private int savedColor = -1;
     private int permanentColor = -1;
     private InkBlockUtils.InkType permanentInkType = InkBlockUtils.InkType.NORMAL;
@@ -26,15 +26,17 @@ public class InkedBlockTileEntity extends InkColorTileEntity
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public double getMaxRenderDistanceSquared() {
-        return Minecraft.getInstance().gameSettings.renderDistanceChunks*12D; //probably a bad idea
+    public double getViewDistance() {
+        return Minecraft.getInstance().options.renderDistance*12D; //probably a bad idea
     }
+
+
 
     //Read NBT
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
+    public void load(BlockState state, CompoundNBT nbt)
     {
-        super.read(state, nbt);
+        super.load(state, nbt);
         savedState = NBTUtil.readBlockState(nbt.getCompound("SavedState"));
         savedColor = nbt.getInt("SavedColor");
 
@@ -46,7 +48,7 @@ public class InkedBlockTileEntity extends InkColorTileEntity
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt)
+    public CompoundNBT save(CompoundNBT nbt)
     {
         nbt.put("SavedState", NBTUtil.writeBlockState(savedState));
         if(hasSavedColor())
@@ -54,9 +56,9 @@ public class InkedBlockTileEntity extends InkColorTileEntity
         if(hasPermanentColor())
         {
             nbt.putInt("PermanentColor", permanentColor);
-            nbt.putString("PermanentInkType", permanentInkType.getString());
+            nbt.putString("PermanentInkType", permanentInkType.getSerializedName());
         }
-        return super.write(nbt);
+        return super.save(nbt);
     }
 
     public BlockState getSavedState()

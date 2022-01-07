@@ -13,7 +13,7 @@ public class RequestPlayerInfoPacket extends PlayToServerPacket
 
     public RequestPlayerInfoPacket(PlayerEntity target)
     {
-        this.target = target.getUniqueID();
+        this.target = target.getUUID();
     }
 
     private RequestPlayerInfoPacket(UUID target)
@@ -23,19 +23,19 @@ public class RequestPlayerInfoPacket extends PlayToServerPacket
 
     public static RequestPlayerInfoPacket decode(PacketBuffer buffer)
     {
-        return new RequestPlayerInfoPacket(buffer.readUniqueId());
+        return new RequestPlayerInfoPacket(buffer.readUUID());
     }
 
     @Override
     public void encode(PacketBuffer buffer)
     {
-        buffer.writeUniqueId(target);
+        buffer.writeUUID(target);
     }
 
     @Override
     public void execute(PlayerEntity player)
     {
-        ServerPlayerEntity target = (ServerPlayerEntity) player.world.getPlayerByUuid(this.target);
+        ServerPlayerEntity target = (ServerPlayerEntity) player.level.getPlayerByUUID(this.target);
         if (target != null)
         {
             SplatcraftPacketHandler.sendToPlayer(new UpdatePlayerInfoPacket(target), (ServerPlayerEntity) player);

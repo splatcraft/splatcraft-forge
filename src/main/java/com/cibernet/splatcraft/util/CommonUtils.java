@@ -1,6 +1,11 @@
 package com.cibernet.splatcraft.util;
 
 import com.cibernet.splatcraft.Splatcraft;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
 
 public class CommonUtils
 {
@@ -56,5 +61,23 @@ public class CommonUtils
         }
 
         return astring;
+    }
+
+    public static void blockDrop(World levelIn, BlockPos pos, ItemStack stack)
+    {
+        if(levelIn.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !levelIn.captureBlockSnapshots)
+            spawnItem(levelIn, pos, stack);
+    }
+
+    public static void spawnItem(World levelIn, BlockPos pos, ItemStack stack) {
+        if (!levelIn.isClientSide && !stack.isEmpty())
+        {
+            double d0 = (double)(levelIn.random.nextFloat() * 0.5F) + 0.25D;
+            double d1 = (double)(levelIn.random.nextFloat() * 0.5F) + 0.25D;
+            double d2 = (double)(levelIn.random.nextFloat() * 0.5F) + 0.25D;
+            ItemEntity itementity = new ItemEntity(levelIn, (double)pos.getX() + d0, (double)pos.getY() + d1, (double)pos.getZ() + d2, stack);
+            itementity.setDefaultPickUpDelay();
+            levelIn.addFreshEntity(itementity);
+        }
     }
 }

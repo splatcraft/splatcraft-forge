@@ -30,26 +30,26 @@ public class ColoredBarrierTileEntity extends StageBarrierTileEntity
             activeTime--;
         }
 
-        for (Entity entity : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos).grow(0.05)))
+        for (Entity entity : level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(getBlockPos()).inflate(0.05)))
         {
 
             if(entity instanceof LivingEntity && ColorUtils.getEntityColor(entity) > -1 && (getBlockState().getBlock() instanceof ColoredBarrierBlock &&
-                    ((ColoredBarrierBlock) getBlockState().getBlock()).canAllowThrough(getPos(), entity)))
+                    ((ColoredBarrierBlock) getBlockState().getBlock()).canAllowThrough(getBlockPos(), entity)))
             resetActiveTime();
         }
 
-        if (world.isRemote && ClientUtils.getClientPlayer().isCreative())
+        if (level.isClientSide && ClientUtils.getClientPlayer().isCreative())
         {
             boolean canRender = true;
             PlayerEntity player = ClientUtils.getClientPlayer();
             int renderDistance = SplatcraftConfig.Client.barrierRenderDistance.get();
 
-            if(player.getDistanceSq(getPos().getX(), getPos().getY(), getPos().getZ()) > renderDistance*renderDistance)
+            if(player.distanceToSqr(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()) > renderDistance*renderDistance)
                 canRender = false;
             else if (SplatcraftConfig.Client.holdBarrierToRender.get())
             {
-                canRender = player.getHeldItemMainhand().getItem().isIn(SplatcraftTags.Items.REVEALS_BARRIERS) ||
-                        player.getHeldItemMainhand().getItem().isIn(SplatcraftTags.Items.REVEALS_BARRIERS);
+                canRender = player.getMainHandItem().getItem().is(SplatcraftTags.Items.REVEALS_BARRIERS) ||
+                        player.getMainHandItem().getItem().is(SplatcraftTags.Items.REVEALS_BARRIERS);
             }
             if (canRender)
                 resetActiveTime();
@@ -68,16 +68,16 @@ public class ColoredBarrierTileEntity extends StageBarrierTileEntity
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
+    public void load(BlockState state, CompoundNBT nbt)
     {
-        super.read(state, nbt);
+        super.load(state, nbt);
         setColor(ColorUtils.getColorFromNbt(nbt));
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
+    public CompoundNBT save(CompoundNBT compound)
     {
         compound.putInt("Color", getColor());
-        return super.write(compound);
+        return super.save(compound);
     }
 }

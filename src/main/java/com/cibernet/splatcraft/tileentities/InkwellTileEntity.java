@@ -23,9 +23,9 @@ public class InkwellTileEntity extends InkColorTileEntity implements ITickableTi
     @Override
     public void tick()
     {
-        AxisAlignedBB bb = new AxisAlignedBB(getPos().up());
+        AxisAlignedBB bb = new AxisAlignedBB(getBlockPos().above());
 
-        for (ItemEntity entity : world.getEntitiesWithinAABB(ItemEntity.class, bb))
+        for (ItemEntity entity : level.getEntitiesOfClass(ItemEntity.class, bb))
         {
             ItemStack stack = entity.getItem();
 

@@ -10,5 +10,5 @@ public interface IChargeableWeapon
 
     float getChargeSpeed();
 
-    void onRelease(World worldIn, PlayerEntity playerIn, ItemStack stack, float charge);
+    void onRelease(World levelIn, PlayerEntity playerIn, ItemStack stack, float charge);
 }

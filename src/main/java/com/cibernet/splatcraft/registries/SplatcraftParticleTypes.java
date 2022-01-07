@@ -17,7 +17,7 @@ public class SplatcraftParticleTypes
     public static final ParticleType<InkSplashParticleData> INK_SPLASH = new ParticleType<InkSplashParticleData>(false, InkSplashParticleData.DESERIALIZER)
     {
         @Override
-        public Codec<InkSplashParticleData> func_230522_e_()
+        public Codec<InkSplashParticleData> codec()
         {
             return InkSplashParticleData.CODEC;
         }
@@ -25,7 +25,7 @@ public class SplatcraftParticleTypes
     public static final ParticleType<InkExplosionParticleData> INK_EXPLOSION = new ParticleType<InkExplosionParticleData>(false, InkExplosionParticleData.DESERIALIZER)
     {
         @Override
-        public Codec<InkExplosionParticleData> func_230522_e_()
+        public Codec<InkExplosionParticleData> codec()
         {
             return InkExplosionParticleData.CODEC;
         }
@@ -33,7 +33,7 @@ public class SplatcraftParticleTypes
     public static final ParticleType<SquidSoulParticleData> SQUID_SOUL = new ParticleType<SquidSoulParticleData>(false, SquidSoulParticleData.DESERIALIZER)
     {
         @Override
-        public Codec<SquidSoulParticleData> func_230522_e_()
+        public Codec<SquidSoulParticleData> codec()
         {
             return SquidSoulParticleData.CODEC;
         }
@@ -43,9 +43,9 @@ public class SplatcraftParticleTypes
     public static void registerFactories(ParticleFactoryRegisterEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
-        mc.particles.registerFactory(INK_SPLASH, InkSplashParticle.Factory::new);
-        mc.particles.registerFactory(INK_EXPLOSION, InkExplosionParticle.Factory::new);
-        mc.particles.registerFactory(SQUID_SOUL, SquidSoulParticle.Factory::new);
+        mc.particleEngine.register(INK_SPLASH, InkSplashParticle.Factory::new);
+        mc.particleEngine.register(INK_EXPLOSION, InkExplosionParticle.Factory::new);
+        mc.particleEngine.register(SQUID_SOUL, SquidSoulParticle.Factory::new);
     }
 
     @SubscribeEvent

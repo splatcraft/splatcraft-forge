@@ -21,19 +21,18 @@ public class RollerRollTickableSound extends TickableSound
     public RollerRollTickableSound(PlayerEntity player, boolean isBrush)
     {
         super(isBrush ? SplatcraftSounds.brushRoll : SplatcraftSounds.rollerRoll, SoundCategory.PLAYERS);
-        this.repeat = true;
-        this.repeatDelay = 0;
+        this.looping = true;
+        this.delay = 0;
 
         this.player = player;
         this.volume = 0;
-        this.x = player.getPosX();
-        this.y = player.getPosY();
-        this.z = player.getPosZ();
+        this.x = player.getX();
+        this.y = player.getY();
+        this.z = player.getZ();
     }
 
-
     @Override
-    public boolean canBeSilent()
+    public boolean canStartSilent()
     {
         return true;
     }
@@ -41,21 +40,21 @@ public class RollerRollTickableSound extends TickableSound
     @Override
     public void tick()
     {
-        if (this.player.isAlive() && player.getActiveItemStack().getItem() instanceof RollerItem)
+        if (this.player.isAlive() && player.getUseItem().getItem() instanceof RollerItem)
         {
-            ItemStack roller = player.getActiveItemStack();
+            ItemStack roller = player.getUseItem();
             if (WeaponBaseItem.getInkAmount(player, roller) < Math.max(((RollerItem) roller.getItem()).rollConsumptionMin, ((RollerItem) roller.getItem()).rollConsumptionMax))
             {
-                finishPlaying();
+                stop();
                 return;
             }
 
-            this.x = (float) this.player.getPosX();
-            this.y = (float) this.player.getPosY();
-            this.z = (float) this.player.getPosZ();
+            this.x = (float) this.player.getX();
+            this.y = (float) this.player.getY();
+            this.z = (float) this.player.getZ();
 
-            Vector3d motion = player.equals(Minecraft.getInstance().player) ? player.getMotion() : player.getPositionVec().subtract(WeaponHandler.getPlayerPrevPos(player));
-            float vol = Math.max(Math.abs(player.prevRotationYawHead - player.rotationYawHead), MathHelper.sqrt(Entity.horizontalMag(motion))) * 3f;
+            Vector3d motion = player.equals(Minecraft.getInstance().player) ? player.getDeltaMovement() : player.position().subtract(WeaponHandler.getPlayerPrevPos(player));
+            float vol = Math.max(Math.abs(player.yHeadRotO - player.yHeadRot), MathHelper.sqrt(Entity.getHorizontalDistanceSqr(motion))) * 3f;
 
             if ((double) vol >= 0.01D)
             {
@@ -67,6 +66,6 @@ public class RollerRollTickableSound extends TickableSound
                 this.volume = 0.0F;
             }
 
-        } else finishPlaying();
+        } else stop();
     }
 }

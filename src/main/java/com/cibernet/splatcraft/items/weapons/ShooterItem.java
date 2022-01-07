@@ -33,9 +33,9 @@ public class ShooterItem extends WeaponBaseItem
 
         if (!(this instanceof BlasterItem))
         {
-            addStat(new WeaponStat("range", (stack, world) -> (int) (projectileSpeed / 1.2f * 100)));
-            addStat(new WeaponStat("damage", (stack, world) -> (int) (damage / 20 * 100)));
-            addStat(new WeaponStat("fire_rate", (stack, world) -> (11 - firingSpeed) * 10));
+            addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / 1.2f * 100)));
+            addStat(new WeaponStat("damage", (stack, level) -> (int) (damage / 20 * 100)));
+            addStat(new WeaponStat("fire_rate", (stack, level) -> (11 - firingSpeed) * 10));
         }
     }
 
@@ -45,16 +45,16 @@ public class ShooterItem extends WeaponBaseItem
     }
 
     @Override
-    public void weaponUseTick(World world, LivingEntity entity, ItemStack stack, int timeLeft)
+    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
     {
-        if (!world.isRemote && (getUseDuration(stack) - timeLeft - 1) % firingSpeed == 0)
+        if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % firingSpeed == 0)
         {
             if (getInkAmount(entity, stack) >= inkConsumption)
             {
-                InkProjectileEntity proj = new InkProjectileEntity(world, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage).setShooterTrail();
-                proj.shoot(entity, entity.rotationPitch, entity.rotationYaw, 0.0f, projectileSpeed, inaccuracy);
-                world.addEntity(proj);
-                world.playSound(null, entity.getPosX(), entity.getPosY(), entity.getPosZ(), SplatcraftSounds.shooterShot, SoundCategory.PLAYERS, 0.7F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
+                InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage).setShooterTrail();
+                proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, projectileSpeed, inaccuracy);
+                level.addFreshEntity(proj);
+                level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.shooterShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 reduceInk(entity, inkConsumption);
             } else
             {

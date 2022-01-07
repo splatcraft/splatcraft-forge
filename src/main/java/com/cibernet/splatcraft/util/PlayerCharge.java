@@ -49,7 +49,7 @@ public class PlayerCharge
 
     public static boolean chargeMatches(PlayerEntity player, ItemStack stack)
     {
-        return hasCharge(player) && getCharge(player).chargedWeapon.isItemEqual(stack);
+        return hasCharge(player) && getCharge(player).chargedWeapon.sameItem(stack);
     }
 
     public static void addChargeValue(PlayerEntity player, ItemStack stack, float value)
@@ -101,7 +101,7 @@ public class PlayerCharge
 
     public static void dischargeWeapon(PlayerEntity player)
     {
-        if (!player.world.isRemote || !hasCharge(player))
+        if (!player.level.isClientSide || !hasCharge(player))
         {
             return;
         }

@@ -57,19 +57,19 @@ public class ClientUtils
     public static boolean showDurabilityBar(ItemStack stack)
     {
         return (SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.DURABILITY)) &&
-                getClientPlayer().getHeldItem(Hand.MAIN_HAND).equals(stack) && getDurabilityForDisplay(stack) > 0;
+                getClientPlayer().getItemInHand(Hand.MAIN_HAND).equals(stack) && getDurabilityForDisplay(stack) > 0;
     }
 
     public static double getDurabilityForDisplay(ItemStack stack)
     {
         PlayerEntity player = getClientPlayer();
 
-        if (!SplatcraftGameRules.getBooleanRuleValue(player.world, SplatcraftGameRules.REQUIRE_INK_TANK))
+        if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK))
         {
             return 0;
         }
 
-        ItemStack chestpiece = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        ItemStack chestpiece = player.getItemBySlot(EquipmentSlotType.CHEST);
         if (chestpiece.getItem() instanceof InkTankItem)
         {
             return 1 - WeaponBaseItem.getInkAmount(player, stack) / ((InkTankItem) chestpiece.getItem()).capacity;
@@ -79,19 +79,19 @@ public class ClientUtils
 
     public static void playClientSound(BlockPos pos, SoundEvent soundIn, SoundCategory category, float volume, float pitch)
     {
-        Minecraft.getInstance().getSoundHandler().play(new ClientPlayerSound(soundIn, category, volume, pitch));
+        Minecraft.getInstance().getSoundManager().play(new ClientPlayerSound(soundIn, category, volume, pitch));
     }
 
     public static boolean canPerformRoll(PlayerEntity entity)
     {
-        MovementInput input = ((ClientPlayerEntity) entity).movementInput;
+        MovementInput input = ((ClientPlayerEntity) entity).input;
 
-        return !PlayerCooldown.hasPlayerCooldown(entity) && input.jump && (input.moveStrafe != 0 || input.moveForward != 0);
+        return !PlayerCooldown.hasPlayerCooldown(entity) && input.jumping && (input.leftImpulse != 0 || input.forwardImpulse != 0);
     }
 
     public static Vector3d getDodgeRollVector(PlayerEntity entity)
     {
-        MovementInput input = ((ClientPlayerEntity) entity).movementInput;
-        return new Vector3d(input.moveStrafe, -0.4f, input.moveForward);
+        MovementInput input = ((ClientPlayerEntity) entity).input;
+        return new Vector3d(input.leftImpulse, -0.4f, input.forwardImpulse);
     }
 }

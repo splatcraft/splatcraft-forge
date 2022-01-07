@@ -21,43 +21,43 @@ public class BurstBombEntity extends AbstractSubWeaponEntity
     public static final float DIRECT_DAMAGE = 12;
     public static final float EXPLOSION_SIZE = 2;
 
-    public BurstBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, World world)
+    public BurstBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, World level)
     {
-        super(type, world);
+        super(type, level);
     }
 
     @Override
-    protected void onEntityHit(EntityRayTraceResult result)
+    protected void onHitEntity(EntityRayTraceResult result)
     {
-        super.onEntityHit(result);
+        super.onHitEntity(result);
 
         Entity target = result.getEntity();
         if (target instanceof LivingEntity)
-            InkDamageUtils.doDamage(world, (LivingEntity) target, DIRECT_DAMAGE, getColor(), func_234616_v_(), sourceWeapon, damageMobs, inkType, SPLASH_DAMAGE_TYPE, false);
-        InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, getPosition(), 2, DAMAGE, DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
-        world.setEntityState(this, (byte) 1);
-        world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
-        setDead();
+            InkDamageUtils.doDamage(level, (LivingEntity) target, DIRECT_DAMAGE, getColor(), getOwner(), sourceWeapon, damageMobs, inkType, SPLASH_DAMAGE_TYPE, false);
+        InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), 2, DAMAGE, DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
+        level.broadcastEntityEvent(this, (byte) 1);
+        level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+        remove();
     }
 
     @Override
     protected void onBlockHit(BlockRayTraceResult result)
     {
-        InkExplosion.createInkExplosion(world, func_234616_v_(), SPLASH_DAMAGE_SOURCE, getPosition(), EXPLOSION_SIZE, DAMAGE, DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
-        world.setEntityState(this, (byte) 1);
-        world.playSound(null, getPosX(), getPosY(), getPosZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.1F + 1.0F) * 0.95F);
-        setDead();
+        InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), EXPLOSION_SIZE, DAMAGE, DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
+        level.broadcastEntityEvent(this, (byte) 1);
+        level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+        remove();
     }
 
 
     @Override
-    public void handleStatusUpdate(byte id)
+    public void handleEntityEvent(byte id)
     {
-        super.handleStatusUpdate(id);
+        super.handleEntityEvent(id);
         switch (id)
         {
             case 1:
-                world.addParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getPosX(), this.getPosY(), this.getPosZ(), 0, 0, 0);
+                level.addParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 break;
         }
 
