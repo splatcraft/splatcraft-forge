@@ -16,6 +16,7 @@
     "minecraft:redstone_lamp",
     "minecraft:piston",
     "minecraft:sticky_piston",
-    "splatcraft:sardinium_block"
+    "splatcraft:sardinium_block",
+    "splatcraft:empty_inkwell"
   ]
 }
