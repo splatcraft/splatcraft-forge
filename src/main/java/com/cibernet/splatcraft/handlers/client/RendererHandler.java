@@ -10,8 +10,10 @@ import com.cibernet.splatcraft.data.capabilities.inkoverlay.InkOverlayCapability
 import com.cibernet.splatcraft.data.capabilities.playerinfo.IPlayerInfo;
 import com.cibernet.splatcraft.data.capabilities.playerinfo.PlayerInfoCapability;
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
+import com.cibernet.splatcraft.entities.subs.AbstractSubWeaponEntity;
 import com.cibernet.splatcraft.items.InkTankItem;
 import com.cibernet.splatcraft.items.weapons.IChargeableWeapon;
+import com.cibernet.splatcraft.items.weapons.SubWeaponItem;
 import com.cibernet.splatcraft.items.weapons.WeaponBaseItem;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
@@ -31,10 +33,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.network.play.NetworkPlayerInfo;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderState;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PhantomRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -46,6 +45,7 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
@@ -62,8 +62,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.*;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.extensions.IForgeBakedModel;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -249,14 +252,73 @@ public class RendererHandler
     }
 
     @SubscribeEvent
-    public static void onItemRenderGui(RenderItemEvent.Gui.Pre event)
+    public static void onItemRender(RenderItemEvent event)
     {
-        if (event.getItem().getItem().equals(SplatcraftItems.powerEgg))
+        if (event instanceof RenderItemEvent.Gui.Pre && event.getItem().getItem().equals(SplatcraftItems.powerEgg))
         {
             IBakedModel modelIn = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(event.getItem().getItem().getRegistryName() + "#inventory"));
             renderItem(event.getItem(), event.getTransformType(), true, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getOverlay(), modelIn);
             event.setCanceled(true);
+            return;
         }
+        else if(event.getItem().getItem() instanceof SubWeaponItem)
+        {
+            MatrixStack matrixStack = event.getMatrixStack();
+            AbstractSubWeaponEntity sub = ((SubWeaponItem)event.getItem().getItem()).entityType.create(Minecraft.getInstance().player.level);
+            sub.setColor(ColorUtils.getInkColor(event.getItem()));
+
+            Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(event.getItem().getItem().getRegistryName() + "#inventory"))
+                    .handlePerspective(event.getTransformType(), matrixStack);
+            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(sub).render(sub, 0, event.getPartialTicks(), matrixStack, event.getRenderTypeBuffer(), event.getLight());
+            if(!matrixStack.clear())
+                matrixStack.popPose();
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onItemRenderHand(RenderHandEvent event)
+    {
+        if(event.getItemStack().getItem() instanceof SubWeaponItem)
+        {
+            MatrixStack matrixStack = event.getMatrixStack();
+            HandSide handside = event.getHand() == Hand.MAIN_HAND ? Minecraft.getInstance().player.getMainArm() : Minecraft.getInstance().player.getMainArm().getOpposite();
+            AbstractSubWeaponEntity sub = ((SubWeaponItem)event.getItemStack().getItem()).entityType.create(Minecraft.getInstance().player.level);
+            sub.setColor(ColorUtils.getInkColor(event.getItemStack()));
+
+            int i = event.getHand() == Hand.MAIN_HAND ? 1 : -1;
+            applyItemArmAttackTransform(matrixStack, handside, event.getPartialTicks());
+            matrixStack.translate((double)((float)i * 0.56F), (double)(-0.52F + -getHandHeight(event.getHand(), event.getPartialTicks()) * -0.6F), (double)-0.72F);
+
+            Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(event.getItemStack().getItem().getRegistryName() + "#inventory"))
+                    .handlePerspective(handside == HandSide.RIGHT ? ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, matrixStack);
+            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(sub).render(sub, 0, event.getPartialTicks(), matrixStack, event.getBuffers(), event.getLight());
+            if(!matrixStack.clear())
+                matrixStack.popPose();
+            event.setCanceled(true);
+
+
+            StructureSeparationSettings
+        }
+    }
+
+    protected static float getHandHeight(Hand hand, float partial)
+    {
+        return MathHelper.lerp(partial, ObfuscationReflectionHelper.getPrivateValue(FirstPersonRenderer.class, Minecraft.getInstance().getItemInHandRenderer(), "o"+(hand==Hand.MAIN_HAND?"Main":"Off")+"HandHeight"),
+                                        ObfuscationReflectionHelper.getPrivateValue(FirstPersonRenderer.class, Minecraft.getInstance().getItemInHandRenderer(), (hand==Hand.MAIN_HAND?"main":"off")+"HandHeight"));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected static void applyItemArmAttackTransform(MatrixStack matrixStack, HandSide hand, float partial)
+    {
+        float progress = Minecraft.getInstance().player.getAttackAnim(partial);
+        int i = hand == HandSide.RIGHT ? 1 : -1;
+        float f = MathHelper.sin(progress * progress * (float)Math.PI);
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees((float)i * (45.0F + f * -20.0F)));
+        float f1 = MathHelper.sin(MathHelper.sqrt(progress) * (float)Math.PI);
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float)i * f1 * -20.0F));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(f1 * -80.0F));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees((float)i * -45.0F));
     }
 
     protected static void renderItem(ItemStack itemStackIn, ItemCameraTransforms.TransformType transformTypeIn, boolean leftHand, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn, IBakedModel modelIn)

@@ -118,7 +118,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
 
         if(stickFacing.get2DDataValue() >= 0)
         {
-            yRot = 180- stickFacing.get2DDataValue();
+            yRot = 180- stickFacing.toYRot();
             yRotO = yRot;
         }
         else

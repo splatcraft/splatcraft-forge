@@ -31,7 +31,7 @@ public class AbstractInkTankModel extends BipedModel<LivingEntity>
                 continue;
             }
             box.visible = true;
-            box.yRot = 23.25F - Math.min(i * inkPctg, i);
+            box.y = 23.25F - Math.min(i * inkPctg, i);
         }
     }
 
