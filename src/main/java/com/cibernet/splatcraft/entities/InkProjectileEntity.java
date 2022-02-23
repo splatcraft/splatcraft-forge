@@ -386,6 +386,11 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     }
 
     @Override
+    public ItemStack getItem() {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
     public int getColor()
     {
         return entityData.get(COLOR);
