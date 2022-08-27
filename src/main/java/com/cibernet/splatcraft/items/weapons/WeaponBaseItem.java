@@ -258,6 +258,11 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
+    public void onUseTick(World p_219972_1_, LivingEntity p_219972_2_, ItemStack p_219972_3_, int p_219972_4_) {
+        super.onUseTick(p_219972_1_, p_219972_2_, p_219972_3_, p_219972_4_);
+    }
+
+    @Override
     public void releaseUsing(ItemStack stack, World level, LivingEntity entity, int timeLeft)
     {
         entity.stopUsingItem();
