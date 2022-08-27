@@ -84,6 +84,7 @@ public class RollerItem extends WeaponBaseItem
     public static void applyRecoilKnockback(LivingEntity entity, double pow)
     {
         entity.setDeltaMovement(new Vector3d(Math.cos(Math.toRadians(entity.yRot + 90)) * -pow, entity.getDeltaMovement().y(), Math.sin(Math.toRadians(entity.yRot + 90)) * -pow));
+        entity.hasImpulse = true;
     }
 
     private float getSwingTime()
@@ -243,6 +244,7 @@ public class RollerItem extends WeaponBaseItem
                     }
 
                     BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
+                    if(!level.isClientSide)
                     for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(attackPos, attackPos.offset(1, 2, 1)), EntityPredicates.NO_SPECTATORS.and((e) ->
                     {
                         if(e instanceof LivingEntity && ColorUtils.getEntityColor(e) != -1)
@@ -253,7 +255,7 @@ public class RollerItem extends WeaponBaseItem
                         if(target.equals(entity))
                             continue;
                         InkDamageUtils.doRollDamage(level, target, rollDamage * (hasInk ? 1 : 0.4f), ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity));
-                        if (!InkDamageUtils.isSplatted(level, target))
+                        if (!InkDamageUtils.isSplatted(level, target) && target.invulnerableTime > 0)
                             doPush = true;
                     }
                 }

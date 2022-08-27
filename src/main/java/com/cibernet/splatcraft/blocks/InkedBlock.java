@@ -265,14 +265,14 @@ public class InkedBlock extends Block implements IColoredBlock
     @Override
     public boolean addLandingEffects(BlockState state1, ServerWorld levelserver, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles)
     {
-        ColorUtils.addInkSplashParticle(levelserver, getColor(levelserver, pos), entity.getX(), entity.getEyePosition(levelserver.random.nextFloat() * 0.3f).y, entity.getZ(), (float) Math.sqrt(numberOfParticles) * 0.3f);
+        ColorUtils.addInkSplashParticle(levelserver, getColor(levelserver, pos), entity.getX(), entity.getY(levelserver.random.nextFloat() * 0.3f), entity.getZ(), (float) Math.sqrt(numberOfParticles) * 0.3f);
         return true;
     }
 
     @Override
     public boolean addRunningEffects(BlockState state, World level, BlockPos pos, Entity entity)
     {
-        ColorUtils.addInkSplashParticle(level, getColor(level, pos), entity.getX(), entity.getEyePosition(level.getRandom().nextFloat() * 0.3f).y, entity.getZ(), 0.6f);
+        ColorUtils.addInkSplashParticle(level, getColor(level, pos), entity.getX(), entity.getY(level.getRandom().nextFloat() * 0.3f), entity.getZ(), 0.6f);
         return true;
     }
 
