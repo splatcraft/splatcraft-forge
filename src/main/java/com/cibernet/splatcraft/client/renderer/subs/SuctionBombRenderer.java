@@ -25,19 +25,22 @@ public class SuctionBombRenderer extends SubWeaponRenderer<SuctionBombEntity, Su
     public void render(SuctionBombEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 
         matrixStackIn.pushPose();
-        //matrixStackIn.translate(0.0D, 0.2/*0.15000000596046448D*/, 0.0D);
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 180.0F));
-        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot)+90F));
-        matrixStackIn.scale(1, -1, 1);
+        if(!entityIn.isItem)
+        {
+            //matrixStackIn.translate(0.0D, 0.2/*0.15000000596046448D*/, 0.0D);
+            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 180.0F));
+            matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot)+90F));
+            matrixStackIn.scale(1, -1, 1);
 
-        float f = entityIn.getFlashIntensity(partialTicks);
-        float f1 = 1.0F + MathHelper.sin(f * 100.0F) * f * 0.01F;
-        f = MathHelper.clamp(f, 0.0F, 1.0F);
-        f = f * f;
-        f = f * f;
-        float f2 = (1.0F + f * 0.4F) * f1;
-        float f3 = (1.0F + f * 0.1F) / f1;
-        matrixStackIn.scale(f2, f3, f2);
+            float f = entityIn.getFlashIntensity(partialTicks);
+            float f1 = 1.0F + MathHelper.sin(f * 100.0F) * f * 0.01F;
+            f = MathHelper.clamp(f, 0.0F, 1.0F);
+            f = f * f;
+            f = f * f;
+            float f2 = (1.0F + f * 0.4F) * f1;
+            float f3 = (1.0F + f * 0.1F) / f1;
+            matrixStackIn.scale(f2, f3, f2);
+        }
 
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         matrixStackIn.popPose();

@@ -123,7 +123,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
         }
         else
         {
-            xRotO = stickFacing.equals(Direction.UP) ? -90 : 90;
+            xRot = stickFacing.equals(Direction.UP) ? -90 : 90;
             yRot = yRotO;
             xRotO = xRot;
         }

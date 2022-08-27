@@ -25,10 +25,13 @@ public class BurstBombRenderer extends SubWeaponRenderer<BurstBombEntity, BurstB
     public void render(BurstBombEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 
         matrixStackIn.pushPose();
-        matrixStackIn.translate(0.0D, 0.2/*0.15000000596046448D*/, 0.0D);
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 180.0F));
-        matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot)+90F));
-        matrixStackIn.scale(1, -1, 1);
+        if(!entityIn.isItem)
+        {
+            matrixStackIn.translate(0.0D, 0.2/*0.15000000596046448D*/, 0.0D);
+            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 180.0F));
+            matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot)+90F));
+            matrixStackIn.scale(1, -1, 1);
+        }
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         matrixStackIn.popPose();
     }

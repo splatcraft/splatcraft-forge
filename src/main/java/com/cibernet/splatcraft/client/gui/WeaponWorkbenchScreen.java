@@ -12,6 +12,7 @@ import com.cibernet.splatcraft.tileentities.container.WeaponWorkbenchContainer;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.audio.SoundHandler;
@@ -36,6 +37,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,12 +125,18 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
         displayStackMatrix.translate(x + 88 + i * 26, y + 73, 100);
         displayStackMatrix.scale(scale, scale, scale);
         displayStackMatrix.mulPose(new Quaternion(0, 1, 0, 0));
+
         IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().renderBuffers().bufferSource();
-        ItemRenderer itemRenderer = minecraft.getItemRenderer();
-        if (itemRenderer != null)
+        int light = 15728880;
+        if(!MinecraftForge.EVENT_BUS.post(new RenderItemEvent(displayStack, ItemCameraTransforms.TransformType.GUI, displayStackMatrix, irendertypebuffer$impl, light, OverlayTexture.NO_OVERLAY, minecraft.getDeltaFrameTime())))
         {
-            minecraft.getItemRenderer().render(displayStack, ItemCameraTransforms.TransformType.GUI, false, displayStackMatrix, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, minecraft.getItemRenderer().getModel(displayStack, level, player));
+            ItemRenderer itemRenderer = minecraft.getItemRenderer();
+            if (itemRenderer != null)
+            {
+                minecraft.getItemRenderer().render(displayStack, ItemCameraTransforms.TransformType.GUI, false, displayStackMatrix, irendertypebuffer$impl, light, OverlayTexture.NO_OVERLAY, minecraft.getItemRenderer().getModel(displayStack, level, player));
+            }
         }
+
         irendertypebuffer$impl.endBatch();
         matrixStack.popPose();
     }

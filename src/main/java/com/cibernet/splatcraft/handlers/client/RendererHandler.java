@@ -60,6 +60,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.*;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
@@ -67,6 +68,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.extensions.IForgeBakedModel;
+import net.minecraftforge.common.model.TransformationHelper;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -266,6 +268,7 @@ public class RendererHandler
             MatrixStack matrixStack = event.getMatrixStack();
             AbstractSubWeaponEntity sub = ((SubWeaponItem)event.getItem().getItem()).entityType.create(Minecraft.getInstance().player.level);
             sub.setColor(ColorUtils.getInkColor(event.getItem()));
+            sub.isItem = true;
 
             Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(event.getItem().getItem().getRegistryName() + "#inventory"))
                     .handlePerspective(event.getTransformType(), matrixStack);
@@ -279,27 +282,36 @@ public class RendererHandler
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onItemRenderHand(RenderHandEvent event)
     {
+        MatrixStack matrixStack = event.getMatrixStack();
+
+        matrixStack.pushPose();
         if(event.getItemStack().getItem() instanceof SubWeaponItem)
         {
-            MatrixStack matrixStack = event.getMatrixStack();
             HandSide handside = event.getHand() == Hand.MAIN_HAND ? Minecraft.getInstance().player.getMainArm() : Minecraft.getInstance().player.getMainArm().getOpposite();
             AbstractSubWeaponEntity sub = ((SubWeaponItem)event.getItemStack().getItem()).entityType.create(Minecraft.getInstance().player.level);
             sub.setColor(ColorUtils.getInkColor(event.getItemStack()));
+            sub.isItem = true;
 
-            int i = event.getHand() == Hand.MAIN_HAND ? 1 : -1;
-            applyItemArmAttackTransform(matrixStack, handside, event.getPartialTicks());
-            matrixStack.translate((double)((float)i * 0.56F), (double)(-0.52F + -getHandHeight(event.getHand(), event.getPartialTicks()) * -0.6F), (double)-0.72F);
+            float p_228405_5_ = event.getSwingProgress();
+            float p_228405_7_ = event.getEquipProgress();
+
+            float f5 = -0.4F * MathHelper.sin(MathHelper.sqrt(p_228405_5_) * (float)Math.PI);
+            float f6 = 0.2F * MathHelper.sin(MathHelper.sqrt(p_228405_5_) * ((float)Math.PI * 2F));
+            float f10 = -0.2F * MathHelper.sin(p_228405_5_ * (float)Math.PI);
+            int l = handside == HandSide.RIGHT ? 1 : -1;
+            matrixStack.translate((double)((float)l * f5), (double)f6, (double)f10);
+            applyItemArmTransform(matrixStack, handside, p_228405_7_);
+            applyItemArmAttackTransform(matrixStack, handside, p_228405_5_);
 
             Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(event.getItemStack().getItem().getRegistryName() + "#inventory"))
                     .handlePerspective(handside == HandSide.RIGHT ? ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, matrixStack);
+
             Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(sub).render(sub, 0, event.getPartialTicks(), matrixStack, event.getBuffers(), event.getLight());
             if(!matrixStack.clear())
                 matrixStack.popPose();
             event.setCanceled(true);
-
-
-            StructureSeparationSettings
         }
+         matrixStack.popPose();
     }
 
     protected static float getHandHeight(Hand hand, float partial)
@@ -309,16 +321,20 @@ public class RendererHandler
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected static void applyItemArmAttackTransform(MatrixStack matrixStack, HandSide hand, float partial)
-    {
-        float progress = Minecraft.getInstance().player.getAttackAnim(partial);
-        int i = hand == HandSide.RIGHT ? 1 : -1;
-        float f = MathHelper.sin(progress * progress * (float)Math.PI);
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees((float)i * (45.0F + f * -20.0F)));
-        float f1 = MathHelper.sin(MathHelper.sqrt(progress) * (float)Math.PI);
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float)i * f1 * -20.0F));
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(f1 * -80.0F));
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees((float)i * -45.0F));
+    private static void applyItemArmTransform(MatrixStack p_228406_1_, HandSide p_228406_2_, float p_228406_3_) {
+        int i = p_228406_2_ == HandSide.RIGHT ? 1 : -1;
+        p_228406_1_.translate((double)((float)i * 0.56F), (double)(-0.52F + p_228406_3_ * -0.6F), (double)-0.72F);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static void applyItemArmAttackTransform(MatrixStack p_228399_1_, HandSide p_228399_2_, float p_228399_3_) {
+        int i = p_228399_2_ == HandSide.RIGHT ? 1 : -1;
+        float f = MathHelper.sin(p_228399_3_ * p_228399_3_ * (float)Math.PI);
+        p_228399_1_.mulPose(Vector3f.YP.rotationDegrees((float)i * (45.0F + f * -20.0F)));
+        float f1 = MathHelper.sin(MathHelper.sqrt(p_228399_3_) * (float)Math.PI);
+        p_228399_1_.mulPose(Vector3f.ZP.rotationDegrees((float)i * f1 * -20.0F));
+        p_228399_1_.mulPose(Vector3f.XP.rotationDegrees(f1 * -80.0F));
+        p_228399_1_.mulPose(Vector3f.YP.rotationDegrees((float)i * -45.0F));
     }
 
     protected static void renderItem(ItemStack itemStackIn, ItemCameraTransforms.TransformType transformTypeIn, boolean leftHand, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn, IBakedModel modelIn)

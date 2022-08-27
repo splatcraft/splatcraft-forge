@@ -1,34 +1,119 @@
 {
-	"display": {
-        "gui": {
-            "rotation": [ 90, 90, 90 ],
-            "translation": [ 0, 0, 0],
-            "scale":[ 0.8, 0.8, 0.8 ]
-        },
-        "ground": {
-            "rotation": [ 0, 0, 0 ],
-            "translation": [ 0, 3, 0],
-            "scale":[ 0.5, 0.5, 0.5 ]
-        },
-        "fixed": {
-            "rotation": [ 0, 0, 0 ],
-            "translation": [ 0, 0, 0],
-            "scale":[ 0.5, 0.5, 0.5 ]
-        },
-        "thirdperson_righthand": {
-            "rotation": [ 75, 45, 0 ],
-            "translation": [ 0, 0, 0],
-            "scale": [ 0.5, 0.5, 0.5 ]
-        },
-        "firstperson_righthand": {
-            "rotation": [ 0, 45, 0 ],
-            "translation": [ 0, -5, 0 ],
-            "scale": [ 0.50, 0.50, 0.50 ]
-        },
-        "firstperson_lefthand": {
-            "rotation": [ 0, 225, 0 ],
-            "translation": [ 0, -5, 0 ],
-            "scale": [ 0.50, 0.50, 0.50 ]
-        }
+  "parent": "block/block",
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [
+        0.5,
+        -3,
+        -1
+      ],
+      "rotation": [
+        210,
+        0,
+        0
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "thirdperson_lefthand": {
+      "translation": [
+        -0.5,
+        -3,
+        -1
+      ],
+      "rotation": [
+        210,
+        0,
+        0
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        180,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        180,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        180
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    "gui": {
+      "rotation": [
+        210,
+        40,
+        0
+      ],
+      "translation": [
+        -0.5,
+        -6,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        180,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        -6,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
     }
+  }
 }

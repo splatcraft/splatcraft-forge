@@ -6,6 +6,7 @@ import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
@@ -78,7 +79,7 @@ public class SubWeaponItem extends WeaponBaseItem
     {
         super.releaseUsing(stack, level, entity, timeLeft);
 
-        entity.swing(entity.getOffhandItem().equals(this) ? Hand.OFF_HAND : Hand.MAIN_HAND, false);
+        entity.swing(entity.getOffhandItem().equals(stack) ? Hand.OFF_HAND : Hand.MAIN_HAND, false);
 
         AbstractSubWeaponEntity proj = AbstractSubWeaponEntity.create(entityType, level, entity, stack);
         proj.shoot(entity, entity.xRot, entity.yRot, -30f, 0.5f, 0);
@@ -93,13 +94,22 @@ public class SubWeaponItem extends WeaponBaseItem
 
     }
 
-    public static class DispenseBehavior extends ProjectileDispenseBehavior
+    public static class DispenseBehavior extends DefaultDispenseItemBehavior
     {
         @Override
         public ItemStack execute(IBlockSource source, ItemStack stack)
         {
-            if(stack.getOrCreateTag().getBoolean("SingleUse"))
-                return super.execute(source, stack);
+            if(stack.getOrCreateTag().getBoolean("SingleUse")) 
+            {
+                World world = source.getLevel();
+                IPosition iposition = DispenserBlock.getDispensePosition(source);
+                Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+                AbstractSubWeaponEntity projectileentity = this.getProjectile(world, iposition, stack);
+                projectileentity.shoot(direction.getStepX(), (float)direction.getStepY() + 0.1F, (double)direction.getStepZ(), this.getPower(), this.getUncertainty());
+                world.addFreshEntity(projectileentity);
+                stack.shrink(1);
+                return stack;
+            }
 
             Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
             IPosition iposition = DispenserBlock.getDispensePosition(source);
@@ -108,29 +118,28 @@ public class SubWeaponItem extends WeaponBaseItem
             return stack;
         }
 
-        @Override
-        protected ProjectileEntity getProjectile(World levelIn, IPosition position, ItemStack stackIn)
+        protected AbstractSubWeaponEntity getProjectile(World levelIn, IPosition position, ItemStack stackIn)
         {
             if(!(stackIn.getItem() instanceof SubWeaponItem))
                 return null;
 
             return AbstractSubWeaponEntity.create(((SubWeaponItem) stackIn.getItem()).entityType,  levelIn, position.x(), position.y(), position.z(), ColorUtils.getInkColor(stackIn), InkBlockUtils.InkType.NORMAL, stackIn);
         }
+        
 
         @Override
         protected void playSound(IBlockSource source) {
             source.getLevel().playSound(null, source.x(), source.y(), source.z(), SplatcraftSounds.subThrow, SoundCategory.PLAYERS, 0.7F, 1);
         }
 
-        @Override
         protected float getPower() {
             return 0.7f;
         }
 
-        @Override
         protected float getUncertainty() {
             return 0;
         }
+        
     }
 
 }
