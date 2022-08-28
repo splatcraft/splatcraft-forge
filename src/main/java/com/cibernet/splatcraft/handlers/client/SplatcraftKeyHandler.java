@@ -118,8 +118,7 @@ public class SplatcraftKeyHandler
     public static void onSquidKeyPress()
     {
         PlayerEntity player = Minecraft.getInstance().player;
-        if (player != null && PlayerInfoCapability.hasCapability(player))
-        {
+        if (player != null && PlayerInfoCapability.hasCapability(player) && player.containerMenu == null) {
             IPlayerInfo capability = PlayerInfoCapability.get(player);
             SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player));
             capability.setIsSquid(!capability.isSquid());
@@ -205,7 +204,6 @@ public class SplatcraftKeyHandler
                             }
 
                             mc.gameRenderer.itemInHandRenderer.itemUsed(hand);
-                            return;
                         }
                     }
                 }

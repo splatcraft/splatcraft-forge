@@ -29,7 +29,7 @@ public class PlayerSquidRenderer extends InkSquidRenderer
         boolean shouldSit = entityIn.isPassenger() && entityIn.getVehicle() != null && entityIn.getVehicle().shouldRiderSit();
         this.model.riding = shouldSit;
         this.model.young = entityIn.isBaby();
-        float f = MathHelper.lerp(partialTicks, entityIn.yHeadRotO, entityIn.yBodyRot);
+        float f = MathHelper.lerp(partialTicks, entityIn.yBodyRotO, entityIn.yBodyRot);
         float f1 = MathHelper.lerp(partialTicks, entityIn.yHeadRotO, entityIn.yHeadRot);
         float f2 = f1 - f;
         if (shouldSit && entityIn.getVehicle() instanceof LivingEntity)

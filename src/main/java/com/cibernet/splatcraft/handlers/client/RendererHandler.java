@@ -33,7 +33,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.network.play.NetworkPlayerInfo;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.FirstPersonRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PhantomRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -44,8 +48,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
@@ -60,15 +62,21 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.TransformationMatrix;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.*;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.extensions.IForgeBakedModel;
-import net.minecraftforge.common.model.TransformationHelper;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderNameplateEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -95,7 +103,7 @@ public class RendererHandler
     });
     private static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/widgets.png");
     private static PlayerSquidRenderer squidRenderer = null;
-    private static List<PlayerRenderer> hasAccessoryLayer = new ArrayList<>();
+    private static final List<PlayerRenderer> hasAccessoryLayer = new ArrayList<>();
     private static float tickTime = 0;
     private static float oldCooldown = 0;
     private static int squidTime = 0;
@@ -196,8 +204,7 @@ public class RendererHandler
     public static void onRenderTick(TickEvent.RenderTickEvent event)
     {
         PlayerEntity player = Minecraft.getInstance().player;
-        if (player != null && PlayerCooldown.hasPlayerCooldown(player))
-        {
+        if (PlayerCooldown.hasPlayerCooldown(player)) {
             player.inventory.selected = PlayerCooldown.getPlayerCooldown(player).getSlotIndex();
         }
     }
@@ -261,7 +268,6 @@ public class RendererHandler
             IBakedModel modelIn = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(event.getItem().getItem().getRegistryName() + "#inventory"));
             renderItem(event.getItem(), event.getTransformType(), true, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getOverlay(), modelIn);
             event.setCanceled(true);
-            return;
         }
         else if(event.getItem().getItem() instanceof SubWeaponItem)
         {
@@ -299,7 +305,7 @@ public class RendererHandler
             float f6 = 0.2F * MathHelper.sin(MathHelper.sqrt(p_228405_5_) * ((float)Math.PI * 2F));
             float f10 = -0.2F * MathHelper.sin(p_228405_5_ * (float)Math.PI);
             int l = handside == HandSide.RIGHT ? 1 : -1;
-            matrixStack.translate((double)((float)l * f5), (double)f6, (double)f10);
+            matrixStack.translate((float) l * f5, f6, f10);
             applyItemArmTransform(matrixStack, handside, p_228405_7_);
             applyItemArmAttackTransform(matrixStack, handside, p_228405_5_);
 
@@ -314,16 +320,15 @@ public class RendererHandler
          matrixStack.popPose();
     }
 
-    protected static float getHandHeight(Hand hand, float partial)
-    {
-        return MathHelper.lerp(partial, ObfuscationReflectionHelper.getPrivateValue(FirstPersonRenderer.class, Minecraft.getInstance().getItemInHandRenderer(), "o"+(hand==Hand.MAIN_HAND?"Main":"Off")+"HandHeight"),
-                                        ObfuscationReflectionHelper.getPrivateValue(FirstPersonRenderer.class, Minecraft.getInstance().getItemInHandRenderer(), (hand==Hand.MAIN_HAND?"main":"off")+"HandHeight"));
+    protected static float getHandHeight(Hand hand, float partial) {
+        return MathHelper.lerp(partial, ObfuscationReflectionHelper.getPrivateValue(FirstPersonRenderer.class, Minecraft.getInstance().getItemInHandRenderer(), hand == Hand.MAIN_HAND ? "field_187470_g" : "field_187472_i"),
+                ObfuscationReflectionHelper.getPrivateValue(FirstPersonRenderer.class, Minecraft.getInstance().getItemInHandRenderer(), hand == Hand.MAIN_HAND ? "field_187469_f" : "field_187471_h"));
     }
 
     @OnlyIn(Dist.CLIENT)
     private static void applyItemArmTransform(MatrixStack p_228406_1_, HandSide p_228406_2_, float p_228406_3_) {
         int i = p_228406_2_ == HandSide.RIGHT ? 1 : -1;
-        p_228406_1_.translate((double)((float)i * 0.56F), (double)(-0.52F + p_228406_3_ * -0.6F), (double)-0.72F);
+        p_228406_1_.translate((float) i * 0.56F, -0.52F + p_228406_3_ * -0.6F, -0.72F);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -453,7 +458,7 @@ public class RendererHandler
     {
         if (SplatcraftGameRules.getBooleanRuleValue(event.getEntity().level, SplatcraftGameRules.COLORED_PLAYER_NAMES) && event.getEntity() instanceof LivingEntity)
         {
-            int color = ColorUtils.getEntityColor((LivingEntity) event.getEntity());
+            int color = ColorUtils.getEntityColor(event.getEntity());
             if (SplatcraftConfig.Client.getColorLock())
             {
                 color = ColorUtils.getLockedColor(color);

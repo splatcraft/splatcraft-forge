@@ -314,12 +314,11 @@
   "ink_color.splatcraft.dye_green": "Organic Green",
   "ink_color.splatcraft.dye_red": "Organic Red",
   "ink_color.splatcraft.dye_black": "Organic Black",
-
   "ink_color.splatcraft.color_lock_a": "Color Locked Friendly",
   "ink_color.splatcraft.color_lock_b": "Color Locked Hostile",
   "ink_color.splatcraft.default": "Undyed",
-
   "death.attack.splatcraft:water": "%s dissolved in water",
+  "death.attack.splatcraft:water.player": "%s dissolved in water, thanks to %s",
   "death.attack.splatcraft:splat": "%s was splatted by %s",
   "death.attack.splatcraft:splat.item": "%s was splatted by %s using %s",
   "death.attack.splatcraft:roll": "%s was crushed by %s",
@@ -328,7 +327,6 @@
   "death.attack.splatcraft:squish.item": "%s was squished by %s using %s",
   "death.attack.splatcraft:outOfStage": "%s tried to escape the stage",
   "death.attack.splatcraft:outOfStage.player": "%1$s was knocked out of the stage by %2$s",
-
   "entity.splatcraft.ink_projectile": "Ink Projectile",
   "entity.splatcraft.ink_squid": "Squid",
   "entity.splatcraft.squid_bumper": "Squid Bumper",

@@ -78,9 +78,9 @@
     ]
   },
   "sub_throw": {
-    "subtitle": "subtitle.slosher_shot",
+    "subtitle": "subtitle.sub_throw",
     "sounds": [
-      "splatcraft:slosher_shot"
+      "splatcraft:sub_throw"
     ]
   },
   "sub_detonating": {

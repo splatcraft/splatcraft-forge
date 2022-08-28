@@ -26,7 +26,7 @@ public class PaneConnectionMixin
 
     private static final Map<Direction, BooleanProperty> PROPERTY_BY_DIRECTION = SixWayBlock.PROPERTY_BY_DIRECTION.entrySet().stream().filter((facingProperty) -> facingProperty.getKey().getAxis().isHorizontal()).collect(Util.toMap());
 
-    @Inject(at= @At("TAIL"), method = "updateShape", cancellable = true, remap = false)
+    @Inject(at = @At("TAIL"), method = "updateShape", cancellable = true)
     private void updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos, CallbackInfoReturnable<BlockState> callback)
     {
         BlockState state = callback.getReturnValue();
@@ -37,7 +37,7 @@ public class PaneConnectionMixin
         }
     }
 
-    @Inject(at= @At("TAIL"), method = "getStateForPlacement", cancellable = true, remap = false)
+    @Inject(at = @At("TAIL"), method = "getStateForPlacement", cancellable = true)
     private void getStateForPlacement(BlockItemUseContext context, CallbackInfoReturnable<BlockState> callback)
     {
         BlockState state = callback.getReturnValue();

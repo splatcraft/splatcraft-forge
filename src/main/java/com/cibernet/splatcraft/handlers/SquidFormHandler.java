@@ -83,29 +83,28 @@ public class SquidFormHandler
 
         if (PlayerInfoCapability.isSquid(player))
         {
-            player.setSprinting(player.isInWater());
-            player.walkDist = player.walkDistO;
+            if (!player.abilities.flying) {
+                player.setSprinting(player.isInWater());
+                player.walkDist = player.walkDistO;
+            }
 
             player.setPose(Pose.SWIMMING);
             player.stopUsingItem();
 
             player.awardStat(SplatcraftStats.SQUID_TIME);
 
-            if (InkBlockUtils.canSquidHide(player))
-            {
+            if (InkBlockUtils.canSquidHide(player)) {
                 player.fallDistance = 0;
-                if (player.level.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN) && player.tickCount % 5 == 0 && !player.hasEffect(Effects.POISON) && !player.hasEffect(Effects.WITHER))
-                {
+                if (player.level.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN) && player.tickCount % 5 == 0 && !player.hasEffect(Effects.POISON) && !player.hasEffect(Effects.WITHER)) {
                     player.heal(0.5f);
-                    if (InkOverlayCapability.hasCapability(player))
-                    {
+                    if (InkOverlayCapability.hasCapability(player)) {
                         InkOverlayCapability.get(player).addAmount(-0.49f);
                     }
                 }
 
-                if (player.level.getRandom().nextFloat() <= 0.6f && (Math.abs(player.getX() - player.xo) > 0.14 || Math.abs(player.getY() - player.yo) > 0.07 || Math.abs(player.getZ() - player.zo) > 0.14))
-                {
-                    ColorUtils.addInkSplashParticle(player.level, player, 1.1f);
+                boolean crouch = player.isCrouching();
+                if (player.level.getRandom().nextFloat() <= (crouch ? 0.4f : 0.6f) && (Math.abs(player.getX() - player.xo) > 0.14 || Math.abs(player.getY() - player.yo) > 0.07 || Math.abs(player.getZ() - player.zo) > 0.14)) {
+                    ColorUtils.addInkSplashParticle(player.level, player, crouch ? 0.825f : 1.1f);
                 }
 
             }
@@ -136,7 +135,7 @@ public class SquidFormHandler
         if (PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidSwim(player))
         {
             player.causeFoodExhaustion(1F);
-            player.setDeltaMovement(player.getDeltaMovement().x(), player.getDeltaMovement().y() * 1.1, player.getDeltaMovement().z());
+            player.setDeltaMovement(player.getDeltaMovement().x() * 0.9, player.getDeltaMovement().y() * 1.1, player.getDeltaMovement().z() * 0.9);
         }
     }
 
