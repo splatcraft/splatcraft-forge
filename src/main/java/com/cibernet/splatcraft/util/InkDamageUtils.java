@@ -7,6 +7,7 @@ import com.cibernet.splatcraft.entities.IColoredEntity;
 import com.cibernet.splatcraft.entities.SquidBumperEntity;
 import com.cibernet.splatcraft.network.SplatcraftPacketHandler;
 import com.cibernet.splatcraft.network.UpdateInkOverlayPacket;
+import com.cibernet.splatcraft.registries.SplatcraftEntities;
 import com.cibernet.splatcraft.registries.SplatcraftGameRules;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -62,7 +63,7 @@ public class InkDamageUtils
             applyInkCoverage = doDamage;
         }
 
-        InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID+":"+name, source, source, sourceItem);
+        InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID + ":" + name, (source != null ? source : SplatcraftEntities.INK_PROJECTILE.create(level)), source, sourceItem);
         if (target instanceof IColoredEntity)
         {
             doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);

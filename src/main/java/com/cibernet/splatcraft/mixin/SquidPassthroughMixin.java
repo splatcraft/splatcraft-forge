@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class SquidPassthroughMixin
 {
 
-    @Inject(at = @At("TAIL"), method = "getCollisionShape", cancellable = true, remap = false)
+    @Inject(at = @At("TAIL"), method = "getCollisionShape", cancellable = true)
     private void getCollisionShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context, CallbackInfoReturnable<VoxelShape> callback)
     {
         try

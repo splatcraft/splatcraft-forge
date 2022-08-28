@@ -28,22 +28,27 @@ public class SplatcraftConfig
         config.setConfig(file);
     }
 
-    public enum InkIndicator
-    {
+    public enum InkIndicator {
         CROSSHAIR,
         DURABILITY,
         BOTH,
         NONE
     }
 
-    public static class Client
-    {
+    public enum PreventBobView {
+        SUBMERGED,
+        ALWAYS,
+        OFF
+    }
+
+    public static class Client {
         public static ForgeConfigSpec.EnumValue<SplatcraftKeyHandler.KeyMode> squidKeyMode;
         public static ForgeConfigSpec.EnumValue<InkIndicator> inkIndicator;
         public static ForgeConfigSpec.BooleanValue vanillaInkDurability;
         public static ForgeConfigSpec.BooleanValue holdBarrierToRender;
         public static ForgeConfigSpec.IntValue barrierRenderDistance;
         //public static ForgeConfigSpec.BooleanValue colorLock; TODO
+        public static ForgeConfigSpec.EnumValue<PreventBobView> preventBobView;
 
         public static void init(ForgeConfigSpec.Builder client)
         {
@@ -57,6 +62,7 @@ public class SplatcraftConfig
             barrierRenderDistance = client.comment("How far away stage barriers or voids will render away from you.")
                     .defineInRange("splatcraft.barrierRenderDistance", 40, 4, 80);
             //colorLock = client.comment("Color Lock Mode").define("splatcraft.colorLock", false);
+            preventBobView = client.comment("Prevents changing FOV when in Squid Mode").defineEnum("splatcraft.preventBobView", PreventBobView.ALWAYS);
         }
 
         public static boolean getColorLock()

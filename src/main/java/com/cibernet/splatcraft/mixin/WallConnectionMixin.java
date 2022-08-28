@@ -32,7 +32,7 @@ public abstract class WallConnectionMixin
 
     @Shadow @Final public static EnumProperty<WallHeight> NORTH_WALL;
 
-    @Inject(at=@At("TAIL"), method = "sideUpdate", cancellable = true, remap = false)
+    @Inject(at = @At("TAIL"), method = "sideUpdate", cancellable = true)
     private void sideUpdate(IWorldReader reader, BlockPos pos, BlockState state, BlockPos facingPos, BlockState facingState, Direction facing, CallbackInfoReturnable<BlockState> callback)
     {
 
