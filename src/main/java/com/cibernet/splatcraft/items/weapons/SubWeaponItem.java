@@ -4,16 +4,15 @@ import com.cibernet.splatcraft.entities.subs.AbstractSubWeaponEntity;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.ColorUtils;
 import com.cibernet.splatcraft.util.InkBlockUtils;
+import com.cibernet.splatcraft.util.WeaponStat;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
-import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Direction;
@@ -34,13 +33,16 @@ public class SubWeaponItem extends WeaponBaseItem
 
     public static final ArrayList<SubWeaponItem> subs = new ArrayList<>();
 
-    public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float inkConsumption)
-    {
+    public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption) {
         super();
         setRegistryName(name);
         this.inkConsumption = inkConsumption;
         this.entityType = entityType;
         subs.add(this);
+
+        addStat(new WeaponStat("damage", (stack, level) -> (int) (directDamage / 20 * 100)));
+        addStat(new WeaponStat("impact", (stack, level) -> (int) (explosionSize / 4 * 100)));
+        addStat(new WeaponStat("ink_consumption", (stack, level) -> (int) (inkConsumption)));
     }
 
     @Override
@@ -71,7 +73,7 @@ public class SubWeaponItem extends WeaponBaseItem
 
     @Override
     public boolean showDurabilityBar(ItemStack stack) {
-        return stack.getOrCreateTag().getBoolean("SingleUse") ? false : super.showDurabilityBar(stack);
+        return !stack.getOrCreateTag().getBoolean("SingleUse") && super.showDurabilityBar(stack);
     }
 
     @Override
@@ -105,7 +107,7 @@ public class SubWeaponItem extends WeaponBaseItem
                 IPosition iposition = DispenserBlock.getDispensePosition(source);
                 Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
                 AbstractSubWeaponEntity projectileentity = this.getProjectile(world, iposition, stack);
-                projectileentity.shoot(direction.getStepX(), (float)direction.getStepY() + 0.1F, (double)direction.getStepZ(), this.getPower(), this.getUncertainty());
+                projectileentity.shoot(direction.getStepX(), (float) direction.getStepY() + 0.1F, direction.getStepZ(), this.getPower(), this.getUncertainty());
                 world.addFreshEntity(projectileentity);
                 stack.shrink(1);
                 return stack;

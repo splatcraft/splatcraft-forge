@@ -6,19 +6,38 @@ import com.cibernet.splatcraft.client.model.inktanks.ClassicInkTankModel;
 import com.cibernet.splatcraft.client.model.inktanks.InkTankJrModel;
 import com.cibernet.splatcraft.client.model.inktanks.InkTankModel;
 import com.cibernet.splatcraft.dispenser.PlaceBlockDispenseBehavior;
+import com.cibernet.splatcraft.entities.subs.BurstBombEntity;
+import com.cibernet.splatcraft.entities.subs.SplatBombEntity;
+import com.cibernet.splatcraft.entities.subs.SuctionBombEntity;
 import com.cibernet.splatcraft.items.BlockItem;
-import com.cibernet.splatcraft.items.*;
+import com.cibernet.splatcraft.items.ColoredArmorItem;
+import com.cibernet.splatcraft.items.ColoredBlockItem;
+import com.cibernet.splatcraft.items.FilterItem;
+import com.cibernet.splatcraft.items.InkTankItem;
+import com.cibernet.splatcraft.items.InkWaxerItem;
+import com.cibernet.splatcraft.items.PowerEggCanItem;
+import com.cibernet.splatcraft.items.SquidBumperItem;
 import com.cibernet.splatcraft.items.remotes.ColorChangerItem;
 import com.cibernet.splatcraft.items.remotes.InkDisruptorItem;
 import com.cibernet.splatcraft.items.remotes.RemoteItem;
 import com.cibernet.splatcraft.items.remotes.TurfScannerItem;
-import com.cibernet.splatcraft.items.weapons.*;
+import com.cibernet.splatcraft.items.weapons.BlasterItem;
+import com.cibernet.splatcraft.items.weapons.ChargerItem;
+import com.cibernet.splatcraft.items.weapons.DualieItem;
+import com.cibernet.splatcraft.items.weapons.RollerItem;
+import com.cibernet.splatcraft.items.weapons.ShooterItem;
+import com.cibernet.splatcraft.items.weapons.SlosherItem;
+import com.cibernet.splatcraft.items.weapons.SubWeaponItem;
 import com.cibernet.splatcraft.util.SplatcraftArmorMaterial;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.item.Items;
+import net.minecraft.item.Rarity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
@@ -111,9 +130,9 @@ public class SplatcraftItems
     public static final InkTankItem armoredInkTank = new InkTankItem("armored_ink_tank", 85, ARMORED_INK_TANK);
 
     //Sub Weapons
-    public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.SPLAT_BOMB,70);
-    public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB,40);
-    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB,70);
+    public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70);
+    public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB, BurstBombEntity.DIRECT_DAMAGE, BurstBombEntity.EXPLOSION_SIZE, 40);
+    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB, SuctionBombEntity.DIRECT_DAMAGE, SuctionBombEntity.EXPLOSION_SIZE, 70);
 
     //Vanity
     public static final Item inkClothHelmet = new ColoredArmorItem("ink_cloth_helmet", INK_CLOTH, EquipmentSlotType.HEAD);

@@ -164,7 +164,6 @@
   "item.splatcraft.ink_tank_jr.tooltip": "Only works with Junior weapons.",
   "item.splatcraft.armored_ink_tank": "Armored Ink Tank",
   "item.splatcraft.hero_ink_tank": "Hero Tank",
-
   "weaponStat.range": "Range: %s%%",
   "weaponStat.damage": "Damage: %s%%",
   "weaponStat.impact": "Impact: %s%%",
@@ -173,7 +172,7 @@
   "weaponStat.ink_speed": "Ink Speed: %s%%",
   "weaponStat.mobility": "Mobility: %s%%",
   "weaponStat.charge_speed": "Charge Speed: %s%%",
-
+  "weaponStat.ink_consumption": "Ink Consumption: %s%%",
   "weaponTab.splatcraft:weapon_workbench_tabs/shooters": "Shooters",
   "weaponTab.splatcraft:weapon_workbench_tabs/rollers": "Rollers",
   "weaponTab.splatcraft:weapon_workbench_tabs/chargers": "Chargers",
