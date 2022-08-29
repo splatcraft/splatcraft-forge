@@ -22,11 +22,10 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class SuctionBombEntity extends AbstractSubWeaponEntity
-{
+public class SuctionBombEntity extends AbstractSubWeaponEntity {
     public static final float DAMAGE = 6;
-    public static final float DIRECT_DAMAGE = 44;
-    public static final float EXPLOSION_SIZE = 3.5f;
+    public static final float DIRECT_DAMAGE = 36;
+    public static final float EXPLOSION_SIZE = 3.75f;
 
     private static final DataParameter<Boolean> ACTIVATED = EntityDataManager.defineId(SuctionBombEntity.class, DataSerializers.BOOLEAN);
 
@@ -84,7 +83,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
             {
                 this.inGround = false;
                 Vector3d vector3d = this.getDeltaMovement();
-                this.setDeltaMovement(vector3d.multiply((double)(this.random.nextFloat() * 0.2F), (double)(this.random.nextFloat() * 0.2F), (double)(this.random.nextFloat() * 0.2F)));
+                this.setDeltaMovement(vector3d.multiply(this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F));
             }
             else
             {
@@ -101,14 +100,10 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
 
 
     @Override
-    public void handleEntityEvent(byte id)
-    {
+    public void handleEntityEvent(byte id) {
         super.handleEntityEvent(id);
-        switch (id)
-        {
-            case 1:
-                level.addParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-                break;
+        if (id == 1) {
+            level.addParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
         }
 
     }
@@ -150,7 +145,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity
 
             Vector3d vector3d = result.getLocation().subtract(this.getX(), this.getY(), this.getZ());
             this.setDeltaMovement(vector3d);
-            Vector3d vector3d1 = vector3d.normalize().scale((double) 0.05F);
+            Vector3d vector3d1 = vector3d.normalize().scale(0.05F);
             this.setPosRaw(this.getX() - vector3d1.x, this.getY() - vector3d1.y, this.getZ() - vector3d1.z);
 
             stickFacing = result.getDirection();

@@ -4,22 +4,21 @@ import com.cibernet.splatcraft.client.particles.InkExplosionParticleData;
 import com.cibernet.splatcraft.registries.SplatcraftItems;
 import com.cibernet.splatcraft.registries.SplatcraftSounds;
 import com.cibernet.splatcraft.util.InkExplosion;
-import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.item.Item;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class SplatBombEntity extends AbstractSubWeaponEntity
-{
+public class SplatBombEntity extends AbstractSubWeaponEntity {
     public static final float DAMAGE = 6;
-    public static final float DIRECT_DAMAGE = 44;
-    public static final float EXPLOSION_SIZE = 3.5f;
+    public static final float DIRECT_DAMAGE = 36;
+    public static final float EXPLOSION_SIZE = 3.25f;
     public static final int FUSE_START = 10;
 
     protected int fuseTime = 20;
@@ -75,14 +74,10 @@ public class SplatBombEntity extends AbstractSubWeaponEntity
     }
 
     @Override
-    public void handleEntityEvent(byte id)
-    {
+    public void handleEntityEvent(byte id) {
         super.handleEntityEvent(id);
-        switch (id)
-        {
-            case 1:
-                level.addParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-                break;
+        if (id == 1) {
+            level.addParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
         }
 
     }
