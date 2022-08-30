@@ -136,7 +136,7 @@ public class SplatcraftKeyHandler
         Minecraft mc = Minecraft.getInstance();
         if (!mc.gameMode.isDestroying())
         {
-            ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, mc, 4, "rightClickDelay");
+            ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, mc, 4, "field_71467_ac");
 
             mc.player.startUsingItem(hand);
 
