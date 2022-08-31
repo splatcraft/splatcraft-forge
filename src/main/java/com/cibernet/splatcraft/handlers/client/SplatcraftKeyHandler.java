@@ -76,19 +76,20 @@ public class SplatcraftKeyHandler
             }
             else slot = -1;
 
-            startUseItem(Hand.OFF_HAND);
             mc.options.keyUse.setDown(true);
+            startUseItem(Hand.OFF_HAND);
         }
         else if(pressState.get(subWeaponHotkey) == -1)
         {
+            if(player.getUsedItemHand() == Hand.OFF_HAND)
+            {
+                mc.options.keyUse.setDown(false);
+                mc.gameMode.releaseUsingItem(player);
+            }
+
             if(slot != -1)
                 SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
 
-            if(player.getUsedItemHand() == Hand.OFF_HAND)
-            {
-                mc.gameMode.releaseUsingItem(player);
-                mc.options.keyUse.setDown(false);
-            }
         }
             
 
@@ -137,7 +138,7 @@ public class SplatcraftKeyHandler
         if (!mc.gameMode.isDestroying())
         {
             ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, mc, 4, "rightClickDelay");
-
+            //field_71467_ac
             mc.player.startUsingItem(hand);
 
             if (!mc.player.isHandsBusy()) {
