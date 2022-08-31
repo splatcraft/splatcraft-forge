@@ -1,17 +1,10 @@
 package net.splatcraft.forge.entities;
 
-import net.splatcraft.forge.blocks.ColoredBarrierBlock;
-import net.splatcraft.forge.client.particles.InkExplosionParticleData;
-import net.splatcraft.forge.client.particles.InkSplashParticleData;
-import net.splatcraft.forge.handlers.WeaponHandler;
-import net.splatcraft.forge.registries.SplatcraftEntities;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.InkDamageUtils;
-import net.splatcraft.forge.util.InkExplosion;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.item.Item;
@@ -32,9 +25,19 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.splatcraft.forge.blocks.ColoredBarrierBlock;
+import net.splatcraft.forge.client.particles.InkExplosionParticleData;
+import net.splatcraft.forge.client.particles.InkSplashParticleData;
+import net.splatcraft.forge.handlers.WeaponHandler;
+import net.splatcraft.forge.registries.SplatcraftEntities;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.InkDamageUtils;
+import net.splatcraft.forge.util.InkExplosion;
 
-public class InkProjectileEntity extends ProjectileItemEntity implements IColoredEntity
-{
+public class InkProjectileEntity extends ProjectileItemEntity implements IColoredEntity {
 
     private static final DataParameter<String> PROJ_TYPE = EntityDataManager.defineId(InkProjectileEntity.class, DataSerializers.STRING);
     private static final DataParameter<Integer> COLOR = EntityDataManager.defineId(InkProjectileEntity.class, DataSerializers.INT);
@@ -58,14 +61,11 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     public InkBlockUtils.InkType inkType;
 
 
-
-    public InkProjectileEntity(EntityType<? extends ProjectileItemEntity> type, World level)
-    {
+    public InkProjectileEntity(EntityType<? extends ProjectileItemEntity> type, World level) {
         super(type, level);
     }
 
-    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float size, float damage, ItemStack sourceWeapon)
-    {
+    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float size, float damage, ItemStack sourceWeapon) {
         super(SplatcraftEntities.INK_PROJECTILE, thrower, level);
         setColor(color);
         setProjectileSize(size);
@@ -74,25 +74,21 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         this.sourceWeapon = sourceWeapon;
     }
 
-    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float size, float damage)
-    {
+    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float size, float damage) {
         this(level, thrower, color, inkType, size, damage, ItemStack.EMPTY);
     }
 
-    public InkProjectileEntity(World level, LivingEntity thrower, ItemStack sourceWeapon, InkBlockUtils.InkType inkType, float size, float damage)
-    {
+    public InkProjectileEntity(World level, LivingEntity thrower, ItemStack sourceWeapon, InkBlockUtils.InkType inkType, float size, float damage) {
         this(level, thrower, ColorUtils.getInkColor(sourceWeapon), inkType, size, damage, sourceWeapon);
     }
 
-    public InkProjectileEntity setShooterTrail()
-    {
+    public InkProjectileEntity setShooterTrail() {
         trailCooldown = 4;
         trailSize = getProjectileSize() * 0.7f;
         return this;
     }
 
-    public InkProjectileEntity setChargerStats(int lifespan, boolean canPierce)
-    {
+    public InkProjectileEntity setChargerStats(int lifespan, boolean canPierce) {
         trailSize = getProjectileSize() * 0.85f;
         this.lifespan = lifespan;
         gravityVelocity = 0;
@@ -101,8 +97,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         return this;
     }
 
-    public InkProjectileEntity setBlasterStats(int lifespan, float splashDamage)
-    {
+    public InkProjectileEntity setBlasterStats(int lifespan, float splashDamage) {
         this.lifespan = lifespan;
         this.splashDamage = splashDamage;
         gravityVelocity = 0;
@@ -112,11 +107,9 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         return this;
     }
 
-    public InkProjectileEntity setRollerSwingStats(boolean airborne)
-    {
+    public InkProjectileEntity setRollerSwingStats(boolean airborne) {
         setProjectileType(Types.ROLLER);
-        if(!airborne)
-        {
+        if (!airborne) {
             damageType = "roll";
             causesHurtCooldown = true;
         }
@@ -124,18 +117,15 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     }
 
     @Override
-    protected void defineSynchedData()
-    {
+    protected void defineSynchedData() {
         entityData.define(COLOR, ColorUtils.DEFAULT);
         entityData.define(PROJ_TYPE, Types.SHOOTER);
         entityData.define(PROJ_SIZE, 1.0f);
     }
 
     @Override
-    public void onSyncedDataUpdated(DataParameter<?> dataParameter)
-    {
-        if (dataParameter.equals(PROJ_SIZE))
-        {
+    public void onSyncedDataUpdated(DataParameter<?> dataParameter) {
+        if (dataParameter.equals(PROJ_SIZE)) {
             refreshDimensions();
         }
 
@@ -143,41 +133,33 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     }
 
     @Override
-    protected Item getDefaultItem()
-    {
+    protected Item getDefaultItem() {
         return SplatcraftItems.splattershot;
     }
 
     @Override
-    public void tick()
-    {
+    public void tick() {
         super.tick();
 
-        if(isInWater())
-        {
+        if (isInWater()) {
             remove();
             return;
         }
 
-        if (!level.isClientSide && !persistent && lifespan-- <= 0)
-        {
+        if (!level.isClientSide && !persistent && lifespan-- <= 0) {
             InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
-            if (explodes)
-            {
+            if (explodes) {
                 level.broadcastEntityEvent(this, (byte) 3);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }
             remove();
         }
 
-        if (trailSize > 0 && (trailCooldown == 0 || tickCount % trailCooldown == 0))
-        {
-            for (double y = getY(); y >= 0 && getY() - y <= 8; y--)
-            {
+        if (trailSize > 0 && (trailCooldown == 0 || tickCount % trailCooldown == 0)) {
+            for (double y = getY(); y >= 0 && getY() - y <= 8; y--) {
                 BlockPos inkPos = new BlockPos(getX(), y, getZ());
-                if (!InkBlockUtils.canInkPassthrough(level, inkPos))
-                {
-                    if(!isInvisible())
+                if (!InkBlockUtils.canInkPassthrough(level, inkPos)) {
+                    if (!isInvisible())
                         level.broadcastEntityEvent(this, (byte) 1);
                     InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, inkPos.relative(Direction.UP), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
                     InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
@@ -189,16 +171,15 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     }
 
     @Override
-    public void handleEntityEvent(byte id)
-    {
+    public void handleEntityEvent(byte id) {
         super.handleEntityEvent(id);
 
-        switch (id)
-        {
+        switch (id) {
             case 1:
                 if (getProjectileType().equals(Types.CHARGER))
-                     level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getX() - this.getDeltaMovement().x() * 0.25D, this.getY() - this.getDeltaMovement().y() * 0.25D, this.getZ() - this.getDeltaMovement().z() * 0.25D, 0, -0.1, 0);
-                else level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getX() - this.getDeltaMovement().x() * 0.25D, this.getY() - this.getDeltaMovement().y() * 0.25D, this.getZ() - this.getDeltaMovement().z() * 0.25D, this.getDeltaMovement().z(), this.getDeltaMovement().y(), this.getDeltaMovement().z());
+                    level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getX() - this.getDeltaMovement().x() * 0.25D, this.getY() - this.getDeltaMovement().y() * 0.25D, this.getZ() - this.getDeltaMovement().z() * 0.25D, 0, -0.1, 0);
+                else
+                    level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getX() - this.getDeltaMovement().x() * 0.25D, this.getY() - this.getDeltaMovement().y() * 0.25D, this.getZ() - this.getDeltaMovement().z() * 0.25D, this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z());
                 break;
             case 2:
                 level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize() * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
@@ -211,8 +192,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     }
 
     @Override
-    protected void onHitEntity(EntityRayTraceResult result)
-    {
+    protected void onHitEntity(EntityRayTraceResult result) {
         super.onHitEntity(result);
 
         Entity target = result.getEntity();
@@ -220,10 +200,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         if (target instanceof LivingEntity)
             InkDamageUtils.doDamage(level, (LivingEntity) target, damage, getColor(), getOwner(), sourceWeapon, damageMobs, inkType, damageType, causesHurtCooldown);
 
-        if (!canPierce)
-        {
-            if (explodes)
-            {
+        if (!canPierce) {
+            if (explodes) {
                 InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
                 level.broadcastEntityEvent(this, (byte) 3);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
@@ -235,20 +213,18 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     }
 
     @Override
-    protected void onHitBlock(BlockRayTraceResult result)
-    {
+    protected void onHitBlock(BlockRayTraceResult result) {
         if (InkBlockUtils.canInkPassthrough(level, result.getBlockPos()))
             return;
 
-        if(level.getBlockState(result.getBlockPos()).getBlock() instanceof ColoredBarrierBlock &&
-            ((ColoredBarrierBlock) level.getBlockState(result.getBlockPos()).getBlock()).canAllowThrough(result.getBlockPos(), this))
+        if (level.getBlockState(result.getBlockPos()).getBlock() instanceof ColoredBarrierBlock &&
+                ((ColoredBarrierBlock) level.getBlockState(result.getBlockPos()).getBlock()).canAllowThrough(result.getBlockPos(), this))
             return;
 
         super.onHitBlock(result);
 
         InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
-        if (explodes)
-        {
+        if (explodes) {
             level.broadcastEntityEvent(this, (byte) 3);
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
         } else
@@ -258,22 +234,18 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     }
 
     @Override
-    public void shootFromRotation(Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy)
-    {
+    public void shootFromRotation(Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
         super.shootFromRotation(thrower, pitch, yaw, pitchOffset, velocity, inaccuracy);
 
         Vector3d posDiff = new Vector3d(0, 0, 0);
 
-        if (thrower instanceof PlayerEntity)
-        {
-            try
-            {
+        if (thrower instanceof PlayerEntity) {
+            try {
                 posDiff = thrower.position().subtract(WeaponHandler.getPlayerPrevPos((PlayerEntity) thrower));
-                if(thrower.isOnGround())
+                if (thrower.isOnGround())
                     posDiff.multiply(1, 0, 1);
 
-            } catch (NullPointerException ignored)
-            {
+            } catch (NullPointerException ignored) {
             }
         }
 
@@ -283,29 +255,25 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     }
 
     @Override
-    protected void onHit(RayTraceResult result)
-    {
+    protected void onHit(RayTraceResult result) {
         RayTraceResult.Type rayType = result.getType();
-        if (rayType == RayTraceResult.Type.ENTITY)
-        {
+        if (rayType == RayTraceResult.Type.ENTITY) {
             this.onHitEntity((EntityRayTraceResult) result);
-        } else if (rayType == RayTraceResult.Type.BLOCK)
-        {
+        } else if (rayType == RayTraceResult.Type.BLOCK) {
             onHitBlock((BlockRayTraceResult) result);
         }
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT nbt)
-    {
-        if(nbt.contains("Size"))
+    public void readAdditionalSaveData(CompoundNBT nbt) {
+        if (nbt.contains("Size"))
             setProjectileSize(nbt.getFloat("Size"));
-        if(nbt.contains("Color"))
+        if (nbt.contains("Color"))
             setColor(ColorUtils.getColorFromNbt(nbt));
 
-        if(nbt.contains("GravityVelocity"))
+        if (nbt.contains("GravityVelocity"))
             gravityVelocity = nbt.getFloat("GravityVelocity");
-        if(nbt.contains("Lifespan"))
+        if (nbt.contains("Lifespan"))
             lifespan = nbt.getInt("Lifespan");
 
         trailCooldown = nbt.getInt("TrailCooldown");
@@ -329,8 +297,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT nbt)
-    {
+    public void addAdditionalSaveData(CompoundNBT nbt) {
         nbt.putFloat("Size", getProjectileSize());
         nbt.putInt("Color", getColor());
 
@@ -354,34 +321,29 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         nbt.put("SourceWeapon", sourceWeapon.save(new CompoundNBT()));
     }
 
-    public void setProjectileSize(float size)
-    {
-        entityData.set(PROJ_SIZE, size);
-        reapplyPosition();
-        refreshDimensions();
-    }
-
     @Override
-    public IPacket<?> getAddEntityPacket()
-    {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public EntitySize getDimensions(Pose pose)
-    {
+    public EntitySize getDimensions(Pose pose) {
         return super.getDimensions(pose).scale(getProjectileSize() / 2f);
     }
 
     @Override
-    public float getGravity()
-    {
+    public float getGravity() {
         return gravityVelocity;
     }
 
-    public float getProjectileSize()
-    {
+    public float getProjectileSize() {
         return entityData.get(PROJ_SIZE);
+    }
+
+    public void setProjectileSize(float size) {
+        entityData.set(PROJ_SIZE, size);
+        reapplyPosition();
+        refreshDimensions();
     }
 
     @Override
@@ -390,29 +352,24 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     }
 
     @Override
-    public int getColor()
-    {
+    public int getColor() {
         return entityData.get(COLOR);
     }
 
     @Override
-    public void setColor(int color)
-    {
+    public void setColor(int color) {
         entityData.set(COLOR, color);
     }
 
-    public String getProjectileType()
-    {
+    public String getProjectileType() {
         return entityData.get(PROJ_TYPE);
     }
 
-    public void setProjectileType(String v)
-    {
+    public void setProjectileType(String v) {
         entityData.set(PROJ_TYPE, v);
     }
 
-    public static class Types
-    {
+    public static class Types {
         public static final String DEFAULT = "ink";
         public static final String SHOOTER = "shooter";
         public static final String CHARGER = "charger";
