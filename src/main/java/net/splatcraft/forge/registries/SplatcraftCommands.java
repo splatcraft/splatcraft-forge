@@ -1,14 +1,5 @@
 package net.splatcraft.forge.registries;
 
-import net.splatcraft.forge.Splatcraft;
-import com.cibernet.splatcraft.commands.*;
-import net.splatcraft.forge.commands.ClearInkCommand;
-import net.splatcraft.forge.commands.ColorScoresCommand;
-import net.splatcraft.forge.commands.InkColorCommand;
-import net.splatcraft.forge.commands.ReplaceColorCommand;
-import net.splatcraft.forge.commands.ScanTurfCommand;
-import net.splatcraft.forge.commands.arguments.ColorCriterionArgument;
-import net.splatcraft.forge.commands.arguments.InkColorArgument;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.arguments.ArgumentSerializer;
@@ -16,6 +7,14 @@ import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.commands.ClearInkCommand;
+import net.splatcraft.forge.commands.ColorScoresCommand;
+import net.splatcraft.forge.commands.InkColorCommand;
+import net.splatcraft.forge.commands.ReplaceColorCommand;
+import net.splatcraft.forge.commands.ScanTurfCommand;
+import net.splatcraft.forge.commands.arguments.ColorCriterionArgument;
+import net.splatcraft.forge.commands.arguments.InkColorArgument;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class SplatcraftCommands

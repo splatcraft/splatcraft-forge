@@ -1,13 +1,5 @@
 package net.splatcraft.forge.items.weapons;
 
-import net.splatcraft.forge.client.audio.RollerRollTickableSound;
-import net.splatcraft.forge.client.particles.InkSplashParticleData;
-import net.splatcraft.forge.entities.InkProjectileEntity;
-import net.splatcraft.forge.handlers.PlayerPosingHandler;
-import net.splatcraft.forge.handlers.WeaponHandler;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import com.cibernet.splatcraft.util.*;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
@@ -24,6 +16,13 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.splatcraft.forge.client.audio.RollerRollTickableSound;
+import net.splatcraft.forge.client.particles.InkSplashParticleData;
+import net.splatcraft.forge.entities.InkProjectileEntity;
+import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.handlers.WeaponHandler;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;

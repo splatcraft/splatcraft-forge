@@ -1,14 +1,5 @@
 package net.splatcraft.forge.tileentities.container;
 
-import net.splatcraft.forge.blocks.InkVatBlock;
-import net.splatcraft.forge.crafting.InkVatColorRecipe;
-import net.splatcraft.forge.crafting.SplatcraftRecipeTypes;
-import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.UpdateBlockColorPacket;
-import com.cibernet.splatcraft.registries.*;
-import net.splatcraft.forge.tileentities.InkVatTileEntity;
-import net.splatcraft.forge.util.InkColor;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -21,11 +12,19 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.NonNullList;
+import net.splatcraft.forge.blocks.InkVatBlock;
+import net.splatcraft.forge.crafting.InkVatColorRecipe;
+import net.splatcraft.forge.crafting.SplatcraftRecipeTypes;
+import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.UpdateBlockColorPacket;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.tileentities.InkVatTileEntity;
+import net.splatcraft.forge.util.InkColor;
 
 import java.util.Collections;
 import java.util.List;

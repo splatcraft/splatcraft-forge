@@ -1,19 +1,19 @@
 {
   "required": true,
-  "package": "com.cibernet.splatcraft.mixin",
+  "package": "net.splatcraft.forge.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "splatcraft.refmap.json",
   "mixins": [
-    "net.splatcraft.forge.mixin.FenceConnectionMixin",
-    "net.splatcraft.forge.mixin.PaneConnectionMixin",
-    "net.splatcraft.forge.mixin.SquidPassthroughMixin",
-    "net.splatcraft.forge.mixin.WallConnectionMixin"
+    "FenceConnectionMixin",
+    "PaneConnectionMixin",
+    "SquidPassthroughMixin",
+    "WallConnectionMixin"
   ],
   "minVersion": "0.8",
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
-    "net.splatcraft.forge.mixin.GameRendererMixin"
+    "GameRendererMixin"
   ]
 }

@@ -1,6 +1,5 @@
 package net.splatcraft.forge.registries;
 
-import com.cibernet.splatcraft.client.particles.*;
 import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleType;

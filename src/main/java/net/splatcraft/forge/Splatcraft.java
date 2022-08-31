@@ -1,12 +1,5 @@
 package net.splatcraft.forge;
 
-import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.handlers.ScoreboardHandler;
-import net.splatcraft.forge.handlers.client.ClientSetupHandler;
-import net.splatcraft.forge.handlers.client.SplatcraftKeyHandler;
-import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import com.cibernet.splatcraft.registries.*;
-import net.splatcraft.forge.world.gen.SplatcraftOreGen;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -20,6 +13,11 @@ import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.handlers.ScoreboardHandler;
+import net.splatcraft.forge.handlers.client.ClientSetupHandler;
+import net.splatcraft.forge.handlers.client.SplatcraftKeyHandler;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftCapabilities;
 import net.splatcraft.forge.registries.SplatcraftCommands;
@@ -28,6 +26,7 @@ import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.world.gen.SplatcraftOreGen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,7 +1,5 @@
 package net.splatcraft.forge.registries;
 
-import net.splatcraft.forge.Splatcraft;
-import com.cibernet.splatcraft.blocks.*;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -15,6 +13,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.blocks.BarrierBarBlock;
 import net.splatcraft.forge.blocks.CanvasBlock;
 import net.splatcraft.forge.blocks.ColoredBarrierBlock;

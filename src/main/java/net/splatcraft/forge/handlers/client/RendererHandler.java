@@ -1,26 +1,5 @@
 package net.splatcraft.forge.handlers.client;
 
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.SplatcraftConfig;
-import net.splatcraft.forge.client.layer.InkAccessoryLayer;
-import net.splatcraft.forge.client.renderer.PlayerSquidRenderer;
-import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
-import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
-import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.entities.SquidBumperEntity;
-import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
-import net.splatcraft.forge.items.InkTankItem;
-import net.splatcraft.forge.items.weapons.IChargeableWeapon;
-import net.splatcraft.forge.items.weapons.SubWeaponItem;
-import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.util.ClientUtils;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.PlayerCooldown;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -82,7 +61,27 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.SplatcraftConfig;
+import net.splatcraft.forge.client.layer.InkAccessoryLayer;
+import net.splatcraft.forge.client.renderer.PlayerSquidRenderer;
+import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
+import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
+import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.entities.SquidBumperEntity;
+import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
+import net.splatcraft.forge.items.InkTankItem;
+import net.splatcraft.forge.items.weapons.IChargeableWeapon;
+import net.splatcraft.forge.items.weapons.SubWeaponItem;
+import net.splatcraft.forge.items.weapons.WeaponBaseItem;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.util.ClientUtils;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.PlayerCooldown;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -244,10 +243,10 @@ public class RendererHandler
             {
                 switch (((WeaponBaseItem) player.getItemInHand(event.getHand()).getItem()).getPose())
                 {
-                    case PlayerPosingHandler.WeaponPose.ROLL:
+                    case ROLL:
                         yOff = -((time - event.getPartialTicks()) / maxTime) + 0.5f;
                         break;
-                    case PlayerPosingHandler.WeaponPose.BRUSH:
+                    case BRUSH:
                         event.getMatrixStack().mulPose(Vector3f.YN.rotation(yOff * ((player.getMainArm() == HandSide.RIGHT ? event.getHand().equals(Hand.MAIN_HAND) : event.getHand().equals(Hand.OFF_HAND)) ? 1 : -1)));
                         yOff = 0;
                         break;

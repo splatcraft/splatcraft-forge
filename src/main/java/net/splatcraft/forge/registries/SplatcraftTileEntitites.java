@@ -1,12 +1,5 @@
 package net.splatcraft.forge.registries;
 
-import net.splatcraft.forge.client.renderer.tileentity.InkedBlockTileEntityRenderer;
-import net.splatcraft.forge.client.renderer.tileentity.RemotePedestalTileEntityRenderer;
-import net.splatcraft.forge.client.renderer.tileentity.StageBarrierTileEntityRenderer;
-import com.cibernet.splatcraft.tileentities.*;
-import net.splatcraft.forge.tileentities.ColoredBarrierTileEntity;
-import net.splatcraft.forge.tileentities.container.InkVatContainer;
-import net.splatcraft.forge.tileentities.container.WeaponWorkbenchContainer;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -19,6 +12,10 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.splatcraft.forge.client.renderer.tileentity.InkedBlockTileEntityRenderer;
+import net.splatcraft.forge.client.renderer.tileentity.RemotePedestalTileEntityRenderer;
+import net.splatcraft.forge.client.renderer.tileentity.StageBarrierTileEntityRenderer;
+import net.splatcraft.forge.tileentities.ColoredBarrierTileEntity;
 import net.splatcraft.forge.tileentities.CrateTileEntity;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkVatTileEntity;
@@ -26,12 +23,28 @@ import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import net.splatcraft.forge.tileentities.InkwellTileEntity;
 import net.splatcraft.forge.tileentities.RemotePedestalTileEntity;
 import net.splatcraft.forge.tileentities.StageBarrierTileEntity;
+import net.splatcraft.forge.tileentities.container.InkVatContainer;
+import net.splatcraft.forge.tileentities.container.WeaponWorkbenchContainer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static net.splatcraft.forge.registries.SplatcraftBlocks.*;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.allowedColorBarrier;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.canvas;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.clearInkedBlock;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.crate;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.deniedColorBarrier;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.glowingInkedBlock;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.inkVat;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.inkedBlock;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.inkedWool;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.inkwell;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.remotePedestal;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.splatSwitch;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.stageBarrier;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.stageVoid;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.sunkenCrate;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftTileEntitites

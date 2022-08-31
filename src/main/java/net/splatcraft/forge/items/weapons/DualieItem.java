@@ -1,12 +1,5 @@
 package net.splatcraft.forge.items.weapons;
 
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.entities.InkProjectileEntity;
-import net.splatcraft.forge.handlers.PlayerPosingHandler;
-import net.splatcraft.forge.network.DodgeRollPacket;
-import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import com.cibernet.splatcraft.util.*;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -20,6 +13,12 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.entities.InkProjectileEntity;
+import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.network.DodgeRollPacket;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
