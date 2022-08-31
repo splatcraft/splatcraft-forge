@@ -293,4 +293,10 @@ public class WeaponBaseItem extends Item implements IColoredItem
     {
         return PlayerPosingHandler.WeaponPose.NONE;
     }
+
+    public WeaponBaseItem setSecret()
+    {
+        secret = true;
+        return this;
+    }
 }

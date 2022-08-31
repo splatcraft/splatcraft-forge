@@ -82,6 +82,7 @@ public class SubWeaponItem extends WeaponBaseItem
         entity.swing(entity.getOffhandItem().equals(stack) ? Hand.OFF_HAND : Hand.MAIN_HAND, false);
 
         AbstractSubWeaponEntity proj = AbstractSubWeaponEntity.create(entityType, level, entity, stack);
+        proj.setItem(stack);
         proj.shoot(entity, entity.xRot, entity.yRot, -30f, 0.5f, 0);
         level.addFreshEntity(proj);
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.subThrow, SoundCategory.PLAYERS, 0.7F, 1);

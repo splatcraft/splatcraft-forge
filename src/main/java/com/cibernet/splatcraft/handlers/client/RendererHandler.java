@@ -274,6 +274,7 @@ public class RendererHandler
             MatrixStack matrixStack = event.getMatrixStack();
             AbstractSubWeaponEntity sub = ((SubWeaponItem)event.getItem().getItem()).entityType.create(Minecraft.getInstance().player.level);
             sub.setColor(ColorUtils.getInkColor(event.getItem()));
+            sub.setItem(event.getItem());
             sub.isItem = true;
 
             Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(event.getItem().getItem().getRegistryName() + "#inventory"))
@@ -296,6 +297,7 @@ public class RendererHandler
             HandSide handside = event.getHand() == Hand.MAIN_HAND ? Minecraft.getInstance().player.getMainArm() : Minecraft.getInstance().player.getMainArm().getOpposite();
             AbstractSubWeaponEntity sub = ((SubWeaponItem)event.getItemStack().getItem()).entityType.create(Minecraft.getInstance().player.level);
             sub.setColor(ColorUtils.getInkColor(event.getItemStack()));
+            sub.setItem(event.getItemStack());
             sub.isItem = true;
 
             float p_228405_5_ = event.getSwingProgress();
