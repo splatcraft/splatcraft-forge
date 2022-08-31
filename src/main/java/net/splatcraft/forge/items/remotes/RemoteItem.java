@@ -85,9 +85,9 @@ public abstract class RemoteItem extends Item
 
 
         if(!nbt.contains("Dimension"))
-            nbt.putString("Dimension", level.dimension().getRegistryName().toString());
-        else if(getLevel(level, stack) != level)
-            return false;
+            nbt.putString("Dimension", level.dimension().location().toString());
+        else if(!level.equals(getLevel(level, stack)))
+                return false;
 
         nbt.put("Point" + (stack.getOrCreateTag().contains("PointA") ? "B" : "A"), NBTUtil.writeBlockPos(pos));
 
