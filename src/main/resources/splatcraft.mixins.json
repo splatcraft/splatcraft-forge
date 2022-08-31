@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.cibernet.splatcraft.mixin",
+  "package": "net.splatcraft.forge.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "splatcraft.refmap.json",
   "mixins": [
