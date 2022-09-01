@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.splatcraft.forge.registries.SplatcraftStats;
 
 import java.util.Optional;
 
@@ -58,17 +59,24 @@ public class CraftWeaponPacket extends PlayToServerPacket
                 SplatcraftRecipeTypes.getItem(player, ing.getIngredient(), ing.getCount(), true);
             }
             ItemStack output = recipe.getOutput().copy();
-            if (!player.addItem(output))
+
+            if(!output.isEmpty())
             {
-                ItemEntity item = player.drop(output, false);
-                if (item != null)
+                if (!player.addItem(output))
                 {
-                    item.setNoPickUpDelay();
+                    ItemEntity item = player.drop(output, false);
+                    if (item != null)
+                    {
+                        item.setNoPickUpDelay();
+                    }
+                } else
+                {
+                    player.containerMenu.broadcastChanges();
                 }
-            } else
-            {
-                player.containerMenu.broadcastChanges();
+                player.awardStat(SplatcraftStats.WEAPONS_CRAFTED);
             }
+
+
         }
     }
 }
