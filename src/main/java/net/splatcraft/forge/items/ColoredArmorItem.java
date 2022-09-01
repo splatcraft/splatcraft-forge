@@ -1,11 +1,5 @@
 package net.splatcraft.forge.items;
 
-import net.splatcraft.forge.blocks.InkwellBlock;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.registries.SplatcraftItemGroups;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.client.resources.I18n;
@@ -15,7 +9,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.IDyeableArmorItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
@@ -24,8 +22,14 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.blocks.InkwellBlock;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.registries.SplatcraftItemGroups;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -44,7 +48,7 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IC
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag)
     {
         super.appendHoverText(stack, level, tooltip, flag);
 
@@ -59,7 +63,7 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IC
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World level, Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected)
     {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
@@ -91,7 +95,7 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IC
 
 
     @Override
-    public ActionResultType useOn(ItemUseContext context)
+    public @NotNull ActionResultType useOn(ItemUseContext context)
     {
         BlockState state = context.getLevel().getBlockState(context.getClickedPos());
         if (ColorUtils.isColorLocked(context.getItemInHand()) && state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && !context.getPlayer().isCrouching())
@@ -120,25 +124,25 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IC
     }
 
     @Override
-    public boolean hasCustomColor(ItemStack stack)
+    public boolean hasCustomColor(@NotNull ItemStack stack)
     {
         return true;
     }
 
     @Override
-    public int getColor(ItemStack stack)
+    public int getColor(@NotNull ItemStack stack)
     {
         return ColorUtils.getInkColor(stack);
     }
 
     @Override
-    public void setColor(ItemStack stack, int color)
+    public void setColor(@NotNull ItemStack stack, int color)
     {
         ColorUtils.setInkColor(stack, color);
     }
 
     @Override
-    public void clearColor(ItemStack stack)
+    public void clearColor(@NotNull ItemStack stack)
     {
         ColorUtils.setInkColor(stack, -1);
         ColorUtils.setColorLocked(stack, false);

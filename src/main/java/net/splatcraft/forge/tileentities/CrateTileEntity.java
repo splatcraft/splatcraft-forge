@@ -1,8 +1,5 @@
 package net.splatcraft.forge.tileentities;
 
-import net.splatcraft.forge.blocks.CrateBlock;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.util.CommonUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -12,6 +9,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
+import net.splatcraft.forge.blocks.CrateBlock;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.util.CommonUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
+    public void load(@NotNull BlockState state, @NotNull CompoundNBT nbt)
     {
         super.load(state, nbt);
 
@@ -91,7 +92,7 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public @NotNull CompoundNBT save(CompoundNBT nbt)
     {
         nbt.putFloat("Health", health);
         nbt.putFloat("MaxHealth", maxHealth);

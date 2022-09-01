@@ -1,8 +1,5 @@
 package net.splatcraft.forge.blocks;
 
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.tileentities.ColoredBarrierTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -16,8 +13,10 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.tileentities.ColoredBarrierTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import org.jetbrains.annotations.Nullable;
 
 public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBlock
 {

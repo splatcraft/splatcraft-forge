@@ -1,5 +1,32 @@
 package net.splatcraft.forge.items.weapons;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.CauldronBlock;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.blocks.InkwellBlock;
@@ -16,27 +43,9 @@ import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponStat;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.stats.Stats;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.*;
-import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +62,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
         SplatcraftItems.weapons.add(this);
     }
 
+    @Deprecated
     public static float getInkAmount(LivingEntity player, ItemStack weapon)
     {
         if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK))
@@ -74,19 +84,43 @@ public class WeaponBaseItem extends Item implements IColoredItem
         return getInkAmount(player, weapon) > 0;
     }
 
-    public static void reduceInk(LivingEntity player, float amount)
+    public static boolean reduceInk(LivingEntity player, float amount, boolean sendMessage)
     {
         ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
-        if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK))
+        if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK)
+                || player instanceof PlayerEntity && ((PlayerEntity)player).isCreative())
         {
-            return;
+            return true;
         }
-        if (!(tank.getItem() instanceof InkTankItem))
+        if (!(tank.getItem() instanceof InkTankItem) || InkTankItem.getInkAmount(tank) - amount < 0)
         {
-            return;
+            if (sendMessage)
+                sendNoInkMessage(player);
+            return false;
         }
 
         InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);
+        return true;
+    }
+
+    public static boolean enoughInk(LivingEntity player, float consumption, boolean sendMessage) {
+        return enoughInk(player, consumption, sendMessage, false);
+    }
+
+    public static boolean enoughInk(LivingEntity player, float consumption, boolean sendMessage, boolean sub) {
+        ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
+        if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK)
+                || player instanceof PlayerEntity && ((PlayerEntity)player).isCreative())
+        {
+            return true;
+        }
+        if (!(tank.getItem() instanceof InkTankItem) || InkTankItem.getInkAmount(tank) - consumption < 0)
+        {
+            if (sendMessage)
+                sendNoInkMessage(player, sub ? SplatcraftSounds.noInkSub : SplatcraftSounds.noInkMain);
+            return false;
+        }
+        return true;
     }
 
     public static void sendNoInkMessage(LivingEntity entity)
@@ -111,7 +145,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
 
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag)
     {
         super.appendHoverText(stack, level, tooltip, flag);
 
@@ -135,7 +169,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> list)
+    public void fillItemCategory(@NotNull ItemGroup group, @NotNull NonNullList<ItemStack> list)
     {
         if (!secret)
         {
@@ -144,7 +178,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World level, Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected)
     {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
@@ -209,7 +243,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public int getUseDuration(ItemStack stack)
+    public int getUseDuration(@NotNull ItemStack stack)
     {
         return USE_DURATION;
     }
@@ -220,7 +254,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public ActionResult<ItemStack> use(World level, PlayerEntity player, Hand hand)
+    public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
     {
         if(!(player.isSwimming() && !player.isInWater()))
             player.startUsingItem(hand);
@@ -228,7 +262,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context)
+    public @NotNull ActionResultType useOn(ItemUseContext context)
     {
         BlockState state = context.getLevel().getBlockState(context.getClickedPos());
         if (ColorUtils.isColorLocked(context.getItemInHand()) && state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && !context.getPlayer().isCrouching())
@@ -258,12 +292,12 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public void onUseTick(World p_219972_1_, LivingEntity p_219972_2_, ItemStack p_219972_3_, int p_219972_4_) {
+    public void onUseTick(@NotNull World p_219972_1_, @NotNull LivingEntity p_219972_2_, @NotNull ItemStack p_219972_3_, int p_219972_4_) {
         super.onUseTick(p_219972_1_, p_219972_2_, p_219972_3_, p_219972_4_);
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, World level, LivingEntity entity, int timeLeft)
+    public void releaseUsing(@NotNull ItemStack stack, @NotNull World level, LivingEntity entity, int timeLeft)
     {
         entity.stopUsingItem();
         super.releaseUsing(stack, level, entity, timeLeft);

@@ -1,14 +1,5 @@
 package net.splatcraft.forge.items;
 
-import net.splatcraft.forge.blocks.IColoredBlock;
-import net.splatcraft.forge.blocks.InkedBlock;
-import net.splatcraft.forge.blocks.InkwellBlock;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.registries.SplatcraftItemGroups;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.tileentities.InkwellTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CauldronBlock;
@@ -34,8 +25,17 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.blocks.IColoredBlock;
+import net.splatcraft.forge.blocks.InkedBlock;
+import net.splatcraft.forge.blocks.InkwellBlock;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.registries.SplatcraftItemGroups;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.tileentities.InkwellTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -54,11 +54,6 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
         this.clearItem = clearItem;
     }
 
-    public ColoredBlockItem(Block block, String name, Properties properties)
-    {
-        this(block, name, properties, null);
-    }
-
     public ColoredBlockItem(Block block, String name, int stackSize, Item clearItem)
     {
         this(block, name, new Properties().stacksTo(stackSize).tab(SplatcraftItemGroups.GROUP_GENERAL), clearItem);
@@ -70,7 +65,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag)
     {
         super.appendHoverText(stack, level, tooltip, flag);
 
@@ -90,7 +85,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     }
 
     @Override
-    protected boolean updateCustomBlockEntityTag(BlockPos pos, World levelIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state)
+    protected boolean updateCustomBlockEntityTag(@NotNull BlockPos pos, World levelIn, @Nullable PlayerEntity player, @NotNull ItemStack stack, @NotNull BlockState state)
     {
         MinecraftServer server = levelIn.getServer();
         if (server == null)
@@ -112,7 +107,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items)
+    public void fillItemCategory(@NotNull ItemGroup group, @NotNull NonNullList<ItemStack> items)
     {
         if (allowdedIn(group))
         {
@@ -126,7 +121,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World levelIn, Entity entityIn, int itemSlot, boolean isSelected)
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull World levelIn, @NotNull Entity entityIn, int itemSlot, boolean isSelected)
     {
         super.inventoryTick(stack, levelIn, entityIn, itemSlot, isSelected);
 
@@ -160,7 +155,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context)
+    public @NotNull ActionResultType useOn(ItemUseContext context)
     {
         BlockState state = context.getLevel().getBlockState(context.getClickedPos());
         if (state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && context.getPlayer().isCrouching())

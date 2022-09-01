@@ -1,9 +1,5 @@
 package net.splatcraft.forge.entities.subs;
 
-import net.splatcraft.forge.entities.IColoredEntity;
-import net.splatcraft.forge.handlers.WeaponHandler;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -24,16 +20,23 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import net.splatcraft.forge.entities.IColoredEntity;
+import net.splatcraft.forge.handlers.WeaponHandler;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -61,7 +64,7 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
         super(type, level);
     }
 
-    public static <A extends AbstractSubWeaponEntity> A create(EntityType<A> type, World level, @Nonnull LivingEntity thrower, ItemStack sourceWeapon)
+    public static <A extends AbstractSubWeaponEntity> A create(EntityType<A> type, World level, @NotNull LivingEntity thrower, ItemStack sourceWeapon)
     {
         return create(type, level, thrower, ColorUtils.getInkColor(sourceWeapon), InkBlockUtils.getInkType(thrower), sourceWeapon);
     }

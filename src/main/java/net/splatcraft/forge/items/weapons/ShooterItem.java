@@ -1,14 +1,14 @@
 package net.splatcraft.forge.items.weapons;
 
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.world.World;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.WeaponStat;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
 
 public class ShooterItem extends WeaponBaseItem
 {
@@ -49,16 +49,12 @@ public class ShooterItem extends WeaponBaseItem
     {
         if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % firingSpeed == 0)
         {
-            if (getInkAmount(entity, stack) >= inkConsumption)
+            if (reduceInk(entity, inkConsumption, true))
             {
                 InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage).setShooterTrail();
                 proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, projectileSpeed, inaccuracy);
                 level.addFreshEntity(proj);
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.shooterShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-                reduceInk(entity, inkConsumption);
-            } else
-            {
-                sendNoInkMessage(entity);
             }
         }
     }

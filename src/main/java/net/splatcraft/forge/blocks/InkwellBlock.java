@@ -1,9 +1,5 @@
 package net.splatcraft.forge.blocks;
 
-import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IWaterLoggable;
@@ -34,8 +30,11 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.ForgeSoundType;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import org.jetbrains.annotations.Nullable;
 
 public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
 {

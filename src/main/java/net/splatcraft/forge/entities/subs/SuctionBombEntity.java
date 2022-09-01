@@ -1,9 +1,5 @@
 package net.splatcraft.forge.entities.subs;
 
-import net.splatcraft.forge.client.particles.InkExplosionParticleData;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.InkExplosion;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
@@ -19,8 +15,11 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.client.particles.InkExplosionParticleData;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.util.InkExplosion;
+import org.jetbrains.annotations.Nullable;
 
 public class SuctionBombEntity extends AbstractSubWeaponEntity {
     public static final float DAMAGE = 6;

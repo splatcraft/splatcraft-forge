@@ -3,7 +3,6 @@ package net.splatcraft.forge.blocks;
 import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.GlassBlock;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -18,9 +17,10 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-
+@SuppressWarnings("deprecation")
 public class EmptyInkwellBlock extends AbstractGlassBlock
 {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -37,19 +37,19 @@ public class EmptyInkwellBlock extends AbstractGlassBlock
     }
 
     @Override
-    public boolean useShapeForLightOcclusion(BlockState state)
+    public boolean useShapeForLightOcclusion(@NotNull BlockState state)
     {
         return true;
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull IBlockReader levelIn, @NotNull BlockPos pos, @NotNull ISelectionContext context)
     {
         return SHAPE;
     }
 
     @Override
-    public PushReaction getPistonPushReaction(BlockState state)
+    public @NotNull PushReaction getPistonPushReaction(@NotNull BlockState state)
     {
         return PushReaction.DESTROY;
     }
@@ -70,13 +70,13 @@ public class EmptyInkwellBlock extends AbstractGlassBlock
     }
 
     @Override
-    public FluidState getFluidState(BlockState state)
+    public @NotNull FluidState getFluidState(BlockState state)
     {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
+    public @NotNull BlockState updateShape(BlockState stateIn, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull IWorld levelIn, @NotNull BlockPos currentPos, @NotNull BlockPos facingPos)
     {
         if (stateIn.getValue(WATERLOGGED))
         {

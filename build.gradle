@@ -15,7 +15,6 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-archivesBaseName = project.archives_base_name
 group = project.maven_group
 
 if (System.env.CI == "true") {
@@ -35,6 +34,7 @@ repositories {
     maven {
         url "https://www.cursemaven.com"
     }
+    mavenCentral()
 }
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
@@ -108,6 +108,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
     implementation fg.deobf("curse.maven:obfuscate-${project.obfuscate_version}")
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    implementation 'org.jetbrains:annotations:23.0.0'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

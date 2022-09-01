@@ -25,10 +25,12 @@ import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkExplosion;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponStat;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
+@SuppressWarnings("UnusedReturnValue")
 public class DualieItem extends WeaponBaseItem
 {
 
@@ -115,7 +117,7 @@ public class DualieItem extends WeaponBaseItem
             activeDualie = maxRolls % 2 == 1 && offhandDualie.getItem() instanceof DualieItem ? offhandDualie : mainDualie;
         }
 
-        if (getInkAmount(player, activeDualie) >= getInkForRoll(activeDualie))
+        if (reduceInk(player, getInkForRoll(activeDualie), !player.level.isClientSide))
         {
             PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(getRollCooldown(activeDualie, maxRolls, rollCount), player.inventory.selected, player.getUsedItemHand(), false, true, false, player.isOnGround()));
             if (!player.level.isClientSide)
@@ -123,13 +125,9 @@ public class DualieItem extends WeaponBaseItem
                 player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.dualieDodge, SoundCategory.PLAYERS, 0.7F, ((player.level.random.nextFloat() - player.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 InkExplosion.createInkExplosion(player.level, player, new DamageSource("ink"), player.blockPosition(), 1.2f, 0, 0, false, ColorUtils.getInkColor(activeDualie), InkBlockUtils.getInkType(player), activeDualie);
             }
-            reduceInk(player, getInkForRoll(activeDualie));
             setRollString(mainDualie, rollCount + 1);
             setRollCooldown(mainDualie, (int) (getRollCooldown(mainDualie, maxRolls, maxRolls) * 0.75f));
             return activeDualie.getItem() instanceof DualieItem ? ((DualieItem) activeDualie.getItem()).rollSpeed : 0;
-        } else if (!player.level.isClientSide)
-        {
-            sendNoInkMessage(player);
         }
 
         return 0;
@@ -173,6 +171,7 @@ public class DualieItem extends WeaponBaseItem
 
     public static int getRollCooldown(ItemStack stack)
     {
+        //noinspection ConstantConditions
         if (!stack.hasTag() || !stack.getTag().contains("RollCooldown"))
         {
             return 0;
@@ -205,7 +204,7 @@ public class DualieItem extends WeaponBaseItem
 
 
     @Override
-    public String getDescriptionId(ItemStack stack)
+    public @NotNull String getDescriptionId(ItemStack stack)
     {
         if (stack.getOrCreateTag().getBoolean("IsPlural"))
         {
@@ -215,13 +214,13 @@ public class DualieItem extends WeaponBaseItem
     }
 
     @Override
-    public ITextComponent getName(ItemStack stack)
+    public @NotNull ITextComponent getName(@NotNull ItemStack stack)
     {
         return super.getName(stack);
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World level, Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected)
     {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
@@ -280,7 +279,7 @@ public class DualieItem extends WeaponBaseItem
                     activeDualie = maxRolls % 2 == 1 && offhandDualie.getItem() instanceof DualieItem ? offhandDualie : stack;
                 }
 
-                if (getInkAmount(entity, activeDualie) >= getInkForRoll(activeDualie))
+                if (enoughInk(entity, getInkForRoll(activeDualie), false))
                 {
                     entity.moveRelative(performRoll((PlayerEntity) entity, stack, offhandDualie), ClientUtils.getDodgeRollVector((PlayerEntity) entity));
                     entity.setDeltaMovement(entity.getDeltaMovement().x(), 0.05, entity.getDeltaMovement().z());
@@ -324,16 +323,12 @@ public class DualieItem extends WeaponBaseItem
     {
         if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % (onRollCooldown ? 2 : firingSpeed) == 0)
         {
-            if (getInkAmount(entity, stack) >= inkConsumption)
+            if (reduceInk(entity, inkConsumption, true))
             {
                 InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage).setShooterTrail();
                 proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, projectileSpeed, entity instanceof PlayerEntity && PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity) ? 0 : inaccuracy);
                 level.addFreshEntity(proj);
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.dualieShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-                reduceInk(entity, inkConsumption);
-            } else
-            {
-                sendNoInkMessage(entity);
             }
         }
     }

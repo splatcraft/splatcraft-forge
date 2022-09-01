@@ -1,11 +1,5 @@
 package net.splatcraft.forge.blocks;
 
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.tileentities.CrateTileEntity;
-import net.splatcraft.forge.util.InkBlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -38,8 +32,14 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.tileentities.CrateTileEntity;
+import net.splatcraft.forge.util.InkBlockUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -74,7 +74,7 @@ public class CrateBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable IBlockReader levelIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable IBlockReader levelIn, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn)
     {
         super.appendHoverText(stack, levelIn, tooltip, flagIn);
         CompoundNBT compoundnbt = stack.getTagElement("BlockEntityTag");
@@ -115,7 +115,7 @@ public class CrateBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
+    public @NotNull BlockState updateShape(@NotNull BlockState stateIn, @NotNull Direction facing, @NotNull BlockState facingState, IWorld levelIn, @NotNull BlockPos currentPos, @NotNull BlockPos facingPos)
     {
         if (levelIn.getBlockEntity(currentPos) instanceof CrateTileEntity)
         {
@@ -148,13 +148,13 @@ public class CrateBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean hasAnalogOutputSignal(BlockState state)
+    public boolean hasAnalogOutputSignal(@NotNull BlockState state)
     {
         return !hasLoot;
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState blockState, World levelIn, BlockPos pos)
+    public int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull World levelIn, @NotNull BlockPos pos)
     {
 
         if (hasLoot || !(levelIn.getBlockEntity(pos) instanceof CrateTileEntity))
@@ -166,7 +166,7 @@ public class CrateBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public void playerDestroy(World levelIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack)
+    public void playerDestroy(World levelIn, PlayerEntity player, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable TileEntity te, @NotNull ItemStack stack)
     {
         player.awardStat(Stats.BLOCK_MINED.get(this));
         player.causeFoodExhaustion(0.005F);
@@ -182,7 +182,7 @@ public class CrateBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
+    public @NotNull List<ItemStack> getDrops(@NotNull BlockState state, LootContext.Builder builder)
     {
         ItemStack tool = builder.getOptionalParameter(LootParameters.TOOL);
         World level = builder.getLevel();

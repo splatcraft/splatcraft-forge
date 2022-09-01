@@ -1,10 +1,5 @@
 package net.splatcraft.forge.tileentities;
 
-import net.splatcraft.forge.SplatcraftConfig;
-import net.splatcraft.forge.blocks.StageBarrierBlock;
-import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.util.ClientUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,8 +10,12 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.SplatcraftConfig;
+import net.splatcraft.forge.blocks.StageBarrierBlock;
+import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.util.ClientUtils;
+import org.jetbrains.annotations.Nullable;
 
 import static net.splatcraft.forge.util.InkDamageUtils.VOID_DAMAGE;
 
