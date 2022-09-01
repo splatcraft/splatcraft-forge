@@ -270,19 +270,21 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
     }
 
     @Override
-    public boolean canBeCollidedWith()
-    {
-        return getInkHealth() > 0;
-    }
-
-    @Override
     protected boolean isImmobile() {
         return true;
     }
 
     @Override
-    public void push(Entity entityIn)
+    public boolean isPushable() {
+        return false;
+    }
+
+    @Override
+    public void doPush(Entity entityIn)
     {
+        if(getInkHealth() <= 0)
+            return;
+
         if (!this.isPassengerOfSameVehicle(entityIn))
         {
             if (!entityIn.noPhysics && !this.noPhysics)
