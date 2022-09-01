@@ -41,13 +41,10 @@ import java.util.Random;
 
 public class InkedBlock extends Block implements IColoredBlock
 {
-    public static final Properties DEFAULT_PROPERTIES = Properties.of(Material.CLAY, MaterialColor.TERRACOTTA_BLACK).randomTicks().harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().sound(SoundType.SLIME_BLOCK).noOcclusion().dynamicShape();
     public static final int GLOWING_LIGHT_LEVEL = 6;
-
-
     public InkedBlock(String name)
     {
-        this(name, DEFAULT_PROPERTIES);
+        this(name, defaultProperties());
     }
 
     public InkedBlock(String name, Properties properties)
@@ -57,9 +54,15 @@ public class InkedBlock extends Block implements IColoredBlock
         setRegistryName(name);
     }
 
+
     public static InkedBlock glowing(String name)
     {
-        return new InkedBlock(name, DEFAULT_PROPERTIES.lightLevel(state -> GLOWING_LIGHT_LEVEL));
+        return new InkedBlock(name, defaultProperties().lightLevel(state -> GLOWING_LIGHT_LEVEL));
+    }
+
+    private static Properties defaultProperties()
+    {
+        return Properties.of(Material.CLAY, MaterialColor.TERRACOTTA_BLACK).randomTicks().harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().sound(SoundType.SLIME_BLOCK).noOcclusion().dynamicShape();
     }
 
     public static boolean isTouchingLiquid(IBlockReader reader, BlockPos pos)
