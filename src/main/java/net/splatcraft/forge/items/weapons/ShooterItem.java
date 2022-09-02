@@ -64,10 +64,4 @@ public class ShooterItem extends WeaponBaseItem
     {
         return PlayerPosingHandler.WeaponPose.FIRE;
     }
-
-    public ShooterItem setSecret()
-    {
-        secret = true;
-        return this;
-    }
 }

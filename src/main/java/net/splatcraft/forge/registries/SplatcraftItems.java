@@ -70,7 +70,7 @@ public class SplatcraftItems
     public static final ShooterItem splattershot = new ShooterItem("splattershot", 1.05f, 0.75f, 12f, 4, 8f, 0.9f);
     public static final ShooterItem tentatekSplattershot = new ShooterItem("tentatek_splattershot", splattershot);
     public static final ShooterItem wasabiSplattershot = new ShooterItem("wasabi_splattershot", splattershot);
-    public static final ShooterItem ancientSplattershot = new ShooterItem("ancient_splattershot", splattershot).setSecret();
+    public static final ShooterItem ancientSplattershot = (ShooterItem) new ShooterItem("ancient_splattershot", splattershot).setSecret();
     public static final ShooterItem splattershotJr = new ShooterItem("splattershot_jr", 1f, 0.55f, 13.5f, 4, 6.5f, 0.5f);
     public static final ShooterItem kensaSplattershotJr = new ShooterItem("kensa_splattershot_jr", splattershotJr);
     public static final ShooterItem aerosprayMG = new ShooterItem("aerospray_mg", 1.3f, 0.45f, 26f, 2, 4.8f, 0.5f);
@@ -129,6 +129,7 @@ public class SplatcraftItems
 
     //Sub Weapons
     public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70);
+    public static final SubWeaponItem splatBomb2 = (SubWeaponItem) new SubWeaponItem("splat_bomb_2", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70).setSecret();
     public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB, BurstBombEntity.DIRECT_DAMAGE, BurstBombEntity.EXPLOSION_SIZE, 40);
     public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB, SuctionBombEntity.DIRECT_DAMAGE, SuctionBombEntity.EXPLOSION_SIZE, 70);
 

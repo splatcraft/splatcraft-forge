@@ -82,7 +82,7 @@ public class TarpBlock extends Block implements IWaterLoggable
     {
         for(Direction direction : Direction.values())
             if(state.getValue(FACING_TO_PROPERTY_MAP.get(direction)))
-                return context.getItemInHand().getItem().equals(asItem()) && !state.getValue(FACING_TO_PROPERTY_MAP.get(context.getClickedFace().getOpposite())) || state.canBeReplaced(context);
+                return context.getItemInHand().getItem().equals(asItem()) && !state.getValue(FACING_TO_PROPERTY_MAP.get(context.getClickedFace().getOpposite()));
         return true;
     }
 

@@ -44,9 +44,7 @@ public class InkVatScreen extends ContainerScreen<InkVatContainer>
         super(screenContainer, inv, titleIn);
         this.imageHeight = 208;
         this.titleLabelX = 8;
-        this.titleLabelX = this.imageHeight - 98;
-
-
+        this.titleLabelY = this.imageHeight - 92;
     }
 
     @Override
@@ -82,7 +80,7 @@ public class InkVatScreen extends ContainerScreen<InkVatContainer>
     protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY)
     {
         this.font.draw(matrixStack, this.inventory.getDisplayName(), (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
-        font.draw(matrixStack, title.getString(), (float) imageWidth / 2 - (float) font.width(title.getString()) / 2, 4, 4210752);
+        font.draw(matrixStack, title.getString(), (float) imageWidth / 2 - (float) font.width(title.getString()) / 2, 6, 4210752);
 
         List<Integer> colors = getMenu().sortRecipeList();
         drawAvailableColors(matrixStack, colors, colorSelectionX, colorSelectionY);

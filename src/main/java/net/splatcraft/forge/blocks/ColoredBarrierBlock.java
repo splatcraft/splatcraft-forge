@@ -65,7 +65,7 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
-        if (context.getEntity() instanceof LivingEntity && ColorUtils.getEntityColor(context.getEntity()) > -1)
+        if (ColorUtils.getEntityColor(context.getEntity()) > -1)
             return !canAllowThrough(pos, context.getEntity()) ? super.getCollisionShape(state, levelIn, pos, context) : VoxelShapes.empty();
         return blocksColor ? super.getCollisionShape(state, levelIn, pos, context) : VoxelShapes.empty();
     }

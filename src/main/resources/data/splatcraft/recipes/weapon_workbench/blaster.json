@@ -1,7 +1,7 @@
 {
   "type": "splatcraft:weapon_workbench",
-  "tab": "splatcraft:weapon_workbench_tabs/shooters",
-  "pos": 15,
+  "tab": "splatcraft:weapon_workbench_tabs/blasters",
+  "pos": 0,
   "recipes": [
     {
       "name": "weaponType.original",

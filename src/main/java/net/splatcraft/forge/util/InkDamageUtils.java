@@ -62,7 +62,7 @@ public class InkDamageUtils
             applyInkCoverage = doDamage;
         }
 
-        InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID + ":" + name, (source != null ? source : SplatcraftEntities.INK_PROJECTILE.create(level)), source, sourceItem);
+        InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID + ":" + name, source, source, sourceItem);
         if (target instanceof IColoredEntity)
         {
             doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
@@ -120,9 +120,17 @@ public class InkDamageUtils
         @Override
         public ITextComponent getLocalizedDeathMessage(LivingEntity entityLivingBaseIn)
         {
-            ITextComponent itextcomponent = this.getEntity() == null ? Objects.requireNonNull(this.entity).getDisplayName() : this.getEntity().getDisplayName();
             String s = "death.attack." + this.msgId;
             String s1 = s + ".item";
+
+            if(getEntity() == null && entity == null)
+            {
+                s += ".player";
+                return !weapon.isEmpty() ? new TranslationTextComponent(s1, entityLivingBaseIn.getDisplayName(),  weapon.getDisplayName()) : new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName());
+            }
+
+            ITextComponent itextcomponent = this.getEntity() == null ? Objects.requireNonNull(this.entity).getDisplayName() : this.getEntity().getDisplayName();
+
             return !weapon.isEmpty() ? new TranslationTextComponent(s1, entityLivingBaseIn.getDisplayName(), itextcomponent, weapon.getDisplayName()) : new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName(), itextcomponent);
         }
     }

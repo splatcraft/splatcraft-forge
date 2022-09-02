@@ -42,7 +42,7 @@ import java.util.UUID;
 
 public abstract class AbstractSubWeaponEntity extends Entity implements IColoredEntity
 {
-    protected static final String SPLASH_DAMAGE_TYPE = "ink";
+    protected static final String SPLASH_DAMAGE_TYPE = "splat";
     protected static final DamageSource SPLASH_DAMAGE_SOURCE = new DamageSource(SPLASH_DAMAGE_TYPE);
 
     private static final DataParameter<Integer> COLOR = EntityDataManager.defineId(AbstractSubWeaponEntity.class, DataSerializers.INT);

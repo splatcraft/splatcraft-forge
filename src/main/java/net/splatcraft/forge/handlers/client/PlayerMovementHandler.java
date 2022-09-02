@@ -123,7 +123,7 @@ public class PlayerMovementHandler
             //if((player.isOnGround() && player.level.getCollisionShapes(player, player.getBoundingBox().offset(xOff, (double)(player.stepHeight), zOff)).toArray().length == 0) || !player.isOnGround())
             {
                 if (player.getDeltaMovement().y() < (input.jumping ? 0.46f : 0.4f))
-                    player.moveRelative(0.055f * (input.jumping ? 1.9f : 1.7f), new Vector3d(0.0f, player.zza, -Math.min(0, player.zza)).normalize());
+                    player.moveRelative(0.055f * (input.jumping ? 2f : 1.7f), new Vector3d(0.0f, player.zza, -Math.min(0, player.zza)).normalize());
                 if (player.getDeltaMovement().y() <= 0 && !input.shiftKeyDown)
                     player.moveRelative(0.035f, new Vector3d(0.0f, 1, 0.0f));
 
