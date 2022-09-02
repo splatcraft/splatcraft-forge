@@ -20,6 +20,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -175,7 +176,7 @@ public class TurfScannerItem extends RemoteItem
         }
 
 
-        for (PlayerEntity player : outputWorld.players())
+        for (PlayerEntity player : target == null ? outputWorld.players() : new ArrayList<PlayerEntity>(){{add(target);}})
         {
             int color = ColorUtils.getPlayerColor(player);
 
