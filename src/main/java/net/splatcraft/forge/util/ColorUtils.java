@@ -60,25 +60,20 @@ public class ColorUtils
             if (str.charAt(0) == '#')
                 return Integer.parseInt(str.substring(1), 16);
         }
-
+        
         return nbt.getInt("Color");
     }
 
     public static int getEntityColor(Entity entity)
     {
         if (entity instanceof PlayerEntity)
-        {
-            return getPlayerColor((PlayerEntity) entity);
-        } else if (entity instanceof IColoredEntity)
-        {
+            return getPlayerColor((LivingEntity) entity);
+        else if (entity instanceof IColoredEntity)
             return ((IColoredEntity) entity).getColor();
-        } else
-        {
-            return -1;
-        }
+        else return -1;
     }
 
-    public static int getPlayerColor(PlayerEntity player)
+    public static int getPlayerColor(LivingEntity player)
     {
         if(PlayerInfoCapability.hasCapability(player))
             return PlayerInfoCapability.get(player).getColor();
