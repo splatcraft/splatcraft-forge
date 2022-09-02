@@ -379,6 +379,7 @@
   "arg.colorCriterion.notFound": "No criteria were found by the color %s",
   "arg.inkColor.notFound": "Unknown color %s",
 
+  "stat.splatcraft.turf_wars_won": "Turf Wars Won",
   "stat.splatcraft.squid_time": "Time as Squid",
   "stat.splatcraft.blocks_inked": "Blocks Inked",
   "stat.splatcraft.weapons_crafted": "Weapons Crafted",

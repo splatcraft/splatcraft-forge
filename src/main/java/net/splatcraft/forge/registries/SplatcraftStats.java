@@ -8,6 +8,8 @@ import net.minecraft.util.registry.Registry;
 
 public class SplatcraftStats
 {
+    public static final ResourceLocation TURF_WARS_WON = register("turf_wars_won", IStatFormatter.DEFAULT);
+
     public static final ResourceLocation BLOCKS_INKED = register("blocks_inked", IStatFormatter.DEFAULT);
     public static final ResourceLocation WEAPONS_CRAFTED = register("weapons_crafted", IStatFormatter.DEFAULT);
     public static final ResourceLocation INKWELLS_CRAFTED = register("inkwells_crafted", IStatFormatter.DEFAULT);

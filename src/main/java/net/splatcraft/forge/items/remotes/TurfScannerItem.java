@@ -6,6 +6,7 @@ import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.network.SendScanTurfResultsPacket;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
+import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -177,6 +178,10 @@ public class TurfScannerItem extends RemoteItem
         for (PlayerEntity player : outputWorld.players())
         {
             int color = ColorUtils.getPlayerColor(player);
+
+            if(color == winner)
+                player.awardStat(SplatcraftStats.TURF_WARS_WON);
+
             if (!ScoreboardHandler.hasColorCriterion(color))
                 continue;
 
