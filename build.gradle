@@ -22,9 +22,9 @@ group = project.maven_group
 
 def commitHash = !indraGit.isPresent() ? "unknown" : indraGit.commit().abbreviate(7).name()
 if (System.env.CI == "true") {
-    branch = System.env.GITHUB_REF
+    def branch = System.env.GITHUB_REF
     branch = branch.substring(branch.lastIndexOf("/") + 1)
-    runNumber = System.env.GITHUB_RUN_NUMBER
+    def runNumber = System.env.GITHUB_RUN_NUMBER
     version = "${project.mod_version}-${project.minecraft_version}".replace("SNAPSHOT", "${branch}.${commitHash}+a${runNumber}")
 } else {
     version = "${project.mod_version}-${project.minecraft_version}".replace("SNAPSHOT", "${commitHash}")
