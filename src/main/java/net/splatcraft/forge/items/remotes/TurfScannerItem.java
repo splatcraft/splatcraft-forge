@@ -1,14 +1,7 @@
 package net.splatcraft.forge.items.remotes;
 
-import net.splatcraft.forge.blocks.IColoredBlock;
-import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.handlers.ScoreboardHandler;
-import net.splatcraft.forge.network.SendScanTurfResultsPacket;
-import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.registries.SplatcraftItemGroups;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
+import java.util.Map;
+import java.util.TreeMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -18,9 +11,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-
-import java.util.Map;
-import java.util.TreeMap;
+import net.splatcraft.forge.blocks.IColoredBlock;
+import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.handlers.ScoreboardHandler;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.s2c.SendScanTurfResultsPacket;
+import net.splatcraft.forge.registries.SplatcraftItemGroups;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
 
 public class TurfScannerItem extends RemoteItem
 {

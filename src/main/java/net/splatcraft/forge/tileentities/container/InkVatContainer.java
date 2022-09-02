@@ -1,6 +1,9 @@
 package net.splatcraft.forge.tileentities.container;
 
 import com.google.common.collect.Lists;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -17,7 +20,7 @@ import net.splatcraft.forge.crafting.InkVatColorRecipe;
 import net.splatcraft.forge.crafting.SplatcraftRecipeTypes;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.UpdateBlockColorPacket;
+import net.splatcraft.forge.network.c2s.UpdateBlockColorPacket;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -25,10 +28,6 @@ import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.registries.SplatcraftTileEntitites;
 import net.splatcraft.forge.tileentities.InkVatTileEntity;
 import net.splatcraft.forge.util.InkColor;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 public class InkVatContainer extends Container
 {

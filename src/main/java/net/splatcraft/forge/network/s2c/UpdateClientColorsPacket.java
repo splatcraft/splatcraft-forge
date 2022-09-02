@@ -1,8 +1,7 @@
-package net.splatcraft.forge.network;
+package net.splatcraft.forge.network.s2c;
 
-import net.splatcraft.forge.network.base.PlayToClientPacket;
-import net.splatcraft.forge.util.ClientUtils;
 import net.minecraft.network.PacketBuffer;
+import net.splatcraft.forge.util.ClientUtils;
 
 import java.util.TreeMap;
 

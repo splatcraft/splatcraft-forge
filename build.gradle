@@ -2,11 +2,13 @@ buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { url = "https://plugins.gradle.org/m2/" }
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+', changing: true
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7.+'
+        classpath group: 'net.kyori', name: 'indra-git', version: '2.+'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -14,18 +16,11 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'net.kyori.indra.git'
 
 group = project.maven_group
 
-if (System.env.CI == "true") {
-    def branch
-    branch = System.env.GITHUB_REF
-    branch = branch.substring(branch.lastIndexOf("/") + 1)
-
-    version = "${project.mod_version}+a${System.env.GITHUB_RUN_NUMBER}.${branch}-forge"
-} else {
-    version = "${project.mod_version}+${project.minecraft_version}-forge"
-}
+version = "${project.mod_version}-${project.minecraft_version}".replace("SNAPSHOT", !indraGit.isPresent() ? "dev" : indraGit.commit().abbreviate(7).name())
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 

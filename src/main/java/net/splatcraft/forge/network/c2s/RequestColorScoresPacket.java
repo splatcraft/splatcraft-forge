@@ -1,10 +1,11 @@
-package net.splatcraft.forge.network;
+package net.splatcraft.forge.network.c2s;
 
-import net.splatcraft.forge.handlers.ScoreboardHandler;
-import net.splatcraft.forge.network.base.PlayToServerPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.splatcraft.forge.handlers.ScoreboardHandler;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
 
 public class RequestColorScoresPacket extends PlayToServerPacket
 {

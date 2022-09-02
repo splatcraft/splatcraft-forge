@@ -1,16 +1,15 @@
-package net.splatcraft.forge.network;
+package net.splatcraft.forge.network.c2s;
 
-import net.splatcraft.forge.crafting.SplatcraftRecipeTypes;
-import net.splatcraft.forge.crafting.StackedIngredient;
-import net.splatcraft.forge.crafting.WeaponWorkbenchRecipe;
-import net.splatcraft.forge.crafting.WeaponWorkbenchSubtypeRecipe;
-import net.splatcraft.forge.network.base.PlayToServerPacket;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.splatcraft.forge.crafting.SplatcraftRecipeTypes;
+import net.splatcraft.forge.crafting.StackedIngredient;
+import net.splatcraft.forge.crafting.WeaponWorkbenchRecipe;
+import net.splatcraft.forge.crafting.WeaponWorkbenchSubtypeRecipe;
 
 import java.util.Optional;
 
