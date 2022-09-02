@@ -305,7 +305,7 @@ public class InkVatContainer extends Container
         @Override
         public boolean mayPlace(ItemStack stack)
         {
-            return stack.equals(validItem, false);
+            return stack.sameItemStackIgnoreDurability(validItem);
         }
     }
 
