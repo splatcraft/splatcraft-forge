@@ -20,7 +20,16 @@ apply plugin: 'net.kyori.indra.git'
 
 group = project.maven_group
 
-version = "${project.mod_version}-${project.minecraft_version}".replace("SNAPSHOT", !indraGit.isPresent() ? "dev" : indraGit.commit().abbreviate(7).name())
+def commitHash = !indraGit.isPresent() ? "unknown" : indraGit.commit().abbreviate(7).name()
+if (System.env.CI == "true") {
+    branch = System.env.GITHUB_REF
+    branch = branch.substring(branch.lastIndexOf("/") + 1)
+    runNumber = System.env.GITHUB_RUN_NUMBER
+    version = "${project.mod_version}-${project.minecraft_version}".replace("SNAPSHOT", "${branch}.${commitHash}+a${runNumber}")
+} else {
+    version = "${project.mod_version}-${project.minecraft_version}".replace("SNAPSHOT", "${commitHash}")
+}
+
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 
