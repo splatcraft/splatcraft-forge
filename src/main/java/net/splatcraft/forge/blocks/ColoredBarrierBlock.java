@@ -8,11 +8,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.EntitySelectionContext;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.splatcraft.forge.entities.IColoredEntity;
 import net.splatcraft.forge.registries.SplatcraftTileEntitites;
 import net.splatcraft.forge.tileentities.ColoredBarrierTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
@@ -65,6 +67,9 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
+        if(context.getEntity() == null)
+            return super.getCollisionShape(state, levelIn, pos, context);
+
         if (ColorUtils.getEntityColor(context.getEntity()) > -1)
             return !canAllowThrough(pos, context.getEntity()) ? super.getCollisionShape(state, levelIn, pos, context) : VoxelShapes.empty();
         return blocksColor ? super.getCollisionShape(state, levelIn, pos, context) : VoxelShapes.empty();
