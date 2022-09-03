@@ -69,14 +69,14 @@ public class PlayerPosingHandler
                         offHand.yRot = -0.1F + model.getHead().yRot -((float) Math.PI / 2F);
                         offHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
                     }
+                case FIRE:
+                    mainHand.yRot = -0.1F + model.getHead().yRot;
+                    mainHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
+                    break;
                 case SUB_HOLD:
                     mainHand.yRot = -0.1F + model.getHead().yRot;
                     mainHand.xRot = ((float) Math.PI / 8F);
                     mainHand.zRot = ((float) Math.PI / 6F) * (mainHand == model.leftArm ? -1 : 1);
-                    break;
-                case FIRE:
-                    mainHand.yRot = -0.1F + model.getHead().yRot;
-                    mainHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
                     break;
                 case BUCKET_SWING:
                     animTime = ((SlosherItem) mainStack.getItem()).startupTicks;
