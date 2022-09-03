@@ -35,7 +35,10 @@ public class InkSquidEntity extends CreatureEntity implements IColoredEntity
 
     public static AttributeModifierMap.MutableAttribute setCustomAttributes()
     {
-        return MobEntity.createLivingAttributes().add(Attributes.MAX_HEALTH, 20).add(Attributes.MOVEMENT_SPEED, 0.23D);
+        return MobEntity.createLivingAttributes()
+                .add(Attributes.MAX_HEALTH, 20)
+                .add(Attributes.MOVEMENT_SPEED, 0.23D)
+                .add(Attributes.FOLLOW_RANGE, 16);
     }
 
     @Override
