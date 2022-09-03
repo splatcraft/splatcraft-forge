@@ -1,11 +1,5 @@
 package net.splatcraft.forge.handlers.client;
 
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.items.weapons.RollerItem;
-import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.PlayerCooldown;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -22,6 +16,12 @@ import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.items.weapons.RollerItem;
+import net.splatcraft.forge.items.weapons.WeaponBaseItem;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.PlayerCooldown;
 
 import java.util.UUID;
 
@@ -152,21 +152,18 @@ public class PlayerMovementHandler
         {
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
 
-            if(cooldown.storedItem instanceof RollerItem)
+            if (cooldown.storedStack.getItem() instanceof RollerItem)
                 input.jumping = false;
 
-            if (!cooldown.canMove())
-            {
+            if (!cooldown.canMove()) {
                 input.forwardImpulse = 0;
                 input.leftImpulse = 0;
                 input.jumping = false;
-            } else if (cooldown.storedItem instanceof RollerItem)
-            {
-                input.forwardImpulse = Math.min(1, Math.abs(input.forwardImpulse)) * Math.signum(input.forwardImpulse) * (float) ((RollerItem) cooldown.storedItem).swingMobility;
-                input.leftImpulse = Math.min(1, Math.abs(input.leftImpulse)) * Math.signum(input.leftImpulse) * (float) ((RollerItem) cooldown.storedItem).swingMobility;
+            } else if (cooldown.storedStack.getItem() instanceof RollerItem) {
+                input.forwardImpulse = Math.min(1, Math.abs(input.forwardImpulse)) * Math.signum(input.forwardImpulse) * (float) ((RollerItem) cooldown.storedStack.getItem()).swingMobility;
+                input.leftImpulse = Math.min(1, Math.abs(input.leftImpulse)) * Math.signum(input.leftImpulse) * (float) ((RollerItem) cooldown.storedStack.getItem()).swingMobility;
             }
-            if (cooldown.forceCrouch() && cooldown.getTime() > 1)
-            {
+            if (cooldown.forceCrouch() && cooldown.getTime() > 1) {
                 input.shiftKeyDown = !player.abilities.flying;
             }
 

@@ -1,6 +1,5 @@
 package net.splatcraft.forge.handlers.client;
 
-import java.util.HashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -28,9 +27,10 @@ import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
 import net.splatcraft.forge.util.CommonUtils;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.HashMap;
+
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
-public class SplatcraftKeyHandler
-{
+public class SplatcraftKeyHandler {
     private static final HashMap<KeyBinding, Integer> pressState = new HashMap<>();
 
     public static KeyBinding squidKey;
@@ -111,8 +111,9 @@ public class SplatcraftKeyHandler
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null && !player.isSpectator() && PlayerInfoCapability.hasCapability(player) && Minecraft.getInstance().screen == null) {
             IPlayerInfo capability = PlayerInfoCapability.get(player);
-            capability.setIsSquid(!capability.isSquid());
-            SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player.getUUID(), capability.isSquid() ? 1 : 0));
+            boolean newSquid = !capability.isSquid();
+            capability.setIsSquid(newSquid);
+            SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player.getUUID(), newSquid));
         }
     }
 

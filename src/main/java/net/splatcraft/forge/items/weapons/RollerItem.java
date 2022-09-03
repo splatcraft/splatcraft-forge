@@ -1,7 +1,6 @@
 package net.splatcraft.forge.items.weapons;
 
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -29,6 +28,8 @@ import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponStat;
+
+import java.util.ArrayList;
 
 public class RollerItem extends WeaponBaseItem
 {
@@ -167,8 +168,7 @@ public class RollerItem extends WeaponBaseItem
             //if (getInkAmount(entity, stack) > inkConsumption){
 
             int startupTicks = entity.isOnGround() ? swingTime : flingTime;
-            PlayerCooldown cooldown = new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround());
-            cooldown.storedItem = this;
+            PlayerCooldown cooldown = new PlayerCooldown(stack, startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround());
             PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, cooldown);
             //} else
             if (reduceInk(entity, entity.isOnGround() ? swingConsumption : flingConsumption, timeLeft % 4 == 0) && isBrush) {

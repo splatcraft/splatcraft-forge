@@ -1,11 +1,5 @@
 package net.splatcraft.forge.items.weapons;
 
-import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
-import net.splatcraft.forge.handlers.PlayerPosingHandler;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.WeaponStat;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
@@ -23,6 +17,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
+import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -39,7 +34,7 @@ public class SubWeaponItem extends WeaponBaseItem
     public final EntityType<? extends AbstractSubWeaponEntity> entityType;
 
     public static final ArrayList<SubWeaponItem> subs = new ArrayList<>();
-    public static final float throwVelocity = 0.5f;
+    public static final float throwVelocity = 0.75f;
     public static final float throwAngle = -30f;
 
     public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption) {
@@ -109,8 +104,7 @@ public class SubWeaponItem extends WeaponBaseItem
         @Override
         public ItemStack execute(IBlockSource source, ItemStack stack)
         {
-            if(stack.getOrCreateTag().getBoolean("SingleUse")) 
-            {
+            if (stack.getOrCreateTag().getBoolean("SingleUse")) {
                 World world = source.getLevel();
                 IPosition iposition = DispenserBlock.getDispensePosition(source);
                 Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
@@ -135,7 +129,7 @@ public class SubWeaponItem extends WeaponBaseItem
 
             return AbstractSubWeaponEntity.create(((SubWeaponItem) stackIn.getItem()).entityType,  levelIn, position.x(), position.y(), position.z(), ColorUtils.getInkColor(stackIn), InkBlockUtils.InkType.NORMAL, stackIn);
         }
-        
+
 
         @Override
         protected void playSound(IBlockSource source) {
@@ -149,7 +143,7 @@ public class SubWeaponItem extends WeaponBaseItem
         protected float getUncertainty() {
             return 0;
         }
-        
+
     }
 
     @Override

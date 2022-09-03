@@ -53,7 +53,7 @@ public class SlosherItem extends WeaponBaseItem
         {
             if (entity instanceof PlayerEntity && getUseDuration(stack) - timeLeft < startupTicks)
             {
-                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
+                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
             }
         }
     }

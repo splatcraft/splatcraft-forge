@@ -1,8 +1,6 @@
 package net.splatcraft.forge.handlers;
 
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
@@ -18,6 +16,9 @@ import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID)
 public class WeaponHandler {
@@ -67,7 +68,7 @@ public class WeaponHandler {
             canUseWeapon = !cooldown.preventWeaponUse();
 
             if (cooldown.getTime() == 1) {
-                ItemStack stack = player.getItemInHand(player.getUsedItemHand());
+                ItemStack stack = cooldown.storedStack;
                 if (stack.getItem() instanceof WeaponBaseItem) {
                     ((WeaponBaseItem) stack.getItem()).onPlayerCooldownEnd(player.level, player, stack, cooldown);
                 }
