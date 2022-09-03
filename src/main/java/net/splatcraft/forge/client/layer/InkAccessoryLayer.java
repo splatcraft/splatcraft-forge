@@ -36,19 +36,18 @@ public class InkAccessoryLayer extends LayerRenderer<AbstractClientPlayerEntity,
         if(!PlayerInfoCapability.hasCapability(entity))
             return;
         IPlayerInfo info = PlayerInfoCapability.get(entity);
-        InkBlockUtils.InkType inkType = info.getInkType();
-        ItemStack repStack = InkBlockUtils.checkInkTypeStack(entity, inkType);
+        ItemStack inkBand = info.getInkBand();
 
-        if(!inkType.getRepItem().equals(Items.AIR) && ((entity.getMainHandItem().equals(repStack) || entity.getOffhandItem().equals(repStack))))
+        if(!inkBand.isEmpty() && ((entity.getMainHandItem().equals(inkBand, false) || entity.getOffhandItem().equals(inkBand, false))))
             return;
 
-        ResourceLocation stackLoc = inkType.getName();
+        ResourceLocation stackLoc = inkBand.getItem().getRegistryName();
 
         String customModelData = "";
 
-        if(info.hasInkTypeData() && Minecraft.getInstance().getResourceManager().hasResource(new ResourceLocation(stackLoc.getNamespace(), "textures/models/" + stackLoc.getPath() + "_" + info.getInkTypeData() + ".png")))
+        if(inkBand.getOrCreateTag().contains("CustomModelData") && Minecraft.getInstance().getResourceManager().hasResource(new ResourceLocation(stackLoc.getNamespace(), "textures/models/" + stackLoc.getPath() + "_" + inkBand.getOrCreateTag().getInt("CustomModelData") + ".png")))
         {
-            customModelData = "_" + info.getInkTypeData();
+            customModelData = "_" + inkBand.getOrCreateTag().getInt("CustomModelData");
         }
 
         ResourceLocation texture = new ResourceLocation(stackLoc.getNamespace(), "textures/models/" + stackLoc.getPath() + customModelData + ".png");

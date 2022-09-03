@@ -21,12 +21,10 @@ public interface IPlayerInfo
 
     void setIsSquid(boolean isSquid);
 
-    InkBlockUtils.InkType getInkType();
-    void setInkType(InkBlockUtils.InkType type);
+    ItemStack getInkBand();
+    void setInkBand(ItemStack stack);
 
-    int getInkTypeData();
-    void setInkTypeData(int data);
-    boolean hasInkTypeData();
+    InkBlockUtils.InkType getInkType();
 
     NonNullList<ItemStack> getMatchInventory();
 

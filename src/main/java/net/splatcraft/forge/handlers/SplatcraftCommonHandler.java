@@ -42,6 +42,7 @@ import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.CommonUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 
@@ -237,36 +238,22 @@ public class SplatcraftCommonHandler
         {
             if(!event.player.level.isClientSide)
             {
-                ItemStack inkTypeStack = InkBlockUtils.checkInkTypeStack(event.player);
-                InkBlockUtils.InkType checkedInkType = InkBlockUtils.checkInkType(inkTypeStack);
-                boolean updateType = false;
+                ItemStack inkBand = CommonUtils.getItemInInventory(event.player, itemStack -> itemStack.getItem().is(SplatcraftTags.Items.INK_BANDS) && InkBlockUtils.hasInkType(itemStack));
 
-                if (!checkedInkType.equals(info.getInkType())) {
-                    info.setInkType(checkedInkType);
-                    updateType = true;
-                }
-
-                int data = inkTypeStack.getOrCreateTag().getInt("CustomModelData");
-
-                if(data != info.getInkTypeData())
+                if(!info.getInkBand().equals(inkBand, false))
                 {
-                    info.setInkTypeData(data);
-                    updateType = true;
-                }
-
-                if (updateType)
+                    info.setInkBand(inkBand);
                     SplatcraftPacketHandler.sendToDim(new UpdatePlayerInfoPacket(event.player), event.player.level);
                 }
-            try
-            {
+            }
+
                 if (event.player.deathTime <= 0 && !info.isInitialized())
                 {
-                    PlayerInfoCapability.get(event.player).setInitialized(true);
-                    PlayerInfoCapability.get(event.player).setColor(ColorUtils.getRandomStarterColor());
+                    info.setInitialized(true);
+                    info.setColor(ColorUtils.getRandomStarterColor());
                     if (event.player.level.isClientSide)
                         SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
                 }
-            } catch (NullPointerException ignored) {}
         }
     }
 

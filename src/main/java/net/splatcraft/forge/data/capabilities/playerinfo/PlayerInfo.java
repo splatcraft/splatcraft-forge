@@ -9,7 +9,6 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 
 public class PlayerInfo implements IPlayerInfo
 {
@@ -20,8 +19,7 @@ public class PlayerInfo implements IPlayerInfo
     private PlayerCooldown playerCooldown = null;
     private PlayerCharge playerCharge = null;
 
-    private InkBlockUtils.InkType inkType = InkBlockUtils.InkType.NORMAL;
-    private int inkTypeData = 0;
+    private ItemStack inkBand = ItemStack.EMPTY;
 
     public PlayerInfo(int defaultColor)
     {
@@ -70,32 +68,18 @@ public class PlayerInfo implements IPlayerInfo
     }
 
     @Override
+    public ItemStack getInkBand() {
+        return inkBand;
+    }
+
+    @Override
+    public void setInkBand(ItemStack stack) {
+        inkBand = stack;
+    }
+
+    @Override
     public InkBlockUtils.InkType getInkType() {
-        return inkType;
-    }
-
-    @Override
-    public void setInkType(InkBlockUtils.InkType type)
-    {
-        inkType = type;
-    }
-
-    @Override
-    public int getInkTypeData()
-    {
-        return inkTypeData;
-    }
-
-    @Override
-    public void setInkTypeData(int data)
-    {
-        inkTypeData = data;
-    }
-
-    @Override
-    public boolean hasInkTypeData()
-    {
-        return inkTypeData != 0;
+        return InkBlockUtils.getInkTypeFromStack(inkBand);
     }
 
     @Override
@@ -148,7 +132,8 @@ public class PlayerInfo implements IPlayerInfo
         nbt.putString("InkType", getInkType().getSerializedName());
         nbt.putBoolean("Initialized", initialized);
 
-        nbt.putInt("InkTypeData", getInkTypeData());
+        if(!inkBand.isEmpty())
+            nbt.put("InkBand", getInkBand().serializeNBT());
 
         if (!matchInventory.isEmpty())
         {
@@ -172,11 +157,11 @@ public class PlayerInfo implements IPlayerInfo
     {
         setColor(ColorUtils.getColorFromNbt(nbt));
         setIsSquid(nbt.getBoolean("IsSquid"));
-        setInkType(InkBlockUtils.InkType.values.getOrDefault(new ResourceLocation(nbt.getString("InkType")), InkBlockUtils.InkType.NORMAL));
         setInitialized(nbt.getBoolean("Initialized"));
 
-        if(nbt.contains("InkTypeData"))
-            setInkTypeData(nbt.getInt("InkTypeData"));
+        if(nbt.contains("InkBand"))
+            setInkBand(ItemStack.of(nbt.getCompound("InkBand")));
+        else setInkBand(ItemStack.EMPTY);
 
         if (nbt.contains("MatchInventory"))
         {

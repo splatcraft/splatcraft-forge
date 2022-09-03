@@ -204,12 +204,7 @@ public class InkBlockUtils
         return PlayerInfoCapability.hasCapability(entity) ? PlayerInfoCapability.get(entity).getInkType() : InkType.NORMAL;
     }
 
-    public static InkType checkInkType(LivingEntity entity)
-    {
-        return checkInkType(checkInkTypeStack(entity));
-    }
-
-    public static InkType checkInkType(ItemStack stack)
+    public static InkType getInkTypeFromStack(ItemStack stack)
     {
         if(!stack.isEmpty())
             for(InkType t : InkType.values.values())
@@ -219,50 +214,13 @@ public class InkBlockUtils
         return InkType.NORMAL;
     }
 
-    public static ItemStack checkInkTypeStack(LivingEntity entity)
+    public static boolean hasInkType(ItemStack stack)
     {
-
-        if(entity instanceof PlayerEntity)
-        {
-            PlayerInventory inv = ((PlayerEntity) entity).inventory;
-            final List<NonNullList<ItemStack>> allInventories = ImmutableList.of(inv.offhand, inv.armor, inv.items);
-
-            for(List<ItemStack> list : allInventories)
-            {
-                for(ItemStack stack : list)
-                    if (stack.getItem().is(SplatcraftTags.Items.INK_BANDS))
-                    {
-                        for(InkType t : InkType.values.values())
-                            if(t.getRepItem().equals(stack.getItem()))
-                                return stack;
-                    }
-            }
-
-        }
-
-        return ItemStack.EMPTY;
-    }
-    public static ItemStack checkInkTypeStack(LivingEntity entity, InkType type)
-    {
-
-        if(entity instanceof PlayerEntity)
-        {
-            PlayerInventory inv = ((PlayerEntity) entity).inventory;
-            final List<NonNullList<ItemStack>> allInventories = ImmutableList.of(inv.offhand, inv.armor, inv.items);
-
-            for(List<ItemStack> list : allInventories)
-            {
-                for(ItemStack stack : list)
-                    if (stack.getItem().is(SplatcraftTags.Items.INK_BANDS))
-                    {
-                        if(type.getRepItem().equals(stack.getItem()))
-                            return stack;
-                    }
-            }
-
-        }
-
-        return ItemStack.EMPTY;
+        if(!stack.isEmpty())
+            for(InkType t : InkType.values.values())
+                if(t.getRepItem().equals(stack.getItem()))
+                    return true;
+        return false;
     }
 
     public static InkType getInkType(BlockState state)
@@ -280,8 +238,8 @@ public class InkBlockUtils
         public static final HashMap<ResourceLocation, InkType> values = new HashMap<>();
 
         public static final InkType NORMAL = new InkType(new ResourceLocation(Splatcraft.MODID, "normal"), SplatcraftBlocks.inkedBlock);
-        public static final InkType GLOWING = new InkType(new ResourceLocation(Splatcraft.MODID, "splatfest_band"), SplatcraftItems.splatfestBand, SplatcraftBlocks.glowingInkedBlock);
-        public static final InkType CLEAR = new InkType(new ResourceLocation(Splatcraft.MODID, "clear_band"), SplatcraftItems.clearBand, SplatcraftBlocks.clearInkedBlock);
+        public static final InkType GLOWING = new InkType(new ResourceLocation(Splatcraft.MODID, "glowing"), SplatcraftItems.splatfestBand, SplatcraftBlocks.glowingInkedBlock);
+        public static final InkType CLEAR = new InkType(new ResourceLocation(Splatcraft.MODID, "clear"), SplatcraftItems.clearBand, SplatcraftBlocks.clearInkedBlock);
 
         private final ResourceLocation name;
         private final Item repItem;
