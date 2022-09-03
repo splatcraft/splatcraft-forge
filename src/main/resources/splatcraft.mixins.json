@@ -8,7 +8,8 @@
     "PaneConnectionMixin",
     "SquidPassthroughMixin",
     "WallConnectionMixin",
-    "RecipeCategoryMixin"
+    "RecipeCategoryMixin",
+    "MinecraftClientAccessor"
   ],
   "minVersion": "0.8",
   "injectors": {

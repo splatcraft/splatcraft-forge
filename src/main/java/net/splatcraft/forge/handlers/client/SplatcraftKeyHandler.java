@@ -21,6 +21,7 @@ import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
+import net.splatcraft.forge.mixin.MinecraftClientAccessor;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.PlayerSetSquidServerPacket;
 import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
@@ -76,8 +77,8 @@ public class SplatcraftKeyHandler
             }
             else slot = -1;
 
-            mc.options.keyUse.setDown(true);
             startUseItem(Hand.OFF_HAND);
+            mc.options.keyUse.setDown(true);
         }
         else if(pressState.get(subWeaponHotkey) == -1)
         {
@@ -137,16 +138,20 @@ public class SplatcraftKeyHandler
         Minecraft mc = Minecraft.getInstance();
         if (!mc.gameMode.isDestroying())
         {
+            /*
+            ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, mc, 4, "field_71467_ac");
             try
             {
-                ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, mc, 4, "rightClickDelay");
             }catch (Throwable t) { }
             //field_71467_ac
-            ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, mc, 4, "field_71467_ac");
+            */
+            ((MinecraftClientAccessor)Minecraft.getInstance()).setRightClickDelay(4);
+            //ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, mc, 4, "rightClickDelay");
 
-            mc.player.startUsingItem(hand);
 
-            if (!mc.player.isHandsBusy()) {
+            if (!mc.player.isHandsBusy())
+            {
+                mc.player.startUsingItem(hand);
                 if (mc.hitResult == null) {
                     //LOGGER.warn("Null returned as 'hitResult', mc shouldn't happen!");
                 }
