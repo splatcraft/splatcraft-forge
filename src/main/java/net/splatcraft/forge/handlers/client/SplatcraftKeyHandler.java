@@ -1,5 +1,6 @@
 package net.splatcraft.forge.handlers.client;
 
+import java.util.HashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -16,7 +17,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
@@ -27,9 +27,6 @@ import net.splatcraft.forge.network.c2s.PlayerSetSquidServerPacket;
 import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
 import net.splatcraft.forge.util.CommonUtils;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.HashMap;
-import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class SplatcraftKeyHandler
@@ -82,48 +79,43 @@ public class SplatcraftKeyHandler
         }
         else if(pressState.get(subWeaponHotkey) == -1)
         {
-            if(player.getUsedItemHand() == Hand.OFF_HAND)
-            {
+            if(player.getUsedItemHand() == Hand.OFF_HAND) {
                 mc.options.keyUse.setDown(false);
                 mc.gameMode.releaseUsingItem(player);
             }
 
-            if(slot != -1)
+            if (slot != -1)
                 SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
 
         }
 
+        boolean isPlayerSquid = PlayerInfoCapability.isSquid(player);
+        if (isPlayerSquid && player.isSpectator()) onSquidKeyPress(0);
+        else if (player.getVehicle() == null && !player.level.getBlockCollisions(player,
+                new AxisAlignedBB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).findAny().isPresent()) {
+            if (KeyMode.HOLD.equals(SplatcraftConfig.Client.squidKeyMode.get())) {
 
-        if(player.getVehicle() == null && player.level.getBlockCollisions(player,
-                new AxisAlignedBB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ()))
-                .collect(Collectors.toList()).isEmpty())
-        {
-            if (KeyMode.HOLD.equals(SplatcraftConfig.Client.squidKeyMode.get()))
-            {
-                boolean isPlayerSquid = PlayerInfoCapability.isSquid(player);
 
                 if (isPlayerSquid && !squidKey.isDown() || !isPlayerSquid && squidKey.isDown())
                     pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 1));
                 else pressState.put(squidKey, 0);
-            } else
-            {
+            } else {
                 if (squidKey.isDown())
                     pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 2));
                 else pressState.put(squidKey, 0);
             }
 
             if (pressState.get(squidKey) == 1)
-                onSquidKeyPress();
+                onSquidKeyPress(-1);
         } else pressState.put(squidKey, 0);
     }
 
-    public static void onSquidKeyPress()
-    {
+    public static void onSquidKeyPress(int forcedForm) {
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null && PlayerInfoCapability.hasCapability(player) && Minecraft.getInstance().screen == null) {
             IPlayerInfo capability = PlayerInfoCapability.get(player);
-            SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player));
-            capability.setIsSquid(!capability.isSquid());
+            capability.setIsSquid(forcedForm != -1 ? forcedForm == 1 : !capability.isSquid());
+            SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player.getUUID(), capability.isSquid() ? 1 : 0));
         }
     }
 

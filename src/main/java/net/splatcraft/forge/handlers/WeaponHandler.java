@@ -1,6 +1,8 @@
 package net.splatcraft.forge.handlers;
 
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
@@ -16,9 +18,6 @@ import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID)
 public class WeaponHandler {
@@ -38,10 +37,10 @@ public class WeaponHandler {
 
             if (event.getSource().getDirectEntity() instanceof PlayerEntity) {
                 PlayerEntity source = (PlayerEntity) event.getSource().getEntity();
-                if (ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(source))) {
+                if (ScoreboardHandler.hasColorCriterion(color) && source != null)
                     target.getScoreboard().forAllObjectives(ScoreboardHandler.getColorKills(color), source.getScoreboardName(), score -> score.add(1));
+                if (ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(source)))
                     target.getScoreboard().forAllObjectives(ScoreboardHandler.getKillsAsColor(ColorUtils.getPlayerColor(source)), source.getScoreboardName(), score -> score.add(1));
-                }
             }
 
         }

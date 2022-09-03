@@ -1,5 +1,6 @@
 package net.splatcraft.forge.network.c2s;
 
+import java.util.UUID;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
@@ -10,20 +11,12 @@ import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 
-import java.util.UUID;
-
 public class PlayerSetSquidServerPacket extends PlayToServerPacket
 {
     UUID target;
-    private int squid = -1;
+    private int squid;
 
-    public PlayerSetSquidServerPacket(PlayerEntity player)
-    {
-        target = player.getUUID();
-    }
-
-    protected PlayerSetSquidServerPacket(UUID player, int squid)
-    {
+    public PlayerSetSquidServerPacket(UUID player, int squid) {
         this.squid = squid;
         this.target = player;
     }

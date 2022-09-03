@@ -1,6 +1,7 @@
 package net.splatcraft.forge.items.weapons;
 
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -28,8 +29,6 @@ import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponStat;
-
-import java.util.ArrayList;
 
 public class RollerItem extends WeaponBaseItem
 {
@@ -88,7 +87,7 @@ public class RollerItem extends WeaponBaseItem
     public static void applyRecoilKnockback(LivingEntity entity, double pow)
     {
         entity.setDeltaMovement(new Vector3d(Math.cos(Math.toRadians(entity.yRot + 90)) * -pow, entity.getDeltaMovement().y(), Math.sin(Math.toRadians(entity.yRot + 90)) * -pow));
-        entity.hasImpulse = true;
+        entity.hurtMarked = true;
     }
 
     private float getSwingTime()
@@ -245,20 +244,19 @@ public class RollerItem extends WeaponBaseItem
                     }
 
                     BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
-                    if(!level.isClientSide)
-                    for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(attackPos, attackPos.offset(1, 2, 1)), EntityPredicates.NO_SPECTATORS.and((e) ->
-                    {
-                        if(e instanceof LivingEntity && ColorUtils.getEntityColor(e) != -1)
-                            return InkDamageUtils.canDamageColor(level, ColorUtils.getEntityColor(e), ColorUtils.getInkColor(stack));
-                        return true;
-                    })))
-                    {
-                        if(target.equals(entity))
-                            continue;
-                        InkDamageUtils.doRollDamage(level, target, rollDamage * (hasInk ? 1 : 0.4f), ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity));
-                        if (!InkDamageUtils.isSplatted(level, target) && target.invulnerableTime > 0)
-                            doPush = true;
-                    }
+                    if (!level.isClientSide)
+                        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(attackPos, attackPos.offset(1, 2, 1)), EntityPredicates.NO_SPECTATORS.and((e) ->
+                        {
+                            if (e instanceof LivingEntity && ColorUtils.getEntityColor(e) != -1)
+                                return InkDamageUtils.canDamageColor(level, ColorUtils.getEntityColor(e), ColorUtils.getInkColor(stack));
+                            return true;
+                        }))) {
+                            if (target.equals(entity))
+                                continue;
+                            InkDamageUtils.doRollDamage(level, target, rollDamage * (hasInk ? 1 : 0.4f), ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity));
+                            if (!InkDamageUtils.isSplatted(level, target))
+                                doPush = true;
+                        }
                 }
                 reduceInk(entity, Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) dashTime) * (rollConsumptionMax - rollConsumptionMin) + rollConsumptionMin, timeLeft % 4 == 0);
             }
