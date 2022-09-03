@@ -66,7 +66,7 @@ public class PlayerPosingHandler
                 case DUAL_FIRE:
                     if (offStack.getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) offStack.getItem()).getPose().equals(WeaponPose.DUAL_FIRE))
                     {
-                        offHand.yRot = -0.1F + model.getHead().yRot -((float) Math.PI / 2F);
+                        offHand.yRot = -0.1F + model.getHead().yRot;
                         offHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
                     }
                 case FIRE:
