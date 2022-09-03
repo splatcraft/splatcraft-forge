@@ -98,13 +98,14 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
         proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, projectileSpeed, 0.1f);
         level.addFreshEntity(proj);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+        reduceInk(player, getInkConsumption(charge), false);
         PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(10, player.inventory.selected, player.getUsedItemHand(), true, false, false, player.isOnGround()));
     }
 
     @Override
     public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
-        if (entity instanceof PlayerEntity && level.isClientSide) {
-            PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1), timeLeft % 4 == 0);
+        if (entity instanceof PlayerEntity && enoughInk(entity, getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack)), timeLeft % 4 == 0) && level.isClientSide) {
+            PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1));
         }
     }
 

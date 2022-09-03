@@ -7,8 +7,6 @@ import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.IChargeableWeapon;
 
-import static net.splatcraft.forge.items.weapons.WeaponBaseItem.reduceInk;
-
 public class PlayerCharge
 {
     public ItemStack chargedWeapon;
@@ -49,24 +47,22 @@ public class PlayerCharge
         return capability.getPlayerCharge() == null;
     }
 
-    public static boolean chargeMatches(PlayerEntity player, ItemStack stack)
-    {
+    public static boolean chargeMatches(PlayerEntity player, ItemStack stack) {
         return hasCharge(player) && getCharge(player).chargedWeapon.sameItem(stack);
     }
 
-    public static void addChargeValue(PlayerEntity player, ItemStack stack, float value, boolean sendLowInkMessage) {
+    public static void addChargeValue(PlayerEntity player, ItemStack stack, float value) {
         if (shouldCreateCharge(player)) {
             setCharge(player, new PlayerCharge(stack, 0));
         }
 
         PlayerCharge charge = getCharge(player);
 
-        if (reduceInk(player, value * 20, sendLowInkMessage))
-            if (chargeMatches(player, stack)) {
-                charge.charge = Math.max(0, Math.min(charge.charge + value, 1f));
-            } else {
-                setCharge(player, new PlayerCharge(stack, value));
-            }
+        if (chargeMatches(player, stack)) {
+            charge.charge = Math.max(0, Math.min(charge.charge + value, 1f));
+        } else {
+            setCharge(player, new PlayerCharge(stack, value));
+        }
     }
 
     public static float getChargeValue(PlayerEntity player, ItemStack stack)
