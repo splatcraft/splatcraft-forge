@@ -1,32 +1,18 @@
-package net.splatcraft.forge.network;
+package net.splatcraft.forge.network.s2c;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.PacketBuffer;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.network.base.PlayToClientPacket;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
 
 import java.util.UUID;
 
 public class PlayerSetSquidClientPacket extends PlayToClientPacket
 {
     UUID target;
-    private int squid = -1;
+    private int squid;
 
-    public PlayerSetSquidClientPacket(PlayerEntity player)
-    {
-        target = player.getUUID();
-    }
-
-    public PlayerSetSquidClientPacket(PlayerEntity player, boolean set)
-    {
-        squid = set ? 1 : 0;
-        target = player.getUUID();
-    }
-
-    protected PlayerSetSquidClientPacket(UUID player, int squid)
-    {
+    public PlayerSetSquidClientPacket(UUID player, int squid) {
         this.squid = squid;
         this.target = player;
     }

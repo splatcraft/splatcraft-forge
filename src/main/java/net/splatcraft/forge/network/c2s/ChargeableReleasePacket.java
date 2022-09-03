@@ -1,11 +1,10 @@
-package net.splatcraft.forge.network;
+package net.splatcraft.forge.network.c2s;
 
-import net.splatcraft.forge.items.weapons.IChargeableWeapon;
-import net.splatcraft.forge.network.base.PlayToServerPacket;
-import net.splatcraft.forge.util.PlayerCharge;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.splatcraft.forge.items.weapons.IChargeableWeapon;
+import net.splatcraft.forge.util.PlayerCharge;
 
 public class ChargeableReleasePacket extends PlayToServerPacket
 {

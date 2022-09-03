@@ -1,15 +1,5 @@
 package net.splatcraft.forge.handlers.client;
 
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.SplatcraftConfig;
-import net.splatcraft.forge.client.gui.InkVatScreen;
-import net.splatcraft.forge.client.gui.WeaponWorkbenchScreen;
-import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.items.SquidBumperItem;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -29,9 +19,19 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.SplatcraftConfig;
+import net.splatcraft.forge.client.gui.InkVatScreen;
+import net.splatcraft.forge.client.gui.WeaponWorkbenchScreen;
+import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.items.SquidBumperItem;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.util.ColorUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetupHandler
@@ -80,7 +80,7 @@ public class ClientSetupHandler
     protected static class InkItemColor implements IItemColor
     {
         @Override
-        public int getColor(ItemStack stack, int i)
+        public int getColor(@NotNull ItemStack stack, int i)
         {
             boolean isDefault = ColorUtils.getInkColor(stack) == -1 && !ColorUtils.isColorLocked(stack);
             int color = i == 0 ? (((stack.getItem().is(SplatcraftTags.Items.INK_BANDS) || !stack.getItem().is(SplatcraftTags.Items.MATCH_ITEMS))
@@ -100,7 +100,7 @@ public class ClientSetupHandler
     {
 
         @Override
-        public int getColor(BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int i)
+        public int getColor(@NotNull BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int i)
         {
             if (iBlockDisplayReader == null || blockPos == null)
                 return -1;

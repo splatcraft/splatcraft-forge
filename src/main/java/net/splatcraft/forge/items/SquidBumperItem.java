@@ -1,15 +1,5 @@
 package net.splatcraft.forge.items;
 
-import net.splatcraft.forge.blocks.InkedBlock;
-import net.splatcraft.forge.blocks.InkwellBlock;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.entities.SquidBumperEntity;
-import net.splatcraft.forge.registries.SplatcraftEntities;
-import net.splatcraft.forge.registries.SplatcraftItemGroups;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -30,8 +20,17 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.blocks.InkedBlock;
+import net.splatcraft.forge.blocks.InkwellBlock;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.entities.SquidBumperEntity;
+import net.splatcraft.forge.registries.SplatcraftEntities;
+import net.splatcraft.forge.registries.SplatcraftItemGroups;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 

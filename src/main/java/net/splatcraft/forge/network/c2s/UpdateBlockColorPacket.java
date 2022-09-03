@@ -1,12 +1,11 @@
-package net.splatcraft.forge.network;
+package net.splatcraft.forge.network.c2s;
 
-import net.splatcraft.forge.network.base.PlayToServerPacket;
-import net.splatcraft.forge.tileentities.InkVatTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.splatcraft.forge.tileentities.InkVatTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
 
 public class UpdateBlockColorPacket extends PlayToServerPacket
 {

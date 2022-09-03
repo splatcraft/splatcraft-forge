@@ -1,7 +1,5 @@
 package net.splatcraft.forge.network;
 
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.network.base.SplatcraftPacket;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.RegistryKey;
@@ -11,6 +9,22 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.network.c2s.ChargeableReleasePacket;
+import net.splatcraft.forge.network.c2s.CraftWeaponPacket;
+import net.splatcraft.forge.network.c2s.DodgeRollPacket;
+import net.splatcraft.forge.network.c2s.PlayerSetSquidServerPacket;
+import net.splatcraft.forge.network.c2s.RequestPlayerInfoPacket;
+import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
+import net.splatcraft.forge.network.c2s.UpdateBlockColorPacket;
+import net.splatcraft.forge.network.s2c.PlayerColorPacket;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
+import net.splatcraft.forge.network.s2c.SendScanTurfResultsPacket;
+import net.splatcraft.forge.network.s2c.UpdateBooleanGamerulesPacket;
+import net.splatcraft.forge.network.s2c.UpdateClientColorsPacket;
+import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
+import net.splatcraft.forge.network.s2c.UpdateInkOverlayPacket;
+import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -21,8 +35,8 @@ public class SplatcraftPacketHandler
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(Splatcraft.MODID, "main"),
             () -> PROTOCOL_VERSION,
-            PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals);
+            Splatcraft.version::equals,
+            Splatcraft.version::equals);
     private static int ID = 0;
 
     public static void registerMessages()

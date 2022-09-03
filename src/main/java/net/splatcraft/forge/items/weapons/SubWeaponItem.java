@@ -22,8 +22,14 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
+import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.WeaponStat;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +55,7 @@ public class SubWeaponItem extends WeaponBaseItem
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag)
     {
         if(stack.getOrCreateTag().getBoolean("SingleUse"))
             tooltip.add(new TranslationTextComponent("item.splatcraft.tooltip.single_use"));
@@ -57,15 +63,11 @@ public class SubWeaponItem extends WeaponBaseItem
     }
 
     @Override
-    public ActionResult<ItemStack> use(World level, PlayerEntity player, Hand hand)
+    public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
     {
 
-        if(!(player.isSwimming() && !player.isInWater()))
-        {
-            if(getInkAmount(player, player.getItemInHand(hand)) >= inkConsumption)
-                player.startUsingItem(hand);
-            else sendNoInkMessage(player, SplatcraftSounds.noInkSub);
-        }
+        if (!(player.isSwimming() && !player.isInWater()) && enoughInk(player, inkConsumption, true, true))
+            player.startUsingItem(hand);
         return useSuper(level, player, hand);
     }
 
@@ -80,7 +82,7 @@ public class SubWeaponItem extends WeaponBaseItem
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, World level, LivingEntity entity, int timeLeft)
+    public void releaseUsing(@NotNull ItemStack stack, @NotNull World level, LivingEntity entity, int timeLeft)
     {
         super.releaseUsing(stack, level, entity, timeLeft);
 
@@ -98,7 +100,7 @@ public class SubWeaponItem extends WeaponBaseItem
             if(entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative())
                 stack.shrink(1);
         }
-        else reduceInk(entity, inkConsumption);
+        else reduceInk(entity, inkConsumption, false);
 
     }
 

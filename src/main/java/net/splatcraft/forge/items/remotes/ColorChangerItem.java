@@ -1,14 +1,5 @@
 package net.splatcraft.forge.items.remotes;
 
-import net.splatcraft.forge.blocks.IColoredBlock;
-import net.splatcraft.forge.blocks.InkwellBlock;
-import net.splatcraft.forge.commands.InkColorCommand;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.items.IColoredItem;
-import net.splatcraft.forge.registries.SplatcraftItemGroups;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -22,8 +13,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.splatcraft.forge.blocks.IColoredBlock;
+import net.splatcraft.forge.blocks.InkwellBlock;
+import net.splatcraft.forge.commands.InkColorCommand;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.items.IColoredItem;
+import net.splatcraft.forge.registries.SplatcraftItemGroups;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class ColorChangerItem extends RemoteItem implements IColoredItem
@@ -34,7 +35,6 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
         SplatcraftItems.inkColoredItems.add(this);
     }
 
-    @SuppressWarnings("deprecation")
     public static RemoteResult replaceColor(World level, BlockPos from, BlockPos to, int color, int mode, int affectedColor)
     {
         BlockPos blockpos2 = new BlockPos(Math.min(from.getX(), to.getX()), Math.min(to.getY(), from.getY()), Math.min(from.getZ(), to.getZ()));
@@ -96,7 +96,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World level, Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected)
     {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 

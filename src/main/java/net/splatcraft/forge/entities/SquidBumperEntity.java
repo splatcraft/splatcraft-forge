@@ -1,18 +1,6 @@
 package net.splatcraft.forge.entities;
 
-import net.splatcraft.forge.client.particles.InkExplosionParticleData;
-import net.splatcraft.forge.client.particles.InkSplashParticleData;
-import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
-import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
-import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.UpdateInkOverlayPacket;
-import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.CommonUtils;
-import net.splatcraft.forge.util.InkDamageUtils;
+import java.util.Collections;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -41,8 +29,19 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
-
-import java.util.Collections;
+import net.splatcraft.forge.client.particles.InkExplosionParticleData;
+import net.splatcraft.forge.client.particles.InkSplashParticleData;
+import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
+import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.s2c.UpdateInkOverlayPacket;
+import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.CommonUtils;
+import net.splatcraft.forge.util.InkDamageUtils;
 
 public class SquidBumperEntity extends LivingEntity implements IColoredEntity
 {

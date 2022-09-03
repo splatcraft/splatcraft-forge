@@ -1,17 +1,5 @@
 package net.splatcraft.forge.items.weapons;
 
-import net.splatcraft.forge.client.audio.ChargerChargingTickableSound;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.entities.InkProjectileEntity;
-import net.splatcraft.forge.handlers.PlayerPosingHandler;
-import net.splatcraft.forge.network.ChargeableReleasePacket;
-import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.PlayerCharge;
-import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponStat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -23,6 +11,19 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.splatcraft.forge.client.audio.ChargerChargingTickableSound;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.entities.InkProjectileEntity;
+import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.c2s.ChargeableReleasePacket;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.PlayerCharge;
+import net.splatcraft.forge.util.PlayerCooldown;
+import net.splatcraft.forge.util.WeaponStat;
+import org.jetbrains.annotations.NotNull;
 
 public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 {
@@ -97,27 +98,19 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
         proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, projectileSpeed, 0.1f);
         level.addFreshEntity(proj);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-        reduceInk(player, getInkConsumption(charge));
+        reduceInk(player, getInkConsumption(charge), false);
         PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(10, player.inventory.selected, player.getUsedItemHand(), true, false, false, player.isOnGround()));
     }
 
     @Override
-    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
-    {
-        if (entity instanceof PlayerEntity && getInkAmount(entity, stack) >= getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack)))
-        {
-            if (level.isClientSide)
-            {
-                PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1));
-            }
-        } else if (timeLeft % 4 == 0)
-        {
-            sendNoInkMessage(entity, null);
+    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
+        if (entity instanceof PlayerEntity && enoughInk(entity, getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack)), timeLeft % 4 == 0) && level.isClientSide) {
+            PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1));
         }
     }
 
     @Override
-    public ActionResult<ItemStack> use(World level, PlayerEntity player, Hand hand)
+    public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
     {
         ActionResult<ItemStack> result = super.use(level, player, hand);
 
@@ -128,7 +121,7 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, World level, LivingEntity entity, int timeLeft)
+    public void releaseUsing(@NotNull ItemStack stack, @NotNull World level, LivingEntity entity, int timeLeft)
     {
         super.releaseUsing(stack, level, entity, timeLeft);
 

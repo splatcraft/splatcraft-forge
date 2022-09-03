@@ -1,9 +1,5 @@
 package net.splatcraft.forge.client.renderer.tileentity;
 
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockRenderType;
@@ -28,9 +24,12 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.client.model.data.EmptyModelData;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.MemoryStack;
-
-import javax.annotation.Nullable;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;

@@ -1,11 +1,10 @@
-package net.splatcraft.forge.network;
+package net.splatcraft.forge.network.s2c;
 
-import net.splatcraft.forge.network.base.PlayToClientPacket;
-import net.splatcraft.forge.util.ClientUtils;
-import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.splatcraft.forge.util.ClientUtils;
+import net.splatcraft.forge.util.ColorUtils;
 
 import java.util.ArrayList;
 

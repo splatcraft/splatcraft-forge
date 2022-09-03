@@ -1,8 +1,5 @@
 package net.splatcraft.forge.tileentities;
 
-import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.items.remotes.RemoteItem;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
@@ -10,8 +7,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.util.Direction;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.items.remotes.RemoteItem;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RemotePedestalTileEntity extends InkColorTileEntity implements ISidedInventory
 {
@@ -118,7 +118,7 @@ public class RemotePedestalTileEntity extends InkColorTileEntity implements ISid
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
+    public void load(@NotNull BlockState state, @NotNull CompoundNBT nbt)
     {
         super.load(state, nbt);
 
@@ -129,7 +129,7 @@ public class RemotePedestalTileEntity extends InkColorTileEntity implements ISid
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public @NotNull CompoundNBT save(CompoundNBT nbt)
     {
         nbt.putInt("Signal", signal);
 

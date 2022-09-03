@@ -1,7 +1,5 @@
 package net.splatcraft.forge.blocks;
 
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.tileentities.StageBarrierTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -22,8 +20,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.tileentities.StageBarrierTileEntity;
+import org.jetbrains.annotations.Nullable;
 
 public class StageBarrierBlock extends Block
 {

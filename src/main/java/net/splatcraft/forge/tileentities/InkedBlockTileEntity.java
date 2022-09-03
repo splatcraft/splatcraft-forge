@@ -1,7 +1,5 @@
 package net.splatcraft.forge.tileentities;
 
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.util.InkBlockUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -10,6 +8,9 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.util.InkBlockUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class InkedBlockTileEntity extends InkColorTileEntity
 {
@@ -33,7 +34,7 @@ public class InkedBlockTileEntity extends InkColorTileEntity
 
     //Read NBT
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
+    public void load(@NotNull BlockState state, @NotNull CompoundNBT nbt)
     {
         super.load(state, nbt);
         savedState = NBTUtil.readBlockState(nbt.getCompound("SavedState"));
@@ -47,7 +48,7 @@ public class InkedBlockTileEntity extends InkColorTileEntity
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public @NotNull CompoundNBT save(CompoundNBT nbt)
     {
         nbt.put("SavedState", NBTUtil.writeBlockState(savedState));
         if(hasSavedColor())

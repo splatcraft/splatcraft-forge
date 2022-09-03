@@ -19,9 +19,10 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-
+@SuppressWarnings("deprecation")
 public class GrateRampBlock extends Block implements IWaterLoggable
 {
 
@@ -30,7 +31,7 @@ public class GrateRampBlock extends Block implements IWaterLoggable
     private static final VoxelShape START = box(0, 0, 0, 3, 3, 16);
     private static final VoxelShape END = box(13, 13, 0, 16, 16, 16);
     private static final VoxelShape SEGMENT = box(1, 2, 0, 4, 5, 16);
-    public static final VoxelShape[] SHAPES = makeVoxelShape(START, END, SEGMENT);
+    public static final VoxelShape[] SHAPES = makeVoxelShape();
 
     public GrateRampBlock(String name)
     {
@@ -39,17 +40,17 @@ public class GrateRampBlock extends Block implements IWaterLoggable
         registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
-    private static VoxelShape[] makeVoxelShape(VoxelShape start, VoxelShape end, VoxelShape segment)
+    private static VoxelShape[] makeVoxelShape()
     {
         VoxelShape[] shapes = new VoxelShape[8];
 
         for (int i = 0; i < 6; i++)
         {
-            shapes[i] = segment.move(.125 * i, .125 * i, 0);
+            shapes[i] = GrateRampBlock.SEGMENT.move(.125 * i, .125 * i, 0);
         }
 
-        shapes[6] = start;
-        shapes[7] = end;
+        shapes[6] = GrateRampBlock.START;
+        shapes[7] = GrateRampBlock.END;
 
         return createVoxelShapes(shapes);
     }
@@ -94,7 +95,7 @@ public class GrateRampBlock extends Block implements IWaterLoggable
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
+    public @NotNull VoxelShape getShape(BlockState state, @NotNull IBlockReader levelIn, @NotNull BlockPos pos, @NotNull ISelectionContext context)
     {
         return SHAPES[state.getValue(FACING).ordinal() - 2];
     }
@@ -111,13 +112,13 @@ public class GrateRampBlock extends Block implements IWaterLoggable
     }
 
     @Override
-    public FluidState getFluidState(BlockState state)
+    public @NotNull FluidState getFluidState(BlockState state)
     {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, IBlockReader levelIn, BlockPos pos, PathType type) {
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull IBlockReader levelIn, @NotNull BlockPos pos, @NotNull PathType type) {
         return false;
     }
 }
