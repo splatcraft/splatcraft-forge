@@ -66,9 +66,14 @@ public class PlayerPosingHandler
                 case DUAL_FIRE:
                     if (offStack.getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) offStack.getItem()).getPose().equals(WeaponPose.DUAL_FIRE))
                     {
-                        offHand.yRot = -0.1F + model.getHead().yRot;
+                        offHand.yRot = -0.1F + model.getHead().yRot -((float) Math.PI / 2F);
                         offHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
                     }
+                case SUB_HOLD:
+                    mainHand.yRot = -0.1F + model.getHead().yRot;
+                    mainHand.xRot = ((float) Math.PI / 8F);
+                    mainHand.zRot = ((float) Math.PI / 6F) * (mainHand == model.leftArm ? -1 : 1);
+                    break;
                 case FIRE:
                     mainHand.yRot = -0.1F + model.getHead().yRot;
                     mainHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
@@ -142,6 +147,7 @@ public class PlayerPosingHandler
         ROLL,
         BRUSH,
         BOW_CHARGE,
-        BUCKET_SWING
+        BUCKET_SWING,
+        SUB_HOLD
     }
 }

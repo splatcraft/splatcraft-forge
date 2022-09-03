@@ -316,7 +316,7 @@ public class ColorUtils
         {
             color = ((IColoredBlock) entity.level.getBlockState(pos).getBlock()).getColor(level, pos);
         }
-        addInkSplashParticle(level, color, entity.getX() + (level.getRandom().nextFloat() * 0.8 - 0.4), entity.getEyePosition(level.getRandom().nextFloat() * 0.3f), entity.getZ() + (level.getRandom().nextFloat() * 0.8 - 0.4), size + (level.getRandom().nextFloat() * 0.2f - 0.1f));
+        addInkSplashParticle(level, color, entity.getX() + (level.getRandom().nextFloat() * 0.8 - 0.4), entity.getY(level.getRandom().nextFloat() * 0.3f), entity.getZ() + (level.getRandom().nextFloat() * 0.8 - 0.4), size + (level.getRandom().nextFloat() * 0.2f - 0.1f));
     }
 
     public static void addInkSplashParticle(World level, int color, double x, double y, double z, float size)
