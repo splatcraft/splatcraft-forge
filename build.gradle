@@ -25,7 +25,7 @@ if (System.env.CI == "true") {
     def branch = System.env.GITHUB_REF
     branch = branch.substring(branch.lastIndexOf("/") + 1)
     def runNumber = System.env.GITHUB_RUN_NUMBER
-    version = "${project.mod_version}-${project.minecraft_version}".replace("SNAPSHOT", "${branch}.${commitHash}+a${runNumber}")
+    version = "${project.mod_version}-${project.minecraft_version}".replace("SNAPSHOT", "+a${runNumber}-${branch}.${commitHash}")
 } else {
     version = "${project.mod_version}-${project.minecraft_version}".replace("SNAPSHOT", "${commitHash}")
 }

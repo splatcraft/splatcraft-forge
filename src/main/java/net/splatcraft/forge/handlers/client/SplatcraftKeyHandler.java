@@ -109,7 +109,7 @@ public class SplatcraftKeyHandler
 
     public static void onSquidKeyPress() {
         PlayerEntity player = Minecraft.getInstance().player;
-        if (player != null && PlayerInfoCapability.hasCapability(player) && Minecraft.getInstance().screen == null) {
+        if (player != null && !player.isSpectator() && PlayerInfoCapability.hasCapability(player) && Minecraft.getInstance().screen == null) {
             IPlayerInfo capability = PlayerInfoCapability.get(player);
             capability.setIsSquid(!capability.isSquid());
             SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player.getUUID(), capability.isSquid() ? 1 : 0));
