@@ -171,7 +171,7 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
         setDeltaMovement(getDeltaMovement().add(posDiff.multiply(0.8, 0.8, 0.8)));
     }
 
-    protected float getGravity() {
+    public float getGravity() {
         return 0.09f;
     }
 
@@ -343,7 +343,7 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
 
     }
 
-    protected boolean canHitEntity(Entity p_230298_1_) {
+    public boolean canHitEntity(Entity p_230298_1_) {
         if (!p_230298_1_.isSpectator() && p_230298_1_.isAlive() && p_230298_1_.isPickable()) {
             Entity entity = this.getOwner();
             return entity == null || this.leftOwner || !entity.isPassengerOfSameVehicle(p_230298_1_);

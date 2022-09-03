@@ -1,6 +1,7 @@
 package net.splatcraft.forge.items.weapons;
 
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
+import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -32,6 +33,8 @@ public class SubWeaponItem extends WeaponBaseItem
     public final EntityType<? extends AbstractSubWeaponEntity> entityType;
 
     public static final ArrayList<SubWeaponItem> subs = new ArrayList<>();
+    public static final float throwVelocity = 0.5f;
+    public static final float throwAngle = -30f;
 
     public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption) {
         super();
@@ -85,7 +88,9 @@ public class SubWeaponItem extends WeaponBaseItem
 
         AbstractSubWeaponEntity proj = AbstractSubWeaponEntity.create(entityType, level, entity, stack);
         proj.setItem(stack);
-        proj.shoot(entity, entity.xRot, entity.yRot, -30f, 0.5f, 0);
+        proj.shoot(entity, entity.xRot, entity.yRot, throwAngle, throwVelocity, 0);
+        proj.setDeltaMovement(proj.getDeltaMovement().add(entity.getDeltaMovement().multiply(1,0,1)));
+
         level.addFreshEntity(proj);
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.subThrow, SoundCategory.PLAYERS, 0.7F, 1);
         if(stack.getOrCreateTag().getBoolean("SingleUse"))
@@ -145,4 +150,8 @@ public class SubWeaponItem extends WeaponBaseItem
         
     }
 
+    @Override
+    public PlayerPosingHandler.WeaponPose getPose() {
+        return PlayerPosingHandler.WeaponPose.SUB_HOLD;
+    }
 }
