@@ -1,16 +1,7 @@
 package net.splatcraft.forge.handlers;
 
-import net.splatcraft.forge.blocks.InkwellBlock;
-import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
-import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.registries.SplatcraftStats;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.InkDamageUtils;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
@@ -27,9 +18,17 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+import net.splatcraft.forge.blocks.InkwellBlock;
+import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
+import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
+import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.registries.SplatcraftStats;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.InkDamageUtils;
 
 @Mod.EventBusSubscriber
 public class SquidFormHandler
@@ -170,17 +169,19 @@ public class SquidFormHandler
 
         PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-        if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidHide(player))
-        {
+        if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidHide(player)) {
             event.modifyVisibility(Math.abs(player.getX() - player.xo) > 0.14 || Math.abs(player.getY() - player.yo) > 0.07 || Math.abs(player.getZ() - player.zo) > 0.14 ? 0.7 : 0);
         }
     }
 
     @SubscribeEvent
-    public static void playerBreakSpeed(PlayerEvent.BreakSpeed event)
-    {
-        if (PlayerInfoCapability.isSquid(event.getPlayer()))
-        {
+    public static void onGameModeSwitch(PlayerEvent.PlayerChangeGameModeEvent event) {
+        PlayerInfoCapability.get(event.getEntityLiving()).setIsSquid(false);
+    }
+
+    @SubscribeEvent
+    public static void playerBreakSpeed(PlayerEvent.BreakSpeed event) {
+        if (PlayerInfoCapability.isSquid(event.getPlayer())) {
             event.setNewSpeed(0);
         }
     }
