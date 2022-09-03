@@ -232,6 +232,24 @@ public class InkedBlock extends Block implements IColoredBlock
         return super.getCollisionShape(state, levelIn, pos, context);
     }
 
+
+    @Override
+    public VoxelShape getVisualShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
+    {
+        if(!(levelIn.getBlockEntity(pos) instanceof InkedBlockTileEntity))
+            return super.getVisualShape(state, levelIn, pos, context);
+        BlockState savedState = ((InkedBlockTileEntity) levelIn.getBlockEntity(pos)).getSavedState();
+
+        if(savedState == null || savedState.getBlock().equals(this))
+        {
+            return super.getVisualShape(state, levelIn, pos, context);
+        }
+        VoxelShape result = savedState.getBlock().getVisualShape(savedState, levelIn, pos, context);
+        if(!result.isEmpty())
+            return result;
+        return super.getVisualShape(state, levelIn, pos, context);
+    }
+
     @Override
     public PushReaction getPistonPushReaction(BlockState state)
     {
