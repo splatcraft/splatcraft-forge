@@ -37,7 +37,7 @@ public class Splatcraft
     public static final String MODID = "splatcraft";
     public static final String MODNAME = "Splatcraft";
     public static final String SHORT = "SC";
-    public static final String VERSION = "2.3.0";
+    public static final String VERSION = "3.0.0";
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 

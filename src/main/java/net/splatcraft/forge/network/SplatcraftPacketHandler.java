@@ -20,7 +20,7 @@ public class SplatcraftPacketHandler
 {
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(Splatcraft.MODID, "main"),
-            () -> PROTOCOL_VERSION,
+            () -> Splatcraft.VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals);
     private static int ID = 0;
