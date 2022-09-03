@@ -3,8 +3,8 @@ package net.splatcraft.forge.util;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.DyeColor;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.TreeMap;
 

@@ -1,21 +1,17 @@
 package net.splatcraft.forge.crafting;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ForgeRegistryEntry;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 
 public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventory>
@@ -35,7 +31,7 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
 
 
     @Override
-    public boolean matches(IInventory inv, World levelIn)
+    public boolean matches(IInventory inv, @NotNull World levelIn)
     {
         java.util.List<ItemStack> inputs = new java.util.ArrayList<>();
         int i = 0;
@@ -59,7 +55,7 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
     }
 
     @Override
-    public ItemStack assemble(IInventory inv)
+    public @NotNull ItemStack assemble(@NotNull IInventory inv)
     {
         return recipeOutput;
     }
@@ -71,25 +67,25 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
     }
 
     @Override
-    public ItemStack getResultItem()
+    public @NotNull ItemStack getResultItem()
     {
         return recipeOutput;
     }
 
     @Override
-    public ResourceLocation getId()
+    public @NotNull ResourceLocation getId()
     {
         return id;
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer()
+    public @NotNull IRecipeSerializer<?> getSerializer()
     {
         return SplatcraftRecipeTypes.WEAPON_STATION;
     }
 
     @Override
-    public IRecipeType<?> getType()
+    public @NotNull IRecipeType<?> getType()
     {
         return SplatcraftRecipeTypes.WEAPON_STATION_TYPE;
     }
@@ -119,35 +115,5 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
         }
 
         return nonnulllist;
-    }
-
-
-    public static class Serializer<T extends AbstractWeaponWorkbenchRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T>
-    {
-
-        public Serializer(String name)
-        {
-            super();
-            setRegistryName(name);
-        }
-
-        @Override
-        public T fromJson(ResourceLocation recipeId, JsonObject json)
-        {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public T fromNetwork(ResourceLocation recipeId, PacketBuffer buffer)
-        {
-            return null;
-        }
-
-        @Override
-        public void toNetwork(PacketBuffer buffer, T recipe)
-        {
-
-        }
     }
 }

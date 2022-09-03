@@ -1,14 +1,6 @@
 package net.splatcraft.forge.util;
 
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
-import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
-import net.splatcraft.forge.entities.IColoredEntity;
-import net.splatcraft.forge.entities.SquidBumperEntity;
-import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.UpdateInkOverlayPacket;
-import net.splatcraft.forge.registries.SplatcraftEntities;
-import net.splatcraft.forge.registries.SplatcraftGameRules;
+import java.util.Objects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
@@ -19,10 +11,16 @@ import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
-
-import java.util.Objects;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
+import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
+import net.splatcraft.forge.entities.IColoredEntity;
+import net.splatcraft.forge.entities.SquidBumperEntity;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.s2c.UpdateInkOverlayPacket;
+import net.splatcraft.forge.registries.SplatcraftEntities;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
+import org.jetbrains.annotations.Nullable;
 
 public class InkDamageUtils
 {

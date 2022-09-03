@@ -1,13 +1,12 @@
-package net.splatcraft.forge.network;
+package net.splatcraft.forge.network.s2c;
 
-import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
-import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
-import net.splatcraft.forge.network.base.PlayToClientPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
+import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 
 public class UpdateInkOverlayPacket extends PlayToClientPacket
 {

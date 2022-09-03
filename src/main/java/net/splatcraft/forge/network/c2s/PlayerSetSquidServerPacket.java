@@ -1,13 +1,14 @@
-package net.splatcraft.forge.network;
+package net.splatcraft.forge.network.c2s;
 
-import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.network.base.PlayToServerPacket;
-import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
+import net.splatcraft.forge.registries.SplatcraftSounds;
 
 import java.util.UUID;
 
@@ -18,12 +19,6 @@ public class PlayerSetSquidServerPacket extends PlayToServerPacket
 
     public PlayerSetSquidServerPacket(PlayerEntity player)
     {
-        target = player.getUUID();
-    }
-
-    public PlayerSetSquidServerPacket(PlayerEntity player, boolean set)
-    {
-        squid = set ? 1 : 0;
         target = player.getUUID();
     }
 

@@ -1,4 +1,4 @@
-package net.splatcraft.forge.network.base;
+package net.splatcraft.forge.network;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;

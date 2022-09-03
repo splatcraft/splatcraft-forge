@@ -1,15 +1,15 @@
 package net.splatcraft.forge.tileentities;
 
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.util.ColorUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InkColorTileEntity extends TileEntity
 {
@@ -27,7 +27,7 @@ public class InkColorTileEntity extends TileEntity
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public @NotNull CompoundNBT save(CompoundNBT nbt)
     {
         nbt.putInt("Color", color);
         return super.save(nbt);
@@ -35,14 +35,14 @@ public class InkColorTileEntity extends TileEntity
 
     //Nbt Read
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
+    public void load(@NotNull BlockState state, @NotNull CompoundNBT nbt)
     {
         super.load(state, nbt);
         color = ColorUtils.getColorFromNbt(nbt);
     }
 
     @Override
-    public CompoundNBT getUpdateTag()
+    public @NotNull CompoundNBT getUpdateTag()
     {
         return this.save(new CompoundNBT());
     }

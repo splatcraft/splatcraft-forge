@@ -1,6 +1,5 @@
 package net.splatcraft.forge.blocks;
 
-import net.splatcraft.forge.tileentities.container.WeaponWorkbenchContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
@@ -31,8 +30,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.tileentities.container.WeaponWorkbenchContainer;
+import org.jetbrains.annotations.Nullable;
 
 public class WeaponWorkbenchBlock extends HorizontalBlock implements IWaterLoggable
 {

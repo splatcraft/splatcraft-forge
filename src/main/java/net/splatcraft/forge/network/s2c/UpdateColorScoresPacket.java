@@ -1,9 +1,8 @@
-package net.splatcraft.forge.network;
+package net.splatcraft.forge.network.s2c;
 
+import net.minecraft.network.PacketBuffer;
 import net.splatcraft.forge.crafting.InkVatColorRecipe;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
-import net.splatcraft.forge.network.base.PlayToClientPacket;
-import net.minecraft.network.PacketBuffer;
 
 public class UpdateColorScoresPacket extends PlayToClientPacket
 {

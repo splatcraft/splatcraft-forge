@@ -1,10 +1,5 @@
 package net.splatcraft.forge.blocks;
 
-import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
-import net.splatcraft.forge.util.InkBlockUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -17,8 +12,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
+import net.splatcraft.forge.util.InkBlockUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CanvasBlock extends Block implements IColoredBlock
 {
@@ -33,6 +33,7 @@ public class CanvasBlock extends Block implements IColoredBlock
         registerDefaultState(defaultBlockState().setValue(INKED, false));
     }
 
+    @SuppressWarnings("unused")
     private static BlockState clearInk(IWorld level, BlockPos pos)
     {
         InkedBlockTileEntity te = (InkedBlockTileEntity) level.getBlockEntity(pos);
@@ -80,7 +81,7 @@ public class CanvasBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
+    public @NotNull BlockState updateShape(@NotNull BlockState stateIn, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull IWorld levelIn, @NotNull BlockPos currentPos, @NotNull BlockPos facingPos)
     {
         int color = getColor((World) levelIn, currentPos);
 

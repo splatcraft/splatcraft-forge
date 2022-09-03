@@ -1,16 +1,16 @@
 package net.splatcraft.forge.items.weapons;
 
-import net.splatcraft.forge.entities.InkProjectileEntity;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponStat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.splatcraft.forge.entities.InkProjectileEntity;
+import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.PlayerCooldown;
+import net.splatcraft.forge.util.WeaponStat;
 
 public class BlasterItem extends ShooterItem
 {
@@ -44,16 +44,13 @@ public class BlasterItem extends ShooterItem
         CooldownTracker cooldownTracker = ((PlayerEntity) entity).getCooldowns();
         if (!cooldownTracker.isOnCooldown(this))
         {
-            if (getInkAmount(entity, stack) > inkConsumption)
+            if (enoughInk(entity, inkConsumption, timeLeft % cooldown == 0))
             {
                 PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
                 if (!level.isClientSide)
                 {
                     cooldownTracker.addCooldown(this, cooldown);
                 }
-            } else if (timeLeft % cooldown == 0)
-            {
-                sendNoInkMessage(entity);
             }
         }
     }
@@ -61,7 +58,7 @@ public class BlasterItem extends ShooterItem
     @Override
     public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
     {
-        if (getInkAmount(player, stack) >= inkConsumption)
+        if (reduceInk(player, inkConsumption, false))
         {
             if (!level.isClientSide)
             {
@@ -70,12 +67,7 @@ public class BlasterItem extends ShooterItem
                 proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, projectileSpeed, inaccuracy);
                 level.addFreshEntity(proj);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.blasterShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-                reduceInk(player, inkConsumption);
-
             }
-        } else
-        {
-            sendNoInkMessage(player, null);
         }
     }
 }

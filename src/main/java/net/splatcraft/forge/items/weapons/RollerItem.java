@@ -172,9 +172,7 @@ public class RollerItem extends WeaponBaseItem
             cooldown.storedItem = this;
             PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, cooldown);
             //} else
-            if (getInkAmount(entity, stack) < (entity.isOnGround() ? swingConsumption : flingConsumption))
-                sendNoInkMessage(entity);
-            else if (isBrush)
+            if (reduceInk(entity, entity.isOnGround() ? swingConsumption : flingConsumption, true) && isBrush)
             {
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.brushFling, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 int total = rollSize * 2 + 1;
@@ -187,11 +185,10 @@ public class RollerItem extends WeaponBaseItem
                     proj.moveTo(proj.getX(), proj.getY() - entity.getEyeHeight() / 2f, proj.getZ());
                     level.addFreshEntity(proj);
                 }
-                reduceInk(entity, entity.isOnGround() ? swingConsumption : flingConsumption);
             }
         } else
         {
-            boolean hasInk = getInkAmount(entity, stack) > Math.min(rollConsumptionMax, rollConsumptionMin);
+            boolean hasInk = enoughInk(entity, Math.min(rollConsumptionMax, rollConsumptionMin), false);
             boolean isMoving = Math.abs(entity.yHeadRotO - entity.yHeadRot) > 0 || (level.isClientSide ? Math.abs(entity.getDeltaMovement().x()) > 0 || Math.abs(entity.getDeltaMovement().z()) > 0
                     : new Vector3d(entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ())
                     .multiply(1, 0, 1).distanceTo(WeaponHandler.getPlayerPrevPos((PlayerEntity) entity).multiply(1, 0, 1)) > 0);
@@ -263,10 +260,7 @@ public class RollerItem extends WeaponBaseItem
                             doPush = true;
                     }
                 }
-                if (hasInk)
-                    reduceInk(entity, Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) dashTime) * (rollConsumptionMax - rollConsumptionMin) + rollConsumptionMin);
-                else if (timeLeft % 4 == 0)
-                    sendNoInkMessage(entity, null);
+                reduceInk(entity, Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) dashTime) * (rollConsumptionMax - rollConsumptionMin) + rollConsumptionMin, timeLeft % 4 == 0);
             }
             if (doPush)
                 applyRecoilKnockback(entity, 0.8);
@@ -283,7 +277,7 @@ public class RollerItem extends WeaponBaseItem
             playRollSound(player);
         }
 
-        if (getInkAmount(player, stack) >= (player.isOnGround() ? swingConsumption : flingConsumption) && !isBrush)
+        if (reduceInk(player, airborne ? swingConsumption : flingConsumption, false) && !isBrush)
         {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.rollerFling, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             for (int i = 0; i < rollSize; i++)
@@ -310,7 +304,6 @@ public class RollerItem extends WeaponBaseItem
                 }
                 level.addFreshEntity(proj);
             }
-            reduceInk(player, airborne ? swingConsumption : flingConsumption);
         }
     }
 
@@ -334,11 +327,13 @@ public class RollerItem extends WeaponBaseItem
         double appliedMobility;
         int useTime = entity.getUseItemRemainingTicks() - entity.getUseItemRemainingTicks();
 
-        if (!(getInkAmount(entity, entity.getUseItem()) > Math.min(rollConsumptionMax, rollConsumptionMin)))
+        if (enoughInk(entity, Math.min(rollConsumptionMax, rollConsumptionMin), false)) {
+            if (entity instanceof PlayerEntity && (PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity)))
+                appliedMobility = swingMobility;
+            else appliedMobility = Math.min(1, (float) useTime / (float) dashTime) * (dashMobility - mobility) + mobility;
+        } else {
             appliedMobility = 0.7;
-        else if (entity instanceof PlayerEntity && (PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity)))
-            appliedMobility = swingMobility;
-        else appliedMobility = Math.min(1, (float) useTime / (float) dashTime) * (dashMobility - mobility) + mobility;
+        }
 
         return new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, "Roller Mobility", appliedMobility - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
     }

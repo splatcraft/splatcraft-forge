@@ -1,12 +1,5 @@
 package net.splatcraft.forge.blocks;
 
-import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.items.IColoredItem;
-import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.tileentities.RemotePedestalTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.CommonUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -30,8 +23,14 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.items.IColoredItem;
+import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.tileentities.RemotePedestalTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.CommonUtils;
+import org.jetbrains.annotations.Nullable;
 
 public class RemotePedestalBlock extends Block implements IColoredBlock
 {

@@ -2,11 +2,13 @@ buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        maven { url = "https://plugins.gradle.org/m2/" }
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+', changing: true
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7.+'
+        classpath group: 'net.kyori', name: 'indra-git', version: '2.+'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -14,19 +16,20 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'net.kyori.indra.git'
 
-archivesBaseName = project.archives_base_name
 group = project.maven_group
 
+def commitHash = !indraGit.isPresent() ? "unknown" : indraGit.commit().abbreviate(7).name()
 if (System.env.CI == "true") {
-    def branch
-    branch = System.env.GITHUB_REF
+    def branch = System.env.GITHUB_REF
     branch = branch.substring(branch.lastIndexOf("/") + 1)
-
-    version = "${project.mod_version}+a${System.env.GITHUB_RUN_NUMBER}.${branch}-forge"
+    def runNumber = System.env.GITHUB_RUN_NUMBER
+    version = "${project.mod_version}-${project.minecraft_version}".replace("SNAPSHOT", "${branch}.${commitHash}+a${runNumber}")
 } else {
-    version = "${project.mod_version}+${project.minecraft_version}-forge"
+    version = "${project.mod_version}-${project.minecraft_version}".replace("SNAPSHOT", "${commitHash}")
 }
+
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 
@@ -35,6 +38,7 @@ repositories {
     maven {
         url "https://www.cursemaven.com"
     }
+    mavenCentral()
 }
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
@@ -108,6 +112,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
     implementation fg.deobf("curse.maven:obfuscate-${project.obfuscate_version}")
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    implementation 'org.jetbrains:annotations:23.0.0'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

@@ -1,7 +1,5 @@
 package net.splatcraft.forge.data.capabilities.playerinfo;
 
-import net.splatcraft.forge.entities.InkSquidEntity;
-import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -10,9 +8,10 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import net.splatcraft.forge.entities.InkSquidEntity;
+import net.splatcraft.forge.registries.SplatcraftInkColors;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PlayerInfoCapability implements ICapabilitySerializable<CompoundNBT>
 {
@@ -44,9 +43,9 @@ public class PlayerInfoCapability implements ICapabilitySerializable<CompoundNBT
         return hasCapability(entity) && get(entity).isSquid();
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
     {
         return CAPABILITY.orEmpty(cap, instance);
     }

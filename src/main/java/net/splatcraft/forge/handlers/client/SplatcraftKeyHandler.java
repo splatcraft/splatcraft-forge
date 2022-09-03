@@ -1,13 +1,5 @@
 package net.splatcraft.forge.handlers.client;
 
-import net.splatcraft.forge.SplatcraftConfig;
-import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.items.weapons.SubWeaponItem;
-import net.splatcraft.forge.network.PlayerSetSquidServerPacket;
-import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.SwapSlotWithOffhandPacket;
-import net.splatcraft.forge.util.CommonUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -25,6 +17,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.splatcraft.forge.SplatcraftConfig;
+import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.items.weapons.SubWeaponItem;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.c2s.PlayerSetSquidServerPacket;
+import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
+import net.splatcraft.forge.util.CommonUtils;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
@@ -91,7 +91,7 @@ public class SplatcraftKeyHandler
                 SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
 
         }
-            
+
 
         if(player.getVehicle() == null && player.level.getBlockCollisions(player,
                 new AxisAlignedBB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ()))

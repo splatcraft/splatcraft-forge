@@ -1,12 +1,5 @@
 package net.splatcraft.forge.tileentities;
 
-import net.splatcraft.forge.blocks.InkVatBlock;
-import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.items.FilterItem;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
-import net.splatcraft.forge.tileentities.container.InkVatContainer;
-import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,8 +20,14 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
-
-import javax.annotation.Nullable;
+import net.splatcraft.forge.blocks.InkVatBlock;
+import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.items.FilterItem;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.tileentities.container.InkVatContainer;
+import net.splatcraft.forge.util.ColorUtils;
+import org.jetbrains.annotations.Nullable;
 
 public class InkVatTileEntity extends LockableTileEntity implements ISidedInventory, ITickableTileEntity
 {

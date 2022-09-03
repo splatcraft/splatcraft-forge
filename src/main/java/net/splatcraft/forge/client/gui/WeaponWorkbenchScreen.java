@@ -1,18 +1,10 @@
 package net.splatcraft.forge.client.gui;
 
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.crafting.SplatcraftRecipeTypes;
-import net.splatcraft.forge.crafting.WeaponWorkbenchRecipe;
-import net.splatcraft.forge.crafting.WeaponWorkbenchSubtypeRecipe;
-import net.splatcraft.forge.crafting.WeaponWorkbenchTab;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.network.CraftWeaponPacket;
-import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.tileentities.container.WeaponWorkbenchContainer;
-import net.splatcraft.forge.util.ColorUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.audio.SoundHandler;
@@ -38,9 +30,16 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.crafting.SplatcraftRecipeTypes;
+import net.splatcraft.forge.crafting.WeaponWorkbenchRecipe;
+import net.splatcraft.forge.crafting.WeaponWorkbenchSubtypeRecipe;
+import net.splatcraft.forge.crafting.WeaponWorkbenchTab;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.c2s.CraftWeaponPacket;
+import net.splatcraft.forge.tileentities.container.WeaponWorkbenchContainer;
+import net.splatcraft.forge.util.ColorUtils;
 
 public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContainer>
 {
