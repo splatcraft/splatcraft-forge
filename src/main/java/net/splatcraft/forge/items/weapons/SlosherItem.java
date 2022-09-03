@@ -49,15 +49,12 @@ public class SlosherItem extends WeaponBaseItem
     @Override
     public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
     {
-        if (getInkAmount(entity, stack) >= inkConsumption)
+        //if (getInkAmount(entity, stack) >= inkConsumption)
         {
             if (entity instanceof PlayerEntity && getUseDuration(stack) - timeLeft < startupTicks)
             {
                 PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
             }
-        } else
-        {
-            sendNoInkMessage(entity, null);
         }
     }
 
@@ -83,7 +80,7 @@ public class SlosherItem extends WeaponBaseItem
             }
         } else
         {
-            sendNoInkMessage(player, null);
+            sendNoInkMessage(player, SplatcraftSounds.noInkMain);
         }
     }
 
