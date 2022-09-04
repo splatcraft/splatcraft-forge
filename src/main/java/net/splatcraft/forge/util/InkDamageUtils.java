@@ -1,6 +1,5 @@
 package net.splatcraft.forge.util;
 
-import java.util.Objects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
@@ -18,16 +17,16 @@ import net.splatcraft.forge.entities.IColoredEntity;
 import net.splatcraft.forge.entities.SquidBumperEntity;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateInkOverlayPacket;
-import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import org.jetbrains.annotations.Nullable;
 
-public class InkDamageUtils
-{
+import java.util.Objects;
 
-    public static final DamageSource ENEMY_INK = new DamageSource(Splatcraft.MODID+":enemyInk");
-    public static final DamageSource WATER = new DamageSource(Splatcraft.MODID+":water");
-    public static final DamageSource VOID_DAMAGE = new DamageSource(Splatcraft.MODID+":outOfStage").bypassArmor();
+public class InkDamageUtils {
+
+    public static final DamageSource ENEMY_INK = new DamageSource(Splatcraft.MODID + ":enemyInk");
+    public static final DamageSource WATER = new DamageSource(Splatcraft.MODID + ":water");
+    public static final DamageSource VOID_DAMAGE = new DamageSource(Splatcraft.MODID + ":outOfStage").bypassArmor();
 
 
     public static boolean doSplatDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType)
@@ -120,18 +119,17 @@ public class InkDamageUtils
         @Override
         public ITextComponent getLocalizedDeathMessage(LivingEntity entityLivingBaseIn)
         {
-            String s = "death.attack." + this.msgId;
-            String s1 = s + ".item";
+            String base = "death.attack." + this.msgId;
 
             if(getEntity() == null && entity == null)
             {
-                s += ".player";
-                return !weapon.isEmpty() ? new TranslationTextComponent(s1, entityLivingBaseIn.getDisplayName(),  weapon.getDisplayName()) : new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName());
+                return !weapon.isEmpty() ? new TranslationTextComponent(base + ".item", entityLivingBaseIn.getDisplayName(), weapon.getDisplayName()) : new TranslationTextComponent(base, entityLivingBaseIn.getDisplayName());
             }
+            base += ".player";
 
             ITextComponent itextcomponent = this.getEntity() == null ? Objects.requireNonNull(this.entity).getDisplayName() : this.getEntity().getDisplayName();
 
-            return !weapon.isEmpty() ? new TranslationTextComponent(s1, entityLivingBaseIn.getDisplayName(), itextcomponent, weapon.getDisplayName()) : new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName(), itextcomponent);
+            return !weapon.isEmpty() ? new TranslationTextComponent(base + ".item", entityLivingBaseIn.getDisplayName(), itextcomponent, weapon.getDisplayName()) : new TranslationTextComponent(base, entityLivingBaseIn.getDisplayName(), itextcomponent);
         }
     }
 }

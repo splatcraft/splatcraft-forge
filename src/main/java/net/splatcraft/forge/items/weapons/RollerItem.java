@@ -251,7 +251,7 @@ public class RollerItem extends WeaponBaseItem
                         if (target.equals(entity))
                             continue;
                         InkDamageUtils.doRollDamage(level, target, rollDamage * (hasInk ? 1 : 0.4f), ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity));
-                        if (!InkDamageUtils.isSplatted(level, target))
+                        if (!InkDamageUtils.isSplatted(level, target) && target.invulnerableTime >= 10)
                             doPush = true;
                     }
                 }

@@ -1,7 +1,5 @@
 package net.splatcraft.forge.handlers;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
@@ -9,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.GameType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -22,6 +21,8 @@ import net.splatcraft.forge.blocks.InkwellBlock;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.registries.SplatcraftStats;
@@ -30,14 +31,15 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Mod.EventBusSubscriber
-public class SquidFormHandler
-{
+public class SquidFormHandler {
     private static final Map<PlayerEntity, Integer> squidSubmergeMode = new LinkedHashMap<>();
 
     @SubscribeEvent
-    public static void playerTick(TickEvent.PlayerTickEvent event)
-    {
+    public static void playerTick(TickEvent.PlayerTickEvent event) {
         PlayerEntity player = event.player;
 
         if (InkBlockUtils.onEnemyInk(player))
@@ -176,7 +178,9 @@ public class SquidFormHandler
 
     @SubscribeEvent
     public static void onGameModeSwitch(PlayerEvent.PlayerChangeGameModeEvent event) {
+        if (event.getNewGameMode() != GameType.SPECTATOR) return;
         PlayerInfoCapability.get(event.getEntityLiving()).setIsSquid(false);
+        SplatcraftPacketHandler.sendToDim(new PlayerSetSquidClientPacket(event.getPlayer().getUUID(), false), event.getPlayer().level);
     }
 
     @SubscribeEvent

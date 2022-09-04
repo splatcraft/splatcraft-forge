@@ -114,6 +114,7 @@ public class RendererHandler
     public static void playerRender(RenderPlayerEvent event)
     {
         PlayerEntity player = event.getPlayer();
+        if (player.isSpectator()) return;
 
 
         if(!hasAccessoryLayer.contains(event.getRenderer()))
@@ -204,7 +205,7 @@ public class RendererHandler
     public static void onRenderTick(TickEvent.RenderTickEvent event)
     {
         PlayerEntity player = Minecraft.getInstance().player;
-        if (PlayerCooldown.hasPlayerCooldown(player)) {
+        if (PlayerCooldown.hasPlayerCooldown(player) && !player.isSpectator()) {
             player.inventory.selected = PlayerCooldown.getPlayerCooldown(player).getSlotIndex();
         }
     }
