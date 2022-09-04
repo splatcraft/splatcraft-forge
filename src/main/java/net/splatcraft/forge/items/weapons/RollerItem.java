@@ -88,7 +88,7 @@ public class RollerItem extends WeaponBaseItem
     public static void applyRecoilKnockback(LivingEntity entity, double pow)
     {
         entity.setDeltaMovement(new Vector3d(Math.cos(Math.toRadians(entity.yRot + 90)) * -pow, entity.getDeltaMovement().y(), Math.sin(Math.toRadians(entity.yRot + 90)) * -pow));
-        entity.hasImpulse = true;
+        entity.hurtMarked = true;
     }
 
     private float getSwingTime()
@@ -168,16 +168,13 @@ public class RollerItem extends WeaponBaseItem
             //if (getInkAmount(entity, stack) > inkConsumption){
 
             int startupTicks = entity.isOnGround() ? swingTime : flingTime;
-            PlayerCooldown cooldown = new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround());
-            cooldown.storedItem = this;
+            PlayerCooldown cooldown = new PlayerCooldown(stack, startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround());
             PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, cooldown);
             //} else
-            if (reduceInk(entity, entity.isOnGround() ? swingConsumption : flingConsumption, true) && isBrush)
-            {
+            if (reduceInk(entity, entity.isOnGround() ? swingConsumption : flingConsumption, timeLeft % 4 == 0) && isBrush) {
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.brushFling, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 int total = rollSize * 2 + 1;
-                for (int i = 0; i < total; i++)
-                {
+                for (int i = 0; i < total; i++) {
                     InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), 1.6f,
                             entity.isOnGround() ? flingDamage : swingDamage);
                     proj.setProjectileType(InkProjectileEntity.Types.ROLLER);
@@ -245,18 +242,14 @@ public class RollerItem extends WeaponBaseItem
                     }
 
                     BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
-                    if(!level.isClientSide)
                     for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(attackPos, attackPos.offset(1, 2, 1)), EntityPredicates.NO_SPECTATORS.and((e) ->
                     {
-                        if(e instanceof LivingEntity && ColorUtils.getEntityColor(e) != -1)
+                        if (e instanceof LivingEntity && ColorUtils.getEntityColor(e) != -1)
                             return InkDamageUtils.canDamageColor(level, ColorUtils.getEntityColor(e), ColorUtils.getInkColor(stack));
                         return true;
-                    })))
-                    {
-                        if(target.equals(entity))
-                            continue;
-                        InkDamageUtils.doRollDamage(level, target, rollDamage * (hasInk ? 1 : 0.4f), ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity));
-                        if (!InkDamageUtils.isSplatted(level, target) && target.invulnerableTime > 0)
+                    }))) {
+                        if (!target.equals(entity) && InkDamageUtils.doRollDamage(level, target, rollDamage * (hasInk ? 1 : 0.4f), ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity))
+                                && !InkDamageUtils.isSplatted(level, target) && target.invulnerableTime >= 10)
                             doPush = true;
                     }
                 }

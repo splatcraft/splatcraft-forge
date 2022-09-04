@@ -46,7 +46,7 @@ public class BlasterItem extends ShooterItem
         {
             if (enoughInk(entity, inkConsumption, timeLeft % cooldown == 0))
             {
-                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
+                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
                 if (!level.isClientSide)
                 {
                     cooldownTracker.addCooldown(this, cooldown);

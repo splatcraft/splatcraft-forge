@@ -50,7 +50,7 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
 
 
     public boolean isItem = false;
-    public boolean damageMobs = false;
+    public boolean damageMobs = true;
     public InkBlockUtils.InkType inkType;
     public ItemStack sourceWeapon = ItemStack.EMPTY;
 

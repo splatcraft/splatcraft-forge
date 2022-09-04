@@ -1,9 +1,5 @@
 package net.splatcraft.forge.entities.subs;
 
-import net.splatcraft.forge.client.particles.InkExplosionParticleData;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.InkExplosion;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.item.Item;
@@ -14,6 +10,10 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.splatcraft.forge.client.particles.InkExplosionParticleData;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.util.InkExplosion;
 
 public class SplatBombEntity extends AbstractSubWeaponEntity {
     public static final float DAMAGE = 6;
@@ -88,9 +88,9 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
     {
         super.onHitEntity(result);
 
-        double velocityX = this.getDeltaMovement().x;
+        double velocityX = this.getDeltaMovement().x * 0.3;
         double velocityY = this.getDeltaMovement().y;
-        double velocityZ = this.getDeltaMovement().z;
+        double velocityZ = this.getDeltaMovement().z * 0.3;
         double absVelocityX = Math.abs(velocityX);
         double absVelocityY = Math.abs(velocityY);
         double absVelocityZ = Math.abs(velocityZ);

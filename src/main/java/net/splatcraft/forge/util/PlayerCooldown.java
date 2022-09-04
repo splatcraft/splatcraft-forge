@@ -1,16 +1,12 @@
 package net.splatcraft.forge.util;
 
-import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.Objects;
+import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 
 public class PlayerCooldown
 {
@@ -21,13 +17,13 @@ public class PlayerCooldown
     final boolean forceCrouch;
     final boolean preventWeaponUse;
     final boolean isGrounded;
-    public Item storedItem = Items.AIR;
+    public ItemStack storedStack = new ItemStack(Items.AIR);
     int time;
 
     public static final int OVERLOAD_LIMIT = -28800;
 
-    public PlayerCooldown(int time, int maxTime, int slotIndex, Hand hand, boolean canMove, boolean forceCrouch, boolean preventWeaponUse, boolean isGrounded)
-    {
+    public PlayerCooldown(ItemStack stack, int time, int maxTime, int slotIndex, Hand hand, boolean canMove, boolean forceCrouch, boolean preventWeaponUse, boolean isGrounded) {
+        this.storedStack = stack;
         this.time = ++time;
         this.maxTime = maxTime;
         this.slotIndex = slotIndex;
@@ -38,17 +34,14 @@ public class PlayerCooldown
         this.isGrounded = isGrounded;
     }
 
-    public PlayerCooldown(int time, int slotIndex, Hand hand, boolean canMove, boolean forceCrouch, boolean preventWeaponUse, boolean isGrounded)
-    {
-        this(time, time, slotIndex, hand, canMove, forceCrouch, preventWeaponUse, isGrounded);
+    public PlayerCooldown(ItemStack stack, int time, int slotIndex, Hand hand, boolean canMove, boolean forceCrouch, boolean preventWeaponUse, boolean isGrounded) {
+        this(stack, time, time, slotIndex, hand, canMove, forceCrouch, preventWeaponUse, isGrounded);
     }
 
-    public static PlayerCooldown readNBT(CompoundNBT nbt)
-    {
-        PlayerCooldown result = new PlayerCooldown(nbt.getInt("Time"), nbt.getInt("MaxTime"), nbt.getInt("SlotIndex"), nbt.getBoolean("MainHand") ? Hand.MAIN_HAND : Hand.OFF_HAND, nbt.getBoolean("CanMove"), nbt.getBoolean("ForceCrouch"), nbt.getBoolean("PreventWeaponUse"), nbt.getBoolean("IsGrounded"));
-        if (nbt.contains("StoredItem"))
-        {
-            result.storedItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(nbt.getString("StoredItem")));
+    public static PlayerCooldown readNBT(CompoundNBT nbt) {
+        PlayerCooldown result = new PlayerCooldown(ItemStack.of(nbt.getCompound("StoredStack")), nbt.getInt("Time"), nbt.getInt("MaxTime"), nbt.getInt("SlotIndex"), nbt.getBoolean("MainHand") ? Hand.MAIN_HAND : Hand.OFF_HAND, nbt.getBoolean("CanMove"), nbt.getBoolean("ForceCrouch"), nbt.getBoolean("PreventWeaponUse"), nbt.getBoolean("IsGrounded"));
+        if (nbt.contains("StoredStack")) {
+            result.storedStack = ItemStack.of(nbt.getCompound("StoredStack"));
         }
         return result;
     }
@@ -157,9 +150,8 @@ public class PlayerCooldown
         nbt.putBoolean("PreventWeaponUse", preventWeaponUse);
         nbt.putBoolean("IsGrounded", isGrounded);
         nbt.putBoolean("MainHand", hand.equals(Hand.MAIN_HAND));
-        if (storedItem != Items.AIR)
-        {
-            nbt.putString("StoredItem", Objects.requireNonNull(storedItem.getRegistryName()).toString());
+        if (storedStack.getItem() != Items.AIR) {
+            nbt.put("StoredStack", storedStack.serializeNBT());
         }
 
         return nbt;

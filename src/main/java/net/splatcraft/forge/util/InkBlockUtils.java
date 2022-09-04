@@ -1,16 +1,8 @@
 package net.splatcraft.forge.util;
 
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.blocks.IColoredBlock;
-import net.splatcraft.forge.blocks.InkedBlock;
-import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftStats;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import com.google.common.collect.ImmutableList;
+import java.util.HashMap;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -31,9 +23,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
-
-import java.util.HashMap;
-import java.util.List;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.blocks.IColoredBlock;
+import net.splatcraft.forge.blocks.InkedBlock;
+import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftStats;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 
 public class InkBlockUtils
 {
@@ -133,7 +132,7 @@ public class InkBlockUtils
 
     public static boolean canSquidHide(LivingEntity entity)
     {
-        return (entity.isOnGround() || !entity.level.getBlockState(new BlockPos(entity.getX(), entity.getY() - 0.1, entity.getZ())).getBlock().equals(Blocks.AIR))
+        return !entity.isSpectator() && (entity.isOnGround() || !entity.level.getBlockState(new BlockPos(entity.getX(), entity.getY() - 0.1, entity.getZ())).getBlock().equals(Blocks.AIR))
                 && canSquidSwim(entity) || canSquidClimb(entity);
     }
 

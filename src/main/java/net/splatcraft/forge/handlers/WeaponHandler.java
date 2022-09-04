@@ -13,6 +13,8 @@ import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.client.particles.SquidSoulParticleData;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
@@ -38,10 +40,10 @@ public class WeaponHandler {
 
             if (event.getSource().getDirectEntity() instanceof PlayerEntity) {
                 PlayerEntity source = (PlayerEntity) event.getSource().getEntity();
-                if (ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(source))) {
+                if (ScoreboardHandler.hasColorCriterion(color) && source != null)
                     target.getScoreboard().forAllObjectives(ScoreboardHandler.getColorKills(color), source.getScoreboardName(), score -> score.add(1));
+                if (ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(source)))
                     target.getScoreboard().forAllObjectives(ScoreboardHandler.getKillsAsColor(ColorUtils.getPlayerColor(source)), source.getScoreboardName(), score -> score.add(1));
-                }
             }
 
         }
@@ -65,10 +67,12 @@ public class WeaponHandler {
         if (PlayerCooldown.shrinkCooldownTime(player, 1) != null) {
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
             PlayerInfoCapability.get(player).setIsSquid(false);
+            if (event.side.isServer())
+                SplatcraftPacketHandler.sendToDim(new PlayerSetSquidClientPacket(player.getUUID(), false), player.level);
             canUseWeapon = !cooldown.preventWeaponUse();
 
             if (cooldown.getTime() == 1) {
-                ItemStack stack = player.getItemInHand(player.getUsedItemHand());
+                ItemStack stack = cooldown.storedStack;
                 if (stack.getItem() instanceof WeaponBaseItem) {
                     ((WeaponBaseItem) stack.getItem()).onPlayerCooldownEnd(player.level, player, stack, cooldown);
                 }

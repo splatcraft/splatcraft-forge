@@ -64,7 +64,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.client.layer.InkAccessoryLayer;
-import net.splatcraft.forge.client.renderer.PlayerSquidRenderer;
+import net.splatcraft.forge.client.renderer.InkSquidRenderer;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
@@ -102,7 +102,7 @@ public class RendererHandler
         RenderSystem.defaultBlendFunc();
     });
     private static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/widgets.png");
-    private static PlayerSquidRenderer squidRenderer = null;
+    private static InkSquidRenderer squidRenderer = null;
     private static final List<PlayerRenderer> hasAccessoryLayer = new ArrayList<>();
     private static float tickTime = 0;
     private static float oldCooldown = 0;
@@ -114,6 +114,7 @@ public class RendererHandler
     public static void playerRender(RenderPlayerEvent event)
     {
         PlayerEntity player = event.getPlayer();
+        if (player.isSpectator()) return;
 
 
         if(!hasAccessoryLayer.contains(event.getRenderer()))
@@ -127,7 +128,7 @@ public class RendererHandler
         {
             event.setCanceled(true);
             if (squidRenderer == null)
-                squidRenderer = new PlayerSquidRenderer(event.getRenderer().getDispatcher());
+                squidRenderer = new InkSquidRenderer(event.getRenderer().getDispatcher());
             if (!InkBlockUtils.canSquidHide(player))
             {
                 squidRenderer.render(player, player.yHeadRot, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
@@ -135,7 +136,7 @@ public class RendererHandler
             }
             //else player.setInvisible(true);
         }
-        //else event.getRenderer().getRenderManager().setRenderShadow(true);
+        event.getRenderer().getDispatcher().setRenderShadow(false);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -204,7 +205,7 @@ public class RendererHandler
     public static void onRenderTick(TickEvent.RenderTickEvent event)
     {
         PlayerEntity player = Minecraft.getInstance().player;
-        if (PlayerCooldown.hasPlayerCooldown(player)) {
+        if (PlayerCooldown.hasPlayerCooldown(player) && !player.isSpectator()) {
             player.inventory.selected = PlayerCooldown.getPlayerCooldown(player).getSlotIndex();
         }
     }

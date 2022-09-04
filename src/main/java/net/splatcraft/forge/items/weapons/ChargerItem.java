@@ -99,12 +99,13 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
         level.addFreshEntity(proj);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
         reduceInk(player, getInkConsumption(charge), false);
-        PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(10, player.inventory.selected, player.getUsedItemHand(), true, false, false, player.isOnGround()));
+        PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, 10, player.inventory.selected, player.getUsedItemHand(), true, false, false, player.isOnGround()));
+        player.getCooldowns().addCooldown(this, 10);
     }
 
     @Override
     public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
-        if (entity instanceof PlayerEntity && enoughInk(entity, getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack)), timeLeft % 4 == 0) && level.isClientSide) {
+        if (entity instanceof PlayerEntity && enoughInk(entity, getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack)), timeLeft % 4 == 0) && level.isClientSide && !((PlayerEntity) entity).getCooldowns().isOnCooldown(this)) {
             PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1));
         }
     }
@@ -131,7 +132,7 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
             if (charge > 0.05f)
             {
                 PlayerCharge.reset((PlayerEntity) entity);
-                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(10, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, false, entity.isOnGround()));
+                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, 10, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, false, entity.isOnGround()));
                 SplatcraftPacketHandler.sendToServer(new ChargeableReleasePacket(charge, stack));
             }
             PlayerCharge.setCanDischarge((PlayerEntity) entity, true);

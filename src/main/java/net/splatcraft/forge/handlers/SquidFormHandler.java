@@ -1,16 +1,5 @@
 package net.splatcraft.forge.handlers;
 
-import net.splatcraft.forge.blocks.InkwellBlock;
-import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
-import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.registries.SplatcraftStats;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.InkDamageUtils;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
@@ -18,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.GameType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -27,18 +17,29 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.splatcraft.forge.blocks.InkwellBlock;
+import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
+import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
+import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.registries.SplatcraftStats;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.InkDamageUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Mod.EventBusSubscriber
-public class SquidFormHandler
-{
+public class SquidFormHandler {
     private static final Map<PlayerEntity, Integer> squidSubmergeMode = new LinkedHashMap<>();
 
     @SubscribeEvent
-    public static void playerTick(TickEvent.PlayerTickEvent event)
-    {
+    public static void playerTick(TickEvent.PlayerTickEvent event) {
         PlayerEntity player = event.player;
 
         if (InkBlockUtils.onEnemyInk(player))
@@ -170,17 +171,21 @@ public class SquidFormHandler
 
         PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-        if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidHide(player))
-        {
+        if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidHide(player)) {
             event.modifyVisibility(Math.abs(player.getX() - player.xo) > 0.14 || Math.abs(player.getY() - player.yo) > 0.07 || Math.abs(player.getZ() - player.zo) > 0.14 ? 0.7 : 0);
         }
     }
 
     @SubscribeEvent
-    public static void playerBreakSpeed(PlayerEvent.BreakSpeed event)
-    {
-        if (PlayerInfoCapability.isSquid(event.getPlayer()))
-        {
+    public static void onGameModeSwitch(PlayerEvent.PlayerChangeGameModeEvent event) {
+        if (event.getNewGameMode() != GameType.SPECTATOR) return;
+        PlayerInfoCapability.get(event.getEntityLiving()).setIsSquid(false);
+        SplatcraftPacketHandler.sendToDim(new PlayerSetSquidClientPacket(event.getPlayer().getUUID(), false), event.getPlayer().level);
+    }
+
+    @SubscribeEvent
+    public static void playerBreakSpeed(PlayerEvent.BreakSpeed event) {
+        if (PlayerInfoCapability.isSquid(event.getPlayer())) {
             event.setNewSpeed(0);
         }
     }
