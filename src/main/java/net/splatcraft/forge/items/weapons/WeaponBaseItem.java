@@ -192,19 +192,15 @@ public class WeaponBaseItem extends Item implements IColoredItem
     {
         BlockPos pos = entity.blockPosition().below();
 
-        if (entity.level.getBlockState(pos).getBlock() instanceof InkwellBlock)
-        {
+        if (entity.level.getBlockState(pos).getBlock() instanceof InkwellBlock) {
             InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos);
 
-            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te))
-            {
+            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te)) {
                 ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColor(te));
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
-        }
-        else if((stack.getItem() instanceof SubWeaponItem && !stack.getOrCreateTag().getBoolean("SingleUse") || !(stack.getItem() instanceof SubWeaponItem))
-        && InkedBlock.causesClear(entity.level.getBlockState(pos)) && ColorUtils.getInkColor(stack) != 0xFFFFFF)
-        {
+        } else if ((stack.getItem() instanceof SubWeaponItem && !SubWeaponItem.singleUse(stack) || !(stack.getItem() instanceof SubWeaponItem))
+                && InkedBlock.causesClear(entity.level.getBlockState(pos)) && ColorUtils.getInkColor(stack) != 0xFFFFFF) {
             ColorUtils.setInkColor(stack, 0xFFFFFF);
             ColorUtils.setColorLocked(stack, false);
         }

@@ -49,10 +49,13 @@ public class SubWeaponItem extends WeaponBaseItem
         addStat(new WeaponStat("ink_consumption", (stack, level) -> (int) (inkConsumption)));
     }
 
+    public static boolean singleUse(ItemStack stack) {
+        return stack.getOrCreateTag().getBoolean("SingleUse");
+    }
+
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag)
-    {
-        if(stack.getOrCreateTag().getBoolean("SingleUse"))
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag) {
+        if (SubWeaponItem.singleUse(stack))
             tooltip.add(new TranslationTextComponent("item.splatcraft.tooltip.single_use"));
         super.appendHoverText(stack, level, tooltip, flag);
     }
@@ -60,20 +63,19 @@ public class SubWeaponItem extends WeaponBaseItem
     @Override
     public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
     {
-
-        if (!(player.isSwimming() && !player.isInWater()) && enoughInk(player, inkConsumption, true, true))
+        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, inkConsumption, true, true)))
             player.startUsingItem(hand);
         return useSuper(level, player, hand);
     }
 
     @Override
     public int getItemStackLimit(ItemStack stack) {
-        return stack.getOrCreateTag().getBoolean("SingleUse") ? 16 : 1;
+        return SubWeaponItem.singleUse(stack) ? 16 : 1;
     }
 
     @Override
     public boolean showDurabilityBar(ItemStack stack) {
-        return !stack.getOrCreateTag().getBoolean("SingleUse") && super.showDurabilityBar(stack);
+        return !SubWeaponItem.singleUse(stack) && super.showDurabilityBar(stack);
     }
 
     @Override
@@ -90,12 +92,10 @@ public class SubWeaponItem extends WeaponBaseItem
 
         level.addFreshEntity(proj);
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.subThrow, SoundCategory.PLAYERS, 0.7F, 1);
-        if(stack.getOrCreateTag().getBoolean("SingleUse"))
-        {
-            if(entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative())
+        if (SubWeaponItem.singleUse(stack)) {
+            if (entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative())
                 stack.shrink(1);
-        }
-        else reduceInk(entity, inkConsumption, false);
+        } else reduceInk(entity, inkConsumption, false);
 
     }
 
@@ -104,7 +104,7 @@ public class SubWeaponItem extends WeaponBaseItem
         @Override
         public ItemStack execute(IBlockSource source, ItemStack stack)
         {
-            if (stack.getOrCreateTag().getBoolean("SingleUse")) {
+            if (SubWeaponItem.singleUse(stack)) {
                 World world = source.getLevel();
                 IPosition iposition = DispenserBlock.getDispensePosition(source);
                 Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
