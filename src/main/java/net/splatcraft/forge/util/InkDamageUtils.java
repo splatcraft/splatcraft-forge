@@ -64,6 +64,7 @@ public class InkDamageUtils {
         InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID + ":" + name, source, source, sourceItem);
         if (target instanceof IColoredEntity)
         {
+            target.hurtTime = 20;
             doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
             applyInkCoverage = doDamage;
         }
