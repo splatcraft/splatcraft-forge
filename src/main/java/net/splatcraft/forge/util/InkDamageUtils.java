@@ -64,7 +64,7 @@ public class InkDamageUtils {
         InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID + ":" + name, source, source, sourceItem);
         if (target instanceof IColoredEntity)
         {
-            target.invulnerableTime = 20;
+            target.invulnerableTime = (!applyHurtCooldown && !SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_DAMAGE_COOLDOWN)) ? 1 : 20;
             doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
             applyInkCoverage = doDamage;
         }
@@ -93,8 +93,6 @@ public class InkDamageUtils {
                     SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
             }
         }
-
-
 
         if (!applyHurtCooldown && !SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_DAMAGE_COOLDOWN))
             target.hurtTime = 1;
