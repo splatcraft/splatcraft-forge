@@ -34,7 +34,7 @@ public class InkSquidColorLayer extends LayerRenderer<LivingEntity, InkSquidMode
         float g = ((color & '\uff00') >> 8) / 255.0f;
         float b = (color & 255) / 255.0f;
 
-        coloredCutoutModelCopyLayerRender(getParentModel(), MODEL, TEXTURE, matrixStack, iRenderTypeBuffer, i, entity, v, v1, v2, v3, v4, v5, r, g, b);
+        coloredCutoutModelCopyLayerRender(getParentModel(), MODEL, TEXTURE, matrixStack, iRenderTypeBuffer, i, entity, v, v1, v3, v4, v5, v2, r, g, b);
     }
 
 
