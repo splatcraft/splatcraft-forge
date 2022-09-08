@@ -415,8 +415,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
         setInkHealth(getInkHealth() - damage);
         setRespawnTime(maxRespawnTime);
         this.level.broadcastEntityEvent(this, (byte) 31);
-        hurtCooldown = level.getGameTime();
-        hurtCooldown = hurtDuration;
+        hurtCooldown = invulnerableTime;
 
         if(!isInWater())
         {
