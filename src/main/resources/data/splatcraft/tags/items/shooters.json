@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#splatcraft:blasters",
     "splatcraft:splattershot",
     "splatcraft:tentatek_splattershot",
     "splatcraft:wasabi_splattershot",
@@ -15,6 +14,8 @@
     "splatcraft:52_gal_deco",
     "splatcraft:kensa_52_gal",
     "splatcraft:96_gal",
-    "splatcraft:96_gal_deco"
+    "splatcraft:96_gal_deco",
+    "splatcraft:n-zap85",
+    "splatcraft:n-zap89"
   ]
 }

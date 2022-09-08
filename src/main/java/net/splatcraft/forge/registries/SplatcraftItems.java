@@ -80,6 +80,8 @@ public class SplatcraftItems
     public static final ShooterItem kensaGal52 = new ShooterItem("kensa_52_gal", gal52);
     public static final ShooterItem gal96 = new ShooterItem("96_gal", 1.3f, 0.85f, 12.5f, 11, 12.4f, 2.5f);
     public static final ShooterItem gal96Deco = new ShooterItem("96_gal_deco", gal96);
+    public static final ShooterItem nzap85 = new ShooterItem("n-zap85", 1.05f, 0.75f, 12f, 3, 5.5f, 0.8f);
+    public static final ShooterItem nzap89 = new ShooterItem("n-zap89", nzap85);
 
 
 

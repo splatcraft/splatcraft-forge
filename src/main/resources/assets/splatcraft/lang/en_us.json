@@ -88,6 +88,9 @@
   "item.splatcraft.96_gal": ".96 Gal",
   "item.splatcraft.96_gal_deco": ".96 Gal Deco",
   "item.splatcraft.kensa_96_gal": "Kensa .96 Gal",
+  "item.splatcraft.n-zap83": "N-ZAP '83",
+  "item.splatcraft.n-zap85": "N-ZAP '85",
+  "item.splatcraft.n-zap89": "N-ZAP '89",
 
   "item.splatcraft.blaster": "Blaster",
   "item.splatcraft.grim_blaster": "Grim Blaster",
@@ -186,6 +189,7 @@
   "weaponTab.splatcraft:weapon_workbench_tabs/ink_tanks": "Ink Tanks",
 
   "weaponRecipe.splatcraft:weapon_workbench/aerospray": "Aerospray",
+  "weaponRecipe.splatcraft:weapon_workbench/n-zap": "N-ZAP",
   "weaponRecipe.splatcraft:weapon_workbench/e_liter": "E-Liter",
   "weaponRecipe.splatcraft:weapon_workbench/bamboozler_14": "Bamboozler 14",
 
@@ -217,6 +221,9 @@
   "weaponType.mk1": "Mk I",
   "weaponType.mk2": "Mk II",
   "weaponType.mk3": "Mk III",
+  "weaponType.83": "'83",
+  "weaponType.85": "'85",
+  "weaponType.89": "'89",
 
   "subtitle.shooter_firing": "Shooter Firing",
   "subtitle.blaster_firing": "Blaster Firing",
