@@ -26,8 +26,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.splatcraft.forge.Splatcraft;
@@ -366,7 +366,7 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
                 TranslationTextComponent t = new TranslationTextComponent("weaponRecipe." + recipeList.get(i).getId().toString());
                 if (t.getString().equals("weaponRecipe." + recipeList.get(i).getId().toString()))
                 {
-                    tooltip.add(displayStack.getDisplayName());
+                    tooltip.add(getDisplayName(displayStack));
                 } else
                 {
                     tooltip.add(t);
@@ -406,6 +406,17 @@ public class WeaponWorkbenchScreen extends ContainerScreen<WeaponWorkbenchContai
 
 
         }
+    }
+
+    protected static ITextComponent getDisplayName(ItemStack stack) {
+        IFormattableTextComponent iformattabletextcomponent = (new StringTextComponent("")).append(stack.getHoverName());
+        if (stack.hasCustomHoverName())
+            iformattabletextcomponent.withStyle(TextFormatting.ITALIC);
+
+        iformattabletextcomponent.withStyle(stack.getRarity().color).withStyle((style) ->
+                style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemHover(stack))));
+
+        return iformattabletextcomponent;
     }
 
     @Override
