@@ -71,21 +71,35 @@ public class SplatcraftKeyHandler {
             {
                 slot = player.inventory.findSlotMatchingItem(sub);
                 SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
+
+                ItemStack stack = player.getOffhandItem();
+                player.setItemInHand(Hand.OFF_HAND, player.inventory.getItem(slot));
+                player.inventory.setItem(slot, stack);
+                player.stopUsingItem();
             }
             else slot = -1;
 
-            startUseItem(Hand.OFF_HAND);
             mc.options.keyUse.setDown(true);
+            startUseItem(Hand.OFF_HAND);
         }
         else if(pressState.get(subWeaponHotkey) == -1)
         {
-            if(player.getUsedItemHand() == Hand.OFF_HAND) {
+
+            if(player.getUsedItemHand() == Hand.OFF_HAND)
+            {
                 mc.options.keyUse.setDown(false);
                 mc.gameMode.releaseUsingItem(player);
             }
 
             if (slot != -1)
+            {
+                ItemStack stack = player.getOffhandItem();
+                player.setItemInHand(Hand.OFF_HAND, player.inventory.getItem(slot));
+                player.inventory.setItem(slot, stack);
+                player.stopUsingItem();
+
                 SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
+            }
 
         }
 
@@ -128,25 +142,17 @@ public class SplatcraftKeyHandler {
         Minecraft mc = Minecraft.getInstance();
         if (!mc.gameMode.isDestroying())
         {
+            ((MinecraftClientAccessor)mc).setRightClickDelay(4);
             /*
-            ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, mc, 4, "field_71467_ac");
-            try
-            {
-            }catch (Throwable t) { }
-            //field_71467_ac
-            */
-            ((MinecraftClientAccessor)Minecraft.getInstance()).setRightClickDelay(4);
-            //ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, mc, 4, "rightClickDelay");
-
-
-            if (!mc.player.isHandsBusy())
-            {
-                mc.player.startUsingItem(hand);
+            mc.rightClickDelay = 4;
+            if (!mc.player.isHandsBusy()) {
                 if (mc.hitResult == null) {
-                    //LOGGER.warn("Null returned as 'hitResult', mc shouldn't happen!");
+                    LOGGER.warn("Null returned as 'hitResult', mc shouldn't happen!");
                 }
+                */
 
-                /*for(Hand hand : Hand.values())*/ {
+                //for(Hand hand : Hand.values())
+                {
                     net.minecraftforge.client.event.InputEvent.ClickInputEvent inputEvent = net.minecraftforge.client.ForgeHooksClient.onClickInput(1, mc.options.keyUse, hand);
                     if (inputEvent.isCanceled()) {
                         if (inputEvent.shouldSwingHand()) mc.player.swing(hand);
@@ -205,11 +211,11 @@ public class SplatcraftKeyHandler {
                             }
 
                             mc.gameRenderer.itemInHandRenderer.itemUsed(hand);
+                            return;
                         }
                     }
                 }
 
             }
         }
-    }
 }
