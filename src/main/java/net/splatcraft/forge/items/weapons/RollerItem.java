@@ -1,17 +1,21 @@
 package net.splatcraft.forge.items.weapons;
 
 import com.google.common.collect.Lists;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.TorchBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,11 +27,7 @@ import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.InkDamageUtils;
-import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponStat;
+import net.splatcraft.forge.util.*;
 
 import java.util.ArrayList;
 
@@ -224,10 +224,15 @@ public class RollerItem extends WeaponBaseItem
                             BlockPos pos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() + yOff, entity.getZ() + zOff + dzOff);
                             if (!InkBlockUtils.canInkPassthrough(level, pos))
                             {
+                                VoxelShape shape = level.getBlockState(pos).getCollisionShape(level, pos);
+
                                 InkBlockUtils.inkBlock(level, pos, ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
-                                double blockHeight = level.getBlockState(pos).getCollisionShape(level, pos).isEmpty() ? 0 : level.getBlockState(pos).getCollisionShape(level, pos).bounds().maxY;
+                                double blockHeight = shape.isEmpty() ? 0 : shape.bounds().maxY;
 
                                 level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xOff + dxOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zOff + dzOff, 0, 0, 0);
+
+                                if(yOff != -3 && !(shape.bounds().minX <= 0 && shape.bounds().minZ <= 0 && shape.bounds().maxX >= 1 && shape.bounds().maxZ >= 1))
+                                    InkBlockUtils.inkBlock(level, pos.below(), ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
 
                                 if (i > 0)
                                 {
