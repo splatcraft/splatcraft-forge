@@ -1,0 +1,15 @@
+{
+  "parent": "splatcraft:item/glooga_dualies",
+  "textures": {
+    "0": "splatcraft:weapons/glooga_dualies_deco",
+    "particle": "splatcraft:weapons/glooga_dualies_deco"
+  },
+	"overrides": [
+		{
+			"predicate": {
+				"splatcraft:is_left": 1
+			},
+			"model": "splatcraft:item/glooga_dualies_deco_left"
+		}
+	]
+}

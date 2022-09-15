@@ -46,6 +46,7 @@ public class DualieItem extends WeaponBaseItem
     public int maxRolls;
     public float rollSpeed;
     public float rollConsumption;
+    public float rollDamage;
 
     public int rollCooldown;
     public int finalRollCooldown;
@@ -64,6 +65,7 @@ public class DualieItem extends WeaponBaseItem
         this.projectileSpeed = projectileSpeed;
         this.firingSpeed = firingSpeed;
         this.damage = damage;
+        this.rollDamage = damage;
         this.inkConsumption = inkConsumption;
 
         this.maxRolls = rolls;
@@ -91,6 +93,7 @@ public class DualieItem extends WeaponBaseItem
     public DualieItem(String name, DualieItem parent)
     {
         this(name, parent.projectileSize, parent.projectileSpeed, parent.inaccuracy, parent.firingSpeed, parent.damage, parent.inkConsumption, parent.maxRolls, parent.rollSpeed, parent.rollConsumption, parent.rollCooldown, parent.finalRollCooldown, parent.canRollFire);
+        parent.rollDamage = rollDamage;
     }
 
     public static float performRoll(PlayerEntity player, ItemStack mainDualie, ItemStack offhandDualie)
@@ -325,7 +328,7 @@ public class DualieItem extends WeaponBaseItem
         {
             if (reduceInk(entity, inkConsumption, true))
             {
-                InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage).setShooterTrail();
+                InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, onRollCooldown ? rollDamage : damage).setShooterTrail();
                 proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, projectileSpeed, entity instanceof PlayerEntity && PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity) ? 0 : inaccuracy);
                 level.addFreshEntity(proj);
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.dualieShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);

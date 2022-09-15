@@ -1,0 +1,7 @@
+{
+  "parent": "splatcraft:item/glooga_dualies_left",
+  "textures": {
+    "0": "splatcraft:weapons/glooga_dualies_deco",
+    "particle": "splatcraft:weapons/glooga_dualies_deco"
+  }
+}

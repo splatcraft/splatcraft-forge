@@ -115,7 +115,10 @@ public class SplatcraftItems
     //Dualies
     public static final DualieItem splatDualie = new DualieItem("splat_dualies", 1f, 0.65f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
     public static final DualieItem enperrySplatDualie = new DualieItem("enperry_splat_dualies", splatDualie);
-    public static final DualieItem dualieSquelcher = new DualieItem("dualie_squelchers", 0.9f, 0.74f, 11.5f, 12, 4.4f, 1.2f, 1, 0.7f, 5, 6, 14);
+    public static final DualieItem dualieSquelcher = new DualieItem("dualie_squelchers", 0.95f, 0.74f, 11.5f, 10, 4.4f, 1.2f, 1, 0.7f, 5, 6, 14);
+    public static final DualieItem gloogaDualie = new DualieItem("glooga_dualies", 0.9f, 0.68f, 12f, 8, 5.2f, 1.4f, 1, 0.7f, 8, 9, 24) {{ rollDamage = 10.5f;}};
+    public static final DualieItem gloogaDualieDeco = new DualieItem("glooga_dualies_deco", gloogaDualie);
+    public static final DualieItem kensaGloogaDualie = new DualieItem("kensa_glooga_dualies", gloogaDualie);
 
     //Sloshers
     public static final SlosherItem slosher = new SlosherItem("slosher", 1.6f, 0.48f, 2, 8, 14, 3, 7f);
