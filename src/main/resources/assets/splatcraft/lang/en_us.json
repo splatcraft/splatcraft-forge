@@ -376,7 +376,8 @@
   "gamerule.splatcraft.inkDamageCooldown.description": "Prevents ink damage from bypassing hurt resistance time.",
   "gamerule.splatcraft.inkMobDamagePercentage": "Ink Mob Damage Percentage",
   "gamerule.splatcraft.inkMobDamagePercentage.description": "Determines how much damage is dealt by regular Splatcraft weapons against mobs.",
-
+  "gamerule.splatcraft.infiniteInkInCreative": "Infinite Ink in Creative Mode",
+  "gamerule.splatcraft.infiniteInkInCreative.description": "Players in Creative Mode will not need an ink tank or refill ink to use Splatcraft weapons",
   "status.coord_set.a": "Set first position to X: %s Y: %s Z: %s",
   "status.coord_set.b": "Set second position to X: %s Y: %s Z: %s",
   "status.no_ink": "Low Ink!",

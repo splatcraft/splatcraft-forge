@@ -62,43 +62,10 @@ public class WeaponBaseItem extends Item implements IColoredItem
         SplatcraftItems.weapons.add(this);
     }
 
-    @Deprecated
-    public static float getInkAmount(LivingEntity player, ItemStack weapon)
-    {
-        if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK))
-        {
-            return Float.MAX_VALUE;
-        }
-
-        ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
-        if (!(tank.getItem() instanceof InkTankItem))
-        {
-            return 0;
-        }
-
-        return InkTankItem.getInkAmount(tank, weapon);
-    }
-
-    public static boolean hasInk(LivingEntity player, ItemStack weapon)
-    {
-        return getInkAmount(player, weapon) > 0;
-    }
-
     public static boolean reduceInk(LivingEntity player, float amount, boolean sendMessage)
     {
+        if (!enoughInk(player, amount, sendMessage, false)) return false;
         ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
-        if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK)
-                || player instanceof PlayerEntity && ((PlayerEntity)player).isCreative())
-        {
-            return true;
-        }
-        if (!(tank.getItem() instanceof InkTankItem) || InkTankItem.getInkAmount(tank) - amount < 0)
-        {
-            if (sendMessage)
-                sendNoInkMessage(player);
-            return false;
-        }
-
         InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);
         return true;
     }
@@ -110,22 +77,16 @@ public class WeaponBaseItem extends Item implements IColoredItem
     public static boolean enoughInk(LivingEntity player, float consumption, boolean sendMessage, boolean sub) {
         ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
         if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK)
-                || player instanceof PlayerEntity && ((PlayerEntity)player).isCreative())
-        {
+                || player instanceof PlayerEntity && ((PlayerEntity) player).isCreative()
+                && SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.INFINITE_INK_IN_CREATIVE)) {
             return true;
         }
-        if (!(tank.getItem() instanceof InkTankItem) || InkTankItem.getInkAmount(tank) - consumption < 0)
-        {
+        if (!(tank.getItem() instanceof InkTankItem) || InkTankItem.getInkAmount(tank) - consumption < 0) {
             if (sendMessage)
                 sendNoInkMessage(player, sub ? SplatcraftSounds.noInkSub : SplatcraftSounds.noInkMain);
             return false;
         }
         return true;
-    }
-
-    public static void sendNoInkMessage(LivingEntity entity)
-    {
-        sendNoInkMessage(entity, SplatcraftSounds.noInkMain);
     }
 
     public static void sendNoInkMessage(LivingEntity entity, SoundEvent sound)

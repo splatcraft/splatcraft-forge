@@ -1,9 +1,5 @@
 package net.splatcraft.forge.util;
 
-import net.splatcraft.forge.SplatcraftConfig;
-import net.splatcraft.forge.items.InkTankItem;
-import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,12 +7,12 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.MovementInput;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.splatcraft.forge.SplatcraftConfig;
+import net.splatcraft.forge.items.InkTankItem;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
 
 import java.util.TreeMap;
 
@@ -72,14 +68,9 @@ public class ClientUtils
         ItemStack chestpiece = player.getItemBySlot(EquipmentSlotType.CHEST);
         if (chestpiece.getItem() instanceof InkTankItem)
         {
-            return 1 - WeaponBaseItem.getInkAmount(player, stack) / ((InkTankItem) chestpiece.getItem()).capacity;
+            return 1 - InkTankItem.getInkAmount(chestpiece) / ((InkTankItem) chestpiece.getItem()).capacity;
         }
         return 1;
-    }
-
-    public static void playClientSound(BlockPos pos, SoundEvent soundIn, SoundCategory category, float volume, float pitch)
-    {
-        Minecraft.getInstance().getSoundManager().play(new ClientPlayerSound(soundIn, category, volume, pitch));
     }
 
     public static boolean canPerformRoll(PlayerEntity entity)

@@ -1,10 +1,10 @@
 package net.splatcraft.forge.registries;
 
-import net.splatcraft.forge.Splatcraft;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameRules.Category;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.splatcraft.forge.Splatcraft;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,6 +28,7 @@ public class SplatcraftGameRules
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_FRIENDLY_FIRE;
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_REGEN;
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_DAMAGE_COOLDOWN;
+    public static GameRules.RuleKey<GameRules.BooleanValue> INFINITE_INK_IN_CREATIVE;
 
     public static void registerGamerules()
     {
@@ -42,6 +43,7 @@ public class SplatcraftGameRules
         INK_REGEN = createBooleanRule("inkHealing", Category.PLAYER, true);
         INK_DAMAGE_COOLDOWN = createBooleanRule("inkDamageCooldown", Category.PLAYER, false);
         INK_MOB_DAMAGE_PERCENTAGE = createIntRule("inkMobDamagePercentage", Category.MOBS, 0);
+        INFINITE_INK_IN_CREATIVE = createBooleanRule("infiniteInkInCreative", Category.PLAYER, true);
     }
 
     public static GameRules.RuleKey<GameRules.BooleanValue> createBooleanRule(String name, GameRules.Category category, boolean defaultValue)

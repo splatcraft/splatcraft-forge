@@ -1,9 +1,5 @@
 package net.splatcraft.forge.client.audio;
 
-import net.splatcraft.forge.handlers.WeaponHandler;
-import net.splatcraft.forge.items.weapons.RollerItem;
-import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.Entity;
@@ -12,6 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.splatcraft.forge.handlers.WeaponHandler;
+import net.splatcraft.forge.items.weapons.RollerItem;
+import net.splatcraft.forge.items.weapons.WeaponBaseItem;
+import net.splatcraft.forge.registries.SplatcraftSounds;
 
 public class RollerRollTickableSound extends TickableSound
 {
@@ -43,8 +43,7 @@ public class RollerRollTickableSound extends TickableSound
         if (this.player.isAlive() && player.getUseItem().getItem() instanceof RollerItem)
         {
             ItemStack roller = player.getUseItem();
-            if (WeaponBaseItem.getInkAmount(player, roller) < Math.max(((RollerItem) roller.getItem()).rollConsumptionMin, ((RollerItem) roller.getItem()).rollConsumptionMax))
-            {
+            if (!WeaponBaseItem.enoughInk(player, Math.max(((RollerItem) roller.getItem()).rollConsumptionMin, ((RollerItem) roller.getItem()).rollConsumptionMax), false)) {
                 stop();
                 return;
             }
