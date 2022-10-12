@@ -8,7 +8,6 @@ import net.minecraft.util.math.MathHelper;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.ChargerItem;
-import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.PlayerCharge;
 
@@ -45,8 +44,6 @@ public class ChargerChargingTickableSound extends TickableSound
             IPlayerInfo info = PlayerInfoCapability.get(player);
             if (!info.isSquid())
             {
-                volume = WeaponBaseItem.enoughInk(player, 0.01f, false) ? 1 : 0;
-
                 if (PlayerCharge.getChargeValue(player, player.getUseItem()) >= 1 && !isStopped())
                 {
                     player.level.playSound(player, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerReady, SoundCategory.PLAYERS, 1, 1);

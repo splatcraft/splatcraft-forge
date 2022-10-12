@@ -5,8 +5,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -93,7 +91,7 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
     @Override
     public void onRelease(World level, PlayerEntity player, ItemStack stack, float charge)
     {
-        InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), projectileSize, charge > 0.95f ? damage : damage * charge / 4f + damage / 4f);
+        InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), projectileSize, charge > 0.95f ? damage : damage * charge / 5f + damage / 5f);
         proj.setChargerStats((int) (projectileLifespan * charge), charge >= pierceCharge);
         proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, projectileSpeed, 0.1f);
         level.addFreshEntity(proj);
@@ -107,18 +105,8 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
     public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
         if (entity instanceof PlayerEntity && enoughInk(entity, getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack)), timeLeft % 4 == 0) && level.isClientSide && !((PlayerEntity) entity).getCooldowns().isOnCooldown(this)) {
             PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1));
+            playChargingSound((PlayerEntity) entity);
         }
-    }
-
-    @Override
-    public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
-    {
-        ActionResult<ItemStack> result = super.use(level, player, hand);
-
-        if (level.isClientSide && !(player.isSwimming() && !player.isInWater()))
-            playChargingSound(player);
-
-        return result;
     }
 
     @Override

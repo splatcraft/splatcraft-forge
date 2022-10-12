@@ -66,7 +66,8 @@ public class WeaponBaseItem extends Item implements IColoredItem
     {
         if (!enoughInk(player, amount, sendMessage, false)) return false;
         ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
-        InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);
+        if (tank.getItem() instanceof InkTankItem)
+            InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);
         return true;
     }
 
