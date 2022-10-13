@@ -46,7 +46,6 @@ public class ChargerChargingTickableSound extends TickableSound
             {
                 if (PlayerCharge.getChargeValue(player, player.getUseItem()) >= 1 && !isStopped())
                 {
-                    player.level.playSound(player, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerReady, SoundCategory.PLAYERS, 1, 1);
                     stop();
                     return;
                 }

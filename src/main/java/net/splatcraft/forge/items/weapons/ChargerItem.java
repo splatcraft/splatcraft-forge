@@ -98,14 +98,23 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
         reduceInk(player, getInkConsumption(charge), false);
         PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, 10, player.inventory.selected, player.getUsedItemHand(), true, false, false, player.isOnGround()));
-        player.getCooldowns().addCooldown(this, 10);
+        player.getCooldowns().addCooldown(this, 7);
     }
 
     @Override
     public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
-        if (entity instanceof PlayerEntity && enoughInk(entity, getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack)), timeLeft % 4 == 0) && level.isClientSide && !((PlayerEntity) entity).getCooldowns().isOnCooldown(this)) {
-            PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1));
-            playChargingSound((PlayerEntity) entity);
+        if (entity instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) entity;
+            float prevCharge = PlayerCharge.getChargeValue(player, stack);
+            float newCharge = prevCharge + (chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.33f : 1));
+            if (enoughInk(entity, getInkConsumption(newCharge), timeLeft % 4 == 0) && level.isClientSide && !player.getCooldowns().isOnCooldown(this))
+            {
+                if (prevCharge < 1 && newCharge >= 1) {
+                    player.level.playSound(player, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerReady, SoundCategory.PLAYERS, 1, 1);
+                } else if (newCharge < 1)
+                    playChargingSound(player);
+                PlayerCharge.addChargeValue(player, stack, newCharge - prevCharge);
+            }
         }
     }
 
