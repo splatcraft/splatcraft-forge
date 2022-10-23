@@ -11,6 +11,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,7 +32,7 @@ import java.util.HashMap;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class SplatcraftKeyHandler {
-    private static final HashMap<KeyBinding, Integer> pressState = new HashMap<>();
+    public static final HashMap<KeyBinding, Integer> pressState = new HashMap<>();
 
     public static KeyBinding squidKey;
     public static KeyBinding subWeaponHotkey;
@@ -67,29 +68,36 @@ public class SplatcraftKeyHandler {
         {
             ItemStack sub = CommonUtils.getItemInInventory(player, itemStack -> itemStack.getItem() instanceof SubWeaponItem);
 
-            if(!sub.isEmpty() && !player.getItemInHand(Hand.OFF_HAND).equals(sub))
+            if(sub.isEmpty())
+                player.displayClientMessage(new TranslationTextComponent("status.cant_use"), true);
+            else
             {
-                slot = player.inventory.findSlotMatchingItem(sub);
-                SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
+                IPlayerInfo cap = PlayerInfoCapability.get(player);
+                if(cap.isSquid())
+                {
+                    cap.setIsSquid(false);
+                    SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player.getUUID(), false));
+                }
 
-                ItemStack stack = player.getOffhandItem();
-                player.setItemInHand(Hand.OFF_HAND, player.inventory.getItem(slot));
-                player.inventory.setItem(slot, stack);
-                player.stopUsingItem();
+                if(!player.getItemInHand(Hand.OFF_HAND).equals(sub))
+                {
+                    slot = player.inventory.findSlotMatchingItem(sub);
+                    SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
+
+                    ItemStack stack = player.getOffhandItem();
+                    player.setItemInHand(Hand.OFF_HAND, player.inventory.getItem(slot));
+                    player.inventory.setItem(slot, stack);
+                    player.stopUsingItem();
+                }
+                else slot = -1;
+
+                startUsingItemInHand(Hand.OFF_HAND);
             }
-            else slot = -1;
-
-            mc.options.keyUse.setDown(true);
-            startUseItem(Hand.OFF_HAND);
         }
         else if(pressState.get(subWeaponHotkey) == -1)
         {
-
             if(player.getUsedItemHand() == Hand.OFF_HAND)
-            {
-                mc.options.keyUse.setDown(false);
                 mc.gameMode.releaseUsingItem(player);
-            }
 
             if (slot != -1)
             {
@@ -137,7 +145,7 @@ public class SplatcraftKeyHandler {
         TOGGLE
     }
 
-    private static void startUseItem(Hand hand)
+    public static void startUsingItemInHand(Hand hand)
     {
         Minecraft mc = Minecraft.getInstance();
         if (!mc.gameMode.isDestroying())
@@ -151,71 +159,71 @@ public class SplatcraftKeyHandler {
                 }
                 */
 
-                //for(Hand hand : Hand.values())
-                {
-                    net.minecraftforge.client.event.InputEvent.ClickInputEvent inputEvent = net.minecraftforge.client.ForgeHooksClient.onClickInput(1, mc.options.keyUse, hand);
-                    if (inputEvent.isCanceled()) {
-                        if (inputEvent.shouldSwingHand()) mc.player.swing(hand);
-                        return;
-                    }
-                    ItemStack itemstack = mc.player.getItemInHand(hand);
-                    if (mc.hitResult != null) {
-                        switch(mc.hitResult.getType()) {
-                            case ENTITY:
-                                EntityRayTraceResult entityraytraceresult = (EntityRayTraceResult)mc.hitResult;
-                                Entity entity = entityraytraceresult.getEntity();
-                                ActionResultType actionresulttype = mc.gameMode.interactAt(mc.player, entity, entityraytraceresult, hand);
-                                if (!actionresulttype.consumesAction()) {
-                                    actionresulttype = mc.gameMode.interact(mc.player, entity, hand);
-                                }
-
-                                if (actionresulttype.consumesAction()) {
-                                    if (actionresulttype.shouldSwing()) {
-                                        if (inputEvent.shouldSwingHand())
-                                            mc.player.swing(hand);
-                                    }
-
-                                    return;
-                                }
-                                break;
-                            case BLOCK:
-                                BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult)mc.hitResult;
-                                int i = itemstack.getCount();
-                                ActionResultType actionresulttype1 = mc.gameMode.useItemOn(mc.player, mc.level, hand, blockraytraceresult);
-                                if (actionresulttype1.consumesAction()) {
-                                    if (actionresulttype1.shouldSwing()) {
-                                        if (inputEvent.shouldSwingHand())
-                                            mc.player.swing(hand);
-                                        if (!itemstack.isEmpty() && (itemstack.getCount() != i || mc.gameMode.hasInfiniteItems())) {
-                                            mc.gameRenderer.itemInHandRenderer.itemUsed(hand);
-                                        }
-                                    }
-
-                                    return;
-                                }
-
-                                if (actionresulttype1 == ActionResultType.FAIL) {
-                                    return;
-                                }
-                        }
-                    }
-
-                    if (itemstack.isEmpty() && (mc.hitResult == null || mc.hitResult.getType() == RayTraceResult.Type.MISS))
-                        net.minecraftforge.common.ForgeHooks.onEmptyClick(mc.player, hand);
-
-                    if (!itemstack.isEmpty()) {
-                        ActionResultType actionresulttype2 = mc.gameMode.useItem(mc.player, mc.level, hand);
-                        if (actionresulttype2.consumesAction()) {
-                            if (actionresulttype2.shouldSwing()) {
-                                mc.player.swing(hand);
+            //for(Hand hand : Hand.values())
+            {
+                net.minecraftforge.client.event.InputEvent.ClickInputEvent inputEvent = net.minecraftforge.client.ForgeHooksClient.onClickInput(1, mc.options.keyUse, hand);
+                if (inputEvent.isCanceled()) {
+                    if (inputEvent.shouldSwingHand()) mc.player.swing(hand);
+                    return;
+                }
+                ItemStack itemstack = mc.player.getItemInHand(hand);
+                if (mc.hitResult != null) {
+                    switch(mc.hitResult.getType()) {
+                        case ENTITY:
+                            EntityRayTraceResult entityraytraceresult = (EntityRayTraceResult)mc.hitResult;
+                            Entity entity = entityraytraceresult.getEntity();
+                            ActionResultType actionresulttype = mc.gameMode.interactAt(mc.player, entity, entityraytraceresult, hand);
+                            if (!actionresulttype.consumesAction()) {
+                                actionresulttype = mc.gameMode.interact(mc.player, entity, hand);
                             }
 
-                            mc.gameRenderer.itemInHandRenderer.itemUsed(hand);
-                            return;
-                        }
+                            if (actionresulttype.consumesAction()) {
+                                if (actionresulttype.shouldSwing()) {
+                                    if (inputEvent.shouldSwingHand())
+                                        mc.player.swing(hand);
+                                }
+
+                                return;
+                            }
+                            break;
+                        case BLOCK:
+                            BlockRayTraceResult blockraytraceresult = (BlockRayTraceResult)mc.hitResult;
+                            int i = itemstack.getCount();
+                            ActionResultType actionresulttype1 = mc.gameMode.useItemOn(mc.player, mc.level, hand, blockraytraceresult);
+                            if (actionresulttype1.consumesAction()) {
+                                if (actionresulttype1.shouldSwing()) {
+                                    if (inputEvent.shouldSwingHand())
+                                        mc.player.swing(hand);
+                                    if (!itemstack.isEmpty() && (itemstack.getCount() != i || mc.gameMode.hasInfiniteItems())) {
+                                        mc.gameRenderer.itemInHandRenderer.itemUsed(hand);
+                                    }
+                                }
+
+                                return;
+                            }
+
+                            if (actionresulttype1 == ActionResultType.FAIL) {
+                                return;
+                            }
                     }
                 }
 
+                if (itemstack.isEmpty() && (mc.hitResult == null || mc.hitResult.getType() == RayTraceResult.Type.MISS))
+                    net.minecraftforge.common.ForgeHooks.onEmptyClick(mc.player, hand);
+
+                if (!itemstack.isEmpty()) {
+                    ActionResultType actionresulttype2 = mc.gameMode.useItem(mc.player, mc.level, hand);
+                    if (actionresulttype2.consumesAction()) {
+                        if (actionresulttype2.shouldSwing()) {
+                            mc.player.swing(hand);
+                        }
+
+                        mc.gameRenderer.itemInHandRenderer.itemUsed(hand);
+                        return;
+                    }
+                }
             }
+
         }
+    }
 }

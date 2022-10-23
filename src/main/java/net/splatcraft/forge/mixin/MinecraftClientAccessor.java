@@ -11,5 +11,5 @@ public interface MinecraftClientAccessor
 	int getRightClickDelay();
 
 	@Accessor("rightClickDelay")
-	public void setRightClickDelay(int rightClickDelay);
+	void setRightClickDelay(int rightClickDelay);
 }

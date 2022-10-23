@@ -6,16 +6,18 @@
   "mixins": [
     "FenceConnectionMixin",
     "PaneConnectionMixin",
-    "SquidPassthroughMixin",
-    "WallConnectionMixin",
     "RecipeCategoryMixin",
-    "MinecraftClientAccessor"
+    "SquidPassthroughMixin",
+    "WallConnectionMixin"
   ],
   "minVersion": "0.8",
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
-    "GameRendererMixin"
+    "GameRendererMixin",
+    "MinecraftClientAccessor",
+    "WeaponHotkeyMixin$MinecraftInstance",
+    "WeaponHotkeyMixin$PlayerControllerMix"
   ]
 }
