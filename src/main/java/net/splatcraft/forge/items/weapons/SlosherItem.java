@@ -21,6 +21,7 @@ public class SlosherItem extends WeaponBaseItem
     public int projectileCount;
     public float diffAngle;
     public float inkConsumption;
+    public Type slosherType = Type.DEFAULT;
 
     public SlosherItem(String name, float projectileSize, float projectileSpeed, int projectileCount, float offsetBetweenProj, float damage, int startupTicks, float inkConsumption)
     {
@@ -44,6 +45,12 @@ public class SlosherItem extends WeaponBaseItem
     public SlosherItem(String name, SlosherItem parent)
     {
         this(name, parent.projectileSize, parent.projectileSpeed, parent.projectileCount, parent.diffAngle, parent.damage, parent.startupTicks, parent.inkConsumption);
+    }
+
+    public SlosherItem setSlosherType(Type type)
+    {
+        this.slosherType = type;
+        return this;
     }
 
     @Override
@@ -70,6 +77,15 @@ public class SlosherItem extends WeaponBaseItem
                 proj.setShooterTrail();
                 proj.shootFromRotation(player, player.xRot, player.yRot + angle, -15.0f, projectileSpeed, 2);
                 level.addFreshEntity(proj);
+
+                switch (slosherType)
+                {
+                    case EXPLODING:
+                        proj.trailSize = projectileSize * .4f;
+                        proj.explodes = true;
+                        proj.splashDamage = damage;
+                        proj.setProjectileType(InkProjectileEntity.Types.BLASTER);
+                }
             }
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.slosherShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
         }
@@ -79,5 +95,13 @@ public class SlosherItem extends WeaponBaseItem
     public PlayerPosingHandler.WeaponPose getPose()
     {
         return PlayerPosingHandler.WeaponPose.BUCKET_SWING;
+    }
+
+    public enum Type
+    {
+        DEFAULT,
+        EXPLODING,
+        CYCLONE,
+        BUBBLES
     }
 }

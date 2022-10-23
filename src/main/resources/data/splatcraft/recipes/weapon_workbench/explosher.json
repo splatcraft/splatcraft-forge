@@ -1,0 +1,36 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/buckets",
+  "pos": 2,
+  "recipes": [
+    {
+      "name": "weaponType.original",
+      "result": {
+        "item": "splatcraft:explosher",
+        "count": 1
+      },
+      "ingredients": [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 8
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 20
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 10
+        },
+        {
+          "item": "minecraft:bucket",
+          "count": 1
+        },
+        {
+          "item": "minecraft:iron_block",
+          "count": 1
+        }
+      ]
+    }
+  ]
+}

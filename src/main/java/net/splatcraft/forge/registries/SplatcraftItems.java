@@ -125,6 +125,7 @@ public class SplatcraftItems
     public static final SlosherItem classicSlosher = new SlosherItem("classic_slosher", slosher);
     public static final SlosherItem sodaSlosher = new SlosherItem("soda_slosher", slosher);
     public static final SlosherItem triSlosher = new SlosherItem("tri_slosher", 1.65f, 0.444f, 3, 20, 12.4f, 4, 6f);
+    public static final SlosherItem explosher = new SlosherItem("explosher", 2.1f, 0.7f, 1, 0, 11f, 16, 11.7f).setSlosherType(SlosherItem.Type.EXPLODING);
 
     //Ink Tanks
     public static final InkTankItem inkTank = new InkTankItem("ink_tank", 100);

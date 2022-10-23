@@ -147,6 +147,8 @@
   "item.splatcraft.glooga_dualies_deco.plural": "Glooga Dualies Deco",
   "item.splatcraft.kensa_glooga_dualies": "Kensa Glooga Dualie",
   "item.splatcraft.kensa_glooga_dualies.plural": "Kensa Glooga Dualies",
+  "item.splatcraft.explosher": "Explosher",
+  "item.splatcraft.custom_explosher": "Custom Explosher",
 
   "item.splatcraft.slosher": "Slosher",
   "item.splatcraft.classic_slosher": "Classic Slosher",
@@ -381,6 +383,7 @@
   "status.coord_set.a": "Set first position to X: %s Y: %s Z: %s",
   "status.coord_set.b": "Set second position to X: %s Y: %s Z: %s",
   "status.no_ink": "Low Ink!",
+  "status.cant_use": "Can't Use!",
   "status.remote_mode": "Set Remote Mode to %s",
   "status.scan_turf.out_of_world": "§cCannot check for blocks outside of the world",
   "status.scan_turf.score": "%s = %s%%",
