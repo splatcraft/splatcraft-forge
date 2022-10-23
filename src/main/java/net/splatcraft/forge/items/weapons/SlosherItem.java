@@ -68,7 +68,7 @@ public class SlosherItem extends WeaponBaseItem
 
                 InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), projectileSize * (hasTrail ? 1 : 0.8f), damage);
                 proj.setShooterTrail();
-                proj.shootFromRotation(player, player.xRot, player.yRot + angle, 0.0f, projectileSpeed, 2);
+                proj.shootFromRotation(player, player.xRot, player.yRot + angle, -15.0f, projectileSpeed, 2);
                 level.addFreshEntity(proj);
             }
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.slosherShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
