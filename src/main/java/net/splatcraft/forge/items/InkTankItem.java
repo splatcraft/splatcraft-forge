@@ -25,6 +25,7 @@ import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.SplatcraftArmorMaterial;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -70,19 +71,15 @@ public class InkTankItem extends ColoredArmorItem
     }
 
 
-    public static float getInkAmount(ItemStack stack)
-    {
-        return stack.getOrCreateTag().getFloat("Ink");
-    }
-
-    public static float getInkAmount(ItemStack tank, ItemStack weapon)
-    {
-        return ((InkTankItem) tank.getItem()).canUse(weapon.getItem()) ? getInkAmount(tank) : 0;
+    public static float getInkAmount(ItemStack stack) {
+        float capacity = ((InkTankItem) stack.getItem()).capacity;
+        if (stack.getOrCreateTag().getBoolean("InfiniteInk")) return capacity;
+        return Math.max(0, Math.min(capacity, stack.getOrCreateTag().getFloat("Ink")));
     }
 
     public static void setInkAmount(ItemStack stack, float value)
     {
-        stack.getOrCreateTag().putFloat("Ink", value);
+        stack.getOrCreateTag().putFloat("Ink", Math.max(0, Math.min(((InkTankItem) stack.getItem()).capacity, value)));
     }
 
     public static boolean canRecharge(ItemStack stack)
@@ -101,9 +98,8 @@ public class InkTankItem extends ColoredArmorItem
             float ink = getInkAmount(stack);
 
             if (canRecharge(stack) && player.getItemBySlot(EquipmentSlotType.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
-                    && (!(player.getUseItem().getItem() instanceof WeaponBaseItem) || player.getUseItem().getItem() instanceof IChargeableWeapon))
-            {
-                setInkAmount(stack, Math.min(capacity, ink + (InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player) ? 1.1125f : .11125f)));
+                    && (!(player.getUseItem().getItem() instanceof WeaponBaseItem) || player.getUseItem().getItem() instanceof IChargeableWeapon || PlayerCooldown.hasPlayerCooldown(player))) {
+                setInkAmount(stack, ink + (InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player) ? 1.1125f : .11125f));
             }
         }
     }

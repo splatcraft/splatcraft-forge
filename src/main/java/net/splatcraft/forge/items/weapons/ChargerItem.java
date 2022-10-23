@@ -5,8 +5,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -93,32 +91,31 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
     @Override
     public void onRelease(World level, PlayerEntity player, ItemStack stack, float charge)
     {
-        InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), projectileSize, charge > 0.95f ? damage : damage * charge / 4f + damage / 4f);
+        InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), projectileSize, charge > 0.95f ? damage : damage * charge / 5f + damage / 5f);
         proj.setChargerStats((int) (projectileLifespan * charge), charge >= pierceCharge);
         proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, projectileSpeed, 0.1f);
         level.addFreshEntity(proj);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
         reduceInk(player, getInkConsumption(charge), false);
         PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, 10, player.inventory.selected, player.getUsedItemHand(), true, false, false, player.isOnGround()));
-        player.getCooldowns().addCooldown(this, 10);
+        player.getCooldowns().addCooldown(this, 7);
     }
 
     @Override
     public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
-        if (entity instanceof PlayerEntity && enoughInk(entity, getInkConsumption(PlayerCharge.getChargeValue((PlayerEntity) entity, stack)), timeLeft % 4 == 0) && level.isClientSide && !((PlayerEntity) entity).getCooldowns().isOnCooldown(this)) {
-            PlayerCharge.addChargeValue((PlayerEntity) entity, stack, chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.5f : 1));
+        if (entity instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) entity;
+            float prevCharge = PlayerCharge.getChargeValue(player, stack);
+            float newCharge = prevCharge + (chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.33f : 1));
+            if (enoughInk(entity, getInkConsumption(newCharge), timeLeft % 4 == 0) && level.isClientSide && !player.getCooldowns().isOnCooldown(this))
+            {
+                if (prevCharge < 1 && newCharge >= 1) {
+                    player.level.playSound(player, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerReady, SoundCategory.PLAYERS, 1, 1);
+                } else if (newCharge < 1)
+                    playChargingSound(player);
+                PlayerCharge.addChargeValue(player, stack, newCharge - prevCharge);
+            }
         }
-    }
-
-    @Override
-    public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
-    {
-        ActionResult<ItemStack> result = super.use(level, player, hand);
-
-        if (level.isClientSide && !(player.isSwimming() && !player.isInWater()))
-            playChargingSound(player);
-
-        return result;
     }
 
     @Override

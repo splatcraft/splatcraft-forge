@@ -1,15 +1,12 @@
 package net.splatcraft.forge.items.weapons;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.TorchBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -27,7 +24,11 @@ import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.*;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.InkDamageUtils;
+import net.splatcraft.forge.util.PlayerCooldown;
+import net.splatcraft.forge.util.WeaponStat;
 
 import java.util.ArrayList;
 
@@ -91,26 +92,6 @@ public class RollerItem extends WeaponBaseItem
         entity.hurtMarked = true;
     }
 
-    private float getSwingTime()
-    {
-        return swingTime;
-    }
-
-    private float getFlingTime()
-    {
-        return flingTime;
-    }
-
-    private float getSwingProjSpeed()
-    {
-        return swingProjectileSpeed;
-    }
-
-    private float getFlingProjSpeed()
-    {
-        return flingProjectileSpeed;
-    }
-
     public RollerItem setDashStats(double dashMobility, float rollConsumptionDash, int dashTime)
     {
         this.dashMobility = dashMobility;
@@ -158,16 +139,13 @@ public class RollerItem extends WeaponBaseItem
     }
 
     @Override
-    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
-    {
+    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
         if (!(entity instanceof PlayerEntity))
             return;
 
-        if (timeLeft >= getUseDuration(stack) - flingTime)
-        {
+        int startupTicks = entity.isOnGround() ? swingTime : flingTime;
+        if (getUseDuration(stack) - timeLeft < startupTicks) {
             //if (getInkAmount(entity, stack) > inkConsumption){
-
-            int startupTicks = entity.isOnGround() ? swingTime : flingTime;
             PlayerCooldown cooldown = new PlayerCooldown(stack, startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround());
             PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, cooldown);
             //} else
@@ -176,9 +154,9 @@ public class RollerItem extends WeaponBaseItem
                 int total = rollSize * 2 + 1;
                 for (int i = 0; i < total; i++) {
                     InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), 1.6f,
-                            entity.isOnGround() ? flingDamage : swingDamage);
+                            entity.isOnGround() ? swingDamage : flingDamage);
                     proj.setProjectileType(InkProjectileEntity.Types.ROLLER);
-                    proj.shootFromRotation(entity, entity.xRot, entity.yRot + (i - total / 2f) * 20, 0, entity.isOnGround() ? flingProjectileSpeed : swingProjectileSpeed, 0.05f);
+                    proj.shootFromRotation(entity, entity.xRot, entity.yRot + (i - total / 2f) * 20, 0, entity.isOnGround() ? swingProjectileSpeed : flingProjectileSpeed, 0.05f);
                     proj.moveTo(proj.getX(), proj.getY() - entity.getEyeHeight() / 2f, proj.getZ());
                     level.addFreshEntity(proj);
                 }
@@ -275,17 +253,14 @@ public class RollerItem extends WeaponBaseItem
             playRollSound(player);
         }
 
-        if (reduceInk(player, airborne ? swingConsumption : flingConsumption, false) && !isBrush)
-        {
+        if (reduceInk(player, airborne ? flingConsumption : swingConsumption, false) && !isBrush) {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.rollerFling, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-            for (int i = 0; i < rollSize; i++)
-            {
+            for (int i = 0; i < rollSize; i++) {
 
                 InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), 1.6f, airborne ? flingDamage : swingDamage);
                 proj.shootFromRotation(player, player.xRot, player.yRot, airborne ? 0.0f : -67.5f, airborne ? flingProjectileSpeed : swingProjectileSpeed, 0.05f);
                 proj.setRollerSwingStats(airborne);
-                if (airborne)
-                {
+                if (airborne) {
                     double off = (double) i - (rollSize - 1) / 2d;
                     double yOff = Math.sin(Math.toRadians(player.xRot+90));
                     double y2Off = Math.cos(Math.toRadians(player.xRot+90));
