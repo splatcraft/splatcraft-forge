@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "splatcraft.refmap.json",
   "mixins": [
+    "EntityMixin",
     "FenceConnectionMixin",
     "PaneConnectionMixin",
     "RecipeCategoryMixin",

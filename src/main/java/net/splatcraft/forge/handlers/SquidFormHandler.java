@@ -57,7 +57,8 @@ public class SquidFormHandler {
         IPlayerInfo info = PlayerInfoCapability.get(player);
         if (event.phase == TickEvent.Phase.START)
         {
-            player.setInvisible(shouldBeInvisible(player));
+            //if(!shouldBeInvisible(player))
+            //    player.setInvisible(shouldBeInvisible(player));
 
             if (!squidSubmergeMode.containsKey(player))
                 squidSubmergeMode.put(player, -2);
@@ -65,7 +66,8 @@ public class SquidFormHandler {
             if (InkBlockUtils.canSquidHide(player) && info.isSquid())
             {
                 squidSubmergeMode.put(player, Math.min(2, Math.max(squidSubmergeMode.get(player) + 1, 1)));
-                player.setInvisible(true);
+                //if(!player.isInvisible())
+                //    player.setInvisible(true);
             } else squidSubmergeMode.put(player, Math.max(-2, Math.min(squidSubmergeMode.get(player) - 1, -1)));
 
 
@@ -157,7 +159,7 @@ public class SquidFormHandler {
 
     protected static boolean shouldBeInvisible(PlayerEntity playerEntity)
     {
-        return playerEntity.hasEffect(Effects.INVISIBILITY);
+        return playerEntity.hasEffect(Effects.INVISIBILITY) || playerEntity.isSpectator();
     }
 
 
