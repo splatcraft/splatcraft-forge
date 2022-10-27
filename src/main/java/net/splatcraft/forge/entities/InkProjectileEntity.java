@@ -208,6 +208,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
             } else
                 level.broadcastEntityEvent(this, (byte) 2);
 
+            if(!level.isClientSide)
             remove();
         }
     }
