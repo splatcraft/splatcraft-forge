@@ -26,6 +26,7 @@ import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.PlayerSetSquidServerPacket;
 import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
 import net.splatcraft.forge.util.CommonUtils;
+import net.splatcraft.forge.util.PlayerCooldown;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
@@ -111,9 +112,11 @@ public class SplatcraftKeyHandler {
 
         }
 
-        if (player.getVehicle() == null && !player.level.getBlockCollisions(player,
+        if (player.getVehicle() == null && !PlayerCooldown.hasPlayerCooldown(player) &&
+                !player.level.getBlockCollisions(player,
                 new AxisAlignedBB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).findAny().isPresent()) {
-            if (KeyMode.HOLD.equals(SplatcraftConfig.Client.squidKeyMode.get())) {
+            if (KeyMode.HOLD.equals(SplatcraftConfig.Client.squidKeyMode.get()))
+            {
                 boolean isPlayerSquid = PlayerInfoCapability.isSquid(player);
                 if (isPlayerSquid && !squidKey.isDown() || !isPlayerSquid && squidKey.isDown())
                     pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 1));
