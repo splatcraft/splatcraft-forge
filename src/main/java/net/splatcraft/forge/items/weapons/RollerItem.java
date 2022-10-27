@@ -231,8 +231,9 @@ public class RollerItem extends WeaponBaseItem
                             return InkDamageUtils.canDamageColor(level, ColorUtils.getEntityColor(e), ColorUtils.getInkColor(stack));
                         return true;
                     }))) {
-                        if (!target.equals(entity) && InkDamageUtils.doRollDamage(level, target, rollDamage * (hasInk ? 1 : 0.4f), ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity))
-                                && !InkDamageUtils.isSplatted(level, target) && target.invulnerableTime >= 10)
+                        if (!target.equals(entity) && !InkDamageUtils.isSplatted(level, target) && InkDamageUtils.canDamage(target, entity) &&
+                                !InkDamageUtils.doRollDamage(level, target, rollDamage * (hasInk ? 1 : 0.4f), ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity))
+                                /*&& target.invulnerableTime >= 10*/)
                             doPush = true;
                     }
                 }

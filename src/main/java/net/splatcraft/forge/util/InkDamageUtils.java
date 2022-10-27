@@ -39,6 +39,11 @@ public class InkDamageUtils {
         return doDamage(level, target, damage, color, source, sourceItem, damageMobs, inkType, "roll", true);
     }
 
+    public static boolean canDamage(Entity target, Entity source)
+    {
+        return canDamageColor(source.level, ColorUtils.getEntityColor(target), ColorUtils.getEntityColor(source));
+    }
+
     public static boolean canDamageColor(World level, int targetColor, int sourceColor)
     {
         return SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_FRIENDLY_FIRE) || !ColorUtils.colorEquals(level, targetColor, sourceColor);
