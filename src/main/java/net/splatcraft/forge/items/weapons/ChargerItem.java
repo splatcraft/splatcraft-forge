@@ -1,6 +1,7 @@
 package net.splatcraft.forge.items.weapons;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
@@ -69,13 +70,6 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
         this(name, parent.projectileSize, parent.projectileSpeed, parent.projectileLifespan, (int) (1f / parent.chargeSpeed), (int) (1f / parent.dischargeSpeed), parent.damage, parent.minConsumption, parent.maxConsumption, parent.mobility, parent.airCharge, parent.pierceCharge);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected static void playChargingSound(PlayerEntity player)
-    {
-
-        Minecraft.getInstance().getSoundManager().play(new ChargerChargingTickableSound(player));
-    }
-
     @Override
     public float getDischargeSpeed()
     {
@@ -110,9 +104,9 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
             if (enoughInk(entity, getInkConsumption(newCharge), timeLeft % 4 == 0) && level.isClientSide && !player.getCooldowns().isOnCooldown(this))
             {
                 if (prevCharge < 1 && newCharge >= 1) {
-                    player.level.playSound(player, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerReady, SoundCategory.PLAYERS, 1, 1);
+                    Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SplatcraftSounds.chargerReady, Minecraft.getInstance().options.getSoundSourceVolume(SoundCategory.PLAYERS)));
                 } else if (newCharge < 1)
-                    playChargingSound(player);
+                    Minecraft.getInstance().getSoundManager().queueTickingSound(new ChargerChargingTickableSound(player));
                 PlayerCharge.addChargeValue(player, stack, newCharge - prevCharge);
             }
         }
