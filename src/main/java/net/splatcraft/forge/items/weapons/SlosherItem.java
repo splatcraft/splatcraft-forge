@@ -85,6 +85,8 @@ public class SlosherItem extends WeaponBaseItem
                         proj.explodes = true;
                         proj.splashDamage = damage;
                         proj.setProjectileType(InkProjectileEntity.Types.BLASTER);
+                    case CYCLONE:
+                        proj.canPierce = true;
                 }
             }
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.slosherShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
