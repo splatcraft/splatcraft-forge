@@ -146,9 +146,7 @@ public class InkBlockUtils
         if (standingBlock instanceof IColoredBlock)
             canSwim = ((IColoredBlock) standingBlock).canSwim();
 
-        if (canSwim)
-            return ColorUtils.colorEquals(entity, entity.level.getBlockEntity(down));
-        return false;
+        return canSwim && ColorUtils.colorEquals(entity, entity.level.getBlockEntity(down));
     }
 
     public static BlockPos getBlockStandingOnPos(Entity entity)
@@ -158,7 +156,9 @@ public class InkBlockUtils
         {
             result = new BlockPos(entity.getX(), entity.getY()+i, entity.getZ());
 
-            if(!(entity.level.getBlockState(result).getMaterial().equals(Material.AIR) || entity.level.getBlockState(result).getCollisionShape(entity.level, result, ISelectionContext.of(entity)).isEmpty()))
+            VoxelShape shape = entity.level.getBlockState(result).getCollisionShape(entity.level, result, ISelectionContext.of(entity));
+
+            if(!shape.isEmpty() && shape.bounds().minY <= entity.getY()-result.getY())
                 return result;
         }
 
@@ -189,7 +189,7 @@ public class InkBlockUtils
             Block block = entity.level.getBlockState(pos).getBlock();
             VoxelShape shape = entity.level.getBlockState(pos).getCollisionShape(entity.level, pos, ISelectionContext.of(entity));
 
-            if(pos.equals(getBlockStandingOnPos(entity)) || (shape != null && !shape.isEmpty() && shape.bounds().maxY <= (entity.getY()-entity.position().y())))
+            if(pos.equals(getBlockStandingOnPos(entity)) || (!shape.isEmpty() && (shape.bounds().maxY < (entity.getY()-entity.blockPosition().getY()) || shape.bounds().minY > (entity.getY()-entity.blockPosition().getY()))))
                 continue;
 
             if ((!(block instanceof IColoredBlock) || ((IColoredBlock) block).canClimb()) && entity.level.getBlockEntity(pos) instanceof InkColorTileEntity && ColorUtils.colorEquals(entity, entity.level.getBlockEntity(pos)) && !entity.isPassenger())
