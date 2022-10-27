@@ -104,12 +104,24 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
             if (enoughInk(entity, getInkConsumption(newCharge), timeLeft % 4 == 0) && level.isClientSide && !player.getCooldowns().isOnCooldown(this))
             {
                 if (prevCharge < 1 && newCharge >= 1) {
-                    Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SplatcraftSounds.chargerReady, Minecraft.getInstance().options.getSoundSourceVolume(SoundCategory.PLAYERS)));
+                    playChargingSound();
                 } else if (newCharge < 1)
-                    Minecraft.getInstance().getSoundManager().queueTickingSound(new ChargerChargingTickableSound(player));
+                    playChargeReadySound();
                 PlayerCharge.addChargeValue(player, stack, newCharge - prevCharge);
             }
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected static void playChargingSound()
+    {
+        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SplatcraftSounds.chargerReady, Minecraft.getInstance().options.getSoundSourceVolume(SoundCategory.PLAYERS)));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected static void playChargeReadySound()
+    {
+        Minecraft.getInstance().getSoundManager().queueTickingSound(new ChargerChargingTickableSound(Minecraft.getInstance().player));
     }
 
     @Override

@@ -250,7 +250,7 @@ public class RollerItem extends WeaponBaseItem
         boolean airborne = !cooldown.isGrounded();
 
         if (level.isClientSide)
-            Minecraft.getInstance().getSoundManager().queueTickingSound(new RollerRollTickableSound(player, isBrush));
+            playRollSound(isBrush);
 
         if (reduceInk(player, airborne ? flingConsumption : swingConsumption, false) && !isBrush) {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.rollerFling, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
@@ -277,6 +277,12 @@ public class RollerItem extends WeaponBaseItem
                 level.addFreshEntity(proj);
             }
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected static void playRollSound(boolean isBrush)
+    {
+        Minecraft.getInstance().getSoundManager().queueTickingSound(new RollerRollTickableSound(Minecraft.getInstance().player, isBrush));
     }
 
     @Override
