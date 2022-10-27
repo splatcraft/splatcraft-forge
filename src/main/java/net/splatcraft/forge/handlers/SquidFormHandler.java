@@ -12,9 +12,11 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.blocks.InkwellBlock;
@@ -37,6 +39,13 @@ import java.util.Map;
 @Mod.EventBusSubscriber
 public class SquidFormHandler {
     private static final Map<PlayerEntity, Integer> squidSubmergeMode = new LinkedHashMap<>();
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onLivingHurt(LivingHurtEvent event)
+    {
+        if(InkDamageUtils.ENEMY_INK.equals(event.getSource()) && event.getEntityLiving().getHealth() <= 4)
+            event.setCanceled(true);
+    }
 
     @SubscribeEvent
     public static void playerTick(TickEvent.PlayerTickEvent event) {
