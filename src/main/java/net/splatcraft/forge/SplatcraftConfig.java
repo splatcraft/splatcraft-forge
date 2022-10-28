@@ -1,10 +1,10 @@
 package net.splatcraft.forge;
 
-import net.splatcraft.forge.handlers.client.SplatcraftKeyHandler;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
+import net.splatcraft.forge.handlers.client.SplatcraftKeyHandler;
 
 import java.io.File;
 
@@ -49,6 +49,7 @@ public class SplatcraftConfig
         public static ForgeConfigSpec.IntValue barrierRenderDistance;
         //public static ForgeConfigSpec.BooleanValue colorLock; TODO
         public static ForgeConfigSpec.EnumValue<PreventBobView> preventBobView;
+        public static ForgeConfigSpec.BooleanValue lowInkWarning;
 
         public static void init(ForgeConfigSpec.Builder client)
         {
@@ -63,6 +64,8 @@ public class SplatcraftConfig
                     .defineInRange("splatcraft.barrierRenderDistance", 40, 4, 80);
             //colorLock = client.comment("Color Lock Mode").define("splatcraft.colorLock", false);
             preventBobView = client.comment("Prevents changing FOV when in Squid Mode").defineEnum("splatcraft.preventBobView", PreventBobView.ALWAYS);
+            lowInkWarning = client.comment("Determines whether the ink indicator near your crosshair warns you if your ink is low.")
+                    .define("splatcraft.lowInkWarning", true);
         }
 
         public static boolean getColorLock()

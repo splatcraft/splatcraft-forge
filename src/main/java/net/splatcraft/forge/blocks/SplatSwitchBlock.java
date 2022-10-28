@@ -14,6 +14,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -21,6 +22,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.registries.SplatcraftTileEntitites;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -105,6 +107,7 @@ public class SplatSwitchBlock extends Block implements IColoredBlock, IWaterLogg
         {
             stateIn = stateIn.setValue(POWERED, false);
             levelIn.setBlock(currentPos, stateIn, 3);
+            playSound(levelIn, currentPos, stateIn);
             updateNeighbors(stateIn, (World) levelIn, currentPos);
             return stateIn;
         }
@@ -164,19 +167,23 @@ public class SplatSwitchBlock extends Block implements IColoredBlock, IWaterLogg
 
         te.setColor(color);
         level.setBlock(pos, state.setValue(POWERED, true), 3);
+        playSound(level, pos, state);
         updateNeighbors(state, level, pos);
         return color != switchColor;
     }
 
     @Override
-    public boolean remoteInkClear(World level, BlockPos pos)
-    {
+    public boolean remoteInkClear(World level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
-        if(state.getValue(POWERED))
-        {
+        if (state.getValue(POWERED)) {
             level.setBlock(pos, state.setValue(POWERED, false), 3);
+            playSound(level, pos, state);
             return true;
         }
         return false;
+    }
+
+    private void playSound(IWorld level, BlockPos currentPos, BlockState stateIn) {
+        level.playSound(null, currentPos, stateIn.getValue(POWERED) ? SplatcraftSounds.splatSwitchPoweredOn : SplatcraftSounds.splatSwitchPoweredOff, SoundCategory.BLOCKS, 1f, 1f);
     }
 }

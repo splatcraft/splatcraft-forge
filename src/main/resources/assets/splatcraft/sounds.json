@@ -199,5 +199,17 @@
     "sounds": [
       "splatcraft:ink_surface"
     ]
+  },
+  "splat_switch_powered_on": {
+    "subtitle": "subtitle.splat_switch_powered_on",
+    "sounds": [
+      "splatcraft:splat_switch_powered_on"
+    ]
+  },
+  "splat_switch_powered_off": {
+    "subtitle": "subtitle.splat_switch_powered_off",
+    "sounds": [
+      "splatcraft:splat_switch_powered_off"
+    ]
   }
 }
