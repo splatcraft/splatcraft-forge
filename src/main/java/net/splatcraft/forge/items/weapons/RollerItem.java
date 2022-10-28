@@ -17,6 +17,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.client.audio.RollerRollTickableSound;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.entities.InkProjectileEntity;
@@ -200,6 +201,10 @@ public class RollerItem extends WeaponBaseItem
                             }
 
                             BlockPos pos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() + yOff, entity.getZ() + zOff + dzOff);
+
+                            if(level.getBlockState(pos).getBlock() instanceof ColoredBarrierBlock && ((ColoredBarrierBlock)level.getBlockState(pos).getBlock()).canAllowThrough(pos, entity))
+                                continue;
+
                             if (!InkBlockUtils.canInkPassthrough(level, pos))
                             {
                                 VoxelShape shape = level.getBlockState(pos).getCollisionShape(level, pos);
