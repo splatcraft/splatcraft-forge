@@ -48,6 +48,13 @@ public class ClientSetupHandler
         event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/allowed_color_barrier_fancy"));
         event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/denied_color_barrier_fancy"));
         event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/permanent_ink_overlay"));
+
+        int i = 1;
+        while(Minecraft.getInstance().getResourceManager().hasResource(new ResourceLocation(Splatcraft.MODID, "textures/blocks/inked_block"+i+".png")))
+            event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/inked_block"+(i++)));
+        i = 1;
+        while(Minecraft.getInstance().getResourceManager().hasResource(new ResourceLocation(Splatcraft.MODID, "textures/blocks/glitter"+i+".png")))
+            event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/glitter"+(i++)));
     }
 
     public static void bindScreenContainers()

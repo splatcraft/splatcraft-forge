@@ -16,6 +16,8 @@
     "defaultRequire": 1
   },
   "client": [
+    "BlockRenderMixin$AOFace",
+    "BlockRenderMixin$ModelRenderer",
     "GameRendererMixin",
     "MinecraftClientAccessor",
     "WeaponHotkeyMixin$MinecraftInstance",
