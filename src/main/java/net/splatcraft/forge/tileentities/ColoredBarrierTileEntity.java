@@ -34,7 +34,7 @@ public class ColoredBarrierTileEntity extends StageBarrierTileEntity
         {
 
             if(entity instanceof LivingEntity && ColorUtils.getEntityColor(entity) > -1 && (getBlockState().getBlock() instanceof ColoredBarrierBlock &&
-                    ((ColoredBarrierBlock) getBlockState().getBlock()).canAllowThrough(getBlockPos(), entity)))
+                    !((ColoredBarrierBlock) getBlockState().getBlock()).canAllowThrough(getBlockPos(), entity)))
             resetActiveTime();
         }
 
