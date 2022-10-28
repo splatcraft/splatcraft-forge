@@ -33,7 +33,7 @@ public class ColoredBarrierTileEntity extends StageBarrierTileEntity
         for (Entity entity : level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(getBlockPos()).inflate(0.05)))
         {
 
-            if(entity instanceof LivingEntity && ColorUtils.getEntityColor(entity) > -1 && (getBlockState().getBlock() instanceof ColoredBarrierBlock &&
+            if(ColorUtils.getEntityColor(entity) > -1 && (getBlockState().getBlock() instanceof ColoredBarrierBlock &&
                     !((ColoredBarrierBlock) getBlockState().getBlock()).canAllowThrough(getBlockPos(), entity)))
             resetActiveTime();
         }
