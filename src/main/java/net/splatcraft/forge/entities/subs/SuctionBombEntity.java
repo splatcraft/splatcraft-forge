@@ -38,6 +38,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
     private Direction stickFacing;
     protected boolean inGround;
     public int shakeTime;
+    protected boolean playedActivationSound = false;
 
     public SuctionBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, World level) {
         super(type, level);
@@ -55,27 +56,28 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
     }
 
     @Override
-    public void tick()
-    {
+    public void tick() {
         super.tick();
         BlockState state = this.level.getBlockState(blockPosition());
 
-        if(shakeTime > 0)
+        if (shakeTime > 0)
             --shakeTime;
 
         prevFuseTime = fuseTime;
 
-        if(isActivated())
-            if(fuseTime > 0)
-                --fuseTime;
-            else
-            {
+        if (isActivated()) {
+            fuseTime--;
+            if (fuseTime <= 0) {
                 InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), EXPLOSION_SIZE, DAMAGE, DAMAGE, DIRECT_DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
                 level.broadcastEntityEvent(this, (byte) 1);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 remove();
                 return;
+            } else if (fuseTime <= 20 && !playedActivationSound) {
+                level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonating, SoundCategory.PLAYERS, 0.8F, 1f);
+                playedActivationSound = true;
             }
+        }
 
         if(inGround)
             if(inBlockState != state && this.level.noCollision((new AxisAlignedBB(this.position(), this.position())).inflate(0.06D)))
@@ -89,10 +91,6 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
                 setDeltaMovement(0, 0, 0);
                 setStickFacing();
             }
-        else
-        {
-
-        }
 
         checkInsideBlocks();
     }
