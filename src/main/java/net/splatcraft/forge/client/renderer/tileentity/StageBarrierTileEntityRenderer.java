@@ -1,8 +1,10 @@
 package net.splatcraft.forge.client.renderer.tileentity;
 
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.blocks.StageBarrierBlock;
+import net.splatcraft.forge.tileentities.ColoredBarrierTileEntity;
 import net.splatcraft.forge.tileentities.StageBarrierTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -47,6 +49,11 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
     {
         BlockPos pos = te.getBlockPos().relative(side);
         BlockState state = te.getLevel().getBlockState(pos);
+
+        if(state.getBlock() instanceof ColoredBarrierBlock && te.getLevel().getBlockState(te.getBlockPos()).getBlock() instanceof ColoredBarrierBlock)
+            return ((ColoredBarrierBlock)state.getBlock()).canAllowThrough(pos, Minecraft.getInstance().player) !=
+                    ((ColoredBarrierBlock)te.getLevel().getBlockState(te.getBlockPos()).getBlock()).canAllowThrough(te.getBlockPos(), Minecraft.getInstance().player);
+
         return !(state.getBlock() instanceof StageBarrierBlock);
     }
 
