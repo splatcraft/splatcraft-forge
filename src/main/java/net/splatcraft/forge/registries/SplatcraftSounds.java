@@ -1,12 +1,12 @@
 package net.splatcraft.forge.registries;
 
-import net.splatcraft.forge.Splatcraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.splatcraft.forge.Splatcraft;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +48,10 @@ public class SplatcraftSounds
     public static SoundEvent squidBumperHit;
     public static SoundEvent squidBumperInk;
     public static SoundEvent squidBumperBreak;
+    public static SoundEvent splatSwitchPoweredOn;
+    public static SoundEvent splatSwitchPoweredOff;
 
-    public static void initSounds()
-    {
+    public static void initSounds() {
         squidTransform = createSoundEvent("squid_transform");
         squidRevert = createSoundEvent("squid_revert");
         inkSubmerge = createSoundEvent("ink_submerge");
@@ -82,6 +83,8 @@ public class SplatcraftSounds
         squidBumperHit = createSoundEvent("squid_bumper_hit");
         squidBumperInk = createSoundEvent("squid_bumper_ink");
         squidBumperBreak = createSoundEvent("squid_bumper_break");
+        splatSwitchPoweredOn = createSoundEvent("splat_switch_powered_on");
+        splatSwitchPoweredOff = createSoundEvent("splat_switch_powered_off");
     }
 
     private static SoundEvent createSoundEvent(String id)
