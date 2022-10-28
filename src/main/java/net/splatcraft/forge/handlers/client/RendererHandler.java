@@ -87,10 +87,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.splatcraft.forge.items.weapons.WeaponBaseItem.enoughInk;
+
 //@Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 @Mod.EventBusSubscriber(Dist.CLIENT)
-public class RendererHandler
-{
+public class RendererHandler {
     @Deprecated
     public static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency", () ->
     {
@@ -503,8 +504,7 @@ public class RendererHandler
                 Minecraft.getInstance().getTextureManager().bind(WIDGETS);
 
                 AbstractGui.blit(matrixStack, width / 2 - 15, height / 2 + 14, 30, 9, 88, 0, 30, 9, 256, 256);
-                if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).getPlayerCharge() != null)
-                {
+                if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).getPlayerCharge() != null) {
                     float charge = PlayerInfoCapability.get(player).getPlayerCharge().charge;
                     AbstractGui.blit(matrixStack, width / 2 - 15, height / 2 + 14, (int) (30 * charge), 9, 88, 9, (int) (30 * charge), 9, 256, 256);
                 }
@@ -513,32 +513,28 @@ public class RendererHandler
             }
         }
 
-        if (info.isSquid())
-        {
-            if (event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR))
-            {
+        boolean showCrosshairInkIndicator = SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.CROSSHAIR);
+        boolean showLowInkWarning = showCrosshairInkIndicator && SplatcraftConfig.Client.lowInkWarning.get() && !enoughInk(player, 10f, false);
+        if (info.isSquid() || showLowInkWarning) {
+            if (event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR)) {
                 squidTime++;
                 float inkPctg = 0;
                 boolean hasTank = player.getItemBySlot(EquipmentSlotType.CHEST).getItem() instanceof InkTankItem;
-                if (hasTank)
-                {
+                if (hasTank) {
                     ItemStack stack = player.getItemBySlot(EquipmentSlotType.CHEST);
                     inkPctg = InkTankItem.getInkAmount(stack) / ((InkTankItem) stack.getItem()).capacity;
                 }
 
-                if (SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.CROSSHAIR))
-                {
+                if (showCrosshairInkIndicator) {
                     int heightAnim = Math.min(14, squidTime);
                     int glowAnim = Math.max(0, Math.min(18, squidTime - 16));
                     float[] rgb = ColorUtils.hexToRGB(info.getColor());
 
                     boolean canUse = true;
 
-                    if (hasTank)
-                    {
+                    if (hasTank) {
                         ItemStack stack = player.getItemBySlot(EquipmentSlotType.CHEST);
-                        if(player.getUseItem() != null)
-                            canUse = ((InkTankItem) stack.getItem()).canUse(player.getMainHandItem().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getOffhandItem().getItem());
+                        canUse = ((InkTankItem) stack.getItem()).canUse(player.getMainHandItem().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getOffhandItem().getItem());
                     }
 
                     MatrixStack matrixStack = event.getMatrixStack();
@@ -546,13 +542,19 @@ public class RendererHandler
                     RenderSystem.enableBlend();
                     Minecraft.getInstance().getTextureManager().bind(WIDGETS);
 
-                    if (SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK))
-                    {
+                    if (enoughInk(player, 220, false)) { // checks if you have unlimited ink
+                        AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 2, 0, 131, 18, 2, 256, 256);
+                        AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 4 + heightAnim, 0, 131, 18, 4 + heightAnim, 256, 256);
+
+                        RenderSystem.color3f(rgb[0], rgb[1], rgb[2]);
+
+                        AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 4 + heightAnim, 18, 131, 18, 4 + heightAnim, 256, 256);
+                        AbstractGui.blit(matrixStack, width / 2 + 9 + 18 - glowAnim, height / 2 - 9, glowAnim, 18, 18 - glowAnim, 149, glowAnim, 18, 256, 256);
+                    } else {
                         AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 2, 0, 95, 18, 2, 256, 256);
                         AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 4 + heightAnim, 0, 95, 18, 4 + heightAnim, 256, 256);
 
-                        if (inkPctg != prevInkPctg && inkPctg == 1)
-                        {
+                        if (inkPctg != prevInkPctg && inkPctg == 1) {
                             inkFlash = 0.1f;
                         }
                         inkFlash = Math.max(0, inkFlash - 0.002f);
@@ -577,25 +579,13 @@ public class RendererHandler
                         AbstractGui.blit(matrixStack, width / 2 + 9 + 18 - glowAnim, height / 2 - 9, glowAnim, 18, 18 - glowAnim, 113, glowAnim, 18, 256, 256);
 
                         RenderSystem.color3f(1, 1, 1);
-                        if (glowAnim >= 18 && (SplatcraftTags.Items.MATCH_ITEMS.contains(player.getMainHandItem().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getOffhandItem().getItem())))
-                        {
-                            if (!hasTank)
-                            {
+                        if (glowAnim == 18 && (SplatcraftTags.Items.MATCH_ITEMS.contains(player.getMainHandItem().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getOffhandItem().getItem()))) {
+                            if (showLowInkWarning) {
                                 AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 18, 112, 18, 18, 256, 256);
-                            } else if (!canUse)
-                            {
+                            } else if (!canUse) {
                                 AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 36, 112, 18, 18, 256, 256);
                             }
                         }
-                    } else
-                    {
-                        AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 2, 0, 131, 18, 2, 256, 256);
-                        AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 4 + heightAnim, 0, 131, 18, 4 + heightAnim, 256, 256);
-
-                        RenderSystem.color3f(rgb[0], rgb[1], rgb[2]);
-
-                        AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 4 + heightAnim, 18, 131, 18, 4 + heightAnim, 256, 256);
-                        AbstractGui.blit(matrixStack, width / 2 + 9 + 18 - glowAnim, height / 2 - 9, glowAnim, 18, 18 - glowAnim, 149, glowAnim, 18, 256, 256);
                     }
                     matrixStack.popPose();
                 }
