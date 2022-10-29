@@ -52,7 +52,7 @@ public class InkDamageUtils {
     public static boolean doDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, InkBlockUtils.InkType inkType, String name, boolean applyHurtCooldown)
     {
 
-        if (damage == 0)
+        if (damage == 0 || (target.isInvulnerable() && !(target instanceof SquidBumperEntity)))
             return false;
 
         float mobDmgPctg = SplatcraftGameRules.getIntRuleValue(level, SplatcraftGameRules.INK_MOB_DAMAGE_PERCENTAGE) * 0.01f;
