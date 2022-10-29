@@ -205,7 +205,9 @@ public class InkExplosion
             if (entity instanceof LivingEntity)
                 targetColor = ColorUtils.getEntityColor(entity);
 
-            if (targetColor == -1 && damageMobs || color != targetColor && targetColor > -1)
+
+
+            if (targetColor == -1 || (color != targetColor && targetColor > -1))
             {
                 float pctg = Math.max(0, (float) (entity.distanceToSqr(x, y, z)/Math.pow(f2, 2)));
 
