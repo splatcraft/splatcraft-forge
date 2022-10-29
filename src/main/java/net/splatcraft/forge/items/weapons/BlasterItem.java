@@ -30,7 +30,7 @@ public class BlasterItem extends ShooterItem
 
         addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / projectileLifespan * 100)));
         addStat(new WeaponStat("impact", (stack, level) -> (int) (damage / 20 * 100)));
-        addStat(new WeaponStat("fire_rate", (stack, level) -> (int) ((11 - cooldown * 0.5f) * 10)));
+        addStat(new WeaponStat("fire_rate", (stack, level) -> (int) ((15 - cooldown * 0.5f)/15f * 100)));
     }
 
     public BlasterItem(String name, BlasterItem parent)

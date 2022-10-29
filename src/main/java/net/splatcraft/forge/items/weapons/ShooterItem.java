@@ -35,7 +35,7 @@ public class ShooterItem extends WeaponBaseItem
         {
             addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / 1.2f * 100)));
             addStat(new WeaponStat("damage", (stack, level) -> (int) (damage / 20 * 100)));
-            addStat(new WeaponStat("fire_rate", (stack, level) -> (11 - firingSpeed) * 10));
+            addStat(new WeaponStat("fire_rate", (stack, level) -> (int) ((15 - firingSpeed)/15f * 100)));
         }
     }
 

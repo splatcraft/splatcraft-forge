@@ -39,7 +39,7 @@ public class SlosherItem extends WeaponBaseItem
 
         addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / 1.2f * 100)));
         addStat(new WeaponStat("damage", (stack, level) -> (int) (damage / 20 * 100)));
-        addStat(new WeaponStat("handling", (stack, level) -> (11 - startupTicks) * 10));
+        addStat(new WeaponStat("handling", (stack, level) -> (int) ((15 - startupTicks)/15f * 100)));
     }
 
     public SlosherItem(String name, SlosherItem parent)
