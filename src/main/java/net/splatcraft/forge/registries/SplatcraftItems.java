@@ -75,10 +75,10 @@ public class SplatcraftItems
     public static final ShooterItem kensaSplattershotJr = new ShooterItem("kensa_splattershot_jr", splattershotJr);
     public static final ShooterItem aerosprayMG = new ShooterItem("aerospray_mg", 1.3f, 0.45f, 26f, 2, 4.8f, 0.5f);
     public static final ShooterItem getAerosprayRG = new ShooterItem("aerospray_rg", aerosprayMG);
-    public static final ShooterItem gal52 = new ShooterItem("52_gal", 1.2f, 0.78f, 16f, 9, 10.4f, 1.3f);
+    public static final ShooterItem gal52 = new ShooterItem("52_gal", 1.2f, 0.78f, 16f, 6, 10.4f, 1.3f);
     public static final ShooterItem gal52Deco = new ShooterItem("52_gal_deco", gal52);
     public static final ShooterItem kensaGal52 = new ShooterItem("kensa_52_gal", gal52);
-    public static final ShooterItem gal96 = new ShooterItem("96_gal", 1.3f, 0.85f, 12.5f, 11, 12.4f, 2.5f);
+    public static final ShooterItem gal96 = new ShooterItem("96_gal", 1.3f, 0.85f, 12.5f, 8, 12.4f, 2.5f);
     public static final ShooterItem gal96Deco = new ShooterItem("96_gal_deco", gal96);
     public static final ShooterItem nzap85 = new ShooterItem("n-zap85", 1.05f, 0.75f, 12f, 3, 5.5f, 0.8f);
     public static final ShooterItem nzap89 = new ShooterItem("n-zap89", nzap85);
