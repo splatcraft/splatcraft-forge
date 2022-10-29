@@ -209,7 +209,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
                 level.broadcastEntityEvent(this, (byte) 2);
 
             if(!level.isClientSide)
-            remove();
+                remove();
         }
     }
 
@@ -230,8 +230,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
         } else
             level.broadcastEntityEvent(this, (byte) 2);
-        //if (!level.isClientSide)
-        this.remove();
+        if (!level.isClientSide)
+            this.remove();
     }
 
     @Override
