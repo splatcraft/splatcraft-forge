@@ -514,7 +514,8 @@ public class RendererHandler {
         }
 
         boolean showCrosshairInkIndicator = SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.CROSSHAIR);
-        boolean showLowInkWarning = showCrosshairInkIndicator && SplatcraftConfig.Client.lowInkWarning.get() && !enoughInk(player, 10f, false);
+        boolean isHoldingMatchItem = SplatcraftTags.Items.MATCH_ITEMS.contains(player.getMainHandItem().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getOffhandItem().getItem());
+        boolean showLowInkWarning = showCrosshairInkIndicator && isHoldingMatchItem && SplatcraftConfig.Client.lowInkWarning.get() && !enoughInk(player, 10f, false);
         if (info.isSquid() || showLowInkWarning) {
             if (event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR)) {
                 squidTime++;
@@ -579,7 +580,7 @@ public class RendererHandler {
                         AbstractGui.blit(matrixStack, width / 2 + 9 + 18 - glowAnim, height / 2 - 9, glowAnim, 18, 18 - glowAnim, 113, glowAnim, 18, 256, 256);
 
                         RenderSystem.color3f(1, 1, 1);
-                        if (glowAnim == 18 && (SplatcraftTags.Items.MATCH_ITEMS.contains(player.getMainHandItem().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getOffhandItem().getItem()))) {
+                        if (glowAnim == 18 && isHoldingMatchItem) {
                             if (showLowInkWarning) {
                                 AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 18, 112, 18, 18, 256, 256);
                             } else if (!canUse) {

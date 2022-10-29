@@ -95,33 +95,32 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
         player.getCooldowns().addCooldown(this, 7);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    protected static void playChargeReadySound(PlayerEntity player) {
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getUUID().equals(player.getUUID()))
+            Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SplatcraftSounds.chargerReady, Minecraft.getInstance().options.getSoundSourceVolume(SoundCategory.PLAYERS)));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected static void playChargingSound(PlayerEntity player) {
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getUUID().equals(player.getUUID()))
+            Minecraft.getInstance().getSoundManager().queueTickingSound(new ChargerChargingTickableSound(Minecraft.getInstance().player));
+    }
+
     @Override
     public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
             float prevCharge = PlayerCharge.getChargeValue(player, stack);
             float newCharge = prevCharge + (chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.33f : 1));
-            if (enoughInk(entity, getInkConsumption(newCharge), timeLeft % 4 == 0) && level.isClientSide && !player.getCooldowns().isOnCooldown(this))
-            {
+            if (enoughInk(entity, getInkConsumption(newCharge), timeLeft % 4 == 0) && level.isClientSide && !player.getCooldowns().isOnCooldown(this)) {
                 if (prevCharge < 1 && newCharge >= 1) {
-                    playChargingSound();
+                    playChargeReadySound(player);
                 } else if (newCharge < 1)
-                    playChargeReadySound();
+                    playChargingSound(player);
                 PlayerCharge.addChargeValue(player, stack, newCharge - prevCharge);
             }
         }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    protected static void playChargingSound()
-    {
-        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SplatcraftSounds.chargerReady, Minecraft.getInstance().options.getSoundSourceVolume(SoundCategory.PLAYERS)));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    protected static void playChargeReadySound()
-    {
-        Minecraft.getInstance().getSoundManager().queueTickingSound(new ChargerChargingTickableSound(Minecraft.getInstance().player));
     }
 
     @Override
