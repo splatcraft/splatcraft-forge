@@ -71,7 +71,8 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
                 InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), EXPLOSION_SIZE, DAMAGE, DAMAGE, DIRECT_DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
                 level.broadcastEntityEvent(this, (byte) 1);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-                remove();
+                if(!level.isClientSide())
+                    remove();
                 return;
             } else if (fuseTime <= 20 && !playedActivationSound) {
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonating, SoundCategory.PLAYERS, 0.8F, 1f);
@@ -97,12 +98,11 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
 
 
     @Override
-    public void handleEntityEvent(byte id) {
+    public void handleEntityEvent(byte id)
+    {
         super.handleEntityEvent(id);
-        if (id == 1) {
-            level.addParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-        }
-
+        if (id == 1)
+            level.addAlwaysVisibleParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
     }
 
     public void setStickFacing()
