@@ -5,11 +5,11 @@ license = "https://github.com/splatcraft/splatcraft-forge/blob/HEAD/LICENSE"
 [[mods]]
 modId           = "splatcraft"
 displayName     = "Splatcraft"
-description     = '''
+description = '''
         Splatcraft is a Minecraft mod based on Nintendo's popular game Splatoon!
         This mod aims to add items and mechanics based on the game in a cohesive way, such as Turf Wars, Weapons, Squid Transformations and many more!
     '''
-authors = "Cibernet, L1ttle, Andante"
+authors = "Cibernet, l1ttle, Andante"
 credits = "Thanks to Nintendo and Mojang, for making such great games!"
 logoFile = "pack.png"
 
