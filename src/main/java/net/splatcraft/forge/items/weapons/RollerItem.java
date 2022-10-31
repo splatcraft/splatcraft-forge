@@ -164,7 +164,7 @@ public class RollerItem extends WeaponBaseItem
             }
         } else
         {
-            boolean hasInk = enoughInk(entity, Math.min(rollConsumptionMax, rollConsumptionMin), false);
+            float toConsume = Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) dashTime) * (rollConsumptionMax - rollConsumptionMin) + rollConsumptionMin;
             boolean isMoving = Math.abs(entity.yHeadRotO - entity.yHeadRot) > 0 || (level.isClientSide ? Math.abs(entity.getDeltaMovement().x()) > 0 || Math.abs(entity.getDeltaMovement().z()) > 0
                     : new Vector3d(entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ())
                     .multiply(1, 0, 1).distanceTo(WeaponHandler.getPlayerPrevPos((PlayerEntity) entity).multiply(1, 0, 1)) > 0);
@@ -190,12 +190,10 @@ public class RollerItem extends WeaponBaseItem
                     double xOff = Math.cos(Math.toRadians(entity.yRot)) * off;
                     double zOff = Math.sin(Math.toRadians(entity.yRot)) * off;
 
-                    if (hasInk)
-                    {
-                        for (float yOff = 0; yOff >= -3; yOff--)
-                        {
-                            if(yOff == -3)
-                            {
+                    if (enoughInk(entity, toConsume, timeLeft % 4 == 0)) {
+                        boolean consumeInk = false;
+                        for (float yOff = 0; yOff >= -3; yOff--) {
+                            if (yOff == -3) {
                                 dxOff = Math.cos(Math.toRadians(entity.yRot + 90));
                                 dzOff = Math.sin(Math.toRadians(entity.yRot + 90));
                             }
@@ -209,13 +207,13 @@ public class RollerItem extends WeaponBaseItem
                             {
                                 VoxelShape shape = level.getBlockState(pos).getCollisionShape(level, pos);
 
-                                InkBlockUtils.inkBlock(level, pos, ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
+                                consumeInk = InkBlockUtils.inkBlock(level, pos, ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
                                 double blockHeight = shape.isEmpty() ? 0 : shape.bounds().maxY;
 
                                 level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xOff + dxOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zOff + dzOff, 0, 0, 0);
 
                                 if(yOff != -3 && !(shape.bounds().minX <= 0 && shape.bounds().minZ <= 0 && shape.bounds().maxX >= 1 && shape.bounds().maxZ >= 1))
-                                    InkBlockUtils.inkBlock(level, pos.below(), ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
+                                    consumeInk |= InkBlockUtils.inkBlock(level, pos.below(), ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
 
                                 if (i > 0)
                                 {
@@ -223,10 +221,11 @@ public class RollerItem extends WeaponBaseItem
                                     double zhOff = dzOff + Math.sin(Math.toRadians(entity.yRot)) * (off - 0.5);
                                     level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xhOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zhOff, 0, 0, 0);
                                 }
-
                                 break;
                             }
                         }
+                        if (consumeInk)
+                            reduceInk(entity, Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) dashTime) * (rollConsumptionMax - rollConsumptionMin) + rollConsumptionMin, false);
                     }
 
                     BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
@@ -236,13 +235,12 @@ public class RollerItem extends WeaponBaseItem
                             return InkDamageUtils.canDamageColor(level, ColorUtils.getEntityColor(e), ColorUtils.getInkColor(stack));
                         return true;
                     }))) {
-                        if (!target.equals(entity) && !InkDamageUtils.isSplatted(level, target) && InkDamageUtils.canDamage(target, entity) && ( !hasInk ||
+                        if (!target.equals(entity) && !InkDamageUtils.isSplatted(level, target) && InkDamageUtils.canDamage(target, entity) && (!enoughInk(entity, toConsume, false) ||
                                 !InkDamageUtils.doRollDamage(level, target, rollDamage, ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity)))
-                                /*&& target.invulnerableTime >= 10*/)
+                            /*&& target.invulnerableTime >= 10*/)
                             doPush = true;
                     }
                 }
-                reduceInk(entity, Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) dashTime) * (rollConsumptionMax - rollConsumptionMin) + rollConsumptionMin, timeLeft % 4 == 0);
             }
             if (doPush)
                 applyRecoilKnockback(entity, 0.8);
