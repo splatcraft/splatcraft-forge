@@ -185,14 +185,14 @@ public class InkedBlock extends Block implements IColoredBlock
     {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
-    
+
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
         if(!(levelIn.getBlockEntity(pos) instanceof InkedBlockTileEntity))
             return VoxelShapes.empty();
         BlockState savedState = ((InkedBlockTileEntity) levelIn.getBlockEntity(pos)).getSavedState();
-        
+
         if(savedState == null || savedState.getBlock().equals(this))
             return super.getShape(state, levelIn, pos, context);
 
@@ -403,8 +403,9 @@ public class InkedBlock extends Block implements IColoredBlock
         InkedBlockTileEntity te = (InkedBlockTileEntity) level.getBlockEntity(pos);
         BlockState oldState = level.getBlockState(pos);
         BlockState state = level.getBlockState(pos);
+        boolean changeColor = te.getColor() != color;
 
-        if (te.getColor() != color)
+        if (changeColor)
             te.setColor(color);
         BlockState inkState = InkBlockUtils.getInkState(inkType, level, pos);
 
@@ -423,6 +424,6 @@ public class InkedBlock extends Block implements IColoredBlock
         }
         level.sendBlockUpdated(pos, oldState, state, 2);
 
-        return !(te.getColor() == color && inkState.getBlock() == state.getBlock());
+        return changeColor;
     }
 }

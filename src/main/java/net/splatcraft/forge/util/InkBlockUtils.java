@@ -1,23 +1,16 @@
 package net.splatcraft.forge.util;
 
-import com.google.common.collect.ImmutableList;
-import java.util.HashMap;
-import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -33,6 +26,8 @@ import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
+
+import java.util.HashMap;
 
 public class InkBlockUtils
 {
@@ -51,7 +46,6 @@ public class InkBlockUtils
     public static boolean inkBlock(World level, BlockPos pos, int color, float damage, InkType inkType)
     {
         BlockState state = level.getBlockState(pos);
-        TileEntity te = level.getBlockEntity(pos);
 
         if (InkedBlock.isTouchingLiquid(level, pos))
             return false;
@@ -59,7 +53,7 @@ public class InkBlockUtils
         if (state.getBlock() instanceof IColoredBlock)
             return ((IColoredBlock) state.getBlock()).inkBlock(level, pos, color, damage, inkType);
 
-        if (!canInk(level, pos))
+        if (isUninkable(level, pos))
             return false;
 
         BlockState inkState = getInkState(inkType, level, pos);
@@ -91,8 +85,6 @@ public class InkBlockUtils
 
     public static BlockState getInkState(InkType inkType, World level, BlockPos pos)
     {
-        if(level.getBlockState(pos).getBlock() instanceof InkedBlock)
-            return inkType.block.defaultBlockState();
         return inkType.block.defaultBlockState();
 
     }
@@ -100,27 +92,26 @@ public class InkBlockUtils
 
     public static boolean canInkFromFace(World level, BlockPos pos, Direction face)
     {
-        if(!(level.getBlockState(pos).getBlock() instanceof IColoredBlock) && !canInk(level, pos))
+        if (!(level.getBlockState(pos).getBlock() instanceof IColoredBlock) && isUninkable(level, pos))
             return false;
 
         return canInkPassthrough(level, pos.relative(face)) || !level.getBlockState(pos.relative(face)).is(SplatcraftTags.Blocks.BLOCKS_INK);
     }
 
-    public static boolean canInk(World level, BlockPos pos)
-    {
+    public static boolean isUninkable(World level, BlockPos pos) {
 
         if (InkedBlock.isTouchingLiquid(level, pos))
-            return false;
+            return true;
 
         Block block = level.getBlockState(pos).getBlock();
 
         if (SplatcraftTags.Blocks.UNINKABLE_BLOCKS.contains(block))
-            return false;
+            return true;
 
         if (!(level.getBlockEntity(pos) instanceof InkColorTileEntity) && level.getBlockEntity(pos) != null)
-            return false;
+            return true;
 
-        return !canInkPassthrough(level, pos);
+        return canInkPassthrough(level, pos);
     }
 
     public static boolean canInkPassthrough(World level, BlockPos pos)

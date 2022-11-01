@@ -207,13 +207,13 @@ public class RollerItem extends WeaponBaseItem
                             {
                                 VoxelShape shape = level.getBlockState(pos).getCollisionShape(level, pos);
 
-                                consumeInk = InkBlockUtils.inkBlock(level, pos, ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
+                                consumeInk = InkBlockUtils.playerInkBlock((PlayerEntity) entity, level, pos, ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
                                 double blockHeight = shape.isEmpty() ? 0 : shape.bounds().maxY;
 
                                 level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xOff + dxOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zOff + dzOff, 0, 0, 0);
 
                                 if(yOff != -3 && !(shape.bounds().minX <= 0 && shape.bounds().minZ <= 0 && shape.bounds().maxX >= 1 && shape.bounds().maxZ >= 1))
-                                    consumeInk |= InkBlockUtils.inkBlock(level, pos.below(), ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
+                                    consumeInk |= InkBlockUtils.playerInkBlock((PlayerEntity) entity, level, pos.below(), ColorUtils.getInkColor(stack), rollDamage, InkBlockUtils.getInkType(entity));
 
                                 if (i > 0)
                                 {

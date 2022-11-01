@@ -1,8 +1,5 @@
 package net.splatcraft.forge.items.remotes;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -22,6 +19,10 @@ import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
+
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class TurfScannerItem extends RemoteItem
 {
@@ -74,10 +75,10 @@ public class TurfScannerItem extends RemoteItem
                     BlockPos checkPos = new BlockPos(x, y, z);
                     BlockState checkState = level.getBlockState(checkPos);
 
-                    if (!InkBlockUtils.canInk(level, checkPos))
+                    if (InkBlockUtils.isUninkable(level, checkPos))
                         continue;
 
-                    if (!checkState.getMaterial().blocksMotion() || checkState.getMaterial().isLiquid() || !InkBlockUtils.canInk(level, checkPos))
+                    if (!checkState.getMaterial().blocksMotion() || checkState.getMaterial().isLiquid() || InkBlockUtils.isUninkable(level, checkPos))
                         continue;
 
                     blockTotal++;
@@ -126,10 +127,10 @@ public class TurfScannerItem extends RemoteItem
                                 break;
                         }
 
-                        if (isWall || !InkBlockUtils.canInk(level, checkPos))
+                        if (isWall || InkBlockUtils.isUninkable(level, checkPos))
                             continue;
 
-                        if (!checkState.getMaterial().blocksMotion() || checkState.getMaterial().isLiquid() || !InkBlockUtils.canInk(level, checkPos))
+                        if (!checkState.getMaterial().blocksMotion() || checkState.getMaterial().isLiquid() || InkBlockUtils.isUninkable(level, checkPos))
                             continue;
 
                         blockTotal++;
