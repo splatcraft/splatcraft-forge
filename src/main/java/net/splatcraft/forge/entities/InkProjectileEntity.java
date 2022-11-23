@@ -5,7 +5,6 @@ import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,7 +27,6 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
-import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
@@ -237,22 +235,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     @Override
     public void shootFromRotation(Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
         super.shootFromRotation(thrower, pitch, yaw, pitchOffset, velocity, inaccuracy);
-
-        Vector3d posDiff = new Vector3d(0, 0, 0);
-
-        if (thrower instanceof PlayerEntity) {
-            try {
-                posDiff = thrower.position().subtract(WeaponHandler.getPlayerPrevPos((PlayerEntity) thrower));
-                if (thrower.isOnGround())
-                    posDiff.multiply(1, 0, 1);
-
-            } catch (NullPointerException ignored) {
-            }
-        }
-
-
-        moveTo(getX() + posDiff.x(), getY() + posDiff.y(), getZ() + posDiff.z());
-        setDeltaMovement(getDeltaMovement().add(posDiff.multiply(0.8, 0.8, 0.8)));
+        Vector3d vector3d = thrower.getDeltaMovement();
+        setDeltaMovement(getDeltaMovement().subtract(vector3d.x, thrower.isOnGround() ? 0.0D : vector3d.y, vector3d.z));
     }
 
     @Override
