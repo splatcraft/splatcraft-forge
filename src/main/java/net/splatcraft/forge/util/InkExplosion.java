@@ -5,6 +5,11 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -26,12 +31,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 
 public class InkExplosion
 {
@@ -197,7 +196,6 @@ public class InkExplosion
         int j2 = MathHelper.floor(this.z - (double) f2 - 1.0D);
         int j1 = MathHelper.floor(this.z + (double) f2 + 1.0D);
         List<Entity> list = this.level.getEntities(this.exploder, new AxisAlignedBB(k1, i2, j2, l1, i1, j1));
-        Vector3d vector3d = new Vector3d(this.x, this.y, this.z);
 
         for (Entity entity : list)
         {
@@ -211,7 +209,7 @@ public class InkExplosion
             {
                 float pctg = Math.max(0, (float) (entity.distanceToSqr(x, y, z)/Math.pow(f2, 2)));
 
-                InkDamageUtils.doSplatDamage(level, (LivingEntity) entity, MathHelper.lerp(pctg, maxDamage, minDamage), color, exploder, weapon, damageMobs, inkType);
+                InkDamageUtils.doSplatDamage(level, (LivingEntity) entity, MathHelper.lerp(pctg, minDamage, maxDamage), color, exploder, weapon, damageMobs, inkType);
             }
 
             DyeColor dyeColor = null;
