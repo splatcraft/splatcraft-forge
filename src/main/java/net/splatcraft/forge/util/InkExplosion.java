@@ -27,6 +27,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -203,14 +204,12 @@ public class InkExplosion
             if (entity instanceof LivingEntity)
                 targetColor = ColorUtils.getEntityColor(entity);
 
-
-
             if (targetColor == -1 || (color != targetColor && targetColor > -1))
             {
                 double f2Sq = f2 * f2;
                 float pctg = Math.max(0, (float) ((f2Sq - entity.distanceToSqr(x, y, z)) / f2Sq));
 
-                InkDamageUtils.doSplatDamage(level, (LivingEntity) entity, MathHelper.lerp(pctg, minDamage, maxDamage), color, exploder, weapon, damageMobs, inkType);
+                InkDamageUtils.doSplatDamage(level, (LivingEntity) entity, MathHelper.lerp(pctg, minDamage, maxDamage) * Explosion.getSeenPercent(new Vector3d(x, y, z), entity), color, exploder, weapon, damageMobs, inkType);
             }
 
             DyeColor dyeColor = null;
