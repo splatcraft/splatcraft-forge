@@ -207,7 +207,8 @@ public class InkExplosion
 
             if (targetColor == -1 || (color != targetColor && targetColor > -1))
             {
-                float pctg = Math.max(0, (float) (entity.distanceToSqr(x, y, z)/Math.pow(f2, 2)));
+                double f2Sq = f2 * f2;
+                float pctg = Math.max(0, (float) ((f2Sq - entity.distanceToSqr(x, y, z)) / f2Sq));
 
                 InkDamageUtils.doSplatDamage(level, (LivingEntity) entity, MathHelper.lerp(pctg, minDamage, maxDamage), color, exploder, weapon, damageMobs, inkType);
             }
