@@ -89,7 +89,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     }
 
     public InkProjectileEntity setChargerStats(int lifespan, boolean canPierce) {
-        trailSize = getProjectileSize() * 0.85f;
+        trailSize = getProjectileSize() * 1.05f;
         this.lifespan = lifespan;
         gravityVelocity = 0;
         this.canPierce = canPierce;
@@ -101,7 +101,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         this.lifespan = lifespan;
         this.splashDamage = splashDamage;
         gravityVelocity = 0;
-        trailSize = getProjectileSize() * 0.35f;
+        trailSize = getProjectileSize() * 0.4f;
         explodes = true;
         setProjectileType(Types.BLASTER);
         return this;
@@ -241,18 +241,19 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         Vector3d posDiff = new Vector3d(0, 0, 0);
 
         if (thrower instanceof PlayerEntity) {
-            try {
-                posDiff = thrower.position().subtract(WeaponHandler.getPlayerPrevPos((PlayerEntity) thrower));
-                if (thrower.isOnGround())
-                    posDiff.multiply(1, 0, 1);
-
-            } catch (NullPointerException ignored) {
-            }
+            posDiff = thrower.position().subtract(WeaponHandler.getPlayerPrevPos((PlayerEntity) thrower));
+            if (thrower.isOnGround())
+                posDiff.multiply(1, 0, 1);
         }
 
 
         moveTo(getX() + posDiff.x(), getY() + posDiff.y(), getZ() + posDiff.z());
-        setDeltaMovement(getDeltaMovement().add(posDiff.multiply(0.8, 0.8, 0.8)));
+        Vector3d throwerSpeed = thrower.getDeltaMovement();
+        Vector3d speed = getDeltaMovement()
+                .subtract(throwerSpeed.x, thrower.isOnGround() ? 0.0 : throwerSpeed.y, throwerSpeed.z)
+                .add(Math.min(2.5, throwerSpeed.x * 0.8), 0.0, Math.min(2.5, throwerSpeed.z * 0.8))
+                .add(posDiff.multiply(0.8, 0.8, 0.8));
+        setDeltaMovement(speed);
     }
 
     @Override
