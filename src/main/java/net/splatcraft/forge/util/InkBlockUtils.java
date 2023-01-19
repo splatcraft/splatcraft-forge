@@ -1,5 +1,6 @@
 package net.splatcraft.forge.util;
 
+import java.util.HashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -27,8 +28,6 @@ import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 
-import java.util.HashMap;
-
 public class InkBlockUtils
 {
     public static boolean playerInkBlock(PlayerEntity player, World level, BlockPos pos, int color, float damage, InkType inkType)
@@ -50,17 +49,16 @@ public class InkBlockUtils
         if (InkedBlock.isTouchingLiquid(level, pos))
             return false;
 
-        if (state.getBlock() instanceof IColoredBlock)
-            return ((IColoredBlock) state.getBlock()).inkBlock(level, pos, color, damage, inkType);
-
         if (isUninkable(level, pos))
             return false;
+
+        if (state.getBlock() instanceof IColoredBlock)
+            return ((IColoredBlock) state.getBlock()).inkBlock(level, pos, color, damage, inkType);
 
         BlockState inkState = getInkState(inkType, level, pos);
 
         InkedBlockTileEntity inkte = (InkedBlockTileEntity) SplatcraftBlocks.inkedBlock.createTileEntity(inkState, level);
-        if (inkte == null)
-        {
+        if (inkte == null) {
             return false;
         }
         inkte.setColor(color);

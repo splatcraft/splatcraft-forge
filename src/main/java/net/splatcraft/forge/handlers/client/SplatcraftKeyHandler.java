@@ -1,5 +1,6 @@
 package net.splatcraft.forge.handlers.client;
 
+import java.util.HashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -28,8 +29,6 @@ import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
 import net.splatcraft.forge.util.CommonUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.HashMap;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class SplatcraftKeyHandler {
@@ -68,19 +67,18 @@ public class SplatcraftKeyHandler {
         if(pressState.get(subWeaponHotkey) == 1)
         {
             ItemStack sub = CommonUtils.getItemInInventory(player, itemStack -> itemStack.getItem() instanceof SubWeaponItem);
+            IPlayerInfo cap = PlayerInfoCapability.get(player);
 
-            if(sub.isEmpty())
+            if (sub.isEmpty() || (cap.isSquid() && player.level.getBlockCollisions(player,
+                    new AxisAlignedBB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).findAny().isPresent()))
                 player.displayClientMessage(new TranslationTextComponent("status.cant_use"), true);
-            else
-            {
-                IPlayerInfo cap = PlayerInfoCapability.get(player);
-                if(cap.isSquid())
-                {
+            else {
+                if (cap.isSquid()) {
                     cap.setIsSquid(false);
                     SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player.getUUID(), false));
                 }
 
-                if(!player.getItemInHand(Hand.OFF_HAND).equals(sub))
+                if (!player.getItemInHand(Hand.OFF_HAND).equals(sub))
                 {
                     slot = player.inventory.findSlotMatchingItem(sub);
                     SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
@@ -222,7 +220,6 @@ public class SplatcraftKeyHandler {
                         }
 
                         mc.gameRenderer.itemInHandRenderer.itemUsed(hand);
-                        return;
                     }
                 }
             }

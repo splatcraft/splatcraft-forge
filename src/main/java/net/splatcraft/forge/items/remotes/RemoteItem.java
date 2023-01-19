@@ -1,5 +1,7 @@
 package net.splatcraft.forge.items.remotes;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,9 +27,6 @@ import net.minecraft.world.World;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class RemoteItem extends Item
 {
@@ -182,7 +181,7 @@ public abstract class RemoteItem extends Item
             {
                 playerIn.displayClientMessage(remoteResult.getOutput(), true);
             }
-            levelIn.playSound(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SplatcraftSounds.remoteUse, SoundCategory.BLOCKS, 0.8f, 1);
+            levelIn.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SplatcraftSounds.remoteUse, SoundCategory.BLOCKS, 0.8f, 1);
             return new ActionResult<>(remoteResult.wasSuccessful() ? ActionResultType.SUCCESS : ActionResultType.FAIL, stack);
         }
 

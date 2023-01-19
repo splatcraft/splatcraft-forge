@@ -1,5 +1,6 @@
 package net.splatcraft.forge.util;
 
+import java.util.Objects;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
@@ -19,8 +20,6 @@ import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateInkOverlayPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class InkDamageUtils {
 
@@ -57,13 +56,11 @@ public class InkDamageUtils {
 
         float mobDmgPctg = SplatcraftGameRules.getIntRuleValue(level, SplatcraftGameRules.INK_MOB_DAMAGE_PERCENTAGE) * 0.01f;
         boolean doDamage = target instanceof PlayerEntity || damageMobs || mobDmgPctg > 0;
-        boolean applyInkCoverage = true;
         int targetColor = ColorUtils.getEntityColor(target);
 
         if (targetColor > -1)
         {
             doDamage = canDamageColor(level, color, targetColor);
-            applyInkCoverage = doDamage;
         }
 
         InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID + ":" + name, source, source, sourceItem);
@@ -71,24 +68,20 @@ public class InkDamageUtils {
         {
             target.invulnerableTime = (!applyHurtCooldown && !SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_DAMAGE_COOLDOWN)) ? 1 : 20;
             doDamage = ((IColoredEntity) target).onEntityInked(damageSource, damage, color);
-            applyInkCoverage = doDamage;
         }
         else if (target instanceof SheepEntity)
         {
             if (!((SheepEntity) target).isSheared())
             {
                 doDamage = false;
-                applyInkCoverage = false;
             }
         }
 
         if (doDamage)
-            target.hurt(damageSource, damage * (target instanceof PlayerEntity || target instanceof IColoredEntity || damageMobs ? 1 : mobDmgPctg));
+            doDamage = target.hurt(damageSource, damage * (target instanceof PlayerEntity || target instanceof IColoredEntity || damageMobs ? 1 : mobDmgPctg));
 
-        if (applyInkCoverage && !target.isInWater())
-        {
-            if (InkOverlayCapability.hasCapability(target))
-            {
+        if (doDamage && !target.isInWater()) {
+            if (InkOverlayCapability.hasCapability(target)) {
                 IInkOverlayInfo info = InkOverlayCapability.get(target);
 
                 if (info.getAmount() < (target instanceof SquidBumperEntity ? SquidBumperEntity.maxInkHealth : target.getMaxHealth()) * 1.5)
