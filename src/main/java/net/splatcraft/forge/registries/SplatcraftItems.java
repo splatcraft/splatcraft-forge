@@ -1,5 +1,26 @@
 package net.splatcraft.forge.registries;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.RangedAttribute;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.IArmorMaterial;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.item.Items;
+import net.minecraft.item.Rarity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.client.model.inktanks.ArmoredInkTankModel;
 import net.splatcraft.forge.client.model.inktanks.ClassicInkTankModel;
@@ -29,28 +50,6 @@ import net.splatcraft.forge.items.weapons.ShooterItem;
 import net.splatcraft.forge.items.weapons.SlosherItem;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.util.SplatcraftArmorMaterial;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.RangedAttribute;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.Items;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftItems
@@ -67,28 +66,27 @@ public class SplatcraftItems
     public static final IArmorMaterial ARMORED_INK_TANK = new SplatcraftArmorMaterial("armored_ink_tank", SoundEvents.ARMOR_EQUIP_IRON, 3, 0, 0.05f);
 
     //Shooters
-    public static final ShooterItem splattershot = new ShooterItem("splattershot", 1.05f, 0.75f, 12f, 4, 8f, 0.9f);
+    public static final ShooterItem splattershot = new ShooterItem("splattershot", 1f, 0.75f, 12f, 3, 8f, 0.9f);
     public static final ShooterItem tentatekSplattershot = new ShooterItem("tentatek_splattershot", splattershot);
     public static final ShooterItem wasabiSplattershot = new ShooterItem("wasabi_splattershot", splattershot);
     public static final ShooterItem ancientSplattershot = (ShooterItem) new ShooterItem("ancient_splattershot", splattershot).setSecret();
-    public static final ShooterItem splattershotJr = new ShooterItem("splattershot_jr", 1f, 0.55f, 13.5f, 4, 6.5f, 0.5f);
+    public static final ShooterItem splattershotJr = new ShooterItem("splattershot_jr", 0.95f, 0.55f, 13.5f, 3, 6.5f, 0.5f);
     public static final ShooterItem kensaSplattershotJr = new ShooterItem("kensa_splattershot_jr", splattershotJr);
-    public static final ShooterItem aerosprayMG = new ShooterItem("aerospray_mg", 1.3f, 0.45f, 26f, 2, 4.8f, 0.5f);
+    public static final ShooterItem aerosprayMG = new ShooterItem("aerospray_mg", 1.2f, 0.45f, 26f, 1, 5f, 0.5f);
     public static final ShooterItem getAerosprayRG = new ShooterItem("aerospray_rg", aerosprayMG);
-    public static final ShooterItem gal52 = new ShooterItem("52_gal", 1.2f, 0.78f, 16f, 6, 10.4f, 1.3f);
+    public static final ShooterItem gal52 = new ShooterItem("52_gal", 1.1f, 0.78f, 16f, 6, 10.4f, 1.3f);
     public static final ShooterItem gal52Deco = new ShooterItem("52_gal_deco", gal52);
     public static final ShooterItem kensaGal52 = new ShooterItem("kensa_52_gal", gal52);
-    public static final ShooterItem gal96 = new ShooterItem("96_gal", 1.3f, 0.85f, 12.5f, 8, 12.4f, 2.5f);
+    public static final ShooterItem gal96 = new ShooterItem("96_gal", 1.2f, 0.88f, 12.5f, 8, 12.4f, 2.5f);
     public static final ShooterItem gal96Deco = new ShooterItem("96_gal_deco", gal96);
-    public static final ShooterItem nzap85 = new ShooterItem("n-zap85", 1.05f, 0.75f, 12f, 3, 5.5f, 0.8f);
+    public static final ShooterItem nzap85 = new ShooterItem("n-zap85", 1f, 0.75f, 12f, 2, 5.9f, 0.8f);
     public static final ShooterItem nzap89 = new ShooterItem("n-zap89", nzap85);
 
 
-
     //Blasters
-    public static final BlasterItem blaster = new BlasterItem("blaster", 2.3f, 1f, 5f, 4, 20, 25f, 10f, 10f, 6);
+    public static final BlasterItem blaster = new BlasterItem("blaster", 2.25f, 1.1f, 5f, 4, 20, 25f, 10f, 10f, 5);
     public static final BlasterItem grimBlaster = new BlasterItem("grim_blaster", blaster);
-    public static final BlasterItem clashBlaster = new BlasterItem("clash_blaster", 1.8f, 1.2f, 5f, 1, 10, 12f, 6f, 4, 4);
+    public static final BlasterItem clashBlaster = new BlasterItem("clash_blaster", 1.65f, 1.1f, 5f, 1, 10, 12f, 6f, 4, 4);
     public static final BlasterItem clashBlasterNeo = new BlasterItem("clash_blaster_neo", clashBlaster);
 
     //Rollers
@@ -99,33 +97,35 @@ public class SplatcraftItems
     public static final RollerItem carbonRoller = new RollerItem("carbon_roller", 2, 0.06f, 14, 1.28f, false).setDashStats(1.52, 0.3f, 10)
             .setSwingStats(0.6, 4, 20, 0.45f, 3, 4, 24, 0.58f, 4);
     public static final RollerItem inkbrush = new RollerItem("inkbrush", 1, 0.4f, 4, 1.92f, true)
-            .setSwingStats(0.24, 2f, 4, 0.54f, 2);
+            .setSwingStats(0.24, 2f, 4, 0.6f, 2);
     public static final RollerItem octobrush = new RollerItem("octobrush", 2, 0.54f, 5, 1.92f, true)
-            .setSwingStats(0.24, 3.2f, 2, 0.6f, 3);
+            .setSwingStats(0.24, 3.2f, 2, 0.65f, 3);
     public static final RollerItem kensaOctobrush = new RollerItem("kensa_octobrush", octobrush);
 
     //Chargers
-    public static final ChargerItem splatCharger = new ChargerItem("splat_charger", 0.87f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4, false, 1.1f);
+    public static final ChargerItem splatCharger = new ChargerItem("splat_charger", 0.7f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4, false, 1.1f);
     public static final ChargerItem bentoSplatCharger = new ChargerItem("bento_splat_charger", splatCharger);
     public static final ChargerItem kelpSplatCharger = new ChargerItem("kelp_splat_charger", splatCharger);
-    public static final ChargerItem eLiter4K = new ChargerItem("e_liter_4k", 0.95f, 2.4f, 16, 35, 40, 36f, 2.25f, 25f, 0.15, false, 1.0f);
-    public static final ChargerItem bamboozler14mk1 = new ChargerItem("bamboozler_14_mk1", 0.86f, 1.9f, 8, 4, 0, 16, 2.8f, 7, 0.8, true, 1.1f);
+    public static final ChargerItem eLiter4K = new ChargerItem("e_liter_4k", 0.85f, 2.4f, 16, 35, 40, 36f, 2.25f, 25f, 0.15, false, 1.0f);
+    public static final ChargerItem bamboozler14mk1 = new ChargerItem("bamboozler_14_mk1", 0.75f, 1.9f, 8, 4, 0, 16, 2.8f, 7, 0.8, true, 1.1f);
     public static final ChargerItem bamboozler14mk2 = new ChargerItem("bamboozler_14_mk2", bamboozler14mk1);
 
     //Dualies
-    public static final DualieItem splatDualie = new DualieItem("splat_dualies", 1f, 0.65f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
+    public static final DualieItem splatDualie = new DualieItem("splat_dualies", 0.9f, 0.65f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
     public static final DualieItem enperrySplatDualie = new DualieItem("enperry_splat_dualies", splatDualie);
-    public static final DualieItem dualieSquelcher = new DualieItem("dualie_squelchers", 0.95f, 0.74f, 11.5f, 10, 4.4f, 1.2f, 1, 0.7f, 5, 6, 14);
-    public static final DualieItem gloogaDualie = new DualieItem("glooga_dualies", 0.9f, 0.68f, 12f, 8, 5.2f, 1.4f, 1, 0.7f, 8, 9, 24) {{ rollDamage = 10.5f;}};
+    public static final DualieItem dualieSquelcher = new DualieItem("dualie_squelchers", 0.85f, 0.74f, 11.5f, 10, 4.4f, 1.2f, 1, 0.7f, 5, 6, 14);
+    public static final DualieItem gloogaDualie = new DualieItem("glooga_dualies", 0.8f, 0.72f, 12f, 7, 7.3f, 1.4f, 1, 0.7f, 8, 9, 24) {{
+        rollDamage = 10.5f;
+    }};
     public static final DualieItem gloogaDualieDeco = new DualieItem("glooga_dualies_deco", gloogaDualie);
     public static final DualieItem kensaGloogaDualie = new DualieItem("kensa_glooga_dualies", gloogaDualie);
 
     //Sloshers
-    public static final SlosherItem slosher = new SlosherItem("slosher", 1.6f, 0.48f, 2, 8, 14, 3, 7f);
+    public static final SlosherItem slosher = new SlosherItem("slosher", 1.6f, 0.4f, 2, 8, 14, 3, 7f);
     public static final SlosherItem classicSlosher = new SlosherItem("classic_slosher", slosher);
     public static final SlosherItem sodaSlosher = new SlosherItem("soda_slosher", slosher);
-    public static final SlosherItem triSlosher = new SlosherItem("tri_slosher", 1.65f, 0.444f, 3, 20, 12.4f, 4, 6f);
-    public static final SlosherItem explosher = new SlosherItem("explosher", 2.1f, 0.7f, 1, 0, 11f, 12, 11.7f).setSlosherType(SlosherItem.Type.EXPLODING);
+    public static final SlosherItem triSlosher = new SlosherItem("tri_slosher", 1.55f, 0.444f, 3, 20, 12.4f, 4, 6f);
+    public static final SlosherItem explosher = new SlosherItem("explosher", 2f, 0.75f, 1, 0, 11f, 12, 11.7f).setSlosherType(SlosherItem.Type.EXPLODING);
 
     //Ink Tanks
     public static final InkTankItem inkTank = new InkTankItem("ink_tank", 100);
