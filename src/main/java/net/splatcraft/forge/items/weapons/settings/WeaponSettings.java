@@ -1,12 +1,14 @@
-package net.splatcraft.forge.util;
+package net.splatcraft.forge.items.weapons.settings;
 
 public class WeaponSettings {
     public String name;
 
     public float projectileSize;
+    public int projectileLifespan;
     public float projectileSpeed;
 
-    public float firingSpeed;
+    public int firingSpeed;
+    public int startupTicks;
 
     public float groundInaccuracy;
     public float airInaccuracy;
@@ -23,19 +25,23 @@ public class WeaponSettings {
         this.name = name;
     }
 
-    public WeaponSettings changeName(String newName) {
-        this.name = newName;
-        return this;
-    }
-
     public float calculateDamage(int tickCount) {
         int e = tickCount - damageDecayStartTick;
-        // There are 3x more frames in Splatoon than ticks in Minecraft
-        return Math.max(e > 0 ? baseDamage - e * damageDecayPerTick : baseDamage, minDamage);
+        return Math.max(e > 0 ? baseDamage - (e * damageDecayPerTick) : baseDamage, minDamage);
+    }
+
+    public WeaponSettings setName(String setName) {
+        this.name = setName;
+        return this;
     }
 
     public WeaponSettings setProjectileSize(float projectileSize) {
         this.projectileSize = projectileSize;
+        return this;
+    }
+
+    public WeaponSettings setProjectileLifespan(int projectileLifespan) {
+        this.projectileLifespan = projectileLifespan;
         return this;
     }
 
@@ -44,8 +50,13 @@ public class WeaponSettings {
         return this;
     }
 
-    public WeaponSettings setFiringSpeed(float firingSpeed) {
+    public WeaponSettings setFiringSpeed(int firingSpeed) {
         this.firingSpeed = firingSpeed;
+        return this;
+    }
+
+    public WeaponSettings setStartupTicks(int startupTicks) {
+        this.startupTicks = startupTicks;
         return this;
     }
 

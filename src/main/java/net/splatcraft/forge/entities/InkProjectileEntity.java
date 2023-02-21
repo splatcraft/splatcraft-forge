@@ -28,6 +28,7 @@ import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.handlers.WeaponHandler;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
@@ -35,7 +36,6 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.InkExplosion;
-import net.splatcraft.forge.util.WeaponSettings;
 
 public class InkProjectileEntity extends ProjectileItemEntity implements IColoredEntity {
 
@@ -147,7 +147,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         }
 
         if (!level.isClientSide && !persistent && lifespan-- <= 0) {
-            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, settings.baseDamage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, settings.baseDamage, damageMobs, getColor(), inkType, sourceWeapon);
             if (explodes) {
                 level.broadcastEntityEvent(this, (byte) 3);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
@@ -225,7 +225,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 
         super.onHitBlock(result);
 
-        InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, settings.calculateDamage(this.tickCount), splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+        InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, settings.calculateDamage(this.tickCount), damageMobs, getColor(), inkType, sourceWeapon);
         if (explodes) {
             level.broadcastEntityEvent(this, (byte) 3);
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);

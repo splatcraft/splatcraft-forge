@@ -95,7 +95,7 @@ public class SubWeaponItem extends WeaponBaseItem
         if (SubWeaponItem.singleUse(stack)) {
             if (entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative())
                 stack.shrink(1);
-        } else reduceInk(entity, inkConsumption, false);
+        } else reduceInk(entity, inkConsumption, 0, false);
 
     }
 

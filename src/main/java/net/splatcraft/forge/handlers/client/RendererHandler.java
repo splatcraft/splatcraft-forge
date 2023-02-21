@@ -515,7 +515,7 @@ public class RendererHandler {
 
         boolean showCrosshairInkIndicator = SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.CROSSHAIR);
         boolean isHoldingMatchItem = SplatcraftTags.Items.MATCH_ITEMS.contains(player.getMainHandItem().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getOffhandItem().getItem());
-        boolean showLowInkWarning = showCrosshairInkIndicator && isHoldingMatchItem && SplatcraftConfig.Client.lowInkWarning.get() && !enoughInk(player, 10f, false);
+        boolean showLowInkWarning = showCrosshairInkIndicator && isHoldingMatchItem && SplatcraftConfig.Client.lowInkWarning.get() && !enoughInk(player, 10f, 0, false);
         if (info.isSquid() || showLowInkWarning) {
             if (event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR)) {
                 squidTime++;
@@ -543,7 +543,7 @@ public class RendererHandler {
                     RenderSystem.enableBlend();
                     Minecraft.getInstance().getTextureManager().bind(WIDGETS);
 
-                    if (enoughInk(player, 220, false)) { // checks if you have unlimited ink
+                    if (enoughInk(player, 220, 0, false)) { // checks if you have unlimited ink
                         AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 2, 0, 131, 18, 2, 256, 256);
                         AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 4 + heightAnim, 0, 131, 18, 4 + heightAnim, 256, 256);
 
