@@ -7,7 +7,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.SoundCategory;
@@ -24,7 +23,7 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkExplosion;
 import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponStat;
+import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -78,9 +77,9 @@ public class DualieItem extends WeaponBaseItem
         this.finalRollCooldown = finalRollCooldown;
         this.canRollFire = canRollFire;
 
-        addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / 1.2f * 100)));
-        addStat(new WeaponStat("damage", (stack, level) -> (int) (damage / 20 * 100)));
-        addStat(new WeaponStat("mobility", (stack, level) -> (int) (rollSpeed * 100)));
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) (projectileSpeed / 1.2f * 100)));
+        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (damage / 20 * 100)));
+        addStat(new WeaponTooltip("mobility", (stack, level) -> (int) (rollSpeed * 100)));
 
         dualies.add(this);
     }
@@ -126,7 +125,7 @@ public class DualieItem extends WeaponBaseItem
             if (!player.level.isClientSide)
             {
                 player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.dualieDodge, SoundCategory.PLAYERS, 0.7F, ((player.level.random.nextFloat() - player.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-                InkExplosion.createInkExplosion(player.level, player, new DamageSource("ink"), player.blockPosition(), 1.2f, 0, 0, false, ColorUtils.getInkColor(activeDualie), InkBlockUtils.getInkType(player), activeDualie);
+                InkExplosion.createInkExplosion(player.level, player, player.blockPosition(), 1.2f, 0, 0, false, ColorUtils.getInkColor(activeDualie), InkBlockUtils.getInkType(player), activeDualie);
             }
             setRollString(mainDualie, rollCount + 1);
             setRollCooldown(mainDualie, (int) (getRollCooldown(mainDualie, maxRolls, maxRolls) * 0.75f));

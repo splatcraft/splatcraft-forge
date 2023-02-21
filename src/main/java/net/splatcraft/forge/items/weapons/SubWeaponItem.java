@@ -21,7 +21,7 @@ import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.WeaponStat;
+import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,9 +44,9 @@ public class SubWeaponItem extends WeaponBaseItem
         this.entityType = entityType;
         subs.add(this);
 
-        addStat(new WeaponStat("damage", (stack, level) -> (int) (directDamage / 20 * 100)));
-        addStat(new WeaponStat("impact", (stack, level) -> (int) (explosionSize / 4 * 100)));
-        addStat(new WeaponStat("ink_consumption", (stack, level) -> (int) (inkConsumption)));
+        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (directDamage / 20 * 100)));
+        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (explosionSize / 4 * 100)));
+        addStat(new WeaponTooltip("ink_consumption", (stack, level) -> (int) (inkConsumption)));
     }
 
     public static boolean singleUse(ItemStack stack) {

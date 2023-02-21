@@ -21,7 +21,7 @@ import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponStat;
+import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 
 public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
@@ -60,9 +60,9 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
         this.maxConsumption = maxConsumption;
         this.minConsumption = minConsumption;
 
-        addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / projectileLifespan * 100)));
-        addStat(new WeaponStat("charge_speed", (stack, level) -> (int) ((40 - chargeTime) * 100 / 40f)));
-        addStat(new WeaponStat("mobility", (stack, level) -> (int) (mobility * 100)));
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) (projectileSpeed / projectileLifespan * 100)));
+        addStat(new WeaponTooltip("charge_speed", (stack, level) -> (int) ((40 - chargeTime) * 100 / 40f)));
+        addStat(new WeaponTooltip("mobility", (stack, level) -> (int) (mobility * 100)));
     }
 
     public ChargerItem(String name, ChargerItem parent)

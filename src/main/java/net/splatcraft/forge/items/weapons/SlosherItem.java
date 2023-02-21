@@ -10,7 +10,7 @@ import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponStat;
+import net.splatcraft.forge.util.WeaponTooltip;
 
 public class SlosherItem extends WeaponBaseItem
 {
@@ -37,9 +37,9 @@ public class SlosherItem extends WeaponBaseItem
         this.inkConsumption = inkConsumption;
 
 
-        addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / 1.2f * 100)));
-        addStat(new WeaponStat("damage", (stack, level) -> (int) (damage / 20 * 100)));
-        addStat(new WeaponStat("handling", (stack, level) -> (int) ((15 - startupTicks)/15f * 100)));
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) (projectileSpeed / 1.2f * 100)));
+        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (damage / 20 * 100)));
+        addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((15 - startupTicks) / 15f * 100)));
     }
 
     public SlosherItem(String name, SlosherItem parent)

@@ -38,7 +38,6 @@ public class Splatcraft {
     public static final String MODNAME = "Splatcraft";
     public static final String SHORT = "SC";
     public static String version;
-    // Directly reference a log4j logger.
 
     public Splatcraft() {
         for (ModInfo m : ModList.get().getMods()) { // Forge is stupid

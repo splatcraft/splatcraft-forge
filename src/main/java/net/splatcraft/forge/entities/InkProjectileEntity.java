@@ -14,7 +14,6 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -36,18 +35,17 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.InkExplosion;
+import net.splatcraft.forge.util.WeaponSettings;
 
 public class InkProjectileEntity extends ProjectileItemEntity implements IColoredEntity {
 
     private static final DataParameter<String> PROJ_TYPE = EntityDataManager.defineId(InkProjectileEntity.class, DataSerializers.STRING);
     private static final DataParameter<Integer> COLOR = EntityDataManager.defineId(InkProjectileEntity.class, DataSerializers.INT);
     private static final DataParameter<Float> PROJ_SIZE = EntityDataManager.defineId(InkProjectileEntity.class, DataSerializers.FLOAT);
-    private static final DamageSource SPLASH_DAMAGE_SOURCE = new DamageSource("ink");
 
     public float gravityVelocity = 0.075f;
     public int lifespan = 600;
     public boolean explodes = false;
-    public float damage = 0;
     public float splashDamage = 0;
     public boolean damageMobs = false;
     public boolean canPierce = false;
@@ -58,6 +56,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     public String damageType = "splat";
     public boolean causesHurtCooldown = false;
 
+    public WeaponSettings settings;
+
     public InkBlockUtils.InkType inkType;
 
 
@@ -65,21 +65,21 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         super(type, level);
     }
 
-    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float size, float damage, ItemStack sourceWeapon) {
+    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, WeaponSettings settings, ItemStack sourceWeapon) {
         super(SplatcraftEntities.INK_PROJECTILE, thrower, level);
         setColor(color);
-        setProjectileSize(size);
-        this.damage = damage;
+        this.settings = settings;
+        setProjectileSize(settings.projectileSize);
         this.inkType = inkType;
         this.sourceWeapon = sourceWeapon;
     }
 
-    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float size, float damage) {
-        this(level, thrower, color, inkType, size, damage, ItemStack.EMPTY);
+    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, WeaponSettings settings) {
+        this(level, thrower, color, inkType, settings, ItemStack.EMPTY);
     }
 
-    public InkProjectileEntity(World level, LivingEntity thrower, ItemStack sourceWeapon, InkBlockUtils.InkType inkType, float size, float damage) {
-        this(level, thrower, ColorUtils.getInkColor(sourceWeapon), inkType, size, damage, sourceWeapon);
+    public InkProjectileEntity(World level, LivingEntity thrower, ItemStack sourceWeapon, InkBlockUtils.InkType inkType, WeaponSettings settings) {
+        this(level, thrower, ColorUtils.getInkColor(sourceWeapon), inkType, settings, sourceWeapon);
     }
 
     public InkProjectileEntity setShooterTrail() {
@@ -147,7 +147,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         }
 
         if (!level.isClientSide && !persistent && lifespan-- <= 0) {
-            InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, settings.baseDamage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
             if (explodes) {
                 level.broadcastEntityEvent(this, (byte) 3);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
@@ -161,8 +161,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
                 if (!InkBlockUtils.canInkPassthrough(level, inkPos)) {
                     if (!isInvisible())
                         level.broadcastEntityEvent(this, (byte) 1);
-                    InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, inkPos.relative(Direction.UP), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
-                    InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
+                    InkExplosion.createInkExplosion(level, getOwner(), inkPos.relative(Direction.UP), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
+                    InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), trailSize, 0, 0, damageMobs, getColor(), inkType, sourceWeapon);
                     break;
                 }
             }
@@ -196,13 +196,14 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         super.onHitEntity(result);
 
         Entity target = result.getEntity();
+        float damage = settings.calculateDamage(this.tickCount);
 
         if (target instanceof LivingEntity)
             InkDamageUtils.doDamage(level, (LivingEntity) target, damage, getColor(), getOwner(), sourceWeapon, damageMobs, inkType, damageType, causesHurtCooldown);
 
         if (!canPierce) {
             if (explodes) {
-                InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+                InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, damage, damageMobs, getColor(), inkType, sourceWeapon);
                 level.broadcastEntityEvent(this, (byte) 3);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             } else
@@ -224,7 +225,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 
         super.onHitBlock(result);
 
-        InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), getProjectileSize() * 0.85f, damage, splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
+        InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, settings.calculateDamage(this.tickCount), splashDamage, damageMobs, getColor(), inkType, sourceWeapon);
         if (explodes) {
             level.broadcastEntityEvent(this, (byte) 3);
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
@@ -280,7 +281,6 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 
         trailCooldown = nbt.getInt("TrailCooldown");
         trailSize = nbt.getFloat("TrailSize");
-        damage = nbt.getFloat("Damage");
         splashDamage = nbt.getFloat("SplashDamage");
         damageMobs = nbt.getBoolean("DamageMobs");
         canPierce = nbt.getBoolean("CanPierce");
@@ -307,7 +307,6 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         nbt.putInt("Lifespan", lifespan);
         nbt.putFloat("TrailSize", trailSize);
         nbt.putInt("TrailCooldown", trailCooldown);
-        nbt.putFloat("Damage", damage);
         nbt.putFloat("SplashDamage", splashDamage);
         nbt.putBoolean("DamageMobs", damageMobs);
         nbt.putBoolean("CanPierce", canPierce);

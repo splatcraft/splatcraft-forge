@@ -29,7 +29,7 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponStat;
+import net.splatcraft.forge.util.WeaponTooltip;
 
 import java.util.ArrayList;
 
@@ -59,13 +59,12 @@ public class RollerItem extends WeaponBaseItem
 
     public boolean isBrush;
 
-    public RollerItem(String name, int rollSize, float rollConsumption, float rollDamage, double mobility, boolean isBrush)
-    {
+    public RollerItem(String name, int rollSize, float rollConsumption, float rollDamage, double mobility, boolean isBrush) {
         super();
 
-        addStat(new WeaponStat("range", (stack, level) -> (int) ((flingProjectileSpeed + swingProjectileSpeed) * 50)));
-        addStat(new WeaponStat("ink_speed", (stack, level) -> (int) (dashMobility / 2f * 100)));
-        addStat(new WeaponStat("handling", (stack, level) -> (int) ((20 - (flingTime + swingTime) / 2f) * 5)));
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) ((flingProjectileSpeed + swingProjectileSpeed) * 50)));
+        addStat(new WeaponTooltip("ink_speed", (stack, level) -> (int) (dashMobility / 2f * 100)));
+        addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((20 - (flingTime + swingTime) / 2f) * 5)));
 
         setRegistryName(name);
         rollers.add(this);
