@@ -41,11 +41,11 @@ import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
 import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.CommonUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -230,6 +230,9 @@ public class SplatcraftCommonHandler
 
     }
 
+    @Deprecated
+    public static final HashMap<PlayerEntity, Integer> LOCAL_COLOR = new HashMap<>();
+
     @SubscribeEvent
     public static void capabilityUpdateEvent(TickEvent.PlayerTickEvent event)
     {
@@ -250,7 +253,10 @@ public class SplatcraftCommonHandler
                 if (event.player.deathTime <= 0 && !info.isInitialized())
                 {
                     info.setInitialized(true);
-                    info.setColor(ColorUtils.getRandomStarterColor());
+                    info.setPlayer(event.player);
+                    if(LOCAL_COLOR.containsKey(event.player))
+                        info.setColor(LOCAL_COLOR.get(event.player));
+
                     if (event.player.level.isClientSide)
                         SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
                 }

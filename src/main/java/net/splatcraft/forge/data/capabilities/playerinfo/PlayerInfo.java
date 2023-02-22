@@ -1,6 +1,9 @@
 package net.splatcraft.forge.data.capabilities.playerinfo;
 
-import net.splatcraft.forge.registries.SplatcraftInkColors;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.event.world.NoteBlockEvent;
+import net.splatcraft.forge.handlers.SplatcraftCommonHandler;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCharge;
@@ -18,6 +21,7 @@ public class PlayerInfo implements IPlayerInfo
     private NonNullList<ItemStack> matchInventory = NonNullList.create();
     private PlayerCooldown playerCooldown = null;
     private PlayerCharge playerCharge = null;
+    private PlayerEntity player;
 
     private ItemStack inkBand = ItemStack.EMPTY;
 
@@ -28,13 +32,18 @@ public class PlayerInfo implements IPlayerInfo
 
     public PlayerInfo()
     {
-        this(SplatcraftInkColors.undyed.getColor());
+        this(ColorUtils.getRandomStarterColor());
     }
 
     @Override
     public boolean isInitialized()
     {
         return initialized;
+    }
+
+    @Override
+    public void setPlayer(PlayerEntity entity) {
+        this.player = entity;
     }
 
     @Override
@@ -53,6 +62,9 @@ public class PlayerInfo implements IPlayerInfo
     public void setColor(int color)
     {
         this.color = color;
+
+        if(player != null)
+            SplatcraftCommonHandler.LOCAL_COLOR.put(player, color);
     }
 
     @Override

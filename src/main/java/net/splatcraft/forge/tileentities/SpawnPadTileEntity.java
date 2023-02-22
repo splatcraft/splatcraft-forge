@@ -41,7 +41,7 @@ public class SpawnPadTileEntity extends InkColorTileEntity implements ITickableT
 		for (Entity entity : level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(getBlockPos().getX()+.5, getBlockPos().getY()+.5, getBlockPos().getZ()+.5,
 				getBlockPos().getX()+.5, getBlockPos().getY()+.5, getBlockPos().getZ()+.5).inflate(radius)))
 		{
-			if(ColorUtils.getEntityColor(entity) != getColor())
+			if(!ColorUtils.colorEquals(entity, this))
 			{
 				activeTime = maxActiveTime;
 
@@ -54,6 +54,7 @@ public class SpawnPadTileEntity extends InkColorTileEntity implements ITickableT
 				{
 					entity.setDeltaMovement(entity.position().subtract(getBlockPos().getX()+.5f, getBlockPos().getY(), getBlockPos().getZ()+.5f).normalize().scale(.5));
 					entity.hasImpulse = true;
+
 				}
 			}
 		}

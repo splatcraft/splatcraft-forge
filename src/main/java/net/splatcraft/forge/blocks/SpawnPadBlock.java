@@ -65,7 +65,7 @@ public class SpawnPadBlock extends Block implements IColoredBlock, IWaterLoggabl
 	@Override
 	public Optional<Vector3d> getRespawnPosition(BlockState state, EntityType<?> type, IWorldReader world, BlockPos pos, float orientation, @Nullable LivingEntity entity)
 	{
-		if(!ColorUtils.colorEquals(entity, world.getBlockEntity(pos)))
+		if(entity != null && !ColorUtils.colorEquals(entity, world.getBlockEntity(pos)))
 			return Optional.empty();
 
 		Vector3d vec = TransportationHelper.findSafeDismountLocation(type, world, pos, false);

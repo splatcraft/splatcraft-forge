@@ -1,5 +1,7 @@
 package net.splatcraft.forge.data.capabilities.playerinfo;
 
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
@@ -10,6 +12,8 @@ import net.minecraft.util.NonNullList;
 public interface IPlayerInfo
 {
     boolean isInitialized();
+
+    void setPlayer(PlayerEntity entity);
 
     void setInitialized(boolean init);
 
