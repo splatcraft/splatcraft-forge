@@ -20,7 +20,7 @@ import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.client.model.inktanks.AbstractInkTankModel;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.items.weapons.IChargeableWeapon;
+import net.splatcraft.forge.items.weapons.ChargerItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -89,7 +89,6 @@ public class InkTankItem extends ColoredArmorItem
             tag.putInt("RegenCooldown", 0);
         int cooldown = tag.getInt("RegenCooldown");
         if (cooldown == 0 || !fromTick) return !cannotRecharge;
-        if (--cooldown < 0) cooldown = 1;
         tag.putInt("RegenCooldown", --cooldown);
         return false;
     }
@@ -107,7 +106,7 @@ public class InkTankItem extends ColoredArmorItem
             float ink = getInkAmount(stack);
 
             if (canRecharge(stack, true) && player.getItemBySlot(EquipmentSlotType.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
-                    && (!(player.getUseItem().getItem() instanceof WeaponBaseItem) || player.getUseItem().getItem() instanceof IChargeableWeapon || PlayerCooldown.hasPlayerCooldown(player))) {
+                    && (!(player.getUseItem().getItem() instanceof WeaponBaseItem) || player.getUseItem().getItem() instanceof ChargerItem || PlayerCooldown.hasPlayerCooldown(player))) {
                 setInkAmount(stack, ink + (InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player) ? 1.1125f : .11125f));
             }
         }

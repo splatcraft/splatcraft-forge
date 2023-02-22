@@ -73,7 +73,7 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.SquidBumperEntity;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.items.InkTankItem;
-import net.splatcraft.forge.items.weapons.IChargeableWeapon;
+import net.splatcraft.forge.items.weapons.ChargerItem;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
@@ -495,7 +495,7 @@ public class RendererHandler {
 
         if (event instanceof RenderGameOverlayEvent.Pre && event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR))
         {
-            if (player.getMainHandItem().getItem() instanceof IChargeableWeapon || player.getOffhandItem().getItem() instanceof IChargeableWeapon)
+            if (player.getMainHandItem().getItem() instanceof ChargerItem || player.getOffhandItem().getItem() instanceof ChargerItem)
             {
 
                 MatrixStack matrixStack = event.getMatrixStack();

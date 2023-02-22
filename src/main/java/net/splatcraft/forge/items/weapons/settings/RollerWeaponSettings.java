@@ -37,7 +37,7 @@ public class RollerWeaponSettings implements IDamageCalculator {
         this.name = name;
     }
 
-    public float calculateDamage(int tickCount, boolean airborne) {
+    public float calculateDamage(int tickCount, boolean airborne, float charge) {
         if (airborne) {
             int e = tickCount - flingDamageDecayStartTick;
             return Math.max(e > 0 ? flingBaseDamage - (e * flingDamageDecayPerTick) : flingBaseDamage, flingMinDamage);

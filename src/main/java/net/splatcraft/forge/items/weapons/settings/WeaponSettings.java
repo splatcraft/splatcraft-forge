@@ -10,10 +10,13 @@ public class WeaponSettings implements IDamageCalculator {
     public int firingSpeed;
     public int startupTicks;
 
+    public int dischargeTicks;
+
     public float groundInaccuracy;
     public float airInaccuracy;
 
     public float inkConsumption;
+    public float minInkConsumption;
     public int inkRecoveryCooldown;
 
     public float baseDamage;
@@ -21,11 +24,18 @@ public class WeaponSettings implements IDamageCalculator {
     public int damageDecayStartTick;
     public float damageDecayPerTick;
 
+    public float chargerMobility;
+    public boolean fastMidAirCharge;
+    public float chargerPiercesAt;
+
     public WeaponSettings(String name) {
         this.name = name;
     }
 
-    public float calculateDamage(int tickCount, boolean airborne) {
+    public float calculateDamage(int tickCount, boolean airborne, float charge) {
+        if (charge > 0.0f)
+            return charge > 0.95f ? baseDamage : baseDamage * charge / 5f + baseDamage / 5f;
+
         int e = tickCount - damageDecayStartTick;
         return Math.max(e > 0 ? baseDamage - (e * damageDecayPerTick) : baseDamage, minDamage);
     }
@@ -60,6 +70,11 @@ public class WeaponSettings implements IDamageCalculator {
         return this;
     }
 
+    public WeaponSettings setDischargeTicks(int dischargeTicks) {
+        this.dischargeTicks = dischargeTicks;
+        return this;
+    }
+
     public WeaponSettings setGroundInaccuracy(float groundInaccuracy) {
         this.groundInaccuracy = groundInaccuracy;
         return this;
@@ -72,6 +87,11 @@ public class WeaponSettings implements IDamageCalculator {
 
     public WeaponSettings setInkConsumption(float inkConsumption) {
         this.inkConsumption = inkConsumption;
+        return this;
+    }
+
+    public WeaponSettings setMinInkConsumption(float minInkConsumption) {
+        this.minInkConsumption = minInkConsumption;
         return this;
     }
 
@@ -97,6 +117,21 @@ public class WeaponSettings implements IDamageCalculator {
 
     public WeaponSettings setDamageDecayPerTick(float damageDecayPerTick) {
         this.damageDecayPerTick = damageDecayPerTick;
+        return this;
+    }
+
+    public WeaponSettings setChargerMobility(float chargerMobility) {
+        this.chargerMobility = chargerMobility;
+        return this;
+    }
+
+    public WeaponSettings setFastMidAirCharge(boolean fastMidAirCharge) {
+        this.fastMidAirCharge = fastMidAirCharge;
+        return this;
+    }
+
+    public WeaponSettings setChargerPiercesAt(float chargerPiercesAt) {
+        this.chargerPiercesAt = chargerPiercesAt;
         return this;
     }
 }

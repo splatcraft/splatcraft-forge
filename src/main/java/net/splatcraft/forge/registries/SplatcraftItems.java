@@ -205,12 +205,48 @@ public class SplatcraftItems {
     public static final RollerItem kensaOctobrush = new RollerItem(octobrush.settings.setName("kensa_octobrush"));
 
     //Chargers
-    public static final ChargerItem splatCharger = new ChargerItem("splat_charger", 0.7f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4, false, 1.1f);
-    public static final ChargerItem bentoSplatCharger = new ChargerItem("bento_splat_charger", splatCharger);
-    public static final ChargerItem kelpSplatCharger = new ChargerItem("kelp_splat_charger", splatCharger);
-    public static final ChargerItem eLiter4K = new ChargerItem("e_liter_4k", 0.85f, 2.4f, 16, 35, 40, 36f, 2.25f, 25f, 0.15, false, 1.0f);
-    public static final ChargerItem bamboozler14mk1 = new ChargerItem("bamboozler_14_mk1", 0.75f, 1.9f, 8, 4, 0, 16, 2.8f, 7, 0.8, true, 1.1f);
-    public static final ChargerItem bamboozler14mk2 = new ChargerItem("bamboozler_14_mk2", bamboozler14mk1);
+    public static final ChargerItem splatCharger = new ChargerItem(new WeaponSettings("splat_charger")
+            .setProjectileSize(0.7f)
+            .setProjectileLifespan(13)
+            .setProjectileSpeed(1.8f)
+            .setStartupTicks(20)
+            .setDischargeTicks(20)
+            .setMinInkConsumption(2.25f)
+            .setInkConsumption(18)
+            .setInkRecoveryCooldown(7)
+            .setBaseDamage(32)
+            .setChargerMobility(0.4f)
+            .setFastMidAirCharge(false)
+            .setChargerPiercesAt(1.1f));
+    public static final ChargerItem bentoSplatCharger = new ChargerItem(splatCharger.settings.setName("bento_splat_charger"));
+    public static final ChargerItem kelpSplatCharger = new ChargerItem(splatCharger.settings.setName("kelp_splat_charger"));
+    public static final ChargerItem eLiter4K = new ChargerItem(new WeaponSettings("e_liter_4k")
+            .setProjectileSize(0.85f)
+            .setProjectileLifespan(16)
+            .setProjectileSpeed(2.4f)
+            .setStartupTicks(35)
+            .setDischargeTicks(40)
+            .setMinInkConsumption(2.25f)
+            .setInkConsumption(25)
+            .setInkRecoveryCooldown(7)
+            .setBaseDamage(36)
+            .setChargerMobility(0.15f)
+            .setFastMidAirCharge(false)
+            .setChargerPiercesAt(1.0f));
+    public static final ChargerItem bamboozler14mk1 = new ChargerItem(new WeaponSettings("bamboozler_14_mk1")
+            .setProjectileSize(0.75f)
+            .setProjectileLifespan(8)
+            .setProjectileSpeed(1.9f)
+            .setStartupTicks(4)
+            .setDischargeTicks(0) // no charge storage
+            .setMinInkConsumption(2.8f)
+            .setInkConsumption(7)
+            .setInkRecoveryCooldown(7)
+            .setBaseDamage(16) // bamboo without MPU :trollface:
+            .setChargerMobility(0.8f)
+            .setFastMidAirCharge(true)
+            .setChargerPiercesAt(1.1f));
+    public static final ChargerItem bamboozler14mk2 = new ChargerItem(bamboozler14mk1.settings.setName("bamboozler_14_mk2"));
 
     //Dualies
     public static final DualieItem splatDualie = new DualieItem("splat_dualies", 0.9f, 0.65f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
