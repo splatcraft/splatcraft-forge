@@ -19,7 +19,7 @@ public class SlosherItem extends WeaponBaseItem
     public Type slosherType = Type.DEFAULT;
 
     public SlosherItem(WeaponSettings settings) {
-        super();
+        super(settings);
         this.settings = settings;
         setRegistryName(this.settings.name);
 

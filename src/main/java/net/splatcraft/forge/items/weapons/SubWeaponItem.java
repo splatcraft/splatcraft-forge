@@ -18,6 +18,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -38,7 +39,7 @@ public class SubWeaponItem extends WeaponBaseItem
     public static final float throwAngle = -30f;
 
     public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption) {
-        super();
+        super(WeaponSettings.DEFAULT); //it's either keeping this here or making another interface for main weapons >_>
         setRegistryName(name);
         this.inkConsumption = inkConsumption;
         this.entityType = entityType;

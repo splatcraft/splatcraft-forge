@@ -13,8 +13,9 @@ import net.splatcraft.forge.util.WeaponTooltip;
 
 public class ShooterItem extends WeaponBaseItem {
     public WeaponSettings settings;
-    public ShooterItem(WeaponSettings settings) {
-        super();
+    public ShooterItem(WeaponSettings settings)
+    {
+        super(settings);
         this.settings = settings;
         setRegistryName(this.settings.name);
 

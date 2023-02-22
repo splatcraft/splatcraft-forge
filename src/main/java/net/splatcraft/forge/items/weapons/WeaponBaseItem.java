@@ -34,6 +34,8 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.items.InkTankItem;
+import net.splatcraft.forge.items.weapons.settings.IDamageCalculator;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -55,10 +57,13 @@ public class WeaponBaseItem extends Item implements IColoredItem
     protected final List<WeaponTooltip> stats = new ArrayList<>();
     protected boolean secret = false;
 
-    public WeaponBaseItem() {
+    public IDamageCalculator damageCalculator;
+
+    public WeaponBaseItem(IDamageCalculator damageCalculator) {
         super(new Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_WEAPONS));
         SplatcraftItems.inkColoredItems.add(this);
         SplatcraftItems.weapons.add(this);
+        this.damageCalculator = damageCalculator;
     }
 
     public static boolean reduceInk(LivingEntity player, float amount, int recoveryCooldown, boolean sendMessage) {

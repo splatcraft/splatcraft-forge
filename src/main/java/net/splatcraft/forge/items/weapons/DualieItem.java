@@ -40,7 +40,7 @@ public class DualieItem extends WeaponBaseItem
     public int offhandFiringOffset;
 
     public DualieItem(WeaponSettings settings) {
-        super();
+        super(settings);
 
         this.settings = settings;
         setRegistryName(this.settings.name);

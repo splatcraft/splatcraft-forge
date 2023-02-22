@@ -40,7 +40,7 @@ public class RollerItem extends WeaponBaseItem
     public RollerWeaponSettings settings;
 
     public RollerItem(RollerWeaponSettings settings) {
-        super();
+        super(settings);
         this.settings = settings;
         setRegistryName(settings.name);
     }

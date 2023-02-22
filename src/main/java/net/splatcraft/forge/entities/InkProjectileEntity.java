@@ -28,7 +28,9 @@ import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.handlers.WeaponHandler;
+import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.items.weapons.settings.IDamageCalculator;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
@@ -59,7 +61,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     public float charge;
     public boolean isOnRollCooldown = false;
 
-    public IDamageCalculator damage;
+    public IDamageCalculator damage = WeaponSettings.DEFAULT;
     public InkBlockUtils.InkType inkType;
 
 
@@ -300,6 +302,9 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         inkType = InkBlockUtils.InkType.values.getOrDefault(new ResourceLocation(nbt.getString("InkType")), InkBlockUtils.InkType.NORMAL);
 
         sourceWeapon = ItemStack.of(nbt.getCompound("SourceWeapon"));
+
+        if(sourceWeapon.getItem() instanceof WeaponBaseItem)
+            damage = ((WeaponBaseItem) sourceWeapon.getItem()).damageCalculator;
     }
 
     @Override

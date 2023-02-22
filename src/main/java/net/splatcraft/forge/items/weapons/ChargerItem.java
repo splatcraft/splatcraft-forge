@@ -34,6 +34,7 @@ public class ChargerItem extends WeaponBaseItem
 
     public ChargerItem(WeaponSettings settings)
     {
+        super(settings);
         this.settings = settings;
         setRegistryName(this.settings.name);
         this.chargeSpeed = 1f / (float)settings.startupTicks;

@@ -43,6 +43,8 @@ public class WeaponSettings implements IDamageCalculator {
     public int rollDamageDecayStartTick;
     public float rollDamageDecayPerTick;
 
+    public static final WeaponSettings DEFAULT = new WeaponSettings("default");
+
     public WeaponSettings(String name) {
         this.name = name;
     }
