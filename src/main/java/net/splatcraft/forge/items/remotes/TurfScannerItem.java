@@ -183,6 +183,8 @@ public class TurfScannerItem extends RemoteItem
             if(color == winner)
                 player.awardStat(SplatcraftStats.TURF_WARS_WON);
 
+            ScoreboardHandler.updatePlayerScore(ScoreboardHandler.TURF_WAR_SCORE, player, scores.getOrDefault(color, 0));
+
             if (!ScoreboardHandler.hasColorCriterion(color))
                 continue;
 

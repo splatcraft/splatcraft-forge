@@ -12,12 +12,13 @@ import java.util.*;
 public class ScoreboardHandler
 {
     public static final ScoreCriteria COLOR = new ScoreCriteria(Splatcraft.MODID + ".inkColor");
-    public static final ScoreCriteria INK = new ScoreCriteria(Splatcraft.MODID + ".inkUnits");
+    public static final ScoreCriteria TURF_WAR_SCORE = new ScoreCriteria(Splatcraft.MODID + ".turfWarScore");
+
     protected static final Map<Integer, CriteriaInkColor[]> COLOR_CRITERIA = Maps.newHashMap();
 
-    public static void updatePlayerColorScore(PlayerEntity player, int color)
+    public static void updatePlayerScore(ScoreCriteria criteria, PlayerEntity player, int color)
     {
-        player.getScoreboard().forAllObjectives(COLOR, player.getScoreboardName(), p_195397_1_ -> p_195397_1_.setScore(color));
+        player.getScoreboard().forAllObjectives(criteria, player.getScoreboardName(), p_195397_1_ -> p_195397_1_.setScore(color));
     }
 
     public static void createColorCriterion(int color)

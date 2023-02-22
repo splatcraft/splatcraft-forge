@@ -90,7 +90,7 @@ public class ColorUtils
         if (PlayerInfoCapability.hasCapability(player))
         {
             PlayerInfoCapability.get(player).setColor(color);
-            ScoreboardHandler.updatePlayerColorScore(player, color);
+            ScoreboardHandler.updatePlayerScore(ScoreboardHandler.COLOR, player, color);
         }
 
         World level = player.level;
