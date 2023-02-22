@@ -1,22 +1,36 @@
 package net.splatcraft.forge.tileentities;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.ICommandSource;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.CommandBlockTileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.server.ServerWorld;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.items.remotes.RemoteItem;
+import net.splatcraft.forge.items.remotes.TurfScannerItem;
 import net.splatcraft.forge.registries.SplatcraftTileEntitites;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RemotePedestalTileEntity extends InkColorTileEntity implements ISidedInventory
+import java.awt.*;
+import java.util.UUID;
+
+public class RemotePedestalTileEntity extends InkColorTileEntity implements ISidedInventory, ICommandSource
 {
     protected ItemStack remote = ItemStack.EMPTY;
     protected int signal = 0;
+    protected int remoteResult = 0;
 
     public RemotePedestalTileEntity() {
         super(SplatcraftTileEntitites.remotePedestalTileEntity);
@@ -30,9 +44,9 @@ public class RemotePedestalTileEntity extends InkColorTileEntity implements ISid
             return;
         }
 
-        RemoteItem.RemoteResult result = ((RemoteItem) remote.getItem()).onRemoteUse(level, remote, getColor());
+        RemoteItem.RemoteResult result = ((RemoteItem) remote.getItem()).onRemoteUse(level, remote, getColor(), Vector3d.atCenterOf(worldPosition), null);
         signal = result.getComparatorResult();
-
+        remoteResult = result.getCommandResult();
     }
 
     @Override
@@ -126,6 +140,9 @@ public class RemotePedestalTileEntity extends InkColorTileEntity implements ISid
 
         if(nbt.contains("Remote"))
             remote = ItemStack.of(nbt.getCompound("Remote"));
+
+        if(nbt.contains("RemoteResult"))
+            remoteResult = nbt.getInt("RemoteResult");
     }
 
     @Override
@@ -135,10 +152,33 @@ public class RemotePedestalTileEntity extends InkColorTileEntity implements ISid
 
         if(!remote.isEmpty())
             nbt.put("Remote", remote.save(new CompoundNBT()));
+        if(remoteResult != 0)
+            nbt.putInt("RemoteResult", remoteResult);
+
         return super.save(nbt);
     }
 
     public int getSignal() {
         return signal;
+    }
+
+    private final ITextComponent name = new TranslationTextComponent("");
+
+    @Override
+    public void sendMessage(ITextComponent p_145747_1_, UUID p_145747_2_) {}
+
+    @Override
+    public boolean acceptsSuccess() {
+        return false;
+    }
+
+    @Override
+    public boolean acceptsFailure() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldInformAdmins() {
+        return false;
     }
 }

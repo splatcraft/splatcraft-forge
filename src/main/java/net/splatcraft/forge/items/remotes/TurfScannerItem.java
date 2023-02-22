@@ -1,6 +1,9 @@
 package net.splatcraft.forge.items.remotes;
 
+import com.mojang.brigadier.StringReader;
 import net.minecraft.block.BlockState;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -20,9 +23,7 @@ import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class TurfScannerItem extends RemoteItem
 {
@@ -31,7 +32,7 @@ public class TurfScannerItem extends RemoteItem
         super(name, new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1), 2);
     }
 
-    public static RemoteResult scanTurf(World level, World outputWorld, BlockPos blockpos, BlockPos blockpos1, int mode, ServerPlayerEntity target)
+    public static RemoteResult scanTurf(World level, World outputWorld, BlockPos blockpos, BlockPos blockpos1, int mode, Collection<ServerPlayerEntity> targets)
     {
         BlockPos blockpos2 = new BlockPos(Math.min(blockpos.getX(), blockpos1.getX()), Math.min(blockpos1.getY(), blockpos.getY()), Math.min(blockpos.getZ(), blockpos1.getZ()));
         BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos1.getY(), blockpos.getY()), Math.max(blockpos.getZ(), blockpos1.getZ()));
@@ -176,7 +177,7 @@ public class TurfScannerItem extends RemoteItem
         }
 
 
-        for (PlayerEntity player : target == null ? outputWorld.players() : new ArrayList<PlayerEntity>(){{add(target);}})
+        for (PlayerEntity player : targets == ALL_TARGETS ? outputWorld.players() : targets)
         {
             int color = ColorUtils.getPlayerColor(player);
 
@@ -199,9 +200,10 @@ public class TurfScannerItem extends RemoteItem
         } else
         {
             SendScanTurfResultsPacket packet = new SendScanTurfResultsPacket(colors, colorScores);
-            if (target == null)
+            if (targets == ALL_TARGETS)
                 SplatcraftPacketHandler.sendToDim(packet, outputWorld);
-            else SplatcraftPacketHandler.sendToPlayer(packet, target);
+            else for(ServerPlayerEntity target : targets)
+                SplatcraftPacketHandler.sendToPlayer(packet, target);
 
         }
         return createResult(true, null).setIntResults(winner, (int) ((float) affectedBlockTotal / blockTotal * 15));
@@ -230,8 +232,8 @@ public class TurfScannerItem extends RemoteItem
     }
 
     @Override
-    public RemoteResult onRemoteUse(World usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode)
+    public RemoteResult onRemoteUse(World usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode, Collection<ServerPlayerEntity> targets)
     {
-        return scanTurf(getLevel(usedOnWorld, stack), usedOnWorld, posA, posB, mode, null);
+        return scanTurf(getLevel(usedOnWorld, stack), usedOnWorld, posA, posB, mode, targets);
     }
 }

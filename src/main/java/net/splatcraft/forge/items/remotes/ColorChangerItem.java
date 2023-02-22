@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.tileentity.TileEntity;
@@ -25,6 +26,7 @@ import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 
 public class ColorChangerItem extends RemoteItem implements IColoredItem
@@ -127,7 +129,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
     }
 
     @Override
-    public RemoteResult onRemoteUse(World usedOnWorld, BlockPos from, BlockPos to, ItemStack stack, int colorIn, int mode)
+    public RemoteResult onRemoteUse(World usedOnWorld, BlockPos from, BlockPos to, ItemStack stack, int colorIn, int mode, Collection<ServerPlayerEntity> targets)
     {
         return replaceColor(getLevel(usedOnWorld, stack), from, to, ColorUtils.getInkColor(stack), mode, colorIn);
     }

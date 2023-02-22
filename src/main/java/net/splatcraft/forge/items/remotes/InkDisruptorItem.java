@@ -1,5 +1,6 @@
 package net.splatcraft.forge.items.remotes;
 
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.minecraft.block.Block;
@@ -7,6 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+
+import java.util.Collection;
+import java.util.List;
 
 public class InkDisruptorItem extends RemoteItem
 {
@@ -16,7 +20,7 @@ public class InkDisruptorItem extends RemoteItem
     }
 
     @Override
-    public RemoteResult onRemoteUse(World usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode)
+    public RemoteResult onRemoteUse(World usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode, Collection<ServerPlayerEntity> targets)
     {
         return clearInk(getLevel(usedOnWorld, stack), posA, posB);
     }

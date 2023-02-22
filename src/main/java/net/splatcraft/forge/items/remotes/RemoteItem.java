@@ -1,10 +1,18 @@
 package net.splatcraft.forge.items.remotes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.ICommandSource;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.dispenser.IPosition;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,16 +27,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class RemoteItem extends Item
+public abstract class RemoteItem extends Item implements ICommandSource
 {
     public static final List<RemoteItem> remotes = new ArrayList<>();
     protected final int totalModes;
@@ -137,7 +147,11 @@ public abstract class RemoteItem extends Item
             tooltip.add(new TranslationTextComponent("item.remote.coords.a", pos.getX(), pos.getY(), pos.getZ()));
         }
 
+        if(nbt.contains("Targets") && !nbt.getString("Targets").isEmpty())
+            tooltip.add(TextComponentUtils.mergeStyles(new StringTextComponent(nbt.getString("Targets")), TARGETS_STYLE));
     }
+
+    private static final Style TARGETS_STYLE = Style.EMPTY.withColor(TextFormatting.DARK_BLUE).withItalic(true);
 
     @Override
     public ActionResultType useOn(ItemUseContext context)
@@ -175,7 +189,7 @@ public abstract class RemoteItem extends Item
             }
         } else if (hasCoordSet(stack) && !levelIn.isClientSide)
         {
-            RemoteResult remoteResult = onRemoteUse(levelIn, stack, ColorUtils.getPlayerColor(playerIn));
+            RemoteResult remoteResult = onRemoteUse(levelIn, stack, ColorUtils.getPlayerColor(playerIn), playerIn.position(), playerIn);
 
             if (remoteResult.getOutput() != null)
             {
@@ -189,16 +203,54 @@ public abstract class RemoteItem extends Item
         return super.use(levelIn, playerIn, handIn);
     }
 
-    public abstract RemoteResult onRemoteUse(World usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode);
+    public static final Collection<ServerPlayerEntity> ALL_TARGETS = new ArrayList<>();
 
-    public RemoteResult onRemoteUse(World usedOnWorld, ItemStack stack, int colorIn)
+    public abstract RemoteResult onRemoteUse(World usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode, Collection<ServerPlayerEntity> targets);
+
+    public RemoteResult onRemoteUse(World usedOnWorld, ItemStack stack, int colorIn, Vector3d pos, Entity user)
     {
         Tuple<BlockPos, BlockPos> coordSet = getCoordSet(stack);
 
         if(coordSet == null)
             return new RemoteResult(false, null);
 
-        return onRemoteUse(usedOnWorld, coordSet.getA(), coordSet.getB(), stack, colorIn, getRemoteMode(stack));
+        Collection<ServerPlayerEntity> targets = ALL_TARGETS;
+
+        if(stack.getTag().contains("Targets") && !stack.getTag().getString("Targets").isEmpty())
+        try {
+            targets = EntityArgument.players().parse(new StringReader(stack.getTag().getString("Targets"))).findPlayers(createCommandSourceStack(stack, (ServerWorld) usedOnWorld, pos, user));
+        } catch (CommandSyntaxException e) {
+            targets = Collections.emptyList();
+            System.out.println(e.getMessage());
+        }
+
+
+        return onRemoteUse(usedOnWorld, coordSet.getA(), coordSet.getB(), stack, colorIn, getRemoteMode(stack), targets);
+    }
+
+    public CommandSource createCommandSourceStack(ItemStack stack, ServerWorld level, Vector3d pos, Entity user)
+    {
+        return new CommandSource(this, pos, Vector2f.ZERO, level, 2, getName(stack).toString(), getName(stack), level.getServer(), user);
+    }
+
+    @Override
+    public void sendMessage(ITextComponent p_145747_1_, UUID p_145747_2_) {
+
+    }
+
+    @Override
+    public boolean acceptsSuccess() {
+        return false;
+    }
+
+    @Override
+    public boolean acceptsFailure() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldInformAdmins() {
+        return false;
     }
 
     public static class RemoteResult
@@ -241,5 +293,7 @@ public abstract class RemoteItem extends Item
         {
             return output;
         }
+
+
     }
 }
