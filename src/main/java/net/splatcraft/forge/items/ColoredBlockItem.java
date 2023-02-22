@@ -54,7 +54,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
         this.clearItem = clearItem;
     }
 
-    public ColoredBlockItem(Block block, String name, int stackSize, Item clearItem)
+    public ColoredBlockItem(Block block, String name, int stackSize, @Nullable Item clearItem)
     {
         this(block, name, new Properties().stacksTo(stackSize).tab(SplatcraftItemGroups.GROUP_GENERAL), clearItem);
     }

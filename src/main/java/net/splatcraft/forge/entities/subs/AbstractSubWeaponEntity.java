@@ -31,6 +31,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.entities.IColoredEntity;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.util.ColorUtils;
@@ -47,7 +48,6 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
 
     private static final DataParameter<Integer> COLOR = EntityDataManager.defineId(AbstractSubWeaponEntity.class, DataSerializers.INT);
     private static final DataParameter<ItemStack> DATA_ITEM_STACK = EntityDataManager.defineId(AbstractSubWeaponEntity.class, DataSerializers.ITEM_STACK);
-
 
     public boolean isItem = false;
     public boolean damageMobs = true;
@@ -149,6 +149,18 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
 
         if(handleMovement())
             setPos(newPos.x, newPos.y, newPos.z);
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        super.handleEntityEvent(id);
+
+        switch (id)
+        {
+            case -1:
+                level.addParticle(new InkExplosionParticleData(getColor(), .5f), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                break;
+        }
     }
 
     public void shoot(Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy)

@@ -1,13 +1,10 @@
 package net.splatcraft.forge.crafting;
 
 
+import net.minecraft.item.crafting.*;
 import net.splatcraft.forge.Splatcraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +16,7 @@ public class SplatcraftRecipeTypes
     public static final IRecipeSerializer<WeaponWorkbenchTab> WEAPON_STATION_TAB = new WeaponWorkbenchTab.WeaponWorkbenchTabSerializer("weapon_workbench_tab");
     public static final IRecipeSerializer<WeaponWorkbenchRecipe> WEAPON_STATION = new WeaponWorkbenchRecipe.Serializer("weapon_workbench");
     public static final SpecialRecipeSerializer<SingleUseSubRecipe> SINGLE_USE_SUB = new SpecialRecipeSerializer<>(SingleUseSubRecipe::new);
+    public static final IRecipeSerializer<ShapedRecipe> COLORED_SHAPED_CRAFTING = new ColoredShapedRecipe.Serializer("colored_crafting_shaped");
     public static IRecipeType<AbstractWeaponWorkbenchRecipe> WEAPON_STATION_TYPE;
     public static IRecipeType<WeaponWorkbenchTab> WEAPON_STATION_TAB_TYPE;
     public static IRecipeType<InkVatColorRecipe> INK_VAT_COLOR_CRAFTING_TYPE;
@@ -64,6 +62,7 @@ public class SplatcraftRecipeTypes
             registry.register(INK_VAT_COLOR_CRAFTING);
             registry.register(WEAPON_STATION_TAB);
             registry.register(WEAPON_STATION);
+            registry.register(COLORED_SHAPED_CRAFTING);
             registry.register(SINGLE_USE_SUB.setRegistryName(Splatcraft.MODID, "single_use_sub"));
         }
     }

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "splatcraft:block/spawn_pad"
+    },
+    "facing=east": {
+      "model": "splatcraft:block/spawn_pad",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "splatcraft:block/spawn_pad",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "splatcraft:block/spawn_pad",
+      "y": 270
+    }
+  }
+}

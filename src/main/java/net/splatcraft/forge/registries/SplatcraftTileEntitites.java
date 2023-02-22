@@ -14,15 +14,9 @@ import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.splatcraft.forge.client.renderer.tileentity.InkedBlockTileEntityRenderer;
 import net.splatcraft.forge.client.renderer.tileentity.RemotePedestalTileEntityRenderer;
+import net.splatcraft.forge.client.renderer.tileentity.SpawnPadTileEntityRenderer;
 import net.splatcraft.forge.client.renderer.tileentity.StageBarrierTileEntityRenderer;
-import net.splatcraft.forge.tileentities.ColoredBarrierTileEntity;
-import net.splatcraft.forge.tileentities.CrateTileEntity;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
-import net.splatcraft.forge.tileentities.InkVatTileEntity;
-import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
-import net.splatcraft.forge.tileentities.InkwellTileEntity;
-import net.splatcraft.forge.tileentities.RemotePedestalTileEntity;
-import net.splatcraft.forge.tileentities.StageBarrierTileEntity;
+import net.splatcraft.forge.tileentities.*;
 import net.splatcraft.forge.tileentities.container.InkVatContainer;
 import net.splatcraft.forge.tileentities.container.WeaponWorkbenchContainer;
 
@@ -30,21 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static net.splatcraft.forge.registries.SplatcraftBlocks.allowedColorBarrier;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.canvas;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.clearInkedBlock;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.crate;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.deniedColorBarrier;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.glowingInkedBlock;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.inkVat;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.inkedBlock;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.inkedWool;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.inkwell;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.remotePedestal;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.splatSwitch;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.stageBarrier;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.stageVoid;
-import static net.splatcraft.forge.registries.SplatcraftBlocks.sunkenCrate;
+import static net.splatcraft.forge.registries.SplatcraftBlocks.*;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftTileEntitites
@@ -59,6 +39,7 @@ public class SplatcraftTileEntitites
     public static final TileEntityType<ColoredBarrierTileEntity> colorBarrierTileEntity = registerTileEntity("color_barrier", ColoredBarrierTileEntity::new, allowedColorBarrier, deniedColorBarrier);
     public static final TileEntityType<InkVatTileEntity> inkVatTileEntity = registerTileEntity("ink_vat", InkVatTileEntity::new, inkVat);
     public static final TileEntityType<RemotePedestalTileEntity> remotePedestalTileEntity = registerTileEntity("remote_pedestal", RemotePedestalTileEntity::new, remotePedestal);
+    public static final TileEntityType<SpawnPadTileEntity> spawnPadTileEntity = registerTileEntity("spawn_pad", SpawnPadTileEntity::new, spawnPad);
 
     private static final List<ContainerType<?>> c_registry = new ArrayList<>();
 
@@ -111,5 +92,6 @@ public class SplatcraftTileEntitites
         ClientRegistry.bindTileEntityRenderer(stageBarrierTileEntity, StageBarrierTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(colorBarrierTileEntity, StageBarrierTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(remotePedestalTileEntity, RemotePedestalTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(spawnPadTileEntity, SpawnPadTileEntityRenderer::new);
     }
 }

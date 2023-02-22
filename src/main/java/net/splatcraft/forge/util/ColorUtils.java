@@ -112,7 +112,9 @@ public class ColorUtils
 
     public static ItemStack setInkColor(ItemStack stack, int color)
     {
-        stack.getOrCreateTag().putInt("Color", color);
+        if(color == -1)
+            stack.getOrCreateTag().remove("Color");
+        else stack.getOrCreateTag().putInt("Color", color);
         return stack;
     }
 

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "splatcraft:block/spawn_pad"
+    }
+  }
+}

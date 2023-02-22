@@ -1,0 +1,25 @@
+{
+  "type": "splatcraft:colored_crafting_shaped",
+  "pattern": [
+    "SSS",
+    "#I#",
+    "PPP"
+  ],
+  "key": {
+    "S": {
+      "item": "splatcraft:sardinium"
+    },
+    "P": {
+      "item": "splatcraft:power_egg"
+    },
+    "I": {
+      "item": "splatcraft:inkwell"
+    },
+    "#": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "splatcraft:spawn_pad"
+  }
+}

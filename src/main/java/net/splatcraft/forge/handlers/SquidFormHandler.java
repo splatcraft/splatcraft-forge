@@ -1,11 +1,16 @@
 package net.splatcraft.forge.handlers;
 
+import net.minecraft.block.BedBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.RespawnAnchorBlock;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameType;
 import net.minecraft.world.server.ServerWorld;
@@ -20,6 +25,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.blocks.InkwellBlock;
+import net.splatcraft.forge.blocks.SpawnPadBlock;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
@@ -121,11 +127,32 @@ public class SquidFormHandler {
 
             }
 
-            if (player.level.getBlockState(player.blockPosition().below()).getBlock() instanceof InkwellBlock)
+            BlockPos posBelow = InkBlockUtils.getBlockStandingOnPos(player);
+            Block blockBelow = player.level.getBlockState(posBelow).getBlock();
+
+            if(blockBelow instanceof SpawnPadBlock.Aux)
             {
-                InkColorTileEntity inkwell = (InkColorTileEntity) player.level.getBlockEntity(player.blockPosition().below());
+                BlockPos newPos = ((SpawnPadBlock.Aux) blockBelow).getParentPos(player.level.getBlockState(posBelow), posBelow);
+                if(player.level.getBlockState(newPos).getBlock() instanceof SpawnPadBlock)
+                {
+                    posBelow = newPos;
+                    blockBelow = player.level.getBlockState(newPos).getBlock();
+                }
+            }
+
+            if (blockBelow instanceof InkwellBlock)
+            {
+                InkColorTileEntity inkwell = (InkColorTileEntity) player.level.getBlockEntity(posBelow);
 
                 ColorUtils.setPlayerColor(player, inkwell.getColor());
+            }
+            else if(blockBelow instanceof SpawnPadBlock)
+            {
+                InkColorTileEntity spawnPad = (InkColorTileEntity) player.level.getBlockEntity(posBelow);
+
+                if(player instanceof ServerPlayerEntity && ColorUtils.colorEquals(player, spawnPad))
+                    ((ServerPlayerEntity)player).setRespawnPosition(player.level.dimension(), posBelow, 0, false, true);
+
             }
         }
         if (InkOverlayCapability.hasCapability(player))

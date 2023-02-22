@@ -176,6 +176,7 @@ public class SplatcraftItems
 
     //Map Items
     public static final Item inkwell = new ColoredBlockItem(SplatcraftBlocks.inkwell, "inkwell", 16, emptyInkwell).addStarterColors();
+    public static final Item spawnPad = new ColoredBlockItem(SplatcraftBlocks.spawnPad, "spawn_pad", 1, null);
     public static final Item grate = new BlockItem(SplatcraftBlocks.grate).setRegistryName("grate");
     public static final Item grateRamp = new BlockItem(SplatcraftBlocks.grateRamp).setRegistryName("grate_ramp");
     public static final Item barrierBar = new BlockItem(SplatcraftBlocks.barrierBar).setRegistryName("barrier_bar");
@@ -238,6 +239,7 @@ public class SplatcraftItems
 
         registry.register(emptyInkwell);
         registry.register(inkwell);
+        registry.register(spawnPad);
         registry.register(grate);
         registry.register(grateRamp);
         registry.register(barrierBar);

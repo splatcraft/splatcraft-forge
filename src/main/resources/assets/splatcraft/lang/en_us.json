@@ -30,6 +30,8 @@
   "block.splatcraft.ammo_knights_workbench": "Ammo Knights Weapon Workbench",
   "block.splatcraft.remote_pedestal": "Remote Pedestal",
   "block.splatcraft.splat_switch": "Splat-Switch",
+  "block.splatcraft.spawn_pad": "Spawn Pad",
+
   "block.splatcraft.stage_barrier": "Stage Barrier",
   "block.splatcraft.stage_void": "Stage Void",
   "block.splatcraft.allowed_color_barrier": "Colored Stage Barrier (Allow)",

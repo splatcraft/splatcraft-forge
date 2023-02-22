@@ -14,28 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.blocks.BarrierBarBlock;
-import net.splatcraft.forge.blocks.CanvasBlock;
-import net.splatcraft.forge.blocks.ColoredBarrierBlock;
-import net.splatcraft.forge.blocks.CrateBlock;
-import net.splatcraft.forge.blocks.EmptyInkwellBlock;
-import net.splatcraft.forge.blocks.GrateBlock;
-import net.splatcraft.forge.blocks.GrateRampBlock;
-import net.splatcraft.forge.blocks.InkStainedBlock;
-import net.splatcraft.forge.blocks.InkVatBlock;
-import net.splatcraft.forge.blocks.InkedBlock;
-import net.splatcraft.forge.blocks.InkedCarpetBlock;
-import net.splatcraft.forge.blocks.InkedGlassBlock;
-import net.splatcraft.forge.blocks.InkedGlassPaneBlock;
-import net.splatcraft.forge.blocks.InkwellBlock;
-import net.splatcraft.forge.blocks.LightBlock;
-import net.splatcraft.forge.blocks.MetalBlock;
-import net.splatcraft.forge.blocks.OreBlock;
-import net.splatcraft.forge.blocks.RemotePedestalBlock;
-import net.splatcraft.forge.blocks.SplatSwitchBlock;
-import net.splatcraft.forge.blocks.StageBarrierBlock;
-import net.splatcraft.forge.blocks.TarpBlock;
-import net.splatcraft.forge.blocks.WeaponWorkbenchBlock;
+import net.splatcraft.forge.blocks.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,6 +47,8 @@ public class SplatcraftBlocks
     public static final Block inkedGlassPane = new InkedGlassPaneBlock("ink_stained_glass_pane");
     public static final Block canvas = new CanvasBlock("canvas");
     public static final Block splatSwitch = new SplatSwitchBlock().setRegistryName("splat_switch");
+    public static final Block spawnPad = new SpawnPadBlock().setRegistryName("spawn_pad");
+    public static final Block spawnPadEdge = new SpawnPadBlock.Aux((SpawnPadBlock) spawnPad).setRegistryName("spawn_pad_edge");
 
     public static final Block grate = new GrateBlock("grate");
     public static final Block grateRamp = new GrateRampBlock("grate_ramp");
@@ -114,6 +95,8 @@ public class SplatcraftBlocks
         registry.register(cautionBarrierBar);
         registry.register(tarp);
         registry.register(splatSwitch);
+        registry.register(spawnPad);
+        registry.register(spawnPadEdge);
 
         registry.register(stageBarrier);
         registry.register(stageVoid);
@@ -130,6 +113,7 @@ public class SplatcraftBlocks
 
         RenderTypeLookup.setRenderLayer(emptyInkwell, RenderType.cutout());
         RenderTypeLookup.setRenderLayer(inkwell, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(spawnPad, RenderType.cutout());
         RenderTypeLookup.setRenderLayer(grate, RenderType.cutout());
         RenderTypeLookup.setRenderLayer(grateRamp, RenderType.cutout());
         RenderTypeLookup.setRenderLayer(crate, RenderType.cutout());

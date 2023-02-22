@@ -175,6 +175,9 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         super.handleEntityEvent(id);
 
         switch (id) {
+            case -1:
+                level.addParticle(new InkExplosionParticleData(getColor(), .5f), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                break;
             case 1:
                 if (getProjectileType().equals(Types.CHARGER))
                     level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getX() - this.getDeltaMovement().x() * 0.25D, this.getY() - this.getDeltaMovement().y() * 0.25D, this.getZ() - this.getDeltaMovement().z() * 0.25D, 0, -0.1, 0);
