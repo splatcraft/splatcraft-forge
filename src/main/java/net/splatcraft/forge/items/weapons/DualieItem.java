@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.DodgeRollPacket;
 import net.splatcraft.forge.registries.SplatcraftSounds;
@@ -35,79 +36,50 @@ public class DualieItem extends WeaponBaseItem
 
     public static final ArrayList<DualieItem> dualies = Lists.newArrayList();
 
-    public float projectileSize;
-    public float inaccuracy;
-    public float projectileSpeed;
-    public int firingSpeed;
-    public float damage;
-    public float inkConsumption;
-
-    public int maxRolls;
-    public float rollSpeed;
-    public float rollConsumption;
-    public float rollDamage;
-
-    public int rollCooldown;
-    public int finalRollCooldown;
-
+    public WeaponSettings settings;
     public int offhandFiringOffset;
 
-    public boolean canRollFire;
-
-    public DualieItem(String name, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage, float inkConsumption, int rolls, float rollSpeed, float rollConsuption, int rollCooldown, int finalRollCooldown, boolean canRollFire)
-    {
+    public DualieItem(WeaponSettings settings) {
         super();
 
-        setRegistryName(name);
-        this.inaccuracy = inaccuracy;
-        this.projectileSize = projectileSize;
-        this.projectileSpeed = projectileSpeed;
-        this.firingSpeed = firingSpeed;
-        this.damage = damage;
-        this.rollDamage = damage;
-        this.inkConsumption = inkConsumption;
+        this.settings = settings;
+        setRegistryName(this.settings.name);
 
-        this.maxRolls = rolls;
-        this.rollSpeed = rollSpeed;
-        this.rollConsumption = rollConsuption;
-
-        offhandFiringOffset = firingSpeed / 2;
-
-        this.rollCooldown = rollCooldown;
-        this.finalRollCooldown = finalRollCooldown;
-        this.canRollFire = canRollFire;
-
-        addStat(new WeaponTooltip("range", (stack, level) -> (int) (projectileSpeed / 1.2f * 100)));
-        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (damage / 20 * 100)));
-        addStat(new WeaponTooltip("mobility", (stack, level) -> (int) (rollSpeed * 100)));
+        offhandFiringOffset = settings.firingSpeed / 2;
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / 1.2f * 100)));
+        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (settings.baseDamage / 20 * 100)));
+        addStat(new WeaponTooltip("mobility", (stack, level) -> (int) (settings.rollSpeed * 100)));
 
         dualies.add(this);
     }
 
-    public DualieItem(String name, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage, float inkConsumption, int rolls, float rollSpeed, float rollConsuption, int rollCooldown, int finalRollCooldown)
+    private static float getInkForRoll(ItemStack stack)
     {
-        this(name, projectileSize, projectileSpeed, inaccuracy, firingSpeed, damage, inkConsumption, rolls, rollSpeed, rollConsuption, rollCooldown, finalRollCooldown, false);
+        return stack.getItem() instanceof DualieItem ? ((DualieItem) stack.getItem()).settings.rollInkConsumption : 0;
     }
 
-    public DualieItem(String name, DualieItem parent)
+    public static int getRollCooldown(ItemStack stack, int maxRolls, int rollCount)
     {
-        this(name, parent.projectileSize, parent.projectileSpeed, parent.inaccuracy, parent.firingSpeed, parent.damage, parent.inkConsumption, parent.maxRolls, parent.rollSpeed, parent.rollConsumption, parent.rollCooldown, parent.finalRollCooldown, parent.canRollFire);
-        parent.rollDamage = rollDamage;
+        if (!(stack.getItem() instanceof DualieItem))
+        {
+            return 0;
+        }
+
+        DualieItem dualie = (DualieItem) stack.getItem();
+        return rollCount >= maxRolls - 1 ? dualie.settings.lastRollCooldown : dualie.settings.rollCooldown;
     }
 
-    public static float performRoll(PlayerEntity player, ItemStack mainDualie, ItemStack offhandDualie)
-    {
+    public float performRoll(PlayerEntity player, ItemStack mainDualie, ItemStack offhandDualie) {
         int rollCount = getRollString(mainDualie);
         int maxRolls = 0;
         ItemStack activeDualie;
 
-        if (mainDualie.getItem() instanceof DualieItem)
-        {
-            maxRolls += ((DualieItem) mainDualie.getItem()).maxRolls;
+        if (mainDualie.getItem() instanceof DualieItem) {
+            maxRolls += ((DualieItem) mainDualie.getItem()).settings.rollCount;
         }
         if (offhandDualie.getItem() instanceof DualieItem)
         {
-            maxRolls += ((DualieItem) offhandDualie.getItem()).maxRolls;
+            maxRolls += ((DualieItem) offhandDualie.getItem()).settings.rollCount;
         }
 
 
@@ -119,41 +91,18 @@ public class DualieItem extends WeaponBaseItem
             activeDualie = maxRolls % 2 == 1 && offhandDualie.getItem() instanceof DualieItem ? offhandDualie : mainDualie;
         }
 
-        if (reduceInk(player, getInkForRoll(activeDualie), !player.level.isClientSide))
-        {
+        if (reduceInk(player, getInkForRoll(activeDualie), settings.rollInkRecoveryCooldown, !player.level.isClientSide)) {
             PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(activeDualie, getRollCooldown(activeDualie, maxRolls, rollCount), player.inventory.selected, player.getUsedItemHand(), false, true, false, player.isOnGround()));
-            if (!player.level.isClientSide)
-            {
+            if (!player.level.isClientSide) {
                 player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.dualieDodge, SoundCategory.PLAYERS, 0.7F, ((player.level.random.nextFloat() - player.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 InkExplosion.createInkExplosion(player.level, player, player.blockPosition(), 1.2f, 0, 0, false, ColorUtils.getInkColor(activeDualie), InkBlockUtils.getInkType(player), activeDualie);
             }
             setRollString(mainDualie, rollCount + 1);
             setRollCooldown(mainDualie, (int) (getRollCooldown(mainDualie, maxRolls, maxRolls) * 0.75f));
-            return activeDualie.getItem() instanceof DualieItem ? ((DualieItem) activeDualie.getItem()).rollSpeed : 0;
+            return activeDualie.getItem() instanceof DualieItem ? ((DualieItem) activeDualie.getItem()).settings.rollSpeed : 0;
         }
 
         return 0;
-    }
-
-    private static float getInkForRoll(ItemStack stack)
-    {
-        return stack.getItem() instanceof DualieItem ? ((DualieItem) stack.getItem()).rollConsumption : 0;
-    }
-
-    public static int getRollCooldown(ItemStack stack, int maxRolls, int rollCount)
-    {
-        if (!(stack.getItem() instanceof DualieItem))
-        {
-            return 0;
-        }
-
-        DualieItem dualie = (DualieItem) stack.getItem();
-        return rollCount >= maxRolls - 1 ? dualie.finalRollCooldown : dualie.rollCooldown;
-    }
-
-    public static boolean canRollFire(ItemStack stack)
-    {
-        return stack.getItem() instanceof DualieItem && ((DualieItem) stack.getItem()).canRollFire;
     }
 
     public static int getRollString(ItemStack stack)
@@ -267,11 +216,11 @@ public class DualieItem extends WeaponBaseItem
                 int maxRolls = 0;
                 if (stack.getItem() instanceof DualieItem)
                 {
-                    maxRolls += ((DualieItem) stack.getItem()).maxRolls;
+                    maxRolls += ((DualieItem) stack.getItem()).settings.rollCount;
                 }
                 if (offhandDualie.getItem() instanceof DualieItem)
                 {
-                    maxRolls += ((DualieItem) offhandDualie.getItem()).maxRolls;
+                    maxRolls += ((DualieItem) offhandDualie.getItem()).settings.rollCount;
                 }
                 if (rollCount >= maxRolls - 1)
                 {
@@ -281,8 +230,7 @@ public class DualieItem extends WeaponBaseItem
                     activeDualie = maxRolls % 2 == 1 && offhandDualie.getItem() instanceof DualieItem ? offhandDualie : stack;
                 }
 
-                if (enoughInk(entity, getInkForRoll(activeDualie), false))
-                {
+                if (enoughInk(entity, getInkForRoll(activeDualie), 0, false)) {
                     entity.moveRelative(performRoll((PlayerEntity) entity, stack, offhandDualie), ClientUtils.getDodgeRollVector((PlayerEntity) entity));
                     entity.setDeltaMovement(entity.getDeltaMovement().x(), 0.05, entity.getDeltaMovement().z());
                 }
@@ -295,27 +243,22 @@ public class DualieItem extends WeaponBaseItem
 
             if (stack.getItem() instanceof DualieItem)
             {
-                maxRolls += ((DualieItem) stack.getItem()).maxRolls;
+                maxRolls += ((DualieItem) stack.getItem()).settings.rollCount;
             }
             if (offhandDualie.getItem() instanceof DualieItem)
             {
-                maxRolls += ((DualieItem) offhandDualie.getItem()).maxRolls;
+                maxRolls += ((DualieItem) offhandDualie.getItem()).settings.rollCount;
             }
 
-            boolean rollFire = canRollFire(stack);
             boolean hasCooldown = PlayerInfoCapability.get(entity).hasPlayerCooldown();
             boolean onRollCooldown = entity.isOnGround() && hasCooldown && rollCount >= Math.max(2, maxRolls);
 
-            if (offhandDualie.getItem() instanceof DualieItem)
-            {
-                rollFire = canRollFire(offhandDualie);
-                if (!entity.isOnGround() && (rollFire || !hasCooldown) || entity.isOnGround())
-                {
+            if (offhandDualie.getItem() instanceof DualieItem) {
+                if (!entity.isOnGround() && !hasCooldown || entity.isOnGround()) {
                     ((DualieItem) offhandDualie.getItem()).fireDualie(level, entity, offhandDualie, timeLeft + ((DualieItem) offhandDualie.getItem()).offhandFiringOffset, entity.isOnGround() && hasCooldown);
                 }
             }
-            if (!entity.isOnGround() && (rollFire || !hasCooldown) || entity.isOnGround())
-            {
+            if (!entity.isOnGround() && !hasCooldown || entity.isOnGround()) {
                 fireDualie(level, entity, stack, timeLeft, onRollCooldown);
             }
         }
@@ -323,12 +266,11 @@ public class DualieItem extends WeaponBaseItem
 
     protected void fireDualie(World level, LivingEntity entity, ItemStack stack, int timeLeft, boolean onRollCooldown)
     {
-        if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % (onRollCooldown ? 2 : firingSpeed) == 0)
-        {
-            if (reduceInk(entity, inkConsumption, true))
-            {
-                InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, onRollCooldown ? rollDamage : damage).setShooterTrail();
-                proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, projectileSpeed, entity instanceof PlayerEntity && PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity) ? 0 : inaccuracy);
+        if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % (onRollCooldown ? 2 : settings.firingSpeed) == 0) {
+            if (reduceInk(entity, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
+                InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.inkRecoveryCooldown, settings).setShooterTrail();
+                proj.isOnRollCooldown = onRollCooldown;
+                proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, settings.projectileSpeed, entity instanceof PlayerEntity && PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity) ? settings.rollInaccuracy : (entity.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy));
                 level.addFreshEntity(proj);
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.dualieShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }

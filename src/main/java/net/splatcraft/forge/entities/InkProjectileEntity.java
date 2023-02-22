@@ -56,6 +56,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     public String damageType = "splat";
     public boolean causesHurtCooldown = false;
     public boolean throwerAirborne = false;
+    public float charge;
+    public boolean isOnRollCooldown = false;
 
     public IDamageCalculator damage;
     public InkBlockUtils.InkType inkType;
@@ -89,7 +91,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         return this;
     }
 
-    public InkProjectileEntity setChargerStats(int lifespan, boolean canPierce) {
+    public InkProjectileEntity setChargerStats(float charge, int lifespan, boolean canPierce) {
+        this.charge = charge;
         trailSize = getProjectileSize() * 1.05f;
         this.lifespan = lifespan;
         gravityVelocity = 0;
@@ -148,7 +151,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         }
 
         if (!level.isClientSide && !persistent && lifespan-- <= 0) {
-            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, damage.calculateDamage(this.tickCount, throwerAirborne, 0), damageMobs, getColor(), inkType, sourceWeapon);
+            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown), damageMobs, getColor(), inkType, sourceWeapon);
             if (explodes) {
                 level.broadcastEntityEvent(this, (byte) 3);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
@@ -197,7 +200,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         super.onHitEntity(result);
 
         Entity target = result.getEntity();
-        float dmg = damage.calculateDamage(this.tickCount, throwerAirborne, 0);
+        float dmg = damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown);
 
         if (target instanceof LivingEntity)
             InkDamageUtils.doDamage(level, (LivingEntity) target, dmg, getColor(), getOwner(), sourceWeapon, damageMobs, inkType, damageType, causesHurtCooldown);
@@ -226,7 +229,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 
         super.onHitBlock(result);
 
-        InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, damage.calculateDamage(this.tickCount, throwerAirborne, 0), damageMobs, getColor(), inkType, sourceWeapon);
+        InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown), damageMobs, getColor(), inkType, sourceWeapon);
         if (explodes) {
             level.broadcastEntityEvent(this, (byte) 3);
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);

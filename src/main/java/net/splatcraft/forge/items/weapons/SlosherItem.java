@@ -7,6 +7,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
@@ -14,37 +15,17 @@ import net.splatcraft.forge.util.WeaponTooltip;
 
 public class SlosherItem extends WeaponBaseItem
 {
-    public float projectileSize;
-    public float projectileSpeed;
-    public float damage;
-    public int startupTicks;
-    public int projectileCount;
-    public float diffAngle;
-    public float inkConsumption;
+    public WeaponSettings settings;
     public Type slosherType = Type.DEFAULT;
 
-    public SlosherItem(String name, float projectileSize, float projectileSpeed, int projectileCount, float offsetBetweenProj, float damage, int startupTicks, float inkConsumption)
-    {
+    public SlosherItem(WeaponSettings settings) {
         super();
-        setRegistryName(name);
+        this.settings = settings;
+        setRegistryName(this.settings.name);
 
-        this.projectileSize = projectileSize;
-        this.projectileSpeed = projectileSpeed;
-        this.damage = damage;
-        this.startupTicks = startupTicks;
-        this.projectileCount = projectileCount;
-        this.diffAngle = offsetBetweenProj;
-        this.inkConsumption = inkConsumption;
-
-
-        addStat(new WeaponTooltip("range", (stack, level) -> (int) (projectileSpeed / 1.2f * 100)));
-        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (damage / 20 * 100)));
-        addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((15 - startupTicks) / 15f * 100)));
-    }
-
-    public SlosherItem(String name, SlosherItem parent)
-    {
-        this(name, parent.projectileSize, parent.projectileSpeed, parent.projectileCount, parent.diffAngle, parent.damage, parent.startupTicks, parent.inkConsumption);
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / 1.2f * 100)));
+        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (settings.baseDamage / 20 * 100)));
+        addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((15 - settings.startupTicks) / 15f * 100)));
     }
 
     public SlosherItem setSlosherType(Type type)
@@ -58,30 +39,27 @@ public class SlosherItem extends WeaponBaseItem
     {
         //if (getInkAmount(entity, stack) >= inkConsumption)
         {
-            if (entity instanceof PlayerEntity && getUseDuration(stack) - timeLeft < startupTicks)
-            {
-                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
+            if (entity instanceof PlayerEntity && getUseDuration(stack) - timeLeft < settings.startupTicks) {
+                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, settings.startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
             }
         }
     }
 
     @Override
-    public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
-    {
-        if (reduceInk(player, inkConsumption, true) && !level.isClientSide) {
-            for (int i = 0; i < projectileCount; i++) {
-                boolean hasTrail = i == Math.floor((projectileCount - 1) / 2f) || i == Math.ceil((projectileCount - 1) / 2f);
-                float angle = diffAngle * i - diffAngle * (projectileCount - 1) / 2;
+    public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown) {
+        if (reduceInk(player, settings.inkConsumption, settings.inkRecoveryCooldown, true) && !level.isClientSide) {
+            for (int i = 0; i < settings.projectileCount; i++) {
+                boolean hasTrail = i == Math.floor((settings.projectileCount - 1) / 2f) || i == Math.ceil((settings.projectileCount - 1) / 2f);
+                float angle = settings.groundInaccuracy * i - settings.groundInaccuracy * (settings.projectileCount - 1) / 2;
 
-                InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), projectileSize * (hasTrail ? 1 : 0.8f), damage);
+                InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize * (hasTrail ? 1 : 0.8f), settings);
                 proj.setShooterTrail();
-                proj.shootFromRotation(player, player.xRot, player.yRot + angle, -15.0f, projectileSpeed, 2);
+                proj.shootFromRotation(player, player.xRot, player.yRot + angle, -15.0f, settings.projectileSpeed, 2);
                 level.addFreshEntity(proj);
 
-                switch (slosherType)
-                {
+                switch (slosherType) {
                     case EXPLODING:
-                        proj.trailSize = projectileSize * .35f;
+                        proj.trailSize = settings.projectileSize * .35f;
                         proj.explodes = true;
                         proj.splashDamage = 7;
                         proj.setProjectileType(InkProjectileEntity.Types.BLASTER);

@@ -6,6 +6,7 @@ public class WeaponSettings implements IDamageCalculator {
     public float projectileSize;
     public int projectileLifespan;
     public float projectileSpeed;
+    public int projectileCount;
 
     public int firingSpeed;
     public int startupTicks;
@@ -28,11 +29,29 @@ public class WeaponSettings implements IDamageCalculator {
     public boolean fastMidAirCharge;
     public float chargerPiercesAt;
 
+    public int rollCount;
+    public float rollSpeed;
+    public float rollInaccuracy;
+    public float rollInkConsumption;
+    public int rollInkRecoveryCooldown;
+    public int rollCooldown;
+    public int lastRollCooldown;
+
+    //glooga dualies are *so* special, screw them
+    public float rollBaseDamage;
+    public float rollMinDamage;
+    public int rollDamageDecayStartTick;
+    public float rollDamageDecayPerTick;
+
     public WeaponSettings(String name) {
         this.name = name;
     }
 
-    public float calculateDamage(int tickCount, boolean airborne, float charge) {
+    public float calculateDamage(int tickCount, boolean airborne, float charge, boolean isOnRollCooldown) {
+        if (isOnRollCooldown) {
+            int e = tickCount - rollDamageDecayStartTick;
+            return Math.max(e > 0 ? rollBaseDamage - (e * rollDamageDecayPerTick) : rollBaseDamage, rollMinDamage);
+        }
         if (charge > 0.0f)
             return charge > 0.95f ? baseDamage : baseDamage * charge / 5f + baseDamage / 5f;
 
@@ -60,6 +79,11 @@ public class WeaponSettings implements IDamageCalculator {
         return this;
     }
 
+    public WeaponSettings setProjectileCount(int projectileCount) {
+        this.projectileCount = projectileCount;
+        return this;
+    }
+
     public WeaponSettings setFiringSpeed(int firingSpeed) {
         this.firingSpeed = firingSpeed;
         return this;
@@ -77,6 +101,7 @@ public class WeaponSettings implements IDamageCalculator {
 
     public WeaponSettings setGroundInaccuracy(float groundInaccuracy) {
         this.groundInaccuracy = groundInaccuracy;
+        this.airInaccuracy = groundInaccuracy;
         return this;
     }
 
@@ -102,21 +127,25 @@ public class WeaponSettings implements IDamageCalculator {
 
     public WeaponSettings setBaseDamage(float baseDamage) {
         this.baseDamage = baseDamage;
+        this.rollBaseDamage = baseDamage;
         return this;
     }
 
     public WeaponSettings setMinDamage(float minDamage) {
         this.minDamage = minDamage;
+        this.rollMinDamage = minDamage;
         return this;
     }
 
     public WeaponSettings setDamageDecayStartTick(int damageDecayStartTick) {
         this.damageDecayStartTick = damageDecayStartTick;
+        this.rollDamageDecayStartTick = damageDecayStartTick;
         return this;
     }
 
     public WeaponSettings setDamageDecayPerTick(float damageDecayPerTick) {
         this.damageDecayPerTick = damageDecayPerTick;
+        this.rollDamageDecayPerTick = damageDecayPerTick;
         return this;
     }
 
@@ -132,6 +161,62 @@ public class WeaponSettings implements IDamageCalculator {
 
     public WeaponSettings setChargerPiercesAt(float chargerPiercesAt) {
         this.chargerPiercesAt = chargerPiercesAt;
+        return this;
+    }
+
+    public WeaponSettings setRollCount(int rollCount) {
+        this.rollCount = rollCount;
+        return this;
+    }
+
+    public WeaponSettings setRollSpeed(float rollSpeed) {
+        this.rollSpeed = rollSpeed;
+        return this;
+    }
+
+    public WeaponSettings setRollInaccuracy(float rollInaccuracy) {
+        this.rollInaccuracy = rollInaccuracy;
+        return this;
+    }
+
+    public WeaponSettings setRollInkConsumption(float rollInkConsumption) {
+        this.rollInkConsumption = rollInkConsumption;
+        return this;
+    }
+
+    public WeaponSettings setRollInkRecoveryCooldown(int rollInkRecoveryCooldown) {
+        this.rollInkRecoveryCooldown = rollInkRecoveryCooldown;
+        return this;
+    }
+
+    public WeaponSettings setRollCooldown(int rollCooldown) {
+        this.rollCooldown = rollCooldown;
+        return this;
+    }
+
+    public WeaponSettings setLastRollCooldown(int lastRollCooldown) {
+        this.lastRollCooldown = lastRollCooldown;
+        return this;
+    }
+
+    //whoever at Nintendo made me do this, why?!
+    public WeaponSettings setRollBaseDamage(float rollBaseDamage) {
+        this.rollBaseDamage = rollBaseDamage;
+        return this;
+    }
+
+    public WeaponSettings setRollMinDamage(float rollMinDamage) {
+        this.rollMinDamage = rollMinDamage;
+        return this;
+    }
+
+    public WeaponSettings setRollDamageDecayStartTick(int rollDamageDecayStartTick) {
+        this.rollDamageDecayStartTick = rollDamageDecayStartTick;
+        return this;
+    }
+
+    public WeaponSettings setRollDamageDecayPerTick(float rollDamageDecayPerTick) {
+        this.rollDamageDecayPerTick = rollDamageDecayPerTick;
         return this;
     }
 }

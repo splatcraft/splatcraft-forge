@@ -1,11 +1,5 @@
 package net.splatcraft.forge.handlers;
 
-import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.items.weapons.RollerItem;
-import net.splatcraft.forge.items.weapons.SlosherItem;
-import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.util.PlayerCooldown;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -18,6 +12,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.items.weapons.RollerItem;
+import net.splatcraft.forge.items.weapons.SlosherItem;
+import net.splatcraft.forge.items.weapons.WeaponBaseItem;
+import net.splatcraft.forge.util.PlayerCooldown;
 
 @Mod.EventBusSubscriber
 public class PlayerPosingHandler
@@ -79,7 +79,7 @@ public class PlayerPosingHandler
                     mainHand.zRot = ((float) Math.PI / 6F) * (mainHand == model.leftArm ? -1 : 1);
                     break;
                 case BUCKET_SWING:
-                    animTime = ((SlosherItem) mainStack.getItem()).startupTicks;
+                    animTime = ((SlosherItem) mainStack.getItem()).settings.startupTicks;
                     mainHand.yRot = 0;
                     mainHand.xRot = -0.36f;
 

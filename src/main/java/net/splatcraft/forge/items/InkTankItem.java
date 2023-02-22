@@ -85,16 +85,17 @@ public class InkTankItem extends ColoredArmorItem
     public static boolean canRecharge(ItemStack stack, boolean fromTick) {
         CompoundNBT tag = stack.getOrCreateTag();
         boolean cannotRecharge = tag.contains("CannotRecharge");
-        if (!tag.contains("RegenCooldown"))
-            tag.putInt("RegenCooldown", 0);
-        int cooldown = tag.getInt("RegenCooldown");
+        if (!tag.contains("RecoveryCooldown"))
+            tag.putInt("RecoveryCooldown", 0);
+        int cooldown = tag.getInt("RecoveryCooldown");
         if (cooldown == 0 || !fromTick) return !cannotRecharge;
-        tag.putInt("RegenCooldown", --cooldown);
+        tag.putInt("RecoveryCooldown", --cooldown);
         return false;
     }
 
     public static void setRecoveryCooldown(ItemStack stack, int recoveryCooldown) {
-        stack.getOrCreateTag().putInt("RegenCooldown", recoveryCooldown);
+        CompoundNBT tag = stack.getOrCreateTag();
+        tag.putInt("RecoveryCooldown", Math.max(tag.getInt("RecoveryCooldown"), recoveryCooldown));
     }
 
     @Override

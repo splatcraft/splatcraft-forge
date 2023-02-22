@@ -49,7 +49,7 @@ public class ChargerItem extends WeaponBaseItem
     public void onRelease(World level, PlayerEntity player, ItemStack stack, float charge)
     {
         InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize, settings);
-        proj.setChargerStats((int) (settings.projectileLifespan * charge), charge >= settings.chargerPiercesAt);
+        proj.setChargerStats(charge, (int) (settings.projectileLifespan * charge), charge >= settings.chargerPiercesAt);
         proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, settings.projectileSpeed, 0.1f);
         level.addFreshEntity(proj);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
