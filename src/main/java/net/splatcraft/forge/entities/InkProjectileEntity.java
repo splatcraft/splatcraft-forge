@@ -28,7 +28,7 @@ import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.handlers.WeaponHandler;
-import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.IDamageCalculator;
 import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
@@ -55,9 +55,9 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
     public int trailCooldown = 0;
     public String damageType = "splat";
     public boolean causesHurtCooldown = false;
+    public boolean throwerAirborne = false;
 
-    public WeaponSettings settings;
-
+    public IDamageCalculator damage;
     public InkBlockUtils.InkType inkType;
 
 
@@ -65,21 +65,22 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         super(type, level);
     }
 
-    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, WeaponSettings settings, ItemStack sourceWeapon) {
+    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float projectileSize, IDamageCalculator damage, ItemStack sourceWeapon) {
         super(SplatcraftEntities.INK_PROJECTILE, thrower, level);
         setColor(color);
-        this.settings = settings;
-        setProjectileSize(settings.projectileSize);
+        setProjectileSize(projectileSize);
+        this.throwerAirborne = !thrower.isOnGround();
+        this.damage = damage;
         this.inkType = inkType;
         this.sourceWeapon = sourceWeapon;
     }
 
-    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, WeaponSettings settings) {
-        this(level, thrower, color, inkType, settings, ItemStack.EMPTY);
+    public InkProjectileEntity(World level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float projectileSize, IDamageCalculator damage) {
+        this(level, thrower, color, inkType, projectileSize, damage, ItemStack.EMPTY);
     }
 
-    public InkProjectileEntity(World level, LivingEntity thrower, ItemStack sourceWeapon, InkBlockUtils.InkType inkType, WeaponSettings settings) {
-        this(level, thrower, ColorUtils.getInkColor(sourceWeapon), inkType, settings, sourceWeapon);
+    public InkProjectileEntity(World level, LivingEntity thrower, ItemStack sourceWeapon, InkBlockUtils.InkType inkType, float projectileSize, IDamageCalculator damage) {
+        this(level, thrower, ColorUtils.getInkColor(sourceWeapon), inkType, projectileSize, damage, sourceWeapon);
     }
 
     public InkProjectileEntity setShooterTrail() {
@@ -147,7 +148,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         }
 
         if (!level.isClientSide && !persistent && lifespan-- <= 0) {
-            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, settings.baseDamage, damageMobs, getColor(), inkType, sourceWeapon);
+            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, damage.calculateDamage(this.tickCount, throwerAirborne), damageMobs, getColor(), inkType, sourceWeapon);
             if (explodes) {
                 level.broadcastEntityEvent(this, (byte) 3);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
@@ -196,14 +197,14 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         super.onHitEntity(result);
 
         Entity target = result.getEntity();
-        float damage = settings.calculateDamage(this.tickCount);
+        float dmg = damage.calculateDamage(this.tickCount, throwerAirborne);
 
         if (target instanceof LivingEntity)
-            InkDamageUtils.doDamage(level, (LivingEntity) target, damage, getColor(), getOwner(), sourceWeapon, damageMobs, inkType, damageType, causesHurtCooldown);
+            InkDamageUtils.doDamage(level, (LivingEntity) target, dmg, getColor(), getOwner(), sourceWeapon, damageMobs, inkType, damageType, causesHurtCooldown);
 
         if (!canPierce) {
             if (explodes) {
-                InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, damage, damageMobs, getColor(), inkType, sourceWeapon);
+                InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, dmg, damageMobs, getColor(), inkType, sourceWeapon);
                 level.broadcastEntityEvent(this, (byte) 3);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             } else
@@ -225,7 +226,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
 
         super.onHitBlock(result);
 
-        InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, settings.calculateDamage(this.tickCount), damageMobs, getColor(), inkType, sourceWeapon);
+        InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, splashDamage, damage.calculateDamage(this.tickCount, throwerAirborne), damageMobs, getColor(), inkType, sourceWeapon);
         if (explodes) {
             level.broadcastEntityEvent(this, (byte) 3);
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);

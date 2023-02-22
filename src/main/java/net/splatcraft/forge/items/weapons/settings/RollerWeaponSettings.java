@@ -1,6 +1,6 @@
 package net.splatcraft.forge.items.weapons.settings;
 
-public class RollerWeaponSettings {
+public class RollerWeaponSettings implements IDamageCalculator {
     public String name;
     public boolean isBrush;
 
@@ -17,18 +17,33 @@ public class RollerWeaponSettings {
     public float swingMobility;
     public float swingConsumption;
     public int swingInkRecoveryCooldown;
-    public float swingDamage;
+    public float swingBaseDamage;
+    public int swingDamageDecayStartTick;
+    public float swingDamageDecayPerTick;
+    public float swingMinDamage;
     public float swingProjectileSpeed;
     public int swingTime;
 
     public float flingConsumption;
     public int flingInkRecoveryCooldown;
-    public float flingDamage;
+    public float flingBaseDamage;
+    public int flingDamageDecayStartTick;
+    public float flingDamageDecayPerTick;
+    public float flingMinDamage;
     public float flingProjectileSpeed;
     public int flingTime;
 
     public RollerWeaponSettings(String name) {
         this.name = name;
+    }
+
+    public float calculateDamage(int tickCount, boolean airborne) {
+        if (airborne) {
+            int e = tickCount - flingDamageDecayStartTick;
+            return Math.max(e > 0 ? flingBaseDamage - (e * flingDamageDecayPerTick) : flingBaseDamage, flingMinDamage);
+        }
+        int e = tickCount - swingDamageDecayStartTick;
+        return Math.max(e > 0 ? swingBaseDamage - (e * swingDamageDecayPerTick) : swingBaseDamage, swingMinDamage);
     }
 
     public RollerWeaponSettings setName(String name) {
@@ -98,9 +113,27 @@ public class RollerWeaponSettings {
         return this;
     }
 
-    public RollerWeaponSettings setSwingDamage(float swingDamage) {
-        this.swingDamage = swingDamage;
-        this.flingDamage = swingDamage;
+    public RollerWeaponSettings setSwingBaseDamage(float swingBaseDamage) {
+        this.swingBaseDamage = swingBaseDamage;
+        this.flingBaseDamage = swingBaseDamage;
+        return this;
+    }
+
+    public RollerWeaponSettings setSwingDamageDecayStartTick(int swingDamageDecayStartTick) {
+        this.swingDamageDecayStartTick = swingDamageDecayStartTick;
+        this.flingDamageDecayStartTick = swingDamageDecayStartTick;
+        return this;
+    }
+
+    public RollerWeaponSettings setSwingDamageDecayPerTick(float swingDamageDecayPerTick) {
+        this.swingDamageDecayPerTick = swingDamageDecayPerTick;
+        this.flingDamageDecayPerTick = swingDamageDecayPerTick;
+        return this;
+    }
+
+    public RollerWeaponSettings setSwingMinDamage(float swingMinDamage) {
+        this.swingMinDamage = swingMinDamage;
+        this.flingMinDamage = swingMinDamage;
         return this;
     }
 
@@ -126,8 +159,23 @@ public class RollerWeaponSettings {
         return this;
     }
 
-    public RollerWeaponSettings setFlingDamage(float flingDamage) {
-        this.flingDamage = flingDamage;
+    public RollerWeaponSettings setFlingBaseDamage(float flingBaseDamage) {
+        this.flingBaseDamage = flingBaseDamage;
+        return this;
+    }
+
+    public RollerWeaponSettings setFlingDamageDecayStartTick(int flingDamageDecayStartTick) {
+        this.flingDamageDecayStartTick = flingDamageDecayStartTick;
+        return this;
+    }
+
+    public RollerWeaponSettings setFlingDamageDecayPerTick(float flingDamageDecayPerTick) {
+        this.flingDamageDecayPerTick = flingDamageDecayPerTick;
+        return this;
+    }
+
+    public RollerWeaponSettings setFlingMinDamage(float flingMinDamage) {
+        this.flingMinDamage = flingMinDamage;
         return this;
     }
 

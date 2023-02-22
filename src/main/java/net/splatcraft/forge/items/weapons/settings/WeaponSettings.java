@@ -1,6 +1,6 @@
 package net.splatcraft.forge.items.weapons.settings;
 
-public class WeaponSettings {
+public class WeaponSettings implements IDamageCalculator {
     public String name;
 
     public float projectileSize;
@@ -25,7 +25,7 @@ public class WeaponSettings {
         this.name = name;
     }
 
-    public float calculateDamage(int tickCount) {
+    public float calculateDamage(int tickCount, boolean airborne) {
         int e = tickCount - damageDecayStartTick;
         return Math.max(e > 0 ? baseDamage - (e * damageDecayPerTick) : baseDamage, minDamage);
     }

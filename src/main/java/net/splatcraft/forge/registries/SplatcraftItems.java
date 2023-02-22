@@ -183,20 +183,25 @@ public class SplatcraftItems {
     public static final RollerItem splatRoller = new RollerItem(new RollerWeaponSettings("splat_roller").setBrush(false)
             .setRollSize(3).setRollConsumption(0.06f).setRollInkRecoveryCooldown(7).setRollDamage(25).setRollMobility(1.08f)
             .setDashMobility(1.32f).setDashConsumption(0.3f).setDashTime(30)
-            .setSwingMobility(0.48f).setSwingConsumption(9).setSwingDamage(16).setSwingProjectileSpeed(0.55f).setSwingTime(6));
+            .setSwingMobility(0.48f).setSwingConsumption(9).setSwingInkRecoveryCooldown(15).setSwingProjectileSpeed(0.55f).setSwingTime(6)
+            .setSwingBaseDamage(30).setSwingMinDamage(7).setSwingDamageDecayStartTick(8).setSwingDamageDecayPerTick(3.45f));
     public static final RollerItem krakOnSplatRoller = new RollerItem(splatRoller.settings.setName("krak_on_splat_roller"));
     public static final RollerItem coroCoroSplatRoller = new RollerItem(splatRoller.settings.setName("corocoro_splat_roller"));
     public static final RollerItem carbonRoller = new RollerItem(new RollerWeaponSettings("carbon_roller").setBrush(false)
             .setRollSize(2).setRollConsumption(0.06f).setRollInkRecoveryCooldown(7).setRollDamage(14).setRollMobility(1.28f)
             .setDashMobility(1.52f).setDashConsumption(0.3f).setDashTime(10)
-            .setSwingMobility(0.6f).setSwingConsumption(4).setSwingInkRecoveryCooldown(13).setSwingDamage(20).setSwingProjectileSpeed(0.45f).setSwingTime(3)
-            .setFlingDamage(24).setFlingInkRecoveryCooldown(15).setFlingProjectileSpeed(0.58f).setFlingTime(4));
+            .setSwingMobility(0.6f).setSwingConsumption(4).setSwingInkRecoveryCooldown(13).setSwingProjectileSpeed(0.45f).setSwingTime(3)
+            .setSwingBaseDamage(20).setSwingMinDamage(5).setSwingDamageDecayStartTick(8).setSwingDamageDecayPerTick(2.25f)
+            .setFlingInkRecoveryCooldown(15).setFlingProjectileSpeed(0.58f).setFlingTime(4)
+            .setFlingBaseDamage(24).setFlingMinDamage(7).setFlingDamageDecayStartTick(10).setFlingDamageDecayPerTick(3.4f));
     public static final RollerItem inkbrush = new RollerItem(new RollerWeaponSettings("inkbrush").setBrush(true)
-            .setRollSize(1).setRollConsumption(0.4f).setRollDamage(4).setRollMobility(1.92f)
-            .setSwingMobility(0.24f).setSwingConsumption(2).setSwingInkRecoveryCooldown(10).setSwingDamage(4).setSwingProjectileSpeed(0.6f).setSwingTime(2));
+            .setRollSize(1).setRollConsumption(0.4f).setRollInkRecoveryCooldown(7).setRollDamage(4).setRollMobility(1.92f)
+            .setSwingMobility(0.24f).setSwingConsumption(2).setSwingInkRecoveryCooldown(10).setSwingProjectileSpeed(0.6f).setSwingTime(2)
+            .setSwingBaseDamage(6).setSwingMinDamage(3).setSwingDamageDecayStartTick(7).setSwingDamageDecayPerTick(0.45f));
     public static final RollerItem octobrush = new RollerItem(new RollerWeaponSettings("octobrush").setBrush(true)
-            .setRollSize(2).setRollConsumption(0.54f).setRollDamage(5).setRollMobility(1.92f)
-            .setSwingMobility(0.24f).setSwingConsumption(3.2f).setSwingInkRecoveryCooldown(10).setSwingDamage(2).setSwingProjectileSpeed(0.65f).setSwingTime(3));
+            .setRollSize(2).setRollConsumption(0.54f).setRollInkRecoveryCooldown(7).setRollDamage(5).setRollMobility(1.92f)
+            .setSwingMobility(0.24f).setSwingConsumption(3.2f).setSwingInkRecoveryCooldown(10).setSwingProjectileSpeed(0.65f).setSwingTime(3)
+            .setSwingBaseDamage(8).setSwingMinDamage(4).setSwingDamageDecayStartTick(8).setSwingDamageDecayPerTick(0.57f));
     public static final RollerItem kensaOctobrush = new RollerItem(octobrush.settings.setName("kensa_octobrush"));
 
     //Chargers

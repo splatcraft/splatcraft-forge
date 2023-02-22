@@ -37,7 +37,7 @@ public class BlasterItem extends ShooterItem {
     public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown) {
         if (reduceInk(player, settings.inkConsumption, settings.inkRecoveryCooldown, false)) {
             if (!level.isClientSide) {
-                InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings).setShooterTrail();
+                InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize, settings).setShooterTrail();
                 proj.setBlasterStats(settings.projectileLifespan, settings.minDamage);
                 proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, settings.projectileSpeed, player.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy);
                 level.addFreshEntity(proj);

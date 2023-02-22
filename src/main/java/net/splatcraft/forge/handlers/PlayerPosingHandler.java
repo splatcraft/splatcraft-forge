@@ -114,7 +114,7 @@ public class PlayerPosingHandler
                     if (PlayerCooldown.hasPlayerCooldown(player))
                     {
                         cooldown = PlayerCooldown.getPlayerCooldown(player);
-                        animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).swingTime : ((RollerItem) mainStack.getItem()).flingTime;
+                        animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).settings.swingTime : ((RollerItem) mainStack.getItem()).settings.flingTime;
                         angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
                         mainHand.xRot = MathHelper.cos(angle) + (0.1F * 0.5F - ((float) Math.PI / 10F));//+ 0.36f;
                     } else
@@ -129,7 +129,7 @@ public class PlayerPosingHandler
                     if (PlayerCooldown.hasPlayerCooldown(player))
                     {
                         cooldown = PlayerCooldown.getPlayerCooldown(player);
-                        animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).swingTime : ((RollerItem) mainStack.getItem()).flingTime;
+                        animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).settings.swingTime : ((RollerItem) mainStack.getItem()).settings.flingTime;
                         angle = (float) -((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
 
                         mainHand.yRot = model.getHead().yRot + MathHelper.cos(angle);

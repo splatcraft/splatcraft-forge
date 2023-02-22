@@ -43,7 +43,7 @@ public class RollerRollTickableSound extends TickableSound
         if (this.player.isAlive() && player.getUseItem().getItem() instanceof RollerItem)
         {
             ItemStack roller = player.getUseItem();
-            if (!WeaponBaseItem.enoughInk(player, Math.max(((RollerItem) roller.getItem()).rollConsumptionMin, ((RollerItem) roller.getItem()).rollConsumptionMax), 7, false)) {
+            if (!WeaponBaseItem.enoughInk(player, Math.max(((RollerItem) roller.getItem()).settings.rollConsumption, ((RollerItem) roller.getItem()).settings.dashConsumption), 7, false)) {
                 stop();
                 return;
             }

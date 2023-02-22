@@ -85,8 +85,7 @@ public class RollerItem extends WeaponBaseItem
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.brushFling, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 int total = settings.rollSize * 2 + 1;
                 for (int i = 0; i < total; i++) {
-                    InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), 1.6f,
-                            entity.isOnGround() ? settings.swingDamage : settings.flingDamage);
+                    InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), 1.6f, settings);
                     proj.setProjectileType(InkProjectileEntity.Types.ROLLER);
                     proj.shootFromRotation(entity, entity.xRot, entity.yRot + (i - total / 2f) * 20, 0, entity.isOnGround() ? settings.swingProjectileSpeed : settings.flingProjectileSpeed, 0.05f);
                     proj.moveTo(proj.getX(), proj.getY() - entity.getEyeHeight() / 2f, proj.getZ());
@@ -189,7 +188,8 @@ public class RollerItem extends WeaponBaseItem
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.rollerFling, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             for (int i = 0; i < settings.rollSize; i++) {
 
-                InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), 1.6f, airborne ? settings.flingDamage : settings.swingDamage);
+                InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), 1.6f, settings);
+                proj.throwerAirborne = airborne;
                 proj.shootFromRotation(player, player.xRot, player.yRot, airborne ? 0.0f : -67.5f, airborne ? settings.flingProjectileSpeed : settings.swingProjectileSpeed, 0.05f);
                 proj.setRollerSwingStats(airborne);
                 if (airborne) {
