@@ -52,7 +52,7 @@ public class RollerWeaponSettings implements IDamageCalculator {
     }
 
     public RollerWeaponSettings setBrush(boolean brush) {
-        isBrush = brush;
+        this.isBrush = brush;
         return this;
     }
 
@@ -141,7 +141,7 @@ public class RollerWeaponSettings implements IDamageCalculator {
 
     public RollerWeaponSettings setSwingProjectileSpeed(float swingProjectileSpeed) {
         this.swingProjectileSpeed = swingProjectileSpeed;
-        this.flingProjectileSpeed = swingProjectileSpeed;
+        this.flingProjectileSpeed = swingProjectileSpeed * (isBrush ? 1 : 1.3f);
         return this;
     }
 

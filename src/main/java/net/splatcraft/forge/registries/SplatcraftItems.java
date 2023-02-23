@@ -251,10 +251,10 @@ public class SplatcraftItems {
     public static final InkTankItem armoredInkTank = new InkTankItem("armored_ink_tank", 85, ARMORED_INK_TANK);
 
     //Sub Weapons
-    public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70);
-    public static final SubWeaponItem splatBomb2 = (SubWeaponItem) new SubWeaponItem("splat_bomb_2", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70).setSecret();
-    public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB, BurstBombEntity.DIRECT_DAMAGE, BurstBombEntity.EXPLOSION_SIZE, 40);
-    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB, SuctionBombEntity.DIRECT_DAMAGE, SuctionBombEntity.EXPLOSION_SIZE, 70);
+    public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70, 20);
+    public static final SubWeaponItem splatBomb2 = (SubWeaponItem) new SubWeaponItem("splat_bomb_2", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70, 20).setSecret();
+    public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB, BurstBombEntity.DIRECT_DAMAGE, BurstBombEntity.EXPLOSION_SIZE, 40, 15);
+    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB, SuctionBombEntity.DIRECT_DAMAGE, SuctionBombEntity.EXPLOSION_SIZE, 70, 30);
 
     //Vanity
     public static final Item inkClothHelmet = new ColoredArmorItem("ink_cloth_helmet", INK_CLOTH, EquipmentSlotType.HEAD);

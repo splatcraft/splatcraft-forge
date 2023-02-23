@@ -32,16 +32,18 @@ import java.util.List;
 public class SubWeaponItem extends WeaponBaseItem
 {
     public float inkConsumption;
+    public int inkRecoveryCooldown;
     public final EntityType<? extends AbstractSubWeaponEntity> entityType;
 
     public static final ArrayList<SubWeaponItem> subs = new ArrayList<>();
     public static final float throwVelocity = 0.75f;
     public static final float throwAngle = -30f;
 
-    public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption) {
+    public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption, int inkRecoveryCooldown) {
         super(WeaponSettings.DEFAULT); //it's either keeping this here or making another interface for main weapons >_>
         setRegistryName(name);
         this.inkConsumption = inkConsumption;
+        this.inkRecoveryCooldown = inkRecoveryCooldown;
         this.entityType = entityType;
         subs.add(this);
 
@@ -64,7 +66,7 @@ public class SubWeaponItem extends WeaponBaseItem
     @Override
     public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
     {
-        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, inkConsumption, 0, true, true)))
+        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, inkConsumption, inkRecoveryCooldown, true, true)))
             player.startUsingItem(hand);
         return useSuper(level, player, hand);
     }

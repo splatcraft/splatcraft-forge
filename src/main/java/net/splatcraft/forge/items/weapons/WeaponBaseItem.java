@@ -85,8 +85,9 @@ public class WeaponBaseItem extends Item implements IColoredItem
             return true;
         }
         if (tank.getItem() instanceof InkTankItem) {
-            InkTankItem.setRecoveryCooldown(tank, recoveryCooldown);
             boolean enoughInk = InkTankItem.getInkAmount(tank) - consumption >= 0;
+            if (!sub || enoughInk)
+                InkTankItem.setRecoveryCooldown(tank, recoveryCooldown);
             if (!enoughInk && sendMessage)
                 sendNoInkMessage(player, sub ? SplatcraftSounds.noInkSub : SplatcraftSounds.noInkMain);
             return enoughInk;
