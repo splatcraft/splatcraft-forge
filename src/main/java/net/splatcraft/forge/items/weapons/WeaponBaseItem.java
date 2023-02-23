@@ -35,7 +35,6 @@ import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.weapons.settings.IDamageCalculator;
-import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -86,10 +85,11 @@ public class WeaponBaseItem extends Item implements IColoredItem
             return true;
         }
         if (tank.getItem() instanceof InkTankItem) {
-            if (sendMessage)
-                sendNoInkMessage(player, sub ? SplatcraftSounds.noInkSub : SplatcraftSounds.noInkMain);
             InkTankItem.setRecoveryCooldown(tank, recoveryCooldown);
-            return InkTankItem.getInkAmount(tank) - consumption >= 0;
+            boolean enoughInk = InkTankItem.getInkAmount(tank) - consumption >= 0;
+            if (!enoughInk && sendMessage)
+                sendNoInkMessage(player, sub ? SplatcraftSounds.noInkSub : SplatcraftSounds.noInkMain);
+            return enoughInk;
         }
         return false;
     }

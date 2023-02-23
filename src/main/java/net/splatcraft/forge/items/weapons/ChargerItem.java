@@ -44,7 +44,7 @@ public class ChargerItem extends WeaponBaseItem
 
         addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / settings.projectileLifespan * 100)));
         addStat(new WeaponTooltip("charge_speed", (stack, level) -> (int) ((40 - settings.startupTicks) / 40f * 100)));
-        addStat(new WeaponTooltip("settings.chargerMobility", (stack, level) -> (int) (settings.chargerMobility * 100)));
+        addStat(new WeaponTooltip("mobility", (stack, level) -> (int) (settings.chargerMobility * 100)));
     }
 
     public void onRelease(World level, PlayerEntity player, ItemStack stack, float charge)

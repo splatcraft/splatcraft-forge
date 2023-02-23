@@ -268,7 +268,7 @@ public class DualieItem extends WeaponBaseItem
     {
         if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % (onRollCooldown ? 2 : settings.firingSpeed) == 0) {
             if (reduceInk(entity, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
-                InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.inkRecoveryCooldown, settings).setShooterTrail();
+                InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.projectileSize, settings).setShooterTrail();
                 proj.isOnRollCooldown = onRollCooldown;
                 proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, settings.projectileSpeed, entity instanceof PlayerEntity && PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity) ? settings.rollInaccuracy : (entity.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy));
                 level.addFreshEntity(proj);

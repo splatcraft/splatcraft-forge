@@ -12,7 +12,7 @@ public class RollerWeaponSettings implements IDamageCalculator {
 
     public float dashMobility;
     public float dashConsumption;
-    public int dashTime;
+    public int dashTime = 1;
 
     public float swingMobility;
     public float swingConsumption;
@@ -63,6 +63,7 @@ public class RollerWeaponSettings implements IDamageCalculator {
 
     public RollerWeaponSettings setRollConsumption(float rollConsumption) {
         this.rollConsumption = rollConsumption;
+        this.dashConsumption = rollConsumption;
         return this;
     }
 
@@ -78,6 +79,7 @@ public class RollerWeaponSettings implements IDamageCalculator {
 
     public RollerWeaponSettings setRollMobility(float rollMobility) {
         this.rollMobility = rollMobility;
+        this.dashMobility = rollMobility;
         return this;
     }
 

@@ -30,6 +30,7 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
+import net.splatcraft.forge.util.WeaponTooltip;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,10 @@ public class RollerItem extends WeaponBaseItem
         super(settings);
         this.settings = settings;
         setRegistryName(settings.name);
+
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) ((settings.flingProjectileSpeed + settings.swingProjectileSpeed) * 50)));
+        addStat(new WeaponTooltip("ink_speed", (stack, level) -> (int) (settings.dashMobility / 2f * 100)));
+        addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((20 - (settings.flingTime + settings.swingTime) / 2f) * 5)));
     }
 
     public static void applyRecoilKnockback(LivingEntity entity, double pow)

@@ -65,6 +65,7 @@ public class WeaponHandler {
         //Vector3d prevPos = PlayerInfoCapability.get(player).getPrevPos();
 
         if (PlayerCooldown.shrinkCooldownTime(player, 1) != null) {
+            player.setSprinting(false);
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
             PlayerInfoCapability.get(player).setIsSquid(false);
             if (event.side.isServer())

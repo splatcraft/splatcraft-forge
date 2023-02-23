@@ -37,9 +37,8 @@ public class EntityMixin
 			return;
 		if(p_70031_1_ && PlayerCooldown.hasPlayerCooldown(((PlayerEntity)(Object)this)))
 		{
+			((PlayerEntity) (Object) this).setSprinting(false);
 			ci.cancel();
-			((PlayerEntity)(Object)this).setSprinting(false);
 		}
-
 	}
 }
