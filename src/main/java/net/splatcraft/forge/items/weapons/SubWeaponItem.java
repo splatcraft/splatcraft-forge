@@ -18,10 +18,11 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.WeaponStat;
+import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,22 +32,24 @@ import java.util.List;
 public class SubWeaponItem extends WeaponBaseItem
 {
     public float inkConsumption;
+    public int inkRecoveryCooldown;
     public final EntityType<? extends AbstractSubWeaponEntity> entityType;
 
     public static final ArrayList<SubWeaponItem> subs = new ArrayList<>();
     public static final float throwVelocity = 0.75f;
     public static final float throwAngle = -30f;
 
-    public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption) {
-        super();
+    public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption, int inkRecoveryCooldown) {
+        super(WeaponSettings.DEFAULT); //it's either keeping this here or making another interface for main weapons >_>
         setRegistryName(name);
         this.inkConsumption = inkConsumption;
+        this.inkRecoveryCooldown = inkRecoveryCooldown;
         this.entityType = entityType;
         subs.add(this);
 
-        addStat(new WeaponStat("damage", (stack, level) -> (int) (directDamage / 20 * 100)));
-        addStat(new WeaponStat("impact", (stack, level) -> (int) (explosionSize / 4 * 100)));
-        addStat(new WeaponStat("ink_consumption", (stack, level) -> (int) (inkConsumption)));
+        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (directDamage / 20 * 100)));
+        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (explosionSize / 4 * 100)));
+        addStat(new WeaponTooltip("ink_consumption", (stack, level) -> (int) (inkConsumption)));
     }
 
     public static boolean singleUse(ItemStack stack) {
@@ -63,7 +66,7 @@ public class SubWeaponItem extends WeaponBaseItem
     @Override
     public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
     {
-        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, inkConsumption, true, true)))
+        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, this, inkConsumption, inkRecoveryCooldown, true, true)))
             player.startUsingItem(hand);
         return useSuper(level, player, hand);
     }
@@ -95,7 +98,7 @@ public class SubWeaponItem extends WeaponBaseItem
         if (SubWeaponItem.singleUse(stack)) {
             if (entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative())
                 stack.shrink(1);
-        } else reduceInk(entity, inkConsumption, false);
+        } else reduceInk(entity, this, inkConsumption, 0, false);
 
     }
 

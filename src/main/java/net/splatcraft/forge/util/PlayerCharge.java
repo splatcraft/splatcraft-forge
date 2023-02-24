@@ -5,7 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.items.weapons.IChargeableWeapon;
+import net.splatcraft.forge.items.weapons.ChargerItem;
 
 public class PlayerCharge
 {
@@ -103,9 +103,9 @@ public class PlayerCharge
         PlayerCharge charge = getCharge(player);
         Item dischargeItem = charge.chargedWeapon.getItem();
 
-        if (dischargeItem instanceof IChargeableWeapon)
+        if (dischargeItem instanceof ChargerItem)
         {
-            charge.charge = Math.max(0, charge.charge - ((IChargeableWeapon) dischargeItem).getDischargeSpeed());
+            charge.charge = Math.max(0, charge.charge - ((ChargerItem) dischargeItem).dischargeSpeed);
         } else
         {
             charge.charge = 0;

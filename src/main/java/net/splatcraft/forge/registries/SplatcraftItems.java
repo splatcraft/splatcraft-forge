@@ -1,9 +1,5 @@
 package net.splatcraft.forge.registries;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
@@ -49,11 +45,18 @@ import net.splatcraft.forge.items.weapons.RollerItem;
 import net.splatcraft.forge.items.weapons.ShooterItem;
 import net.splatcraft.forge.items.weapons.SlosherItem;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
+import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.util.SplatcraftArmorMaterial;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+
+@SuppressWarnings("unused")
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class SplatcraftItems
-{
+public class SplatcraftItems {
     public static final List<Item> weapons = new ArrayList<>();
     public static final ArrayList<Item> inkColoredItems = new ArrayList<>();
     public static final UUID SPEED_MOD_UUID = UUID.fromString("dc65cedb-19d2-4731-a492-ee930c8234df");
@@ -66,66 +69,180 @@ public class SplatcraftItems
     public static final IArmorMaterial ARMORED_INK_TANK = new SplatcraftArmorMaterial("armored_ink_tank", SoundEvents.ARMOR_EQUIP_IRON, 3, 0, 0.05f);
 
     //Shooters
-    public static final ShooterItem splattershot = new ShooterItem("splattershot", 1f, 0.75f, 12f, 3, 8f, 0.9f);
-    public static final ShooterItem tentatekSplattershot = new ShooterItem("tentatek_splattershot", splattershot);
-    public static final ShooterItem wasabiSplattershot = new ShooterItem("wasabi_splattershot", splattershot);
-    public static final ShooterItem ancientSplattershot = (ShooterItem) new ShooterItem("ancient_splattershot", splattershot).setSecret();
-    public static final ShooterItem splattershotJr = new ShooterItem("splattershot_jr", 0.95f, 0.55f, 13.5f, 3, 6.5f, 0.5f);
-    public static final ShooterItem kensaSplattershotJr = new ShooterItem("kensa_splattershot_jr", splattershotJr);
-    public static final ShooterItem aerosprayMG = new ShooterItem("aerospray_mg", 1.2f, 0.45f, 26f, 1, 5f, 0.5f);
-    public static final ShooterItem getAerosprayRG = new ShooterItem("aerospray_rg", aerosprayMG);
-    public static final ShooterItem gal52 = new ShooterItem("52_gal", 1.1f, 0.78f, 16f, 6, 10.4f, 1.3f);
-    public static final ShooterItem gal52Deco = new ShooterItem("52_gal_deco", gal52);
-    public static final ShooterItem kensaGal52 = new ShooterItem("kensa_52_gal", gal52);
-    public static final ShooterItem gal96 = new ShooterItem("96_gal", 1.2f, 0.88f, 12.5f, 8, 12.4f, 2.5f);
-    public static final ShooterItem gal96Deco = new ShooterItem("96_gal_deco", gal96);
-    public static final ShooterItem nzap85 = new ShooterItem("n-zap85", 1f, 0.75f, 12f, 2, 5.9f, 0.8f);
-    public static final ShooterItem nzap89 = new ShooterItem("n-zap89", nzap85);
-
+    public static final ShooterItem splattershot = new ShooterItem(new WeaponSettings("splattershot")
+            .setProjectileSize(1).setProjectileSpeed(0.75f)
+            .setFiringSpeed(3)
+            .setGroundInaccuracy(6).setAirInaccuracy(12)
+            .setInkConsumption(0.9f).setInkRecoveryCooldown(7)
+            .setBaseDamage(8).setMinDamage(4).setDamageDecayStartTick(3).setDamageDecayPerTick(0.34f));
+    public static final ShooterItem tentatekSplattershot = new ShooterItem(splattershot.settings.setName("tentatek_splattershot"));
+    public static final ShooterItem wasabiSplattershot = new ShooterItem(splattershot.settings.setName("wasabi_splattershot"));
+    public static final ShooterItem ancientSplattershot = (ShooterItem) new ShooterItem(splattershot.settings.setName("ancient_splattershot")).setSecret();
+    public static final ShooterItem splattershotJr = new ShooterItem(new WeaponSettings("splattershot_jr")
+            .setProjectileSize(0.95f).setProjectileSpeed(0.55f)
+            .setFiringSpeed(3)
+            .setGroundInaccuracy(12).setAirInaccuracy(15)
+            .setInkConsumption(0.5f).setInkRecoveryCooldown(5)
+            .setBaseDamage(6.5f).setMinDamage(3.3f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.53f));
+    public static final ShooterItem kensaSplattershotJr = new ShooterItem(splattershotJr.settings.setName("kensa_splattershot_jr"));
+    public static final ShooterItem aerosprayMG = new ShooterItem(new WeaponSettings("aerospray_mg")
+            .setProjectileSize(1.2f).setProjectileSpeed(0.45f)
+            .setFiringSpeed(3)
+            .setGroundInaccuracy(13).setAirInaccuracy(16)
+            .setInkConsumption(0.5f).setInkRecoveryCooldown(5)
+            .setBaseDamage(5).setMinDamage(2.5f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.45f));
+    public static final ShooterItem aerosprayRG = new ShooterItem(aerosprayMG.settings.setName("aerospray_rg"));
+    public static final ShooterItem gal52 = new ShooterItem(new WeaponSettings("52_gal")
+            .setProjectileSize(1.1f).setProjectileSpeed(0.78f)
+            .setFiringSpeed(6)
+            .setGroundInaccuracy(6).setAirInaccuracy(12)
+            .setInkConsumption(1.3f).setInkRecoveryCooldown(7)
+            .setBaseDamage(10.4f).setMinDamage(6).setDamageDecayStartTick(4).setDamageDecayPerTick(0.83f));
+    public static final ShooterItem gal52Deco = new ShooterItem(gal52.settings.setName("52_gal_deco"));
+    public static final ShooterItem kensaGal52 = new ShooterItem(gal52.settings.setName("kensa_52_gal"));
+    public static final ShooterItem gal96 = new ShooterItem(new WeaponSettings("96_gal")
+            .setProjectileSize(1.2f).setProjectileSpeed(0.88f)
+            .setFiringSpeed(8)
+            .setGroundInaccuracy(4).setAirInaccuracy(11)
+            .setInkConsumption(2.5f).setInkRecoveryCooldown(7)
+            .setBaseDamage(12.4f).setMinDamage(7).setDamageDecayStartTick(3).setDamageDecayPerTick(1));
+    public static final ShooterItem gal96Deco = new ShooterItem(gal96.settings.setName("96_gal_deco"));
+    public static final ShooterItem nzap85 = new ShooterItem(new WeaponSettings("n-zap85")
+            .setProjectileSize(1).setProjectileSpeed(0.75f)
+            .setFiringSpeed(2)
+            .setGroundInaccuracy(6).setAirInaccuracy(12)
+            .setInkConsumption(0.8f).setInkRecoveryCooldown(7)
+            .setBaseDamage(5.9f).setMinDamage(2.8f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.53f));
+    public static final ShooterItem nzap89 = new ShooterItem(nzap85.settings.setName("n-zap89"));
 
     //Blasters
-    public static final BlasterItem blaster = new BlasterItem("blaster", 2.25f, 1.1f, 5f, 4, 20, 25f, 10f, 10f, 5);
-    public static final BlasterItem grimBlaster = new BlasterItem("grim_blaster", blaster);
-    public static final BlasterItem clashBlaster = new BlasterItem("clash_blaster", 1.65f, 1.1f, 5f, 1, 10, 12f, 6f, 4, 4);
-    public static final BlasterItem clashBlasterNeo = new BlasterItem("clash_blaster_neo", clashBlaster);
+    public static final BlasterItem blaster = new BlasterItem(new WeaponSettings("blaster")
+            .setProjectileSize(2.25f).setProjectileLifespan(5).setProjectileSpeed(1.1f)
+            .setFiringSpeed(20).setStartupTicks(4)
+            .setGroundInaccuracy(0).setAirInaccuracy(10)
+            .setInkConsumption(10).setInkRecoveryCooldown(20)
+            .setBaseDamage(25).setMinDamage(10));
+    public static final BlasterItem grimBlaster = new BlasterItem(blaster.settings.setName("grim_blaster"));
+    public static final BlasterItem clashBlaster = new BlasterItem(new WeaponSettings("clash_blaster")
+            .setProjectileSize(1.65f).setProjectileLifespan(4).setProjectileSpeed(1.1f)
+            .setFiringSpeed(10)
+            .setStartupTicks(1).setGroundInaccuracy(0).setAirInaccuracy(8)
+            .setInkConsumption(4).setInkRecoveryCooldown(13).setBaseDamage(12).setMinDamage(6));
+    public static final BlasterItem clashBlasterNeo = new BlasterItem(clashBlaster.settings.setName("clash_blaster_neo"));
 
     //Rollers
-    public static final RollerItem splatRoller = new RollerItem("splat_roller", 3, 0.06f, 25, 1.08f, false).setDashStats(1.32, 0.3f, 30)
-            .setSwingStats(0.48, 9, 16, 0.55f, 6);
-    public static final RollerItem krakOnSplatRoller = new RollerItem("krak_on_splat_roller", splatRoller);
-    public static final RollerItem coroCoroSplatRoller = new RollerItem("corocoro_splat_roller", splatRoller);
-    public static final RollerItem carbonRoller = new RollerItem("carbon_roller", 2, 0.06f, 14, 1.28f, false).setDashStats(1.52, 0.3f, 10)
-            .setSwingStats(0.6, 4, 20, 0.45f, 3, 4, 24, 0.58f, 4);
-    public static final RollerItem inkbrush = new RollerItem("inkbrush", 1, 0.4f, 4, 1.92f, true)
-            .setSwingStats(0.24, 2f, 4, 0.6f, 2);
-    public static final RollerItem octobrush = new RollerItem("octobrush", 2, 0.54f, 5, 1.92f, true)
-            .setSwingStats(0.24, 3.2f, 2, 0.65f, 3);
-    public static final RollerItem kensaOctobrush = new RollerItem("kensa_octobrush", octobrush);
+    public static final RollerItem splatRoller = new RollerItem(new RollerWeaponSettings("splat_roller").setBrush(false)
+            .setRollSize(3).setRollConsumption(0.06f).setRollInkRecoveryCooldown(7).setRollDamage(25).setRollMobility(1.08f)
+            .setDashMobility(1.32f).setDashConsumption(0.3f).setDashTime(30)
+            .setSwingMobility(0.48f).setSwingConsumption(9).setSwingInkRecoveryCooldown(15).setSwingProjectileSpeed(0.55f).setSwingTime(6)
+            .setSwingBaseDamage(30).setSwingMinDamage(7).setSwingDamageDecayStartTick(8).setSwingDamageDecayPerTick(3.45f));
+    public static final RollerItem krakOnSplatRoller = new RollerItem(splatRoller.settings.setName("krak_on_splat_roller"));
+    public static final RollerItem coroCoroSplatRoller = new RollerItem(splatRoller.settings.setName("corocoro_splat_roller"));
+    public static final RollerItem carbonRoller = new RollerItem(new RollerWeaponSettings("carbon_roller").setBrush(false)
+            .setRollSize(2).setRollConsumption(0.06f).setRollInkRecoveryCooldown(7).setRollDamage(14).setRollMobility(1.28f)
+            .setDashMobility(1.52f).setDashConsumption(0.3f).setDashTime(10)
+            .setSwingMobility(0.6f).setSwingConsumption(4).setSwingInkRecoveryCooldown(13).setSwingProjectileSpeed(0.45f).setSwingTime(3)
+            .setSwingBaseDamage(20).setSwingMinDamage(5).setSwingDamageDecayStartTick(8).setSwingDamageDecayPerTick(2.25f)
+            .setFlingInkRecoveryCooldown(15).setFlingProjectileSpeed(0.58f).setFlingTime(4)
+            .setFlingBaseDamage(24).setFlingMinDamage(7).setFlingDamageDecayStartTick(10).setFlingDamageDecayPerTick(3.4f));
+    public static final RollerItem inkbrush = new RollerItem(new RollerWeaponSettings("inkbrush").setBrush(true)
+            .setRollSize(1).setRollConsumption(0.4f).setRollInkRecoveryCooldown(7).setRollDamage(4).setRollMobility(1.92f)
+            .setSwingMobility(0.24f).setSwingConsumption(2).setSwingInkRecoveryCooldown(10).setSwingProjectileSpeed(0.6f).setSwingTime(2)
+            .setSwingBaseDamage(6).setSwingMinDamage(3).setSwingDamageDecayStartTick(7).setSwingDamageDecayPerTick(0.45f));
+    public static final RollerItem octobrush = new RollerItem(new RollerWeaponSettings("octobrush").setBrush(true)
+            .setRollSize(2).setRollConsumption(0.54f).setRollInkRecoveryCooldown(7).setRollDamage(5).setRollMobility(1.92f)
+            .setSwingMobility(0.24f).setSwingConsumption(3.2f).setSwingInkRecoveryCooldown(10).setSwingProjectileSpeed(0.65f).setSwingTime(3)
+            .setSwingBaseDamage(8).setSwingMinDamage(4).setSwingDamageDecayStartTick(8).setSwingDamageDecayPerTick(0.57f));
+    public static final RollerItem kensaOctobrush = new RollerItem(octobrush.settings.setName("kensa_octobrush"));
 
     //Chargers
-    public static final ChargerItem splatCharger = new ChargerItem("splat_charger", 0.7f, 1.8f, 13, 20, 40, 32f, 2.25f, 18f, 0.4, false, 1.1f);
-    public static final ChargerItem bentoSplatCharger = new ChargerItem("bento_splat_charger", splatCharger);
-    public static final ChargerItem kelpSplatCharger = new ChargerItem("kelp_splat_charger", splatCharger);
-    public static final ChargerItem eLiter4K = new ChargerItem("e_liter_4k", 0.85f, 2.4f, 16, 35, 40, 36f, 2.25f, 25f, 0.15, false, 1.0f);
-    public static final ChargerItem bamboozler14mk1 = new ChargerItem("bamboozler_14_mk1", 0.75f, 1.9f, 8, 4, 0, 16, 2.8f, 7, 0.8, true, 1.1f);
-    public static final ChargerItem bamboozler14mk2 = new ChargerItem("bamboozler_14_mk2", bamboozler14mk1);
+    public static final ChargerItem splatCharger = new ChargerItem(new WeaponSettings("splat_charger")
+            .setProjectileSize(0.7f).setProjectileLifespan(13).setProjectileSpeed(1.8f)
+            .setStartupTicks(20).setDischargeTicks(20)
+            .setMinInkConsumption(2.25f).setInkConsumption(18).setInkRecoveryCooldown(7)
+            .setBaseDamage(32)
+            .setChargerMobility(0.4f)
+            .setFastMidAirCharge(false)
+            .setChargerPiercesAt(1.1f));
+    public static final ChargerItem bentoSplatCharger = new ChargerItem(splatCharger.settings.setName("bento_splat_charger"));
+    public static final ChargerItem kelpSplatCharger = new ChargerItem(splatCharger.settings.setName("kelp_splat_charger"));
+    public static final ChargerItem eLiter4K = new ChargerItem(new WeaponSettings("e_liter_4k")
+            .setProjectileSize(0.85f).setProjectileLifespan(16).setProjectileSpeed(2.4f)
+            .setStartupTicks(35).setDischargeTicks(40)
+            .setMinInkConsumption(2.25f).setInkConsumption(25).setInkRecoveryCooldown(7)
+            .setBaseDamage(36)
+            .setChargerMobility(0.15f)
+            .setFastMidAirCharge(false)
+            .setChargerPiercesAt(1.0f));
+    public static final ChargerItem bamboozler14mk1 = new ChargerItem(new WeaponSettings("bamboozler_14_mk1")
+            .setProjectileSize(0.75f).setProjectileLifespan(8).setProjectileSpeed(1.9f)
+            .setStartupTicks(4).setDischargeTicks(0) // no charge storage
+            .setMinInkConsumption(2.8f).setInkConsumption(7).setInkRecoveryCooldown(7)
+            .setBaseDamage(16) // bamboo without MPU :trollface:
+            .setChargerMobility(0.8f)
+            .setFastMidAirCharge(true)
+            .setChargerPiercesAt(1.1f));
+    public static final ChargerItem bamboozler14mk2 = new ChargerItem(bamboozler14mk1.settings.setName("bamboozler_14_mk2"));
 
     //Dualies
-    public static final DualieItem splatDualie = new DualieItem("splat_dualies", 0.9f, 0.65f, 10, 8, 6, 0.75f, 1, 0.7f, 9, 8, 30);
-    public static final DualieItem enperrySplatDualie = new DualieItem("enperry_splat_dualies", splatDualie);
-    public static final DualieItem dualieSquelcher = new DualieItem("dualie_squelchers", 0.85f, 0.74f, 11.5f, 10, 4.4f, 1.2f, 1, 0.7f, 5, 6, 14);
-    public static final DualieItem gloogaDualie = new DualieItem("glooga_dualies", 0.8f, 0.72f, 12f, 7, 7.3f, 1.4f, 1, 0.7f, 8, 9, 24) {{
-        rollDamage = 10.5f;
-    }};
-    public static final DualieItem gloogaDualieDeco = new DualieItem("glooga_dualies_deco", gloogaDualie);
-    public static final DualieItem kensaGloogaDualie = new DualieItem("kensa_glooga_dualies", gloogaDualie);
+    public static final DualieItem splatDualie = new DualieItem(new WeaponSettings("splat_dualies")
+            .setProjectileSize(0.9f).setProjectileSpeed(0.65f)
+            .setFiringSpeed(8)
+            .setGroundInaccuracy(2).setAirInaccuracy(7.5f).setInkConsumption(0.75f).setInkRecoveryCooldown(7)
+            .setBaseDamage(6).setMinDamage(3).setDamageDecayStartTick(2).setDamageDecayPerTick(1.13f)
+            .setRollCount(1)
+            .setRollSpeed(0.9f)
+            .setRollInaccuracy(0).setRollInkConsumption(9).setRollInkRecoveryCooldown(23)
+            .setRollCooldown(8).setLastRollCooldown(30));
+    public static final DualieItem enperrySplatDualie = new DualieItem(splatDualie.settings.setName("enperry_splat_dualies"));
+    public static final DualieItem dualieSquelcher = new DualieItem(new WeaponSettings("dualie_squelchers")
+            .setProjectileSize(0.85f).setProjectileSpeed(0.74f)
+            .setFiringSpeed(10)
+            .setGroundInaccuracy(4).setAirInaccuracy(8)
+            .setInkConsumption(1.2f)
+            .setInkRecoveryCooldown(7)
+            .setBaseDamage(5.6f).setMinDamage(2.8f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.53f)
+            .setRollCount(1)
+            .setRollSpeed(0.7f)
+            .setRollInaccuracy(2)
+            .setRollInkConsumption(5).setRollInkRecoveryCooldown(20)
+            .setRollCooldown(6).setLastRollCooldown(14));
+    public static final DualieItem gloogaDualie = new DualieItem(new WeaponSettings("glooga_dualies")
+            .setProjectileSize(0.8f).setProjectileSpeed(0.72f)
+            .setFiringSpeed(7)
+            .setGroundInaccuracy(4).setAirInaccuracy(8)
+            .setInkConsumption(1.4f).setInkRecoveryCooldown(7)
+            .setBaseDamage(7.3f).setMinDamage(3.6f).setDamageDecayStartTick(2).setDamageDecayPerTick(1.35f)
+            .setRollCount(1)
+            .setRollSpeed(0.7f)
+            .setRollBaseDamage(10.6f).setRollMinDamage(5.26f).setRollDamageDecayPerTick(2)
+            .setRollInaccuracy(3)
+            .setRollInkConsumption(8).setRollInkRecoveryCooldown(23)
+            .setRollCooldown(9).setLastRollCooldown(24));
+    public static final DualieItem gloogaDualieDeco = new DualieItem(gloogaDualie.settings.setName("glooga_dualies_deco"));
+    public static final DualieItem kensaGloogaDualie = new DualieItem(gloogaDualie.settings.setName("kensa_glooga_dualies"));
 
     //Sloshers
-    public static final SlosherItem slosher = new SlosherItem("slosher", 1.6f, 0.4f, 2, 8, 14, 3, 7f);
-    public static final SlosherItem classicSlosher = new SlosherItem("classic_slosher", slosher);
-    public static final SlosherItem sodaSlosher = new SlosherItem("soda_slosher", slosher);
-    public static final SlosherItem triSlosher = new SlosherItem("tri_slosher", 1.55f, 0.444f, 3, 20, 12.4f, 4, 6f);
-    public static final SlosherItem explosher = new SlosherItem("explosher", 2f, 0.75f, 1, 0, 11f, 12, 11.7f).setSlosherType(SlosherItem.Type.EXPLODING);
+    public static final SlosherItem slosher = new SlosherItem(new WeaponSettings("slosher")
+            .setProjectileSize(1.6f).setProjectileSpeed(0.4f).setProjectileCount(2)
+            .setStartupTicks(7)
+            .setGroundInaccuracy(8)
+            .setInkConsumption(7f).setInkRecoveryCooldown(13)
+            .setBaseDamage(14));
+    public static final SlosherItem classicSlosher = new SlosherItem(slosher.settings.setName("classic_slosher"));
+    public static final SlosherItem sodaSlosher = new SlosherItem(slosher.settings.setName("soda_slosher"));
+    public static final SlosherItem triSlosher = new SlosherItem(new WeaponSettings("tri_slosher")
+            .setProjectileSize(1.55f).setProjectileSpeed(0.444f).setProjectileCount(3)
+            .setStartupTicks(4)
+            .setGroundInaccuracy(20)
+            .setInkConsumption(6f).setInkRecoveryCooldown(12)
+            .setBaseDamage(12.4f));
+    public static final SlosherItem explosher = new SlosherItem(new WeaponSettings("explosher")
+            .setProjectileSize(2f).setProjectileSpeed(0.75f).setProjectileCount(1)
+            .setStartupTicks(12)
+            .setGroundInaccuracy(0)
+            .setInkConsumption(11.7f).setInkRecoveryCooldown(23)
+            .setBaseDamage(11f)).setSlosherType(SlosherItem.Type.EXPLODING);
 
     //Ink Tanks
     public static final InkTankItem inkTank = new InkTankItem("ink_tank", 100);
@@ -134,10 +251,10 @@ public class SplatcraftItems
     public static final InkTankItem armoredInkTank = new InkTankItem("armored_ink_tank", 85, ARMORED_INK_TANK);
 
     //Sub Weapons
-    public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70);
-    public static final SubWeaponItem splatBomb2 = (SubWeaponItem) new SubWeaponItem("splat_bomb_2", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70).setSecret();
-    public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB, BurstBombEntity.DIRECT_DAMAGE, BurstBombEntity.EXPLOSION_SIZE, 40);
-    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB, SuctionBombEntity.DIRECT_DAMAGE, SuctionBombEntity.EXPLOSION_SIZE, 70);
+    public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70, 20);
+    public static final SubWeaponItem splatBomb2 = (SubWeaponItem) new SubWeaponItem("splat_bomb_2", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70, 20).setSecret();
+    public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB, BurstBombEntity.DIRECT_DAMAGE, BurstBombEntity.EXPLOSION_SIZE, 40, 15);
+    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB, SuctionBombEntity.DIRECT_DAMAGE, SuctionBombEntity.EXPLOSION_SIZE, 70, 30);
 
     //Vanity
     public static final Item inkClothHelmet = new ColoredArmorItem("ink_cloth_helmet", INK_CLOTH, EquipmentSlotType.HEAD);
@@ -212,8 +329,7 @@ public class SplatcraftItems
     //Misc
 
     @SubscribeEvent
-    public static void itemInit(final RegistryEvent.Register<Item> event)
-    {
+    public static void itemInit(final RegistryEvent.Register<Item> event) {
         IForgeRegistry<Item> registry = event.getRegistry();
 
         for (Item item : weapons)
@@ -281,12 +397,53 @@ public class SplatcraftItems
             DispenserBlock.registerBehavior(sub, new SubWeaponItem.DispenseBehavior());
     }
 
+    public static void registerModelProperties() {
+        ResourceLocation activeProperty = new ResourceLocation(Splatcraft.MODID, "active");
+        ResourceLocation modeProperty = new ResourceLocation(Splatcraft.MODID, "mode");
+        ResourceLocation inkProperty = new ResourceLocation(Splatcraft.MODID, "ink");
+        ResourceLocation isLeftProperty = new ResourceLocation(Splatcraft.MODID, "is_left");
+        ResourceLocation unfoldedProperty = new ResourceLocation(Splatcraft.MODID, "unfolded");
+
+        for (RemoteItem remote : RemoteItem.remotes) {
+            ItemModelsProperties.register(remote, activeProperty, remote.getActiveProperty());
+            ItemModelsProperties.register(remote, modeProperty, remote.getModeProperty());
+        }
+
+        for (InkTankItem tank : InkTankItem.inkTanks) {
+            ItemModelsProperties.register(tank, inkProperty, (stack, level, entity) -> InkTankItem.getInkAmount(stack) / tank.capacity);
+        }
+
+        for (DualieItem dualie : DualieItem.dualies) {
+            ItemModelsProperties.register(dualie, isLeftProperty, dualie.getIsLeft());
+        }
+        for (RollerItem roller : RollerItem.rollers) {
+            ItemModelsProperties.register(roller, unfoldedProperty, roller.getUnfolded());
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void registerArmorModels() {
+        inkTank.setArmorModel(new InkTankModel());
+        classicInkTank.setArmorModel(new ClassicInkTankModel());
+        inkTankJr.setArmorModel(new InkTankJrModel());
+        armoredInkTank.setArmorModel(new ArmoredInkTankModel());
+    }
+
+    @SubscribeEvent
+    public static void registerAttributes(final RegistryEvent.Register<Attribute> event) {
+        IForgeRegistry<Attribute> registry = event.getRegistry();
+        registry.register(INK_SWIM_SPEED);
+
+    }
+
+    private static Attribute createAttribute(String id, Attribute attribute) {
+        attribute.setRegistryName(id);
+        return attribute;
+    }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
-    public static class Missmaps
-    {
-        private static final HashMap<String, Item> remaps = new HashMap<String, Item>()
-        {{
+    public static class Missmaps {
+        private static final HashMap<String, Item> remaps = new HashMap<String, Item>() {{
             put("inked_wool", inkedWool);
             put("inked_carpet", inkedCarpet);
             put("inked_glass", inkedGlass);
@@ -296,66 +453,12 @@ public class SplatcraftItems
         }};
 
         @SubscribeEvent
-        public static void onMissingMappings(final RegistryEvent.MissingMappings<Item> event)
-        {
-            for(RegistryEvent.MissingMappings.Mapping<Item> item : event.getMappings(Splatcraft.MODID))
-            {
+        public static void onMissingMappings(final RegistryEvent.MissingMappings<Item> event) {
+            for (RegistryEvent.MissingMappings.Mapping<Item> item : event.getMappings(Splatcraft.MODID)) {
                 String key = item.key.getPath();
-                if(remaps.containsKey(key))
+                if (remaps.containsKey(key))
                     item.remap(remaps.get(key));
             }
         }
-    }
-
-    public static void registerModelProperties()
-    {
-        ResourceLocation activeProperty = new ResourceLocation(Splatcraft.MODID, "active");
-        ResourceLocation modeProperty = new ResourceLocation(Splatcraft.MODID, "mode");
-        ResourceLocation inkProperty = new ResourceLocation(Splatcraft.MODID, "ink");
-        ResourceLocation isLeftProperty = new ResourceLocation(Splatcraft.MODID, "is_left");
-        ResourceLocation unfoldedProperty = new ResourceLocation(Splatcraft.MODID, "unfolded");
-
-        for (RemoteItem remote : RemoteItem.remotes)
-        {
-            ItemModelsProperties.register(remote, activeProperty, remote.getActiveProperty());
-            ItemModelsProperties.register(remote, modeProperty, remote.getModeProperty());
-        }
-
-        for (InkTankItem tank : InkTankItem.inkTanks)
-        {
-            ItemModelsProperties.register(tank, inkProperty, (stack, level, entity) -> InkTankItem.getInkAmount(stack) / tank.capacity);
-        }
-
-        for (DualieItem dualie : DualieItem.dualies)
-        {
-            ItemModelsProperties.register(dualie, isLeftProperty, dualie.getIsLeft());
-        }
-        for (RollerItem roller : RollerItem.rollers)
-        {
-            ItemModelsProperties.register(roller, unfoldedProperty, roller.getUnfolded());
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void registerArmorModels()
-    {
-        inkTank.setArmorModel(new InkTankModel());
-        classicInkTank.setArmorModel(new ClassicInkTankModel());
-        inkTankJr.setArmorModel(new InkTankJrModel());
-        armoredInkTank.setArmorModel(new ArmoredInkTankModel());
-    }
-
-    @SubscribeEvent
-    public static void registerAttributes(final RegistryEvent.Register<Attribute> event)
-    {
-        IForgeRegistry<Attribute> registry = event.getRegistry();
-        registry.register(INK_SWIM_SPEED);
-
-    }
-
-    private static Attribute createAttribute(String id, Attribute attribute)
-    {
-        attribute.setRegistryName(id);
-        return attribute;
     }
 }

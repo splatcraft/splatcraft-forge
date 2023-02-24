@@ -2,12 +2,6 @@ package net.splatcraft.forge.client.renderer.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-import java.util.Random;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -39,6 +33,13 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.MemoryStack;
+
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.Random;
 
 public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockTileEntity> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "blocks/inked_block");
@@ -142,13 +143,12 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
                 brightness = new float[]{aoBrightness[0], aoBrightness[1], aoBrightness[2], aoBrightness[3]};
             }
 
-            if(type.equals(InkBlockUtils.InkType.CLEAR))
+            if (type.equals(InkBlockUtils.InkType.CLEAR))
                 builder.putBulkData(matrixEntry, bakedquad, f, f1, f2, combinedLightIn, combinedOverlayIn);
-            else
-            {
+            else {
                 BlockPos pos = te.getBlockPos();
-                Random random = new Random(Long.parseLong((Math.signum(pos.getX()) > 0 ? "1" : "0") + (Math.signum(pos.getY()) > 0 ? "1" : "0") + (Math.signum(pos.getZ()) > 0 ? "1" : "0")
-                        + (Math.abs(pos.getX()) % Integer.MAX_VALUE)+"" + (Math.abs(pos.getY()) % Integer.MAX_VALUE)+"" + (Math.abs(pos.getZ()) % Integer.MAX_VALUE)+""));
+                random.setSeed(Long.parseLong((Math.signum(pos.getX()) > 0 ? "1" : "0") + (Math.signum(pos.getY()) > 0 ? "1" : "0") + (Math.signum(pos.getZ()) > 0 ? "1" : "0")
+                        + (Math.abs(pos.getX()) % Integer.MAX_VALUE) + "" + (Math.abs(pos.getY()) % Integer.MAX_VALUE) + "" + (Math.abs(pos.getZ()) % Integer.MAX_VALUE) + ""));
                 random.setSeed(random.nextLong());
 
                 putBulkData(builder, Minecraft.getInstance().getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(TEXTURES.get(random.nextInt(TEXTURES.size()))), matrixEntry, bakedquad, f, f1, f2, brightness, combinedLights, combinedOverlayIn);

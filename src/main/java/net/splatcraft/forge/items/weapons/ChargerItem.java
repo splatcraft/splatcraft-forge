@@ -14,6 +14,7 @@ import net.splatcraft.forge.client.audio.ChargerChargingTickableSound;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.ChargeableReleasePacket;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -21,76 +22,39 @@ import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponStat;
+import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 
-public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
+public class ChargerItem extends WeaponBaseItem
 {
     private final AttributeModifier SPEED_MODIFIER;
-    private final double mobility;
-    public float projectileSize;
-    public float projectileSpeed;
-    public int projectileLifespan;
+    public WeaponSettings settings;
     public float chargeSpeed;
     public float dischargeSpeed;
-    public float damage;
-    public float pierceCharge;
-    public float minConsumption;
-    public float maxConsumption;
-    public boolean airCharge;
 
-    public ChargerItem(String name, float projectileSize, float projectileSpeed, int projectileLifespan, int chargeTime, int dischargeTime, float damage, float minConsumption, float maxConsumption, double mobility, boolean canAirCharge, float pierceCharge)
+    public ChargerItem(WeaponSettings settings)
     {
-        setRegistryName(name);
+        super(settings);
+        this.settings = settings;
+        setRegistryName(this.settings.name);
+        this.chargeSpeed = 1f / (float)settings.startupTicks;
+        this.dischargeSpeed = 1f / (float)settings.dischargeTicks;
 
-        this.projectileSize = projectileSize;
-        this.projectileLifespan = projectileLifespan;
-        this.chargeSpeed = 1f / (float) chargeTime;
-        this.dischargeSpeed = 1f / (float) dischargeTime;
-        this.damage = damage;
-        this.projectileSpeed = projectileSpeed;
+        SPEED_MODIFIER = new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, "Charger mobility", settings.chargerMobility - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        this.airCharge = canAirCharge;
-        this.pierceCharge = pierceCharge;
-
-        this.mobility = mobility;
-
-        SPEED_MODIFIER = new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, "Charger Mobility", mobility - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
-
-        this.maxConsumption = maxConsumption;
-        this.minConsumption = minConsumption;
-
-        addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / projectileLifespan * 100)));
-        addStat(new WeaponStat("charge_speed", (stack, level) -> (int) ((40 - chargeTime) * 100 / 40f)));
-        addStat(new WeaponStat("mobility", (stack, level) -> (int) (mobility * 100)));
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / settings.projectileLifespan * 100)));
+        addStat(new WeaponTooltip("charge_speed", (stack, level) -> (int) ((40 - settings.startupTicks) / 40f * 100)));
+        addStat(new WeaponTooltip("mobility", (stack, level) -> (int) (settings.chargerMobility * 100)));
     }
 
-    public ChargerItem(String name, ChargerItem parent)
-    {
-        this(name, parent.projectileSize, parent.projectileSpeed, parent.projectileLifespan, (int) (1f / parent.chargeSpeed), (int) (1f / parent.dischargeSpeed), parent.damage, parent.minConsumption, parent.maxConsumption, parent.mobility, parent.airCharge, parent.pierceCharge);
-    }
-
-    @Override
-    public float getDischargeSpeed()
-    {
-        return dischargeSpeed;
-    }
-
-    @Override
-    public float getChargeSpeed()
-    {
-        return chargeSpeed;
-    }
-
-    @Override
     public void onRelease(World level, PlayerEntity player, ItemStack stack, float charge)
     {
-        InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), projectileSize, charge > 0.95f ? damage : damage * charge / 5f + damage / 5f);
-        proj.setChargerStats((int) (projectileLifespan * charge), charge >= pierceCharge);
-        proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, projectileSpeed, 0.1f);
+        InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize, settings);
+        proj.setChargerStats(charge, (int) (settings.projectileLifespan * charge), charge >= settings.chargerPiercesAt);
+        proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, settings.projectileSpeed, 0.1f);
         level.addFreshEntity(proj);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-        reduceInk(player, getInkConsumption(charge), false);
+        reduceInk(player, this, getInkConsumption(charge), settings.inkRecoveryCooldown, false);
         PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, 10, player.inventory.selected, player.getUsedItemHand(), true, false, false, player.isOnGround()));
         player.getCooldowns().addCooldown(this, 7);
     }
@@ -112,8 +76,8 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
             float prevCharge = PlayerCharge.getChargeValue(player, stack);
-            float newCharge = prevCharge + (chargeSpeed * (!entity.isOnGround() && !airCharge ? 0.33f : 1));
-            if (enoughInk(entity, getInkConsumption(newCharge), timeLeft % 4 == 0) && level.isClientSide && !player.getCooldowns().isOnCooldown(this)) {
+            float newCharge = prevCharge + (chargeSpeed * (!entity.isOnGround() && !settings.fastMidAirCharge ? 0.33f : 1));
+            if (enoughInk(entity, this, getInkConsumption(newCharge), 0, timeLeft % 4 == 0) && level.isClientSide && !player.getCooldowns().isOnCooldown(this)) {
                 if (prevCharge < 1 && newCharge >= 1) {
                     playChargeReadySound(player);
                 } else if (newCharge < 1)
@@ -144,7 +108,7 @@ public class ChargerItem extends WeaponBaseItem implements IChargeableWeapon
 
     public float getInkConsumption(float charge)
     {
-        return minConsumption + (maxConsumption - minConsumption) * charge;
+        return settings.minInkConsumption + (settings.inkConsumption - settings.minInkConsumption) * charge;
     }
 
     @Override
