@@ -65,19 +65,19 @@ public class WeaponBaseItem extends Item implements IColoredItem
         this.damageCalculator = damageCalculator;
     }
 
-    public static boolean reduceInk(LivingEntity player, float amount, int recoveryCooldown, boolean sendMessage) {
-        if (!enoughInk(player, amount, recoveryCooldown, sendMessage, false)) return false;
+    public static boolean reduceInk(LivingEntity player, Item item, float amount, int recoveryCooldown, boolean sendMessage) {
+        if (!enoughInk(player, item, amount, recoveryCooldown, sendMessage, false)) return false;
         ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
         if (tank.getItem() instanceof InkTankItem)
             InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);
         return true;
     }
 
-    public static boolean enoughInk(LivingEntity player, float consumption, int recoveryCooldown, boolean sendMessage) {
-        return enoughInk(player, consumption, recoveryCooldown, sendMessage, false);
+    public static boolean enoughInk(LivingEntity player, Item item, float consumption, int recoveryCooldown, boolean sendMessage) {
+        return enoughInk(player, item, consumption, recoveryCooldown, sendMessage, false);
     }
 
-    public static boolean enoughInk(LivingEntity player, float consumption, int recoveryCooldown, boolean sendMessage, boolean sub) {
+    public static boolean enoughInk(LivingEntity player, Item item, float consumption, int recoveryCooldown, boolean sendMessage, boolean sub) {
         ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
         if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK)
                 || player instanceof PlayerEntity && ((PlayerEntity) player).isCreative()
@@ -85,7 +85,8 @@ public class WeaponBaseItem extends Item implements IColoredItem
             return true;
         }
         if (tank.getItem() instanceof InkTankItem) {
-            boolean enoughInk = InkTankItem.getInkAmount(tank) - consumption >= 0;
+            boolean enoughInk = InkTankItem.getInkAmount(tank) - consumption >= 0
+                    && (item == null || ((InkTankItem) tank.getItem()).canUse(item));
             if (!sub || enoughInk)
                 InkTankItem.setRecoveryCooldown(tank, recoveryCooldown);
             if (!enoughInk && sendMessage)
@@ -106,10 +107,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
                         ((entity.level.getRandom().nextFloat() - entity.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }
         }
-
     }
-
-
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag)

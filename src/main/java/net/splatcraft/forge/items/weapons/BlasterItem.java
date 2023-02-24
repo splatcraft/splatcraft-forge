@@ -35,7 +35,7 @@ public class BlasterItem extends ShooterItem {
 
     @Override
     public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown) {
-        if (reduceInk(player, settings.inkConsumption, settings.inkRecoveryCooldown, false)) {
+        if (reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, false)) {
             if (!level.isClientSide) {
                 InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize, settings).setShooterTrail();
                 proj.setBlasterStats(settings.projectileLifespan, settings.minDamage);

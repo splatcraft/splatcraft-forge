@@ -86,7 +86,7 @@ public class RollerItem extends WeaponBaseItem
             PlayerCooldown cooldown = new PlayerCooldown(stack, startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround());
             PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, cooldown);
             //} else
-            if (reduceInk(entity, entity.isOnGround() ? settings.swingConsumption : settings.flingConsumption, entity.isOnGround() ? settings.swingInkRecoveryCooldown : settings.flingInkRecoveryCooldown, timeLeft % 4 == 0) && settings.isBrush) {
+            if (reduceInk(entity, this, entity.isOnGround() ? settings.swingConsumption : settings.flingConsumption, entity.isOnGround() ? settings.swingInkRecoveryCooldown : settings.flingInkRecoveryCooldown, timeLeft % 4 == 0) && settings.isBrush) {
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.brushFling, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 int total = settings.rollSize * 2 + 1;
                 for (int i = 0; i < total; i++) {
@@ -124,7 +124,7 @@ public class RollerItem extends WeaponBaseItem
                     double xOff = Math.cos(Math.toRadians(entity.yRot)) * off;
                     double zOff = Math.sin(Math.toRadians(entity.yRot)) * off;
 
-                    if (enoughInk(entity, toConsume, 0, timeLeft % 4 == 0)) {
+                    if (enoughInk(entity, this, toConsume, 0, timeLeft % 4 == 0)) {
                         boolean consumeInk = false;
                         for (float yOff = 0; yOff >= -3; yOff--) {
                             if (yOff == -3) {
@@ -159,7 +159,7 @@ public class RollerItem extends WeaponBaseItem
                             }
                         }
                         if (consumeInk)
-                            reduceInk(entity, Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) settings.dashTime) * (settings.dashConsumption - settings.rollConsumption) + settings.rollConsumption, settings.rollInkRecoveryCooldown, false);
+                            reduceInk(entity, this, Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) settings.dashTime) * (settings.dashConsumption - settings.rollConsumption) + settings.rollConsumption, settings.rollInkRecoveryCooldown, false);
                     }
 
                     BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
@@ -169,7 +169,7 @@ public class RollerItem extends WeaponBaseItem
                             return InkDamageUtils.canDamageColor(level, ColorUtils.getEntityColor(e), ColorUtils.getInkColor(stack));
                         return true;
                     }))) {
-                        if (!target.equals(entity) && !InkDamageUtils.isSplatted(level, target) && InkDamageUtils.canDamage(target, entity) && (!enoughInk(entity, toConsume, 0, false) ||
+                        if (!target.equals(entity) && !InkDamageUtils.isSplatted(level, target) && InkDamageUtils.canDamage(target, entity) && (!enoughInk(entity, this, toConsume, 0, false) ||
                                 !InkDamageUtils.doRollDamage(level, target, settings.rollDamage, ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity)))
                             /*&& target.invulnerableTime >= 10*/)
                             doPush = true;
@@ -189,7 +189,7 @@ public class RollerItem extends WeaponBaseItem
         if (level.isClientSide)
             playRollSound(settings.isBrush);
 
-        if (reduceInk(player, airborne ? settings.flingConsumption : settings.swingConsumption, airborne ? settings.flingInkRecoveryCooldown : settings.swingInkRecoveryCooldown, false) && !settings.isBrush) {
+        if (reduceInk(player, this, airborne ? settings.flingConsumption : settings.swingConsumption, airborne ? settings.flingInkRecoveryCooldown : settings.swingInkRecoveryCooldown, false) && !settings.isBrush) {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.rollerFling, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             for (int i = 0; i < settings.rollSize; i++) {
 
@@ -236,7 +236,7 @@ public class RollerItem extends WeaponBaseItem
         double appliedMobility;
         int useTime = entity.getUseItemRemainingTicks() - entity.getUseItemRemainingTicks();
 
-        if (enoughInk(entity, Math.min(settings.dashConsumption, settings.rollConsumption), 0, false)) {
+        if (enoughInk(entity, this, Math.min(settings.dashConsumption, settings.rollConsumption), 0, false)) {
             if (entity instanceof PlayerEntity && (PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity)))
                 appliedMobility = settings.swingMobility;
             else

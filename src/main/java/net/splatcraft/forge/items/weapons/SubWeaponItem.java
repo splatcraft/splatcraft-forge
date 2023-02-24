@@ -66,7 +66,7 @@ public class SubWeaponItem extends WeaponBaseItem
     @Override
     public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
     {
-        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, inkConsumption, inkRecoveryCooldown, true, true)))
+        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, this, inkConsumption, inkRecoveryCooldown, true, true)))
             player.startUsingItem(hand);
         return useSuper(level, player, hand);
     }
@@ -98,7 +98,7 @@ public class SubWeaponItem extends WeaponBaseItem
         if (SubWeaponItem.singleUse(stack)) {
             if (entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative())
                 stack.shrink(1);
-        } else reduceInk(entity, inkConsumption, 0, false);
+        } else reduceInk(entity, this, inkConsumption, 0, false);
 
     }
 

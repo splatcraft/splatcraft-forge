@@ -91,7 +91,7 @@ public class DualieItem extends WeaponBaseItem
             activeDualie = maxRolls % 2 == 1 && offhandDualie.getItem() instanceof DualieItem ? offhandDualie : mainDualie;
         }
 
-        if (reduceInk(player, getInkForRoll(activeDualie), settings.rollInkRecoveryCooldown, !player.level.isClientSide)) {
+        if (reduceInk(player, this, getInkForRoll(activeDualie), settings.rollInkRecoveryCooldown, !player.level.isClientSide)) {
             PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(activeDualie, getRollCooldown(activeDualie, maxRolls, rollCount), player.inventory.selected, player.getUsedItemHand(), false, true, false, player.isOnGround()));
             if (!player.level.isClientSide) {
                 player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.dualieDodge, SoundCategory.PLAYERS, 0.7F, ((player.level.random.nextFloat() - player.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
@@ -230,7 +230,7 @@ public class DualieItem extends WeaponBaseItem
                     activeDualie = maxRolls % 2 == 1 && offhandDualie.getItem() instanceof DualieItem ? offhandDualie : stack;
                 }
 
-                if (enoughInk(entity, getInkForRoll(activeDualie), 0, false)) {
+                if (enoughInk(entity, this, getInkForRoll(activeDualie), 0, false)) {
                     entity.moveRelative(performRoll((PlayerEntity) entity, stack, offhandDualie), ClientUtils.getDodgeRollVector((PlayerEntity) entity));
                     entity.setDeltaMovement(entity.getDeltaMovement().x(), 0.05, entity.getDeltaMovement().z());
                 }
@@ -267,7 +267,7 @@ public class DualieItem extends WeaponBaseItem
     protected void fireDualie(World level, LivingEntity entity, ItemStack stack, int timeLeft, boolean onRollCooldown)
     {
         if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % (onRollCooldown ? 2 : settings.firingSpeed) == 0) {
-            if (reduceInk(entity, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
+            if (reduceInk(entity, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
                 InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.projectileSize, settings).setShooterTrail();
                 proj.isOnRollCooldown = onRollCooldown;
                 proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, settings.projectileSpeed, entity instanceof PlayerEntity && PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity) ? settings.rollInaccuracy : (entity.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy));

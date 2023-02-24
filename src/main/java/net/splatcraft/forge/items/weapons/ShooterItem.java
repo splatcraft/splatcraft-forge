@@ -29,7 +29,7 @@ public class ShooterItem extends WeaponBaseItem {
     @Override
     public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
         if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % settings.firingSpeed == 0) {
-            if (reduceInk(entity, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
+            if (reduceInk(entity, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
                 InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.projectileSize, settings).setShooterTrail();
                 proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, settings.projectileSpeed, entity.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy);
                 level.addFreshEntity(proj);

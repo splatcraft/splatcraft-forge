@@ -47,7 +47,7 @@ public class SlosherItem extends WeaponBaseItem
 
     @Override
     public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown) {
-        if (reduceInk(player, settings.inkConsumption, settings.inkRecoveryCooldown, true) && !level.isClientSide) {
+        if (reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, true) && !level.isClientSide) {
             for (int i = 0; i < settings.projectileCount; i++) {
                 boolean hasTrail = i == Math.floor((settings.projectileCount - 1) / 2f) || i == Math.ceil((settings.projectileCount - 1) / 2f);
                 float angle = settings.groundInaccuracy * i - settings.groundInaccuracy * (settings.projectileCount - 1) / 2;
