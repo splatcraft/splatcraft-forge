@@ -108,7 +108,7 @@ public class InkTankItem extends ColoredArmorItem
 
             if (canRecharge(stack, true) && player.getItemBySlot(EquipmentSlotType.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
                     && (!(player.getUseItem().getItem() instanceof WeaponBaseItem) || player.getUseItem().getItem() instanceof ChargerItem || PlayerCooldown.hasPlayerCooldown(player))) {
-                setInkAmount(stack, ink + (InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player) ? 1.1125f : .11125f));
+                setInkAmount(stack, ink + (100f / 20f / ((InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player)) ? 3f : 10f)));
             }
         }
     }
