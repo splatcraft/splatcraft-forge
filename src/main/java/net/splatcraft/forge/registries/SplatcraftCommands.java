@@ -9,7 +9,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.commands.*;
-import net.splatcraft.forge.items.weapons.commands.*;
 import net.splatcraft.forge.commands.arguments.ColorCriterionArgument;
 import net.splatcraft.forge.commands.arguments.InkColorArgument;
 
