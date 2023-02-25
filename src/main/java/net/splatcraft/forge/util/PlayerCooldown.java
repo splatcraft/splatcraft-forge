@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.commands.SuperJumpCommand;
 
 public class PlayerCooldown
 {
@@ -38,13 +39,24 @@ public class PlayerCooldown
         this(stack, time, time, slotIndex, hand, canMove, forceCrouch, preventWeaponUse, isGrounded);
     }
 
-    public static PlayerCooldown readNBT(CompoundNBT nbt) {
-        PlayerCooldown result = new PlayerCooldown(ItemStack.of(nbt.getCompound("StoredStack")), nbt.getInt("Time"), nbt.getInt("MaxTime"), nbt.getInt("SlotIndex"), nbt.getBoolean("MainHand") ? Hand.MAIN_HAND : Hand.OFF_HAND, nbt.getBoolean("CanMove"), nbt.getBoolean("ForceCrouch"), nbt.getBoolean("PreventWeaponUse"), nbt.getBoolean("IsGrounded"));
-        if (nbt.contains("StoredStack")) {
-            result.storedStack = ItemStack.of(nbt.getCompound("StoredStack"));
-        }
-        return result;
+    public PlayerCooldown(CompoundNBT nbt)
+    {
+        this(ItemStack.of(nbt.getCompound("StoredStack")), nbt.getInt("Time"), nbt.getInt("MaxTime"), nbt.getInt("SlotIndex"), nbt.getBoolean("MainHand") ? Hand.MAIN_HAND : Hand.OFF_HAND, nbt.getBoolean("CanMove"), nbt.getBoolean("ForceCrouch"), nbt.getBoolean("PreventWeaponUse"), nbt.getBoolean("IsGrounded"));
+        if (nbt.contains("StoredStack"))
+            storedStack = ItemStack.of(nbt.getCompound("StoredStack"));
+
     }
+
+    public static PlayerCooldown readNBT(CompoundNBT nbt)
+    {
+        if(nbt.getBoolean("SuperJump"))
+            return new SuperJumpCommand.SuperJump(nbt);
+        else return new PlayerCooldown(nbt);
+
+        //PlayerCooldown result = new PlayerCooldown(ItemStack.of(nbt.getCompound("StoredStack")), nbt.getInt("Time"), nbt.getInt("MaxTime"), nbt.getInt("SlotIndex"), nbt.getBoolean("MainHand") ? Hand.MAIN_HAND : Hand.OFF_HAND, nbt.getBoolean("CanMove"), nbt.getBoolean("ForceCrouch"), nbt.getBoolean("PreventWeaponUse"), nbt.getBoolean("IsGrounded"));
+    }
+
+
 
     public static PlayerCooldown getPlayerCooldown(PlayerEntity player)
     {
