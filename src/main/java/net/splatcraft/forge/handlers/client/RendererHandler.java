@@ -515,7 +515,7 @@ public class RendererHandler {
 
         boolean showCrosshairInkIndicator = SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.CROSSHAIR);
         boolean isHoldingMatchItem = SplatcraftTags.Items.MATCH_ITEMS.contains(player.getMainHandItem().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getOffhandItem().getItem());
-        boolean showLowInkWarning = showCrosshairInkIndicator && isHoldingMatchItem && SplatcraftConfig.Client.lowInkWarning.get() && !enoughInk(player, null, 10f, 0, false);
+        boolean showLowInkWarning = showCrosshairInkIndicator && SplatcraftConfig.Client.lowInkWarning.get() && (isHoldingMatchItem || info.isSquid()) && !enoughInk(player, null, 10f, 0, false);
 
         boolean canUse = true;
         boolean hasTank = player.getItemBySlot(EquipmentSlotType.CHEST).getItem() instanceof InkTankItem;
@@ -576,7 +576,7 @@ public class RendererHandler {
                         AbstractGui.blit(matrixStack, width / 2 + 9 + 18 - glowAnim, height / 2 - 9, glowAnim, 18, 18 - glowAnim, 113, glowAnim, 18, 256, 256);
 
                         RenderSystem.color3f(1, 1, 1);
-                        if (glowAnim == 18 && isHoldingMatchItem) {
+                        if (glowAnim == 18) {
                             if (!canUse) {
                                 AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 36, 112, 18, 18, 256, 256);
                             } else if (showLowInkWarning) {
