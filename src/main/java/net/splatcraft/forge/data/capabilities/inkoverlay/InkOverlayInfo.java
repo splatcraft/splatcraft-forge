@@ -1,5 +1,7 @@
 package net.splatcraft.forge.data.capabilities.inkoverlay;
 
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -7,6 +9,10 @@ public class InkOverlayInfo implements IInkOverlayInfo
 {
     private int color = ColorUtils.DEFAULT;
     private float amount = 0;
+
+    private double squidRot;
+    private double squidRotO;
+    private Vector3d prevPos = null;
 
     public InkOverlayInfo()
     {
@@ -40,6 +46,35 @@ public class InkOverlayInfo implements IInkOverlayInfo
     public void addAmount(float v)
     {
         setAmount(amount + v);
+    }
+
+    @Override
+    public double getSquidRot() {
+        return squidRot;
+    }
+
+    @Override
+    public double getSquidRotO() {
+        return squidRotO;
+    }
+
+    @Override
+    public void setSquidRot(double v)
+    {
+        squidRotO = squidRot;
+        squidRot = v;
+    }
+
+    @Override
+    public Vector3d getPrevPosOrDefault(Vector3d def)
+    {
+        return prevPos == null ? def : prevPos;
+    }
+
+    @Override
+    public void setPrevPos(Vector3d v)
+    {
+        prevPos = v;
     }
 
     @Override

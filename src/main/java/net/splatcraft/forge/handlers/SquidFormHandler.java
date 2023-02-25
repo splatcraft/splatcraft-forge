@@ -1,8 +1,6 @@
 package net.splatcraft.forge.handlers;
 
-import net.minecraft.block.BedBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.RespawnAnchorBlock;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
@@ -11,9 +9,12 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameType;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -26,6 +27,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.blocks.InkwellBlock;
 import net.splatcraft.forge.blocks.SpawnPadBlock;
+import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
@@ -243,6 +245,23 @@ public class SquidFormHandler {
         if (PlayerInfoCapability.isSquid(event.getPlayer()) && event.isCancelable())
         {
             event.setCanceled(true);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onClientLivingTick(LivingEvent.LivingUpdateEvent event)
+    {
+        if(!event.getEntity().level.isClientSide)
+            return;
+        LivingEntity living = event.getEntityLiving();
+        if(InkOverlayCapability.hasCapability(living))
+        {
+            IInkOverlayInfo info = InkOverlayCapability.get(living);
+            Vector3d prev = info.getPrevPosOrDefault(living.position());
+
+            info.setSquidRot(Math.abs(living.getY() - prev.y()) * new Vector3d((living.getX() - prev.x), (living.getY() - prev.y), (living.getZ() - prev.z)).normalize().y);
+            info.setPrevPos(living.position());
         }
     }
 }

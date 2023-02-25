@@ -9,6 +9,9 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
+import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
+import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
+import net.splatcraft.forge.handlers.SquidFormHandler;
 
 public class InkSquidModel extends EntityModel<LivingEntity>
 {
@@ -94,7 +97,9 @@ public class InkSquidModel extends EntityModel<LivingEntity>
 
         if (!entitylivingbaseIn.isPassenger())
         {
-            float angle = isSwimming ? (float) -(entitylivingbaseIn.xRot * Math.PI / 180F) : (float) (entitylivingbaseIn.getY() - entitylivingbaseIn.yo) * 1.1f;
+            IInkOverlayInfo info = InkOverlayCapability.get(entitylivingbaseIn);
+
+            double angle = isSwimming ? -(entitylivingbaseIn.xRot * Math.PI / 180F) : MathHelper.lerp(partialTickTime, info.getSquidRotO(), info.getSquidRot()) * 1.1f;
             squid.xRot = (float) -Math.min(Math.PI / 2, Math.max(-Math.PI / 2, angle));
         }
 
