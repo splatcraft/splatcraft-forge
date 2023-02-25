@@ -9,6 +9,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -19,7 +20,7 @@ import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.client.model.inktanks.AbstractInkTankModel;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.items.weapons.IChargeableWeapon;
+import net.splatcraft.forge.items.weapons.ChargerItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -77,29 +78,37 @@ public class InkTankItem extends ColoredArmorItem
         return Math.max(0, Math.min(capacity, stack.getOrCreateTag().getFloat("Ink")));
     }
 
-    public static void setInkAmount(ItemStack stack, float value)
-    {
+    public static void setInkAmount(ItemStack stack, float value) {
         stack.getOrCreateTag().putFloat("Ink", Math.max(0, Math.min(((InkTankItem) stack.getItem()).capacity, value)));
     }
 
-    public static boolean canRecharge(ItemStack stack)
-    {
-        return !stack.getOrCreateTag().contains("CanRecharge") || stack.getOrCreateTag().getBoolean("CanRecharge");
+    public static boolean canRecharge(ItemStack stack, boolean fromTick) {
+        CompoundNBT tag = stack.getOrCreateTag();
+        boolean cannotRecharge = tag.contains("CannotRecharge");
+        if (!tag.contains("RecoveryCooldown"))
+            tag.putInt("RecoveryCooldown", 0);
+        int cooldown = tag.getInt("RecoveryCooldown");
+        if (cooldown == 0 || !fromTick) return !cannotRecharge;
+        tag.putInt("RecoveryCooldown", --cooldown);
+        return false;
+    }
+
+    public static void setRecoveryCooldown(ItemStack stack, int recoveryCooldown) {
+        CompoundNBT tag = stack.getOrCreateTag();
+        tag.putInt("RecoveryCooldown", Math.max(tag.getInt("RecoveryCooldown"), recoveryCooldown));
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected)
-    {
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
-        if (entity instanceof PlayerEntity)
-        {
+        if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
             float ink = getInkAmount(stack);
 
-            if (canRecharge(stack) && player.getItemBySlot(EquipmentSlotType.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
-                    && (!(player.getUseItem().getItem() instanceof WeaponBaseItem) || player.getUseItem().getItem() instanceof IChargeableWeapon || PlayerCooldown.hasPlayerCooldown(player))) {
-                setInkAmount(stack, ink + (InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player) ? 1.1125f : .11125f));
+            if (canRecharge(stack, true) && player.getItemBySlot(EquipmentSlotType.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
+                    && (!(player.getUseItem().getItem() instanceof WeaponBaseItem) || player.getUseItem().getItem() instanceof ChargerItem || PlayerCooldown.hasPlayerCooldown(player))) {
+                setInkAmount(stack, ink + (100f / 20f / ((InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player)) ? 3f : 10f)));
             }
         }
     }
@@ -108,12 +117,10 @@ public class InkTankItem extends ColoredArmorItem
     public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag)
     {
         super.appendHoverText(stack, level, tooltip, flag);
-        if (!canRecharge(stack))
-        {
+        if (!canRecharge(stack, false)) {
             tooltip.add(new TranslationTextComponent("item.splatcraft.ink_tank.cant_recharge"));
         }
-        if (flag.isAdvanced())
-        {
+        if (flag.isAdvanced()) {
             tooltip.add(new TranslationTextComponent("item.splatcraft.ink_tank.ink", String.format("%.1f", getInkAmount(stack)), capacity));
         }
 

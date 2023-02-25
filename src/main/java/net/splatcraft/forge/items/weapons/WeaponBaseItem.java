@@ -34,6 +34,7 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.items.InkTankItem;
+import net.splatcraft.forge.items.weapons.settings.IDamageCalculator;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -42,7 +43,7 @@ import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponStat;
+import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,42 +53,47 @@ import java.util.List;
 public class WeaponBaseItem extends Item implements IColoredItem
 {
     public static final int USE_DURATION = 72000;
-    protected final List<WeaponStat> stats = new ArrayList<>();
+    protected final List<WeaponTooltip> stats = new ArrayList<>();
     protected boolean secret = false;
 
-    public WeaponBaseItem()
-    {
+    public IDamageCalculator damageCalculator;
+
+    public WeaponBaseItem(IDamageCalculator damageCalculator) {
         super(new Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_WEAPONS));
         SplatcraftItems.inkColoredItems.add(this);
         SplatcraftItems.weapons.add(this);
+        this.damageCalculator = damageCalculator;
     }
 
-    public static boolean reduceInk(LivingEntity player, float amount, boolean sendMessage)
-    {
-        if (!enoughInk(player, amount, sendMessage, false)) return false;
+    public static boolean reduceInk(LivingEntity player, Item item, float amount, int recoveryCooldown, boolean sendMessage) {
+        if (!enoughInk(player, item, amount, recoveryCooldown, sendMessage, false)) return false;
         ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
         if (tank.getItem() instanceof InkTankItem)
             InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);
         return true;
     }
 
-    public static boolean enoughInk(LivingEntity player, float consumption, boolean sendMessage) {
-        return enoughInk(player, consumption, sendMessage, false);
+    public static boolean enoughInk(LivingEntity player, Item item, float consumption, int recoveryCooldown, boolean sendMessage) {
+        return enoughInk(player, item, consumption, recoveryCooldown, sendMessage, false);
     }
 
-    public static boolean enoughInk(LivingEntity player, float consumption, boolean sendMessage, boolean sub) {
+    public static boolean enoughInk(LivingEntity player, Item item, float consumption, int recoveryCooldown, boolean sendMessage, boolean sub) {
         ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
         if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK)
                 || player instanceof PlayerEntity && ((PlayerEntity) player).isCreative()
                 && SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.INFINITE_INK_IN_CREATIVE)) {
             return true;
         }
-        if (!(tank.getItem() instanceof InkTankItem) || InkTankItem.getInkAmount(tank) - consumption < 0) {
-            if (sendMessage)
+        if (tank.getItem() instanceof InkTankItem) {
+            boolean enoughInk = InkTankItem.getInkAmount(tank) - consumption >= 0
+                    && (item == null || ((InkTankItem) tank.getItem()).canUse(item));
+            if (!sub || enoughInk)
+                InkTankItem.setRecoveryCooldown(tank, recoveryCooldown);
+            if (!enoughInk && sendMessage)
                 sendNoInkMessage(player, sub ? SplatcraftSounds.noInkSub : SplatcraftSounds.noInkMain);
-            return false;
+            return enoughInk;
         }
-        return true;
+        return false;
     }
 
     public static void sendNoInkMessage(LivingEntity entity, SoundEvent sound)
@@ -101,10 +107,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
                         ((entity.level.getRandom().nextFloat() - entity.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }
         }
-
     }
-
-
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag)
@@ -119,14 +122,12 @@ public class WeaponBaseItem extends Item implements IColoredItem
             tooltip.add(new StringTextComponent(""));
         }
 
-        for (WeaponStat stat : stats)
-        {
+        for (WeaponTooltip stat : stats) {
             tooltip.add(stat.getTextComponent(stack, level).withStyle(TextFormatting.DARK_GREEN));
         }
     }
 
-    public void addStat(WeaponStat stat)
-    {
+    public void addStat(WeaponTooltip stat) {
         stats.add(stat);
     }
 

@@ -3,7 +3,7 @@ package net.splatcraft.forge.network.c2s;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.splatcraft.forge.items.weapons.IChargeableWeapon;
+import net.splatcraft.forge.items.weapons.ChargerItem;
 import net.splatcraft.forge.util.PlayerCharge;
 
 public class ChargeableReleasePacket extends PlayToServerPacket
@@ -27,9 +27,9 @@ public class ChargeableReleasePacket extends PlayToServerPacket
     {
         PlayerCharge.setCharge(player, new PlayerCharge(stack, charge));
 
-        if (stack.getItem() instanceof IChargeableWeapon)
+        if (stack.getItem() instanceof ChargerItem)
         {
-            IChargeableWeapon weapon = (IChargeableWeapon) stack.getItem();
+            ChargerItem weapon = (ChargerItem) stack.getItem();
             weapon.onRelease(player.level, player, stack, charge);
         }
     }

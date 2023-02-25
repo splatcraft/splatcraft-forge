@@ -6,53 +6,32 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.WeaponStat;
+import net.splatcraft.forge.util.WeaponTooltip;
 
-public class ShooterItem extends WeaponBaseItem
-{
-    public float projectileSize;
-    public float projectileSpeed;
-    public float inaccuracy;
-    public int firingSpeed;
-    public float damage;
-    public float inkConsumption;
-
-    public ShooterItem(String name, float projectileSize, float projectileSpeed, float inaccuracy, int firingSpeed, float damage, float inkConsumption)
+public class ShooterItem extends WeaponBaseItem {
+    public WeaponSettings settings;
+    public ShooterItem(WeaponSettings settings)
     {
-        super();
-        setRegistryName(name);
+        super(settings);
+        this.settings = settings;
+        setRegistryName(this.settings.name);
 
-        this.projectileSize = projectileSize;
-        this.projectileSpeed = projectileSpeed;
-        this.inaccuracy = inaccuracy;
-        this.firingSpeed = firingSpeed;
-        this.damage = damage;
-        this.inkConsumption = inkConsumption;
-
-        if (!(this instanceof BlasterItem))
-        {
-            addStat(new WeaponStat("range", (stack, level) -> (int) (projectileSpeed / 1.2f * 100)));
-            addStat(new WeaponStat("damage", (stack, level) -> (int) (damage / 20 * 100)));
-            addStat(new WeaponStat("fire_rate", (stack, level) -> (int) ((15 - firingSpeed)/15f * 100)));
+        if (!(this instanceof BlasterItem)) {
+            addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / 1.2f * 100)));
+            addStat(new WeaponTooltip("damage", (stack, level) -> (int) (settings.baseDamage / 20 * 100)));
+            addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - settings.firingSpeed) / 15f * 100)));
         }
     }
 
-    public ShooterItem(String name, ShooterItem parent)
-    {
-        this(name, parent.projectileSize, parent.projectileSpeed, parent.inaccuracy, parent.firingSpeed, parent.damage, parent.inkConsumption);
-    }
-
     @Override
-    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
-    {
-        if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % firingSpeed == 0)
-        {
-            if (reduceInk(entity, inkConsumption, true))
-            {
-                InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), projectileSize, damage).setShooterTrail();
-                proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, projectileSpeed, inaccuracy);
+    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
+        if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % settings.firingSpeed == 0) {
+            if (reduceInk(entity, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
+                InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.projectileSize, settings).setShooterTrail();
+                proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, settings.projectileSpeed, entity.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy);
                 level.addFreshEntity(proj);
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.shooterShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }

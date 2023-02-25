@@ -1,10 +1,5 @@
 package net.splatcraft.forge.entities.subs;
 
-import net.splatcraft.forge.client.particles.InkExplosionParticleData;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.InkDamageUtils;
-import net.splatcraft.forge.util.InkExplosion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -13,6 +8,11 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
+import net.splatcraft.forge.client.particles.InkExplosionParticleData;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.util.InkDamageUtils;
+import net.splatcraft.forge.util.InkExplosion;
 
 public class BurstBombEntity extends AbstractSubWeaponEntity
 {
@@ -34,7 +34,7 @@ public class BurstBombEntity extends AbstractSubWeaponEntity
         Entity target = result.getEntity();
         if (target instanceof LivingEntity)
             InkDamageUtils.doDamage(level, (LivingEntity) target, DIRECT_DAMAGE, getColor(), getOwner(), sourceWeapon, damageMobs, inkType, SPLASH_DAMAGE_TYPE, false);
-        InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), 2, DAMAGE, DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
+        InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), 2, DAMAGE, DIRECT_DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
         level.broadcastEntityEvent(this, (byte) 1);
         level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
         if(!level.isClientSide())
@@ -44,7 +44,7 @@ public class BurstBombEntity extends AbstractSubWeaponEntity
     @Override
     protected void onBlockHit(BlockRayTraceResult result)
     {
-        InkExplosion.createInkExplosion(level, getOwner(), SPLASH_DAMAGE_SOURCE, blockPosition(), EXPLOSION_SIZE, DAMAGE, DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
+        InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), EXPLOSION_SIZE, DAMAGE, DIRECT_DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
         level.broadcastEntityEvent(this, (byte) 1);
         level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
         remove();

@@ -73,7 +73,7 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.SquidBumperEntity;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.items.InkTankItem;
-import net.splatcraft.forge.items.weapons.IChargeableWeapon;
+import net.splatcraft.forge.items.weapons.ChargerItem;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
@@ -495,7 +495,7 @@ public class RendererHandler {
 
         if (event instanceof RenderGameOverlayEvent.Pre && event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR))
         {
-            if (player.getMainHandItem().getItem() instanceof IChargeableWeapon || player.getOffhandItem().getItem() instanceof IChargeableWeapon)
+            if (player.getMainHandItem().getItem() instanceof ChargerItem || player.getOffhandItem().getItem() instanceof ChargerItem)
             {
 
                 MatrixStack matrixStack = event.getMatrixStack();
@@ -515,35 +515,31 @@ public class RendererHandler {
 
         boolean showCrosshairInkIndicator = SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.CROSSHAIR);
         boolean isHoldingMatchItem = SplatcraftTags.Items.MATCH_ITEMS.contains(player.getMainHandItem().getItem()) || SplatcraftTags.Items.MATCH_ITEMS.contains(player.getOffhandItem().getItem());
-        boolean showLowInkWarning = showCrosshairInkIndicator && isHoldingMatchItem && SplatcraftConfig.Client.lowInkWarning.get() && !enoughInk(player, 10f, false);
-        if (info.isSquid() || showLowInkWarning) {
+        boolean showLowInkWarning = showCrosshairInkIndicator && isHoldingMatchItem && SplatcraftConfig.Client.lowInkWarning.get() && !enoughInk(player, null, 10f, 0, false);
+
+        boolean canUse = true;
+        boolean hasTank = player.getItemBySlot(EquipmentSlotType.CHEST).getItem() instanceof InkTankItem;
+        float inkPctg = 0;
+        if (hasTank) {
+            ItemStack stack = player.getItemBySlot(EquipmentSlotType.CHEST);
+            inkPctg = InkTankItem.getInkAmount(stack) / ((InkTankItem) stack.getItem()).capacity;
+            canUse = ((InkTankItem) stack.getItem()).canUse(player.getMainHandItem().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getOffhandItem().getItem());
+        }
+        if (info.isSquid() || showLowInkWarning || !canUse) {
             if (event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR)) {
                 squidTime++;
-                float inkPctg = 0;
-                boolean hasTank = player.getItemBySlot(EquipmentSlotType.CHEST).getItem() instanceof InkTankItem;
-                if (hasTank) {
-                    ItemStack stack = player.getItemBySlot(EquipmentSlotType.CHEST);
-                    inkPctg = InkTankItem.getInkAmount(stack) / ((InkTankItem) stack.getItem()).capacity;
-                }
 
                 if (showCrosshairInkIndicator) {
                     int heightAnim = Math.min(14, squidTime);
                     int glowAnim = Math.max(0, Math.min(18, squidTime - 16));
                     float[] rgb = ColorUtils.hexToRGB(info.getColor());
 
-                    boolean canUse = true;
-
-                    if (hasTank) {
-                        ItemStack stack = player.getItemBySlot(EquipmentSlotType.CHEST);
-                        canUse = ((InkTankItem) stack.getItem()).canUse(player.getMainHandItem().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getOffhandItem().getItem());
-                    }
-
                     MatrixStack matrixStack = event.getMatrixStack();
                     matrixStack.pushPose();
                     RenderSystem.enableBlend();
                     Minecraft.getInstance().getTextureManager().bind(WIDGETS);
 
-                    if (enoughInk(player, 220, false)) { // checks if you have unlimited ink
+                    if (enoughInk(player, null, 220, 0, false)) { // checks if you have unlimited ink
                         AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 2, 0, 131, 18, 2, 256, 256);
                         AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 4 + heightAnim, 0, 131, 18, 4 + heightAnim, 256, 256);
 
@@ -581,10 +577,10 @@ public class RendererHandler {
 
                         RenderSystem.color3f(1, 1, 1);
                         if (glowAnim == 18 && isHoldingMatchItem) {
-                            if (showLowInkWarning) {
-                                AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 18, 112, 18, 18, 256, 256);
-                            } else if (!canUse) {
+                            if (!canUse) {
                                 AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 36, 112, 18, 18, 256, 256);
+                            } else if (showLowInkWarning) {
+                                AbstractGui.blit(matrixStack, width / 2 + 9, height / 2 - 9, 18, 112, 18, 18, 256, 256);
                             }
                         }
                     }

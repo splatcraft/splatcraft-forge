@@ -160,8 +160,8 @@ public class PlayerMovementHandler
                 input.leftImpulse = 0;
                 input.jumping = false;
             } else if (cooldown.storedStack.getItem() instanceof RollerItem) {
-                input.forwardImpulse = Math.min(1, Math.abs(input.forwardImpulse)) * Math.signum(input.forwardImpulse) * (float) ((RollerItem) cooldown.storedStack.getItem()).swingMobility;
-                input.leftImpulse = Math.min(1, Math.abs(input.leftImpulse)) * Math.signum(input.leftImpulse) * (float) ((RollerItem) cooldown.storedStack.getItem()).swingMobility;
+                input.forwardImpulse = Math.min(1, Math.abs(input.forwardImpulse)) * Math.signum(input.forwardImpulse) * ((RollerItem) cooldown.storedStack.getItem()).settings.swingMobility;
+                input.leftImpulse = Math.min(1, Math.abs(input.leftImpulse)) * Math.signum(input.leftImpulse) * ((RollerItem) cooldown.storedStack.getItem()).settings.swingMobility;
             }
             if (cooldown.forceCrouch() && cooldown.getTime() > 1) {
                 input.shiftKeyDown = !player.abilities.flying;

@@ -34,7 +34,7 @@ public class DodgeRollPacket extends PlayToServerPacket
     public void execute(PlayerEntity player)
     {
         PlayerEntity target = player.level.getPlayerByUUID(this.target);
-        DualieItem.performRoll(target, mainDualie, offhandDualie);
+        ((DualieItem) mainDualie.getItem()).performRoll(target, mainDualie, offhandDualie);
     }
 
     @Override
