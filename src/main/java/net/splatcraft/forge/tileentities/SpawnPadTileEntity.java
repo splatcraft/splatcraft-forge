@@ -52,9 +52,8 @@ public class SpawnPadTileEntity extends InkColorTileEntity implements ITickableT
 				}
 				else
 				{
-					entity.setDeltaMovement(entity.position().subtract(getBlockPos().getX()+.5f, getBlockPos().getY(), getBlockPos().getZ()+.5f).normalize().scale(.5));
-					entity.hasImpulse = true;
-
+					entity.setDeltaMovement(entity.position().subtract(getBlockPos().getX() + .5f, getBlockPos().getY(), getBlockPos().getZ() + .5f).normalize().scale(.5));
+					entity.hurtMarked = true;
 				}
 			}
 		}
@@ -64,7 +63,7 @@ public class SpawnPadTileEntity extends InkColorTileEntity implements ITickableT
 	@Override
 	public void load(BlockState state, CompoundNBT nbt)
 	{
-		super.load(state, nbt);;
+		super.load(state, nbt);
 
 		if (nbt.contains("ActiveTime"))
 			activeTime = nbt.getInt("ActiveTime");
