@@ -38,6 +38,7 @@ import net.splatcraft.forge.network.c2s.RequestPlayerInfoPacket;
 import net.splatcraft.forge.network.s2c.UpdateBooleanGamerulesPacket;
 import net.splatcraft.forge.network.s2c.UpdateClientColorsPacket;
 import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
+import net.splatcraft.forge.network.s2c.UpdateIntGamerulesPacket;
 import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
@@ -205,6 +206,7 @@ public class SplatcraftCommonHandler
     {
         PlayerEntity player = event.getPlayer();
         SplatcraftPacketHandler.sendToPlayer(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.booleanRules), (ServerPlayerEntity) player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateIntGamerulesPacket(SplatcraftGameRules.intRules), (ServerPlayerEntity) player);
 
         int[] colors = new int[ScoreboardHandler.getCriteriaKeySet().size()];
         int i = 0;
@@ -267,17 +269,21 @@ public class SplatcraftCommonHandler
     public static void onWorldTick(TickEvent.WorldTickEvent event)
     {
         World level = event.world;
-        if (level.isClientSide)
-        {
+        if (level.isClientSide) {
             return;
         }
-        for (Map.Entry<Integer, Boolean> rule : SplatcraftGameRules.booleanRules.entrySet())
-        {
+        for (Map.Entry<Integer, Boolean> rule : SplatcraftGameRules.booleanRules.entrySet()) {
             boolean levelValue = level.getGameRules().getBoolean(SplatcraftGameRules.getRuleFromIndex(rule.getKey()));
-            if (rule.getValue() != levelValue)
-            {
+            if (rule.getValue() != levelValue) {
                 SplatcraftGameRules.booleanRules.put(rule.getKey(), levelValue);
                 SplatcraftPacketHandler.sendToAll(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.getRuleFromIndex(rule.getKey()), rule.getValue()));
+            }
+        }
+        for (Map.Entry<Integer, Integer> rule : SplatcraftGameRules.intRules.entrySet()) {
+            int levelValue = level.getGameRules().getInt(SplatcraftGameRules.getRuleFromIndex(rule.getKey()));
+            if (rule.getValue() != levelValue) {
+                SplatcraftGameRules.intRules.put(rule.getKey(), levelValue);
+                SplatcraftPacketHandler.sendToAll(new UpdateIntGamerulesPacket(SplatcraftGameRules.getRuleFromIndex(rule.getKey()), rule.getValue()));
             }
         }
     }

@@ -145,7 +145,7 @@ public class InkExplosion {
                 double f2Sq = f2 * f2;
                 float pctg = Math.max(0, (float) ((f2Sq - entity.distanceToSqr(x, y, z)) / f2Sq));
 
-                InkDamageUtils.doSplatDamage(level, (LivingEntity) entity, MathHelper.lerp(pctg, minDamage, maxDamage) * Explosion.getSeenPercent(explosionPos, entity), color, exploder, weapon, damageMobs, inkType);
+                InkDamageUtils.doSplatDamage(level, (LivingEntity) entity, MathHelper.lerp(pctg, minDamage, maxDamage) * Explosion.getSeenPercent(explosionPos, entity), color, exploder, weapon, damageMobs);
             }
 
             DyeColor dyeColor = null;

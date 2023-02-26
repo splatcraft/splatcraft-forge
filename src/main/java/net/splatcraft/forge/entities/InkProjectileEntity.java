@@ -208,7 +208,7 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         float dmg = damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown);
 
         if (target instanceof LivingEntity)
-            InkDamageUtils.doDamage(level, (LivingEntity) target, dmg, getColor(), getOwner(), sourceWeapon, damageMobs, inkType, damageType, causesHurtCooldown);
+            InkDamageUtils.doDamage(level, (LivingEntity) target, dmg, getColor(), getOwner(), sourceWeapon, damageMobs, damageType, causesHurtCooldown);
 
         if (!canPierce) {
             if (explodes) {

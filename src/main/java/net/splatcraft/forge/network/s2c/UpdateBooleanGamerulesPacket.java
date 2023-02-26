@@ -45,20 +45,14 @@ public class UpdateBooleanGamerulesPacket extends PlayToClientPacket
 
         buffer.writeInt(entrySet.size());
 
-        for (Map.Entry<Integer, Boolean> rule : entrySet)
-        {
+        for (Map.Entry<Integer, Boolean> rule : entrySet) {
             buffer.writeInt(rule.getKey());
             buffer.writeBoolean(rule.getValue());
         }
     }
 
     @Override
-    public void execute()
-    {
-        for (Map.Entry<Integer, Boolean> rule : booleanRules.entrySet())
-        {
-            SplatcraftGameRules.booleanRules.put(rule.getKey(), rule.getValue());
-        }
+    public void execute() {
+        SplatcraftGameRules.booleanRules.putAll(booleanRules);
     }
-
 }

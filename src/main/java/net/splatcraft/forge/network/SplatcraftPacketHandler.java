@@ -24,6 +24,7 @@ import net.splatcraft.forge.network.s2c.UpdateBooleanGamerulesPacket;
 import net.splatcraft.forge.network.s2c.UpdateClientColorsPacket;
 import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
 import net.splatcraft.forge.network.s2c.UpdateInkOverlayPacket;
+import net.splatcraft.forge.network.s2c.UpdateIntGamerulesPacket;
 import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
 
 import java.util.function.BiConsumer;
@@ -48,6 +49,7 @@ public class SplatcraftPacketHandler
         registerMessage(PlayerSetSquidServerPacket.class, PlayerSetSquidServerPacket::decode);
         registerMessage(PlayerSetSquidClientPacket.class, PlayerSetSquidClientPacket::decode);
         registerMessage(UpdateBooleanGamerulesPacket.class, UpdateBooleanGamerulesPacket::decode);
+        registerMessage(UpdateIntGamerulesPacket.class, UpdateIntGamerulesPacket::decode);
         registerMessage(RequestPlayerInfoPacket.class, RequestPlayerInfoPacket::decode);
         registerMessage(SendScanTurfResultsPacket.class, SendScanTurfResultsPacket::decode);
         registerMessage(UpdateColorScoresPacket.class, UpdateColorScoresPacket::decode);

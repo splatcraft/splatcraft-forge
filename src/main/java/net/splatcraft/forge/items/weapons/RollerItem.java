@@ -164,16 +164,18 @@ public class RollerItem extends WeaponBaseItem
                     }
 
                     BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
-                    for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(attackPos, attackPos.offset(1, 2, 1)), EntityPredicates.NO_SPECTATORS.and((e) ->
+                    for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(attackPos, attackPos.offset(1, 2, 1)), EntityPredicates.NO_SPECTATORS.and(e ->
                     {
-                        if (e instanceof LivingEntity && ColorUtils.getEntityColor(e) != -1)
-                            return InkDamageUtils.canDamageColor(level, ColorUtils.getEntityColor(e), ColorUtils.getInkColor(stack));
-                        return true;
+                        if (e instanceof LivingEntity) {
+                            if (((LivingEntity) e).isDeadOrDying()) return false;
+                            return InkDamageUtils.canDamage(e, entity);
+                        }
+                        return false;
                     }))) {
-                        if (!target.equals(entity) && !InkDamageUtils.isSplatted(level, target) && InkDamageUtils.canDamage(target, entity) && (!enoughInk(entity, this, toConsume, 0, false) ||
-                                !InkDamageUtils.doRollDamage(level, target, settings.rollDamage, ColorUtils.getInkColor(stack), entity, stack, false, InkBlockUtils.getInkType(entity)))
-                            /*&& target.invulnerableTime >= 10*/)
+                        /*&& target.invulnerableTime >= 10*/
+                        if (!target.equals(entity) && (!enoughInk(entity, this, toConsume, 0, false) || !InkDamageUtils.doRollDamage(level, target, settings.rollDamage, ColorUtils.getInkColor(stack), entity, stack, false) || !InkDamageUtils.isSplatted(target))) {
                             doPush = true;
+                        }
                     }
                 }
             }
@@ -238,7 +240,7 @@ public class RollerItem extends WeaponBaseItem
         int useTime = entity.getUseItemRemainingTicks() - entity.getUseItemRemainingTicks();
 
         if (enoughInk(entity, this, Math.min(settings.dashConsumption, settings.rollConsumption), 0, false)) {
-            if (entity instanceof PlayerEntity && (PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity)))
+            if (entity instanceof PlayerEntity && PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity))
                 appliedMobility = settings.swingMobility;
             else
                 appliedMobility = Math.min(1, (float) useTime / (float) settings.dashTime) * (settings.dashMobility - settings.rollMobility) + settings.rollMobility;
