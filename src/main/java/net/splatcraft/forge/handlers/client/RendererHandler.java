@@ -523,7 +523,8 @@ public class RendererHandler {
         if (hasTank) {
             ItemStack stack = player.getItemBySlot(EquipmentSlotType.CHEST);
             inkPctg = InkTankItem.getInkAmount(stack) / ((InkTankItem) stack.getItem()).capacity;
-            canUse = ((InkTankItem) stack.getItem()).canUse(player.getMainHandItem().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getOffhandItem().getItem());
+            if (isHoldingMatchItem)
+                canUse = ((InkTankItem) stack.getItem()).canUse(player.getMainHandItem().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getOffhandItem().getItem());
         }
         if (info.isSquid() || showLowInkWarning || !canUse) {
             if (event.getType().equals(RenderGameOverlayEvent.ElementType.HOTBAR)) {
