@@ -25,7 +25,7 @@ import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftStats;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkVatTileEntity;
 import net.splatcraft.forge.util.InkColor;
 
@@ -38,7 +38,7 @@ public class InkVatContainer extends Container
 
     public InkVatContainer(final int windowId, final PlayerInventory playerInv, final InkVatTileEntity te, boolean updateSelectedRecipe)
     {
-        super(SplatcraftTileEntitites.inkVatContainer, windowId);
+        super(SplatcraftTileEntities.inkVatContainer, windowId);
         this.te = te;
         this.callableInteract = IWorldPosCallable.create(te.getLevel(), te.getBlockPos());
 

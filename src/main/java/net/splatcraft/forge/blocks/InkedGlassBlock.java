@@ -15,7 +15,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
@@ -73,7 +73,7 @@ public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
-        return SplatcraftTileEntitites.colorTileEntity.create();
+        return SplatcraftTileEntities.colorTileEntity.create();
     }
 
     @Override

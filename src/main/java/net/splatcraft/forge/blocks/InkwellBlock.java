@@ -31,7 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.ForgeSoundType;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
@@ -157,7 +157,7 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
-        return SplatcraftTileEntitites.inkwellTileEntity.create();
+        return SplatcraftTileEntities.inkwellTileEntity.create();
     }
 
     @Override

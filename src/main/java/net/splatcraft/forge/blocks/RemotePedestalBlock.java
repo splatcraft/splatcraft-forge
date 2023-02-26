@@ -26,7 +26,7 @@ import net.minecraftforge.common.ToolType;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.RemotePedestalTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.CommonUtils;
@@ -50,7 +50,7 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
         SplatcraftBlocks.inkColoredBlocks.add(this);
         registerDefaultState(defaultBlockState().setValue(POWERED, false));
     }
-    
+
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
     {
@@ -163,7 +163,7 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader level) {
-        return SplatcraftTileEntitites.remotePedestalTileEntity.create();
+        return SplatcraftTileEntities.remotePedestalTileEntity.create();
     }
 
 

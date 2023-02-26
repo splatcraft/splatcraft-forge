@@ -13,7 +13,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -68,7 +68,7 @@ public class CanvasBlock extends Block implements IColoredBlock
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
-        InkColorTileEntity te = SplatcraftTileEntitites.colorTileEntity.create();
+        InkColorTileEntity te = SplatcraftTileEntities.colorTileEntity.create();
         if (te != null)
             te.setColor(-1);
         return te;

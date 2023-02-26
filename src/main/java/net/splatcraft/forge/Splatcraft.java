@@ -26,7 +26,7 @@ import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftStats;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.world.gen.SplatcraftOreGen;
 
 import java.util.Objects;
@@ -79,7 +79,7 @@ public class Splatcraft {
         SplatcraftEntities.bindRenderers();
         SplatcraftKeyHandler.registerKeys();
         SplatcraftBlocks.setRenderLayers();
-        SplatcraftTileEntitites.bindTESR();
+        SplatcraftTileEntities.bindTESR();
 
 
         event.enqueueWork(() ->

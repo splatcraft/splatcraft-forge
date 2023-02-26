@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 import static net.splatcraft.forge.registries.SplatcraftBlocks.*;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class SplatcraftTileEntitites
+public class SplatcraftTileEntities
 {
 
     private static final List<TileEntityType<?>> te_registry = new ArrayList<>();

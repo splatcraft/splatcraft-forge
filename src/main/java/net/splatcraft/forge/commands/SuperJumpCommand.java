@@ -7,8 +7,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.ILocationArgument;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -17,13 +15,11 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.handlers.SplatcraftCommonHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
 import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
@@ -36,12 +32,12 @@ public class SuperJumpCommand
 		dispatcher.register(Commands.literal("superjump").then(Commands.argument("to", BlockPosArgument.blockPos()).executes(context ->
 		{
 			BlockPos target = BlockPosArgument.getOrLoadBlockPos(context, "to");
-			return excute(context, new Vector3d(target.getX()+.5d, target.getY(), target.getZ()+.5d));
+			return execute(context, new Vector3d(target.getX()+.5d, target.getY(), target.getZ()+.5d));
 		})).then(Commands.argument("target", EntityArgument.entity()).executes(context ->
-				excute(context, EntityArgument.getEntity(context, "target").position()))));
+				execute(context, EntityArgument.getEntity(context, "target").position()))));
 	}
 
-	private static int excute(CommandContext<CommandSource> context, Vector3d target) throws CommandSyntaxException
+	private static int execute(CommandContext<CommandSource> context, Vector3d target) throws CommandSyntaxException
 	{
 		ServerPlayerEntity player = context.getSource().getPlayerOrException();
 
@@ -64,7 +60,7 @@ public class SuperJumpCommand
 				return;
 
 			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-			
+
 			if(!PlayerCooldown.hasPlayerCooldown(player))
 				return;
 

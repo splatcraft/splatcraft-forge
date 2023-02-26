@@ -10,7 +10,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 import net.splatcraft.forge.blocks.CrateBlock;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.CommonUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +26,7 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
 
     public CrateTileEntity()
     {
-        super(SplatcraftTileEntitites.crateTileEntity);
+        super(SplatcraftTileEntities.crateTileEntity);
     }
 
     public void ink(int color, float damage)

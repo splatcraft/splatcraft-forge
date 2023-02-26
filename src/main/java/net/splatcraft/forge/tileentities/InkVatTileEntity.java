@@ -24,7 +24,7 @@ import net.splatcraft.forge.blocks.InkVatBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.items.FilterItem;
 import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.container.InkVatContainer;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +42,7 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
 
     public InkVatTileEntity()
     {
-        super(SplatcraftTileEntitites.inkVatTileEntity);
+        super(SplatcraftTileEntities.inkVatTileEntity);
     }
 
     @Override

@@ -28,7 +28,7 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.SquidBumperItem;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,8 +59,8 @@ public class ClientSetupHandler
 
     public static void bindScreenContainers()
     {
-        ScreenManager.register(SplatcraftTileEntitites.inkVatContainer, InkVatScreen::new);
-        ScreenManager.register(SplatcraftTileEntitites.weaponWorkbenchContainer, WeaponWorkbenchScreen::new);
+        ScreenManager.register(SplatcraftTileEntities.inkVatContainer, InkVatScreen::new);
+        ScreenManager.register(SplatcraftTileEntities.weaponWorkbenchContainer, WeaponWorkbenchScreen::new);
     }
 
 

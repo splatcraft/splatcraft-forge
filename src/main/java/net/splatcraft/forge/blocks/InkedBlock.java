@@ -29,7 +29,7 @@ import net.minecraftforge.common.ToolType;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
@@ -340,7 +340,7 @@ public class InkedBlock extends Block implements IColoredBlock
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
-        return SplatcraftTileEntitites.inkedTileEntity.create();
+        return SplatcraftTileEntities.inkedTileEntity.create();
     }
 
     @Override

@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.StageBarrierTileEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,7 +85,7 @@ public class StageBarrierBlock extends Block
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
-        return SplatcraftTileEntitites.stageBarrierTileEntity.create();
+        return SplatcraftTileEntities.stageBarrierTileEntity.create();
     }
 
     @Override

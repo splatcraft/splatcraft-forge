@@ -1,7 +1,7 @@
 package net.splatcraft.forge.tileentities;
 
 import net.splatcraft.forge.items.ColoredBlockItem;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
@@ -17,7 +17,7 @@ public class InkwellTileEntity extends InkColorTileEntity implements ITickableTi
 
     public InkwellTileEntity()
     {
-        super(SplatcraftTileEntitites.inkwellTileEntity);
+        super(SplatcraftTileEntities.inkwellTileEntity);
     }
 
     @Override

@@ -35,7 +35,7 @@ import net.minecraftforge.common.ToolType;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.CrateTileEntity;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.NotNull;
@@ -135,7 +135,7 @@ public class CrateBlock extends Block implements IColoredBlock
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
-        CrateTileEntity te = SplatcraftTileEntitites.crateTileEntity.create();
+        CrateTileEntity te = SplatcraftTileEntities.crateTileEntity.create();
         if (te != null)
         {
             te.setMaxHealth(hasLoot ? 25 : 20);

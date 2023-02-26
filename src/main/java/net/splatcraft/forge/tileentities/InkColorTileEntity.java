@@ -6,7 +6,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +18,7 @@ public class InkColorTileEntity extends TileEntity
 
     public InkColorTileEntity()
     {
-        super(SplatcraftTileEntitites.colorTileEntity);
+        super(SplatcraftTileEntities.colorTileEntity);
     }
 
     public InkColorTileEntity(TileEntityType type)

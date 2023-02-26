@@ -9,7 +9,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +21,7 @@ public class SpawnPadTileEntity extends InkColorTileEntity implements ITickableT
 
 	public SpawnPadTileEntity()
 	{
-		super(SplatcraftTileEntitites.spawnPadTileEntity);
+		super(SplatcraftTileEntities.spawnPadTileEntity);
 	}
 
 	public float getActiveTime() {

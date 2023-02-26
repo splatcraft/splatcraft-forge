@@ -1,29 +1,22 @@
 package net.splatcraft.forge.tileentities;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.CommandBlockTileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.server.ServerWorld;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.items.remotes.RemoteItem;
-import net.splatcraft.forge.items.remotes.TurfScannerItem;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.UUID;
 
 public class RemotePedestalTileEntity extends InkColorTileEntity implements ISidedInventory, ICommandSource
@@ -33,7 +26,7 @@ public class RemotePedestalTileEntity extends InkColorTileEntity implements ISid
     protected int remoteResult = 0;
 
     public RemotePedestalTileEntity() {
-        super(SplatcraftTileEntitites.remotePedestalTileEntity);
+        super(SplatcraftTileEntities.remotePedestalTileEntity);
     }
 
     public void onPowered()

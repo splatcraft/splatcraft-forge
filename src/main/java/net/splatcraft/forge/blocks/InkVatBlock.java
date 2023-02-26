@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkVatTileEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -90,7 +90,7 @@ public class InkVatBlock extends ContainerBlock implements IColoredBlock
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader level)
     {
-        return SplatcraftTileEntitites.inkVatTileEntity.create();
+        return SplatcraftTileEntities.inkVatTileEntity.create();
     }
 
     @Override

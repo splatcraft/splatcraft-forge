@@ -23,7 +23,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.Nullable;
@@ -90,7 +90,7 @@ public class SplatSwitchBlock extends Block implements IColoredBlock, IWaterLogg
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader level) {
-        return SplatcraftTileEntitites.colorTileEntity.create();
+        return SplatcraftTileEntities.colorTileEntity.create();
     }
 
     @Override

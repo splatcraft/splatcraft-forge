@@ -4,29 +4,15 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
 import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.blocks.ColoredBarrierBlock;
-import net.splatcraft.forge.blocks.IColoredBlock;
-import net.splatcraft.forge.blocks.StageBarrierBlock;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
 import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
-import net.splatcraft.forge.tileentities.StageBarrierTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 
 public class SpawnPadTileEntityRenderer extends TileEntityRenderer<SpawnPadTileEntity>
@@ -89,30 +75,30 @@ public class SpawnPadTileEntityRenderer extends TileEntityRenderer<SpawnPadTileE
         addVertex(builder, matrixStack, radius, radius, -radius, uvCorner, uvCorner, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, radius, -radius, -radius, uvCorner, 0, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, -radius, -radius, -radius, 0, 0, rgb[0], rgb[1], rgb[2], alpha);
-    
+
 
         addVertex(builder, matrixStack, -radius, -radius, radius, 0, 0, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, radius, -radius, radius, uvCorner, 0, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, radius, radius, radius, uvCorner, uvCorner, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, -radius, radius, radius, 0, uvCorner, rgb[0], rgb[1], rgb[2], alpha);
-    
+
         addVertex(builder, matrixStack, -radius, -radius, -radius, 0, 0, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, -radius, -radius, radius, 0, uvCorner, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, -radius, radius, radius, uvCorner, uvCorner, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, -radius, radius, -radius, uvCorner, 0, rgb[0], rgb[1], rgb[2], alpha);
-    
+
 
         addVertex(builder, matrixStack, radius, -radius, -radius, 0, 0, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, radius, radius, -radius, uvCorner, 0, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, radius, radius, radius, uvCorner, uvCorner, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, radius, -radius, radius, 0, uvCorner, rgb[0], rgb[1], rgb[2], alpha);
-    
+
 
         addVertex(builder, matrixStack, -radius, -radius, -radius, 0, 0, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, radius, -radius, -radius, uvCorner, 0, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, radius, -radius, radius, uvCorner, uvCorner, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, -radius, -radius, radius, 0, uvCorner, rgb[0], rgb[1], rgb[2], alpha);
-    
+
 
         addVertex(builder, matrixStack, -radius, radius, radius, 0, uvCorner, rgb[0], rgb[1], rgb[2], alpha);
         addVertex(builder, matrixStack, radius, radius, radius, uvCorner, uvCorner, rgb[0], rgb[1], rgb[2], alpha);

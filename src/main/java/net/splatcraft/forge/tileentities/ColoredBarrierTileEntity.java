@@ -3,12 +3,11 @@ package net.splatcraft.forge.tileentities;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -19,7 +18,7 @@ public class ColoredBarrierTileEntity extends StageBarrierTileEntity
 
     public ColoredBarrierTileEntity()
     {
-        super(SplatcraftTileEntitites.colorBarrierTileEntity);
+        super(SplatcraftTileEntities.colorBarrierTileEntity);
     }
 
     @Override

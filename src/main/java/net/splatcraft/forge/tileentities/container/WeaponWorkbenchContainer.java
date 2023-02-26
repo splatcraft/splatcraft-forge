@@ -1,6 +1,6 @@
 package net.splatcraft.forge.tileentities.container;
 
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.IWorldPosCallable;
 
@@ -8,7 +8,7 @@ public class WeaponWorkbenchContainer extends PlayerInventoryContainer<WeaponWor
 {
     public WeaponWorkbenchContainer(PlayerInventory player, IWorldPosCallable callable, int id)
     {
-        super(SplatcraftTileEntitites.weaponWorkbenchContainer, player, callable, 8, 144, id);
+        super(SplatcraftTileEntities.weaponWorkbenchContainer, player, callable, 8, 144, id);
     }
 
     public WeaponWorkbenchContainer(int id, PlayerInventory playerInventory)

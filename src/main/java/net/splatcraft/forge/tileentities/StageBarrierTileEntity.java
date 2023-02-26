@@ -13,7 +13,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.StageBarrierBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.ClientUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
 
     public StageBarrierTileEntity()
     {
-        super(SplatcraftTileEntitites.stageBarrierTileEntity);
+        super(SplatcraftTileEntities.stageBarrierTileEntity);
     }
 
     public StageBarrierTileEntity(TileEntityType<? extends StageBarrierTileEntity> type)

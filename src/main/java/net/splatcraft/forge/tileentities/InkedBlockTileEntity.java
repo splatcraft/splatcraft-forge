@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.splatcraft.forge.registries.SplatcraftTileEntitites;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ public class InkedBlockTileEntity extends InkColorTileEntity
 
     public InkedBlockTileEntity()
     {
-        super(SplatcraftTileEntitites.inkedTileEntity);
+        super(SplatcraftTileEntities.inkedTileEntity);
     }
 
     @Override
