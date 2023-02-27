@@ -11,9 +11,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.client.particles.SquidSoulParticleData;
+import net.splatcraft.forge.commands.SuperJumpCommand;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.commands.SuperJumpCommand;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
 import net.splatcraft.forge.util.ColorUtils;
@@ -68,10 +68,6 @@ public class WeaponHandler {
         if (PlayerCooldown.shrinkCooldownTime(player, 1) != null) {
             player.setSprinting(false);
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
-            PlayerInfoCapability.get(player).setIsSquid(false);
-            if (event.side.isServer())
-                SplatcraftPacketHandler.sendToDim(new PlayerSetSquidClientPacket(player.getUUID(), false), player.level);
-            canUseWeapon = !cooldown.preventWeaponUse();
 			if(!(cooldown instanceof SuperJumpCommand.SuperJump))
 			{
 				PlayerInfoCapability.get(player).setIsSquid(false);

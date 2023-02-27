@@ -1,6 +1,5 @@
 package net.splatcraft.forge.entities;
 
-import java.util.Collections;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -43,8 +42,9 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.CommonUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 
-public class SquidBumperEntity extends LivingEntity implements IColoredEntity
-{
+import java.util.Collections;
+
+public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
     public static final float maxInkHealth = 20.0F;
     public static final int maxRespawnTime = 60;
     private static final DataParameter<Integer> COLOR = EntityDataManager.defineId(SquidBumperEntity.class, DataSerializers.INT);
@@ -112,6 +112,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity
                 this.level.broadcastEntityEvent(this, (byte) 34);
                 InkOverlayCapability.get(this).setAmount(0);
             }
+            return true;
         }
         return false;
     }

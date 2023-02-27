@@ -163,18 +163,19 @@ public class RollerItem extends WeaponBaseItem
                             reduceInk(entity, this, Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) settings.dashTime) * (settings.dashConsumption - settings.rollConsumption) + settings.rollConsumption, settings.rollInkRecoveryCooldown, false);
                     }
 
-                    BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
-                    for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(attackPos, attackPos.offset(1, 2, 1)), EntityPredicates.NO_SPECTATORS.and(e ->
-                    {
-                        if (e instanceof LivingEntity) {
-                            if (((LivingEntity) e).isDeadOrDying()) return false;
-                            return InkDamageUtils.canDamage(e, entity);
-                        }
-                        return false;
-                    }))) {
-                        /*&& target.invulnerableTime >= 10*/
-                        if (!target.equals(entity) && (!enoughInk(entity, this, toConsume, 0, false) || !InkDamageUtils.doRollDamage(level, target, settings.rollDamage, ColorUtils.getInkColor(stack), entity, stack, false) || !InkDamageUtils.isSplatted(target))) {
-                            doPush = true;
+                    if (!level.isClientSide) {
+                        BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
+                        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(attackPos, attackPos.offset(1, 2, 1)), EntityPredicates.NO_SPECTATORS.and(e ->
+                        {
+                            if (e instanceof LivingEntity) {
+                                if (InkDamageUtils.isSplatted((LivingEntity) e)) return false;
+                                return InkDamageUtils.canDamage(e, entity);
+                            }
+                            return false;
+                        }))) {
+                            if (!target.equals(entity) && (!enoughInk(entity, this, toConsume, 0, false) || !InkDamageUtils.doRollDamage(level, target, settings.rollDamage, ColorUtils.getInkColor(stack), entity, stack, false) || !InkDamageUtils.isSplatted(target))) {
+                                doPush = true;
+                            }
                         }
                     }
                 }
