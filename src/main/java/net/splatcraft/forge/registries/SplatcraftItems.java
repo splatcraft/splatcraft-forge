@@ -125,8 +125,8 @@ public class SplatcraftItems {
     public static final BlasterItem grimBlaster = new BlasterItem(blaster.settings.setName("grim_blaster"));
     public static final BlasterItem clashBlaster = new BlasterItem(new WeaponSettings("clash_blaster")
             .setProjectileSize(1.65f).setProjectileLifespan(4).setProjectileSpeed(1.1f)
-            .setFiringSpeed(10)
-            .setStartupTicks(1).setGroundInaccuracy(0).setAirInaccuracy(8)
+            .setFiringSpeed(10).setStartupTicks(1)
+            .setGroundInaccuracy(0).setAirInaccuracy(8)
             .setInkConsumption(4).setInkRecoveryCooldown(13).setBaseDamage(12).setMinDamage(6));
     public static final BlasterItem clashBlasterNeo = new BlasterItem(clashBlaster.settings.setName("clash_blaster_neo"));
 
@@ -239,7 +239,7 @@ public class SplatcraftItems {
             .setBaseDamage(12.4f));
     public static final SlosherItem explosher = new SlosherItem(new WeaponSettings("explosher")
             .setProjectileSize(2f).setProjectileSpeed(0.75f).setProjectileCount(1)
-            .setStartupTicks(12)
+            .setFiringSpeed(20).setStartupTicks(6)
             .setGroundInaccuracy(0)
             .setInkConsumption(11.7f).setInkRecoveryCooldown(23)
             .setBaseDamage(11f)).setSlosherType(SlosherItem.Type.EXPLODING);

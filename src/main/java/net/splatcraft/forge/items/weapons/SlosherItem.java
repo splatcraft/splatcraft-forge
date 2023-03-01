@@ -3,6 +3,7 @@ package net.splatcraft.forge.items.weapons;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.splatcraft.forge.entities.InkProjectileEntity;
@@ -35,12 +36,12 @@ public class SlosherItem extends WeaponBaseItem
     }
 
     @Override
-    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
-    {
-        //if (getInkAmount(entity, stack) >= inkConsumption)
-        {
-            if (entity instanceof PlayerEntity && getUseDuration(stack) - timeLeft < settings.startupTicks) {
-                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, settings.startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
+    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
+        CooldownTracker cooldownTracker = ((PlayerEntity) entity).getCooldowns();
+        if (!cooldownTracker.isOnCooldown(this)) {
+            PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, settings.startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
+            if (!level.isClientSide) {
+                cooldownTracker.addCooldown(this, settings.firingSpeed);
             }
         }
     }
