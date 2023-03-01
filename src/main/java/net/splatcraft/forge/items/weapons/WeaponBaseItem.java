@@ -93,6 +93,8 @@ public class WeaponBaseItem extends Item implements IColoredItem
                 sendNoInkMessage(player, sub ? SplatcraftSounds.noInkSub : SplatcraftSounds.noInkMain);
             return enoughInk;
         }
+        if (sendMessage)
+            sendNoInkMessage(player, sub ? SplatcraftSounds.noInkSub : SplatcraftSounds.noInkMain);
         return false;
     }
 

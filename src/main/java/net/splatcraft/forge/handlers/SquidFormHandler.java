@@ -195,11 +195,6 @@ public class SquidFormHandler {
         }
     }
 
-    protected static boolean shouldBeInvisible(PlayerEntity playerEntity)
-    {
-        return playerEntity.hasEffect(Effects.INVISIBILITY) || playerEntity.isSpectator();
-    }
-
 
     @SubscribeEvent
     public static void playerVisibility(LivingEvent.LivingVisibilityEvent event)
@@ -226,7 +221,7 @@ public class SquidFormHandler {
     @SubscribeEvent
     public static void playerBreakSpeed(PlayerEvent.BreakSpeed event) {
         if (PlayerInfoCapability.isSquid(event.getPlayer())) {
-            event.setNewSpeed(0);
+            event.setCanceled(true);
         }
     }
 
@@ -234,9 +229,7 @@ public class SquidFormHandler {
     public static void onPlayerAttackEntity(AttackEntityEvent event)
     {
         if (PlayerInfoCapability.isSquid(event.getPlayer()))
-        {
             event.setCanceled(true);
-        }
     }
 
     @SubscribeEvent

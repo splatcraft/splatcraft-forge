@@ -87,7 +87,7 @@ public class RollerItem extends WeaponBaseItem
             PlayerCooldown cooldown = new PlayerCooldown(stack, startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround());
             PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, cooldown);
             //} else
-            if (reduceInk(entity, this, entity.isOnGround() ? settings.swingConsumption : settings.flingConsumption, entity.isOnGround() ? settings.swingInkRecoveryCooldown : settings.flingInkRecoveryCooldown, timeLeft % 4 == 0) && settings.isBrush) {
+            if (settings.isBrush && reduceInk(entity, this, entity.isOnGround() ? settings.swingConsumption : settings.flingConsumption, entity.isOnGround() ? settings.swingInkRecoveryCooldown : settings.flingInkRecoveryCooldown, timeLeft % 4 == 0)) {
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.brushFling, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 int total = settings.rollSize * 2 + 1;
                 for (int i = 0; i < total; i++) {
@@ -193,7 +193,7 @@ public class RollerItem extends WeaponBaseItem
         if (level.isClientSide)
             playRollSound(settings.isBrush);
 
-        if (reduceInk(player, this, airborne ? settings.flingConsumption : settings.swingConsumption, airborne ? settings.flingInkRecoveryCooldown : settings.swingInkRecoveryCooldown, false) && !settings.isBrush) {
+        if (!settings.isBrush && reduceInk(player, this, airborne ? settings.flingConsumption : settings.swingConsumption, airborne ? settings.flingInkRecoveryCooldown : settings.swingInkRecoveryCooldown, true)) {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.rollerFling, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             for (int i = 0; i < settings.rollSize; i++) {
 
