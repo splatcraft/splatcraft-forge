@@ -14,7 +14,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -224,12 +223,6 @@ public class SplatcraftCommonHandler
         SplatcraftPacketHandler.sendToAll(new UpdateClientColorsPacket(event.getPlayer().getDisplayName().getString(), PlayerInfoCapability.get(event.getPlayer()).getColor()));
         SplatcraftPacketHandler.sendToPlayer(new UpdateClientColorsPacket(playerColors), (ServerPlayerEntity) player);
         SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, colors), (ServerPlayerEntity) player);
-    }
-
-    @SubscribeEvent
-    public static void onDataReload(AddReloadListenerEvent event)
-    {
-
     }
 
     @Deprecated

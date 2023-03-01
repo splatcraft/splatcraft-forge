@@ -100,7 +100,7 @@ public class PlayerMovementHandler
         MovementInput input = event.getMovementInput();
         PlayerEntity player = event.getPlayer();
 
-        float speedMod = !input.shiftKeyDown ? InkBlockUtils.canSquidHide(player) ? 35f : 2f : 1f;
+        float speedMod = !input.shiftKeyDown ? PlayerInfoCapability.isSquid(player) && InkBlockUtils.canSquidHide(player) ? 35f : 2f : 1f;
 
         input.forwardImpulse *= speedMod;
         //input = player.movementInput;

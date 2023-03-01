@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.network.play.NetworkPlayerInfo;
-import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderState;
@@ -322,11 +321,6 @@ public class RendererHandler {
             event.setCanceled(true);
         }
          matrixStack.popPose();
-    }
-
-    protected static float getHandHeight(Hand hand, float partial) {
-        return MathHelper.lerp(partial, ObfuscationReflectionHelper.getPrivateValue(FirstPersonRenderer.class, Minecraft.getInstance().getItemInHandRenderer(), hand == Hand.MAIN_HAND ? "field_187470_g" : "field_187472_i"),
-                ObfuscationReflectionHelper.getPrivateValue(FirstPersonRenderer.class, Minecraft.getInstance().getItemInHandRenderer(), hand == Hand.MAIN_HAND ? "field_187469_f" : "field_187471_h"));
     }
 
     @OnlyIn(Dist.CLIENT)
