@@ -22,6 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.math.vector.Vector4f;
@@ -93,32 +94,42 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
 
     }
 
-    private static void renderModel(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, @Nullable BlockState state, IBakedModel modelIn, float red, float green, float blue, int combinedLightIn, int combinedOverlayIn, net.minecraftforge.client.model.data.IModelData modelData, InkedBlockTileEntity te)
-    {
-        for (Direction direction : Direction.values())
-        {
+    private static void renderModel(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, @Nullable BlockState state, IBakedModel modelIn, float red, float green, float blue, int combinedLightIn, int combinedOverlayIn, net.minecraftforge.client.model.data.IModelData modelData, InkedBlockTileEntity te) {
+        for (Direction direction : Direction.values()) {
             random.setSeed(42L);
-            if(canRenderSide(te, direction))
+            if (shouldRenderSide(te, direction))
                 renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, direction, random, modelData), combinedLightIn, combinedOverlayIn, te);
         }
 
         random.setSeed(42L);
-        renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, null, random, modelData), combinedLightIn, combinedOverlayIn, te);
+        if (shouldRenderSide(te, null))
+            renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, null, random, modelData), combinedLightIn, combinedOverlayIn, te);
     }
 
-    private static boolean canRenderSide(InkedBlockTileEntity te, Direction direction)
-    {
-        if(te.getLevel() == null)
-            return true;
+    private static boolean shouldRenderSide(InkedBlockTileEntity te, Direction direction) {
+        if (te.getLevel() == null)
+            return false;
 
-        return !te.getLevel().getBlockState(te.getBlockPos().relative(direction)).isViewBlocking(te.getLevel(), te.getBlockPos().relative(direction));
+        BlockPos tePos = te.getBlockPos();
+
+        Vector3f lookVec = Minecraft.getInstance().gameRenderer.getMainCamera().getLookVector();
+        Vector3d blockVec = Vector3d.atBottomCenterOf(tePos).add(lookVec.x(), 0.0, lookVec.z());
+
+        Vector3d directionVec3d = blockVec.subtract(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition()).normalize();
+        Vector3f directionVec = new Vector3f((float) directionVec3d.x, (float) directionVec3d.y, (float) directionVec3d.z);
+        if (lookVec.dot(directionVec) > 0) {
+            if (direction == null) return true;
+            BlockState relative = te.getLevel().getBlockState(tePos.relative(direction));
+            return !relative.getMaterial().isSolidBlocking() || !relative.isCollisionShapeFullBlock(te.getLevel(), tePos.relative(direction));
+        }
+
+        return false;
     }
 
     private static void renderModelBrightnessColorQuads(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, BlockState state, float red, float green, float blue, List<BakedQuad> quads, int combinedLightIn, int combinedOverlayIn, InkedBlockTileEntity te) {
         IVertexBuilder builder = type.equals(InkBlockUtils.InkType.GLOWING) ? buffer.getBuffer(RenderType.translucent()) : buffer.getBuffer(RenderTypeLookup.getRenderType(state, false));
         BitSet bitset = new BitSet(3);
         float[] afloat = new float[Direction.values().length * 2];
-
 
         float f = MathHelper.clamp(red, 0.0F, 1.0F);
         float f1 = MathHelper.clamp(green, 0.0F, 1.0F);
@@ -227,7 +238,6 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
                 builder.vertex(vertex.pos.x(), vertex.pos.y(), vertex.pos.z(), vertex.rgba.x(), vertex.rgba.y(), vertex.rgba.z(), vertex.rgba.w(), texU, texV, combinedOverlay, vertex.lightmapUV, vertex.normal.x(), vertex.normal.y(), vertex.normal.z());
             }
         }
-
     }
 
     private static final class VertexData
@@ -254,6 +264,4 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
         //blockRenderer.renderBlock(SplatcraftBlocks.sardiniumBlock.defaultBlockState(), matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
         //blockRenderer.renderBlock(tileEntityIn.getSavedState(), matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
-
-
 }
