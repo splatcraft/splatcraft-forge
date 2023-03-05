@@ -257,7 +257,7 @@
   "gamerule.splatcraft.keepMatchItems": "Conserver les objets de match après la mort",
   "gamerule.splatcraft.keepMatchItems.description": "Vous permet de conserver certains objets importants pour les matchs Splatcraft, tels que les armes principales, les réservoirs d'encre et certains produits cosmétiques, après la mort. Ces éléments peuvent être spécifiés avec le tag : splatcraft: match_items",
   "gamerule.splatcraft.waterDamage": "Dégats de l'eau",
-  "gamerule.splatcraft.inkRegeneration": "Régénération si plongé dans l'encre",
+  "gamerule.splatcraft.inkHealing": "Régénération si plongé dans l'encre",
   "gamerule.splatcraft.dropCrateLoot": "Butin de caisse engloutie",
   "gamerule.splatcraft.requireInkTank": "Nécéssité d'encre lors de l'utilisation d'armes Splatcraft",
   "gamerule.splatcraft.universalInk": "Encre unniverselle",

@@ -258,7 +258,7 @@
   "gamerule.splatcraft.keepMatchItems": "Conservar armas al morir",
   "gamerule.splatcraft.keepMatchItems.description": "Te permite conserver ciertos items inportantes de Splatcraft, como armas, tanques de tinta y cosmeticos, al morir. Estos items son determinados con la etiqueta splatcraft:match_items",
   "gamerule.splatcraft.waterDamage": "Daño por agua",
-  "gamerule.splatcraft.inkRegeneration": "Regenerar vida al sumergir en tinta",
+  "gamerule.splatcraft.inkHealing": "Regenerar vida al sumergir en tinta",
   "gamerule.splatcraft.dropCrateLoot": "Abrir cajas al romperlas",
   "gamerule.splatcraft.requireInkTank": "Requerir tinta al usar armas",
   "gamerule.splatcraft.universalInk": "Tinta universal",
