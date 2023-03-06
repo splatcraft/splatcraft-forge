@@ -180,9 +180,17 @@ public class SplatcraftItems {
             .setMinInkConsumption(2.8f).setInkConsumption(7).setInkRecoveryCooldown(7)
             .setBaseDamage(16) // bamboo without MPU :trollface:
             .setChargerMobility(0.8f)
-            .setFastMidAirCharge(true)
+            .setFastMidAirCharge(false)
             .setChargerPiercesAt(1.1f));
     public static final ChargerItem bamboozler14mk2 = new ChargerItem(bamboozler14mk1.settings.setName("bamboozler_14_mk2"));
+    public static final ChargerItem classicSquiffer = new ChargerItem(new WeaponSettings("classic_squiffer")
+            .setProjectileSize(0.7f).setProjectileLifespan(12).setProjectileSpeed(1.85f)
+            .setStartupTicks(15).setDischargeTicks(25)
+            .setMinInkConsumption(1.87f).setInkConsumption(10.5f).setInkRecoveryCooldown(7)
+            .setBaseDamage(28f)
+            .setChargerMobility(0.3f)
+            .setFastMidAirCharge(true)
+            .setChargerPiercesAt(1.0f));
 
     //Dualies
     public static final DualieItem splatDualie = new DualieItem(new WeaponSettings("splat_dualies")
