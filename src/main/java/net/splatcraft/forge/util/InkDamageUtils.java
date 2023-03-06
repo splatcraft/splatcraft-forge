@@ -45,16 +45,20 @@ public class InkDamageUtils {
         return SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_FRIENDLY_FIRE) || !ColorUtils.colorEquals(level, targetColor, sourceColor);
     }
 
-    public static boolean doDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, String name, boolean applyHurtCooldown) {
+    public static boolean doDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, String name, boolean applyHurtCooldown)
+    {
         InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID + ":" + name, source, source, sourceItem);
         if (damage <= 0 || (target.isInvulnerableTo(damageSource) && !(target instanceof SquidBumperEntity)))
             return false;
 
         float mobDmgPctg = SplatcraftGameRules.getIntRuleValue(level, SplatcraftGameRules.INK_MOB_DAMAGE_PERCENTAGE) * 0.01f;
-        boolean doDamage = target instanceof PlayerEntity || damageMobs || mobDmgPctg > 0;
+
         int targetColor = ColorUtils.getEntityColor(target);
+        boolean doDamage = target instanceof PlayerEntity || damageMobs || mobDmgPctg > 0;
+        boolean canInk = canDamageColor(level, color, targetColor);
+
         if (targetColor > -1) {
-            doDamage = canDamageColor(level, color, targetColor);
+            doDamage = canInk;
         }
 
         if (target instanceof IColoredEntity) {
@@ -68,20 +72,19 @@ public class InkDamageUtils {
 
         if (!(target instanceof SquidBumperEntity) && doDamage) {
             doDamage = target.hurt(damageSource, damage * (target instanceof PlayerEntity || target instanceof IColoredEntity || damageMobs ? 1 : mobDmgPctg));
-
-            if (doDamage && !target.isInWater()) {
-                if (InkOverlayCapability.hasCapability(target)) {
-                    IInkOverlayInfo info = InkOverlayCapability.get(target);
-
-                    if (info.getAmount() < target.getMaxHealth() * 1.5)
-                        info.addAmount(damage * (target instanceof IColoredEntity || damageMobs ? 1 : Math.max(0.5f, mobDmgPctg)));
-                    info.setColor(color);
-                    if (!level.isClientSide)
-                        SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
-                }
-            }
         }
 
+        if ((targetColor <= -1 || canInk) && !target.isInWater()) {
+            if (InkOverlayCapability.hasCapability(target)) {
+                IInkOverlayInfo info = InkOverlayCapability.get(target);
+
+                if (info.getAmount() < target.getMaxHealth() * 1.5)
+                    info.addAmount(damage * (target instanceof IColoredEntity || damageMobs ? 1 : Math.max(0.5f, mobDmgPctg)));
+                info.setColor(color);
+                if (!level.isClientSide)
+                    SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
+            }
+        }
 
         if (!applyHurtCooldown && !SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_DAMAGE_COOLDOWN))
             target.hurtTime = 1;
