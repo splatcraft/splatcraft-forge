@@ -10,6 +10,8 @@ public class InkOverlayInfo implements IInkOverlayInfo
     private int color = ColorUtils.DEFAULT;
     private float amount = 0;
 
+    private int woolColor = -1;
+
     private double squidRot;
     private double squidRotO;
     private Vector3d prevPos = null;
@@ -49,6 +51,16 @@ public class InkOverlayInfo implements IInkOverlayInfo
     }
 
     @Override
+    public int getWoolColor() {
+        return woolColor;
+    }
+
+    @Override
+    public void setWoolColor(int v) {
+        this.woolColor = v;
+    }
+
+    @Override
     public double getSquidRot() {
         return squidRot;
     }
@@ -82,6 +94,10 @@ public class InkOverlayInfo implements IInkOverlayInfo
     {
         nbt.putInt("Color", getColor());
         nbt.putFloat("Amount", getAmount());
+
+        if(getWoolColor() != -1)
+            nbt.putInt("WoolColor", getWoolColor());
+
         return nbt;
     }
 
@@ -90,6 +106,9 @@ public class InkOverlayInfo implements IInkOverlayInfo
     {
         setColor(ColorUtils.getColorFromNbt(nbt));
         setAmount(nbt.getFloat("Amount"));
+
+        if(nbt.contains("WoolColor"))
+            setWoolColor(nbt.getInt("WoolColor"));
     }
 
     @Override

@@ -67,6 +67,14 @@ public class InkDamageUtils {
         } else if (target instanceof SheepEntity) {
             if (!((SheepEntity) target).isSheared()) {
                 doDamage = false;
+                canInk = false;
+                targetColor = 1;
+
+                IInkOverlayInfo info = InkOverlayCapability.get(target);
+
+                info.setWoolColor(color);
+                if (!level.isClientSide)
+                    SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
             }
         }
 

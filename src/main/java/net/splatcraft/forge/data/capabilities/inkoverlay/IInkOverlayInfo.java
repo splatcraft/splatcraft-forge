@@ -18,6 +18,10 @@ public interface IInkOverlayInfo
 
     void addAmount(float v);
 
+    //Sheep-exclusive values
+    int getWoolColor();
+    void setWoolColor(int v);
+
     //storing this here, doesn't feel necessary to make a new cap just for it
     @OnlyIn(Dist.CLIENT)
     double getSquidRot();

@@ -4,6 +4,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -11,9 +13,11 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -27,6 +31,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
@@ -40,7 +45,9 @@ import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
 import net.splatcraft.forge.network.s2c.UpdateIntGamerulesPacket;
 import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
+import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.CommonUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
@@ -48,6 +55,7 @@ import net.splatcraft.forge.util.PlayerCooldown;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber
 public class SplatcraftCommonHandler
@@ -144,8 +152,23 @@ public class SplatcraftCommonHandler
     }
 
     @SubscribeEvent
-    public static void onPlayerDeathDrops(LivingDropsEvent event)
+    public static void onLivingDeathDrops(LivingDropsEvent event)
     {
+        //handle inked wool drops
+        if(event.getEntityLiving() instanceof SheepEntity && InkOverlayCapability.hasCapability(event.getEntityLiving()))
+        {
+            IInkOverlayInfo info = InkOverlayCapability.get(event.getEntityLiving());
+
+            if(info.getWoolColor() >= -1)
+            for(ItemEntity itemEntity : event.getDrops())
+            {
+                ItemStack stack = itemEntity.getItem();
+                if(stack.getItem().is(ItemTags.WOOL))
+                    itemEntity.setItem(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool, stack.getCount()), info.getWoolColor()));
+            }
+        }
+
+        //Handle keepMatchItems
         if (event.getEntityLiving() instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
