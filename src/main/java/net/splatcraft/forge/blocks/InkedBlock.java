@@ -315,7 +315,7 @@ public class InkedBlock extends Block implements IColoredBlock
                 for(Direction dir : Direction.values())
                     if(level.getBlockEntity(pos.relative(dir)) instanceof InkedBlockTileEntity)
                         i++;
-                decay = i > 0 && rand.nextInt(i) == 0;
+                decay = i <= 0 || rand.nextInt(i*2) == 0;
             }
 
             if(decay)
