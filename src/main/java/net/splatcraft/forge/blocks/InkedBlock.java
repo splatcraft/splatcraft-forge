@@ -306,7 +306,21 @@ public class InkedBlock extends Block implements IColoredBlock
     public void randomTick(BlockState state, ServerWorld level, BlockPos pos, Random rand)
     {
         if (level.getGameRules().getBoolean(SplatcraftGameRules.INK_DECAY) && level.getBlockEntity(pos) instanceof InkedBlockTileEntity)
-            level.sendBlockUpdated(pos, level.getBlockState(pos), clearInk(level, pos), 3);
+        {
+            boolean decay = level.isRainingAt(pos);
+
+            if(!decay)
+            {
+                int i = 0;
+                for(Direction dir : Direction.values())
+                    if(level.getBlockEntity(pos.relative(dir)) instanceof InkedBlockTileEntity)
+                        i++;
+                decay = i > 0 && rand.nextInt(i) == 0;
+            }
+
+            if(decay)
+                level.sendBlockUpdated(pos, level.getBlockState(pos), clearInk(level, pos), 3);
+        }
     }
 
     @Override
