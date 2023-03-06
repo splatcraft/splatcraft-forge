@@ -16,7 +16,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.ColorUtils;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,8 +30,6 @@ public class SheepMixin
 	@Redirect(method = "onSheared", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"), remap = false)
 	public <E> boolean getWool(List instance, E e)
 	{
-		PlayerInfo
-
 		if(InkOverlayCapability.hasCapability((SheepEntity)(Object)this))
 		{
 			int color = InkOverlayCapability.get((SheepEntity)(Object)this).getWoolColor();
