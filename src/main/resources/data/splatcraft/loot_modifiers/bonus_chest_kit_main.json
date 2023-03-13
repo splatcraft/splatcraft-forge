@@ -1,0 +1,9 @@
+{
+  "type": "splatcraft:chest_loot",
+  "conditions": [],
+  "item": "splatcraft:splattershot_jr",
+  "countMin": 1,
+  "countMax": 1,
+  "chance": 1,
+  "parent": "minecraft:chests/spawn_bonus_chest"
+}
