@@ -25,7 +25,7 @@ public class SplatcraftCommands
         ClearInkCommand.register(dispatcher);
         ReplaceColorCommand.register(dispatcher);
         ColorScoresCommand.register(dispatcher);
-        SuperJumpCommand.register(dispatcher);
+        //SuperJumpCommand.register(dispatcher);
     }
 
     public static void registerArguments()
