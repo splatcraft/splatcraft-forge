@@ -33,7 +33,7 @@ public class BurstBombEntity extends AbstractSubWeaponEntity
 
         Entity target = result.getEntity();
         if (target instanceof LivingEntity)
-            InkDamageUtils.doDamage(level, (LivingEntity) target, DIRECT_DAMAGE, getColor(), getOwner(), sourceWeapon, damageMobs, SPLASH_DAMAGE_TYPE, false);
+            InkDamageUtils.doDamage(level, (LivingEntity) target, DIRECT_DAMAGE, getColor(), getOwner(), this, sourceWeapon, damageMobs, SPLASH_DAMAGE_TYPE, false);
         InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), 2, DAMAGE, DIRECT_DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
         level.broadcastEntityEvent(this, (byte) 1);
         level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);

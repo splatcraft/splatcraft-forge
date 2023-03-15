@@ -30,11 +30,16 @@ public class InkDamageUtils {
 
 
     public static boolean doSplatDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs) {
-        return doDamage(level, target, damage, color, source, sourceItem, damageMobs, "splat", false);
+        return doDamage(level, target, damage, color, source, source, sourceItem, damageMobs, "splat", false);
     }
 
-    public static boolean doRollDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs) {
-        return doDamage(level, target, damage, color, source, sourceItem, damageMobs, "roll", true);
+    public static boolean doRollDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs)
+    {
+        return doRollDamage(level, target, damage, color, source, source, sourceItem, damageMobs);
+    }
+
+    public static boolean doRollDamage(World level, LivingEntity target, float damage, int color, Entity source, Entity directSource, ItemStack sourceItem, boolean damageMobs) {
+        return doDamage(level, target, damage, color, directSource, source, sourceItem, damageMobs, "roll", true);
     }
 
     public static boolean canDamage(Entity target, Entity source) {
@@ -45,9 +50,9 @@ public class InkDamageUtils {
         return SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_FRIENDLY_FIRE) || !ColorUtils.colorEquals(level, targetColor, sourceColor);
     }
 
-    public static boolean doDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, String name, boolean applyHurtCooldown)
+    public static boolean doDamage(World level, LivingEntity target, float damage, int color, Entity source, Entity directSource, ItemStack sourceItem, boolean damageMobs, String name, boolean applyHurtCooldown)
     {
-        InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID + ":" + name, source, source, sourceItem);
+        InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID + ":" + name, directSource, source, sourceItem);
         if (damage <= 0 || (target.isInvulnerableTo(damageSource) && !(target instanceof SquidBumperEntity)))
             return false;
 

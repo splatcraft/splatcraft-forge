@@ -11,6 +11,7 @@ import net.splatcraft.forge.client.model.subs.BurstBombModel;
 import net.splatcraft.forge.client.model.subs.CurlingBombModel;
 import net.splatcraft.forge.entities.subs.BurstBombEntity;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
+import net.splatcraft.forge.entities.subs.SplatBombEntity;
 
 public class CurlingBombRenderer extends SubWeaponRenderer<CurlingBombEntity, CurlingBombModel>
 {
@@ -33,12 +34,27 @@ public class CurlingBombRenderer extends SubWeaponRenderer<CurlingBombEntity, Cu
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 180.0F));
             //matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot)+90F));
             matrixStackIn.scale(1, -1, 1);
+
+            float f = entityIn.getFlashIntensity(partialTicks);
+            float f1 = 1.0F + MathHelper.sin(f * 100.0F) * f * 0.01F;
+            f = MathHelper.clamp(f, 0.0F, 1.0F);
+            f = f * f;
+            f = f * f;
+            float f2 = (1.0F + f * 0.4F) * f1;
+            float f3 = (1.0F + f * 0.1F) / f1;
+            matrixStackIn.scale(f2, f3, f2);
         }
 
 
         matrixStackIn.translate(0, -1.5, 0);
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         matrixStackIn.popPose();
+    }
+
+    @Override
+    protected float getOverlayProgress(CurlingBombEntity livingEntityIn, float partialTicks) {
+        float f = livingEntityIn.getFlashIntensity(partialTicks);
+        return (int)(f * 10.0F) % 2 == 0 ? 0.0F : MathHelper.clamp(f, 0.5F, 1.0F);
     }
 
     @Override

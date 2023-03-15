@@ -83,7 +83,7 @@ public class InkBlockUtils
 
     public static BlockState getInkState(InkType inkType, World level, BlockPos pos)
     {
-        return inkType.block.defaultBlockState();
+        return (inkType == null ? InkType.NORMAL : inkType).block.defaultBlockState();
 
     }
 

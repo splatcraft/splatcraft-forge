@@ -6,6 +6,7 @@ package net.splatcraft.forge.client.model.subs;// Made with Blockbench 4.6.4
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.math.MathHelper;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
 
 public class CurlingBombModel extends AbstractSubWeaponModel<CurlingBombEntity> {
@@ -101,7 +102,7 @@ public class CurlingBombModel extends AbstractSubWeaponModel<CurlingBombEntity> 
 		handle.setPos(1.5346F, -2.6775F, 0.0F);
 		top.addChild(handle);
 		handle.texOffs(0, 19).addBox(-3.5346F, 0.2775F, -1.0F, 1.0F, 2.0F, 2.0F, 0.0F, false);
-		handle.texOffs(21, 13).addBox(-3.5346F, -0.6225F, -1.0F, 5.0F, 1.0F, 2.0F, 0.0F, false);
+		handle.texOffs(21, 13).addBox(-3.5346F, -0.6225F, -1.0F, 5.0F, 1.0F, 2.0F, 0.001F, false);
 
 		cube_r4 = new ModelRenderer(this);
 		cube_r4.setPos(0.0F, 0.0F, 0.0F);
@@ -131,6 +132,16 @@ public class CurlingBombModel extends AbstractSubWeaponModel<CurlingBombEntity> 
 	@Override
 	public void setupAnim(CurlingBombEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
 		//previously the render function, render code was moved to a method below
+	}
+
+	@Override
+	public void prepareMobModel(CurlingBombEntity  entityIn, float limbSwing, float limbSwingAmount, float partialTick)
+	{
+		super.prepareMobModel(entityIn, limbSwing, limbSwingAmount, partialTick);
+
+		blades.yRot = MathHelper.lerp(partialTick, entityIn.prevBladeRot, entityIn.bladeRot);
+
+		top.y = 20 - MathHelper.clamp(30-entityIn.fuseTime + partialTick, 0, 1) * 3f;
 	}
 
 	@Override
