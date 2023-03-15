@@ -6,8 +6,13 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.item.Item;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ReuseableStream;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
@@ -21,12 +26,11 @@ import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.InkExplosion;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.stream.Stream;
+
 /* TODO
  * Bomb Cooking
  * Figure out how to animate the LEDs on top
- * Lower position when thrown
- * Use player's yRot when thrown straight up/down
- * If thrown straight up/down from a dispenser, either pick a random direction or bias towards north
  */
 public class CurlingBombEntity extends AbstractSubWeaponEntity
 {
@@ -45,6 +49,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 
 	public CurlingBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, World level) {
 		super(type, level);
+		maxUpStep = .7f;
 	}
 
 	@Override
@@ -58,7 +63,12 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 		super.tick();
 
 		for(int i = 0; i <= 2; i++)
-			InkBlockUtils.inkBlock(level, blockPosition().below(i), getColor(), CONTACT_DAMAGE, inkType);
+			if(!InkBlockUtils.isUninkable(level, blockPosition().below(i)))
+			{
+				InkBlockUtils.inkBlock(level, blockPosition().below(i), getColor(), CONTACT_DAMAGE, inkType);
+				break;
+			}
+
 
 		if (!this.onGround || getHorizontalDistanceSqr(this.getDeltaMovement()) > (double)1.0E-5F)
 		{
@@ -93,7 +103,11 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 			level.broadcastEntityEvent(this, (byte) 2);
 
 		this.move(MoverType.SELF, this.getDeltaMovement().multiply(0,1,0));
-		setPos(getX()+getDeltaMovement().x(), getY(), getZ()+getDeltaMovement().z);
+
+		Vector3d vec = getDeltaMovement().multiply(1, 0, 1);
+		vec = position().add(collide(vec));
+
+		setPos(vec.x, vec.y, vec.z);
 	}
 
 	@Override
@@ -112,7 +126,8 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	@Override
 	protected void onHitEntity(EntityRayTraceResult result)
 	{
-		super.onHitEntity(result);
+		if(result.getEntity() instanceof LivingEntity)
+			InkDamageUtils.doRollDamage(level, (LivingEntity) result.getEntity(), CONTACT_DAMAGE, getColor(), getOwner(), this, sourceWeapon, false);
 
 		double velocityX = this.getDeltaMovement().x;
 		double velocityY = this.getDeltaMovement().y;
@@ -127,14 +142,15 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 			this.setDeltaMovement(velocityX, -velocityY * .5, velocityZ);
 		if(absVelocityZ >= absVelocityY && absVelocityZ >= absVelocityX)
 			this.setDeltaMovement(velocityX, velocityY, -velocityZ);
-
-		if(result.getEntity() instanceof LivingEntity)
-			InkDamageUtils.doRollDamage(level, (LivingEntity) result.getEntity(), CONTACT_DAMAGE, getColor(), getOwner(), this, sourceWeapon, false);
 	}
 
 	@Override
 	protected void onBlockHit(BlockRayTraceResult result)
 	{
+
+		if(canStepUp(getDeltaMovement()))
+			return;
+
 		double velocityX = this.getDeltaMovement().x;
 		double velocityY = this.getDeltaMovement().y;
 		double velocityZ = this.getDeltaMovement().z;
@@ -146,6 +162,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 		if(Math.abs(velocityY) >= 0.05 && (blockFace == Direction.DOWN))
 			this.setDeltaMovement(velocityX, -velocityY * .5, velocityZ);
 		if(blockFace == Direction.NORTH || blockFace == Direction.SOUTH) this.setDeltaMovement(velocityX, velocityY, -velocityZ);
+
 	}
 
 	@Override
@@ -156,5 +173,67 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	public float getFlashIntensity(float partialTicks)
 	{
 		return 1f-Math.min(FUSE_START, MathHelper.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float)FUSE_START;
+	}
+
+	private boolean canStepUp(Vector3d p_213306_1_) {
+		AxisAlignedBB axisalignedbb = this.getBoundingBox();
+		ISelectionContext iselectioncontext = ISelectionContext.of(this);
+		VoxelShape voxelshape = this.level.getWorldBorder().getCollisionShape();
+		Stream<VoxelShape> stream = VoxelShapes.joinIsNotEmpty(voxelshape, VoxelShapes.create(axisalignedbb.deflate(1.0E-7D)), IBooleanFunction.AND) ? Stream.empty() : Stream.of(voxelshape);
+		Stream<VoxelShape> stream1 = this.level.getEntityCollisions(this, axisalignedbb.expandTowards(p_213306_1_), (p_233561_0_) -> true);
+		ReuseableStream<VoxelShape> reuseablestream = new ReuseableStream<>(Stream.concat(stream1, stream));
+		Vector3d vector3d = p_213306_1_.lengthSqr() == 0.0D ? p_213306_1_ : collideBoundingBoxHeuristically(this, p_213306_1_, axisalignedbb, this.level, iselectioncontext, reuseablestream);
+		boolean flag = p_213306_1_.x != vector3d.x;
+		boolean flag1 = p_213306_1_.y != vector3d.y;
+		boolean flag2 = p_213306_1_.z != vector3d.z;
+		boolean flag3 = this.onGround || flag1 && p_213306_1_.y < 0.0D;
+		if (this.maxUpStep > 0.0F && flag3 && (flag || flag2)) {
+			Vector3d vector3d1 = collideBoundingBoxHeuristically(this, new Vector3d(p_213306_1_.x, (double)this.maxUpStep, p_213306_1_.z), axisalignedbb, this.level, iselectioncontext, reuseablestream);
+			Vector3d vector3d2 = collideBoundingBoxHeuristically(this, new Vector3d(0.0D, (double)this.maxUpStep, 0.0D), axisalignedbb.expandTowards(p_213306_1_.x, 0.0D, p_213306_1_.z), this.level, iselectioncontext, reuseablestream);
+			if (vector3d2.y < (double)this.maxUpStep) {
+				Vector3d vector3d3 = collideBoundingBoxHeuristically(this, new Vector3d(p_213306_1_.x, 0.0D, p_213306_1_.z), axisalignedbb.move(vector3d2), this.level, iselectioncontext, reuseablestream).add(vector3d2);
+				if (getHorizontalDistanceSqr(vector3d3) > getHorizontalDistanceSqr(vector3d1)) {
+					vector3d1 = vector3d3;
+				}
+			}
+
+			if (getHorizontalDistanceSqr(vector3d1) > getHorizontalDistanceSqr(vector3d)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private Vector3d collide(Vector3d p_213306_1_) {
+		AxisAlignedBB axisalignedbb = this.getBoundingBox();
+		ISelectionContext iselectioncontext = ISelectionContext.of(this);
+		VoxelShape voxelshape = this.level.getWorldBorder().getCollisionShape();
+		Stream<VoxelShape> stream = VoxelShapes.joinIsNotEmpty(voxelshape, VoxelShapes.create(axisalignedbb.deflate(1.0E-7D)), IBooleanFunction.AND) ? Stream.empty() : Stream.of(voxelshape);
+		Stream<VoxelShape> stream1 = this.level.getEntityCollisions(this, axisalignedbb.expandTowards(p_213306_1_), (p_233561_0_) -> {
+			return true;
+		});
+		ReuseableStream<VoxelShape> reuseablestream = new ReuseableStream<>(Stream.concat(stream1, stream));
+		Vector3d vector3d = p_213306_1_.lengthSqr() == 0.0D ? p_213306_1_ : collideBoundingBoxHeuristically(this, p_213306_1_, axisalignedbb, this.level, iselectioncontext, reuseablestream);
+		boolean flag = p_213306_1_.x != vector3d.x;
+		boolean flag1 = p_213306_1_.y != vector3d.y;
+		boolean flag2 = p_213306_1_.z != vector3d.z;
+		boolean flag3 = this.onGround || flag1 && p_213306_1_.y < 0.0D;
+		if (this.maxUpStep > 0.0F && flag3 && (flag || flag2)) {
+			Vector3d vector3d1 = collideBoundingBoxHeuristically(this, new Vector3d(p_213306_1_.x, (double)this.maxUpStep, p_213306_1_.z), axisalignedbb, this.level, iselectioncontext, reuseablestream);
+			Vector3d vector3d2 = collideBoundingBoxHeuristically(this, new Vector3d(0.0D, (double)this.maxUpStep, 0.0D), axisalignedbb.expandTowards(p_213306_1_.x, 0.0D, p_213306_1_.z), this.level, iselectioncontext, reuseablestream);
+			if (vector3d2.y < (double)this.maxUpStep) {
+				Vector3d vector3d3 = collideBoundingBoxHeuristically(this, new Vector3d(p_213306_1_.x, 0.0D, p_213306_1_.z), axisalignedbb.move(vector3d2), this.level, iselectioncontext, reuseablestream).add(vector3d2);
+				if (getHorizontalDistanceSqr(vector3d3) > getHorizontalDistanceSqr(vector3d1)) {
+					vector3d1 = vector3d3;
+				}
+			}
+
+			if (getHorizontalDistanceSqr(vector3d1) > getHorizontalDistanceSqr(vector3d)) {
+				return vector3d1.add(collideBoundingBoxHeuristically(this, new Vector3d(0.0D, -vector3d1.y + p_213306_1_.y, 0.0D), axisalignedbb.move(vector3d1), this.level, iselectioncontext, reuseablestream));
+			}
+		}
+
+		return vector3d;
 	}
 }
