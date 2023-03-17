@@ -17,7 +17,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.EndGatewayTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -44,13 +43,12 @@ import java.util.UUID;
 public abstract class AbstractSubWeaponEntity extends Entity implements IColoredEntity
 {
     protected static final String SPLASH_DAMAGE_TYPE = "splat";
-    protected static final DamageSource SPLASH_DAMAGE_SOURCE = new DamageSource(SPLASH_DAMAGE_TYPE);
 
     private static final DataParameter<Integer> COLOR = EntityDataManager.defineId(AbstractSubWeaponEntity.class, DataSerializers.INT);
     private static final DataParameter<ItemStack> DATA_ITEM_STACK = EntityDataManager.defineId(AbstractSubWeaponEntity.class, DataSerializers.ITEM_STACK);
 
     public boolean isItem = false;
-    public boolean damageMobs = true;
+    public boolean bypassMobDamageMultiplier = false;
     public InkBlockUtils.InkType inkType;
     public ItemStack sourceWeapon = ItemStack.EMPTY;
 
@@ -155,11 +153,8 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
     public void handleEntityEvent(byte id) {
         super.handleEntityEvent(id);
 
-        switch (id)
-        {
-            case -1:
-                level.addParticle(new InkExplosionParticleData(getColor(), .5f), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-                break;
+        if (id == -1) {
+            level.addParticle(new InkExplosionParticleData(getColor(), .5f), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
         }
     }
 
@@ -199,7 +194,7 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
     public void addAdditionalSaveData(CompoundNBT nbt)
     {
         nbt.putInt("Color", getColor());
-        nbt.putBoolean("DamageMobs", damageMobs);
+        nbt.putBoolean("DypassMobDamageMultiplier", bypassMobDamageMultiplier);
         nbt.putString("InkType", inkType.getSerializedName());
         nbt.put("SourceWeapon", sourceWeapon.save(new CompoundNBT()));
 
@@ -220,7 +215,7 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
     {
         if(nbt.contains("Color"))
             setColor(ColorUtils.getColorFromNbt(nbt));
-        damageMobs = nbt.getBoolean("DamageMobs");
+        bypassMobDamageMultiplier = nbt.getBoolean("DypassMobDamageMultiplier");
         inkType = InkBlockUtils.InkType.values.getOrDefault(new ResourceLocation(nbt.getString("InkType")), InkBlockUtils.InkType.NORMAL);
         sourceWeapon = ItemStack.of(nbt.getCompound("SourceWeapon"));
 
