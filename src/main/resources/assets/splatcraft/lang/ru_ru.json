@@ -417,8 +417,8 @@
   "stat.splatcraft.blocks_inked": "Блоков закрашено",
   "stat.splatcraft.weapons_crafted": "Оружий изготовлено",
   "stat.splatcraft.inkwells_crafted": "Чернильниц изготовлено",
-  "stat.splatcraft.subs_used": "Запасных оружий изготовлено",
-  "stat.splatcraft.specials_used": "Особых оружийи изготовлено",
+  "stat.splatcraft.subs_used": "Запасных оружий использовано",
+  "stat.splatcraft.specials_used": "Особых оружий использовано",
 
   "key.categories.splatcraft": "Splatcraft",
   "key.squidForm": "Краскоплыв",
