@@ -115,18 +115,19 @@ public class SquidFormHandler {
 
             if (InkBlockUtils.canSquidHide(player)) {
                 player.fallDistance = 0;
-                if (player.level.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN) && player.tickCount % 5 == 0 && !player.hasEffect(Effects.POISON) && !player.hasEffect(Effects.WITHER)) {
+                if (player.getHealth() < player.getMaxHealth() && player.level.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN) && player.tickCount % 5 == 0 && !player.hasEffect(Effects.POISON) && !player.hasEffect(Effects.WITHER)) {
                     player.heal(0.5f);
+                    if (player.level.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN_CONSUMES_HUNGER))
+                        player.causeFoodExhaustion(0.25f);
                     if (InkOverlayCapability.hasCapability(player)) {
                         InkOverlayCapability.get(player).addAmount(-0.49f);
                     }
                 }
 
                 boolean crouch = player.isCrouching();
-                if (player.level.getRandom().nextFloat() <= (crouch ? 0.4f : 0.6f) && (Math.abs(player.getX() - player.xo) > 0.14 || Math.abs(player.getY() - player.yo) > 0.07 || Math.abs(player.getZ() - player.zo) > 0.14)) {
-                    ColorUtils.addInkSplashParticle(player.level, player, crouch ? 0.825f : 1.1f);
+                if (player.level.getRandom().nextFloat() <= (crouch ? 0.3f : 0.6f) && (Math.abs(player.getX() - player.xo) > 0.14 || Math.abs(player.getY() - player.yo) > 0.07 || Math.abs(player.getZ() - player.zo) > 0.14)) {
+                    ColorUtils.addInkSplashParticle(player.level, player, crouch ? 0.8f : 1.1f);
                 }
-
             }
 
             BlockPos posBelow = InkBlockUtils.getBlockStandingOnPos(player);
@@ -160,23 +161,6 @@ public class SquidFormHandler {
         if (InkOverlayCapability.hasCapability(player))
         {
             InkOverlayCapability.get(player).addAmount(-0.01f);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onPlayerJump(LivingEvent.LivingJumpEvent event)
-    {
-        if (!(event.getEntityLiving() instanceof PlayerEntity) || !PlayerInfoCapability.hasCapability(event.getEntityLiving()))
-        {
-            return;
-        }
-
-        PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-
-        if (PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidSwim(player))
-        {
-            player.causeFoodExhaustion(1F);
-            player.setDeltaMovement(player.getDeltaMovement().x() * 0.9, player.getDeltaMovement().y() * 1.1, player.getDeltaMovement().z() * 0.9);
         }
     }
 

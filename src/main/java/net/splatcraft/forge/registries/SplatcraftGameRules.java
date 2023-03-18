@@ -27,6 +27,7 @@ public class SplatcraftGameRules
     public static GameRules.RuleKey<GameRules.IntegerValue> INK_MOB_DAMAGE_PERCENTAGE;
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_FRIENDLY_FIRE;
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_REGEN;
+    public static GameRules.RuleKey<GameRules.BooleanValue> INK_REGEN_CONSUMES_HUNGER;
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_DAMAGE_COOLDOWN;
     public static GameRules.RuleKey<GameRules.BooleanValue> INFINITE_INK_IN_CREATIVE;
 
@@ -41,8 +42,9 @@ public class SplatcraftGameRules
         REQUIRE_INK_TANK = createBooleanRule("requireInkTank", Category.PLAYER, true);
         INK_FRIENDLY_FIRE = createBooleanRule("inkFriendlyFire", Category.PLAYER, false);
         INK_REGEN = createBooleanRule("inkHealing", Category.PLAYER, true);
+        INK_REGEN_CONSUMES_HUNGER = createBooleanRule("inkHealingConsumesHunger", Category.PLAYER, true);
         INK_DAMAGE_COOLDOWN = createBooleanRule("inkDamageCooldown", Category.PLAYER, false);
-        INK_MOB_DAMAGE_PERCENTAGE = createIntRule("inkMobDamagePercentage", Category.MOBS, 0);
+        INK_MOB_DAMAGE_PERCENTAGE = createIntRule("inkMobDamagePercentage", Category.MOBS, 70);
         INFINITE_INK_IN_CREATIVE = createBooleanRule("infiniteInkInCreative", Category.PLAYER, true);
     }
 

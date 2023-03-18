@@ -369,6 +369,7 @@
   "gamerule.splatcraft.keepMatchItems.description": "Lets you keep certain items important to Splatcraft matches, such as main weapons, ink tanks and some cosmetics, after dying. These items can be specified with the splatcraft:match_items tag",
   "gamerule.splatcraft.waterDamage": "Deal water damage",
   "gamerule.splatcraft.inkHealing": "Health regeneration when submerged in ink",
+  "gamerule.splatcraft.inkHealingConsumesHunger": "Health regeneration when submerged consumes hunger",
   "gamerule.splatcraft.dropCrateLoot": "Drop Sunken Crate loot when mined",
   "gamerule.splatcraft.requireInkTank": "Require ink when using Splatcraft Weapons",
   "gamerule.splatcraft.universalInk": "Universal Ink",
