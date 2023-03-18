@@ -1,9 +1,6 @@
 package net.splatcraft.forge.items.remotes;
 
-import com.mojang.brigadier.StringReader;
 import net.minecraft.block.BlockState;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -23,7 +20,9 @@ import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class TurfScannerItem extends RemoteItem
 {
@@ -201,7 +200,7 @@ public class TurfScannerItem extends RemoteItem
         {
             SendScanTurfResultsPacket packet = new SendScanTurfResultsPacket(colors, colorScores);
             if (targets == ALL_TARGETS)
-                SplatcraftPacketHandler.sendToDim(packet, outputWorld);
+                SplatcraftPacketHandler.sendToDim(packet, outputWorld.dimension());
             else for(ServerPlayerEntity target : targets)
                 SplatcraftPacketHandler.sendToPlayer(packet, target);
 

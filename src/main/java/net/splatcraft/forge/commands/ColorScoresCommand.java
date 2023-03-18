@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import java.util.Collection;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -15,13 +14,13 @@ import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
 
-public class ColorScoresCommand
-{
+import java.util.Collection;
+
+public class ColorScoresCommand {
     private static final SimpleCommandExceptionType CRITERION_ALREADY_EXISTS_EXCEPTION = new SimpleCommandExceptionType(new TranslationTextComponent("commands.colorscores.add.duplicate"));
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher)
-    {
-        dispatcher.register(Commands.literal("colorscores")
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+        dispatcher.register(Commands.literal("colorscores").requires(commandSource -> commandSource.hasPermission(2))
                 .then(Commands.literal("add").then(Commands.argument("color", InkColorArgument.inkColor()).executes(ColorScoresCommand::add)))
                 .then(Commands.literal("remove").then(Commands.argument("color", ColorCriterionArgument.colorCriterion()).executes(ColorScoresCommand::remove)))
                 .then(Commands.literal("list").executes(ColorScoresCommand::list))

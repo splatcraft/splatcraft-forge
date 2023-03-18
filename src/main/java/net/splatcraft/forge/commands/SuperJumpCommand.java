@@ -29,10 +29,10 @@ public class SuperJumpCommand
 {
 	public static void register(CommandDispatcher<CommandSource> dispatcher)
 	{
-		dispatcher.register(Commands.literal("superjump").then(Commands.argument("to", BlockPosArgument.blockPos()).executes(context ->
+		dispatcher.register(Commands.literal("superjump").requires(commandSource -> commandSource.hasPermission(2)).then(Commands.argument("to", BlockPosArgument.blockPos()).executes(context ->
 		{
 			BlockPos target = BlockPosArgument.getOrLoadBlockPos(context, "to");
-			return execute(context, new Vector3d(target.getX()+.5d, target.getY(), target.getZ()+.5d));
+			return execute(context, new Vector3d(target.getX() + .5d, target.getY(), target.getZ() + .5d));
 		})).then(Commands.argument("target", EntityArgument.entity()).executes(context ->
 				execute(context, EntityArgument.getEntity(context, "target").position()))));
 	}

@@ -1,7 +1,5 @@
 package net.splatcraft.forge.commands;
 
-import net.splatcraft.forge.items.remotes.InkDisruptorItem;
-import net.splatcraft.forge.items.remotes.RemoteItem;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -9,12 +7,14 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.util.math.BlockPos;
+import net.splatcraft.forge.items.remotes.InkDisruptorItem;
+import net.splatcraft.forge.items.remotes.RemoteItem;
 
 public class ClearInkCommand
 {
     public static void register(CommandDispatcher<CommandSource> dispatcher)
     {
-        dispatcher.register(Commands.literal("clearink")
+        dispatcher.register(Commands.literal("clearink").requires(commandSource -> commandSource.hasPermission(2))
                 .then(Commands.argument("from", BlockPosArgument.blockPos())
                         .then(Commands.argument("to", BlockPosArgument.blockPos())
                                 .executes(ClearInkCommand::execute)

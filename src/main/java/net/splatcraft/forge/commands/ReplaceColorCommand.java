@@ -1,8 +1,5 @@
 package net.splatcraft.forge.commands;
 
-import net.splatcraft.forge.commands.arguments.InkColorArgument;
-import net.splatcraft.forge.items.remotes.ColorChangerItem;
-import net.splatcraft.forge.items.remotes.RemoteItem;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -10,12 +7,15 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.util.math.BlockPos;
+import net.splatcraft.forge.commands.arguments.InkColorArgument;
+import net.splatcraft.forge.items.remotes.ColorChangerItem;
+import net.splatcraft.forge.items.remotes.RemoteItem;
 
 public class ReplaceColorCommand
 {
     public static void register(CommandDispatcher<CommandSource> dispatcher)
     {
-        dispatcher.register(Commands.literal("replacecolor")
+        dispatcher.register(Commands.literal("replacecolor").requires(commandSource -> commandSource.hasPermission(2))
                 .then(Commands.argument("from", BlockPosArgument.blockPos())
                         .then(Commands.argument("to", BlockPosArgument.blockPos())
                                 .then(Commands.argument("color", InkColorArgument.inkColor())
