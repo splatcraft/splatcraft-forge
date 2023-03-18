@@ -35,6 +35,8 @@ import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.weapons.settings.IDamageCalculator;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -143,13 +145,25 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected)
-    {
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
-        if (entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity)
-                && PlayerInfoCapability.hasCapability((LivingEntity) entity))
-            ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor((PlayerEntity) entity));
+        if (entity instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) entity;
+            if (!ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor(player)
+                    && PlayerInfoCapability.hasCapability(player))
+                ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor(player));
+
+            if (player.getCooldowns().isOnCooldown(stack.getItem())) {
+                if (PlayerInfoCapability.isSquid(player)) {
+                    PlayerInfoCapability.get(player).setIsSquid(false);
+                    if (!level.isClientSide)
+                        SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(player.getUUID(), false), player);
+                }
+                player.setSprinting(false);
+                player.inventory.selected = itemSlot;
+            }
+        }
     }
 
     @Override
