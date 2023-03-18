@@ -1,5 +1,6 @@
 package net.splatcraft.forge.network;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.RegistryKey;
@@ -33,9 +34,7 @@ import java.util.function.Supplier;
 
 public class SplatcraftPacketHandler
 {
-    private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(Splatcraft.MODID, "main"),
-
             () -> Splatcraft.version,
             Splatcraft.version::equals,
             Splatcraft.version::equals);
@@ -77,23 +76,23 @@ public class SplatcraftPacketHandler
         INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
 
-    public static <MSG> void sendToDim(MSG message, RegistryKey<World> level)
-    {
+    public static <MSG> void sendToDim(MSG message, RegistryKey<World> level) {
         INSTANCE.send(PacketDistributor.DIMENSION.with(() -> level), message);
     }
 
-    public static <MSG> void sendToDim(MSG message, World level)
-    {
-        sendToDim(message, level.dimension());
+    public static <MSG> void sendToTrackers(MSG message, Entity trackedEntity) {
+        INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> trackedEntity), message);
     }
 
-    public static <MSG> void sendToAll(MSG message)
-    {
+    public static <MSG> void sendToTrackersAndSelf(MSG message, Entity trackedEntity) {
+        INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> trackedEntity), message);
+    }
+
+    public static <MSG> void sendToAll(MSG message) {
         INSTANCE.send(PacketDistributor.ALL.noArg(), message);
     }
 
-    public static <MSG> void sendToServer(MSG message)
-    {
+    public static <MSG> void sendToServer(MSG message) {
         INSTANCE.sendToServer(message);
     }
 }

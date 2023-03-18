@@ -18,7 +18,7 @@ public class BlasterItem extends ShooterItem {
         super(settings);
 
         addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / settings.projectileLifespan * 100)));
-        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (settings.baseDamage / 20 * 100)));
+        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (settings.projectileSize / 2.0f * 100)));
         addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - settings.firingSpeed * 0.5f) / 15f * 100)));
     }
 
@@ -35,10 +35,10 @@ public class BlasterItem extends ShooterItem {
 
     @Override
     public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown) {
-        if (reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
-            if (!level.isClientSide) {
+        if (!level.isClientSide) {
+            if (reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
                 InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize, settings).setShooterTrail();
-                proj.setBlasterStats(settings.projectileLifespan, settings.minDamage);
+                proj.setBlasterStats(settings.projectileLifespan);
                 proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, settings.projectileSpeed, player.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy);
                 level.addFreshEntity(proj);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.blasterShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);

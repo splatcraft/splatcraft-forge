@@ -44,8 +44,9 @@ public class UpdatePlayerInfoPacket extends PlayToClientPacket
     {
         PlayerEntity target = Minecraft.getInstance().level.getPlayerByUUID(this.target);
 
-        PlayerInfoCapability.get(target).readNBT(nbt);
-        ClientUtils.setClientPlayerColor(target.getDisplayName().getString(), ColorUtils.getColorFromNbt(this.nbt));
+        if (target != null) {
+            PlayerInfoCapability.get(target).readNBT(nbt);
+            ClientUtils.setClientPlayerColor(target.getDisplayName().getString(), ColorUtils.getColorFromNbt(this.nbt));
+        }
     }
-
 }

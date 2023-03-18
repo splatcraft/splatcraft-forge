@@ -11,7 +11,6 @@ public class PlayerCharge
 {
     public ItemStack chargedWeapon;
     public float charge;
-    public boolean canDischarge = false;
 
     public PlayerCharge(ItemStack stack, float charge)
     {
@@ -68,19 +67,6 @@ public class PlayerCharge
     public static float getChargeValue(PlayerEntity player, ItemStack stack)
     {
         return chargeMatches(player, stack) ? getCharge(player).charge : 0;
-    }
-
-    public static boolean canDischarge(PlayerEntity playerEntity)
-    {
-        return hasCharge(playerEntity) && PlayerInfoCapability.get(playerEntity).getPlayerCharge().canDischarge;
-    }
-
-    public static void setCanDischarge(PlayerEntity player, boolean canDischarge)
-    {
-        if (hasCharge(player))
-        {
-            getCharge(player).canDischarge = canDischarge;
-        }
     }
 
     public static void reset(PlayerEntity entity)

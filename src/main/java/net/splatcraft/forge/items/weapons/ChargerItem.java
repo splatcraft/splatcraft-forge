@@ -101,7 +101,6 @@ public class ChargerItem extends WeaponBaseItem
                 PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, 10, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, false, entity.isOnGround()));
                 SplatcraftPacketHandler.sendToServer(new ChargeableReleasePacket(charge, stack));
             }
-            PlayerCharge.setCanDischarge((PlayerEntity) entity, true);
         }
     }
 

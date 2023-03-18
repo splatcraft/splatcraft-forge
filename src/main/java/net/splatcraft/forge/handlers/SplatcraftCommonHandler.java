@@ -17,7 +17,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -55,7 +54,6 @@ import net.splatcraft.forge.util.PlayerCooldown;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.UUID;
 
 @Mod.EventBusSubscriber
 public class SplatcraftCommonHandler
@@ -257,27 +255,24 @@ public class SplatcraftCommonHandler
         IPlayerInfo info = PlayerInfoCapability.get(event.player);
         if(PlayerInfoCapability.hasCapability(event.player))
         {
-            if(!event.player.level.isClientSide)
-            {
+            if(!event.player.level.isClientSide) {
                 ItemStack inkBand = CommonUtils.getItemInInventory(event.player, itemStack -> itemStack.getItem().is(SplatcraftTags.Items.INK_BANDS) && InkBlockUtils.hasInkType(itemStack));
 
-                if(!info.getInkBand().equals(inkBand, false))
-                {
+                if (!info.getInkBand().equals(inkBand, false)) {
                     info.setInkBand(inkBand);
-                    SplatcraftPacketHandler.sendToDim(new UpdatePlayerInfoPacket(event.player), event.player.level);
+                    SplatcraftPacketHandler.sendToTrackersAndSelf(new UpdatePlayerInfoPacket(event.player), event.player);
                 }
             }
 
-                if (event.player.deathTime <= 0 && !info.isInitialized())
-                {
-                    info.setInitialized(true);
-                    info.setPlayer(event.player);
-                    if(LOCAL_COLOR.containsKey(event.player))
-                        info.setColor(LOCAL_COLOR.get(event.player));
+            if (event.player.deathTime <= 0 && !info.isInitialized()) {
+                info.setInitialized(true);
+                info.setPlayer(event.player);
+                if (LOCAL_COLOR.containsKey(event.player))
+                    info.setColor(LOCAL_COLOR.get(event.player));
 
-                    if (event.player.level.isClientSide)
-                        SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
-                }
+                if (event.player.level.isClientSide)
+                    SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
+            }
         }
     }
 

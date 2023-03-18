@@ -113,7 +113,7 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
         BlockPos tePos = te.getBlockPos();
 
         Vector3f lookVec = Minecraft.getInstance().gameRenderer.getMainCamera().getLookVector();
-        Vector3d blockVec = Vector3d.atBottomCenterOf(tePos).add(lookVec.x(), 0.0, lookVec.z());
+        Vector3d blockVec = Vector3d.atBottomCenterOf(tePos).add(lookVec.x(), lookVec.y(), lookVec.z());
 
         Vector3d directionVec3d = blockVec.subtract(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition()).normalize();
         Vector3f directionVec = new Vector3f((float) directionVec3d.x, (float) directionVec3d.y, (float) directionVec3d.z);

@@ -63,7 +63,7 @@ public class SplatcraftConfig
             barrierRenderDistance = client.comment("How far away stage barriers or voids will render away from you.")
                     .defineInRange("splatcraft.barrierRenderDistance", 40, 4, 80);
             //colorLock = client.comment("Color Lock Mode").define("splatcraft.colorLock", false);
-            preventBobView = client.comment("Prevents changing FOV when in Squid Mode").defineEnum("splatcraft.preventBobView", PreventBobView.ALWAYS);
+            preventBobView = client.comment("Prevents changing FOV when in Squid Mode").defineEnum("splatcraft.preventBobView", PreventBobView.OFF);
             lowInkWarning = client.comment("Determines whether the ink indicator near your crosshair warns you if your ink is low.")
                     .define("splatcraft.lowInkWarning", true);
         }

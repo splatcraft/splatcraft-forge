@@ -41,7 +41,7 @@ public class PlayerSetSquidServerPacket extends PlayToServerPacket {
         target.setIsSquid(squid);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), squid ? SplatcraftSounds.squidTransform : SplatcraftSounds.squidRevert, SoundCategory.PLAYERS, 0.75F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
 
-        SplatcraftPacketHandler.sendToDim(new PlayerSetSquidClientPacket(this.target, squid), player.level);
+        SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(this.target, squid), player);
     }
 
 }

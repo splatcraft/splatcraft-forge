@@ -84,10 +84,10 @@ public class SuperJumpCommand
 
 				player.fallDistance = 0;
 
-				if(!player.level.isClientSide() && distancePctg > .2f != info.isSquid())
-				{
+				if (distancePctg > .2f != info.isSquid()) {
 					info.setIsSquid(!info.isSquid());
-					SplatcraftPacketHandler.sendToDim(new PlayerSetSquidClientPacket(player.getUUID(), info.isSquid()), player.level);
+					if (!player.level.isClientSide())
+						SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(player.getUUID(), info.isSquid()), player);
 				}
 
 				player.noPhysics = true;
@@ -103,7 +103,7 @@ public class SuperJumpCommand
 					dist = new Vector3d(Math.min(3, dist.x), dist.y, Math.min(3, dist.z));
 
 					player.setDeltaMovement(dist);
-					player.hasImpulse = true;
+					player.hurtMarked = true;
 
 					//new Vector3d((entitylivingbaseIn.getX() - entitylivingbaseIn.xo), (entitylivingbaseIn.getY() - entitylivingbaseIn.yo), (entitylivingbaseIn.getZ() - entitylivingbaseIn.zo)).normalize().y
 				}

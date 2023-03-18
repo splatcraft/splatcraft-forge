@@ -215,7 +215,7 @@ public class SquidFormHandler {
     public static void onGameModeSwitch(PlayerEvent.PlayerChangeGameModeEvent event) {
         if (event.getNewGameMode() != GameType.SPECTATOR) return;
         PlayerInfoCapability.get(event.getEntityLiving()).setIsSquid(false);
-        SplatcraftPacketHandler.sendToDim(new PlayerSetSquidClientPacket(event.getPlayer().getUUID(), false), event.getPlayer().level);
+        SplatcraftPacketHandler.sendToTrackersAndSelf(new PlayerSetSquidClientPacket(event.getPlayer().getUUID(), false), event.getPlayer());
     }
 
     @SubscribeEvent

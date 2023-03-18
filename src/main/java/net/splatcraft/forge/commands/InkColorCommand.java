@@ -1,14 +1,18 @@
 package net.splatcraft.forge.commands;
 
-import net.splatcraft.forge.commands.arguments.InkColorArgument;
-import net.splatcraft.forge.util.ColorUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.splatcraft.forge.commands.arguments.InkColorArgument;
+import net.splatcraft.forge.util.ColorUtils;
 
 import java.util.Collection;
 
@@ -46,12 +50,10 @@ public class InkColorCommand
 
         if (targets.size() == 1)
         {
-            source.sendSuccess(new TranslationTextComponent("commands.inkcolor.success.single", getColorName(color),
-                    targets.iterator().next().getDisplayName()), true);
+            source.sendSuccess(new TranslationTextComponent("commands.inkcolor.success.single", targets.iterator().next().getDisplayName(), getColorName(color)), true);
         } else
         {
-            source.sendSuccess(new TranslationTextComponent("commands.inkcolor.success.multiple", getColorName(color),
-                    targets.size()), true);
+            source.sendSuccess(new TranslationTextComponent("commands.inkcolor.success.multiple", targets.size(), getColorName(color)), true);
         }
 
         return targets.size();
