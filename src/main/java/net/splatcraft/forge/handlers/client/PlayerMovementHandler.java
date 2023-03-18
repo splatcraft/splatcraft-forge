@@ -46,7 +46,7 @@ public class PlayerMovementHandler
         ModifiableAttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
         ModifiableAttributeInstance swimAttribute = player.getAttribute(ForgeMod.SWIM_SPEED.get());
 
-        if (speedAttribute.hasModifier(INK_SWIM_SPEED) && player.isOnGround())
+        if (speedAttribute.hasModifier(INK_SWIM_SPEED))
             speedAttribute.removeModifier(INK_SWIM_SPEED);
         if (speedAttribute.hasModifier(ENEMY_INK_SPEED))
             speedAttribute.removeModifier(ENEMY_INK_SPEED);
@@ -72,7 +72,7 @@ public class PlayerMovementHandler
 
         if (PlayerInfoCapability.isSquid(player))
         {
-            if (InkBlockUtils.canSquidSwim(player) && !speedAttribute.hasModifier(INK_SWIM_SPEED))
+            if (InkBlockUtils.canSquidSwim(player) && !speedAttribute.hasModifier(INK_SWIM_SPEED) && player.isOnGround())
                 speedAttribute.addTransientModifier(INK_SWIM_SPEED);
             if (!swimAttribute.hasModifier(SQUID_SWIM_SPEED))
                 swimAttribute.addTransientModifier(SQUID_SWIM_SPEED);
@@ -100,7 +100,7 @@ public class PlayerMovementHandler
         MovementInput input = event.getMovementInput();
         PlayerEntity player = event.getPlayer();
 
-        float speedMod = !input.shiftKeyDown ? PlayerInfoCapability.isSquid(player) && InkBlockUtils.canSquidHide(player) ? 35f : 2f : 1f;
+        float speedMod = !input.shiftKeyDown ? PlayerInfoCapability.isSquid(player) && InkBlockUtils.canSquidHide(player) ? 30f : 2f : 1f;
 
         input.forwardImpulse *= speedMod;
         //input = player.movementInput;
@@ -111,8 +111,7 @@ public class PlayerMovementHandler
         {
             ModifiableAttributeInstance gravity = player.getAttribute(net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get());
             boolean flag = player.getDeltaMovement().y <= 0.0D;
-            if (flag && player.hasEffect(Effects.SLOW_FALLING))
-            {
+            if (flag && player.hasEffect(Effects.SLOW_FALLING)) {
                 if (!gravity.hasModifier(SLOW_FALLING))
                     gravity.addTransientModifier(SLOW_FALLING);
                 player.fallDistance = 0.0F;
@@ -120,16 +119,13 @@ public class PlayerMovementHandler
                 gravity.removeModifier(SLOW_FALLING);
             //player.setDeltaMovement(player.getDeltaMovement().add(0.0D, d0 / 4.0D, 0.0D));
 
-            //if((player.isOnGround() && player.level.getCollisionShapes(player, player.getBoundingBox().offset(xOff, (double)(player.stepHeight), zOff)).toArray().length == 0) || !player.isOnGround())
-            {
-                if (player.getDeltaMovement().y() < (input.jumping ? 0.46f : 0.4f))
-                    player.moveRelative(0.055f * (input.jumping ? 2f : 1.7f), new Vector3d(0.0f, player.zza, -Math.min(0, player.zza)).normalize());
-                if (player.getDeltaMovement().y() <= 0 && !input.shiftKeyDown)
-                    player.moveRelative(0.035f, new Vector3d(0.0f, 1, 0.0f));
+            if (player.getDeltaMovement().y() < (input.jumping ? 0.46f : 0.4f))
+                player.moveRelative(0.06f * (input.jumping ? 2f : 1.7f), new Vector3d(0.0f, player.zza, -Math.min(0, player.zza)).normalize());
+            if (player.getDeltaMovement().y() <= 0 && !input.shiftKeyDown)
+                player.moveRelative(0.035f, new Vector3d(0.0f, 1, 0.0f));
 
-                if (input.shiftKeyDown)
-                    player.setDeltaMovement(player.getDeltaMovement().x, Math.max(0, player.getDeltaMovement().y()), player.getDeltaMovement().z);
-            }
+            if (input.shiftKeyDown)
+                player.setDeltaMovement(player.getDeltaMovement().x, Math.max(0, player.getDeltaMovement().y()), player.getDeltaMovement().z);
         }
 
 
@@ -166,8 +162,6 @@ public class PlayerMovementHandler
             if (cooldown.forceCrouch() && cooldown.getTime() > 1) {
                 input.shiftKeyDown = !player.abilities.flying;
             }
-
         }
-
     }
 }
