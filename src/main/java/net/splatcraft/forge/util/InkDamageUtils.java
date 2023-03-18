@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IndirectEntityDamageSource;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -79,7 +80,10 @@ public class InkDamageUtils {
         }
 
         if (!(target instanceof SquidBumperEntity) && doDamage) {
+            Vector3d deltaMovement = target.getDeltaMovement();
             doDamage = target.hurt(damageSource, damage * (target instanceof PlayerEntity || target instanceof IColoredEntity || damageMobs ? 1 : mobDmgPctg));
+            target.setDeltaMovement(deltaMovement); // trying to prevent knockback... (this game is so dumb)
+            target.hurtMarked = false;
         }
 
         if ((targetColor <= -1 || canInk) && !target.isInWater()) {
