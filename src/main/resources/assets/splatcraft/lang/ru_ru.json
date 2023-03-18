@@ -115,10 +115,10 @@
 
   "item.splatcraft.inkbrush": "Кисть",
   "item.splatcraft.permanent_inkbrush": "Водостойкая кисть",
-  "item.splatcraft.inkbrush_nouveau": "Кисть <<НуВо>>",
-  "item.splatcraft.octobrush": "Арт-Кисть",
-  "item.splatcraft.kensa_octobrush": "Арт-Кисть от С.Кусаки",
-  "item.splatcraft.octobrush_nouveau": "Арт-кисть <<НуВо>>",
+  "item.splatcraft.inkbrush_nouveau": "Кисть «НуВо»",
+  "item.splatcraft.octobrush": "Арт-кисть",
+  "item.splatcraft.kensa_octobrush": "Арт-кисть от С.Кусаки",
+  "item.splatcraft.octobrush_nouveau": "Арт-кисть «НуВо»",
 
   "item.splatcraft.splat_charger": "Сплатган",
   "item.splatcraft.bento_splat_charger": "Сплатган <<Бенто>>",
