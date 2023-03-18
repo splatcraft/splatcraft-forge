@@ -400,8 +400,8 @@
   "status.change_color.success": "Перекрашено %s блоков %s",
 
   "commands.scanturf.success": "Просканировано %s блоков",
-  "commands.inkcolor.success.single": "Сменил цвет игроку %s на %s",
-  "commands.inkcolor.success.multiple": "Сменил цвета игрокам %s на %s",
+  "commands.inkcolor.success.single": "Изменён цвет игрока %s на %s",
+  "commands.inkcolor.success.multiple": "Изменены цвета игроков %s на %s",
   "commands.colorscores.add.success": "Добавлен новый критерий цвета %s",
   "commands.colorscores.add.duplicate": "Критерий цвета уже есть %s",
   "commands.colorscores.remove.success": "Удален критерий %s",
