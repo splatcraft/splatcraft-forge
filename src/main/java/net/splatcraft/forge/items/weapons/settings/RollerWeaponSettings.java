@@ -46,6 +46,10 @@ public class RollerWeaponSettings implements IDamageCalculator {
         return Math.max(e > 0 ? swingBaseDamage - (e * swingDamageDecayPerTick) : swingBaseDamage, swingMinDamage);
     }
 
+    public float getMinDamage() {
+        return 0;
+    }
+
     public RollerWeaponSettings setName(String name) {
         this.name = name;
         return this;

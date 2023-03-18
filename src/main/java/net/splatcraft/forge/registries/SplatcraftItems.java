@@ -250,7 +250,7 @@ public class SplatcraftItems {
             .setFiringSpeed(20).setStartupTicks(6)
             .setGroundInaccuracy(0)
             .setInkConsumption(11.7f).setInkRecoveryCooldown(23)
-            .setBaseDamage(11f)).setSlosherType(SlosherItem.Type.EXPLODING);
+            .setBaseDamage(11f).setMinDamage(7)).setSlosherType(SlosherItem.Type.EXPLODING);
 
     //Ink Tanks
     public static final InkTankItem inkTank = new InkTankItem("ink_tank", 100);

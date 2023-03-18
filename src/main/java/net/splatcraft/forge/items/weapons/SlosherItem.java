@@ -60,9 +60,8 @@ public class SlosherItem extends WeaponBaseItem
 
                 switch (slosherType) {
                     case EXPLODING:
-                        proj.trailSize = settings.projectileSize * .35f;
+                        proj.trailSize = settings.projectileSize * 0.4f;
                         proj.explodes = true;
-                        proj.splashDamage = 7;
                         proj.setProjectileType(InkProjectileEntity.Types.BLASTER);
                     case CYCLONE:
                         proj.canPierce = true;

@@ -61,6 +61,10 @@ public class WeaponSettings implements IDamageCalculator {
         return Math.max(e > 0 ? baseDamage - (e * damageDecayPerTick) : baseDamage, minDamage);
     }
 
+    public float getMinDamage() {
+        return minDamage;
+    }
+
     public WeaponSettings setName(String setName) {
         this.name = setName;
         return this;
