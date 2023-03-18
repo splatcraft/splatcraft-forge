@@ -368,7 +368,7 @@
   "gamerule.splatcraft.inkDecay": "Испарение краски",
   "gamerule.splatcraft.coloredPlayerNames": "Цветные имена",
   "gamerule.splatcraft.keepMatchItems": "Сохранять снаряжение после смерти от краски",
-  "gamerule.splatcraft.keepMatchItems.description": "Возвращает вам некоторые важные игровые предметы (оружие, баллоны и некоторые косметические предметы). Такие объекты имеют тег §osplatcraft:match_items",
+  "gamerule.splatcraft.keepMatchItems.description": "Возвращает вам некоторые важные игровые предметы (оружие, баллоны и некоторые косметические предметы). Такие предметы имеют тег §osplatcraft:match_items",
   "gamerule.splatcraft.waterDamage": "Урон при контакте с водой",
   "gamerule.splatcraft.inkRegeneration": "Регенерация в краске",
   "gamerule.splatcraft.inkHealing": "Лечение игрока в краскоплыве",
