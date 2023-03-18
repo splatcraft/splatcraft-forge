@@ -387,7 +387,7 @@
   "status.coord_set.a": "Первая позиция: X: %s Y: %s Z: %s",
   "status.coord_set.b": "Вторая позиция: X: %s Y: %s Z: %s",
   "status.no_ink": "Нет краски!",
-  "status.cant_use": "Не применить!",
+  "status.cant_use": "Невозможно применить!",
   "status.remote_mode": "Режим дистанционного управления %s",
   "status.scan_turf.out_of_world": "§cЗона вне доступа!",
   "status.scan_turf.score": "%s = %s%%",
