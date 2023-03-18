@@ -166,7 +166,7 @@
   "item.splatcraft.suction_bomb": "Бомба на присоске",
   "item.splatcraft.curling_bomb": "Кёрлинг-бомба",
   "item.splatcraft.splash_wall": "Чернильный занавес",
-  "item.splatcraft.tooltip.single_use": "§7§o лишь одно использование!",
+  "item.splatcraft.tooltip.single_use": "§7§oЛишь одно использование!",
 
   "item.splatcraft.ink_tank": "Баллон",
   "item.splatcraft.ink_tank.ink": "%s / %s",
