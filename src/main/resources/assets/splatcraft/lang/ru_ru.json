@@ -260,7 +260,7 @@
   "subtitle.no_ink": "Нет краски!",
   "subtitle.no_ink_sub": "Нет краски!",
   "subtitle.squid_transform": "Трансформация",
-  "subtitle.squid_revert": "Отмена",
+  "subtitle.squid_revert": "Обратная трансформация",
   "subtitle.ink_submerge": "Погружение",
   "subtitle.ink_surface": "Всплыв",
 
