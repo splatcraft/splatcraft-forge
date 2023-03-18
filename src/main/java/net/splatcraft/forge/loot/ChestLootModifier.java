@@ -47,7 +47,9 @@ public class ChestLootModifier extends LootModifier
             return generatedLoot;
         }
 
-        if (context.getRandom().nextInt(100) <= chance * 100)
+        float c = context.getRandom().nextFloat();
+
+        if (c <= chance)
         {
             generatedLoot.add(new ItemStack(item, (countMax - countMin <= 0 ? 0 : context.getRandom().nextInt(countMax - countMin)) + countMin));
         }
@@ -78,6 +80,7 @@ public class ChestLootModifier extends LootModifier
             result.addProperty("countMax", instance.countMax);
             result.addProperty("chance", instance.chance);
             result.addProperty("parent", instance.parentTable.toString());
+
             return result;
         }
     }

@@ -5,6 +5,9 @@
     "splatcraft:power_egg_fishing",
     "splatcraft:small_ocean_ruin_loot",
     "splatcraft:big_ocean_ruin_loot",
-    "splatcraft:big_ocean_ruin_crate"
+    "splatcraft:big_ocean_ruin_crate",
+    "splatcraft:bonus_chest_kit_main",
+    "splatcraft:bonus_chest_kit_sub",
+    "splatcraft:bonus_chest_kit_tank"
   ]
 }

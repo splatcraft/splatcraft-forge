@@ -1,0 +1,9 @@
+{
+  "type": "splatcraft:chest_loot",
+  "conditions": [],
+  "item": "splatcraft:splat_bomb",
+  "countMin": 1,
+  "countMax": 1,
+  "chance": 1,
+  "parent": "minecraft:chests/spawn_bonus_chest"
+}
