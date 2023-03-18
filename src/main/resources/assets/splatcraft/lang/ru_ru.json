@@ -393,7 +393,7 @@
   "status.scan_turf.score": "%s = %s%%",
   "status.scan_turf.winner": "%s выиграл!",
   "status.scan_turf.no_ink": "§c не было краски!",
-  "status.clear_ink.out_of_world": "§c за пределами досягаемости!",
+  "status.clear_ink.out_of_world": "§cЗона за пределами досягаемости!",
   "status.clear_ink.no_ink": "В этой зоне не было краски!",
   "status.clear_ink.success": "Успешно очищено %s блоков",
   "status.change_color.out_of_world": "§c вне досягаемости!",
