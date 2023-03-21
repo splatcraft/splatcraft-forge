@@ -22,6 +22,7 @@ import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.ChargerItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.ColorUtils;
@@ -82,7 +83,8 @@ public class InkTankItem extends ColoredArmorItem
         stack.getOrCreateTag().putFloat("Ink", Math.max(0, Math.min(((InkTankItem) stack.getItem()).capacity, value)));
     }
 
-    public static boolean canRecharge(ItemStack stack, boolean fromTick) {
+    public static boolean canRecharge(ItemStack stack, boolean fromTick)
+    {
         CompoundNBT tag = stack.getOrCreateTag();
         boolean cannotRecharge = tag.contains("CannotRecharge");
         if (!tag.contains("RecoveryCooldown"))
@@ -102,7 +104,7 @@ public class InkTankItem extends ColoredArmorItem
     public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
-        if (entity instanceof PlayerEntity) {
+        if (entity instanceof PlayerEntity && SplatcraftGameRules.getLocalizedRule(level, entity.blockPosition(), SplatcraftGameRules.RECHARGEABLE_INK_TANK)) {
             PlayerEntity player = (PlayerEntity) entity;
             float ink = getInkAmount(stack);
 

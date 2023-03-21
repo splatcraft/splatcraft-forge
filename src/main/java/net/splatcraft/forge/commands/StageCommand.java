@@ -7,7 +7,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
+import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,6 +23,7 @@ import net.splatcraft.forge.network.s2c.UpdateStageListPacket;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -91,32 +94,31 @@ public class StageCommand
 	private static int setSetting(CommandSource source, String name, String setting, @Nullable Boolean value) throws CommandSyntaxException {
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
-		System.out.println("mmm");
-
 		if(!stages.containsKey(name))
 			throw StageIDArgument.STAGE_NOT_FOUND.create(name);
-
-		System.out.println("passed stage check");
 
 		if(!Stage.VALID_SETTINGS.contains(setting))
 			throw StageSettingArgument.SETTING_NOT_FOUND.create(setting);
 
-		System.out.println("a");
-
 		Stage stage = stages.get(name);
 
-		System.out.println(stage);
-
 		stage.applySetting(setting, value);
-
-		System.out.println("yes");
 
 		if(value == null)
 			source.sendSuccess(new TranslationTextComponent("commands.stage.setting.success.default", setting, name), true);
 		else source.sendSuccess(new TranslationTextComponent("commands.stage.setting.success", setting, name, value), true);
 
-		System.out.println("mhm");
-
 		return 1;
+	}
+
+	private static int listStages(CommandSource p_198662_0_) {
+		Collection<ScoreObjective> collection = p_198662_0_.getServer().getScoreboard().getObjectives();
+		if (collection.isEmpty()) {
+			p_198662_0_.sendSuccess(new TranslationTextComponent("commands.scoreboard.objectives.list.empty"), false);
+		} else {
+			p_198662_0_.sendSuccess(new TranslationTextComponent("commands.scoreboard.objectives.list.success", collection.size(), TextComponentUtils.formatList(collection, ScoreObjective::getFormattedDisplayName)), false);
+		}
+
+		return collection.size();
 	}
 }

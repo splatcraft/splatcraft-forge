@@ -1,5 +1,6 @@
 package net.splatcraft.forge.data;
 
+import net.minecraft.command.impl.ScoreboardCommand;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
@@ -33,6 +34,8 @@ public class Stage
 		registerGameruleSetting(SplatcraftGameRules.INK_FRIENDLY_FIRE);
 		registerGameruleSetting(SplatcraftGameRules.INK_HEALING);
 		registerGameruleSetting(SplatcraftGameRules.INK_HEALING_CONSUMES_HUNGER);
+		registerGameruleSetting(SplatcraftGameRules.INKABLE_GROUND);
+		registerGameruleSetting(SplatcraftGameRules.RECHARGEABLE_INK_TANK);
 	}
 
 	public CompoundNBT writeData()

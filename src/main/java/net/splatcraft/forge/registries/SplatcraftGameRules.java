@@ -8,7 +8,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.data.Stage;
-import net.splatcraft.forge.data.capabilities.saveinfo.ISaveInfo;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.util.ClientUtils;
 
@@ -36,6 +35,8 @@ public class SplatcraftGameRules
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_HEALING_CONSUMES_HUNGER;
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_DAMAGE_COOLDOWN;
     public static GameRules.RuleKey<GameRules.BooleanValue> INFINITE_INK_IN_CREATIVE;
+    public static GameRules.RuleKey<GameRules.BooleanValue> INKABLE_GROUND;
+    public static GameRules.RuleKey<GameRules.BooleanValue> RECHARGEABLE_INK_TANK;
 
     public static void registerGamerules()
     {
@@ -52,6 +53,8 @@ public class SplatcraftGameRules
         INK_DAMAGE_COOLDOWN = createBooleanRule("inkDamageCooldown", Category.PLAYER, false);
         INK_MOB_DAMAGE_PERCENTAGE = createIntRule("inkMobDamagePercentage", Category.MOBS, 70);
         INFINITE_INK_IN_CREATIVE = createBooleanRule("infiniteInkInCreative", Category.PLAYER, true);
+        INKABLE_GROUND = createBooleanRule("inkableGround", Category.PLAYER, true);
+        RECHARGEABLE_INK_TANK = createBooleanRule("rechargeableInkTank", Category.PLAYER, true);
     }
 
     public static boolean getLocalizedRule(World level, BlockPos pos, GameRules.RuleKey<GameRules.BooleanValue> rule)
@@ -73,7 +76,7 @@ public class SplatcraftGameRules
         if(localStage != null && localStage.hasSetting(rule))
             return localStage.getSetting(rule);
 
-        return level.getGameRules().getBoolean(rule);
+        return getBooleanRuleValue(level, rule);
     }
 
     public static GameRules.RuleKey<GameRules.BooleanValue> createBooleanRule(String name, GameRules.Category category, boolean defaultValue)

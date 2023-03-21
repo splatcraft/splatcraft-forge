@@ -23,6 +23,7 @@ import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
@@ -54,6 +55,9 @@ public class InkBlockUtils
 
         if (state.getBlock() instanceof IColoredBlock)
             return ((IColoredBlock) state.getBlock()).inkBlock(level, pos, color, damage, inkType);
+
+        if(!SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INKABLE_GROUND))
+            return false;
 
         BlockState inkState = getInkState(inkType, level, pos);
 
