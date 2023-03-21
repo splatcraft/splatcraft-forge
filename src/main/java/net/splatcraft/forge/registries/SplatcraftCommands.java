@@ -8,12 +8,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.commands.ClearInkCommand;
-import net.splatcraft.forge.commands.ColorScoresCommand;
-import net.splatcraft.forge.commands.InkColorCommand;
-import net.splatcraft.forge.commands.ReplaceColorCommand;
-import net.splatcraft.forge.commands.ScanTurfCommand;
-import net.splatcraft.forge.commands.SuperJumpCommand;
+import net.splatcraft.forge.commands.*;
 import net.splatcraft.forge.commands.arguments.ColorCriterionArgument;
 import net.splatcraft.forge.commands.arguments.InkColorArgument;
 
@@ -30,6 +25,8 @@ public class SplatcraftCommands
         ClearInkCommand.register(dispatcher);
         ReplaceColorCommand.register(dispatcher);
         ColorScoresCommand.register(dispatcher);
+        StageCommand.register(dispatcher);
+
         SuperJumpCommand.register(dispatcher);
     }
 

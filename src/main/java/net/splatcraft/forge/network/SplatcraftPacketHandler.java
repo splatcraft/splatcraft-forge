@@ -18,15 +18,7 @@ import net.splatcraft.forge.network.c2s.PlayerSetSquidServerPacket;
 import net.splatcraft.forge.network.c2s.RequestPlayerInfoPacket;
 import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
 import net.splatcraft.forge.network.c2s.UpdateBlockColorPacket;
-import net.splatcraft.forge.network.s2c.PlayerColorPacket;
-import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
-import net.splatcraft.forge.network.s2c.SendScanTurfResultsPacket;
-import net.splatcraft.forge.network.s2c.UpdateBooleanGamerulesPacket;
-import net.splatcraft.forge.network.s2c.UpdateClientColorsPacket;
-import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
-import net.splatcraft.forge.network.s2c.UpdateInkOverlayPacket;
-import net.splatcraft.forge.network.s2c.UpdateIntGamerulesPacket;
-import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
+import net.splatcraft.forge.network.s2c.*;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -59,6 +51,7 @@ public class SplatcraftPacketHandler
         registerMessage(UpdateInkOverlayPacket.class, UpdateInkOverlayPacket::decode);
         registerMessage(ChargeableReleasePacket.class, ChargeableReleasePacket::decode);
         registerMessage(SwapSlotWithOffhandPacket.class, SwapSlotWithOffhandPacket::decode);
+        registerMessage(UpdateStageListPacket.class, UpdateStageListPacket::decode);
     }
 
     private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, Function<PacketBuffer, MSG> decoder)

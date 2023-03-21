@@ -230,9 +230,9 @@ public class ColorUtils
                 :getColorName(color).withStyle(getColorName(color).getStyle().withColor(Color.fromRgb(color)));
     }
 
-    public static boolean colorEquals(World level, int colorA, int colorB)
+    public static boolean colorEquals(World level, BlockPos pos, int colorA, int colorB)
     {
-        return SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.UNIVERSAL_INK) || colorA == colorB;
+        return SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.UNIVERSAL_INK) || colorA == colorB;
     }
 
     public static boolean colorEquals(Entity entity, TileEntity te)
@@ -242,7 +242,7 @@ public class ColorUtils
 
         if (entityColor == -1 || inkColor == -1)
             return false;
-        return colorEquals(entity.level, entityColor, inkColor);
+        return colorEquals(entity.level, te.getBlockPos(), entityColor, inkColor);
     }
 
     public static boolean colorEquals(LivingEntity entity, ItemStack stack)
@@ -252,7 +252,7 @@ public class ColorUtils
 
         if (entityColor == -1 || inkColor == -1)
             return false;
-        return colorEquals(entity.level, entityColor, inkColor);
+        return colorEquals(entity.level, entity.blockPosition(), entityColor, inkColor);
     }
 
     public static ItemStack setColorLocked(ItemStack stack, boolean isLocked)

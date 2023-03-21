@@ -34,15 +34,12 @@ import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.InkWaxerItem;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.RequestPlayerInfoPacket;
-import net.splatcraft.forge.network.s2c.UpdateBooleanGamerulesPacket;
-import net.splatcraft.forge.network.s2c.UpdateClientColorsPacket;
-import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
-import net.splatcraft.forge.network.s2c.UpdateIntGamerulesPacket;
-import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
+import net.splatcraft.forge.network.s2c.*;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
@@ -195,7 +192,7 @@ public class SplatcraftCommonHandler
         }
 
         PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-        if (!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.KEEP_MATCH_ITEMS))
+        if (!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.KEEP_MATCH_ITEMS))
         {
             IPlayerInfo playerCapability;
             try
@@ -244,6 +241,7 @@ public class SplatcraftCommonHandler
         SplatcraftPacketHandler.sendToAll(new UpdateClientColorsPacket(event.getPlayer().getDisplayName().getString(), PlayerInfoCapability.get(event.getPlayer()).getColor()));
         SplatcraftPacketHandler.sendToPlayer(new UpdateClientColorsPacket(playerColors), (ServerPlayerEntity) player);
         SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, colors), (ServerPlayerEntity) player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateStageListPacket(SaveInfoCapability.get(event.getPlayer().level.getServer()).getStages()), (ServerPlayerEntity) player);
     }
 
     @Deprecated

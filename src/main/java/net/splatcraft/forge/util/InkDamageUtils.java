@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IndirectEntityDamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -39,11 +40,11 @@ public class InkDamageUtils {
     }
 
     public static boolean canDamage(Entity target, Entity source) {
-        return canDamageColor(source.level, ColorUtils.getEntityColor(target), ColorUtils.getEntityColor(source));
+        return canDamageColor(source.level, target.blockPosition(), ColorUtils.getEntityColor(target), ColorUtils.getEntityColor(source));
     }
 
-    public static boolean canDamageColor(World level, int targetColor, int sourceColor) {
-        return SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.INK_FRIENDLY_FIRE) || !ColorUtils.colorEquals(level, targetColor, sourceColor);
+    public static boolean canDamageColor(World level, BlockPos pos, int targetColor, int sourceColor) {
+        return SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INK_FRIENDLY_FIRE) || !ColorUtils.colorEquals(level, pos, targetColor, sourceColor);
     }
 
     public static boolean doDamage(World level, LivingEntity target, float damage, int color, Entity source, ItemStack sourceItem, boolean damageMobs, String name, boolean applyHurtCooldown)
@@ -56,7 +57,7 @@ public class InkDamageUtils {
 
         int targetColor = ColorUtils.getEntityColor(target);
         boolean doDamage = target instanceof PlayerEntity || damageMobs || mobDmgPctg > 0;
-        boolean canInk = canDamageColor(level, color, targetColor);
+        boolean canInk = canDamageColor(level, target.blockPosition(), color, targetColor);
 
         if (targetColor > -1) {
             doDamage = canInk;
