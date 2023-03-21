@@ -65,7 +65,7 @@
 
   "item.splatcraft.squid_bumper": "Calamabarriera",
   "item.splatcraft.ink_cloth_helmet": "Cappello inchiostrato",
-  "item.splatcraft.ink_cloth_chestplate": "Maglietta inchiostrato",
+  "item.splatcraft.ink_cloth_chestplate": "Maglietta inchiostrata",
   "item.splatcraft.ink_cloth_leggings": "Pantaloni inchiostrati",
   "item.splatcraft.ink_cloth_boots": "Scarpe inchiostrate",
   "item.splatcraft.splatfest_band": "Bracciale festival",
@@ -79,8 +79,8 @@
   "item.splatcraft.wasabi_splattershot": "Splasher Wasabi",
   "item.splatcraft.ancient_splattershot": "§dSplasher Antico",
   "item.splatcraft.splattershot_jr": "Sparacolore recluta",
-  "item.splatcraft.custom_splattershot_jr": "Sparacolore recluta logo",
-  "item.splatcraft.kensa_splattershot_jr": "Sparacolore recluta Nero Marlin",
+  "item.splatcraft.custom_splattershot_jr": "Sparacolore logo",
+  "item.splatcraft.kensa_splattershot_jr": "Sparacolore Nero Marlin",
   "item.splatcraft.aerospray_mg": "Aerografo",
   "item.splatcraft.aerospray_rg": "Aerografo èlite",
   "item.splatcraft.aerospray_pg": "Aerografo deluxe",
@@ -152,7 +152,7 @@
   "item.splatcraft.kensa_glooga_dualies.plural": "Kelvin duplo 525 Nero Marlin",
 
   "item.splatcraft.explosher": "Termosecchiostro",
-  "item.splatcraft.custom_explosher": "Termosecchiostro CM",
+  "item.splatcraft.custom_explosher": "Termosecchiostro Master",
   "item.splatcraft.slosher": "Secchiostro",
   "item.splatcraft.classic_slosher": "Secchiostro classico",
   "item.splatcraft.soda_slosher": "Secchiostro frizzante",
