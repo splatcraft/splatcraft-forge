@@ -39,7 +39,7 @@ public class StageCommand
 						.then(Commands.argument("to", BlockPosArgument.blockPos()).executes(StageCommand::add))
 				))).then(Commands.literal("remove")
 						.then(Commands.argument("stage", new StageIDArgument(true)).executes(StageCommand::remove)
-				)).then(Commands.literal("list"))
+				))//.then(Commands.literal("list"))
 				.then(Commands.literal("settings").then(Commands.argument("stage", new StageIDArgument(true))
 						.then(Commands.argument("setting", new StageSettingArgument())
 								.then(Commands.literal("true").executes(context -> setSetting(context, true)))
@@ -109,16 +109,5 @@ public class StageCommand
 		else source.sendSuccess(new TranslationTextComponent("commands.stage.setting.success", setting, name, value), true);
 
 		return 1;
-	}
-
-	private static int listStages(CommandSource p_198662_0_) {
-		Collection<ScoreObjective> collection = p_198662_0_.getServer().getScoreboard().getObjectives();
-		if (collection.isEmpty()) {
-			p_198662_0_.sendSuccess(new TranslationTextComponent("commands.scoreboard.objectives.list.empty"), false);
-		} else {
-			p_198662_0_.sendSuccess(new TranslationTextComponent("commands.scoreboard.objectives.list.success", collection.size(), TextComponentUtils.formatList(collection, ScoreObjective::getFormattedDisplayName)), false);
-		}
-
-		return collection.size();
 	}
 }
