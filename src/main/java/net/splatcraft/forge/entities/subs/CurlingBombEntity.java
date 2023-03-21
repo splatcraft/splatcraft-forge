@@ -1,10 +1,14 @@
 package net.splatcraft.forge.entities.subs;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ReuseableStream;
 import net.minecraft.util.SoundCategory;
@@ -17,20 +21,17 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
-import net.splatcraft.forge.entities.InkProjectileEntity;
-import net.splatcraft.forge.items.weapons.RollerItem;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.InkExplosion;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
 /* TODO
- * Bomb Cooking
- * Figure out how to animate the LEDs on top
+ * Increase explosion size/maybe trail when cooked
+ * fix client/server desync for motion
  */
 public class CurlingBombEntity extends AbstractSubWeaponEntity
 {
@@ -39,9 +40,16 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	public static final float EXPLOSION_SIZE = 2.5f;
 	public static final int FUSE_START = 10;
 	public static final int MAX_FUSE_TIME = 80;
+	public static final int MAX_COOK_TIME = 20;
 
-	public int fuseTime = MAX_FUSE_TIME;
-	public int prevFuseTime = fuseTime;
+	private static final DataParameter<Integer> FUSE_TIME = EntityDataManager.defineId(CurlingBombEntity.class, DataSerializers.INT);
+	private static final DataParameter<Float> COOK_SCALE = EntityDataManager.defineId(CurlingBombEntity.class, DataSerializers.FLOAT);
+
+	private int clientFuseTime = MAX_FUSE_TIME;
+	public int prevFuseTime = MAX_FUSE_TIME;
+
+	private float clientCookScale = 0;
+	public float prevCookScale = 0;
 
 	public float bladeRot = 0;
 	public float prevBladeRot = 0;
@@ -53,14 +61,47 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	}
 
 	@Override
+	protected void defineSynchedData()
+	{
+		super.defineSynchedData();
+		entityData.define(FUSE_TIME, MAX_FUSE_TIME);
+		entityData.define(COOK_SCALE, 0f);
+	}
+
+	@Override
 	protected Item getDefaultItem() {
 		return SplatcraftItems.curlingBomb;
+	}
+
+	public static void onItemUseTick(World level, LivingEntity entity, ItemStack stack, int useTime)
+	{
+		CompoundNBT data = stack.getTag().getCompound("EntityData");
+		data.putInt("CookTime", stack.getItem().getUseDuration(stack) - useTime);
+
+		stack.getTag().put("EntityData", data);
+	}
+
+	@Override
+	public void readItemData(CompoundNBT nbt)
+	{
+		if(nbt.contains("CookTime"))
+		{
+			setFuseTime(getFuseTime() - nbt.getInt("CookTime"));
+			prevFuseTime = getFuseTime();
+		}
 	}
 
 	@Override
 	public void tick()
 	{
 		super.tick();
+
+		double spd = getDeltaMovement().multiply(1, 0, 1).length();
+		prevBladeRot = bladeRot;
+		bladeRot += spd;
+
+		if(!level.isClientSide())
+		setFuseTime(getFuseTime()-1);
 
 		for(int i = 0; i <= 2; i++)
 			if(!InkBlockUtils.isUninkable(level, blockPosition().below(i)))
@@ -76,21 +117,13 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 			if (this.onGround)
 				f1 = this.level.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getSlipperiness(level, new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ()), this);
 
-			f1 = (float) Math.min(0.98, f1*3f) * Math.min(1, 2*fuseTime/(float)MAX_FUSE_TIME);
+			f1 = (float) Math.min(0.98, f1*3f) * Math.min(1, 2*getFuseTime()/(float)MAX_FUSE_TIME);
 
 			this.setDeltaMovement(this.getDeltaMovement().multiply(f1, 0.98D, f1));
 
 		}
 
-
-		double spd = getDeltaMovement().multiply(1, 0, 1).length();
-		prevBladeRot = bladeRot;
-		bladeRot += spd;
-
-		prevFuseTime = fuseTime;
-			fuseTime--;
-
-		if(fuseTime <= 0)
+		if(getFuseTime() <= 0)
 		{
 			InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), EXPLOSION_SIZE, DIRECT_DAMAGE, DIRECT_DAMAGE, DIRECT_DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
 			level.broadcastEntityEvent(this, (byte) 1);
@@ -99,7 +132,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 				remove();
 			return;
 		}
-		else if(spd > 0.01 && fuseTime % (int)Math.max(1, (1-spd)*10) == 0)
+		else if(spd > 0.01 && getFuseTime() % (int)Math.max(1, (1-spd)*10) == 0)
 			level.broadcastEntityEvent(this, (byte) 2);
 
 		this.move(MoverType.SELF, this.getDeltaMovement().multiply(0,1,0));
@@ -172,7 +205,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 
 	public float getFlashIntensity(float partialTicks)
 	{
-		return 1f-Math.min(FUSE_START, MathHelper.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float)FUSE_START;
+		return 1f-Math.min(FUSE_START, MathHelper.lerp(partialTicks, prevFuseTime, getFuseTime())*0.5f)/(float)FUSE_START;
 	}
 
 	private boolean canStepUp(Vector3d p_213306_1_) {
@@ -235,5 +268,61 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 		}
 
 		return vector3d;
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundNBT nbt) {
+		super.readAdditionalSaveData(nbt);
+		setFuseTime(nbt.getInt("FuseTime"));
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundNBT nbt) {
+		super.addAdditionalSaveData(nbt);
+		nbt.putInt("FuseTime", getFuseTime());
+	}
+
+	public int getFuseTime()
+	{
+		return entityData.get(FUSE_TIME);
+	}
+
+	public void setFuseTime(int v)
+	{
+		prevFuseTime = getFuseTime();
+		entityData.set(FUSE_TIME, v);
+
+	}
+
+	public float getCookScale() {
+		return entityData.get(COOK_SCALE);
+	}
+
+	public void setCookScale(float v)
+	{
+		if(!level.isClientSide)
+		{
+			prevCookScale = getCookScale();
+			entityData.set(COOK_SCALE, v);
+		}
+	}
+
+	@Override
+	public void onSyncedDataUpdated(DataParameter<?> dataParameter)
+	{
+		super.onSyncedDataUpdated(dataParameter);
+
+		if(FUSE_TIME.equals(dataParameter))
+		{
+			prevFuseTime = clientFuseTime;
+			clientFuseTime = getFuseTime();
+		}
+
+		if(COOK_SCALE.equals(dataParameter))
+		{
+			prevCookScale = clientCookScale;
+			clientCookScale = getCookScale();
+		}
+
 	}
 }

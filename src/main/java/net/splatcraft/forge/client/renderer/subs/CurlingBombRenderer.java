@@ -7,17 +7,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.client.model.subs.BurstBombModel;
 import net.splatcraft.forge.client.model.subs.CurlingBombModel;
-import net.splatcraft.forge.entities.subs.BurstBombEntity;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
-import net.splatcraft.forge.entities.subs.SplatBombEntity;
+import org.jetbrains.annotations.Nullable;
 
 public class CurlingBombRenderer extends SubWeaponRenderer<CurlingBombEntity, CurlingBombModel>
 {
     private static final CurlingBombModel MODEL = new CurlingBombModel();
     private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/weapons/sub/curling_bomb.png");
-    private static final ResourceLocation OVERLAY_TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/weapons/sub/curling_bomb_ink.png");
+    private static final ResourceLocation INK_TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/weapons/sub/curling_bomb_ink.png");
+    private static final ResourceLocation OVERLAY_TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/weapons/sub/curling_bomb_overlay.png");
 
     public CurlingBombRenderer(EntityRendererManager manager)
     {
@@ -70,9 +69,20 @@ public class CurlingBombRenderer extends SubWeaponRenderer<CurlingBombEntity, Cu
     }
 
     @Override
-    public ResourceLocation getOverlayTexture(CurlingBombEntity entity)
+    public ResourceLocation getInkTextureLocation(CurlingBombEntity entity)
     {
+        return INK_TEXTURE;
+    }
+
+    @Override
+    public @Nullable ResourceLocation getOverlayTextureLocation(CurlingBombEntity entity) {
         return OVERLAY_TEXTURE;
     }
 
+    @Override
+    public float[] getOverlayColor(CurlingBombEntity entity, float partialTicks)
+    {
+        float v = MathHelper.clamp((CurlingBombEntity.MAX_FUSE_TIME - MathHelper.lerp(partialTicks, entity.prevFuseTime, entity.getFuseTime())) / CurlingBombEntity.MAX_COOK_TIME, 0, 1);
+        return new float[] {v, 1-v, 0};
+    }
 }

@@ -85,7 +85,14 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
         result.inkType = inkType;
         result.sourceWeapon = sourceWeapon;
 
+        result.readItemData(sourceWeapon.getOrCreateTag().getCompound("EntityData"));
+
         return result;
+    }
+
+    public void readItemData(CompoundNBT nbt)
+    {
+
     }
 
     @Override

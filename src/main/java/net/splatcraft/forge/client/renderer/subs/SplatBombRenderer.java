@@ -57,7 +57,7 @@ public class SplatBombRenderer extends SubWeaponRenderer<SplatBombEntity, SplatB
     }
 
     @Override
-    public ResourceLocation getOverlayTexture(SplatBombEntity entity) {
+    public ResourceLocation getInkTextureLocation(SplatBombEntity entity) {
         return OVERLAY_TEXTURE;
     }
 

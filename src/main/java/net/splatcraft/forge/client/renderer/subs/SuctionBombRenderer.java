@@ -65,7 +65,7 @@ public class SuctionBombRenderer extends SubWeaponRenderer<SuctionBombEntity, Su
     }
 
     @Override
-    public ResourceLocation getOverlayTexture(SuctionBombEntity entity)
+    public ResourceLocation getInkTextureLocation(SuctionBombEntity entity)
     {
         return OVERLAY_TEXTURE;
     }

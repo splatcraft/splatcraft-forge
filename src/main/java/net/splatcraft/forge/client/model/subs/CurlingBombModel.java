@@ -99,7 +99,7 @@ public class CurlingBombModel extends AbstractSubWeaponModel<CurlingBombEntity> 
 		top.texOffs(0, 9).addBox(-3.5F, -0.6F, -3.5F, 7.0F, 3.0F, 7.0F, -0.05F, false);
 
 		handle = new ModelRenderer(this);
-		handle.setPos(1.5346F, -2.6775F, 0.0F);
+		handle.setPos(2.5346F, -2.6775F, 0.0F);
 		top.addChild(handle);
 		handle.texOffs(0, 19).addBox(-3.5346F, 0.2775F, -1.0F, 1.0F, 2.0F, 2.0F, 0.0F, false);
 		handle.texOffs(21, 13).addBox(-3.5346F, -0.6225F, -1.0F, 5.0F, 1.0F, 2.0F, 0.001F, false);
@@ -141,7 +141,7 @@ public class CurlingBombModel extends AbstractSubWeaponModel<CurlingBombEntity> 
 
 		blades.yRot = MathHelper.lerp(partialTick, entityIn.prevBladeRot, entityIn.bladeRot);
 
-		top.y = 20 - MathHelper.clamp(30-entityIn.fuseTime + partialTick, 0, 1) * 3f;
+		top.y = 20 - MathHelper.clamp(30-entityIn.getFuseTime() + partialTick, 0, 1) * 3f;
 	}
 
 	@Override
