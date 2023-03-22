@@ -67,7 +67,7 @@ public class SquidFormHandler {
                 ColorUtils.addStandingInkSplashParticle(player.level, player, 1);
         }
 
-        if (player.level.getGameRules().getBoolean(SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.tickCount % 10 == 0)
+        if (SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.tickCount % 10 == 0)
             player.hurt(InkDamageUtils.WATER, 8f);
 
 
@@ -115,9 +115,9 @@ public class SquidFormHandler {
 
             if (InkBlockUtils.canSquidHide(player)) {
                 player.fallDistance = 0;
-                if (player.getHealth() < player.getMaxHealth() && player.level.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN) && player.tickCount % 5 == 0 && !player.hasEffect(Effects.POISON) && !player.hasEffect(Effects.WITHER)) {
+                if (player.getHealth() < player.getMaxHealth() && SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.INK_HEALING) && player.tickCount % 5 == 0 && !player.hasEffect(Effects.POISON) && !player.hasEffect(Effects.WITHER)) {
                     player.heal(0.5f);
-                    if (player.level.getGameRules().getBoolean(SplatcraftGameRules.INK_REGEN_CONSUMES_HUNGER))
+                    if (SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.INK_HEALING_CONSUMES_HUNGER))
                         player.causeFoodExhaustion(0.25f);
                     if (InkOverlayCapability.hasCapability(player)) {
                         InkOverlayCapability.get(player).addAmount(-0.49f);

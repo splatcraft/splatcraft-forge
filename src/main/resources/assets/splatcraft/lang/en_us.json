@@ -382,6 +382,11 @@
   "gamerule.splatcraft.inkMobDamagePercentage.description": "Determines how much damage is dealt by regular Splatcraft weapons against mobs.",
   "gamerule.splatcraft.infiniteInkInCreative": "Infinite Ink in Creative Mode",
   "gamerule.splatcraft.infiniteInkInCreative.description": "Players in Creative Mode will not need an ink tank or refill ink to use Splatcraft weapons",
+  "gamerule.splatcraft.inkableGround": "Inkable Ground",
+  "gamerule.splatcraft.inkableGround.description": "Allows weapons to replace blocks with Inked Blocks",
+  "gamerule.splatcraft.rechargeableInkTank": "Rechargeable Ink Tank",
+  "gamerule.splatcraft.rechargeableInkTank.description": "Allows Ink Tanks to passively recover ink, recharge rate increases when swimming on ink",
+
   "status.coord_set.a": "Set first position to X: %s Y: %s Z: %s",
   "status.coord_set.b": "Set second position to X: %s Y: %s Z: %s",
   "status.no_ink": "Low Ink!",
@@ -406,6 +411,11 @@
   "commands.colorscores.list.empty": "There are no registered color criteria",
   "commands.colorscores.list.count": "Showing %s registered color criteria:",
   "commands.colorscores.list.entry": "%s: displays as '%s'",
+
+  "commands.stage.add.success": "Successfully added stage [%s]",
+  "commands.stage.remove.success": "Successfully removed stage [%s]",
+  "commands.stage.setting.success.default": "Reset %s for stage [%s]",
+  "commands.stage.setting.success": "Set %s for stage [%s] to %s",
 
   "arg.colorCriterion.notFound": "No criteria were found by the color %s",
   "arg.inkColor.notFound": "Unknown color %s",

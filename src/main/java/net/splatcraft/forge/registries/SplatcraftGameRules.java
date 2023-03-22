@@ -1,10 +1,15 @@
 package net.splatcraft.forge.registries;
 
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameRules.Category;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.data.Stage;
+import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
+import net.splatcraft.forge.util.ClientUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,10 +31,12 @@ public class SplatcraftGameRules
     public static GameRules.RuleKey<GameRules.BooleanValue> REQUIRE_INK_TANK;
     public static GameRules.RuleKey<GameRules.IntegerValue> INK_MOB_DAMAGE_PERCENTAGE;
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_FRIENDLY_FIRE;
-    public static GameRules.RuleKey<GameRules.BooleanValue> INK_REGEN;
-    public static GameRules.RuleKey<GameRules.BooleanValue> INK_REGEN_CONSUMES_HUNGER;
+    public static GameRules.RuleKey<GameRules.BooleanValue> INK_HEALING;
+    public static GameRules.RuleKey<GameRules.BooleanValue> INK_HEALING_CONSUMES_HUNGER;
     public static GameRules.RuleKey<GameRules.BooleanValue> INK_DAMAGE_COOLDOWN;
     public static GameRules.RuleKey<GameRules.BooleanValue> INFINITE_INK_IN_CREATIVE;
+    public static GameRules.RuleKey<GameRules.BooleanValue> INKABLE_GROUND;
+    public static GameRules.RuleKey<GameRules.BooleanValue> RECHARGEABLE_INK_TANK;
 
     public static void registerGamerules()
     {
@@ -41,11 +48,35 @@ public class SplatcraftGameRules
         WATER_DAMAGE = createBooleanRule("waterDamage", Category.PLAYER, false);
         REQUIRE_INK_TANK = createBooleanRule("requireInkTank", Category.PLAYER, true);
         INK_FRIENDLY_FIRE = createBooleanRule("inkFriendlyFire", Category.PLAYER, false);
-        INK_REGEN = createBooleanRule("inkHealing", Category.PLAYER, true);
-        INK_REGEN_CONSUMES_HUNGER = createBooleanRule("inkHealingConsumesHunger", Category.PLAYER, true);
+        INK_HEALING = createBooleanRule("inkHealing", Category.PLAYER, true);
+        INK_HEALING_CONSUMES_HUNGER = createBooleanRule("inkHealingConsumesHunger", Category.PLAYER, true);
         INK_DAMAGE_COOLDOWN = createBooleanRule("inkDamageCooldown", Category.PLAYER, false);
         INK_MOB_DAMAGE_PERCENTAGE = createIntRule("inkMobDamagePercentage", Category.MOBS, 70);
         INFINITE_INK_IN_CREATIVE = createBooleanRule("infiniteInkInCreative", Category.PLAYER, true);
+        INKABLE_GROUND = createBooleanRule("inkableGround", Category.PLAYER, true);
+        RECHARGEABLE_INK_TANK = createBooleanRule("rechargeableInkTank", Category.PLAYER, true);
+    }
+
+    public static boolean getLocalizedRule(World level, BlockPos pos, GameRules.RuleKey<GameRules.BooleanValue> rule)
+    {
+        ArrayList<Stage> stages = new ArrayList<>(level.isClientSide ? ClientUtils.clientStages.values() : SaveInfoCapability.get(level.getServer()).getStages().values());
+
+        Stage localStage = null;
+
+        for(Object obj : stages.stream().filter(stage -> stage.dimID.equals(level.dimension().getRegistryName()) && new AxisAlignedBB(stage.cornerA, stage.cornerB).expandTowards(1, 1, 1).contains(pos.getX(), pos.getY(), pos.getZ())).toArray())
+        {
+            Stage stage = (Stage) obj;
+            if(localStage == null ||
+                    Math.abs(stage.cornerA.getX()-stage.cornerB.getX()) < Math.abs(localStage.cornerA.getX()-localStage.cornerB.getX()) ||
+                    Math.abs(stage.cornerA.getX()-stage.cornerB.getY()) < Math.abs(localStage.cornerA.getX()-localStage.cornerB.getY()) ||
+                    Math.abs(stage.cornerA.getX()-stage.cornerB.getZ()) < Math.abs(localStage.cornerA.getX()-localStage.cornerB.getZ()))
+                localStage = stage;
+        }
+
+        if(localStage != null && localStage.hasSetting(rule))
+            return localStage.getSetting(rule);
+
+        return getBooleanRuleValue(level, rule);
     }
 
     public static GameRules.RuleKey<GameRules.BooleanValue> createBooleanRule(String name, GameRules.Category category, boolean defaultValue)

@@ -11,15 +11,19 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.SplatcraftConfig;
+import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 
+import java.util.HashMap;
 import java.util.TreeMap;
 
 public class ClientUtils
 {
     @OnlyIn(Dist.CLIENT)
     protected static final TreeMap<String, Integer> clientColors = new TreeMap<>();
+    @OnlyIn(Dist.CLIENT)
+    public static final HashMap<String, Stage> clientStages = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
     public static void resetClientColors()
@@ -60,7 +64,7 @@ public class ClientUtils
     {
         PlayerEntity player = getClientPlayer();
 
-        if (!SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.REQUIRE_INK_TANK))
+        if (!SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.REQUIRE_INK_TANK))
         {
             return 0;
         }
