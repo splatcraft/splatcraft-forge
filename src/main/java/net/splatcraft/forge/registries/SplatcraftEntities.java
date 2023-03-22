@@ -5,12 +5,14 @@ import net.splatcraft.forge.client.renderer.InkProjectileRenderer;
 import net.splatcraft.forge.client.renderer.InkSquidRenderer;
 import net.splatcraft.forge.client.renderer.SquidBumperRenderer;
 import net.splatcraft.forge.client.renderer.subs.BurstBombRenderer;
+import net.splatcraft.forge.client.renderer.subs.CurlingBombRenderer;
 import net.splatcraft.forge.client.renderer.subs.SplatBombRenderer;
 import net.splatcraft.forge.client.renderer.subs.SuctionBombRenderer;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.entities.InkSquidEntity;
 import net.splatcraft.forge.entities.SquidBumperEntity;
 import net.splatcraft.forge.entities.subs.BurstBombEntity;
+import net.splatcraft.forge.entities.subs.CurlingBombEntity;
 import net.splatcraft.forge.entities.subs.SplatBombEntity;
 import net.splatcraft.forge.entities.subs.SuctionBombEntity;
 import net.minecraft.entity.Entity;
@@ -44,6 +46,7 @@ public class SplatcraftEntities
     public static final EntityType<BurstBombEntity> BURST_BOMB = create("burst_bomb", BurstBombEntity::new, EntityClassification.MISC, 0.5f, 0.5f);
     public static final EntityType<SuctionBombEntity> SUCTION_BOMB = create("suction_bomb", SuctionBombEntity::new, EntityClassification.MISC, 0.5f, 0.5f);
     public static final EntityType<SplatBombEntity> SPLAT_BOMB = create("splat_bomb", SplatBombEntity::new, EntityClassification.MISC, 0.5f, 0.5f);
+    public static final EntityType<CurlingBombEntity> CURLING_BOMB = create("curling_bomb", CurlingBombEntity::new, EntityClassification.MISC, 0.5f, 0.5f);
 
 
     @SubscribeEvent
@@ -58,6 +61,7 @@ public class SplatcraftEntities
         registry.register(BURST_BOMB);
         registry.register(SUCTION_BOMB);
         registry.register(SPLAT_BOMB);
+        registry.register(CURLING_BOMB);
     }
 
     private static <T extends Entity> EntityType<T> create(String name, EntityType.IFactory<T> supplier, EntityClassification classification, float width, float height)
@@ -89,6 +93,7 @@ public class SplatcraftEntities
         RenderingRegistry.registerEntityRenderingHandler(BURST_BOMB, BurstBombRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SUCTION_BOMB, SuctionBombRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SPLAT_BOMB, SplatBombRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(CURLING_BOMB, CurlingBombRenderer::new);
     }
 
     //@SubscribeEvent

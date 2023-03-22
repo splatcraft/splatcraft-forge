@@ -14,8 +14,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.items.weapons.RollerItem;
 import net.splatcraft.forge.items.weapons.SlosherItem;
+import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.util.PlayerCooldown;
 
@@ -74,9 +76,13 @@ public class PlayerPosingHandler
                     mainHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
                     break;
                 case SUB_HOLD:
+                    System.out.println(useTime);
+                    if(!(mainStack.getItem() instanceof SubWeaponItem) || useTime < ((SubWeaponItem) mainStack.getItem()).maxUseTime)
+                {
                     mainHand.yRot = -0.1F + model.getHead().yRot;
                     mainHand.xRot = ((float) Math.PI / 8F);
                     mainHand.zRot = ((float) Math.PI / 6F) * (mainHand == model.leftArm ? -1 : 1);
+                }
                     break;
                 case BUCKET_SWING:
                     animTime = ((SlosherItem) mainStack.getItem()).settings.startupTicks;

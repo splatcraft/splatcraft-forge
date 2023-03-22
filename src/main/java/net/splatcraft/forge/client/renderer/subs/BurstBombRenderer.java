@@ -49,7 +49,7 @@ public class BurstBombRenderer extends SubWeaponRenderer<BurstBombEntity, BurstB
     }
 
     @Override
-    public ResourceLocation getOverlayTexture(BurstBombEntity entity)
+    public ResourceLocation getInkTextureLocation(BurstBombEntity entity)
     {
         return OVERLAY_TEXTURE;
     }

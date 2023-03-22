@@ -83,7 +83,14 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
         result.inkType = inkType;
         result.sourceWeapon = sourceWeapon;
 
+        result.readItemData(sourceWeapon.getOrCreateTag().getCompound("EntityData"));
+
         return result;
+    }
+
+    public void readItemData(CompoundNBT nbt)
+    {
+
     }
 
     @Override
@@ -95,7 +102,12 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
 
         super.tick();
 
+        Vector3d raytraceOffset = new Vector3d(getBbWidth()/2f * Math.signum(getDeltaMovement().x), getBbHeight() * Math.max(0, Math.signum(getDeltaMovement().y)), getBbWidth()/2f * Math.signum(getDeltaMovement().z));
+
+        setDeltaMovement(getDeltaMovement().add(raytraceOffset));
         RayTraceResult raytraceresult = ProjectileHelper.getHitResult(this, this::canHitEntity);
+        setDeltaMovement(getDeltaMovement().subtract(raytraceOffset));
+
         boolean flag = false;
         if (raytraceresult.getType() == RayTraceResult.Type.BLOCK) {
             BlockPos blockpos = ((BlockRayTraceResult)raytraceresult).getBlockPos();
