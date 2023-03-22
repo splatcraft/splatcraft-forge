@@ -77,7 +77,7 @@ public class PlayerPosingHandler
                     break;
                 case SUB_HOLD:
                     System.out.println(useTime);
-                    if(!(mainStack.getItem() instanceof SubWeaponItem) || (mainStack.getItem().getUseDuration(mainStack) - useTime) < ((SubWeaponItem) mainStack.getItem()).maxUseTime)
+                    if(!(mainStack.getItem() instanceof SubWeaponItem) || useTime < ((SubWeaponItem) mainStack.getItem()).maxUseTime)
                 {
                     mainHand.yRot = -0.1F + model.getHead().yRot;
                     mainHand.xRot = ((float) Math.PI / 8F);

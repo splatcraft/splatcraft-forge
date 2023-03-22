@@ -29,10 +29,6 @@ import net.splatcraft.forge.util.InkExplosion;
 
 import java.util.stream.Stream;
 
-/* TODO
- * Increase explosion size/maybe trail when cooked
- * fix client/server desync for motion
- */
 public class CurlingBombEntity extends AbstractSubWeaponEntity
 {
 	public static final float DIRECT_DAMAGE = 36;
@@ -40,7 +36,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	public static final float EXPLOSION_SIZE = 2.5f;
 	public static final int FUSE_START = 10;
 	public static final int MAX_FUSE_TIME = 80;
-	public static final int MAX_COOK_TIME = 20;
+	public static final int MAX_COOK_TIME = 25;
 
 	private static final DataParameter<Integer> FUSE_TIME = EntityDataManager.defineId(CurlingBombEntity.class, DataSerializers.INT);
 	private static final DataParameter<Float> COOK_SCALE = EntityDataManager.defineId(CurlingBombEntity.class, DataSerializers.FLOAT);
@@ -100,7 +96,8 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 		prevBladeRot = bladeRot;
 		bladeRot += spd;
 
-		if(!level.isClientSide())
+		if(level.isClientSide())
+			setFuseTime(prevFuseTime);
 		setFuseTime(getFuseTime()-1);
 
 		for(int i = 0; i <= 2; i++)
@@ -125,7 +122,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 
 		if(getFuseTime() <= 0)
 		{
-			InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), EXPLOSION_SIZE, DIRECT_DAMAGE, DIRECT_DAMAGE, DIRECT_DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
+			InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), EXPLOSION_SIZE + getCookScale(), DIRECT_DAMAGE, DIRECT_DAMAGE, DIRECT_DAMAGE, damageMobs, getColor(), inkType, sourceWeapon);
 			level.broadcastEntityEvent(this, (byte) 1);
 			level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
 			if(!level.isClientSide())
@@ -147,7 +144,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	public void handleEntityEvent(byte id) {
 		super.handleEntityEvent(id);
 		if (id == 1) {
-			level.addAlwaysVisibleParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+			level.addAlwaysVisibleParticle(new InkExplosionParticleData(getColor(), (EXPLOSION_SIZE+getCookScale()) * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
 		}
 		if (id == 2) {
 			level.addParticle(new InkSplashParticleData(getColor(), EXPLOSION_SIZE*1.15f), this.getX(), this.getY()+0.4, this.getZ(), 0, 0, 0);
