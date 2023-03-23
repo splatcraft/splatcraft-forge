@@ -155,16 +155,20 @@ public abstract class RemoteItem extends Item implements ICommandSource
 
         CompoundNBT nbt = stack.getOrCreateTag();
 
-        if (hasCoordSet(stack))
+        if(!nbt.contains("Stage") || ClientUtils.clientStages.containsKey(nbt.getString("Stage")))
         {
-            Tuple<BlockPos, BlockPos> set = getCoordSet(stack, levelIn);
-            tooltip.add(new TranslationTextComponent("item.remote.coords.b", set.getA().getX(), set.getA().getY(), set.getA().getZ(),
-                    set.getB().getX(), set.getB().getY(), set.getB().getZ()));
-        } else if (stack.getOrCreateTag().contains("PointA"))
-        {
-            BlockPos pos = NBTUtil.readBlockPos(nbt.getCompound("PointA"));
-            tooltip.add(new TranslationTextComponent("item.remote.coords.a", pos.getX(), pos.getY(), pos.getZ()));
+            if (hasCoordSet(stack))
+            {
+                Tuple<BlockPos, BlockPos> set = getCoordSet(stack, levelIn);
+                tooltip.add(new TranslationTextComponent("item.remote.coords.b", set.getA().getX(), set.getA().getY(), set.getA().getZ(),
+                        set.getB().getX(), set.getB().getY(), set.getB().getZ()));
+            } else if (stack.getOrCreateTag().contains("PointA"))
+            {
+                BlockPos pos = NBTUtil.readBlockPos(nbt.getCompound("PointA"));
+                tooltip.add(new TranslationTextComponent("item.remote.coords.a", pos.getX(), pos.getY(), pos.getZ()));
+            }
         }
+        else tooltip.add(new TranslationTextComponent("item.remote.coords.invalid").withStyle(Style.EMPTY.withColor(TextFormatting.RED).withItalic(true)));
 
         if(nbt.contains("Targets") && !nbt.getString("Targets").isEmpty())
             tooltip.add(TextComponentUtils.mergeStyles(new StringTextComponent(nbt.getString("Targets")), TARGETS_STYLE));
