@@ -8,7 +8,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.util.math.BlockPos;
-import net.splatcraft.forge.commands.arguments.StageIDArgument;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.items.remotes.InkDisruptorItem;
@@ -22,7 +21,7 @@ public class ClearInkCommand
                 .then(Commands.argument("from", BlockPosArgument.blockPos())
                         .then(Commands.argument("to", BlockPosArgument.blockPos())
                                 .executes(ClearInkCommand::execute)
-                        )).then(Commands.argument("stage", new StageIDArgument(true)).executes(ClearInkCommand::executeStage)));
+                        )).then(StageCommand.stageId("stage").executes(ClearInkCommand::executeStage)));
     }
 
     private static int execute(CommandContext<CommandSource> context) throws CommandSyntaxException
@@ -35,7 +34,7 @@ public class ClearInkCommand
         Stage stage = SaveInfoCapability.get(context.getSource().getServer()).getStages().get(StringArgumentType.getString(context, "stage"));
 
         if(stage == null)
-            throw StageIDArgument.STAGE_NOT_FOUND.create(stage);
+            throw StageCommand.STAGE_NOT_FOUND.create(stage);
 
         return execute(context.getSource(), stage.cornerA, stage.cornerB);
     }

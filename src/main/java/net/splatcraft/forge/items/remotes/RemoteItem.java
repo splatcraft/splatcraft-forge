@@ -34,7 +34,10 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.splatcraft.forge.data.Stage;
+import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -80,14 +83,24 @@ public abstract class RemoteItem extends Item implements ICommandSource
 
     public static boolean hasCoordSet(ItemStack stack)
     {
-        return stack.getOrCreateTag().contains("PointA") && stack.getOrCreateTag().contains("PointB");
+        return stack.getOrCreateTag().contains("Stage") || (stack.getOrCreateTag().contains("PointA") && stack.getOrCreateTag().contains("PointB"));
     }
 
-    public static Tuple<BlockPos, BlockPos> getCoordSet(ItemStack stack)
+    public static Tuple<BlockPos, BlockPos> getCoordSet(ItemStack stack, World level)
     {
         if (!hasCoordSet(stack))
             return null;
         CompoundNBT nbt = stack.getTag();
+
+        if(nbt.contains("Stage"))
+        {
+            Stage stage = level.isClientSide() ? ClientUtils.clientStages.get(nbt.getString("Stage")) : SaveInfoCapability.get(level.getServer()).getStages().get(nbt.getString("Stage"));
+            if(stage == null)
+                return null;
+
+            return new Tuple<>(stage.cornerA, stage.cornerB);
+        }
+
         return new Tuple<>(NBTUtil.readBlockPos(nbt.getCompound("PointA")), NBTUtil.readBlockPos(nbt.getCompound("PointB")));
     }
 
@@ -111,7 +124,13 @@ public abstract class RemoteItem extends Item implements ICommandSource
 
     public static World getLevel(World level, ItemStack stack)
     {
-        return level.getServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(stack.getOrCreateTag().getString("Dimension"))));
+        CompoundNBT nbt = stack.getOrCreateTag();
+
+        World result = level.getServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, nbt.contains("Stage") ?
+                (level.isClientSide() ? ClientUtils.clientStages.get(nbt.getString("Stage")) : SaveInfoCapability.get(level.getServer()).getStages().get(nbt.getString("Stage"))).dimID
+                : new ResourceLocation(nbt.getString("Dimension"))));
+
+        return result == null ? level : result;
     }
 
     public static RemoteResult createResult(boolean success, TextComponent output)
@@ -138,7 +157,7 @@ public abstract class RemoteItem extends Item implements ICommandSource
 
         if (hasCoordSet(stack))
         {
-            Tuple<BlockPos, BlockPos> set = getCoordSet(stack);
+            Tuple<BlockPos, BlockPos> set = getCoordSet(stack, levelIn);
             tooltip.add(new TranslationTextComponent("item.remote.coords.b", set.getA().getX(), set.getA().getY(), set.getA().getZ(),
                     set.getB().getX(), set.getB().getY(), set.getB().getZ()));
         } else if (stack.getOrCreateTag().contains("PointA"))
@@ -151,7 +170,7 @@ public abstract class RemoteItem extends Item implements ICommandSource
             tooltip.add(TextComponentUtils.mergeStyles(new StringTextComponent(nbt.getString("Targets")), TARGETS_STYLE));
     }
 
-    private static final Style TARGETS_STYLE = Style.EMPTY.withColor(TextFormatting.DARK_BLUE).withItalic(true);
+    protected static final Style TARGETS_STYLE = Style.EMPTY.withColor(TextFormatting.DARK_BLUE).withItalic(true);
 
     @Override
     public ActionResultType useOn(ItemUseContext context)
@@ -209,10 +228,10 @@ public abstract class RemoteItem extends Item implements ICommandSource
 
     public RemoteResult onRemoteUse(World usedOnWorld, ItemStack stack, int colorIn, Vector3d pos, Entity user)
     {
-        Tuple<BlockPos, BlockPos> coordSet = getCoordSet(stack);
+        Tuple<BlockPos, BlockPos> coordSet = getCoordSet(stack, usedOnWorld);
 
         if(coordSet == null)
-            return new RemoteResult(false, null);
+            return new RemoteResult(false, new TranslationTextComponent("status.remote.undefined_area"));
 
         Collection<ServerPlayerEntity> targets = ALL_TARGETS;
 
@@ -223,7 +242,6 @@ public abstract class RemoteItem extends Item implements ICommandSource
             targets = Collections.emptyList();
             System.out.println(e.getMessage());
         }
-
 
         return onRemoteUse(usedOnWorld, coordSet.getA(), coordSet.getB(), stack, colorIn, getRemoteMode(stack), targets);
     }

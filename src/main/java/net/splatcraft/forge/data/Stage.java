@@ -8,9 +8,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
+import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +25,7 @@ public class Stage
 	public ResourceLocation dimID;
 
 	private final HashMap<String, Boolean> settings = new HashMap<>();
+	private final HashMap<String, Integer> teams = new HashMap<>();
 
 	static
 	{
@@ -47,11 +50,15 @@ public class Stage
 		nbt.putString("Dimension", dimID.toString());
 
 		CompoundNBT settingsNbt = new CompoundNBT();
+		CompoundNBT teamsNbt = new CompoundNBT();
 
 		for(Map.Entry<String, Boolean> setting : settings.entrySet())
 			settingsNbt.putBoolean(setting.getKey(), setting.getValue());
-
 		nbt.put("Settings", settingsNbt);
+
+		for(Map.Entry<String, Integer> team : teams.entrySet())
+			settingsNbt.putInt(team.getKey(), team.getValue());
+		nbt.put("Teams", settingsNbt);
 
 		return nbt;
 	}
@@ -83,6 +90,26 @@ public class Stage
 		else settings.put(key, value);
 	}
 
+	public boolean hasTeam(String teamId)
+	{
+		return teams.containsKey(teamId);
+	}
+
+	public int getTeamColor(String teamId)
+	{
+		return hasTeam(teamId) ? teams.get(teamId) : -1;
+	}
+
+	public void setTeamColor(String teamId, int teamColor)
+	{
+		teams.put(teamId, teamColor);
+	}
+
+	public Collection<String> getTeamIds()
+	{
+		return teams.keySet();
+	}
+
 	public Stage(CompoundNBT nbt)
 	{
 		cornerA = NBTUtil.readBlockPos(nbt.getCompound("CornerA"));
@@ -90,15 +117,19 @@ public class Stage
 		dimID = new ResourceLocation(nbt.getString("Dimension"));
 
 		settings.clear();
-		CompoundNBT settingsNbt = nbt.getCompound("Settings");
 
+		CompoundNBT settingsNbt = nbt.getCompound("Settings");
 		for(String key : settingsNbt.getAllKeys())
 			settings.put(key, settingsNbt.getBoolean(key));
+
+		CompoundNBT teamsNbt = nbt.getCompound("Teams");
+		for(String key : teamsNbt.getAllKeys())
+			teams.put(key, teamsNbt.getInt(key));
 	}
 
 	public Stage(World level, BlockPos posA, BlockPos posB)
 	{
-		dimID = level.dimension().getRegistryName();
+		dimID = level.dimension().location();
 
 		cornerA = posA;
 		cornerB = posB;

@@ -154,7 +154,7 @@ public class SquidFormHandler {
                 InkColorTileEntity spawnPad = (InkColorTileEntity) player.level.getBlockEntity(posBelow);
 
                 if(player instanceof ServerPlayerEntity && ColorUtils.colorEquals(player, spawnPad))
-                    ((ServerPlayerEntity)player).setRespawnPosition(player.level.dimension(), posBelow, player.level.getBlockState(posBelow).getValue(SpawnPadBlock.DIRECTION).get2DDataValue()*90, false, true);
+                    ((ServerPlayerEntity)player).setRespawnPosition(player.level.dimension(), posBelow, player.level.getBlockState(posBelow).getValue(SpawnPadBlock.DIRECTION).toYRot(), false, true);
 
             }
         }

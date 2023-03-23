@@ -15,6 +15,7 @@ public class InkColorTileEntity extends TileEntity
 {
 
     private int color = ColorUtils.DEFAULT;
+    private String team = "";
 
     public InkColorTileEntity()
     {
@@ -30,6 +31,8 @@ public class InkColorTileEntity extends TileEntity
     public @NotNull CompoundNBT save(CompoundNBT nbt)
     {
         nbt.putInt("Color", color);
+        if(!team.isEmpty())
+            nbt.putString("Team", team);
         return super.save(nbt);
     }
 
@@ -39,6 +42,7 @@ public class InkColorTileEntity extends TileEntity
     {
         super.load(state, nbt);
         color = ColorUtils.getColorFromNbt(nbt);
+        team = nbt.getString("Team");
     }
 
     @Override
@@ -81,4 +85,11 @@ public class InkColorTileEntity extends TileEntity
         this.color = color;
     }
 
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
+    }
 }

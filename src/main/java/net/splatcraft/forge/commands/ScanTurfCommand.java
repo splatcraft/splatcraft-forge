@@ -11,7 +11,6 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.splatcraft.forge.commands.arguments.StageIDArgument;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.items.remotes.RemoteItem;
@@ -30,7 +29,7 @@ public class ScanTurfCommand
                         .then(Commands.literal("topDown").executes(context -> execute(context, 0)))
                         .then(Commands.literal("multiLayered").executes(context -> execute(context, 1))))
                 ))
-                .then(Commands.argument("stage", new StageIDArgument(true)).executes(ScanTurfCommand::executeStageOnSelf)
+                .then(StageCommand.stageId("stage").executes(ScanTurfCommand::executeStageOnSelf)
                 .then(Commands.argument("target", EntityArgument.players())
                         .then(Commands.literal("topDown").executes(context -> executeStage(context, 0)))
                         .then(Commands.literal("multiLayered").executes(context -> executeStage(context, 1))))));
@@ -41,7 +40,7 @@ public class ScanTurfCommand
         Stage stage = SaveInfoCapability.get(context.getSource().getServer()).getStages().get(StringArgumentType.getString(context, "stage"));
 
         if(stage == null)
-            throw StageIDArgument.STAGE_NOT_FOUND.create(stage);
+            throw StageCommand.STAGE_NOT_FOUND.create(stage);
 
         return execute(context.getSource(), stage.cornerA, stage.cornerB, 0,
                 context.getSource().getEntity() instanceof ServerPlayerEntity ? Collections.singletonList((ServerPlayerEntity) context.getSource().getEntity()) : RemoteItem.ALL_TARGETS);
@@ -57,7 +56,7 @@ public class ScanTurfCommand
         Stage stage = SaveInfoCapability.get(context.getSource().getServer()).getStages().get(StringArgumentType.getString(context, "stage"));
 
         if(stage == null)
-            throw StageIDArgument.STAGE_NOT_FOUND.create(stage);
+            throw StageCommand.STAGE_NOT_FOUND.create(stage);
 
         return execute(context.getSource(), stage.cornerA, stage.cornerB, mode, EntityArgument.getPlayers(context, "target"));
     }
