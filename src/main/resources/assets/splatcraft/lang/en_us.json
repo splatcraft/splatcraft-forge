@@ -62,6 +62,7 @@
   "item.splatcraft.color_changer.mode.2": "Blacklist Player Color",
   "item.remote.coords.a": "(%s,%s,%s)",
   "item.remote.coords.b": "(%s,%s,%s) to (%s,%s,%s)",
+  "item.remote.coords.invalid": "Invalid coord set!",
 
   "item.splatcraft.squid_bumper": "Squid Bumper",
   "item.splatcraft.ink_cloth_helmet": "Ink Cloth Hat",
@@ -392,6 +393,7 @@
   "status.no_ink": "Low Ink!",
   "status.cant_use": "Can't Use!",
   "status.remote_mode": "Set Remote Mode to %s",
+  "status.remote.undefined_area": "§cInvalid coord set!",
   "status.scan_turf.out_of_world": "§cCannot check for blocks outside of the world",
   "status.scan_turf.score": "%s = %s%%",
   "status.scan_turf.winner": "%s §ewins!",
@@ -416,9 +418,16 @@
   "commands.stage.remove.success": "Successfully removed stage [%s]",
   "commands.stage.setting.success.default": "Reset %s for stage [%s]",
   "commands.stage.setting.success": "Set %s for stage [%s] to %s",
+  "commands.stage.teams.set.success": "Tagged %s blocks on %s as part of [%s] team",
+  "commands.stage.teams.get.success": "[%s] team on %s is currently %s",
+  "commands.stage.warp.success": "Successfully teleported %s player(s) to [%s]",
 
   "arg.colorCriterion.notFound": "No criteria were found by the color %s",
   "arg.inkColor.notFound": "Unknown color %s",
+  "arg.stageWarp.noSpawnPads": "No available Spawn Pads were found on stage [%s]",
+  "arg.stageWarp.noPlayers": "No players were found with a Spawn Pad matching their ink color on stage [%s]",
+  "arg.stageTeam.notFound": "Unknown stage %s",
+  "arg.stageTeam.alreadyExists": "Stage [%s] already exists",
 
   "stat.splatcraft.turf_wars_won": "Turf Wars Won",
   "stat.splatcraft.squid_time": "Time as Squid",

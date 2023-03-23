@@ -17,6 +17,9 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -194,6 +197,8 @@ public class StageCommand
 		BlockPos blockpos2 = new BlockPos(Math.min(stage.cornerA.getX(), stage.cornerB.getX()), Math.min(stage.cornerB.getY(), stage.cornerA.getY()), Math.min(stage.cornerA.getZ(), stage.cornerB.getZ()));
 		BlockPos blockpos3 = new BlockPos(Math.max(stage.cornerA.getX(), stage.cornerB.getX()), Math.max(stage.cornerB.getY(), stage.cornerA.getY()), Math.max(stage.cornerA.getZ(), stage.cornerB.getZ()));
 
+		int affectedBlocks = 0;
+
 		for (int x = blockpos2.getX(); x <= blockpos3.getX(); x++)
 			for (int y = blockpos2.getY(); y <= blockpos3.getY(); y++)
 				for (int z = blockpos2.getZ(); z <= blockpos3.getZ(); z++)
@@ -201,11 +206,18 @@ public class StageCommand
 					BlockPos pos = new BlockPos(x, y, z);
 
 					if (stageLevel.getBlockEntity(pos) instanceof InkColorTileEntity)
-						((InkColorTileEntity) stageLevel.getBlockEntity(pos)).setTeam(teamId);
+					{
+						InkColorTileEntity te = ((InkColorTileEntity) stageLevel.getBlockEntity(pos));
+						if(te.getColor() == teamColor && !te.getTeam().equals(teamId))
+						{
+							te.setTeam(teamId);
+							affectedBlocks++;
+						}
+					}
 				}
 
 		stage.setTeamColor(teamId, teamColor);
-		source.sendSuccess(new TranslationTextComponent("commands.stage.teams.set.success", ColorUtils.getFormatedColorName(teamColor, false), stageId, teamId), true);
+		source.sendSuccess(new TranslationTextComponent("commands.stage.teams.set.success", affectedBlocks, stageId, new StringTextComponent(teamId).withStyle(Style.EMPTY.withColor(Color.fromRgb(teamColor)))), true);
 
 		SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
 
@@ -290,6 +302,9 @@ public class StageCommand
 		int result = 0;
 		for(int i : playersTeleported.values())
 			result += i;
+
+		if(result == 0)
+			throw NO_PLAYERS_FOUND.create(stageId);
 
 		source.sendSuccess(new TranslationTextComponent("commands.stage.warp.success", result, stageId), true);
 		return result;
