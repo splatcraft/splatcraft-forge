@@ -143,7 +143,12 @@ public class CanvasBlock extends Block implements IColoredBlock
         if (tileEntity instanceof InkColorTileEntity && ((InkColorTileEntity) tileEntity).getColor() != newColor)
         {
             ((InkColorTileEntity) tileEntity).setColor(newColor);
-            level.setBlock(pos, state.setValue(INKED, true), 2);
+            if(state.getValue(INKED))
+            {
+                level.sendBlockUpdated(pos, state, state, 3);
+                state.updateNeighbourShapes(level, pos, 3);
+            }
+            else level.setBlock(pos, state.setValue(INKED, true), 3);
             return true;
         }
         return false;
