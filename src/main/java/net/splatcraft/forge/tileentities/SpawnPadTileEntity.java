@@ -3,112 +3,58 @@ package net.splatcraft.forge.tileentities;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.splatcraft.forge.entities.InkProjectileEntity;
-import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
+import net.minecraft.world.server.ServerWorld;
+import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
-import net.splatcraft.forge.util.ColorUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
-public class SpawnPadTileEntity extends InkColorTileEntity implements ITickableTileEntity
+import java.util.UUID;
+
+public class SpawnPadTileEntity extends InkColorTileEntity
 {
-	public final int maxActiveTime = 20;
-	protected int activeTime = maxActiveTime;
-	public float radius = 2f;
+	private UUID spawnShieldUuid;
 
 	public SpawnPadTileEntity()
 	{
 		super(SplatcraftTileEntities.spawnPadTileEntity);
 	}
 
-	public float getActiveTime() {
-		return activeTime;
-	}
-
-	public float getMaxActiveTime() {
-		return maxActiveTime;
-	}
-
-	@Override
-	public void tick()
+	public boolean isSpawnShield(SpawnShieldEntity otherShield)
 	{
-		if (activeTime > 0)
-			activeTime--;
+		return otherShield != null && spawnShieldUuid.equals(otherShield.getUUID());
+	}
 
-		for (Entity entity : level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(getBlockPos().getX()+.5, getBlockPos().getY()+.5, getBlockPos().getZ()+.5,
-				getBlockPos().getX()+.5, getBlockPos().getY()+.5, getBlockPos().getZ()+.5).inflate(radius)))
-		{
-			if(!ColorUtils.colorEquals(entity, this))
-			{
-				activeTime = maxActiveTime;
+	public SpawnShieldEntity getSpawnShield()
+	{
+		if(level.isClientSide() || spawnShieldUuid == null)
+			return null;
 
-				if(entity instanceof InkProjectileEntity || entity instanceof AbstractSubWeaponEntity)
-				{
-					level.broadcastEntityEvent(entity, (byte) -1);
-					entity.remove();
-				}
-				else
-				{
-					entity.setDeltaMovement(entity.position().subtract(getBlockPos().getX() + .5f, getBlockPos().getY(), getBlockPos().getZ() + .5f).normalize().scale(.5));
-					entity.hurtMarked = true;
-				}
-			}
-		}
+		Entity res = ((ServerWorld) level).getEntity(spawnShieldUuid);
+			return (res instanceof SpawnShieldEntity) ? (SpawnShieldEntity) res : null;
+	}
+
+	public void setSpawnShield(SpawnShieldEntity shield)
+	{
+		if(shield == null)
+			spawnShieldUuid = null;
+		else spawnShieldUuid = shield.getUUID();
 
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT nbt)
+	public @NotNull CompoundNBT save(CompoundNBT nbt)
+	{
+		if(spawnShieldUuid != null)
+			nbt.putUUID("SpawnShield", spawnShieldUuid);
+		return super.save(nbt);
+	}
+
+	@Override
+	public void load(@NotNull BlockState state, @NotNull CompoundNBT nbt)
 	{
 		super.load(state, nbt);
 
-		if (nbt.contains("ActiveTime"))
-			activeTime = nbt.getInt("ActiveTime");
-
-		if(nbt.contains("ProtectionRadius"))
-			radius = nbt.getFloat("ProtectionRadius");
-	}
-
-	@Override
-	public CompoundNBT save(CompoundNBT compound)
-	{
-		compound.putInt("ActiveTime", activeTime);
-		compound.putFloat("ProtectionRadius", radius);
-
-		return super.save(compound);
-	}
-
-
-	@Override
-	public CompoundNBT getUpdateTag()
-	{
-		return this.save(new CompoundNBT());
-	}
-
-	@Override
-	public void handleUpdateTag(BlockState state, CompoundNBT tag)
-	{
-		this.load(state, tag);
-	}
-
-	@Nullable
-	@Override
-	public SUpdateTileEntityPacket getUpdatePacket()
-	{
-		return new SUpdateTileEntityPacket(getBlockPos(), 2, getUpdateTag());
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
-	{
-		if (level != null)
-		{
-			BlockState state = level.getBlockState(getBlockPos());
-			level.sendBlockUpdated(getBlockPos(), state, state, 2);
-			handleUpdateTag(state, pkt.getTag());
-		}
+		if(nbt.hasUUID("SpawnShield"))
+			spawnShieldUuid = nbt.getUUID("SpawnShield");
 	}
 }

@@ -207,6 +207,12 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         Entity target = result.getEntity();
         float dmg = damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown);
 
+        if(!level.isClientSide() && target instanceof SpawnShieldEntity && !InkDamageUtils.canDamage(target, this))
+        {
+            remove();
+            level.broadcastEntityEvent(this, (byte) -1);
+        }
+
         if (target instanceof LivingEntity) {
             if (InkDamageUtils.isSplatted((LivingEntity) target)) return;
 

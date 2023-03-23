@@ -8,8 +8,10 @@ import net.splatcraft.forge.client.renderer.subs.BurstBombRenderer;
 import net.splatcraft.forge.client.renderer.subs.CurlingBombRenderer;
 import net.splatcraft.forge.client.renderer.subs.SplatBombRenderer;
 import net.splatcraft.forge.client.renderer.subs.SuctionBombRenderer;
+import net.splatcraft.forge.client.renderer.SpawnShieldRenderer;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.entities.InkSquidEntity;
+import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.entities.SquidBumperEntity;
 import net.splatcraft.forge.entities.subs.BurstBombEntity;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
@@ -37,10 +39,11 @@ import java.util.function.Consumer;
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftEntities
 {
+    public static final EntityType<InkSquidEntity> INK_SQUID = create("ink_squid", InkSquidEntity::new, EntityClassification.AMBIENT, 0.6f, 0.5f);
 
     public static final EntityType<InkProjectileEntity> INK_PROJECTILE = create("ink_projectile", InkProjectileEntity::new, EntityClassification.MISC);
-    public static final EntityType<InkSquidEntity> INK_SQUID = create("ink_squid", InkSquidEntity::new, EntityClassification.AMBIENT, 0.6f, 0.5f);
     public static final EntityType<SquidBumperEntity> SQUID_BUMPER = create("squid_bumper", SquidBumperEntity::new, EntityClassification.MISC, 0.6f, 1.8f);
+    public static final EntityType<SpawnShieldEntity> SPAWN_SHIELD = create("spawn_shield", SpawnShieldEntity::new, EntityClassification.MISC, 1, 1);
 
     //Sub Weapons
     public static final EntityType<BurstBombEntity> BURST_BOMB = create("burst_bomb", BurstBombEntity::new, EntityClassification.MISC, 0.5f, 0.5f);
@@ -57,6 +60,7 @@ public class SplatcraftEntities
         registry.register(INK_PROJECTILE);
         registry.register(INK_SQUID);
         registry.register(SQUID_BUMPER);
+        registry.register(SPAWN_SHIELD);
 
         registry.register(BURST_BOMB);
         registry.register(SUCTION_BOMB);
@@ -89,6 +93,7 @@ public class SplatcraftEntities
         RenderingRegistry.registerEntityRenderingHandler(INK_PROJECTILE, InkProjectileRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(INK_SQUID, InkSquidRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SQUID_BUMPER, SquidBumperRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(SPAWN_SHIELD, SpawnShieldRenderer::new);
 
         RenderingRegistry.registerEntityRenderingHandler(BURST_BOMB, BurstBombRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SUCTION_BOMB, SuctionBombRenderer::new);

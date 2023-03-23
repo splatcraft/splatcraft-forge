@@ -29,9 +29,11 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
+import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,7 +83,6 @@ public class SpawnPadBlock extends Block implements IColoredBlock, IWaterLoggabl
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context)
 	{
-
 		for(Direction dir : Direction.values()) {
 			if (dir.get2DDataValue() < 0)
 				continue;
@@ -147,9 +148,14 @@ public class SpawnPadBlock extends Block implements IColoredBlock, IWaterLoggabl
 	@Override
 	public void setPlacedBy(World level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
 	{
-		if (!level.isClientSide && stack.getTag() != null && level.getBlockEntity(pos) instanceof InkColorTileEntity)
+		if (!level.isClientSide && stack.getTag() != null && level.getBlockEntity(pos) instanceof SpawnPadTileEntity)
 		{
 			ColorUtils.setInkColor(level.getBlockEntity(pos), ColorUtils.getInkColor(stack));
+
+			SpawnShieldEntity shield = new SpawnShieldEntity(level, pos, ColorUtils.getInkColor(stack));
+			((SpawnPadTileEntity) level.getBlockEntity(pos)).setSpawnShield(shield);
+
+			level.addFreshEntity(shield);
 		}
 
 		for(Direction dir : Direction.values())
@@ -228,9 +234,12 @@ public class SpawnPadBlock extends Block implements IColoredBlock, IWaterLoggabl
 	{
 		BlockState state = level.getBlockState(pos);
 		TileEntity tileEntity = level.getBlockEntity(pos);
-		if (tileEntity instanceof InkColorTileEntity && ((InkColorTileEntity) tileEntity).getColor() != newColor)
+		if (tileEntity instanceof SpawnPadTileEntity && ((InkColorTileEntity) tileEntity).getColor() != newColor)
 		{
 			((InkColorTileEntity) tileEntity).setColor(newColor);
+			SpawnShieldEntity shield = ((SpawnPadTileEntity) tileEntity).getSpawnShield();
+			if(shield != null)
+				shield.setColor(newColor);
 			level.sendBlockUpdated(pos, state, state, 3);
 			state.updateNeighbourShapes(level, pos, 3);
 			return true;

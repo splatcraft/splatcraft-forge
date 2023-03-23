@@ -13,6 +13,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -22,6 +23,7 @@ import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -58,6 +60,10 @@ public class InkBlockUtils
 
         if(!SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INKABLE_GROUND))
             return false;
+
+        for(SpawnShieldEntity shieldEntity : level.getEntitiesOfClass(SpawnShieldEntity.class, new AxisAlignedBB(pos)))
+            if(!ColorUtils.colorEquals(level, pos, ColorUtils.getEntityColor(shieldEntity), color))
+                return false;
 
         BlockState inkState = getInkState(inkType, level, pos);
 

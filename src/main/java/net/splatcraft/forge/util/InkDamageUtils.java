@@ -16,6 +16,7 @@ import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 import net.splatcraft.forge.entities.IColoredEntity;
+import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.entities.SquidBumperEntity;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateInkOverlayPacket;
@@ -44,8 +45,16 @@ public class InkDamageUtils {
         return doDamage(level, target, damage, color, directSource, source, sourceItem, damageMobs, "roll", true);
     }
 
-    public static boolean canDamage(Entity target, Entity source) {
-        return canDamageColor(source.level, target.blockPosition(), ColorUtils.getEntityColor(target), ColorUtils.getEntityColor(source));
+    public static boolean canDamage(Entity target, Entity source)
+    {
+        boolean result = canDamageColor(source.level, target.blockPosition(), ColorUtils.getEntityColor(target), ColorUtils.getEntityColor(source));
+
+        if(result)
+            for(SpawnShieldEntity shield : target.level.getEntitiesOfClass(SpawnShieldEntity.class, target.getBoundingBox()))
+                if(ColorUtils.colorEquals(target.level, target.blockPosition(), ColorUtils.getEntityColor(shield), ColorUtils.getEntityColor(target)))
+                    return false;
+
+        return result;
     }
 
     public static boolean canDamageColor(World level, BlockPos pos, int targetColor, int sourceColor) {

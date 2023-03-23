@@ -14,7 +14,6 @@ import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.splatcraft.forge.client.renderer.tileentity.InkedBlockTileEntityRenderer;
 import net.splatcraft.forge.client.renderer.tileentity.RemotePedestalTileEntityRenderer;
-import net.splatcraft.forge.client.renderer.tileentity.SpawnPadTileEntityRenderer;
 import net.splatcraft.forge.client.renderer.tileentity.StageBarrierTileEntityRenderer;
 import net.splatcraft.forge.tileentities.*;
 import net.splatcraft.forge.tileentities.container.InkVatContainer;
@@ -92,6 +91,5 @@ public class SplatcraftTileEntities
         ClientRegistry.bindTileEntityRenderer(stageBarrierTileEntity, StageBarrierTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(colorBarrierTileEntity, StageBarrierTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(remotePedestalTileEntity, RemotePedestalTileEntityRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(spawnPadTileEntity, SpawnPadTileEntityRenderer::new);
     }
 }
