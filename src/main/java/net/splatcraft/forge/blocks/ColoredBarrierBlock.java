@@ -40,7 +40,9 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
         if(level.getBlockEntity(pos) instanceof ColoredBarrierTileEntity)
         {
             ((ColoredBarrierTileEntity) level.getBlockEntity(pos)).setColor(color);
-            level.sendBlockUpdated(pos, state, state, 2);
+            System.out.println(((ColoredBarrierTileEntity) level.getBlockEntity(pos)).getColor());
+            level.sendBlockUpdated(pos, state, state, 3);
+            state.updateNeighbourShapes(level, pos, 3);
             return true;
         }
         return false;
@@ -93,11 +95,16 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
     }
 
     @Override
+    public boolean canRemoteColorChange(World level, BlockPos pos, int color, int newColor)
+    {
+        return IColoredBlock.super.canRemoteColorChange(level, pos, color, newColor);
+    }
+
+    @Override
     public boolean remoteColorChange(World level, BlockPos pos, int newColor)
     {
         return setColor(level, pos, newColor);
     }
-
 
     @Override
     public boolean remoteInkClear(World level, BlockPos pos) {

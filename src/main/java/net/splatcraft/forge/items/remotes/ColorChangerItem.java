@@ -75,9 +75,9 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
                     BlockPos pos = new BlockPos(x, y, z);
                     Block block = level.getBlockState(pos).getBlock();
                     TileEntity tileEntity = level.getBlockEntity(pos);
-                    if (block instanceof IColoredBlock && tileEntity instanceof InkColorTileEntity)
+                    if (block instanceof IColoredBlock)
                     {
-                        int teColor = ((InkColorTileEntity) tileEntity).getColor();
+                        int teColor = ((IColoredBlock) block).getColor(level, pos);
 
                         if (((IColoredBlock) block).canRemoteColorChange(level, pos, teColor, color) && (mode == 0 || (mode == 1) == (affectedTeam.isEmpty() ? teColor == affectedColor : ((InkColorTileEntity) tileEntity).getTeam().equals(affectedTeam)))
                                 && ((IColoredBlock) block).remoteColorChange(level, pos, color))
