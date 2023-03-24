@@ -47,7 +47,12 @@ public class InkDamageUtils {
 
     public static boolean canDamage(Entity target, Entity source)
     {
-        boolean result = canDamageColor(source.level, target.blockPosition(), ColorUtils.getEntityColor(target), ColorUtils.getEntityColor(source));
+        return canDamage(target, ColorUtils.getEntityColor(source));
+    }
+
+    public static boolean canDamage(Entity target, int color)
+    {
+        boolean result = canDamageColor(target.level, target.blockPosition(), ColorUtils.getEntityColor(target), color);
 
         if(result)
             for(SpawnShieldEntity shield : target.level.getEntitiesOfClass(SpawnShieldEntity.class, target.getBoundingBox()))
@@ -71,7 +76,7 @@ public class InkDamageUtils {
 
         int targetColor = ColorUtils.getEntityColor(target);
         boolean doDamage = target instanceof PlayerEntity || damageMobs || mobDmgPctg > 0;
-        boolean canInk = canDamageColor(level, target.blockPosition(), color, targetColor);
+        boolean canInk = canDamage(target, color);
 
         if (targetColor > -1) {
             doDamage = canInk;
