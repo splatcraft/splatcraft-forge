@@ -13,6 +13,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
@@ -72,7 +73,7 @@ public class SpawnShieldEntity extends Entity implements IColoredEntity
 
 		for (Entity entity : level.getEntitiesOfClass(Entity.class, getBoundingBox()))
 		{
-			if(!ColorUtils.colorEquals(level, blockPosition(), ColorUtils.getEntityColor(entity), getColor()))
+			if(!(entity.getType().is(SplatcraftTags.EntityTypes.BYPASSES_SPAWN_SHIELD) || ColorUtils.colorEquals(level, blockPosition(), ColorUtils.getEntityColor(entity), getColor())))
 			{
 				setActiveTime(MAX_ACTIVE_TIME);
 

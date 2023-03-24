@@ -1,5 +1,7 @@
 package net.splatcraft.forge.data;
 
+import net.minecraft.entity.EntityType;
+import net.minecraft.tags.EntityTypeTags;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.util.InkColor;
@@ -85,6 +87,17 @@ public class SplatcraftTags
         private static ITag<Block> createTag(String name)
         {
             return BlockTags.bind(new ResourceLocation(Splatcraft.MODID, name).toString());
+        }
+    }
+
+
+    public static class EntityTypes
+    {
+        public static final ITag<EntityType<?>> BYPASSES_SPAWN_SHIELD = createTag("inkproof");
+
+        private static ITag<EntityType<?>> createTag(String name)
+        {
+            return EntityTypeTags.bind(new ResourceLocation(Splatcraft.MODID, name).toString());
         }
     }
 
