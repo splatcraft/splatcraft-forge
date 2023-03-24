@@ -44,6 +44,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
     private final Item clearItem;
     private boolean addStartersToTab = false;
+    private boolean matchColor = true;
 
     public ColoredBlockItem(Block block, String name, Properties properties, Item clearItem)
     {
@@ -57,6 +58,15 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     public ColoredBlockItem(Block block, String name, int stackSize, @Nullable Item clearItem)
     {
         this(block, name, new Properties().stacksTo(stackSize).tab(SplatcraftItemGroups.GROUP_GENERAL), clearItem);
+    }
+
+    public ColoredBlockItem setMatchColor(boolean matchColor) {
+        this.matchColor = matchColor;
+        return this;
+    }
+
+    public boolean matchesColor() {
+        return matchColor;
     }
 
     public ColoredBlockItem(Block block, String name)
@@ -74,7 +84,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
         if (ColorUtils.isColorLocked(stack))
             tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
-        else
+        else if(matchColor)
             tooltip.add(new TranslationTextComponent( "item.splatcraft.tooltip.matches_color").withStyle(TextFormatting.GRAY));
     }
 
@@ -125,7 +135,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     {
         super.inventoryTick(stack, levelIn, entityIn, itemSlot, isSelected);
 
-        if (ColorUtils.getInkColor(stack) == -1 || !ColorUtils.isColorLocked(stack))
+        if (matchColor && (ColorUtils.getInkColor(stack) == -1 || !ColorUtils.isColorLocked(stack)))
         {
             ColorUtils.setInkColor(stack, entityIn instanceof PlayerEntity && PlayerInfoCapability.hasCapability((LivingEntity) entityIn) ?
                     ColorUtils.getPlayerColor((PlayerEntity) entityIn) : ColorUtils.DEFAULT);

@@ -1,3 +1,11 @@
 {
-  "parent": "splatcraft:block/ink_canvas"
+  "parent": "splatcraft:block/ink_canvas",
+  "overrides": [
+    {
+      "predicate": {
+        "splatcraft:inked": 1
+      },
+      "model": "splatcraft:item/inked_canvas"
+    }
+  ]
 }

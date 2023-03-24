@@ -4,11 +4,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -16,6 +20,7 @@ import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +61,13 @@ public class CanvasBlock extends Block implements IColoredBlock
         }
 
         return level.getBlockState(pos);
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context)
+    {
+        return super.getStateForPlacement(context).setValue(INKED, ColorUtils.getInkColor(context.getItemInHand()) != -1);
     }
 
     @Override
@@ -138,17 +150,21 @@ public class CanvasBlock extends Block implements IColoredBlock
     @Override
     public boolean remoteColorChange(World level, BlockPos pos, int newColor)
     {
-        BlockState state = level.getBlockState(pos);
+        return setColor(level, pos, newColor);
+    }
+
+    @Override
+    public boolean setColor(World level, BlockPos pos, int newColor)
+    {
         TileEntity tileEntity = level.getBlockEntity(pos);
         if (tileEntity instanceof InkColorTileEntity && ((InkColorTileEntity) tileEntity).getColor() != newColor)
         {
             ((InkColorTileEntity) tileEntity).setColor(newColor);
-            if(state.getValue(INKED))
-            {
-                level.sendBlockUpdated(pos, state, state, 3);
-                state.updateNeighbourShapes(level, pos, 3);
-            }
-            else level.setBlock(pos, state.setValue(INKED, true), 3);
+
+            BlockState state = level.getBlockState(pos);
+            level.sendBlockUpdated(pos, state, state, 3);
+            state.updateNeighbourShapes(level, pos, 3);
+
             return true;
         }
         return false;
@@ -158,5 +174,11 @@ public class CanvasBlock extends Block implements IColoredBlock
     public boolean remoteInkClear(World level, BlockPos pos)
     {
         return false;
+    }
+
+    @Override
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader level, BlockPos pos, PlayerEntity player)
+    {
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, level, pos, player), getColor((World) level, pos)), true);
     }
 }

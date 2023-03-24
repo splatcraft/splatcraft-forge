@@ -266,7 +266,7 @@ public class ColorUtils
         CompoundNBT nbt = stack.getTag();
 
         if (nbt == null || !nbt.contains("ColorLocked"))
-            return stack.getItem() instanceof ColoredBlockItem;
+            return false;
         return nbt.getBoolean("ColorLocked");
     }
 

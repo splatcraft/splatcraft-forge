@@ -48,6 +48,7 @@ import net.splatcraft.forge.items.weapons.SlosherItem;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
+import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.SplatcraftArmorMaterial;
 
 import java.util.ArrayList;
@@ -317,7 +318,7 @@ public class SplatcraftItems {
     public static final Item platedBarrierBar = new BlockItem(SplatcraftBlocks.platedBarrierBar).setRegistryName("plated_barrier_bar");
     public static final Item cautionBarrierBar = new BlockItem(SplatcraftBlocks.cautionBarrierBar).setRegistryName("caution_barrier_bar");
     public static final Item tarp = new BlockItem(SplatcraftBlocks.tarp).setRegistryName("tarp");
-    public static final Item canvas = new BlockItem(SplatcraftBlocks.canvas).setRegistryName("canvas");
+    public static final Item canvas = new ColoredBlockItem(SplatcraftBlocks.canvas, "canvas").setMatchColor(false);
     public static final Item squidBumper = new SquidBumperItem("squid_bumper");
     public static final Item sunkenCrate = new BlockItem(SplatcraftBlocks.sunkenCrate).setRegistryName("sunken_crate");
     public static final Item crate = new BlockItem(SplatcraftBlocks.crate).setRegistryName("crate");
@@ -436,6 +437,8 @@ public class SplatcraftItems {
         for (RollerItem roller : RollerItem.rollers) {
             ItemModelsProperties.register(roller, unfoldedProperty, roller.getUnfolded());
         }
+
+        ItemModelsProperties.register(canvas, new ResourceLocation(Splatcraft.MODID, "inked"), (stack, level, entity) -> ColorUtils.getInkColor(stack) == -1 ? 0 : 1);
     }
 
     @OnlyIn(Dist.CLIENT)
