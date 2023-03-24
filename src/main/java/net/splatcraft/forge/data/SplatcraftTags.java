@@ -22,6 +22,7 @@ public class SplatcraftTags
         new Items();
         new Blocks();
         new InkColors();
+        new EntityTypes();
     }
 
     public static class Items
@@ -93,7 +94,7 @@ public class SplatcraftTags
 
     public static class EntityTypes
     {
-        public static final ITag<EntityType<?>> BYPASSES_SPAWN_SHIELD = createTag("inkproof");
+        public static final ITag<EntityType<?>> BYPASSES_SPAWN_SHIELD = createTag("bypasses_spawn_shield");
 
         private static ITag<EntityType<?>> createTag(String name)
         {
