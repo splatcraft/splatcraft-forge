@@ -57,8 +57,8 @@ public class Stage
 		nbt.put("Settings", settingsNbt);
 
 		for(Map.Entry<String, Integer> team : teams.entrySet())
-			settingsNbt.putInt(team.getKey(), team.getValue());
-		nbt.put("Teams", settingsNbt);
+			teamsNbt.putInt(team.getKey(), team.getValue());
+		nbt.put("Teams", teamsNbt);
 
 		return nbt;
 	}

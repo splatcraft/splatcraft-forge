@@ -63,7 +63,7 @@ public class SplatcraftGameRules
 
         Stage localStage = null;
 
-        for(Object obj : stages.stream().filter(stage -> stage.dimID.equals(level.dimension().getRegistryName()) && new AxisAlignedBB(stage.cornerA, stage.cornerB).expandTowards(1, 1, 1).contains(pos.getX(), pos.getY(), pos.getZ())).toArray())
+        for(Object obj : stages.stream().filter(stage -> stage.dimID.equals(level.dimension().location()) && new AxisAlignedBB(stage.cornerA, stage.cornerB).expandTowards(1, 1, 1).contains(pos.getX(), pos.getY(), pos.getZ())).toArray())
         {
             Stage stage = (Stage) obj;
             if(localStage == null ||

@@ -11,7 +11,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.RegistryKey;
@@ -25,11 +24,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.splatcraft.forge.blocks.SpawnPadBlock;
 import net.splatcraft.forge.commands.arguments.InkColorArgument;
-import net.splatcraft.forge.commands.arguments.StageSettingArgument;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateStageListPacket;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
 import net.splatcraft.forge.util.ClientUtils;
@@ -49,6 +48,7 @@ public class StageCommand
 	public static final DynamicCommandExceptionType TEAM_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stageTeam.notFound", p_208663_0_));
 	public static final DynamicCommandExceptionType STAGE_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stage.notFound", p_208663_0_));
 	public static final DynamicCommandExceptionType STAGE_ALREADY_EXISTS = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stage.alreadyExists", p_208663_0_));
+	public static final DynamicCommandExceptionType SETTING_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stageSetting.notFound", p_208663_0_));
 
 
 	public static void register(CommandDispatcher<CommandSource> dispatcher)
@@ -62,7 +62,7 @@ public class StageCommand
 						.then(stageId("stage").executes(StageCommand::remove)
 				))//.then(Commands.literal("list"))
 				.then(Commands.literal("settings").then(stageId("stage")
-						.then(Commands.argument("setting", new StageSettingArgument())
+						.then(stageSetting("setting").executes(StageCommand::getSetting)
 								.then(Commands.literal("true").executes(context -> setSetting(context, true)))
 								.then(Commands.literal("false").executes(context -> setSetting(context, false)))
 								.then(Commands.literal("default").executes(context -> setSetting(context, null))))))
@@ -80,7 +80,7 @@ public class StageCommand
 
 	public static RequiredArgumentBuilder<CommandSource, String> stageId(String argumentName)
 	{
-		return Commands.argument(argumentName, StringArgumentType.word()).suggests((context, builder) -> ISuggestionProvider.suggest(ClientUtils.clientStages.keySet(), builder));
+		return Commands.argument(argumentName, StringArgumentType.word()).suggests((context, builder) -> ISuggestionProvider.suggest((context.getSource().getLevel().isClientSide() ? ClientUtils.clientStages : SaveInfoCapability.get(context.getSource().getServer()).getStages()).keySet(), builder));
 	}
 
 	public static RequiredArgumentBuilder<CommandSource, String> stageTeam(String argumentName, String stageArgumentName)
@@ -89,7 +89,7 @@ public class StageCommand
 		{
 			try
 			{
-				Stage stage = ClientUtils.clientStages.get(StringArgumentType.getString(context, stageArgumentName));
+				Stage stage = (context.getSource().getLevel().isClientSide() ? ClientUtils.clientStages : SaveInfoCapability.get(context.getSource().getServer()).getStages()).get(StringArgumentType.getString(context, stageArgumentName));
 				if(stage == null)
 					return Suggestions.empty();
 
@@ -98,6 +98,12 @@ public class StageCommand
 
 			return Suggestions.empty();
 		});
+	}
+
+	public static RequiredArgumentBuilder<CommandSource, String> stageSetting(String argumentName)
+	{
+		return Commands.argument(argumentName, StringArgumentType.word()).suggests((context, builder) ->
+				ISuggestionProvider.suggest(Stage.VALID_SETTINGS, builder));
 	}
 
 	private static int add(CommandContext<CommandSource> context) throws CommandSyntaxException {
@@ -111,6 +117,11 @@ public class StageCommand
 	private static int setSetting(CommandContext<CommandSource> context, @Nullable Boolean value) throws CommandSyntaxException
 	{
 		return setSetting(context.getSource(), StringArgumentType.getString(context, "stage"), StringArgumentType.getString(context, "setting"), value);
+	}
+
+	private static int getSetting(CommandContext<CommandSource> context) throws CommandSyntaxException
+	{
+		return getSetting(context.getSource(), StringArgumentType.getString(context, "stage"), StringArgumentType.getString(context, "setting"));
 	}
 
 
@@ -161,14 +172,15 @@ public class StageCommand
 		return 1;
 	}
 
-	private static int setSetting(CommandSource source, String stageId, String setting, @Nullable Boolean value) throws CommandSyntaxException {
+	private static int setSetting(CommandSource source, String stageId, String setting, @Nullable Boolean value) throws CommandSyntaxException
+	{
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
 		if(!stages.containsKey(stageId))
 			throw STAGE_NOT_FOUND.create(stageId);
 
 		if(!Stage.VALID_SETTINGS.contains(setting))
-			throw StageSettingArgument.SETTING_NOT_FOUND.create(setting);
+			throw SETTING_NOT_FOUND.create(setting);
 
 		Stage stage = stages.get(stageId);
 
@@ -183,7 +195,28 @@ public class StageCommand
 		return 1;
 	}
 
-	private static int setTeam(CommandSource source, String stageId, String teamId, int teamColor) throws CommandSyntaxException {
+	private static int getSetting(CommandSource source, String stageId, String setting) throws CommandSyntaxException
+	{
+		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
+
+		if(!stages.containsKey(stageId))
+			throw STAGE_NOT_FOUND.create(stageId);
+
+		if(!Stage.VALID_SETTINGS.contains(setting))
+			throw SETTING_NOT_FOUND.create(setting);
+
+		Stage stage = stages.get(stageId);
+
+
+		if(!stage.hasSetting(setting))
+			source.sendSuccess(new TranslationTextComponent("commands.stage.setting.get.default", setting, stageId), true);
+		else source.sendSuccess(new TranslationTextComponent("commands.stage.setting.get", setting, stageId, stage.getSetting(setting)), true);
+
+		return 1;
+	}
+
+	private static int setTeam(CommandSource source, String stageId, String teamId, int teamColor) throws CommandSyntaxException
+	{
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
 		if(!stages.containsKey(stageId))
