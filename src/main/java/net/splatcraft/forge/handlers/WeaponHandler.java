@@ -40,7 +40,7 @@ public class WeaponHandler {
 			}
 
 			if (event.getSource().getDirectEntity() instanceof PlayerEntity) {
-				PlayerEntity source = (PlayerEntity) event.getSource().getEntity();
+				PlayerEntity source = (PlayerEntity) event.getSource().getDirectEntity();
 				if (ScoreboardHandler.hasColorCriterion(color) && source != null)
 					target.getScoreboard().forAllObjectives(ScoreboardHandler.getColorKills(color), source.getScoreboardName(), score -> score.add(1));
 				if (ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(source)))
