@@ -378,7 +378,9 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
         Vector3d vector3d = this.getDeltaMovement();
         float f = MathHelper.sqrt(getHorizontalDistanceSqr(vector3d));
         this.xRot = lerpRotation(this.xRotO, (float) (MathHelper.atan2(vector3d.y, f) * (double) (180F / (float) Math.PI)));
-        this.yRot = lerpRotation(this.yRotO, (float) (MathHelper.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI)));
+
+        if(vector3d.multiply(1, 0, 1).length() >= 0.001)
+            this.yRot = lerpRotation(this.yRotO, (float) (MathHelper.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI)));
     }
 
     protected static float lerpRotation(float p_234614_0_, float p_234614_1_) {
