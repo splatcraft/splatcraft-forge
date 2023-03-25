@@ -30,6 +30,7 @@ import net.minecraft.world.World;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.blocks.InkwellBlock;
+import net.splatcraft.forge.client.handlers.SplatcraftKeyHandler;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.IColoredItem;
@@ -160,6 +161,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
                     if (!level.isClientSide)
                         SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(player.getUUID(), false), player);
                 }
+                SplatcraftKeyHandler.canUseHotkeys = false;
                 player.setSprinting(false);
                 player.inventory.selected = itemSlot;
             }

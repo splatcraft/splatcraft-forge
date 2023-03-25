@@ -7,6 +7,7 @@
     "EntityMixin",
     "FenceConnectionMixin",
     "PaneConnectionMixin",
+    "PlayerInventoryMixin",
     "RecipeCategoryMixin",
     "ServerPlayerMixin",
     "SheepMixin",

@@ -1,4 +1,4 @@
-package net.splatcraft.forge.handlers.client;
+package net.splatcraft.forge.client.handlers;
 
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;

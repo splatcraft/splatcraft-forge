@@ -1,4 +1,4 @@
-package net.splatcraft.forge.handlers.client;
+package net.splatcraft.forge.client.handlers;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;

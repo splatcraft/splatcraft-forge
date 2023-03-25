@@ -1,6 +1,5 @@
-package net.splatcraft.forge.handlers.client;
+package net.splatcraft.forge.client.handlers;
 
-import java.util.HashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -30,17 +29,21 @@ import net.splatcraft.forge.util.CommonUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.HashMap;
+
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class SplatcraftKeyHandler {
+    // TODO for Octo: make a proper input queue
     public static final HashMap<KeyBinding, Integer> pressState = new HashMap<>();
 
     public static KeyBinding squidKey;
     public static KeyBinding subWeaponHotkey;
 
+    public static boolean canUseHotkeys = true;
+
     private static int slot = -1;
 
-    public static void registerKeys()
-    {
+    public static void registerKeys() {
         squidKey = new KeyBinding("key.squidForm", GLFW.GLFW_KEY_Z, "key.categories.splatcraft");
         pressState.put(squidKey, 0);
         ClientRegistry.registerKeyBinding(squidKey);
@@ -57,7 +60,7 @@ public class SplatcraftKeyHandler {
     {
         Minecraft mc = Minecraft.getInstance();
         PlayerEntity player = mc.player;
-        if (player == null || !PlayerInfoCapability.hasCapability(player))
+        if (player == null || !PlayerInfoCapability.hasCapability(player) || !canUseHotkeys)
             return;
 
         if (subWeaponHotkey.isDown())
