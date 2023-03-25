@@ -70,7 +70,7 @@ public class ScanTurfCommand
     {
         RemoteItem.RemoteResult result = TurfScannerItem.scanTurf(source.getLevel(), source.getLevel(), from, to, mode, targets);
 
-        source.sendSuccess(result.getOutput() == null ? new TranslationTextComponent("commands.scanturf.success", result.getCommandResult()) : result.getOutput(), true);
+        source.sendSuccess(result.getOutput(), true);
 
         return result.getCommandResult();
     }

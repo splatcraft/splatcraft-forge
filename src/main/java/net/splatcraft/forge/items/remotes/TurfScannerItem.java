@@ -205,7 +205,8 @@ public class TurfScannerItem extends RemoteItem
                 SplatcraftPacketHandler.sendToPlayer(packet, target);
 
         }
-        return createResult(true, null).setIntResults(winner, (int) ((float) affectedBlockTotal / blockTotal * 15));
+
+        return createResult(true, new TranslationTextComponent("commands.scanturf.success", blockTotal)).setIntResults(winner, (int) ((float) affectedBlockTotal / blockTotal * 15));
     }
 
     private static BlockPos getTopSolidOrLiquidBlock(BlockPos pos, World level, int min)
