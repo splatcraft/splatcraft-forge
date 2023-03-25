@@ -32,7 +32,7 @@ public class InkDisruptorItem extends RemoteItem
 
         if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
         {
-            return createResult(false, new TranslationTextComponent("status.clear_ink.out_of_level"));
+            return createResult(false, new TranslationTextComponent("status.clear_ink.out_of_world"));
         }
 
 
@@ -42,7 +42,7 @@ public class InkDisruptorItem extends RemoteItem
             {
                 if (!level.isLoaded(new BlockPos(k, blockpos3.getY() - blockpos2.getY(), j)))
                 {
-                    return createResult(false, new TranslationTextComponent("status.clear_ink.out_of_level"));
+                    return createResult(false, new TranslationTextComponent("status.clear_ink.out_of_world"));
                 }
             }
         }

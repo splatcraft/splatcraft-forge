@@ -39,7 +39,7 @@ public class TurfScannerItem extends RemoteItem
 
         if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
         {
-            return createResult(false, new TranslationTextComponent("status.scan_turf.out_of_level"));
+            return createResult(false, new TranslationTextComponent("status.scan_turf.out_of_world"));
         }
 
         for (int j = blockpos2.getZ(); j <= blockpos3.getZ(); j += 16)
@@ -48,7 +48,7 @@ public class TurfScannerItem extends RemoteItem
             {
                 if (!level.isLoaded(new BlockPos(k, blockpos3.getY() - blockpos2.getY(), j)))
                 {
-                    return createResult(false, new TranslationTextComponent("status.scan_turf.out_of_level"));
+                    return createResult(false, new TranslationTextComponent("status.scan_turf.out_of_world"));
                 }
             }
         }

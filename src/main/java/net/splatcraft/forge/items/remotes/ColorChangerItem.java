@@ -50,7 +50,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
 
         if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
         {
-            return createResult(false, new TranslationTextComponent("status.change_color.out_of_level"));
+            return createResult(false, new TranslationTextComponent("status.change_color.out_of_world"));
         }
 
 
@@ -60,7 +60,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
             {
                 if (!level.isLoaded(new BlockPos(k, blockpos3.getY() - blockpos2.getY(), j)))
                 {
-                    return createResult(false, new TranslationTextComponent("status.change_color.out_of_level"));
+                    return createResult(false, new TranslationTextComponent("status.change_color.out_of_world"));
                 }
             }
         }
