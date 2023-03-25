@@ -105,6 +105,11 @@ public class Stage
 		teams.put(teamId, teamColor);
 	}
 
+	public void removeTeam(String teamId)
+	{
+		teams.remove(teamId);
+	}
+
 	public Collection<String> getTeamIds()
 	{
 		return teams.keySet();

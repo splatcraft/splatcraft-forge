@@ -69,6 +69,8 @@ public class StageCommand
 						.then(Commands.literal("set")
 								.then(stageTeam("teamName", "stage")
 										.then(Commands.argument("teamColor", InkColorArgument.inkColor()).executes(StageCommand::setTeam))))
+						.then(Commands.literal("remove")
+								.then(stageTeam("teamName", "stage").executes(StageCommand::removeTeam)))
 						.then(Commands.literal("get")
 								.then(stageTeam("teamName", "stage").executes(StageCommand::getTeam)))))
 				.then(Commands.literal("warp").then(stageId("stage").executes(StageCommand::warpSelf)
@@ -130,6 +132,10 @@ public class StageCommand
 
 	private static int getTeam(CommandContext<CommandSource> context) throws CommandSyntaxException {
 		return getTeam(context.getSource(), StringArgumentType.getString(context, "stage"), StringArgumentType.getString(context, "teamName"));
+	}
+
+	private static int removeTeam(CommandContext<CommandSource> context) throws CommandSyntaxException {
+		return removeTeam(context.getSource(), StringArgumentType.getString(context, "stage"), StringArgumentType.getString(context, "teamName"));
 	}
 
 	private static int warp(CommandContext<CommandSource> context, boolean setSpawn) throws CommandSyntaxException {
@@ -254,8 +260,6 @@ public class StageCommand
 		return 1;
 	}
 
-
-
 	private static int getTeam(CommandSource source, String stageId, String teamId) throws CommandSyntaxException {
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
@@ -270,6 +274,24 @@ public class StageCommand
 		int teamColor = stage.getTeamColor(teamId);
 
 		source.sendSuccess(new TranslationTextComponent("commands.stage.teams.get.success", teamId, stageId, ColorUtils.getFormatedColorName(teamColor, false)), true);
+		return teamColor;
+	}
+
+	private static int removeTeam(CommandSource source, String stageId, String teamId) throws CommandSyntaxException {
+		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
+
+		if(!stages.containsKey(stageId))
+			throw STAGE_NOT_FOUND.create(stageId);
+
+		Stage stage = stages.get(stageId);
+
+		if(!stage.hasTeam(teamId))
+			throw TEAM_NOT_FOUND.create(new Object[] {teamId, stageId});
+
+		int teamColor = stage.getTeamColor(teamId);
+		stage.removeTeam(teamId);
+
+		source.sendSuccess(new TranslationTextComponent("commands.stage.teams.remove.success", new StringTextComponent(teamId).withStyle(Style.EMPTY.withColor(Color.fromRgb(teamColor))), stageId), true);
 		return teamColor;
 	}
 

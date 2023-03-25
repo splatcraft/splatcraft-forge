@@ -421,6 +421,7 @@
   "commands.stage.setting.get.default": "Setting %s for stage [%s] is currently set to: default",
   "commands.stage.setting.get": "Setting %s for stage [%s] is currently set to: %s",
   "commands.stage.teams.set.success": "Tagged %s blocks on %s as part of [%s] team",
+  "commands.stage.teams.remove.success": "Successfully removed [%s] team on %s",
   "commands.stage.teams.get.success": "[%s] team on %s is currently %s",
   "commands.stage.warp.success": "Successfully teleported %s player(s) to [%s]",
 
