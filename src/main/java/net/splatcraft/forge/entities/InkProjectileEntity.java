@@ -6,6 +6,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,9 +16,11 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.play.server.SChangeGameStatePacket;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -25,6 +29,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.splatcraft.forge.blocks.ColoredBarrierBlock;
+import net.splatcraft.forge.blocks.StageBarrierBlock;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.handlers.WeaponHandler;
@@ -216,8 +221,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         if (target instanceof LivingEntity) {
             if (InkDamageUtils.isSplatted((LivingEntity) target)) return;
 
-            InkDamageUtils.doDamage(level, (LivingEntity) target, dmg, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, damageType, causesHurtCooldown);
-
+            if(InkDamageUtils.doDamage(level, (LivingEntity) target, dmg, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, damageType, causesHurtCooldown) && getOwner() instanceof ServerPlayerEntity)
+                ((ServerPlayerEntity)getOwner()).connection.send(new SChangeGameStatePacket(SChangeGameStatePacket.ARROW_HIT_PLAYER, 0.0F));
         }
 
         if (!canPierce) {
@@ -249,8 +254,9 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         if (explodes) {
             level.broadcastEntityEvent(this, (byte) 3);
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-        } else
-            level.broadcastEntityEvent(this, (byte) 2);
+        } else if(level.getBlockState(result.getBlockPos()).getBlock() instanceof StageBarrierBlock)
+            level.broadcastEntityEvent(this, (byte) -1);
+        else level.broadcastEntityEvent(this, (byte) 2);
         if (!level.isClientSide)
             this.remove();
     }
