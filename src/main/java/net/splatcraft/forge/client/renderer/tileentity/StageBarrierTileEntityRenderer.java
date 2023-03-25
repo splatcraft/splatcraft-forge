@@ -1,13 +1,5 @@
 package net.splatcraft.forge.client.renderer.tileentity;
 
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.blocks.ColoredBarrierBlock;
-import net.splatcraft.forge.blocks.IColoredBlock;
-import net.splatcraft.forge.blocks.StageBarrierBlock;
-import net.splatcraft.forge.tileentities.ColoredBarrierTileEntity;
-import net.splatcraft.forge.tileentities.StageBarrierTileEntity;
-import net.splatcraft.forge.util.ColorUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -23,10 +15,16 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.blocks.ColoredBarrierBlock;
+import net.splatcraft.forge.blocks.IColoredBlock;
+import net.splatcraft.forge.blocks.StageBarrierBlock;
+import net.splatcraft.forge.tileentities.StageBarrierTileEntity;
+import net.splatcraft.forge.util.ClientUtils;
+import net.splatcraft.forge.util.ColorUtils;
 
 public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarrierTileEntity>
 {
@@ -46,16 +44,17 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
         super(rendererDispatcherIn);
     }
 
-    private static boolean canRenderSide(TileEntity te, Direction side)
-    {
-        BlockPos pos = te.getBlockPos().relative(side);
-        BlockState state = te.getLevel().getBlockState(pos);
+    private static boolean shouldRenderSide(StageBarrierTileEntity te, Direction side) {
+        BlockPos relativePos = te.getBlockPos().relative(side);
+        BlockState relativeState = te.getLevel().getBlockState(relativePos);
 
-        if(state.getBlock() instanceof ColoredBarrierBlock && te.getLevel().getBlockState(te.getBlockPos()).getBlock() instanceof ColoredBarrierBlock)
-            return ((ColoredBarrierBlock)state.getBlock()).canAllowThrough(pos, Minecraft.getInstance().player) !=
-                    ((ColoredBarrierBlock)te.getLevel().getBlockState(te.getBlockPos()).getBlock()).canAllowThrough(te.getBlockPos(), Minecraft.getInstance().player);
+        if (!ClientUtils.shouldRenderSide(te, side)) return false;
 
-        return !(state.getBlock() instanceof StageBarrierBlock);
+        if (relativeState.getBlock() instanceof ColoredBarrierBlock && te.getLevel().getBlockState(te.getBlockPos()).getBlock() instanceof ColoredBarrierBlock)
+            return ((ColoredBarrierBlock) relativeState.getBlock()).canAllowThrough(relativePos, Minecraft.getInstance().player) !=
+                    ((ColoredBarrierBlock) te.getLevel().getBlockState(te.getBlockPos()).getBlock()).canAllowThrough(te.getBlockPos(), Minecraft.getInstance().player);
+
+        return !(relativeState.getBlock() instanceof StageBarrierBlock);
     }
 
     private void addVertex(IVertexBuilder builder, MatrixStack matrixStack, float x, float y, float z, float textureX, float textureY, float r, float g, float b, float a)
@@ -90,48 +89,42 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
         if(tileEntity.getBlockState().getBlock() instanceof IColoredBlock)
             rgb = ColorUtils.hexToRGB(((IColoredBlock) tileEntity.getBlockState().getBlock()).getColor(tileEntity.getLevel(), tileEntity.getBlockPos()));
 
-        if (canRenderSide(tileEntity, Direction.NORTH))
-        {
+        if (shouldRenderSide(tileEntity, Direction.NORTH)) {
             addVertex(builder, matrixStack, 0, 1, 0, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 1, 1, 0, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 1, 0, 0, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 0, 0, 0, sprite.getU0(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
         }
 
-        if (canRenderSide(tileEntity, Direction.SOUTH))
-        {
+        if (shouldRenderSide(tileEntity, Direction.SOUTH)) {
             addVertex(builder, matrixStack, 0, 0, 1, sprite.getU0(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 1, 0, 1, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 1, 1, 1, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 0, 1, 1, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
         }
 
-        if (canRenderSide(tileEntity, Direction.WEST))
-        {
+        if (shouldRenderSide(tileEntity, Direction.WEST)) {
             addVertex(builder, matrixStack, 0, 0, 0, sprite.getU0(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 0, 0, 1, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 0, 1, 1, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 0, 1, 0, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
         }
 
-        if (canRenderSide(tileEntity, Direction.EAST))
-        {
+        if (shouldRenderSide(tileEntity, Direction.EAST)) {
             addVertex(builder, matrixStack, 1, 0, 0, sprite.getU0(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 1, 1, 0, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 1, 1, 1, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 1, 0, 1, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
         }
 
-        if (canRenderSide(tileEntity, Direction.DOWN))
-        {
+        if (shouldRenderSide(tileEntity, Direction.DOWN)) {
             addVertex(builder, matrixStack, 0, 0, 0, sprite.getU0(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 1, 0, 0, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 1, 0, 1, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 0, 0, 1, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
         }
 
-        if (canRenderSide(tileEntity, Direction.UP))
-        {
+        if (shouldRenderSide(tileEntity, Direction.UP)) {
             addVertex(builder, matrixStack, 0, 1, 1, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 1, 1, 1, sprite.getU1(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);
             addVertex(builder, matrixStack, 1, 1, 0, sprite.getU1(), sprite.getV0(), rgb[0], rgb[1], rgb[2], alpha);

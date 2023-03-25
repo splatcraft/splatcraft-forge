@@ -22,7 +22,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.math.vector.Vector4f;
@@ -30,6 +29,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.mixin.BlockRenderMixin;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
+import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.Nullable;
@@ -97,33 +97,13 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
     private static void renderModel(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, @Nullable BlockState state, IBakedModel modelIn, float red, float green, float blue, int combinedLightIn, int combinedOverlayIn, net.minecraftforge.client.model.data.IModelData modelData, InkedBlockTileEntity te) {
         for (Direction direction : Direction.values()) {
             random.setSeed(42L);
-            if (shouldRenderSide(te, direction))
+            if (ClientUtils.shouldRenderSide(te, direction))
                 renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, direction, random, modelData), combinedLightIn, combinedOverlayIn, te);
         }
 
         random.setSeed(42L);
-        if (shouldRenderSide(te, null))
+        if (ClientUtils.shouldRenderSide(te, null))
             renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, null, random, modelData), combinedLightIn, combinedOverlayIn, te);
-    }
-
-    private static boolean shouldRenderSide(InkedBlockTileEntity te, Direction direction) {
-        if (te.getLevel() == null)
-            return false;
-
-        BlockPos tePos = te.getBlockPos();
-
-        Vector3f lookVec = Minecraft.getInstance().gameRenderer.getMainCamera().getLookVector();
-        Vector3d blockVec = Vector3d.atBottomCenterOf(tePos).add(lookVec.x(), lookVec.y(), lookVec.z());
-
-        Vector3d directionVec3d = blockVec.subtract(Minecraft.getInstance().gameRenderer.getMainCamera().getPosition()).normalize();
-        Vector3f directionVec = new Vector3f((float) directionVec3d.x, (float) directionVec3d.y, (float) directionVec3d.z);
-        if (lookVec.dot(directionVec) > 0) {
-            if (direction == null) return true;
-            BlockState relative = te.getLevel().getBlockState(tePos.relative(direction));
-            return !relative.getMaterial().isSolidBlocking() || !relative.isCollisionShapeFullBlock(te.getLevel(), tePos.relative(direction));
-        }
-
-        return false;
     }
 
     private static void renderModelBrightnessColorQuads(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, BlockState state, float red, float green, float blue, List<BakedQuad> quads, int combinedLightIn, int combinedOverlayIn, InkedBlockTileEntity te) {
