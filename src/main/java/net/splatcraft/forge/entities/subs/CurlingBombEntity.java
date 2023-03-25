@@ -80,7 +80,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	{
 		if(nbt.contains("CookTime"))
 		{
-			setCookScale(nbt.getInt("CookTime") / (float)MAX_COOK_TIME);
+			setCookScale((nbt.getInt("CookTime") / (float)MAX_COOK_TIME) * 1.5f);
 			setInitialFuseTime(getInitialFuseTime() - nbt.getInt("CookTime"));
 			prevFuseTime = getInitialFuseTime();
 		}
