@@ -1,0 +1,28 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/chargers",
+  "pos": 3,
+  "recipes": [
+    {
+      "name": "weaponType.classic",
+      "result": {
+        "item": "splatcraft:classic_squiffer",
+        "count": 1
+      },
+      "ingredients": [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 10
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 16
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 8
+        }
+      ]
+    }
+  ]
+}
