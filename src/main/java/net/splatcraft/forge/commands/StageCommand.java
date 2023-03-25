@@ -268,7 +268,7 @@ public class StageCommand
 		Stage stage = stages.get(stageId);
 
 		if(!stage.hasTeam(teamId))
-			throw TEAM_NOT_FOUND.create(teamId);
+			throw TEAM_NOT_FOUND.create(new Object[] {teamId, stageId});
 
 		int teamColor = stage.getTeamColor(teamId);
 
