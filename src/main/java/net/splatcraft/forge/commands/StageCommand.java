@@ -224,8 +224,6 @@ public class StageCommand
 		Stage stage = stages.get(stageId);
 		World stageLevel = source.getServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, stage.dimID));
 
-		System.out.println(stage.dimID + " " + stageLevel);
-
 		BlockPos blockpos2 = new BlockPos(Math.min(stage.cornerA.getX(), stage.cornerB.getX()), Math.min(stage.cornerB.getY(), stage.cornerA.getY()), Math.min(stage.cornerA.getZ(), stage.cornerB.getZ()));
 		BlockPos blockpos3 = new BlockPos(Math.max(stage.cornerA.getX(), stage.cornerB.getX()), Math.max(stage.cornerB.getY(), stage.cornerA.getY()), Math.max(stage.cornerA.getZ(), stage.cornerB.getZ()));
 

@@ -76,13 +76,12 @@ public class PlayerPosingHandler
                     mainHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
                     break;
                 case SUB_HOLD:
-                    System.out.println(useTime);
                     if(!(mainStack.getItem() instanceof SubWeaponItem) || useTime < ((SubWeaponItem) mainStack.getItem()).maxUseTime)
-                {
-                    mainHand.yRot = -0.1F + model.getHead().yRot;
-                    mainHand.xRot = ((float) Math.PI / 8F);
-                    mainHand.zRot = ((float) Math.PI / 6F) * (mainHand == model.leftArm ? -1 : 1);
-                }
+                    {
+                        mainHand.yRot = -0.1F + model.getHead().yRot;
+                        mainHand.xRot = ((float) Math.PI / 8F);
+                        mainHand.zRot = ((float) Math.PI / 6F) * (mainHand == model.leftArm ? -1 : 1);
+                    }
                     break;
                 case BUCKET_SWING:
                     animTime = ((SlosherItem) mainStack.getItem()).settings.startupTicks;

@@ -66,11 +66,8 @@ public class ScanTurfCommand
 
         int result = execute(source, stage.cornerA, stage.cornerB, mode, targets);
 
-        System.out.println(stage.getTeamIds().size());
-
         for(String team : stage.getTeamIds())
         {
-            System.out.println(team + " " + stage.getTeamColor(team) + " " + result + " " + (stage.getTeamColor(team) == result));
             if(stage.getTeamColor(team) == result)
                 source.getLevel().getScoreboard().forAllObjectives(Stats.CUSTOM.get(SplatcraftStats.TURF_WARS_WON), "["+team+"]", score -> score.add(1));
         }

@@ -40,7 +40,6 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
         if(level.getBlockEntity(pos) instanceof ColoredBarrierTileEntity)
         {
             ((ColoredBarrierTileEntity) level.getBlockEntity(pos)).setColor(color);
-            System.out.println(((ColoredBarrierTileEntity) level.getBlockEntity(pos)).getColor());
             level.sendBlockUpdated(pos, state, state, 3);
             state.updateNeighbourShapes(level, pos, 3);
             return true;
