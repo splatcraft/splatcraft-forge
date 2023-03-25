@@ -23,6 +23,7 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
 
     protected int fuseTime = 20;
     protected int prevFuseTime = fuseTime;
+    private boolean playedActivationSound = false;
 
     public SplatBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, World level) {
         super(type, level);
@@ -68,6 +69,10 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
             if(!level.isClientSide())
                 remove();
             return;
+        } else if (fuseTime <= 20 && !playedActivationSound)
+        {
+            level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonating, SoundCategory.PLAYERS, 0.8F, 1f);
+            playedActivationSound = true;
         }
 
         this.move(MoverType.SELF, this.getDeltaMovement().multiply(0,1,0));

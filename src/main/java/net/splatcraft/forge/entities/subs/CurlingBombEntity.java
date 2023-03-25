@@ -46,6 +46,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 
 	public float bladeRot = 0;
 	public float prevBladeRot = 0;
+	private boolean playedActivationSound = false;
 
 
 	public CurlingBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, World level) {
@@ -96,6 +97,12 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 
 		prevFuseTime = fuseTime;
 		fuseTime--;
+
+		if (fuseTime <= 20 && !playedActivationSound)
+		{
+			level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonating, SoundCategory.PLAYERS, 0.8F, 1f);
+			playedActivationSound = true;
+		}
 
 		if(!level.isClientSide)
 			for(int i = 0; i <= 2; i++)
