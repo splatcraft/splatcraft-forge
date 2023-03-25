@@ -36,16 +36,13 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	public static final float EXPLOSION_SIZE = 2.5f;
 	public static final int FUSE_START = 10;
 	public static final int MAX_FUSE_TIME = 80;
-	public static final int MAX_COOK_TIME = 25;
+	public static final int MAX_COOK_TIME = 30;
 
-	private static final DataParameter<Integer> FUSE_TIME = EntityDataManager.defineId(CurlingBombEntity.class, DataSerializers.INT);
+	private static final DataParameter<Integer> INIT_FUSE_TIME = EntityDataManager.defineId(CurlingBombEntity.class, DataSerializers.INT);
 	private static final DataParameter<Float> COOK_SCALE = EntityDataManager.defineId(CurlingBombEntity.class, DataSerializers.FLOAT);
 
-	private int clientFuseTime = MAX_FUSE_TIME;
+	public int fuseTime = MAX_FUSE_TIME;
 	public int prevFuseTime = MAX_FUSE_TIME;
-
-	private float clientCookScale = 0;
-	public float prevCookScale = 0;
 
 	public float bladeRot = 0;
 	public float prevBladeRot = 0;
@@ -60,7 +57,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	protected void defineSynchedData()
 	{
 		super.defineSynchedData();
-		entityData.define(FUSE_TIME, MAX_FUSE_TIME);
+		entityData.define(INIT_FUSE_TIME, MAX_FUSE_TIME);
 		entityData.define(COOK_SCALE, 0f);
 	}
 
@@ -82,8 +79,9 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	{
 		if(nbt.contains("CookTime"))
 		{
-			setFuseTime(getFuseTime() - nbt.getInt("CookTime"));
-			prevFuseTime = getFuseTime();
+			setCookScale(nbt.getInt("CookTime") / (float)MAX_COOK_TIME);
+			setInitialFuseTime(getInitialFuseTime() - nbt.getInt("CookTime"));
+			prevFuseTime = getInitialFuseTime();
 		}
 	}
 
@@ -96,16 +94,16 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 		prevBladeRot = bladeRot;
 		bladeRot += spd;
 
-		if(level.isClientSide())
-			setFuseTime(prevFuseTime);
-		setFuseTime(getFuseTime()-1);
+		prevFuseTime = fuseTime;
+		fuseTime--;
 
-		for(int i = 0; i <= 2; i++)
-			if(!InkBlockUtils.isUninkable(level, blockPosition().below(i)))
-			{
-				InkBlockUtils.inkBlock(level, blockPosition().below(i), getColor(), CONTACT_DAMAGE, inkType);
-				break;
-			}
+		if(!level.isClientSide)
+			for(int i = 0; i <= 2; i++)
+				if(!InkBlockUtils.isUninkable(level, blockPosition().below(i)))
+				{
+					InkBlockUtils.inkBlock(level, blockPosition().below(i), getColor(), CONTACT_DAMAGE, inkType);
+					break;
+				}
 
 
 		if (!this.onGround || getHorizontalDistanceSqr(this.getDeltaMovement()) > (double)1.0E-5F)
@@ -114,13 +112,13 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 			if (this.onGround)
 				f1 = this.level.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getSlipperiness(level, new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ()), this);
 
-			f1 = (float) Math.min(0.98, f1*3f) * Math.min(1, 2*getFuseTime()/(float)MAX_FUSE_TIME);
+			f1 = (float) Math.min(0.98, f1*3f) * Math.min(1, 2* fuseTime/(float)MAX_FUSE_TIME);
 
 			this.setDeltaMovement(this.getDeltaMovement().multiply(f1, 0.98D, f1));
 
 		}
 
-		if(getFuseTime() <= 0)
+		if(fuseTime <= 0)
 		{
 			InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), EXPLOSION_SIZE + getCookScale(), DIRECT_DAMAGE, DIRECT_DAMAGE, DIRECT_DAMAGE, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
 			level.broadcastEntityEvent(this, (byte) 1);
@@ -129,7 +127,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 				remove();
 			return;
 		}
-		else if(spd > 0.01 && getFuseTime() % (int)Math.max(1, (1-spd)*10) == 0)
+		else if(spd > 0.01 && fuseTime % (int)Math.max(1, (1-spd)*10) == 0)
 			level.broadcastEntityEvent(this, (byte) 2);
 
 		this.move(MoverType.SELF, this.getDeltaMovement().multiply(0,1,0));
@@ -177,7 +175,6 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	@Override
 	protected void onBlockHit(BlockRayTraceResult result)
 	{
-
 		if(canStepUp(getDeltaMovement()))
 			return;
 
@@ -205,7 +202,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 
 	public float getFlashIntensity(float partialTicks)
 	{
-		return 1f-Math.min(FUSE_START, MathHelper.lerp(partialTicks, prevFuseTime, getFuseTime())*0.5f)/(float)FUSE_START;
+		return 1f-Math.min(FUSE_START, MathHelper.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float)FUSE_START;
 	}
 
 	private boolean canStepUp(Vector3d p_213306_1_) {
@@ -273,25 +270,23 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	@Override
 	public void readAdditionalSaveData(CompoundNBT nbt) {
 		super.readAdditionalSaveData(nbt);
-		setFuseTime(nbt.getInt("FuseTime"));
+		setInitialFuseTime(nbt.getInt("FuseTime"));
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundNBT nbt) {
 		super.addAdditionalSaveData(nbt);
-		nbt.putInt("FuseTime", getFuseTime());
+		nbt.putInt("FuseTime", fuseTime);
 	}
 
-	public int getFuseTime()
+	public int getInitialFuseTime()
 	{
-		return entityData.get(FUSE_TIME);
+		return entityData.get(INIT_FUSE_TIME);
 	}
 
-	public void setFuseTime(int v)
+	public void setInitialFuseTime(int v)
 	{
-		prevFuseTime = getFuseTime();
-		entityData.set(FUSE_TIME, v);
-
+		entityData.set(INIT_FUSE_TIME, v);
 	}
 
 	public float getCookScale() {
@@ -300,11 +295,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 
 	public void setCookScale(float v)
 	{
-		if(!level.isClientSide)
-		{
-			prevCookScale = getCookScale();
-			entityData.set(COOK_SCALE, v);
-		}
+		entityData.set(COOK_SCALE, v);
 	}
 
 	@Override
@@ -312,16 +303,9 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	{
 		super.onSyncedDataUpdated(dataParameter);
 
-		if(FUSE_TIME.equals(dataParameter))
+		if(INIT_FUSE_TIME.equals(dataParameter))
 		{
-			prevFuseTime = clientFuseTime;
-			clientFuseTime = getFuseTime();
-		}
-
-		if(COOK_SCALE.equals(dataParameter))
-		{
-			prevCookScale = clientCookScale;
-			clientCookScale = getCookScale();
+			fuseTime = getInitialFuseTime();
 		}
 
 	}
