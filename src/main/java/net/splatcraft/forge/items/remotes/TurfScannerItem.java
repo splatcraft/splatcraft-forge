@@ -42,6 +42,7 @@ public class TurfScannerItem extends RemoteItem
             return createResult(false, new TranslationTextComponent("status.scan_turf.out_of_world"));
         }
 
+        /*
         for (int j = blockpos2.getZ(); j <= blockpos3.getZ(); j += 16)
         {
             for (int k = blockpos2.getX(); k <= blockpos3.getX(); k += 16)
@@ -52,7 +53,7 @@ public class TurfScannerItem extends RemoteItem
                 }
             }
         }
-
+        */
         if (level.isClientSide)
         {
             return createResult(true, null);
