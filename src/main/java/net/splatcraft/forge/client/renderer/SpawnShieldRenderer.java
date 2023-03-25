@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.client.renderer.tileentity.StageBarrierTileEntityRenderer;
 import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.util.ColorUtils;
 
@@ -32,7 +33,7 @@ public class SpawnShieldRenderer extends EntityRenderer<SpawnShieldEntity>
 			return;
 		}
 
-		IVertexBuilder builder = buffer.getBuffer(RenderType.entityTranslucent(new ResourceLocation(Splatcraft.MODID, "textures/blocks/allowed_color_barrier_fancy.png")));
+		IVertexBuilder builder = buffer.getBuffer(StageBarrierTileEntityRenderer.BARRIER_RENDER);
 
 		float alpha = activeTime / entity.MAX_ACTIVE_TIME;
 
