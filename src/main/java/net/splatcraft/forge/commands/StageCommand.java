@@ -28,7 +28,6 @@ import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateStageListPacket;
-import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
 import net.splatcraft.forge.util.ClientUtils;
@@ -45,7 +44,7 @@ public class StageCommand
 
 	private static final DynamicCommandExceptionType NO_SPAWN_PADS_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stageWarp.noSpawnPads", p_208663_0_));
 	private static final DynamicCommandExceptionType NO_PLAYERS_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stageWarp.noPlayers", p_208663_0_));
-	public static final DynamicCommandExceptionType TEAM_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stageTeam.notFound", p_208663_0_));
+	public static final DynamicCommandExceptionType TEAM_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stageTeam.notFound", ((Object[])p_208663_0_)[0], ((Object[])p_208663_0_)[1]));
 	public static final DynamicCommandExceptionType STAGE_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stage.notFound", p_208663_0_));
 	public static final DynamicCommandExceptionType STAGE_ALREADY_EXISTS = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stage.alreadyExists", p_208663_0_));
 	public static final DynamicCommandExceptionType SETTING_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stageSetting.notFound", p_208663_0_));

@@ -68,7 +68,7 @@ public class ReplaceColorCommand
             return execute(context.getSource(), stage.cornerA, stage.cornerB, color, -1, mode, stageId, team);
 
         if(!stage.hasTeam(team))
-            throw StageCommand.TEAM_NOT_FOUND.create(team);
+            throw StageCommand.TEAM_NOT_FOUND.create(new Object[] {team, stageId});
 
         int teamColor = stage.getTeamColor(team);
         stage.setTeamColor(team, color);

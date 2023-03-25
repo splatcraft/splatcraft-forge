@@ -7,11 +7,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.splatcraft.forge.commands.arguments.InkColorArgument;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
@@ -76,7 +72,7 @@ public class InkColorCommand
         Stage stage = stages.get(stageId);
 
         if(!stage.hasTeam(teamId))
-            throw StageCommand.TEAM_NOT_FOUND.create(teamId);
+            throw StageCommand.TEAM_NOT_FOUND.create(new Object[] {teamId, stageId});
 
         return setColor(source, stage.getTeamColor(teamId), targets);
     }
@@ -90,7 +86,7 @@ public class InkColorCommand
         Stage stage = stages.get(stageId);
 
         if(!stage.hasTeam(teamId))
-            throw StageCommand.TEAM_NOT_FOUND.create(teamId);
+            throw StageCommand.TEAM_NOT_FOUND.create(new Object[] {teamId, stageId});
 
         return setColor(source, stage.getTeamColor(teamId));
     }
