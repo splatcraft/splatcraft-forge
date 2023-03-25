@@ -1,6 +1,7 @@
 package net.splatcraft.forge.util;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -108,7 +109,7 @@ public class ClientUtils
         if (lookVec.dot(directionVec) > 0) {
             if (direction == null) return true;
             BlockState relative = te.getLevel().getBlockState(tePos.relative(direction));
-            return !relative.getMaterial().isSolidBlocking() || !relative.isCollisionShapeFullBlock(te.getLevel(), tePos.relative(direction));
+            return relative.getMaterial().equals(Material.BARRIER) || !relative.getMaterial().isSolidBlocking() || !relative.isCollisionShapeFullBlock(te.getLevel(), tePos.relative(direction));
         }
 
         return false;
