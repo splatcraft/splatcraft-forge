@@ -108,6 +108,9 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
     @Override
     protected void onBlockHit(BlockRayTraceResult result)
     {
+        if(level.getBlockState(result.getBlockPos()).getCollisionShape(level, result.getBlockPos()).bounds().maxY - (position().y() - blockPosition().getY()) < maxUpStep)
+            return;
+
         double velocityX = this.getDeltaMovement().x;
         double velocityY = this.getDeltaMovement().y;
         double velocityZ = this.getDeltaMovement().z;

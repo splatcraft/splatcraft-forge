@@ -187,6 +187,9 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 
 		Direction blockFace = result.getDirection();
 
+		if(level.getBlockState(result.getBlockPos()).getCollisionShape(level, result.getBlockPos()).bounds().maxY - (position().y() - blockPosition().getY()) < maxUpStep)
+			return;
+
 		if(blockFace == Direction.EAST || blockFace == Direction.WEST)
 			this.setDeltaMovement(-velocityX, velocityY, velocityZ);
 		if(Math.abs(velocityY) >= 0.05 && (blockFace == Direction.DOWN))
