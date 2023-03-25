@@ -17,17 +17,13 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.PhantomRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.SlimeRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.PlayerContainer;
@@ -35,7 +31,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.scoreboard.ScorePlayerTeam;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
@@ -59,17 +54,14 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.client.layer.InkAccessoryLayer;
+import net.splatcraft.forge.client.layer.InkOverlayLayer;
 import net.splatcraft.forge.client.renderer.InkSquidRenderer;
 import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
-import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.entities.SquidBumperEntity;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.weapons.ChargerItem;
@@ -82,7 +74,6 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +94,7 @@ public class RendererHandler {
     });
     private static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/widgets.png");
     private static InkSquidRenderer squidRenderer = null;
-    private static final List<PlayerRenderer> hasAccessoryLayer = new ArrayList<>();
+    private static final List<LivingRenderer> hasCustomLayers = new ArrayList<>();
     private static float tickTime = 0;
     private static float oldCooldown = 0;
     private static int squidTime = 0;
@@ -115,14 +106,6 @@ public class RendererHandler {
     {
         PlayerEntity player = event.getPlayer();
         if (player.isSpectator()) return;
-
-
-        if(!hasAccessoryLayer.contains(event.getRenderer()))
-        {
-            event.getRenderer().addLayer(new InkAccessoryLayer(event.getRenderer()));
-            hasAccessoryLayer.add(event.getRenderer());
-        }
-
 
         if (PlayerInfoCapability.isSquid(player))
         {
@@ -140,65 +123,16 @@ public class RendererHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void livingRenderer(RenderLivingEvent.Post<?, ?> event)
+    public static void livingRenderer(RenderLivingEvent.Pre<?, ?> event)
     {
-        LivingEntity entity = event.getEntity();
-
-        if(!entity.isAlive() || event.getRenderer() instanceof SlimeRenderer || event.getRenderer() instanceof PhantomRenderer)
-            return;
-
-        int overlay = 0;
-        int color = ColorUtils.DEFAULT;
-
-        if (InkOverlayCapability.hasCapability(entity))
+        if(!hasCustomLayers.contains(event.getRenderer()))
         {
-            IInkOverlayInfo info = InkOverlayCapability.get(entity);
-            color = info.getColor();
-            overlay = (int) (Math.min(info.getAmount() / (entity instanceof SquidBumperEntity ? SquidBumperEntity.maxInkHealth : entity.getMaxHealth()) * 4, 4) - 1);
+            if(event.getRenderer() instanceof PlayerRenderer)
+                ((PlayerRenderer)event.getRenderer()).addLayer(new InkAccessoryLayer((PlayerRenderer)event.getRenderer()));
+            event.getRenderer().addLayer(new InkOverlayLayer(event.getRenderer()));
+
+            hasCustomLayers.add(event.getRenderer());
         }
-
-        if (overlay <= -1)
-        {
-            return;
-        }
-
-        MatrixStack matrixStack = event.getMatrixStack();
-        float f = MathHelper.lerp(event.getPartialRenderTick(), entity.yBodyRotO, entity.yBodyRot);
-
-        matrixStack.pushPose();
-
-        try
-        {
-            ObfuscationReflectionHelper.findMethod(LivingRenderer.class, "func_225621_a_", LivingEntity.class, MatrixStack.class, float.class, float.class, float.class)
-                    .invoke(event.getRenderer(), entity, matrixStack, (float) entity.tickCount + event.getPartialRenderTick(), f, event.getPartialRenderTick());
-            ObfuscationReflectionHelper.findMethod(LivingRenderer.class, "func_225620_a_", LivingEntity.class, MatrixStack.class, float.class)
-                    .invoke(event.getRenderer(), entity, matrixStack, event.getPartialRenderTick());
-        } catch (IllegalAccessException | InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-
-        if (entity.getPose() == Pose.SLEEPING)
-        {
-            Direction direction = entity.getBedOrientation();
-            if (direction != null)
-            {
-                float f4 = entity.getEyeHeight(Pose.STANDING) - 0.1F;
-                matrixStack.translate((float) -direction.getStepX() * f4, 0.0D, (float) -direction.getStepZ() * f4);
-            }
-        }
-
-        matrixStack.scale(-1.0F, -1.0F, 1.0F);
-        matrixStack.translate(0.0D, -1.501F, 0.0D);
-
-        EntityModel<?> model = event.getRenderer().getModel();
-        RenderType rendertype = model.renderType(new ResourceLocation(Splatcraft.MODID, "textures/entity/ink_overlay_" + overlay + ".png"));
-        IVertexBuilder ivertexbuilder = event.getBuffers().getBuffer(rendertype);
-        int i = LivingRenderer.getOverlayCoords(entity, 0);
-
-        float[] rgb = ColorUtils.hexToRGB(color);
-        model.renderToBuffer(matrixStack, ivertexbuilder, event.getLight(), i, rgb[0], rgb[1], rgb[2], 1);
-        matrixStack.popPose();
     }
 
     @SubscribeEvent

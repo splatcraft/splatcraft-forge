@@ -3,6 +3,7 @@ package net.splatcraft.forge.client.model;// Made with Blockbench 3.5.4
 // Paste this class into your mod and generate all required imports
 
 
+import net.minecraft.client.Minecraft;
 import net.splatcraft.forge.entities.SquidBumperEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -66,7 +67,7 @@ public class SquidBumperModel extends EntityModel<SquidBumperEntity>
         Base.yRot = 0.0F;
         Base.zRot = 0.0F;
 
-        float scale = (10 - Math.min(entityIn.getRespawnTime(), 10)) / 10f;
+        float scale = entityIn.getBumperScale(partialTick);
 
         Bumper.y = 24;
 
@@ -79,13 +80,11 @@ public class SquidBumperModel extends EntityModel<SquidBumperEntity>
     @Override
     public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
     {
-        renderBase(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        renderBumper(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
     public void render(SquidBumperEntity entityIn, MatrixStack matrixStackIn, IVertexBuilder builderIn, int packedLightIn)
     {
-        float scale = (10 - Math.min(entityIn.getRespawnTime(), 10)) / 10f;
+        float scale = entityIn.getBumperScale(Minecraft.getInstance().getDeltaFrameTime());
         int color = entityIn.getColor();
         float r = (float) (Math.floor((float) color / (256 * 256)) / 255f);
         float g = (float) (Math.floor((float) color / 256) % 256 / 255f);

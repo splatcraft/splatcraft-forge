@@ -57,6 +57,8 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
     public long punchCooldown;
     public long hurtCooldown;
 
+    public int prevRespawnTime = 0;
+
     public SquidBumperEntity(EntityType<? extends LivingEntity> type, World levelIn)
     {
         super(type, levelIn);
@@ -83,6 +85,8 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
 
         hurtCooldown = Math.max(hurtCooldown - 1, 0);
 
+        prevRespawnTime = entityData.get(RESPAWN_TIME);
+
         if (getRespawnTime() > 1)
         {
             setRespawnTime(getRespawnTime() - 1);
@@ -104,13 +108,12 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
     @Override
     public boolean onEntityInked(InkDamageUtils.InkDamageSource source, float damage, int color)
     {
-        if (hurtCooldown <= 0 && getInkHealth() > 0 && !inkproof && InkDamageUtils.canDamageColor(level, blockPosition(), getColor(), color))
+        if (hurtCooldown <= 0 && getInkHealth() > 0 && !inkproof && InkDamageUtils.canDamage(this, color))
         {
             ink(damage, color);
             if (getInkHealth() <= 0)
             {
                 this.level.broadcastEntityEvent(this, (byte) 34);
-                InkOverlayCapability.get(this).setAmount(0);
             }
             return true;
         }
@@ -323,6 +326,11 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
         }
     }
 
+    @Override
+    public void knockback(float p_233627_1_, double p_233627_2_, double p_233627_4_)
+    {
+    }
+
     public void dropBumper()
     {
         CommonUtils.blockDrop(this.level, this.blockPosition(), ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.squidBumper), getColor()), true));
@@ -369,6 +377,11 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
 
         if (nbt.contains("Inkproof"))
             inkproof = nbt.getBoolean("Inkproof");
+
+        if(nbt.contains("InkHealth"))
+            setInkHealth(nbt.getFloat("InkHealth"));
+        if(nbt.contains("RegenTicks"))
+            setRespawnTime(nbt.getInt("RegenTicks"));
     }
 
     @Override
@@ -377,6 +390,9 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
         super.addAdditionalSaveData(nbt);
         nbt.putInt("Color", getColor());
         nbt.putBoolean("Inkproof", inkproof);
+
+        nbt.putFloat("InkHealth", getInkHealth());
+        nbt.putInt("RegenTicks", getRespawnTime());
     }
 
     @Override
@@ -406,6 +422,11 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
         return entityData.get(RESPAWN_TIME);
     }
 
+    public float getBumperScale(float partialTicks)
+    {
+        return getInkHealth() <= 0 ? (10 - Math.min(MathHelper.lerp(partialTicks, prevRespawnTime, getRespawnTime()), 10)) / 10f : 1;
+    }
+
     public void setRespawnTime(int value)
     {
         entityData.set(RESPAWN_TIME, value);
@@ -418,19 +439,21 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
         this.level.broadcastEntityEvent(this, (byte) 31);
         hurtCooldown = invulnerableTime;
 
-        if(!isInWater())
-        {
-            if (InkOverlayCapability.hasCapability(this))
+        if (!level.isClientSide)
+            if(!isInWater() && InkOverlayCapability.hasCapability(this))
             {
                 IInkOverlayInfo info = InkOverlayCapability.get(this);
 
-                if (info.getAmount() < maxInkHealth * 1.5)
-                    info.addAmount(damage);
+                if (getInkHealth() > 0)
+                {
+                    if (info.getAmount() < maxInkHealth * 1.5)
+                        info.addAmount(damage);
+                }
+                else info.setAmount(0);
+
                 info.setColor(color);
-                if (!level.isClientSide)
-                    SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(this, info));
+                SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(this, info));
             }
-        }
     }
 
 
@@ -452,4 +475,5 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
     {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
+
 }

@@ -106,7 +106,7 @@ public class InkDamageUtils {
             target.hurtMarked = false;
         }
 
-        if ((targetColor <= -1 || canInk) && !target.isInWater()) {
+        if ((targetColor <= -1 || canInk) && !target.isInWater() && !(target instanceof IColoredEntity && !((IColoredEntity) target).handleInkOverlay())) {
             if (InkOverlayCapability.hasCapability(target)) {
                 IInkOverlayInfo info = InkOverlayCapability.get(target);
 

@@ -12,4 +12,6 @@ public interface IColoredEntity
     {
         return false;
     }
+
+    default boolean handleInkOverlay() {return false;}
 }

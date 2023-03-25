@@ -1,6 +1,12 @@
 package net.splatcraft.forge;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.entity.EntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -10,10 +16,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.splatcraft.forge.client.layer.InkAccessoryLayer;
+import net.splatcraft.forge.client.layer.InkOverlayLayer;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.handlers.client.ClientSetupHandler;
@@ -29,6 +38,7 @@ import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.world.gen.SplatcraftOreGen;
 
+import java.util.Map;
 import java.util.Objects;
 
 // The value here should match an entry in the META-INF/mods.toml file
