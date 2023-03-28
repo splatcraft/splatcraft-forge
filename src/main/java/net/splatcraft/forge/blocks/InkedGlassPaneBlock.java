@@ -18,6 +18,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
@@ -139,7 +140,7 @@ public class InkedGlassPaneBlock extends PaneBlock  implements IColoredBlock, IW
     @Override
     public boolean inkBlock(World level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
-        if (InkedBlock.isTouchingLiquid(level, pos))
+        if (InkedBlock.isTouchingLiquid(level, pos) || !SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INKABLE_GROUND))
         {
             return false;
         }
