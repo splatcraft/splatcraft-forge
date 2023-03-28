@@ -18,7 +18,6 @@
     "minecraft:piston",
     "minecraft:sticky_piston",
     "splatcraft:sardinium_block",
-    "splatcraft:empty_inkwell",
-    "splatcraft:ink_stained_wool"
+    "splatcraft:empty_inkwell"
   ]
 }
