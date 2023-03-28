@@ -201,12 +201,13 @@ public class SplatcraftItems {
             .setFastMidAirCharge(true)
             .setChargerPiercesAt(1.0f));
 
+
     //Dualies
     public static final DualieItem splatDualie = new DualieItem(new WeaponSettings("splat_dualies")
             .setProjectileSize(0.9f).setProjectileSpeed(0.65f)
-            .setFiringSpeed(8)
+            .setFiringSpeed(7)
             .setGroundInaccuracy(2).setAirInaccuracy(7.5f).setInkConsumption(0.75f).setInkRecoveryCooldown(7)
-            .setBaseDamage(6).setMinDamage(3).setDamageDecayStartTick(2).setDamageDecayPerTick(1.13f)
+            .setBaseDamage(6).setMinDamage(4).setDamageDecayStartTick(2).setDamageDecayPerTick(1.13f)
             .setRollCount(1)
             .setRollSpeed(0.9f)
             .setRollInaccuracy(0).setRollInkConsumption(9).setRollInkRecoveryCooldown(23)
@@ -214,7 +215,7 @@ public class SplatcraftItems {
     public static final DualieItem enperrySplatDualie = new DualieItem(splatDualie.settings.setName("enperry_splat_dualies"));
     public static final DualieItem dualieSquelcher = new DualieItem(new WeaponSettings("dualie_squelchers")
             .setProjectileSize(0.85f).setProjectileSpeed(0.74f)
-            .setFiringSpeed(10)
+            .setFiringSpeed(8)
             .setGroundInaccuracy(4).setAirInaccuracy(8)
             .setInkConsumption(1.2f)
             .setInkRecoveryCooldown(7)
@@ -226,7 +227,7 @@ public class SplatcraftItems {
             .setRollCooldown(6).setLastRollCooldown(14));
     public static final DualieItem gloogaDualie = new DualieItem(new WeaponSettings("glooga_dualies")
             .setProjectileSize(0.8f).setProjectileSpeed(0.72f)
-            .setFiringSpeed(7)
+            .setFiringSpeed(10)
             .setGroundInaccuracy(4).setAirInaccuracy(8)
             .setInkConsumption(1.4f).setInkRecoveryCooldown(7)
             .setBaseDamage(7.3f).setMinDamage(3.6f).setDamageDecayStartTick(2).setDamageDecayPerTick(1.35f)
