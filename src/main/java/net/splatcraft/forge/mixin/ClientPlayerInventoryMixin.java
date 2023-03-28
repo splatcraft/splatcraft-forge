@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerInventory.class)
-public class PlayerInventoryMixin {
+public class ClientPlayerInventoryMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void resetCanUseHotkeys(CallbackInfo ci) {
