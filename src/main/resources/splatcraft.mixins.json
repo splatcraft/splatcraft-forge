@@ -8,7 +8,6 @@
     "FenceConnectionMixin",
     "PaneConnectionMixin",
     "PlayerInventoryMixin",
-    "RecipeCategoryMixin",
     "ServerPlayerMixin",
     "SheepMixin",
     "SquidPassthroughMixin",
@@ -23,7 +22,8 @@
     "BlockRenderMixin$ModelRenderer",
     "GameRendererMixin",
     "MinecraftClientAccessor",
-    "SheepMixin$WoolLayer",
+    "RecipeCategoryMixin",
+    "SheepWoolLayerMixin",
     "WeaponHotkeyMixin$MinecraftInstance",
     "WeaponHotkeyMixin$PlayerControllerMix"
   ]
