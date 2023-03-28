@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,6 +34,9 @@ public class SquidSoulParticle extends SpriteTexturedParticle
         hasPhysics = false;
 
         spriteProvider = sprite;
+
+
+        System.out.println("create X: " + x + " Y: " + y + " Z: " + z);
     }
 
     @Override
@@ -62,30 +66,30 @@ public class SquidSoulParticle extends SpriteTexturedParticle
     @Override
     public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
     {
-        Vector3f lvt_4_1_ = renderInfo.getLookVector();
-        float lvt_5_1_ = (float) (MathHelper.lerp(partialTicks, this.xo, this.x) - lvt_4_1_.x());
-        float lvt_6_1_ = (float) (MathHelper.lerp(partialTicks, this.y, this.yo) - lvt_4_1_.y());
-        float lvt_7_1_ = (float) (MathHelper.lerp(partialTicks, this.z, this.zo) - lvt_4_1_.z());
-        Quaternion lvt_8_2_;
+        Vector3d renderPos = renderInfo.getPosition();
+        float lvt_5_1_ = (float) (MathHelper.lerp(partialTicks, this.xo, this.x) - renderPos.x());
+        float lvt_6_1_ = (float) (MathHelper.lerp(partialTicks, this.yo, this.y) - renderPos.y());
+        float lvt_7_1_ = (float) (MathHelper.lerp(partialTicks, this.zo, this.z) - renderPos.z());
+        Quaternion rotation;
         if (this.roll == 0.0F)
         {
-            lvt_8_2_ = renderInfo.rotation();
+            rotation = renderInfo.rotation();
         } else
         {
-            lvt_8_2_ = new Quaternion(renderInfo.rotation());
+            rotation = new Quaternion(renderInfo.rotation());
             float lvt_9_1_ = MathHelper.lerp(partialTicks, this.roll, this.oRoll);
-            lvt_8_2_.mul(Vector3f.ZP.rotation(lvt_9_1_));
+            rotation.mul(Vector3f.ZP.rotation(lvt_9_1_));
         }
 
         Vector3f lvt_9_2_ = new Vector3f(-1.0F, -1.0F, 0.0F);
-        lvt_9_2_.transform(lvt_8_2_);
+        lvt_9_2_.transform(rotation);
         Vector3f[] lvt_10_1_ = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
         float lvt_11_1_ = this.getQuadSize(partialTicks);
 
         for (int lvt_12_1_ = 0; lvt_12_1_ < 4; ++lvt_12_1_)
         {
             Vector3f lvt_13_1_ = lvt_10_1_[lvt_12_1_];
-            lvt_13_1_.transform(lvt_8_2_);
+            lvt_13_1_.transform(rotation);
             lvt_13_1_.mul(lvt_11_1_);
             lvt_13_1_.add(lvt_5_1_, lvt_6_1_, lvt_7_1_);
         }
@@ -132,6 +136,7 @@ public class SquidSoulParticle extends SpriteTexturedParticle
         @Override
         public Particle createParticle(SquidSoulParticleData typeIn, ClientWorld levelIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
         {
+            System.out.println("factory X: " + x + " Y: " + y + " Z: " + z);
             return new SquidSoulParticle(levelIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn, this.spriteSet);
         }
     }
