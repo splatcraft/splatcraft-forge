@@ -32,7 +32,7 @@ public class ScanTurfCommand
                         .then(Commands.literal("multiLayered").executes(context -> execute(context, 1))))
                 ))
                 .then(StageCommand.stageId("stage").executes(ScanTurfCommand::executeStageOnSelf)
-                .then(Commands.argument("target", EntityArgument.players()).executes(context -> execute(context, 0))
+                .then(Commands.argument("target", EntityArgument.players()).executes(context -> executeStage(context, 0))
                         .then(Commands.literal("topDown").executes(context -> executeStage(context, 0)))
                         .then(Commands.literal("multiLayered").executes(context -> executeStage(context, 1))))));
     }
