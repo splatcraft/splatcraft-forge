@@ -221,7 +221,8 @@ public class InkProjectileEntity extends ProjectileItemEntity implements IColore
         if (target instanceof LivingEntity) {
             if (InkDamageUtils.isSplatted((LivingEntity) target)) return;
 
-            if(InkDamageUtils.doDamage(level, (LivingEntity) target, dmg, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, damageType, causesHurtCooldown) && getOwner() instanceof ServerPlayerEntity)
+            if(InkDamageUtils.doDamage(level, (LivingEntity) target, dmg, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, damageType, causesHurtCooldown) &&
+                    charge >= .95f && getOwner() instanceof ServerPlayerEntity)
                 ((ServerPlayerEntity)getOwner()).connection.send(new SChangeGameStatePacket(SChangeGameStatePacket.ARROW_HIT_PLAYER, 0.0F));
         }
 
