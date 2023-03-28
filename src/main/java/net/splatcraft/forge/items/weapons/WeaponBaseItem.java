@@ -161,7 +161,8 @@ public class WeaponBaseItem extends Item implements IColoredItem
                     if (!level.isClientSide)
                         SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(player.getUUID(), false), player);
                 }
-                SplatcraftKeyHandler.canUseHotkeys = false;
+                if(level.isClientSide())
+                    SplatcraftKeyHandler.canUseHotkeys = false;
                 player.setSprinting(false);
                 player.inventory.selected = itemSlot;
             }
