@@ -12,9 +12,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public class ColoredBarrierTileEntity extends StageBarrierTileEntity
+public class ColoredBarrierTileEntity extends StageBarrierTileEntity implements IHasTeam
 {
     protected int color = ColorUtils.DEFAULT;
+    private String team = "";
 
     public ColoredBarrierTileEntity()
     {
@@ -71,12 +72,24 @@ public class ColoredBarrierTileEntity extends StageBarrierTileEntity
     {
         super.load(state, nbt);
         setColor(ColorUtils.getColorFromNbt(nbt));
+        setTeam(nbt.getString("Team"));
     }
 
     @Override
     public CompoundNBT save(CompoundNBT compound)
     {
         compound.putInt("Color", getColor());
+        compound.putString("Team", getTeam());
         return super.save(compound);
+    }
+
+    @Override
+    public String getTeam() {
+        return team;
+    }
+
+    @Override
+    public void setTeam(String team) {
+        this.team = team;
     }
 }

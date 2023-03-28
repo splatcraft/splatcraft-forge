@@ -25,6 +25,7 @@ import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateStageListPacket;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.tileentities.IHasTeam;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
@@ -79,8 +80,8 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
                     if (block instanceof IColoredBlock)
                     {
                         int teColor = ((IColoredBlock) block).getColor(level, pos);
-
-                        if (((IColoredBlock) block).canRemoteColorChange(level, pos, teColor, color) && (mode == 0 || (mode == 1) == (affectedTeam.isEmpty() ? teColor == affectedColor : ((InkColorTileEntity) tileEntity).getTeam().equals(affectedTeam)))
+                        if (((IColoredBlock) block).canRemoteColorChange(level, pos, teColor, color) && (mode == 0 || (mode == 1) == (affectedTeam.isEmpty() ? teColor == affectedColor :
+                                tileEntity instanceof IHasTeam && ((IHasTeam) tileEntity).getTeam().equals(affectedTeam)))
                                 && ((IColoredBlock) block).remoteColorChange(level, pos, color))
                         {
                             count++;

@@ -11,7 +11,7 @@ import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class InkColorTileEntity extends TileEntity
+public class InkColorTileEntity extends TileEntity implements IHasTeam
 {
 
     private int color = ColorUtils.DEFAULT;
