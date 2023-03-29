@@ -108,7 +108,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
     @Override
     public boolean onEntityInked(InkDamageUtils.InkDamageSource source, float damage, int color)
     {
-        if (hurtCooldown <= 0 && getInkHealth() > 0 && !inkproof && InkDamageUtils.canDamage(this, color))
+        if (hurtCooldown <= 0 && getInkHealth() > 0 && !inkproof)
         {
             ink(damage, color);
             if (getInkHealth() <= 0)
