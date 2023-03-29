@@ -106,6 +106,11 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
     }
 
     @Override
+    public boolean isPickable() {
+        return getInkHealth() > 0;
+    }
+
+    @Override
     public boolean onEntityInked(InkDamageUtils.InkDamageSource source, float damage, int color)
     {
         if (hurtCooldown <= 0 && getInkHealth() > 0 && !inkproof)
