@@ -102,6 +102,12 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
 
         super.tick();
 
+        if(isInWater())
+        {
+            level.broadcastEntityEvent(this, (byte) -1);
+            remove();
+        }
+
         Vector3d raytraceOffset = new Vector3d(getBbWidth()/2f * Math.signum(getDeltaMovement().x), getBbHeight() * Math.max(0, Math.signum(getDeltaMovement().y)), getBbWidth()/2f * Math.signum(getDeltaMovement().z));
 
         setDeltaMovement(getDeltaMovement().add(raytraceOffset));
