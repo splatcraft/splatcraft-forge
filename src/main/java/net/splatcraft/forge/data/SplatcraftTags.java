@@ -95,6 +95,7 @@ public class SplatcraftTags
     public static class EntityTypes
     {
         public static final ITag<EntityType<?>> BYPASSES_SPAWN_SHIELD = createTag("bypasses_spawn_shield");
+        public static final ITag<EntityType<?>> SUB_WEAPONS = createTag("sub_weapons");
 
         private static ITag<EntityType<?>> createTag(String name)
         {
