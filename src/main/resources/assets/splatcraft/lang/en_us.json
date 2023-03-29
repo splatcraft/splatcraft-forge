@@ -430,7 +430,7 @@
   "arg.stageWarp.noSpawnPads": "No available Spawn Pads were found on stage [%s]",
   "arg.stageWarp.noPlayers": "No players were found with a Spawn Pad matching their ink color on stage [%s]",
   "arg.stage.notFound": "Stage [%s] does not exist",
-  "arg.stageTeam.alreadyExists": "Stage [%s] already exists",
+  "arg.stage.alreadyExists": "Stage [%s] already exists",
   "arg.stageTeam.notFound": "Unknown team %s for stage [%s]",
   "arg.stageSetting.notFound": "Setting %s does not exist",
 
