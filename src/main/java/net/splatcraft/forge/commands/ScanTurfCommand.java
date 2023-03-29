@@ -59,10 +59,11 @@ public class ScanTurfCommand
     }
 
     private static int executeStage(CommandSource source, String stageId, int mode, Collection<ServerPlayerEntity> targets) throws CommandSyntaxException {
+
         Stage stage = SaveInfoCapability.get(source.getServer()).getStages().get(stageId);
 
         if(stage == null)
-            throw StageCommand.STAGE_NOT_FOUND.create(stage);
+            throw StageCommand.STAGE_NOT_FOUND.create(stageId);
 
         int result = execute(source, stage.cornerA, stage.cornerB, mode, targets);
 

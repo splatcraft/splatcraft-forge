@@ -59,7 +59,7 @@ public class ReplaceColorCommand
         Stage stage = SaveInfoCapability.get(context.getSource().getServer()).getStages().get(stageId);
 
         if(stage == null)
-            throw StageCommand.STAGE_NOT_FOUND.create(stage);
+            throw StageCommand.STAGE_NOT_FOUND.create(stageId);
 
         int color = InkColorArgument.getInkColor(context, "color");
         String team = StringArgumentType.getString(context, "affectedTeam");

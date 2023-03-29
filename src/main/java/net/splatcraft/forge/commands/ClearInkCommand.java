@@ -31,10 +31,11 @@ public class ClearInkCommand
 
     private static int executeStage(CommandContext<CommandSource> context) throws CommandSyntaxException
     {
-        Stage stage = SaveInfoCapability.get(context.getSource().getServer()).getStages().get(StringArgumentType.getString(context, "stage"));
+        String stageId = StringArgumentType.getString(context, "stage");
+        Stage stage = SaveInfoCapability.get(context.getSource().getServer()).getStages().get(stageId);
 
         if(stage == null)
-            throw StageCommand.STAGE_NOT_FOUND.create(stage);
+            throw StageCommand.STAGE_NOT_FOUND.create(stageId);
 
         return execute(context.getSource(), stage.cornerA, stage.cornerB);
     }
