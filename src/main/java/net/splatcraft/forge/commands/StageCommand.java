@@ -61,6 +61,10 @@ public class StageCommand
 						.then(stageId("stage").executes(StageCommand::remove)
 				))//.then(Commands.literal("list"))
 				.then(Commands.literal("settings").then(stageId("stage")
+								.then(Commands.literal("cornerA").executes(context -> getStageCorner(context, true))
+										.then(Commands.argument("pos", BlockPosArgument.blockPos()).executes(context -> setStageCorner(context, true))))
+								.then(Commands.literal("cornerB").executes(context -> getStageCorner(context, false))
+										.then(Commands.argument("pos", BlockPosArgument.blockPos()).executes(context -> setStageCorner(context, false))))
 						.then(stageSetting("setting").executes(StageCommand::getSetting)
 								.then(Commands.literal("true").executes(context -> setSetting(context, true)))
 								.then(Commands.literal("false").executes(context -> setSetting(context, false)))
@@ -118,6 +122,16 @@ public class StageCommand
 	private static int setSetting(CommandContext<CommandSource> context, @Nullable Boolean value) throws CommandSyntaxException
 	{
 		return setSetting(context.getSource(), StringArgumentType.getString(context, "stage"), StringArgumentType.getString(context, "setting"), value);
+	}
+
+	private static int setStageCorner(CommandContext<CommandSource> context, boolean isCornerA) throws CommandSyntaxException
+	{
+		return setStageCoords(context.getSource(), StringArgumentType.getString(context, "stage"), BlockPosArgument.getOrLoadBlockPos(context, "pos"), isCornerA);
+	}
+
+	private static int getStageCorner(CommandContext<CommandSource> context, boolean isCornerA) throws CommandSyntaxException
+	{
+		return getStageCoords(context.getSource(), StringArgumentType.getString(context, "stage"), isCornerA);
 	}
 
 	private static int getSetting(CommandContext<CommandSource> context) throws CommandSyntaxException
@@ -360,5 +374,37 @@ public class StageCommand
 
 		source.sendSuccess(new TranslationTextComponent("commands.stage.warp.success", result, stageId), true);
 		return result;
+	}
+
+	private static int setStageCoords(CommandSource source, String stageId, BlockPos pos, boolean isCornerA) throws CommandSyntaxException {
+		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
+
+		if (!stages.containsKey(stageId))
+			throw STAGE_NOT_FOUND.create(stageId);
+
+		Stage stage = stages.get(stageId);
+
+		if(isCornerA)
+			stage.cornerA = pos;
+		else stage.cornerB = pos;
+
+		SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
+		source.sendSuccess(new TranslationTextComponent("commands.stage.setting.area.success", isCornerA ? "A" : "B", stageId, pos.getX(), pos.getY(), pos.getZ()), true);
+		return 1;
+	}
+
+	private static int getStageCoords(CommandSource source, String stageId, boolean isCornerA) throws CommandSyntaxException {
+		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
+
+		if (!stages.containsKey(stageId))
+			throw STAGE_NOT_FOUND.create(stageId);
+
+		Stage stage = stages.get(stageId);
+
+		BlockPos pos = isCornerA ? stage.cornerA : stage.cornerB;
+
+		source.sendSuccess(new TranslationTextComponent("commands.stage.setting.area.get", isCornerA ? "A" : "B", stageId, pos.getX(), pos.getY(), pos.getZ()), true);
+
+		return 1;
 	}
 }
