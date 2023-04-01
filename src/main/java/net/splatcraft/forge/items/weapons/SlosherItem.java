@@ -37,11 +37,13 @@ public class SlosherItem extends WeaponBaseItem
 
     @Override
     public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
-        CooldownTracker cooldownTracker = ((PlayerEntity) entity).getCooldowns();
-        if (!cooldownTracker.isOnCooldown(this)) {
-            PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, settings.startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
-            if (!level.isClientSide) {
-                cooldownTracker.addCooldown(this, settings.firingSpeed);
+        if (entity instanceof PlayerEntity && getUseDuration(stack) - timeLeft < settings.startupTicks) {
+            CooldownTracker cooldownTracker = ((PlayerEntity) entity).getCooldowns();
+            if (!cooldownTracker.isOnCooldown(this)) {
+                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, settings.startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
+                if (!level.isClientSide && settings.firingSpeed > 0) {
+                    cooldownTracker.addCooldown(this, settings.firingSpeed);
+                }
             }
         }
     }
