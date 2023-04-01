@@ -1,3 +1,6 @@
 {
-  "parent": "splatcraft:block/tarp"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "splatcraft:blocks/tarp"
+  }
 }

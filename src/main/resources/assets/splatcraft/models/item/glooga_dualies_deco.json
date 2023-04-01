@@ -1,5 +1,5 @@
 {
-  "parent": "splatcraft:item/glooga_dualies",
+  "parent": "splatcraft:item/kensa_glooga_dualies",
   "textures": {
     "0": "splatcraft:weapons/glooga_dualies_deco",
     "particle": "splatcraft:weapons/glooga_dualies_deco"

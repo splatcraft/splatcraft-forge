@@ -2,6 +2,6 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "splatcraft:items/splatfest_band_overlay",
-    "layer1": "splatcraft:items/splatfest_band"
+    "layer1": "splatcraft:items/splatfest_ink_band"
   }
 }

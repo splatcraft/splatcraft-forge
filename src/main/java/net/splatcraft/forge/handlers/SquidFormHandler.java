@@ -174,7 +174,7 @@ public class SquidFormHandler {
 
         if (info.isSquid())
         {
-            event.setNewSize(new EntitySize(0.6f, 0.5f, false));
+            event.setNewSize(new EntitySize(0.6f, event.getEntity().isCrouching() ? 0.1f : 0.4f, false));
             event.setNewEyeHeight(InkBlockUtils.canSquidHide((LivingEntity) event.getEntity()) ? 0.3f : 0.4f);
         }
     }

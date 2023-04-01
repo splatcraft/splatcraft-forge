@@ -219,7 +219,7 @@ public class SplatcraftItems {
             .setGroundInaccuracy(4).setAirInaccuracy(8)
             .setInkConsumption(1.2f)
             .setInkRecoveryCooldown(7)
-            .setBaseDamage(5.6f).setMinDamage(2.8f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.53f)
+            .setBaseDamage(30).setMinDamage(300).setDamageDecayStartTick(3).setDamageDecayPerTick(0.53f)
             .setRollCount(1)
             .setRollSpeed(0.7f)
             .setRollInaccuracy(2)
@@ -260,7 +260,7 @@ public class SplatcraftItems {
             .setFiringSpeed(20).setStartupTicks(5)
             .setGroundInaccuracy(0)
             .setInkConsumption(11.7f).setInkRecoveryCooldown(23)
-            .setBaseDamage(11f).setMinDamage(7)).setSlosherType(SlosherItem.Type.EXPLODING);
+            .setBaseDamage(1).setMinDamage(0)).setSlosherType(SlosherItem.Type.EXPLODING);
 
     //Ink Tanks
     public static final InkTankItem inkTank = new InkTankItem("ink_tank", 100);
@@ -270,7 +270,7 @@ public class SplatcraftItems {
 
     //Sub Weapons
     public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70, 20);
-    public static final SubWeaponItem splatBomb2 = (SubWeaponItem) new SubWeaponItem("splat_bomb_2", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70, 20).setSecret();
+    public static final SubWeaponItem splatBomb2 = (SubWeaponItem) new SubWeaponItem("splat_bomb_2", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70, 20);
     public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB, BurstBombEntity.DIRECT_DAMAGE, BurstBombEntity.EXPLOSION_SIZE, 40, 15);
     public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB, SuctionBombEntity.DIRECT_DAMAGE, SuctionBombEntity.EXPLOSION_SIZE, 70, 30);
     public static final SubWeaponItem curlingBomb = new SubWeaponItem("curling_bomb", SplatcraftEntities.CURLING_BOMB, CurlingBombEntity.DIRECT_DAMAGE, CurlingBombEntity.EXPLOSION_SIZE, 70, 30, CurlingBombEntity.MAX_COOK_TIME, CurlingBombEntity::onItemUseTick);

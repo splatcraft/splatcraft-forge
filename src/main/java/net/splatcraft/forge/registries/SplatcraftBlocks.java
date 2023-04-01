@@ -113,6 +113,7 @@ public class SplatcraftBlocks
 
         RenderTypeLookup.setRenderLayer(emptyInkwell, RenderType.cutout());
         RenderTypeLookup.setRenderLayer(inkwell, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(tarp, RenderType.cutout());
         RenderTypeLookup.setRenderLayer(spawnPad, RenderType.cutout());
         RenderTypeLookup.setRenderLayer(grate, RenderType.cutout());
         RenderTypeLookup.setRenderLayer(grateRamp, RenderType.cutout());

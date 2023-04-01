@@ -1,13 +1,13 @@
-package net.splatcraft.forge.client.model.subs;// Made with Blockbench 3.8.4
-// Exported for Minecraft version 1.15 - 1.16
+package net.splatcraft.forge.client.model.subs;// Made with Blockbench 4.6.5
+// Exported for Minecraft version 1.15 - 1.16 with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
 
-import net.splatcraft.forge.entities.subs.SuctionBombEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
+import net.splatcraft.forge.entities.subs.SuctionBombEntity;
 
 public class SuctionBombModel extends AbstractSubWeaponModel<SuctionBombEntity> {
 	private final ModelRenderer Main;
@@ -32,9 +32,9 @@ public class SuctionBombModel extends AbstractSubWeaponModel<SuctionBombEntity> 
 		Top = new ModelRenderer(this);
 		Top.setPos(0.0F, -2.5F, 0.0F);
 		Neck.addChild(Top);
-		Top.texOffs(0, 0).addBox(-2.0F, -7.7F, -2.0F, 4.0F, 6.0F, 4.0F, 0.0F, false);
 		Top.texOffs(12, 0).addBox(-1.5F, -1.7F, -1.5F, 3.0F, 1.0F, 3.0F, 0.0F, false);
 		Top.texOffs(0, 0).addBox(-0.5F, -1.2F, -0.5F, 1.0F, 2.0F, 1.0F, -0.1F, false);
+		Top.texOffs(0, 23).addBox(-4.0F, -2.65F, -4.0F, 8.0F, 1.0F, 8.0F, -0.05F, false);
 	}
 
 	@Override

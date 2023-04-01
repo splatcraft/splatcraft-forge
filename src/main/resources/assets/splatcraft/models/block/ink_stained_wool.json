@@ -2,8 +2,8 @@
   "credit": "Made with Blockbench",
   "parent": "block/block",
   "textures": {
-    "0": "minecraft:block/white_wool",
-    "particle": "minecraft:block/white_wool"
+    "0": "splatcraft:blocks/sardinium_block_side",
+    "particle": "splatcraft:blocks/sardinium_block_side"
   },
   "elements": [
     {
