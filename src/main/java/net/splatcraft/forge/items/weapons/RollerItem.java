@@ -21,6 +21,7 @@ import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.client.audio.RollerRollTickableSound;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.entities.InkProjectileEntity;
+import net.splatcraft.forge.entities.SquidBumperEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
@@ -168,9 +169,10 @@ public class RollerItem extends WeaponBaseItem
                         BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
                         for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(attackPos, attackPos.offset(1, 2, 1)), EntityPredicates.NO_SPECTATORS.and(e ->
                         {
+
                             if (e instanceof LivingEntity) {
                                 if (InkDamageUtils.isSplatted((LivingEntity) e)) return false;
-                                return InkDamageUtils.canDamage(e, entity);
+                                return InkDamageUtils.canDamage(e, entity) || e instanceof SquidBumperEntity;
                             }
                             return false;
                         }))) {
