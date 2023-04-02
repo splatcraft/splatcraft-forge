@@ -133,7 +133,7 @@ public class InkExplosion {
         int j1 = MathHelper.floor(this.z + (double) f2 + 1.0D);
         List<Entity> list = this.level.getEntities(this.exploder, new AxisAlignedBB(k1, i2, j2, l1, i1, j1));
 
-        Vector3d explosionPos = new Vector3d(x, y, z);
+        Vector3d explosionPos = new Vector3d(x + 0.5f, y + 0.5f, z + 0.5f);
         for (Entity entity : list)
         {
             int targetColor = -2;
@@ -143,7 +143,7 @@ public class InkExplosion {
             if (targetColor == -1 || (color != targetColor && targetColor > -1))
             {
                 double f2Sq = f2 * f2;
-                float pctg = Math.max(0, (float) ((f2Sq - entity.distanceToSqr(x, y, z)) / f2Sq));
+                float pctg = Math.max(0, (float) ((f2Sq - entity.distanceToSqr(x + 0.5f, y + 0.5f, z + 0.5f)) / f2Sq));
 
                 InkDamageUtils.doSplatDamage(level, (LivingEntity) entity, MathHelper.lerp(pctg, minDamage, maxDamage) * Explosion.getSeenPercent(explosionPos, entity), color, exploder, weapon, damageMobs);
             }
