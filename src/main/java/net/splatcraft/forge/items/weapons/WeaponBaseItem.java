@@ -182,7 +182,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
         } else if ((stack.getItem() instanceof SubWeaponItem && !SubWeaponItem.singleUse(stack) || !(stack.getItem() instanceof SubWeaponItem))
-                && InkedBlock.causesClear(entity.level.getBlockState(pos)) && ColorUtils.getInkColor(stack) != 0xFFFFFF) {
+                && InkedBlock.causesClear(entity.level, pos, entity.level.getBlockState(pos)) && ColorUtils.getInkColor(stack) != 0xFFFFFF) {
             ColorUtils.setInkColor(stack, 0xFFFFFF);
             ColorUtils.setColorLocked(stack, false);
         }

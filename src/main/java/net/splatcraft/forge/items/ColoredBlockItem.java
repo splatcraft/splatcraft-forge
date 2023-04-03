@@ -18,6 +18,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -158,7 +159,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
         }
-        else if (clearItem != null && InkedBlock.causesClear(entity.level.getBlockState(pos)))
+        else if (clearItem != null && InkedBlock.causesClear(entity.level, pos, entity.level.getBlockState(pos), Direction.UP))
             entity.setItem(new ItemStack(clearItem, stack.getCount()));
 
         return false;

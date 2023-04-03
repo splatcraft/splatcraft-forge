@@ -1,10 +1,12 @@
 {
   "replace": false,
   "values": [
+    "splatcraft:spawn_shield",
     "minecraft:experience_orb",
     "minecraft:evoker_fangs",
     "minecraft:item",
     "minecraft:area_effect_cloud",
-    "minecraft:vex"
+    "minecraft:vex",
+    "minecraft:armor_stand"
   ]
 }

@@ -81,7 +81,7 @@ public class InkedBlock extends Block implements IColoredBlock
             blockpos$mutable.setWithOffset(pos, direction);
             BlockState blockstate = reader.getBlockState(blockpos$mutable);
 
-            if (causesClear(blockstate, direction))
+            if (causesClear(reader, pos, blockstate, direction))
             {
                 flag = true;
                 break;
@@ -91,14 +91,20 @@ public class InkedBlock extends Block implements IColoredBlock
         return flag;
     }
 
-    public static boolean causesClear(BlockState state)
+    public static boolean causesClear(IBlockReader level, BlockPos pos, BlockState state)
     {
-        return causesClear(state, Direction.UP);
+        return causesClear(level, pos, state, Direction.UP);
     }
 
-    public static boolean causesClear(BlockState state, Direction dir)
+    public static boolean causesClear(IBlockReader level, BlockPos pos, BlockState state, Direction dir)
     {
-        return state.is(SplatcraftTags.Blocks.INK_CLEARING_BLOCKS) || (dir != Direction.DOWN && state.getFluidState().is(FluidTags.WATER));
+        if(state.is(SplatcraftTags.Blocks.INK_CLEARING_BLOCKS))
+            return true;
+
+        if(dir != Direction.DOWN && state.getFluidState().is(FluidTags.WATER))
+            return !state.isFaceSturdy(level, pos, dir.getOpposite());
+
+        return false;
     }
 
     private static BlockState clearInk(IWorld level, BlockPos pos)

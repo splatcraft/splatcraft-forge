@@ -81,7 +81,7 @@ public class SquidBumperItem extends Item implements IColoredItem
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
         }
-        else if(InkedBlock.causesClear(entity.level.getBlockState(pos)) && ColorUtils.isColorLocked(stack))
+        else if(InkedBlock.causesClear(entity.level, pos, entity.level.getBlockState(pos)) && ColorUtils.isColorLocked(stack))
         {
             ColorUtils.setInkColor(stack, 0xFFFFFF);
             ColorUtils.setColorLocked(stack, false);
