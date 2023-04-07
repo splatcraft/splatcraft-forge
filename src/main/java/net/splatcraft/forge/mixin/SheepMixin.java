@@ -34,7 +34,7 @@ public class SheepMixin
 		{
 			int color = InkOverlayCapability.get((SheepEntity)(Object)this).getWoolColor();
 			if(color > -1)
-				return instance.add(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool), color));
+				return instance.add(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool), color), true));
 		}
 		return instance.add(e);
 	}
@@ -47,7 +47,7 @@ public class SheepMixin
 		{
 			IInkOverlayInfo info = InkOverlayCapability.get(instance);
 			if(info.getWoolColor() > -1)
-				return instance.spawnAtLocation(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool), info.getWoolColor()), i);
+				return instance.spawnAtLocation(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool), info.getWoolColor()), true), i);
 		}
 
 		return instance.spawnAtLocation(iItemProvider, i);
