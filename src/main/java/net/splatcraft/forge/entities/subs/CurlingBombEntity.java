@@ -12,7 +12,11 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ReuseableStream;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -67,8 +71,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 		return SplatcraftItems.curlingBomb;
 	}
 
-	public static void onItemUseTick(World level, LivingEntity entity, ItemStack stack, int useTime)
-	{
+	public static void onItemUseTick(ItemStack stack, int useTime) {
 		CompoundNBT data = stack.getTag().getCompound("EntityData");
 		data.putInt("CookTime", stack.getItem().getUseDuration(stack) - useTime);
 
@@ -225,18 +228,16 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 		boolean flag2 = p_213306_1_.z != vector3d.z;
 		boolean flag3 = this.onGround || flag1 && p_213306_1_.y < 0.0D;
 		if (this.maxUpStep > 0.0F && flag3 && (flag || flag2)) {
-			Vector3d vector3d1 = collideBoundingBoxHeuristically(this, new Vector3d(p_213306_1_.x, (double)this.maxUpStep, p_213306_1_.z), axisalignedbb, this.level, iselectioncontext, reuseablestream);
-			Vector3d vector3d2 = collideBoundingBoxHeuristically(this, new Vector3d(0.0D, (double)this.maxUpStep, 0.0D), axisalignedbb.expandTowards(p_213306_1_.x, 0.0D, p_213306_1_.z), this.level, iselectioncontext, reuseablestream);
-			if (vector3d2.y < (double)this.maxUpStep) {
+			Vector3d vector3d1 = collideBoundingBoxHeuristically(this, new Vector3d(p_213306_1_.x, this.maxUpStep, p_213306_1_.z), axisalignedbb, this.level, iselectioncontext, reuseablestream);
+			Vector3d vector3d2 = collideBoundingBoxHeuristically(this, new Vector3d(0.0D, this.maxUpStep, 0.0D), axisalignedbb.expandTowards(p_213306_1_.x, 0.0D, p_213306_1_.z), this.level, iselectioncontext, reuseablestream);
+			if (vector3d2.y < (double) this.maxUpStep) {
 				Vector3d vector3d3 = collideBoundingBoxHeuristically(this, new Vector3d(p_213306_1_.x, 0.0D, p_213306_1_.z), axisalignedbb.move(vector3d2), this.level, iselectioncontext, reuseablestream).add(vector3d2);
 				if (getHorizontalDistanceSqr(vector3d3) > getHorizontalDistanceSqr(vector3d1)) {
 					vector3d1 = vector3d3;
 				}
 			}
 
-			if (getHorizontalDistanceSqr(vector3d1) > getHorizontalDistanceSqr(vector3d)) {
-				return true;
-			}
+			return getHorizontalDistanceSqr(vector3d1) > getHorizontalDistanceSqr(vector3d);
 		}
 
 		return false;
@@ -247,9 +248,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 		ISelectionContext iselectioncontext = ISelectionContext.of(this);
 		VoxelShape voxelshape = this.level.getWorldBorder().getCollisionShape();
 		Stream<VoxelShape> stream = VoxelShapes.joinIsNotEmpty(voxelshape, VoxelShapes.create(axisalignedbb.deflate(1.0E-7D)), IBooleanFunction.AND) ? Stream.empty() : Stream.of(voxelshape);
-		Stream<VoxelShape> stream1 = this.level.getEntityCollisions(this, axisalignedbb.expandTowards(p_213306_1_), (p_233561_0_) -> {
-			return true;
-		});
+		Stream<VoxelShape> stream1 = this.level.getEntityCollisions(this, axisalignedbb.expandTowards(p_213306_1_), (p_233561_0_) -> true);
 		ReuseableStream<VoxelShape> reuseablestream = new ReuseableStream<>(Stream.concat(stream1, stream));
 		Vector3d vector3d = p_213306_1_.lengthSqr() == 0.0D ? p_213306_1_ : collideBoundingBoxHeuristically(this, p_213306_1_, axisalignedbb, this.level, iselectioncontext, reuseablestream);
 		boolean flag = p_213306_1_.x != vector3d.x;
@@ -257,9 +256,9 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 		boolean flag2 = p_213306_1_.z != vector3d.z;
 		boolean flag3 = this.onGround || flag1 && p_213306_1_.y < 0.0D;
 		if (this.maxUpStep > 0.0F && flag3 && (flag || flag2)) {
-			Vector3d vector3d1 = collideBoundingBoxHeuristically(this, new Vector3d(p_213306_1_.x, (double)this.maxUpStep, p_213306_1_.z), axisalignedbb, this.level, iselectioncontext, reuseablestream);
-			Vector3d vector3d2 = collideBoundingBoxHeuristically(this, new Vector3d(0.0D, (double)this.maxUpStep, 0.0D), axisalignedbb.expandTowards(p_213306_1_.x, 0.0D, p_213306_1_.z), this.level, iselectioncontext, reuseablestream);
-			if (vector3d2.y < (double)this.maxUpStep) {
+			Vector3d vector3d1 = collideBoundingBoxHeuristically(this, new Vector3d(p_213306_1_.x, this.maxUpStep, p_213306_1_.z), axisalignedbb, this.level, iselectioncontext, reuseablestream);
+			Vector3d vector3d2 = collideBoundingBoxHeuristically(this, new Vector3d(0.0D, this.maxUpStep, 0.0D), axisalignedbb.expandTowards(p_213306_1_.x, 0.0D, p_213306_1_.z), this.level, iselectioncontext, reuseablestream);
+			if (vector3d2.y < (double) this.maxUpStep) {
 				Vector3d vector3d3 = collideBoundingBoxHeuristically(this, new Vector3d(p_213306_1_.x, 0.0D, p_213306_1_.z), axisalignedbb.move(vector3d2), this.level, iselectioncontext, reuseablestream).add(vector3d2);
 				if (getHorizontalDistanceSqr(vector3d3) > getHorizontalDistanceSqr(vector3d1)) {
 					vector3d1 = vector3d3;

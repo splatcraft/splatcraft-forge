@@ -147,7 +147,6 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
         float f;
         if (this.isInWater()) {
             for(int i = 0; i < 4; ++i) {
-                float f1 = 0.25F;
                 this.level.addParticle(ParticleTypes.BUBBLE, d2 - vector3d.x * 0.25D, d0 - vector3d.y * 0.25D, d1 - vector3d.z * 0.25D, vector3d.x, vector3d.y, vector3d.z);
             }
 
@@ -301,9 +300,7 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
 
     public void setItem(ItemStack item) {
         if (item.getItem() != this.getDefaultItem() || item.hasTag()) {
-            this.getEntityData().set(DATA_ITEM_STACK, Util.make(item.copy(), (p_213883_0_) -> {
-                p_213883_0_.setCount(1);
-            }));
+            this.getEntityData().set(DATA_ITEM_STACK, Util.make(item.copy(), (p_213883_0_) -> p_213883_0_.setCount(1)));
         }
 
     }
@@ -326,9 +323,7 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
     private boolean checkLeftOwner() {
         Entity entity = this.getOwner();
         if (entity != null) {
-            for(Entity entity1 : this.level.getEntities(this, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (p_234613_0_) -> {
-                return !p_234613_0_.isSpectator() && p_234613_0_.isPickable();
-            })) {
+            for (Entity entity1 : this.level.getEntities(this, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (p_234613_0_) -> !p_234613_0_.isSpectator() && p_234613_0_.isPickable())) {
                 if (entity1.getRootVehicle() == entity.getRootVehicle()) {
                     return false;
                 }

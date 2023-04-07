@@ -41,6 +41,7 @@ import net.splatcraft.forge.items.remotes.RemoteItem;
 import net.splatcraft.forge.items.remotes.TurfScannerItem;
 import net.splatcraft.forge.items.weapons.BlasterItem;
 import net.splatcraft.forge.items.weapons.ChargerItem;
+import net.splatcraft.forge.items.weapons.CurlingSubWeaponItem;
 import net.splatcraft.forge.items.weapons.DualieItem;
 import net.splatcraft.forge.items.weapons.RollerItem;
 import net.splatcraft.forge.items.weapons.ShooterItem;
@@ -271,9 +272,9 @@ public class SplatcraftItems {
     //Sub Weapons
     public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70, 20);
     public static final SubWeaponItem splatBomb2 = (SubWeaponItem) new SubWeaponItem("splat_bomb_2", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70, 20).setSecret();
-    public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB, BurstBombEntity.DIRECT_DAMAGE, BurstBombEntity.EXPLOSION_SIZE, 40, 15);
-    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB, SuctionBombEntity.DIRECT_DAMAGE, SuctionBombEntity.EXPLOSION_SIZE, 70, 30);
-    public static final SubWeaponItem curlingBomb = new SubWeaponItem("curling_bomb", SplatcraftEntities.CURLING_BOMB, CurlingBombEntity.DIRECT_DAMAGE, CurlingBombEntity.EXPLOSION_SIZE, 70, 30, CurlingBombEntity.MAX_COOK_TIME, CurlingBombEntity::onItemUseTick);
+    public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB, BurstBombEntity.DIRECT_DAMAGE, BurstBombEntity.EXPLOSION_SIZE, 45, 20);
+    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB, SuctionBombEntity.DIRECT_DAMAGE, SuctionBombEntity.EXPLOSION_SIZE, 70, 20);
+    public static final SubWeaponItem curlingBomb = new CurlingSubWeaponItem("curling_bomb", SplatcraftEntities.CURLING_BOMB, CurlingBombEntity.DIRECT_DAMAGE, CurlingBombEntity.EXPLOSION_SIZE, 70, 0 /* see CurlingSubWeaponItem */, CurlingBombEntity.MAX_COOK_TIME, CurlingBombEntity::onItemUseTick);
 
     //Vanity
     public static final Item inkClothHelmet = new ColoredArmorItem("ink_cloth_helmet", INK_CLOTH, EquipmentSlotType.HEAD);

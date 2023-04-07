@@ -60,7 +60,8 @@ public class SubWeaponItem extends WeaponBaseItem
 
     public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption, int inkRecoveryCooldown)
     {
-        this(name, entityType, directDamage, explosionSize, inkConsumption, inkRecoveryCooldown, USE_DURATION, ((level, entity, stack, useTime) -> {}));
+        this(name, entityType, directDamage, explosionSize, inkConsumption, inkRecoveryCooldown, USE_DURATION, (stack, useTime) -> {
+        });
     }
 
     public static boolean singleUse(ItemStack stack) {
@@ -77,7 +78,7 @@ public class SubWeaponItem extends WeaponBaseItem
     @Override
     public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
     {
-        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, this, inkConsumption, inkRecoveryCooldown, true, true)))
+        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, this, inkConsumption, 0, true, true)))
             player.startUsingItem(hand);
         return useSuper(level, player, hand);
     }
@@ -99,7 +100,7 @@ public class SubWeaponItem extends WeaponBaseItem
         if(useTime == maxUseTime)
             throwSub(itemStack, level, entity);
         else if(useTime < maxUseTime)
-            useTick.onUseTick(level, entity, itemStack, timeLeft);
+            useTick.onUseTick(itemStack, timeLeft);
     }
 
     @Override
@@ -129,8 +130,7 @@ public class SubWeaponItem extends WeaponBaseItem
         if (SubWeaponItem.singleUse(stack)) {
             if (entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative())
                 stack.shrink(1);
-        } else reduceInk(entity, this, inkConsumption, 0, false);
-
+        } else reduceInk(entity, this, inkConsumption, inkRecoveryCooldown, false);
     }
 
     public static class DispenseBehavior extends DefaultDispenseItemBehavior
@@ -187,7 +187,7 @@ public class SubWeaponItem extends WeaponBaseItem
 
 
     public interface SubWeaponAction {
-        void onUseTick(World level, LivingEntity entity, ItemStack stack, int useTime);
+        void onUseTick(ItemStack stack, int useTime);
     }
 
     @Override
