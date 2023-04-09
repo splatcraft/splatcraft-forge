@@ -68,8 +68,8 @@ public class SplatcraftGameRules
             Stage stage = (Stage) obj;
             if(localStage == null ||
                     Math.abs(stage.cornerA.getX()-stage.cornerB.getX()) < Math.abs(localStage.cornerA.getX()-localStage.cornerB.getX()) ||
-                    Math.abs(stage.cornerA.getX()-stage.cornerB.getY()) < Math.abs(localStage.cornerA.getX()-localStage.cornerB.getY()) ||
-                    Math.abs(stage.cornerA.getX()-stage.cornerB.getZ()) < Math.abs(localStage.cornerA.getX()-localStage.cornerB.getZ()))
+                    Math.abs(stage.cornerA.getY()-stage.cornerB.getY()) < Math.abs(localStage.cornerA.getY()-localStage.cornerB.getY()) ||
+                    Math.abs(stage.cornerA.getZ()-stage.cornerB.getZ()) < Math.abs(localStage.cornerA.getZ()-localStage.cornerB.getZ()))
                 localStage = stage;
         }
 
