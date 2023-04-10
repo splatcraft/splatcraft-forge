@@ -2,22 +2,22 @@ package net.splatcraft.forge.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 public class InkExplosion {
-    private final World level;
+    private final Level level;
     private final double x;
     private final double y;
     private final double z;
@@ -33,7 +33,7 @@ public class InkExplosion {
     private final Entity exploder;
     private final float size;
     private final List<BlockPos> affectedBlockPositions = Lists.newArrayList();
-    private final Vector3d position;
+    private final Vec3 position;
 
     private final int color;
     private final InkBlockUtils.InkType inkType;
@@ -43,14 +43,14 @@ public class InkExplosion {
     private final float blockDamage;
     private final ItemStack weapon;
 
-    public InkExplosion(World level, @Nullable Entity source, double x, double y, double z, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, float size, int color, InkBlockUtils.InkType inkType, ItemStack weapon) {
+    public InkExplosion(Level level, @Nullable Entity source, double x, double y, double z, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, float size, int color, InkBlockUtils.InkType inkType, ItemStack weapon) {
         this.level = level;
         this.exploder = source;
         this.size = size;
         this.x = x;
         this.y = y;
         this.z = z;
-        this.position = new Vector3d(this.x, this.y, this.z);
+        this.position = new Vec3(this.x, this.y, this.z);
 
 
         this.color = color;
@@ -62,11 +62,11 @@ public class InkExplosion {
         this.weapon = weapon;
     }
 
-    public static void createInkExplosion(World level, Entity source, BlockPos pos, float size, float blockDamage, float damage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon) {
+    public static void createInkExplosion(Level level, Entity source, BlockPos pos, float size, float blockDamage, float damage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon) {
         createInkExplosion(level, source, pos, size, blockDamage, blockDamage, damage, damageMobs, color, type, weapon);
     }
 
-    public static void createInkExplosion(World level, Entity source, BlockPos pos, float size, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon) {
+    public static void createInkExplosion(Level level, Entity source, BlockPos pos, float size, float blockDamage, float minDamage, float maxDamage, boolean damageMobs, int color, InkBlockUtils.InkType type, ItemStack weapon) {
 
         if (level.isClientSide)
             return;
@@ -105,7 +105,7 @@ public class InkExplosion {
                         double d8 = this.z;
 
                         for (; f > 0.0F; f -= 0.22500001F) {
-                            BlockRayTraceResult raytrace = level.clip(new RayTraceContext(new Vector3d(x + 0.5f, y + 0.5f, z + 0.5f), new Vector3d(d4 + 0.5f, d6 + 0.5f, d8 + 0.5f), RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, null));
+                            BlockHitResult raytrace = level.clip(new ClipContext(new Vec3(x + 0.5f, y + 0.5f, z + 0.5f), new Vec3(d4 + 0.5f, d6 + 0.5f, d8 + 0.5f), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
                             BlockPos blockpos;
                             f -= 0.3f * 0.3F;
 
@@ -125,15 +125,15 @@ public class InkExplosion {
 
         this.affectedBlockPositions.addAll(set);
         float f2 = this.size * 1.2f;
-        int k1 = MathHelper.floor(this.x - (double) f2 - 1.0D);
-        int l1 = MathHelper.floor(this.x + (double) f2 + 1.0D);
-        int i2 = MathHelper.floor(this.y - (double) f2 - 1.0D);
-        int i1 = MathHelper.floor(this.y + (double) f2 + 1.0D);
-        int j2 = MathHelper.floor(this.z - (double) f2 - 1.0D);
-        int j1 = MathHelper.floor(this.z + (double) f2 + 1.0D);
-        List<Entity> list = this.level.getEntities(this.exploder, new AxisAlignedBB(k1, i2, j2, l1, i1, j1));
+        int k1 = Mth.floor(this.x - (double) f2 - 1.0D);
+        int l1 = Mth.floor(this.x + (double) f2 + 1.0D);
+        int i2 = Mth.floor(this.y - (double) f2 - 1.0D);
+        int i1 = Mth.floor(this.y + (double) f2 + 1.0D);
+        int j2 = Mth.floor(this.z - (double) f2 - 1.0D);
+        int j1 = Mth.floor(this.z + (double) f2 + 1.0D);
+        List<Entity> list = this.level.getEntities(this.exploder, new AABB(k1, i2, j2, l1, i1, j1));
 
-        Vector3d explosionPos = new Vector3d(x + 0.5f, y + 0.5f, z + 0.5f);
+        Vec3 explosionPos = new Vec3(x + 0.5f, y + 0.5f, z + 0.5f);
         for (Entity entity : list)
         {
             int targetColor = -2;
@@ -145,7 +145,7 @@ public class InkExplosion {
                 double f2Sq = f2 * f2;
                 float pctg = Math.max(0, (float) ((f2Sq - entity.distanceToSqr(x + 0.5f, y + 0.5f, z + 0.5f)) / f2Sq));
 
-                InkDamageUtils.doSplatDamage(level, (LivingEntity) entity, MathHelper.lerp(pctg, minDamage, maxDamage) * Explosion.getSeenPercent(explosionPos, entity), color, exploder, weapon, damageMobs);
+                InkDamageUtils.doSplatDamage(level, (LivingEntity) entity, Mth.lerp(pctg, minDamage, maxDamage) * Explosion.getSeenPercent(explosionPos, entity), color, exploder, weapon, damageMobs);
             }
 
             DyeColor dyeColor = null;
@@ -153,8 +153,8 @@ public class InkExplosion {
             if (InkColor.getByHex(color) != null)
                 dyeColor = InkColor.getByHex(color).getDyeColor();
 
-            if (dyeColor != null && entity instanceof SheepEntity)
-                ((SheepEntity) entity).setColor(dyeColor);
+            if (dyeColor != null && entity instanceof Sheep)
+                ((Sheep) entity).setColor(dyeColor);
         }
 
     }
@@ -180,11 +180,11 @@ public class InkExplosion {
         for (BlockPos blockpos : this.affectedBlockPositions)
         {
             BlockState blockstate = this.level.getBlockState(blockpos);
-            if (!blockstate.isAir(this.level, blockpos))
+            if (!blockstate.isAir())
             {
-                if (exploder instanceof PlayerEntity)
+                if (exploder instanceof Player)
                 {
-                    InkBlockUtils.playerInkBlock((PlayerEntity) exploder, level, blockpos, color, blockDamage, inkType);
+                    InkBlockUtils.playerInkBlock((Player) exploder, level, blockpos, color, blockDamage, inkType);
                 } else
                 {
                     InkBlockUtils.inkBlock(level, blockpos, color, blockDamage, inkType);
@@ -194,7 +194,7 @@ public class InkExplosion {
         }
     }
 
-    public Vector3d getPosition()
+    public Vec3 getPosition()
     {
         return this.position;
     }

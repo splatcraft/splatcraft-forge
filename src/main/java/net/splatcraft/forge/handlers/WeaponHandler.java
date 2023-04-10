@@ -1,10 +1,10 @@
 package net.splatcraft.forge.handlers;
 
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -25,22 +25,22 @@ import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID)
 public class WeaponHandler {
-	private static final Map<PlayerEntity, Vector3d> prevPosMap = new LinkedHashMap<>();
+	private static final Map<Player, Vec3> prevPosMap = new LinkedHashMap<>();
 
 	@SubscribeEvent
 	public static void onLivingDeath(LivingDeathEvent event) {
-		if (event.getEntityLiving() instanceof PlayerEntity && !event.getEntityLiving().isSpectator()) {
-			PlayerEntity target = (PlayerEntity) event.getEntityLiving();
+		if (event.getEntityLiving() instanceof Player && !event.getEntityLiving().isSpectator()) {
+			Player target = (Player) event.getEntityLiving();
 
 			int color = ColorUtils.getPlayerColor(target);
-			((ServerWorld) target.level).sendParticles(new SquidSoulParticleData(color), target.getX(), target.getY() + 0.5f, target.getZ(), 1, 0, 0, 0, 1.5f);
+			((ServerLevel) target.level).sendParticles(new SquidSoulParticleData(color), target.getX(), target.getY() + 0.5f, target.getZ(), 1, 0, 0, 0, 1.5f);
 
 			if (ScoreboardHandler.hasColorCriterion(color)) {
 				target.getScoreboard().forAllObjectives(ScoreboardHandler.getDeathsAsColor(color), target.getScoreboardName(), score -> score.add(1));
 			}
 
-			if (event.getSource().getDirectEntity() instanceof PlayerEntity) {
-				PlayerEntity source = (PlayerEntity) event.getSource().getDirectEntity();
+			if (event.getSource().getDirectEntity() instanceof Player) {
+				Player source = (Player) event.getSource().getDirectEntity();
 				if (ScoreboardHandler.hasColorCriterion(color) && source != null)
 					target.getScoreboard().forAllObjectives(ScoreboardHandler.getColorKills(color), source.getScoreboardName(), score -> score.add(1));
 				if (ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(source)))
@@ -53,9 +53,9 @@ public class WeaponHandler {
 
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		PlayerEntity player = event.player;
+		Player player = event.player;
 		if (PlayerCooldown.hasPlayerCooldown(player)) {
-			player.inventory.selected = PlayerCooldown.getPlayerCooldown(player).getSlotIndex();
+			player.getInventory().selected = PlayerCooldown.getPlayerCooldown(player).getSlotIndex();
 		}
 
 		if (event.phase != TickEvent.Phase.START) {
@@ -63,7 +63,7 @@ public class WeaponHandler {
 		}
 
 		boolean canUseWeapon = true;
-		//Vector3d prevPos = PlayerInfoCapability.get(player).getPrevPos();
+		//Vec3 prevPos = PlayerInfoCapability.get(player).getPrevPos();
 
         if (PlayerCooldown.shrinkCooldownTime(player, 1) != null) {
             player.setSprinting(false);
@@ -95,7 +95,7 @@ public class WeaponHandler {
 		prevPosMap.put(player, player.position());
 	}
 
-	public static Vector3d getPlayerPrevPos(PlayerEntity player) {
+	public static Vec3 getPlayerPrevPos(Player player) {
 		return prevPosMap.get(player);
 	}
 }

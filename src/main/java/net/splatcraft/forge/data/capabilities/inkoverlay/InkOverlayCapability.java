@@ -1,31 +1,28 @@
 package net.splatcraft.forge.data.capabilities.inkoverlay;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class InkOverlayCapability implements ICapabilitySerializable<CompoundNBT>
+public class InkOverlayCapability implements ICapabilityProvider, INBTSerializable<CompoundTag>
 {
-    @CapabilityInject(IInkOverlayInfo.class)
-    public static final Capability<IInkOverlayInfo> CAPABILITY = null;
-    private static final IInkOverlayInfo DEFAULT = new InkOverlayInfo();
-    private final LazyOptional<IInkOverlayInfo> instance = LazyOptional.of(CAPABILITY::getDefaultInstance);
+    public static Capability<InkOverlayInfo> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static void register()
-    {
-        CapabilityManager.INSTANCE.register(IInkOverlayInfo.class, new InkOverlayStorage(), InkOverlayInfo::new);
-    }
+    private InkOverlayInfo inkOverlayInfo = null;
+    private final LazyOptional<InkOverlayInfo> opt = LazyOptional.of(() ->
+            inkOverlayInfo == null ? (inkOverlayInfo = new InkOverlayInfo()) : inkOverlayInfo);
 
-    public static IInkOverlayInfo get(LivingEntity entity) throws NullPointerException
+    public static InkOverlayInfo get(LivingEntity entity) throws NullPointerException
     {
-        return entity.getCapability(CAPABILITY).orElse(null);
+        return entity.getCapability(CAPABILITY).orElseThrow(NullPointerException::new);
     }
 
     public static boolean hasCapability(LivingEntity entity)
@@ -35,20 +32,19 @@ public class InkOverlayCapability implements ICapabilitySerializable<CompoundNBT
 
     @NotNull
     @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
-    {
-        return CAPABILITY.orEmpty(cap, instance);
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        return cap == CAPABILITY ? opt.cast() : LazyOptional.empty();
     }
 
     @Override
-    public CompoundNBT serializeNBT()
+    public CompoundTag serializeNBT()
     {
-        return (CompoundNBT) CAPABILITY.getStorage().writeNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null);
+        return opt.orElse(null).writeNBT(new CompoundTag());
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt)
+    public void deserializeNBT(CompoundTag nbt)
     {
-        CAPABILITY.getStorage().readNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null, nbt);
+        opt.orElse(null).readNBT(nbt);
     }
 }

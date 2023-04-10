@@ -1,23 +1,19 @@
 package net.splatcraft.forge.client.renderer.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.blocks.IColoredBlock;
@@ -26,22 +22,24 @@ import net.splatcraft.forge.tileentities.StageBarrierTileEntity;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 
-public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarrierTileEntity>
+public class StageBarrierTileEntityRenderer implements BlockEntityRenderer<StageBarrierTileEntity>
 {
-    protected static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency", () -> {
+    /*
+    protected static final RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("translucent_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }, () -> {
         RenderSystem.disableBlend();
         RenderSystem.defaultBlendFunc();
     });
-    public static final RenderType BARRIER_RENDER = RenderType.create("splatcraft:stage_barriers", DefaultVertexFormats.BLOCK, 7, 262144, false, true, RenderType.State.builder()
-            .setShadeModelState(new RenderState.ShadeModelState(true)).setLightmapState(new RenderState.LightmapState(true)).setTextureState(new RenderState.TextureState(new ResourceLocation(Splatcraft.MODID, "textures/blocks/allowed_color_barrier_fancy.png"), false, true))
-            .setAlphaState(new RenderState.AlphaState(0.003921569F)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).createCompositeState(true));
+    public static final RenderType BARRIER_RENDER = RenderType.create("splatcraft:stage_barriers", DefaultVertexFormat.BLOCK, 7, 262144, false, true, RenderType.CompositeState.builder()
+            .setShadeModelState(new RenderStateShard.ShadeModelStateShard(true)).setLightmapStateShard(new RenderStateShard.LightmapStateShard(true)).setTextureStateShard(new RenderStateShard.TextureStateShard(new ResourceLocation(Splatcraft.MODID, "textures/blocks/allowed_color_barrier_fancy.png"), false, true))
+            .setAlphaStateShard(new RenderStateShard.AlphaStateShard(0.003921569F)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).createCompositeState(true));
 
-    public StageBarrierTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+    */
+
+    public StageBarrierTileEntityRenderer(BlockEntityRendererProvider.Context context)
     {
-        super(rendererDispatcherIn);
     }
 
     private static boolean shouldRenderSide(StageBarrierTileEntity te, Direction side) {
@@ -57,7 +55,7 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
         return !(relativeState.getBlock() instanceof StageBarrierBlock);
     }
 
-    private void addVertex(IVertexBuilder builder, MatrixStack matrixStack, float x, float y, float z, float textureX, float textureY, float r, float g, float b, float a)
+    private void addVertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float textureX, float textureY, float r, float g, float b, float a)
     {
         builder.vertex(matrixStack.last().pose(), x, y, z)
                 .color(r, g, b, a)
@@ -68,7 +66,7 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
     }
 
     @Override
-    public void render(StageBarrierTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay)
+    public void render(StageBarrierTileEntity tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay)
     {
 
         float activeTime = tileEntity.getActiveTime();
@@ -81,8 +79,8 @@ public class StageBarrierTileEntityRenderer extends TileEntityRenderer<StageBarr
 
         ResourceLocation textureLoc = new ResourceLocation(Splatcraft.MODID, "blocks/" + block.getRegistryName().getPath() + (Minecraft.getInstance().options.graphicsMode.getId() > 0 ? "_fancy" : ""));
 
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(textureLoc);
-        IVertexBuilder builder = buffer.getBuffer(Minecraft.useShaderTransparency() ? BARRIER_RENDER : RenderType.translucentNoCrumbling());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(textureLoc);
+        VertexConsumer builder = buffer.getBuffer(Minecraft.useShaderTransparency() ? RenderType.translucentMovingBlock() : RenderType.translucentNoCrumbling());
 
         float alpha = activeTime / tileEntity.getMaxActiveTime();
         float[] rgb = new float[] {1,1,1};

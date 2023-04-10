@@ -1,14 +1,15 @@
 package net.splatcraft.forge.tileentities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.GameRules;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.blocks.CrateBlock;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.CommonUtils;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class CrateTileEntity extends InkColorTileEntity implements IInventory
+public class CrateTileEntity extends InkColorTileEntity implements Container
 {
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
     private float health;
@@ -24,9 +25,9 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
     private boolean hasLoot;
     private ResourceLocation lootTable = CrateBlock.STORAGE_SUNKEN_CRATE;
 
-    public CrateTileEntity()
+    public CrateTileEntity(BlockPos pos, BlockState state)
     {
-        super(SplatcraftTileEntities.crateTileEntity);
+        super(SplatcraftTileEntities.crateTileEntity.get(), pos, state);
     }
 
     public void ink(int color, float damage)
@@ -75,33 +76,33 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
     }
 
     @Override
-    public void load(@NotNull BlockState state, @NotNull CompoundNBT nbt)
+    public void load(@NotNull CompoundTag nbt)
     {
-        super.load(state, nbt);
+        super.load(nbt);
 
         health = nbt.getFloat("Health");
         maxHealth = nbt.getFloat("MaxHealth");
-        ItemStackHelper.loadAllItems(nbt, inventory);
+        ContainerHelper.loadAllItems(nbt, inventory);
 
-        if (state.getBlock() instanceof CrateBlock)
+        if (getBlockState().getBlock() instanceof CrateBlock)
         {
-            hasLoot = ((CrateBlock) state.getBlock()).hasLoot;
+            hasLoot = ((CrateBlock) getBlockState().getBlock()).hasLoot;
             if(nbt.contains("LootTable"))
                 lootTable = new ResourceLocation(nbt.getString("LootTable"));
         }
     }
 
     @Override
-    public @NotNull CompoundNBT save(CompoundNBT nbt)
+    public @NotNull void saveAdditional(CompoundTag nbt)
     {
         nbt.putFloat("Health", health);
         nbt.putFloat("MaxHealth", maxHealth);
-        ItemStackHelper.saveAllItems(nbt, inventory);
+        ContainerHelper.saveAllItems(nbt, inventory);
 
         if(hasLoot)
             nbt.putString("LootTable", lootTable.toString());
 
-        return super.save(nbt);
+        super.saveAdditional(nbt);
     }
 
     @Override
@@ -130,7 +131,7 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
             return ItemStack.EMPTY;
         }
 
-        ItemStack itemstack = ItemStackHelper.removeItem(inventory, index, count);
+        ItemStack itemstack = ContainerHelper.removeItem(inventory, index, count);
         if (!itemstack.isEmpty())
         {
             this.setChanged();
@@ -142,7 +143,7 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
     @Override
     public ItemStack removeItemNoUpdate(int index)
     {
-        return ItemStackHelper.takeItem(inventory, index);
+        return ContainerHelper.takeItem(inventory, index);
     }
 
     @Override
@@ -158,7 +159,7 @@ public class CrateTileEntity extends InkColorTileEntity implements IInventory
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player)
+    public boolean stillValid(Player player)
     {
         return false;
     }

@@ -1,27 +1,25 @@
 package net.splatcraft.forge.data.capabilities.saveinfo;
 
+import net.minecraft.nbt.CompoundTag;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
-import net.minecraft.nbt.CompoundNBT;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SaveInfo implements ISaveInfo
+public class SaveInfo
 {
     private ArrayList<Integer> colorScores = new ArrayList<>();
     private HashMap<String, Stage> stages = new HashMap<>();
 
-
-    @Override
+    
     public Collection<Integer> getInitializedColorScores()
     {
         return colorScores;
     }
 
-    @Override
     public void addInitializedColorScores(Integer... colors)
     {
         for (Integer color : colors)
@@ -33,20 +31,17 @@ public class SaveInfo implements ISaveInfo
         }
     }
 
-    @Override
     public void removeColorScore(Integer color)
     {
         colorScores.remove(color);
     }
 
-    @Override
     public HashMap<String, Stage> getStages()
     {
         return stages;
     }
-
-    @Override
-    public CompoundNBT writeNBT(CompoundNBT nbt)
+    
+    public CompoundTag writeNBT(CompoundTag nbt)
     {
         int[] arr = new int[colorScores.size()];
         for (int i = 0; i < colorScores.size(); i++)
@@ -56,7 +51,7 @@ public class SaveInfo implements ISaveInfo
 
         nbt.putIntArray("StoredCriteria", arr);
 
-        CompoundNBT stageNbt = new CompoundNBT();
+        CompoundTag stageNbt = new CompoundTag();
 
         for(Map.Entry<String, Stage> e : stages.entrySet())
             stageNbt.put(e.getKey(), e.getValue().writeData());
@@ -66,8 +61,7 @@ public class SaveInfo implements ISaveInfo
         return nbt;
     }
 
-    @Override
-    public void readNBT(CompoundNBT nbt)
+    public void readNBT(CompoundTag nbt)
     {
         colorScores = new ArrayList<>();
         ScoreboardHandler.clearColorCriteria();

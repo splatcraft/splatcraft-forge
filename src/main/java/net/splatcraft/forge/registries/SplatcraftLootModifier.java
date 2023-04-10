@@ -1,14 +1,14 @@
 package net.splatcraft.forge.registries;
 
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.loot.ChestLootModifier;
-import net.splatcraft.forge.loot.FishingLootModifier;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.loot.ChestLootModifier;
+import net.splatcraft.forge.loot.FishingLootModifier;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = Splatcraft.MODID)
 public class SplatcraftLootModifier

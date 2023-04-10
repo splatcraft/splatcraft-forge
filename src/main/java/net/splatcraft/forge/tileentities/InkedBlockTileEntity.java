@@ -1,13 +1,11 @@
 package net.splatcraft.forge.tileentities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.NotNull;
@@ -19,25 +17,17 @@ public class InkedBlockTileEntity extends InkColorTileEntity
     private int permanentColor = -1;
     private InkBlockUtils.InkType permanentInkType = InkBlockUtils.InkType.NORMAL;
 
-    public InkedBlockTileEntity()
+    public InkedBlockTileEntity(BlockPos pos, BlockState state)
     {
-        super(SplatcraftTileEntities.inkedTileEntity);
+        super(SplatcraftTileEntities.inkedTileEntity.get(), pos, state);
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public double getViewDistance() {
-        return Minecraft.getInstance().options.renderDistance*12D; //probably a bad idea
-    }
-
-
 
     //Read NBT
     @Override
-    public void load(@NotNull BlockState state, @NotNull CompoundNBT nbt)
+    public void load(@NotNull CompoundTag nbt)
     {
-        super.load(state, nbt);
-        savedState = NBTUtil.readBlockState(nbt.getCompound("SavedState"));
+        super.load(nbt);
+        savedState = NbtUtils.readBlockState(nbt.getCompound("SavedState"));
         savedColor = nbt.getInt("SavedColor");
 
         if(nbt.contains("PermanentColor"))
@@ -48,9 +38,9 @@ public class InkedBlockTileEntity extends InkColorTileEntity
     }
 
     @Override
-    public @NotNull CompoundNBT save(CompoundNBT nbt)
+    public @NotNull void saveAdditional(CompoundTag nbt)
     {
-        nbt.put("SavedState", NBTUtil.writeBlockState(savedState));
+        nbt.put("SavedState", NbtUtils.writeBlockState(savedState));
         if(hasSavedColor())
             nbt.putInt("SavedColor", savedColor);
         if(hasPermanentColor())
@@ -58,7 +48,7 @@ public class InkedBlockTileEntity extends InkColorTileEntity
             nbt.putInt("PermanentColor", permanentColor);
             nbt.putString("PermanentInkType", permanentInkType.getSerializedName());
         }
-        return super.save(nbt);
+        super.saveAdditional(nbt);
     }
 
     public BlockState getSavedState()

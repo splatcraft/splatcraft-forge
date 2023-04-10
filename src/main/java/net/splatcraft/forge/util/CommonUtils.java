@@ -1,13 +1,13 @@
 package net.splatcraft.forge.util;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.splatcraft.forge.Splatcraft;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShootableItem;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
 
 import java.util.function.Predicate;
 
@@ -67,13 +67,13 @@ public class CommonUtils
         return astring;
     }
 
-    public static void blockDrop(World levelIn, BlockPos pos, ItemStack stack)
+    public static void blockDrop(Level levelIn, BlockPos pos, ItemStack stack)
     {
         if(levelIn.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !levelIn.captureBlockSnapshots)
             spawnItem(levelIn, pos, stack);
     }
 
-    public static void spawnItem(World levelIn, BlockPos pos, ItemStack stack) {
+    public static void spawnItem(Level levelIn, BlockPos pos, ItemStack stack) {
         if (!levelIn.isClientSide && !stack.isEmpty())
         {
             double d0 = (double)(levelIn.random.nextFloat() * 0.5F) + 0.25D;
@@ -85,16 +85,16 @@ public class CommonUtils
         }
     }
 
-    public static ItemStack getItemInInventory(PlayerEntity entity, Predicate<ItemStack> predicate)
+    public static ItemStack getItemInInventory(Player entity, Predicate<ItemStack> predicate)
     {
-        ItemStack itemstack = ShootableItem.getHeldProjectile(entity, predicate);
+        ItemStack itemstack = ProjectileWeaponItem.getHeldProjectile(entity, predicate);
         if (!itemstack.isEmpty())
             return itemstack;
         else
         {
-            for(int i = 0; i < entity.inventory.getContainerSize(); ++i)
+            for(int i = 0; i < entity.getInventory().getContainerSize(); ++i)
             {
-                ItemStack itemstack1 = entity.inventory.getItem(i);
+                ItemStack itemstack1 = entity.getInventory().getItem(i);
                 if (predicate.test(itemstack1))
                     return itemstack1;
             }

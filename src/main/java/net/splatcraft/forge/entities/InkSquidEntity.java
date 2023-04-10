@@ -1,41 +1,41 @@
 package net.splatcraft.forge.entities;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.client.particles.SquidSoulParticleData;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
-public class InkSquidEntity extends CreatureEntity implements IColoredEntity
+public class InkSquidEntity extends PathfinderMob implements IColoredEntity
 {
-    private static final DataParameter<Integer> COLOR = EntityDataManager.defineId(InkSquidEntity.class, DataSerializers.INT);
+    private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(InkSquidEntity.class, EntityDataSerializers.INT);
 
 
-    public InkSquidEntity(EntityType<? extends CreatureEntity> type, World level)
+    public InkSquidEntity(EntityType<? extends PathfinderMob> type, Level level)
     {
         super(type, level);
     }
 
-    public static AttributeModifierMap.MutableAttribute setCustomAttributes()
+    public static AttributeSupplier.Builder setCustomAttributes()
     {
-        return MobEntity.createLivingAttributes()
+        return Mob.createLivingAttributes()
                 .add(Attributes.MAX_HEALTH, 20)
                 .add(Attributes.MOVEMENT_SPEED, 0.23D)
                 .add(Attributes.FOLLOW_RANGE, 16);
@@ -51,9 +51,9 @@ public class InkSquidEntity extends CreatureEntity implements IColoredEntity
     @Override
     protected void registerGoals()
     {
-        goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.6D));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
-        goalSelector.addGoal(11, new LookAtGoal(this, PlayerEntity.class, 10.0F));
+        goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 0.6D));
+        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+        goalSelector.addGoal(11, new LookAtPlayerGoal(this, Player.class, 10.0F));
     }
 
 
@@ -78,7 +78,7 @@ public class InkSquidEntity extends CreatureEntity implements IColoredEntity
     }
 
     @Override
-    protected int getExperienceReward(PlayerEntity player)
+    protected int getExperienceReward(Player player)
     {
         return 0;
     }
@@ -97,7 +97,7 @@ public class InkSquidEntity extends CreatureEntity implements IColoredEntity
 
         BlockPos pos = getBlockPosBelowThatAffectsMyMovement();
 
-        if (level.getBlockState(pos).getBlock() == SplatcraftBlocks.inkwell && level.getBlockEntity(pos) instanceof InkColorTileEntity)
+        if (level.getBlockState(pos).getBlock() == SplatcraftBlocks.inkwell.get() && level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
             InkColorTileEntity te = (InkColorTileEntity) level.getBlockEntity(pos);
             if (te.getColor() != getColor())
@@ -114,7 +114,7 @@ public class InkSquidEntity extends CreatureEntity implements IColoredEntity
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundNBT nbt)
+    public void readAdditionalSaveData(CompoundTag nbt)
     {
         super.readAdditionalSaveData(nbt);
         if (nbt.contains("Color"))
@@ -123,7 +123,7 @@ public class InkSquidEntity extends CreatureEntity implements IColoredEntity
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT nbt)
+    public void addAdditionalSaveData(CompoundTag nbt)
     {
         super.addAdditionalSaveData(nbt);
         nbt.putInt("Color", getColor());

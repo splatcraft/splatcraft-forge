@@ -1,13 +1,12 @@
 package net.splatcraft.forge.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Material;
 
 public class OreBlock extends Block
 {
-    public OreBlock(int harvestLevel)
+    public OreBlock()
     {
-        super(Properties.of(Material.STONE).strength(3.0F, 3.0F).harvestLevel(harvestLevel).harvestTool(ToolType.PICKAXE));
+        super(Properties.of(Material.STONE).strength(3.0F, 3.0F).requiresCorrectToolForDrops());
     }
 }

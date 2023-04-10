@@ -1,27 +1,23 @@
 package net.splatcraft.forge.client.particles;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.material.Material;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Camera;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.settings.PointOfView;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
-public class InkSplashParticle extends SpriteTexturedParticle
+public class InkSplashParticle extends TextureSheetParticle
 {
-    private final IAnimatedSprite spriteProvider;
+    private final SpriteSet spriteProvider;
 
-    public InkSplashParticle(ClientWorld level, double x, double y, double z, double motionX, double motionY, double motionZ, InkSplashParticleData data, IAnimatedSprite sprite)
+    public InkSplashParticle(ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ, InkSplashParticleData data, SpriteSet sprite)
     {
         super(level, x, y, z, motionX, motionY, motionZ);
 
@@ -59,15 +55,15 @@ public class InkSplashParticle extends SpriteTexturedParticle
     }
 
     @Override
-    public IParticleRenderType getRenderType()
+    public ParticleRenderType getRenderType()
     {
-        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
-    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks)
     {
-        if (!(Minecraft.getInstance().options.getCameraType().equals(PointOfView.FIRST_PERSON) && distanceToSqr(Minecraft.getInstance().player, x, y, z) < 0.2))
+        if (!(Minecraft.getInstance().options.getCameraType().equals(CameraType.FIRST_PERSON) && distanceToSqr(Minecraft.getInstance().player, x, y, z) < 0.2))
         {
             super.render(buffer, renderInfo, partialTicks);
         }
@@ -83,19 +79,19 @@ public class InkSplashParticle extends SpriteTexturedParticle
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<InkSplashParticleData>
+    public static class Factory implements ParticleProvider<InkSplashParticleData>
     {
 
-        private final IAnimatedSprite spriteSet;
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite sprite)
+        public Factory(SpriteSet sprite)
         {
             this.spriteSet = sprite;
         }
 
         @Nullable
         @Override
-        public Particle createParticle(InkSplashParticleData typeIn, ClientWorld levelIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+        public Particle createParticle(InkSplashParticleData typeIn, ClientLevel levelIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
         {
             return new InkSplashParticle(levelIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn, this.spriteSet);
         }

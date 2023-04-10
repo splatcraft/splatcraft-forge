@@ -1,11 +1,10 @@
 package net.splatcraft.forge.data.capabilities.inkoverlay;
 
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.phys.Vec3;
 import net.splatcraft.forge.util.ColorUtils;
-import net.minecraft.nbt.CompoundNBT;
 
-public class InkOverlayInfo implements IInkOverlayInfo
+public class InkOverlayInfo
 {
     private int color = ColorUtils.DEFAULT;
     private float amount = 0;
@@ -14,83 +13,70 @@ public class InkOverlayInfo implements IInkOverlayInfo
 
     private double squidRot;
     private double squidRotO;
-    private Vector3d prevPos = null;
+    private Vec3 prevPos = null;
 
     public InkOverlayInfo()
     {
     }
-
-    @Override
+    
     public int getColor()
     {
         return color;
     }
 
-    @Override
     public void setColor(int color)
     {
         this.color = color;
     }
-
-    @Override
+    
     public float getAmount()
     {
         return amount;
     }
 
-    @Override
     public void setAmount(float v)
     {
         amount = Math.max(0, v);
     }
 
-    @Override
     public void addAmount(float v)
     {
         setAmount(amount + v);
     }
-
-    @Override
+    
     public int getWoolColor() {
         return woolColor;
     }
-
-    @Override
+    
     public void setWoolColor(int v) {
         this.woolColor = v;
     }
 
-    @Override
     public double getSquidRot() {
         return squidRot;
     }
 
-    @Override
     public double getSquidRotO() {
         return squidRotO;
     }
 
-    @Override
     public void setSquidRot(double v)
     {
         squidRotO = squidRot;
         squidRot = v;
     }
-
-    @Override
-    public Vector3d getPrevPosOrDefault(Vector3d def)
+    
+    public Vec3 getPrevPosOrDefault(Vec3 def)
     {
         return prevPos == null ? def : prevPos;
     }
-
-    @Override
-    public void setPrevPos(Vector3d v)
+    
+    public void setPrevPos(Vec3 v)
     {
         prevPos = v;
     }
-
-    @Override
-    public CompoundNBT writeNBT(CompoundNBT nbt)
+    
+    public CompoundTag writeNBT(CompoundTag nbt)
     {
         nbt.putInt("Color", getColor());
         nbt.putFloat("Amount", getAmount());
@@ -101,8 +87,7 @@ public class InkOverlayInfo implements IInkOverlayInfo
         return nbt;
     }
 
-    @Override
-    public void readNBT(CompoundNBT nbt)
+    public void readNBT(CompoundTag nbt)
     {
         setColor(ColorUtils.getColorFromNbt(nbt));
         setAmount(nbt.getFloat("Amount"));
@@ -110,8 +95,7 @@ public class InkOverlayInfo implements IInkOverlayInfo
         if(nbt.contains("WoolColor"))
             setWoolColor(nbt.getInt("WoolColor"));
     }
-
-    @Override
+    
     public String toString()
     {
         return "Color: " + color + " Amount: " + amount;

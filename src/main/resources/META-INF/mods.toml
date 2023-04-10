@@ -1,5 +1,5 @@
 modLoader           = "javafml"
-loaderVersion = "[36.0,)"
+loaderVersion = "[40.0,)"
 license = "https://github.com/splatcraft/splatcraft-forge/blob/HEAD/LICENSE"
 
 [[mods]]
@@ -39,18 +39,12 @@ issueTrackerURL = "https://github.com/splatcraft/splatcraft-forge/issues"
 [[dependencies.splatcraft]]
 modId           = "forge"
 mandatory = true
-versionRange = "[36.2.20,)"
+versionRange = "[40.2.0,)"
 ordering = "NONE"
 side            = "BOTH"
 [[dependencies.splatcraft]]
-modId           = "obfuscate"
-mandatory = true
-versionRange = "[0.6.3,)"
-ordering = "NONE"
-side            = "CLIENT"
-[[dependencies.splatcraft]]
 modId           = "minecraft"
 mandatory = true
-versionRange = "[1.16.5]"
+versionRange = "[1.18.2]"
 ordering = "NONE"
 side            = "BOTH"

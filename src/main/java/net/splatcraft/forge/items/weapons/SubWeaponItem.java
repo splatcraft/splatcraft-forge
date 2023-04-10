@@ -1,21 +1,22 @@
 package net.splatcraft.forge.items.weapons;
 
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.dispenser.IPosition;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockSource;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
@@ -33,7 +34,7 @@ public class SubWeaponItem extends WeaponBaseItem
 {
     public float inkConsumption;
     public int inkRecoveryCooldown;
-    public final EntityType<? extends AbstractSubWeaponEntity> entityType;
+    public final RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType;
     public final SubWeaponAction useTick;
     public final int maxUseTime;
 
@@ -41,10 +42,9 @@ public class SubWeaponItem extends WeaponBaseItem
     public static final float throwVelocity = 0.75f;
     public static final float throwAngle = -30f;
 
-    public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption, int inkRecoveryCooldown, int maxUseTime, SubWeaponAction useTick)
+    public SubWeaponItem( RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, float directDamage, float explosionSize, float inkConsumption, int inkRecoveryCooldown, int maxUseTime, SubWeaponAction useTick)
     {
         super(WeaponSettings.DEFAULT); //it's either keeping this here or making another interface for main weapons >_>
-        setRegistryName(name);
         this.inkConsumption = inkConsumption;
         this.inkRecoveryCooldown = inkRecoveryCooldown;
         this.entityType = entityType;
@@ -56,11 +56,14 @@ public class SubWeaponItem extends WeaponBaseItem
         addStat(new WeaponTooltip("damage", (stack, level) -> (int) (directDamage / 20 * 100)));
         addStat(new WeaponTooltip("impact", (stack, level) -> (int) (explosionSize / 4 * 100)));
         addStat(new WeaponTooltip("ink_consumption", (stack, level) -> (int) (inkConsumption)));
+
+
+        DispenserBlock.registerBehavior(this, new SubWeaponItem.DispenseBehavior());
     }
 
-    public SubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption, int inkRecoveryCooldown)
+    public SubWeaponItem(RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, float directDamage, float explosionSize, float inkConsumption, int inkRecoveryCooldown)
     {
-        this(name, entityType, directDamage, explosionSize, inkConsumption, inkRecoveryCooldown, USE_DURATION, ((level, entity, stack, useTime) -> {}));
+        this(entityType, directDamage, explosionSize, inkConsumption, inkRecoveryCooldown, USE_DURATION, ((level, entity, stack, useTime) -> {}));
     }
 
     public static boolean singleUse(ItemStack stack) {
@@ -68,14 +71,14 @@ public class SubWeaponItem extends WeaponBaseItem
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (SubWeaponItem.singleUse(stack))
-            tooltip.add(new TranslationTextComponent("item.splatcraft.tooltip.single_use"));
+            tooltip.add(new TranslatableComponent("item.splatcraft.tooltip.single_use"));
         super.appendHoverText(stack, level, tooltip, flag);
     }
-
+    
     @Override
-    public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand)
     {
         if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, this, inkConsumption, inkRecoveryCooldown, true, true)))
             player.startUsingItem(hand);
@@ -88,12 +91,12 @@ public class SubWeaponItem extends WeaponBaseItem
     }
 
     @Override
-    public boolean showDurabilityBar(ItemStack stack) {
-        return !SubWeaponItem.singleUse(stack) && super.showDurabilityBar(stack);
+    public boolean isBarVisible(ItemStack stack) {
+        return !SubWeaponItem.singleUse(stack) && super.isBarVisible(stack);
     }
 
     @Override
-    public void weaponUseTick(@NotNull World level, @NotNull LivingEntity entity, @NotNull ItemStack itemStack, int timeLeft)
+    public void weaponUseTick(@NotNull Level level, @NotNull LivingEntity entity, @NotNull ItemStack itemStack, int timeLeft)
     {
         int useTime = getUseDuration(itemStack)-timeLeft;
         if(useTime == maxUseTime)
@@ -103,31 +106,31 @@ public class SubWeaponItem extends WeaponBaseItem
     }
 
     @Override
-    public void releaseUsing(@NotNull ItemStack stack, @NotNull World level, LivingEntity entity, int timeLeft)
+    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, LivingEntity entity, int timeLeft)
     {
         super.releaseUsing(stack, level, entity, timeLeft);
         if(getUseDuration(stack)-timeLeft < maxUseTime)
             throwSub(stack, level, entity);
     }
 
-    protected void throwSub(@NotNull ItemStack stack, @NotNull World level, LivingEntity entity)
+    protected void throwSub(@NotNull ItemStack stack, @NotNull Level level, LivingEntity entity)
     {
-        entity.swing(entity.getOffhandItem().equals(stack) ? Hand.OFF_HAND : Hand.MAIN_HAND, false);
+        entity.swing(entity.getOffhandItem().equals(stack) ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND, false);
 
         if(!level.isClientSide())
         {
-            AbstractSubWeaponEntity proj = AbstractSubWeaponEntity.create(entityType, level, entity, stack.copy());
+            AbstractSubWeaponEntity proj = AbstractSubWeaponEntity.create(entityType.get(), level, entity, stack.copy());
 
             stack.getOrCreateTag().remove("EntityData");
 
             proj.setItem(stack);
-            proj.shoot(entity, entity.xRot, entity.yRot, throwAngle, throwVelocity, 0);
+            proj.shoot(entity, entity.getXRot(), entity.getYRot(), throwAngle, throwVelocity, 0);
             proj.setDeltaMovement(proj.getDeltaMovement().add(entity.getDeltaMovement().multiply(1, 0, 1)));
             level.addFreshEntity(proj);
         }
-        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.subThrow, SoundCategory.PLAYERS, 0.7F, 1);
+        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.subThrow, SoundSource.PLAYERS, 0.7F, 1);
         if (SubWeaponItem.singleUse(stack)) {
-            if (entity instanceof PlayerEntity && !((PlayerEntity) entity).isCreative())
+            if (entity instanceof Player && !((Player) entity).isCreative())
                 stack.shrink(1);
         } else reduceInk(entity, this, inkConsumption, 0, false);
 
@@ -136,11 +139,11 @@ public class SubWeaponItem extends WeaponBaseItem
     public static class DispenseBehavior extends DefaultDispenseItemBehavior
     {
         @Override
-        public ItemStack execute(IBlockSource source, ItemStack stack)
+        public ItemStack execute(BlockSource source, ItemStack stack)
         {
             if (SubWeaponItem.singleUse(stack)) {
-                World world = source.getLevel();
-                IPosition iposition = DispenserBlock.getDispensePosition(source);
+                Level world = source.getLevel();
+                Position iposition = DispenserBlock.getDispensePosition(source);
                 Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
                 AbstractSubWeaponEntity projectileentity = this.getProjectile(world, iposition, stack);
                 projectileentity.shoot(direction.getStepX(), (float) direction.getStepY() + 0.1F, direction.getStepZ(), this.getPower(), this.getUncertainty());
@@ -150,24 +153,24 @@ public class SubWeaponItem extends WeaponBaseItem
             }
 
             Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-            IPosition iposition = DispenserBlock.getDispensePosition(source);
+            Position iposition = DispenserBlock.getDispensePosition(source);
             ItemStack itemstack = stack.split(1);
             spawnItem(source.getLevel(), itemstack, 6, direction, iposition);
             return stack;
         }
 
-        protected AbstractSubWeaponEntity getProjectile(World levelIn, IPosition position, ItemStack stackIn)
+        protected AbstractSubWeaponEntity getProjectile(Level levelIn, Position position, ItemStack stackIn)
         {
             if(!(stackIn.getItem() instanceof SubWeaponItem))
                 return null;
 
-            return AbstractSubWeaponEntity.create(((SubWeaponItem) stackIn.getItem()).entityType,  levelIn, position.x(), position.y(), position.z(), ColorUtils.getInkColor(stackIn), InkBlockUtils.InkType.NORMAL, stackIn);
+            return AbstractSubWeaponEntity.create(((SubWeaponItem) stackIn.getItem()).entityType.get(),  levelIn, position.x(), position.y(), position.z(), ColorUtils.getInkColor(stackIn), InkBlockUtils.InkType.NORMAL, stackIn);
         }
 
 
         @Override
-        protected void playSound(IBlockSource source) {
-            source.getLevel().playSound(null, source.x(), source.y(), source.z(), SplatcraftSounds.subThrow, SoundCategory.PLAYERS, 0.7F, 1);
+        protected void playSound(BlockSource source) {
+            source.getLevel().playSound(null, source.x(), source.y(), source.z(), SplatcraftSounds.subThrow, SoundSource.PLAYERS, 0.7F, 1);
         }
 
         protected float getPower() {
@@ -187,7 +190,7 @@ public class SubWeaponItem extends WeaponBaseItem
 
 
     public interface SubWeaponAction {
-        void onUseTick(World level, LivingEntity entity, ItemStack stack, int useTime);
+        void onUseTick(Level level, LivingEntity entity, ItemStack stack, int useTime);
     }
 
     @Override

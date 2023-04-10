@@ -1,30 +1,30 @@
 package net.splatcraft.forge.network.s2c;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 
 public class UpdateInkOverlayPacket extends PlayToClientPacket
 {
     int entityId;
-    CompoundNBT nbt;
+    CompoundTag nbt;
 
-    public UpdateInkOverlayPacket(LivingEntity entity, IInkOverlayInfo info)
+    public UpdateInkOverlayPacket(LivingEntity entity, InkOverlayInfo info)
     {
-        this(entity.getId(), info.writeNBT(new CompoundNBT()));
+        this(entity.getId(), info.writeNBT(new CompoundTag()));
     }
 
-    public UpdateInkOverlayPacket(int entity, CompoundNBT info)
+    public UpdateInkOverlayPacket(int entity, CompoundTag info)
     {
         this.entityId = entity;
         this.nbt = info;
     }
 
-    public static UpdateInkOverlayPacket decode(PacketBuffer buffer)
+    public static UpdateInkOverlayPacket decode(FriendlyByteBuf buffer)
     {
         return new UpdateInkOverlayPacket(buffer.readInt(), buffer.readNbt());
     }
@@ -42,7 +42,7 @@ public class UpdateInkOverlayPacket extends PlayToClientPacket
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeInt(entityId);
         buffer.writeNbt(nbt);

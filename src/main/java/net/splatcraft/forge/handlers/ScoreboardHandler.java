@@ -1,28 +1,43 @@
 package net.splatcraft.forge.handlers;
 
+import com.google.common.collect.Maps;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.scores.criteria.ObjectiveCriteria;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkColor;
-import com.google.common.collect.Maps;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.scoreboard.ScoreCriteria;
+import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class ScoreboardHandler
 {
-    public static final ScoreCriteria COLOR = new ScoreCriteria(Splatcraft.MODID + ".inkColor");
-    public static final ScoreCriteria TURF_WAR_SCORE = new ScoreCriteria(Splatcraft.MODID + ".turfWarScore");
+    public static final ObjectiveCriteria COLOR = createObjectiveCriteria(Splatcraft.MODID + ".inkColor");
+    public static final ObjectiveCriteria TURF_WAR_SCORE = createObjectiveCriteria(Splatcraft.MODID + ".turfWarScore");
 
     protected static final Map<Integer, CriteriaInkColor[]> COLOR_CRITERIA = Maps.newHashMap();
 
-    public static void updatePlayerScore(ScoreCriteria criteria, PlayerEntity player, int color)
+    protected static ObjectiveCriteria createObjectiveCriteria(String id)
+    {
+        try {
+            return ObfuscationReflectionHelper.findConstructor(ObjectiveCriteria.class, String.class).newInstance(id);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void updatePlayerScore(ObjectiveCriteria criteria, Player player, int color)
     {
         player.getScoreboard().forAllObjectives(criteria, player.getScoreboardName(), p_195397_1_ -> p_195397_1_.setScore(color));
     }
 
     public static void createColorCriterion(int color)
     {
+
+
         COLOR_CRITERIA.put(color, new CriteriaInkColor[]
                 {
                         new CriteriaInkColor("colorKills", color),
@@ -129,7 +144,7 @@ public class ScoreboardHandler
         return InkColor.getByHex(color) == null ? String.format("%06X", color).toLowerCase() : Objects.requireNonNull(InkColor.getByHex(color).getRegistryName()).getPath();
     }
 
-    public static class CriteriaInkColor extends ScoreCriteria
+    public static class CriteriaInkColor extends ObjectiveCriteria
     {
         private final String name;
         private final int color;
@@ -146,7 +161,16 @@ public class ScoreboardHandler
 
         public void remove()
         {
-            ScoreCriteria.CRITERIA_BY_NAME.remove(name);
+            //TODO make sure this works
+            @NotNull Map<String, ObjectiveCriteria> CRITERIA_BY_NAME;
+            try {
+                CRITERIA_BY_NAME = (Map<String, ObjectiveCriteria>) ObfuscationReflectionHelper.findField(ObjectiveCriteria.class, "f_166108_").get(null);
+            } catch (IllegalAccessException | ClassCastException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            CRITERIA_BY_NAME.remove(name);
         }
     }
 }

@@ -2,9 +2,9 @@ package net.splatcraft.forge.crafting;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.JSONUtils;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
@@ -25,7 +25,7 @@ public class StackedIngredient implements Predicate<ItemStack>
     {
         if (json != null && !json.isJsonNull() && json.isJsonObject())
         {
-            return new StackedIngredient(Ingredient.fromJson(json), JSONUtils.getAsInt(json.getAsJsonObject(), "count"));
+            return new StackedIngredient(Ingredient.fromJson(json), GsonHelper.getAsInt(json.getAsJsonObject(), "count"));
         } else
         {
             throw new JsonSyntaxException("Item cannot be null");

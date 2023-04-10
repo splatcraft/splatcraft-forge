@@ -1,7 +1,7 @@
 package net.splatcraft.forge.network.s2c;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.GameRules;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.GameRules;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 
 import java.util.Map;
@@ -17,7 +17,7 @@ public class UpdateBooleanGamerulesPacket extends PlayToClientPacket
         this.booleanRules = booleanRules;
     }
 
-    public UpdateBooleanGamerulesPacket(GameRules.RuleKey<GameRules.BooleanValue> rule, boolean value)
+    public UpdateBooleanGamerulesPacket(GameRules.Key<GameRules.BooleanValue> rule, boolean value)
     {
         this.booleanRules = new TreeMap<Integer, Boolean>()
         {{
@@ -25,7 +25,7 @@ public class UpdateBooleanGamerulesPacket extends PlayToClientPacket
         }};
     }
 
-    public static UpdateBooleanGamerulesPacket decode(PacketBuffer buffer)
+    public static UpdateBooleanGamerulesPacket decode(FriendlyByteBuf buffer)
     {
         TreeMap<Integer, Boolean> booleanRules = new TreeMap<>();
         int entrySize = buffer.readInt();
@@ -39,7 +39,7 @@ public class UpdateBooleanGamerulesPacket extends PlayToClientPacket
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         Set<Map.Entry<Integer, Boolean>> entrySet = booleanRules.entrySet();
 

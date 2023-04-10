@@ -1,81 +1,84 @@
 package net.splatcraft.forge.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.ForgeSoundType;
+import net.splatcraft.forge.dispenser.PlaceBlockDispenseBehavior;
+import net.splatcraft.forge.items.ColoredBlockItem;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
+import java.util.HashMap;
+
+public class InkwellBlock extends Block implements IColoredBlock, SimpleWaterloggedBlock, EntityBlock
 {
+
+    public static final HashMap<Item, ColoredBlockItem> inkCoatingRecipes = new HashMap<>();
+
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final SoundType SOUND_TYPE = new ForgeSoundType(1.0F, 1.0F, () -> SoundEvents.STONE_BREAK, () -> SoundEvents.SLIME_BLOCK_STEP, () -> SoundEvents.GLASS_PLACE, () -> SoundEvents.GLASS_HIT, () -> SoundEvents.SLIME_BLOCK_FALL);
-    private static final VoxelShape SHAPE = VoxelShapes.or(
+    private static final VoxelShape SHAPE = Shapes.or(
             box(0, 0, 0, 16, 12, 16),
-            box(1, 12, 1, 14 / 16f, 13, 14),
+            box(1, 12, 1, 14, 13, 14),
             box(0, 13, 0, 16, 16, 16));
 
     public InkwellBlock()
     {
-        super(Properties.of(Material.GLASS).strength(0.35f).harvestTool(ToolType.PICKAXE).sound(SOUND_TYPE));
+        super(Properties.of(Material.GLASS).strength(0.35f).sound(SOUND_TYPE));
         this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false));
 
         SplatcraftBlocks.inkColoredBlocks.add(this);
+
+        DispenserBlock.registerBehavior(this, new PlaceBlockDispenseBehavior());
     }
 
     @Nullable
     @Override
-    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader level, BlockPos pos, BlockPos beaconPos)
+    public float[] getBeaconColorMultiplier(BlockState state, LevelReader level, BlockPos pos, BlockPos beaconPos)
     {
-        return ColorUtils.hexToRGB(getColor((World) level, pos));
-    }
-
-    @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader level, BlockPos pos, PlayerEntity player)
-    {
-        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, level, pos, player), getColor((World) level, pos)), true);
+        return ColorUtils.hexToRGB(getColor((Level) level, pos));
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     {
 
         return defaultBlockState().setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
         builder.add(WATERLOGGED);
     }
@@ -87,18 +90,16 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor levelIn, BlockPos currentPos, BlockPos facingPos)
     {
         if (stateIn.getValue(WATERLOGGED))
-        {
-            levelIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelIn));
-        }
+            levelIn.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelIn));
 
         return super.updateShape(stateIn, facing, facingState, levelIn, currentPos, facingPos);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, BlockGetter levelIn, BlockPos pos, CollisionContext context)
     {
         return SHAPE;
     }
@@ -110,7 +111,7 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     }
 
     @Override
-    public ItemStack getCloneItemStack(IBlockReader reader, BlockPos pos, BlockState state)
+    public ItemStack getCloneItemStack(BlockGetter reader, BlockPos pos, BlockState state)
     {
         ItemStack stack = super.getCloneItemStack(reader, pos, state);
 
@@ -121,7 +122,7 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     }
 
     @Override
-    public boolean isPathfindable(BlockState p_196266_1_, IBlockReader p_196266_2_, BlockPos p_196266_3_, PathType p_196266_4_) {
+    public boolean isPathfindable(BlockState p_60475_, BlockGetter p_60476_, BlockPos p_60477_, PathComputationType p_60478_) {
         return false;
     }
 
@@ -132,7 +133,7 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     }
 
     @Override
-    public void setPlacedBy(World level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
     {
         if (!level.isClientSide && stack.getTag() != null && level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
@@ -142,22 +143,9 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     }
 
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, IWorldReader level, BlockPos pos, Direction side)
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader level, BlockPos pos, Direction side)
     {
         return true;
-    }
-
-    @Override
-    public boolean hasTileEntity(BlockState state)
-    {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader level)
-    {
-        return SplatcraftTileEntities.inkwellTileEntity.create();
     }
 
     @Override
@@ -179,7 +167,7 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     }
 
     @Override
-    public int getColor(World level, BlockPos pos)
+    public int getColor(Level level, BlockPos pos)
     {
         if (level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
@@ -193,10 +181,10 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     }
 
     @Override
-    public boolean remoteColorChange(World level, BlockPos pos, int newColor)
+    public boolean remoteColorChange(Level level, BlockPos pos, int newColor)
     {
         BlockState state = level.getBlockState(pos);
-        TileEntity tileEntity = level.getBlockEntity(pos);
+        BlockEntity tileEntity = level.getBlockEntity(pos);
         if (tileEntity instanceof InkColorTileEntity && ((InkColorTileEntity) tileEntity).getColor() != newColor)
         {
             ((InkColorTileEntity) tileEntity).setColor(newColor);
@@ -208,8 +196,34 @@ public class InkwellBlock extends Block implements IColoredBlock, IWaterLoggable
     }
 
     @Override
-    public boolean remoteInkClear(World level, BlockPos pos)
+    public boolean remoteInkClear(Level level, BlockPos pos)
     {
         return false;
     }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return SplatcraftTileEntities.colorTileEntity.get().create(pos, state);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return level.isClientSide() ? null : (tickLevel,  pos, tickState, te) -> tick(tickLevel, pos, tickState, (InkColorTileEntity) te);
+    }
+
+    private static void tick(Level level, BlockPos pos, BlockState state, InkColorTileEntity t)
+    {
+        AABB bb = new AABB(t.getBlockPos().above());
+
+        for (ItemEntity entity : level.getEntitiesOfClass(ItemEntity.class, bb))
+        {
+            ItemStack stack = entity.getItem();
+
+            if (inkCoatingRecipes.containsKey(stack.getItem()))
+                entity.setItem(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(inkCoatingRecipes.get(stack.getItem())), t.getColor()), true));
+        }
+    }
+
 }

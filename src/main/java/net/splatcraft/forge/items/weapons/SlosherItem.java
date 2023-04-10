@@ -1,11 +1,14 @@
 package net.splatcraft.forge.items.weapons;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.CooldownTracker;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemCooldowns;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
@@ -19,10 +22,19 @@ public class SlosherItem extends WeaponBaseItem
     public WeaponSettings settings;
     public Type slosherType = Type.DEFAULT;
 
-    public SlosherItem(WeaponSettings settings) {
+    public static RegistryObject<SlosherItem> create(DeferredRegister<Item> register, WeaponSettings settings, Type slosherType)
+    {
+        return register.register(settings.name, () -> new SlosherItem(settings).setSlosherType(slosherType));
+    }
+
+    public static RegistryObject<SlosherItem> create(DeferredRegister<Item> register, RegistryObject<SlosherItem> parent, String name)
+    {
+        return register.register(name, () -> new SlosherItem(parent.get().settings).setSlosherType(parent.get().slosherType));
+    }
+
+    protected SlosherItem(WeaponSettings settings) {
         super(settings);
         this.settings = settings;
-        setRegistryName(this.settings.name);
 
         addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / 1.2f * 100)));
         addStat(new WeaponTooltip("damage", (stack, level) -> (int) (settings.baseDamage / 20 * 100)));
@@ -36,11 +48,11 @@ public class SlosherItem extends WeaponBaseItem
     }
 
     @Override
-    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
-        if (entity instanceof PlayerEntity && getUseDuration(stack) - timeLeft < settings.startupTicks) {
-            CooldownTracker cooldownTracker = ((PlayerEntity) entity).getCooldowns();
+    public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft) {
+        if (entity instanceof Player && getUseDuration(stack) - timeLeft < settings.startupTicks) {
+            ItemCooldowns cooldownTracker = ((Player) entity).getCooldowns();
             if (!cooldownTracker.isOnCooldown(this)) {
-                PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, settings.startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
+                PlayerCooldown.setPlayerCooldown((Player) entity, new PlayerCooldown(stack, settings.startupTicks, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
                 if (!level.isClientSide && settings.firingSpeed > 0) {
                     cooldownTracker.addCooldown(this, settings.firingSpeed);
                 }
@@ -49,7 +61,7 @@ public class SlosherItem extends WeaponBaseItem
     }
 
     @Override
-    public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown) {
+    public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown) {
         if (!level.isClientSide && reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
             for (int i = 0; i < settings.projectileCount; i++) {
                 boolean hasTrail = i == Math.floor((settings.projectileCount - 1) / 2f) || i == Math.ceil((settings.projectileCount - 1) / 2f);
@@ -57,7 +69,7 @@ public class SlosherItem extends WeaponBaseItem
 
                 InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize * (hasTrail ? 1 : 0.8f), settings);
                 proj.setShooterTrail();
-                proj.shootFromRotation(player, player.xRot, player.yRot + angle, -15.0f, settings.projectileSpeed, 2);
+                proj.shootFromRotation(player, player.getXRot(), player.getYRot() + angle, -15.0f, settings.projectileSpeed, 2);
                 level.addFreshEntity(proj);
 
                 switch (slosherType) {
@@ -69,7 +81,7 @@ public class SlosherItem extends WeaponBaseItem
                         proj.canPierce = true;
                 }
             }
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.slosherShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.slosherShot, SoundSource.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
         }
     }
 

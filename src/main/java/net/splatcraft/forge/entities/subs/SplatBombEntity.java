@@ -1,15 +1,15 @@
 package net.splatcraft.forge.entities.subs;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MoverType;
-import net.minecraft.item.Item;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
@@ -24,13 +24,13 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
     protected int fuseTime = 20;
     protected int prevFuseTime = fuseTime;
 
-    public SplatBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, World level) {
+    public SplatBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, Level level) {
         super(type, level);
     }
 
     @Override
     protected Item getDefaultItem() {
-        return SplatcraftItems.splatBomb;
+        return SplatcraftItems.splatBomb.get();
     }
 
     @Override
@@ -39,17 +39,17 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
 
         prevFuseTime = fuseTime;
 
-        if (!this.onGround || getHorizontalDistanceSqr(this.getDeltaMovement()) > (double)1.0E-5F)
+        if (!this.onGround || distanceToSqr(this.getDeltaMovement()) > (double)1.0E-5F)
         {
             float f1 = 0.98F;
             if (this.onGround)
-                f1 = this.level.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getSlipperiness(level, new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ()), this);
+                f1 = this.level.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getFriction(level, new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ()), this);
 
             f1 = (float) Math.min(0.98, f1*1.5f);
 
             this.setDeltaMovement(this.getDeltaMovement().multiply(f1, 0.98D, f1));
             /*if (this.onGround) {
-                Vector3d vector3d1 = this.getDeltaMovement();
+                Vec3 vector3d1 = this.getDeltaMovement();
                 if (vector3d1.y < 0.0D) {
                     this.setDeltaMovement(vector3d1.multiply(1.0D, -0.5D, 1.0D));
                 }
@@ -64,9 +64,9 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
         {
             InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), EXPLOSION_SIZE, DAMAGE, DAMAGE, DIRECT_DAMAGE, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
             level.broadcastEntityEvent(this, (byte) 1);
-            level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+            level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundSource.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             if(!level.isClientSide())
-                remove();
+                discard();
             return;
         }
 
@@ -85,7 +85,7 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
 
     //Ripped and modified from Minestuck's BouncingProjectileEntity class (with permission)
     @Override
-    protected void onHitEntity(EntityRayTraceResult result)
+    protected void onHitEntity(EntityHitResult result)
     {
         super.onHitEntity(result);
 
@@ -106,7 +106,7 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
     }
 
     @Override
-    protected void onBlockHit(BlockRayTraceResult result)
+    protected void onBlockHit(BlockHitResult result)
     {
         if(level.getBlockState(result.getBlockPos()).getCollisionShape(level, result.getBlockPos()).bounds().maxY - (position().y() - blockPosition().getY()) <= 0)
             return;
@@ -131,6 +131,6 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
 
     public float getFlashIntensity(float partialTicks)
     {
-        return 1f-Math.min(FUSE_START, MathHelper.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float)FUSE_START;
+        return 1f-Math.min(FUSE_START, Mth.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float)FUSE_START;
     }
 }

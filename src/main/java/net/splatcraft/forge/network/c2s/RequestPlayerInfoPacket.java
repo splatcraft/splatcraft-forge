@@ -1,8 +1,8 @@
 package net.splatcraft.forge.network.c2s;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
 
@@ -12,7 +12,7 @@ public class RequestPlayerInfoPacket extends PlayToServerPacket
 {
     UUID target;
 
-    public RequestPlayerInfoPacket(PlayerEntity target)
+    public RequestPlayerInfoPacket(Player target)
     {
         this.target = target.getUUID();
     }
@@ -22,24 +22,24 @@ public class RequestPlayerInfoPacket extends PlayToServerPacket
         this.target = target;
     }
 
-    public static RequestPlayerInfoPacket decode(PacketBuffer buffer)
+    public static RequestPlayerInfoPacket decode(FriendlyByteBuf buffer)
     {
         return new RequestPlayerInfoPacket(buffer.readUUID());
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeUUID(target);
     }
 
     @Override
-    public void execute(PlayerEntity player)
+    public void execute(Player player)
     {
-        ServerPlayerEntity target = (ServerPlayerEntity) player.level.getPlayerByUUID(this.target);
+        ServerPlayer target = (ServerPlayer) player.level.getPlayerByUUID(this.target);
         if (target != null)
         {
-            SplatcraftPacketHandler.sendToPlayer(new UpdatePlayerInfoPacket(target), (ServerPlayerEntity) player);
+            SplatcraftPacketHandler.sendToPlayer(new UpdatePlayerInfoPacket(target), (ServerPlayer) player);
         }
     }
 

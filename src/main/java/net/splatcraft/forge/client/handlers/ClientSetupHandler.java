@@ -1,19 +1,19 @@
 package net.splatcraft.forge.client.handlers;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -40,7 +40,7 @@ public class ClientSetupHandler
     @SubscribeEvent
     public static void onTextureStitch(TextureStitchEvent.Pre event)
     {
-        if (!event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS))
+        if (!event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS))
             return;
 
         event.addSprite(new ResourceLocation(Splatcraft.MODID, "blocks/stage_barrier_fancy"));
@@ -59,8 +59,8 @@ public class ClientSetupHandler
 
     public static void bindScreenContainers()
     {
-        ScreenManager.register(SplatcraftTileEntities.inkVatContainer, InkVatScreen::new);
-        ScreenManager.register(SplatcraftTileEntities.weaponWorkbenchContainer, WeaponWorkbenchScreen::new);
+        MenuScreens.register(SplatcraftTileEntities.inkVatContainer.get(), InkVatScreen::new);
+        MenuScreens.register(SplatcraftTileEntities.weaponWorkbenchContainer.get(), WeaponWorkbenchScreen::new);
     }
 
 
@@ -68,8 +68,8 @@ public class ClientSetupHandler
     public static void initItemColors(ColorHandlerEvent.Item event) {
         ItemColors colors = event.getItemColors();
 
-        SplatcraftItems.inkColoredItems.add(SplatcraftItems.splatfestBand);
-        SplatcraftItems.inkColoredItems.add(SplatcraftItems.clearBand);
+        SplatcraftItems.inkColoredItems.add(SplatcraftItems.splatfestBand.get());
+        SplatcraftItems.inkColoredItems.add(SplatcraftItems.clearBand.get());
 
         colors.register(new InkItemColor(), SplatcraftItems.inkColoredItems.toArray(new Item[0]));
 
@@ -84,13 +84,13 @@ public class ClientSetupHandler
 
     }
 
-    protected static class InkItemColor implements IItemColor
+    protected static class InkItemColor implements ItemColor
     {
         @Override
         public int getColor(@NotNull ItemStack stack, int i)
         {
             boolean isDefault = ColorUtils.getInkColor(stack) == -1 && !ColorUtils.isColorLocked(stack);
-            int color = i == 0 ? (((stack.getItem().is(SplatcraftTags.Items.INK_BANDS) || !stack.getItem().is(SplatcraftTags.Items.MATCH_ITEMS))
+            int color = i == 0 ? (((stack.is(SplatcraftTags.Items.INK_BANDS) || !stack.is(SplatcraftTags.Items.MATCH_ITEMS))
                     && isDefault && PlayerInfoCapability.hasCapability(Minecraft.getInstance().player))
                     ? ColorUtils.getEntityColor(Minecraft.getInstance().player) : ColorUtils.getInkColor(stack)) : -1;
 
@@ -103,11 +103,11 @@ public class ClientSetupHandler
         }
     }
 
-    protected static class InkBlockColor implements IBlockColor
+    protected static class InkBlockColor implements BlockColor
     {
 
         @Override
-        public int getColor(@NotNull BlockState blockState, @Nullable IBlockDisplayReader iBlockDisplayReader, @Nullable BlockPos blockPos, int i)
+        public int getColor(@NotNull BlockState blockState, @Nullable BlockAndTintGetter iBlockDisplayReader, @Nullable BlockPos blockPos, int i)
         {
             if (iBlockDisplayReader == null || blockPos == null)
                 return -1;

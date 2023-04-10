@@ -1,14 +1,12 @@
 package net.splatcraft.forge.data;
 
-import net.minecraft.command.impl.ScoreboardCommand;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -41,16 +39,16 @@ public class Stage
 		registerGameruleSetting(SplatcraftGameRules.RECHARGEABLE_INK_TANK);
 	}
 
-	public CompoundNBT writeData()
+	public CompoundTag writeData()
 	{
-		CompoundNBT nbt = new CompoundNBT();
+		CompoundTag nbt = new CompoundTag();
 
-		nbt.put("CornerA", NBTUtil.writeBlockPos(cornerA));
-		nbt.put("CornerB", NBTUtil.writeBlockPos(cornerB));
+		nbt.put("CornerA", NbtUtils.writeBlockPos(cornerA));
+		nbt.put("CornerB", NbtUtils.writeBlockPos(cornerB));
 		nbt.putString("Dimension", dimID.toString());
 
-		CompoundNBT settingsNbt = new CompoundNBT();
-		CompoundNBT teamsNbt = new CompoundNBT();
+		CompoundTag settingsNbt = new CompoundTag();
+		CompoundTag teamsNbt = new CompoundTag();
 
 		for(Map.Entry<String, Boolean> setting : settings.entrySet())
 			settingsNbt.putBoolean(setting.getKey(), setting.getValue());
@@ -68,7 +66,7 @@ public class Stage
 		return settings.containsKey(key);
 	}
 
-	public boolean hasSetting(GameRules.RuleKey<GameRules.BooleanValue> rule)
+	public boolean hasSetting(GameRules.Key<GameRules.BooleanValue> rule)
 	{
 		return hasSetting(rule.toString().replace("splatcraft.", ""));
 	}
@@ -78,7 +76,7 @@ public class Stage
 		return settings.get(key);
 	}
 
-	public boolean getSetting(GameRules.RuleKey<GameRules.BooleanValue> rule)
+	public boolean getSetting(GameRules.Key<GameRules.BooleanValue> rule)
 	{
 		return getSetting(rule.toString().replace("splatcraft.", ""));
 	}
@@ -115,24 +113,24 @@ public class Stage
 		return teams.keySet();
 	}
 
-	public Stage(CompoundNBT nbt)
+	public Stage(CompoundTag nbt)
 	{
-		cornerA = NBTUtil.readBlockPos(nbt.getCompound("CornerA"));
-		cornerB = NBTUtil.readBlockPos(nbt.getCompound("CornerB"));
+		cornerA = NbtUtils.readBlockPos(nbt.getCompound("CornerA"));
+		cornerB = NbtUtils.readBlockPos(nbt.getCompound("CornerB"));
 		dimID = new ResourceLocation(nbt.getString("Dimension"));
 
 		settings.clear();
 
-		CompoundNBT settingsNbt = nbt.getCompound("Settings");
+		CompoundTag settingsNbt = nbt.getCompound("Settings");
 		for(String key : settingsNbt.getAllKeys())
 			settings.put(key, settingsNbt.getBoolean(key));
 
-		CompoundNBT teamsNbt = nbt.getCompound("Teams");
+		CompoundTag teamsNbt = nbt.getCompound("Teams");
 		for(String key : teamsNbt.getAllKeys())
 			teams.put(key, teamsNbt.getInt(key));
 	}
 
-	public Stage(World level, BlockPos posA, BlockPos posB)
+	public Stage(Level level, BlockPos posA, BlockPos posB)
 	{
 		dimID = level.dimension().location();
 
@@ -140,7 +138,7 @@ public class Stage
 		cornerB = posB;
 	}
 
-	public static void registerGameruleSetting(GameRules.RuleKey<GameRules.BooleanValue> rule)
+	public static void registerGameruleSetting(GameRules.Key<GameRules.BooleanValue> rule)
 	{
 		VALID_SETTINGS.add(rule.toString().replace("splatcraft.", ""));
 	}

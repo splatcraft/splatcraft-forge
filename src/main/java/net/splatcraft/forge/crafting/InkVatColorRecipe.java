@@ -2,21 +2,19 @@ package net.splatcraft.forge.crafting;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftInkColors;
-import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.ColorUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class InkVatColorRecipe implements IRecipe<IInventory>
+public class InkVatColorRecipe implements Recipe<Container>
 {
     protected static final ArrayList<Integer> omniColors = Lists.newArrayList();
     protected final Ingredient ingredient;
@@ -54,13 +52,13 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
     }
 
     @Override
-    public boolean matches(IInventory inv, World levelIn)
+    public boolean matches(Container inv, Level levelIn)
     {
         return ingredient.test(inv.getItem(3));
     }
 
     @Override
-    public ItemStack assemble(IInventory inv)
+    public ItemStack assemble(Container inv)
     {
         return inv.getItem(0);
     }
@@ -74,7 +72,7 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
     @Override
     public ItemStack getResultItem()
     {
-        return ColorUtils.setInkColor(new ItemStack(SplatcraftBlocks.inkwell), color);
+        return ColorUtils.setInkColor(new ItemStack(SplatcraftBlocks.inkwell.get()), color);
     }
 
     public int getOutputColor()
@@ -89,13 +87,13 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer()
+    public RecipeSerializer<?> getSerializer()
     {
         return SplatcraftRecipeTypes.INK_VAT_COLOR_CRAFTING;
     }
 
     @Override
-    public IRecipeType<?> getType()
+    public RecipeType<?> getType()
     {
         return SplatcraftRecipeTypes.INK_VAT_COLOR_CRAFTING_TYPE;
     }
@@ -103,10 +101,10 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
     @Override
     public ItemStack getToastSymbol()
     {
-        return new ItemStack(SplatcraftItems.inkVat);
+        return new ItemStack(SplatcraftBlocks.inkVat.get());
     }
 
-    public static class InkVatColorSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<InkVatColorRecipe>
+    public static class InkVatColorSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<InkVatColorRecipe>
     {
 
         public InkVatColorSerializer(String name)
@@ -119,22 +117,21 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
         public InkVatColorRecipe fromJson(ResourceLocation recipeId, JsonObject json)
         {
             Ingredient ingredient = json.has("filter") ? Ingredient.fromJson(json.get("filter")) : Ingredient.EMPTY;
-            boolean disableOmni = json.has("not_on_omni_filter") && JSONUtils.getAsBoolean(json, "not_on_omni_filter");
+            boolean disableOmni = json.has("not_on_omni_filter") && GsonHelper.getAsBoolean(json, "not_on_omni_filter");
             int color;
 
-            try
+            color = GsonHelper.getAsInt(json, "color");
+
+            if(color < 0 || color > 0xFFFFFF)
             {
-                color = JSONUtils.getAsInt(json, "color");
-            } catch (JsonSyntaxException jse)
-            {
-                String colorStr = JSONUtils.getAsString(json, "color");
+                String colorStr = GsonHelper.getAsString(json, "color");
                 try {
                     color = Integer.parseInt(colorStr, 16);
                 } catch (NumberFormatException nfe)
                 {
                     try
                     {
-                        color = SplatcraftInkColors.REGISTRY.getValue(new ResourceLocation(colorStr)).getColor();
+                        color = SplatcraftInkColors.cobalt.getColor(); //SaveInfoRY.getValue(new ResourceLocation(colorStr)).getColor();
                     } catch (NullPointerException npe)
                     {
                         LOGGER.error("Parsing error loading recipe {}", recipeId, npe);
@@ -147,15 +144,16 @@ public class InkVatColorRecipe implements IRecipe<IInventory>
             return new InkVatColorRecipe(recipeId, ingredient, color, disableOmni);
         }
 
+
         @Nullable
         @Override
-        public InkVatColorRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer)
+        public InkVatColorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
         {
             return new InkVatColorRecipe(recipeId, Ingredient.fromNetwork(buffer), buffer.readInt(), buffer.readBoolean());
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, InkVatColorRecipe recipe)
+        public void toNetwork(FriendlyByteBuf buffer, InkVatColorRecipe recipe)
         {
             recipe.ingredient.toNetwork(buffer);
             buffer.writeInt(recipe.color);

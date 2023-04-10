@@ -1,18 +1,18 @@
 package net.splatcraft.forge.tileentities.container;
 
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.IWorldPosCallable;
 
 public class WeaponWorkbenchContainer extends PlayerInventoryContainer<WeaponWorkbenchContainer>
 {
-    public WeaponWorkbenchContainer(PlayerInventory player, IWorldPosCallable callable, int id)
+    public WeaponWorkbenchContainer(Inventory player, ContainerLevelAccess callable, int id)
     {
-        super(SplatcraftTileEntities.weaponWorkbenchContainer, player, callable, 8, 144, id);
+        super(SplatcraftTileEntities.weaponWorkbenchContainer.get(), player, callable, 8, 144, id);
     }
 
-    public WeaponWorkbenchContainer(int id, PlayerInventory playerInventory)
+    public WeaponWorkbenchContainer(int id, Inventory playerInventory)
     {
-        this(playerInventory, IWorldPosCallable.NULL, id);
+        this(playerInventory, ContainerLevelAccess.NULL, id);
     }
 }

@@ -1,42 +1,41 @@
 package net.splatcraft.forge.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public class GrateRampBlock extends Block implements IWaterLoggable
+public class GrateRampBlock extends Block implements SimpleWaterloggedBlock
 {
 
-    public static final EnumProperty<Direction> FACING = HorizontalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private static final VoxelShape START = box(0, 0, 0, 3, 3, 16);
     private static final VoxelShape END = box(13, 13, 0, 16, 16, 16);
     private static final VoxelShape SEGMENT = box(1, 2, 0, 4, 5, 16);
     public static final VoxelShape[] SHAPES = makeVoxelShape();
 
-    public GrateRampBlock(String name)
+    public GrateRampBlock()
     {
         super(GrateBlock.PROPERTIES);
-        setRegistryName(name);
         registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
@@ -57,16 +56,16 @@ public class GrateRampBlock extends Block implements IWaterLoggable
 
     protected static VoxelShape modifyShapeForDirection(Direction facing, VoxelShape shape)
     {
-        AxisAlignedBB bb = shape.bounds();
+        AABB bb = shape.bounds();
 
         switch (facing)
         {
             case SOUTH:
-                return VoxelShapes.create(new AxisAlignedBB(1 - bb.maxZ, bb.minY, bb.minX, 1 - bb.minZ, bb.maxY, bb.maxX));
+                return Shapes.create(new AABB(1 - bb.maxZ, bb.minY, bb.minX, 1 - bb.minZ, bb.maxY, bb.maxX));
             case EAST:
-                return VoxelShapes.create(new AxisAlignedBB(1 - bb.maxX, bb.minY, 1 - bb.maxZ, 1 - bb.minX, bb.maxY, 1 - bb.minZ));
+                return Shapes.create(new AABB(1 - bb.maxX, bb.minY, 1 - bb.maxZ, 1 - bb.minX, bb.maxY, 1 - bb.minZ));
             case WEST:
-                return VoxelShapes.create(new AxisAlignedBB(bb.minZ, bb.minY, 1 - bb.maxX, bb.maxZ, bb.maxY, 1 - bb.minX));
+                return Shapes.create(new AABB(bb.minZ, bb.minY, 1 - bb.maxX, bb.maxZ, bb.maxY, 1 - bb.minX));
         }
         return shape;
     }
@@ -77,10 +76,10 @@ public class GrateRampBlock extends Block implements IWaterLoggable
 
         for (int i = 0; i < 4; i++)
         {
-            result[i] = VoxelShapes.empty();
+            result[i] = Shapes.empty();
             for (VoxelShape shape : shapes)
             {
-                result[i] = VoxelShapes.or(result[i], modifyShapeForDirection(Direction.from2DDataValue(i), shape));
+                result[i] = Shapes.or(result[i], modifyShapeForDirection(Direction.from2DDataValue(i), shape));
             }
 
         }
@@ -89,20 +88,20 @@ public class GrateRampBlock extends Block implements IWaterLoggable
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
         builder.add(FACING, WATERLOGGED);
     }
 
     @Override
-    public @NotNull VoxelShape getShape(BlockState state, @NotNull IBlockReader levelIn, @NotNull BlockPos pos, @NotNull ISelectionContext context)
+    public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter levelIn, @NotNull BlockPos pos, @NotNull CollisionContext context)
     {
         return SHAPES[state.getValue(FACING).ordinal() - 2];
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     {
         BlockPos blockPos = context.getClickedPos();
         Direction direction = context.getClickedFace();
@@ -118,7 +117,7 @@ public class GrateRampBlock extends Block implements IWaterLoggable
     }
 
     @Override
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull IBlockReader levelIn, @NotNull BlockPos pos, @NotNull PathType type) {
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter levelIn, @NotNull BlockPos pos, @NotNull PathComputationType type) {
         return false;
     }
 }

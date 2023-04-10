@@ -1,53 +1,35 @@
 package net.splatcraft.forge.handlers;
 
-import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
-import net.splatcraft.forge.items.weapons.RollerItem;
-import net.splatcraft.forge.items.weapons.SlosherItem;
-import net.splatcraft.forge.items.weapons.SubWeaponItem;
-import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.util.PlayerCooldown;
 
 @Mod.EventBusSubscriber
 public class PlayerPosingHandler
 {
+    /* TODO GeckoLib stuff
     @SuppressWarnings("all")
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void setupPlayerAngles(PlayerModelEvent.SetupAngles.Post event)
     {
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         PlayerModel<?> model = event.getModelPlayer();
 
         if (model == null || player == null || PlayerInfoCapability.isSquid(player))
             return;
 
-        IPlayerInfo playerInfo = PlayerInfoCapability.get(player);
+        PlayerInfo playerInfo = PlayerInfoCapability.get(player);
 
-        Hand activeHand = player.getUsedItemHand();
-        HandSide handSide = player.getMainArm();
+        InteractionHand activeHand = player.getUsedItemHand();
+        HumanoidArm handSide = player.getMainArm();
 
         if (activeHand == null)
             return;
 
-        ModelRenderer mainHand = activeHand == Hand.MAIN_HAND && handSide == HandSide.LEFT || activeHand == Hand.OFF_HAND && handSide == HandSide.RIGHT ? model.leftArm : model.rightArm;
+        ModelRenderer mainHand = activeHand == InteractionHand.MAIN_HAND && handSide == HumanoidArm.LEFT || activeHand == InteractionHand.OFF_HAND && handSide == HumanoidArm.RIGHT ? model.leftArm : model.rightArm;
         ModelRenderer offHand = mainHand.equals(model.leftArm) ? model.rightArm : model.leftArm;
 
         ItemStack mainStack = player.getItemInHand(activeHand);
-        ItemStack offStack = player.getItemInHand(Hand.values()[(activeHand.ordinal() + 1) % Hand.values().length]);
+        ItemStack offStack = player.getItemInHand(InteractionHand.values()[(activeHand.ordinal() + 1) % InteractionHand.values().length]);
         int useTime = player.getUseItemRemainingTicks();
 
         if (!(mainStack.getItem() instanceof WeaponBaseItem))
@@ -94,7 +76,7 @@ public class PlayerPosingHandler
                         angle = (cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime;
                         angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI) + ((float) Math.PI) / 1.8f;
                         if (angle < 6.5f)
-                            mainHand.xRot = MathHelper.cos(angle * 0.6662F);
+                            mainHand.xRot = Mth.cos(angle * 0.6662F);
                     }
                     break;
                 case BOW_CHARGE:
@@ -121,7 +103,7 @@ public class PlayerPosingHandler
                         cooldown = PlayerCooldown.getPlayerCooldown(player);
                         animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).settings.swingTime : ((RollerItem) mainStack.getItem()).settings.flingTime;
                         angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
-                        mainHand.xRot = MathHelper.cos(angle) + (0.1F * 0.5F - ((float) Math.PI / 10F));//+ 0.36f;
+                        mainHand.xRot = Mth.cos(angle) + (0.1F * 0.5F - ((float) Math.PI / 10F));//+ 0.36f;
                     } else
                     {
                         mainHand.xRot = 0.1F * 0.5F - ((float) Math.PI / 10F);
@@ -137,12 +119,13 @@ public class PlayerPosingHandler
                         animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).settings.swingTime : ((RollerItem) mainStack.getItem()).settings.flingTime;
                         angle = (float) -((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTicks()) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
 
-                        mainHand.yRot = model.getHead().yRot + MathHelper.cos(angle);
+                        mainHand.yRot = model.getHead().yRot + Mth.cos(angle);
                     } else mainHand.yRot = model.getHead().yRot;
                     break;
             }
         }
     }
+     */
 
     public enum WeaponPose
     {
@@ -155,4 +138,6 @@ public class PlayerPosingHandler
         BUCKET_SWING,
         SUB_HOLD
     }
+
+
 }

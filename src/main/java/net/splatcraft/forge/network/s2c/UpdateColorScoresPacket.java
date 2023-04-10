@@ -1,6 +1,6 @@
 package net.splatcraft.forge.network.s2c;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.splatcraft.forge.crafting.InkVatColorRecipe;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
 
@@ -17,7 +17,7 @@ public class UpdateColorScoresPacket extends PlayToClientPacket
         this.add = add;
     }
 
-    public static UpdateColorScoresPacket decode(PacketBuffer buffer)
+    public static UpdateColorScoresPacket decode(FriendlyByteBuf buffer)
     {
         return new UpdateColorScoresPacket(buffer.readBoolean(), buffer.readBoolean(), buffer.readVarIntArray());
     }
@@ -47,7 +47,7 @@ public class UpdateColorScoresPacket extends PlayToClientPacket
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeBoolean(clear);
         buffer.writeBoolean(add);

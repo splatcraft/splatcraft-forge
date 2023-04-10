@@ -1,9 +1,9 @@
 package net.splatcraft.forge.mixin;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
@@ -24,7 +24,7 @@ public class EntityMixin
 
 		LivingEntity entity = ((LivingEntity)(Object)this);
 
-		IPlayerInfo info = PlayerInfoCapability.get(entity);
+		PlayerInfo info = PlayerInfoCapability.get(entity);
 
 		if(info != null && InkBlockUtils.canSquidHide(entity) && info.isSquid())
 			cir.setReturnValue(true);
@@ -33,11 +33,11 @@ public class EntityMixin
 	@Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
 	public void setSprinting(boolean p_70031_1_, CallbackInfo ci)
 	{
-		if(!(((Object)this) instanceof PlayerEntity))
+		if(!(((Object)this) instanceof Player))
 			return;
-		if(p_70031_1_ && PlayerCooldown.hasPlayerCooldown(((PlayerEntity)(Object)this)))
+		if(p_70031_1_ && PlayerCooldown.hasPlayerCooldown(((Player)(Object)this)))
 		{
-			((PlayerEntity) (Object) this).setSprinting(false);
+			((Player) (Object) this).setSprinting(false);
 			ci.cancel();
 		}
 	}

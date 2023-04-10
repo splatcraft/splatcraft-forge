@@ -43,6 +43,8 @@ public class WeaponSettings implements IDamageCalculator {
     public int rollDamageDecayStartTick;
     public float rollDamageDecayPerTick;
 
+    public boolean secret;
+
     public static final WeaponSettings DEFAULT = new WeaponSettings("default");
 
     public WeaponSettings(String name) {
@@ -67,6 +69,12 @@ public class WeaponSettings implements IDamageCalculator {
 
     public WeaponSettings setName(String setName) {
         this.name = setName;
+        return this;
+    }
+
+    public WeaponSettings setSecret(boolean secret)
+    {
+        this.secret = secret;
         return this;
     }
 

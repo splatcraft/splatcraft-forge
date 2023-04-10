@@ -1,133 +1,90 @@
 package net.splatcraft.forge.registries;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.item.DyeColor;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.splatcraft.forge.Splatcraft;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.blocks.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static net.splatcraft.forge.Splatcraft.MODID;
+
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftBlocks
 {
+    protected static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
+
     public static final ArrayList<Block> inkColoredBlocks = new ArrayList<>();
 
-    public static final InkedBlock inkedBlock = new InkedBlock("inked_block");
-    public static final InkedBlock glowingInkedBlock = InkedBlock.glowing("glowing_inked_block");
-    public static final InkedBlock clearInkedBlock = new InkedBlock("clear_inked_block");
+    public static final RegistryObject<InkedBlock> inkedBlock = REGISTRY.register("inked_block", InkedBlock::new);
 
-    public static final Block sardiniumBlock = new MetalBlock(Material.METAL, MaterialColor.TERRACOTTA_WHITE).setRegistryName("sardinium_block");
-    public static final Block sardiniumOre = new OreBlock(0).setRegistryName("sardinium_ore");
-    public static final Block powerEggBlock = new LightBlock(9, AbstractBlock.Properties.of(Material.VEGETABLE, DyeColor.ORANGE).harvestTool(ToolType.SHOVEL).sound(SoundType.SLIME_BLOCK).strength(0.2f, 0)).setRegistryName("power_egg_block");
-    public static final Block crate = new CrateBlock("crate", false);
-    public static final Block sunkenCrate = new CrateBlock("sunken_crate", true);
+    public static final RegistryObject<Block> sardiniumBlock =  REGISTRY.register("sardinium_block", () -> new MetalBlock(Material.METAL, MaterialColor.TERRACOTTA_WHITE));
+    public static final RegistryObject<Block> sardiniumOre =  REGISTRY.register("sardinium_ore", OreBlock::new);
+    public static final RegistryObject<Block> powerEggBlock =  REGISTRY.register("power_egg_block", () -> new Block(BlockBehaviour.Properties.of(Material.VEGETABLE, DyeColor.ORANGE).sound(SoundType.SLIME_BLOCK).strength(0.2f, 0).lightLevel((state) -> 9)));
+    public static final RegistryObject<Block> crate =  REGISTRY.register("crate", () -> new CrateBlock("crate", false));
+    public static final RegistryObject<Block> sunkenCrate =  REGISTRY.register("sunken_crate", () -> new CrateBlock("sunken_crate", true));
 
-    public static final Block inkVat = new InkVatBlock("ink_vat");
-    public static final Block weaponWorkbench = new WeaponWorkbenchBlock("ammo_knights_workbench");
-    public static final Block remotePedestal = new RemotePedestalBlock().setRegistryName("remote_pedestal");
+    public static final RegistryObject<Block> inkVat =  REGISTRY.register("ink_vat", () -> new InkVatBlock("ink_vat"));
+    public static final RegistryObject<Block> weaponWorkbench =  REGISTRY.register("ammo_knights_workbench", () -> new WeaponWorkbenchBlock("ammo_knights_workbench"));
+    public static final RegistryObject<Block> remotePedestal =  REGISTRY.register("remote_pedestal", RemotePedestalBlock::new);
 
-    public static final Block emptyInkwell =new EmptyInkwellBlock(Block.Properties.of(Material.GLASS).strength(0.3F).sound(SoundType.GLASS).harvestTool(ToolType.PICKAXE)).setRegistryName("empty_inkwell");
-    public static final Block inkwell = new InkwellBlock().setRegistryName("inkwell");
+    public static final RegistryObject<Block> emptyInkwell = REGISTRY.register("empty_inkwell", () -> new EmptyInkwellBlock(Block.Properties.of(Material.GLASS).strength(0.3F).sound(SoundType.GLASS)));
+    public static final RegistryObject<Block> inkwell =  REGISTRY.register("inkwell", InkwellBlock::new);
 
-    public static final Block inkedWool = new InkStainedBlock("ink_stained_wool", AbstractBlock.Properties.of(Material.WOOL).strength(0.8F).sound(SoundType.WOOL));
-    public static final Block inkedCarpet = new InkedCarpetBlock("ink_stained_carpet");
-    public static final Block inkedGlass = new InkedGlassBlock("ink_stained_glass");
-    public static final Block inkedGlassPane = new InkedGlassPaneBlock("ink_stained_glass_pane");
-    public static final Block canvas = new CanvasBlock("canvas");
-    public static final Block splatSwitch = new SplatSwitchBlock().setRegistryName("splat_switch");
-    public static final Block spawnPad = new SpawnPadBlock().setRegistryName("spawn_pad");
-    public static final Block spawnPadEdge = new SpawnPadBlock.Aux((SpawnPadBlock) spawnPad).setRegistryName("spawn_pad_edge");
+    public static final RegistryObject<Block> inkedWool =  REGISTRY.register("ink_stained_wool", () -> new InkStainedBlock("ink_stained_wool", BlockBehaviour.Properties.of(Material.WOOL).strength(0.8F).sound(SoundType.WOOL)));
+    public static final RegistryObject<Block> inkedCarpet =  REGISTRY.register("ink_stained_carpet", () -> new InkedCarpetBlock("ink_stained_carpet"));
+    public static final RegistryObject<Block> inkedGlass =  REGISTRY.register("ink_stained_glass", () -> new InkedGlassBlock("ink_stained_glass"));
+    public static final RegistryObject<Block> inkedGlassPane =  REGISTRY.register("ink_stained_glass_pane", InkedGlassPaneBlock::new);
+    public static final RegistryObject<Block> canvas =  REGISTRY.register("canvas", () -> new CanvasBlock("canvas"));
+    public static final RegistryObject<Block> splatSwitch =  REGISTRY.register("splat_switch", SplatSwitchBlock::new);
+    public static final RegistryObject<SpawnPadBlock> spawnPad =  REGISTRY.register("spawn_pad", SpawnPadBlock::new);
+    public static final RegistryObject<Block> spawnPadEdge =  REGISTRY.register("spawn_pad_edge", () -> new SpawnPadBlock.Aux(spawnPad.get()));
 
-    public static final Block grate = new GrateBlock("grate");
-    public static final Block grateRamp = new GrateRampBlock("grate_ramp");
-    public static final Block barrierBar = new BarrierBarBlock("barrier_bar");
-    public static final Block cautionBarrierBar = new BarrierBarBlock("caution_barrier_bar");
-    public static final Block platedBarrierBar = new BarrierBarBlock("plated_barrier_bar");
-    public static final Block tarp = new TarpBlock().setRegistryName("tarp");
-    public static final Block stageBarrier = new StageBarrierBlock("stage_barrier", false);
-    public static final Block stageVoid = new StageBarrierBlock("stage_void", true);
-    public static final Block allowedColorBarrier = new ColoredBarrierBlock("allowed_color_barrier", false);
-    public static final Block deniedColorBarrier = new ColoredBarrierBlock("denied_color_barrier", true);
-
-    @SubscribeEvent
-    public static void blockInit(final RegistryEvent.Register<Block> event)
-    {
-        IForgeRegistry<Block> registry = event.getRegistry();
-
-        registry.register(inkedBlock);
-        registry.register(glowingInkedBlock);
-        registry.register(clearInkedBlock);
-
-        registry.register(sardiniumBlock);
-        registry.register(sardiniumOre);
-        registry.register(powerEggBlock);
-        registry.register(sunkenCrate);
-        registry.register(crate);
-
-        registry.register(inkVat);
-        registry.register(weaponWorkbench);
-        registry.register(remotePedestal);
-
-        registry.register(emptyInkwell);
-        registry.register(inkwell);
-        registry.register(inkedWool);
-        registry.register(inkedCarpet);
-        registry.register(inkedGlass);
-        registry.register(inkedGlassPane);
-        registry.register(canvas);
-
-        registry.register(grate);
-        registry.register(grateRamp);
-        registry.register(barrierBar);
-        registry.register(platedBarrierBar);
-        registry.register(cautionBarrierBar);
-        registry.register(tarp);
-        registry.register(splatSwitch);
-        registry.register(spawnPad);
-        registry.register(spawnPadEdge);
-
-        registry.register(stageBarrier);
-        registry.register(stageVoid);
-        registry.register(allowedColorBarrier);
-        registry.register(deniedColorBarrier);
-    }
+    public static final RegistryObject<Block> grate =  REGISTRY.register("grate", GrateBlock::new);
+    public static final RegistryObject<Block> grateRamp =  REGISTRY.register("grate_ramp", GrateRampBlock::new);
+    public static final RegistryObject<Block> barrierBar =  REGISTRY.register("barrier_bar", BarrierBarBlock::new);
+    public static final RegistryObject<Block> cautionBarrierBar =  REGISTRY.register("caution_barrier_bar", BarrierBarBlock::new);
+    public static final RegistryObject<Block> platedBarrierBar =  REGISTRY.register("plated_barrier_bar", BarrierBarBlock::new);
+    public static final RegistryObject<Block> tarp =  REGISTRY.register("tarp", TarpBlock::new);
+    public static final RegistryObject<Block> stageBarrier =  REGISTRY.register("stage_barrier", () -> new StageBarrierBlock(false));
+    public static final RegistryObject<Block> stageVoid =  REGISTRY.register("stage_void", () -> new StageBarrierBlock(true));
+    public static final RegistryObject<Block> allowedColorBarrier =  REGISTRY.register("allowed_color_barrier", () -> new ColoredBarrierBlock(false));
+    public static final RegistryObject<Block> deniedColorBarrier =  REGISTRY.register("denied_color_barrier", () -> new ColoredBarrierBlock(true));
 
 
     public static void setRenderLayers()
     {
-        RenderTypeLookup.setRenderLayer(glowingInkedBlock, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(inkedGlass, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(inkedGlassPane, RenderType.translucent());
-
-        RenderTypeLookup.setRenderLayer(emptyInkwell, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(inkwell, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(spawnPad, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(grate, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(grateRamp, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(crate, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(sunkenCrate, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(remotePedestal, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(splatSwitch, RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(inkedGlass.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(inkedGlassPane.get(), RenderType.translucent());
+        
+        ItemBlockRenderTypes.setRenderLayer(emptyInkwell.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(inkwell.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(spawnPad.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(grate.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(grateRamp.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(crate.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(sunkenCrate.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(remotePedestal.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(splatSwitch.get(), RenderType.cutout());
     }
 
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class Missmaps
     {
-        private static final HashMap<String, Block> remaps = new HashMap<String, Block>()
-        {{
+        private static final HashMap<String, RegistryObject<? extends Block>> remaps = new HashMap<>() {{
             put("inked_wool", inkedWool);
             put("inked_carpet", inkedCarpet);
             put("inked_glass", inkedGlass);
@@ -137,20 +94,20 @@ public class SplatcraftBlocks
             put("inked_stairs", inkedBlock);
             put("inked_slab", inkedBlock);
             put("tall_inked_block", inkedBlock);
-            put("glowing_inked_stairs", glowingInkedBlock);
-            put("glowing_inked_slab", glowingInkedBlock);
-            put("tall_glowing_inked_block", glowingInkedBlock);
-            put("tall_clear_inked_block", clearInkedBlock);
+            put("glowing_inked_stairs", inkedBlock);
+            put("glowing_inked_slab", inkedBlock);
+            put("tall_glowing_inked_block", inkedBlock);
+            put("tall_clear_inked_block", inkedBlock);
         }};
 
         @SubscribeEvent
         public static void onMissingMappings(final RegistryEvent.MissingMappings<Block> event)
         {
-            for(RegistryEvent.MissingMappings.Mapping<Block> block : event.getMappings(Splatcraft.MODID))
+            for(RegistryEvent.MissingMappings.Mapping<Block> block : event.getMappings(MODID))
             {
                 String key = block.key.getPath();
                 if(remaps.containsKey(key))
-                    block.remap(remaps.get(key));
+                    block.remap(remaps.get(key).get());
             }
         }
     }

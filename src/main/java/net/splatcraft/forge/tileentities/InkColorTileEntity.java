@@ -1,95 +1,101 @@
 package net.splatcraft.forge.tileentities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class InkColorTileEntity extends TileEntity implements IHasTeam
+public class InkColorTileEntity extends BlockEntity implements IHasTeam
 {
 
-    private int color = ColorUtils.DEFAULT;
-    private String team = "";
+	private int color = ColorUtils.DEFAULT;
+	private String team = "";
 
-    public InkColorTileEntity()
-    {
-        super(SplatcraftTileEntities.colorTileEntity);
-    }
+	public InkColorTileEntity(BlockPos pos, BlockState state)
+	{
+		super(SplatcraftTileEntities.colorTileEntity.get(), pos, state);
+	}
 
-    public InkColorTileEntity(TileEntityType type)
-    {
-        super(type);
-    }
+	public InkColorTileEntity(BlockEntityType type, BlockPos pos, BlockState state)
+	{
+		super(type, pos, state);
+	}
 
-    @Override
-    public @NotNull CompoundNBT save(CompoundNBT nbt)
-    {
-        nbt.putInt("Color", color);
-        if(!team.isEmpty())
-            nbt.putString("Team", team);
-        return super.save(nbt);
-    }
 
-    //Nbt Read
-    @Override
-    public void load(@NotNull BlockState state, @NotNull CompoundNBT nbt)
-    {
-        super.load(state, nbt);
-        color = ColorUtils.getColorFromNbt(nbt);
-        team = nbt.getString("Team");
-    }
+	@Override
+	public void saveAdditional(CompoundTag nbt)
+	{
+		nbt.putInt("Color", color);
+		if(!team.isEmpty())
+			nbt.putString("Team", team);
+		super.saveAdditional(nbt);
+	}
 
-    @Override
-    public @NotNull CompoundNBT getUpdateTag()
-    {
-        return this.save(new CompoundNBT());
-    }
+	//Nbt Read
+	@Override
+	public void load(@NotNull CompoundTag nbt)
+	{
+		super.load(nbt);
+		color = ColorUtils.getColorFromNbt(nbt);
+		team = nbt.getString("Team");
+	}
 
-    @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag)
-    {
-        this.load(state, tag);
-    }
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = new CompoundTag();
+		saveAdditional(tag);
+		return tag;
+	}
 
-    @Nullable
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket()
-    {
-        return new SUpdateTileEntityPacket(getBlockPos(), 2, getUpdateTag());
-    }
+	@Override
+	public void handleUpdateTag(CompoundTag tag)
+	{
+		this.load(tag);
+	}
 
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
-    {
-        if (level != null)
-        {
-            BlockState state = level.getBlockState(getBlockPos());
-            level.sendBlockUpdated(getBlockPos(), state, state, 2);
-            handleUpdateTag(state, pkt.getTag());
-        }
-    }
 
-    public int getColor()
-    {
-        return color;
-    }
 
-    public void setColor(int color)
-    {
-        this.color = color;
-    }
+	@Override
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		// Will get tag from #getUpdateTag
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
 
-    public String getTeam() {
-        return team;
-    }
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
+	{
+		if (level != null)
+		{
+			BlockState state = level.getBlockState(getBlockPos());
+			level.sendBlockUpdated(getBlockPos(), state, state, 2);
+			handleUpdateTag(pkt.getTag());
+		}
+	}
 
-    public void setTeam(String team) {
-        this.team = team;
-    }
+	public int getColor()
+	{
+		return color;
+	}
+
+	public void setColor(int color)
+	{
+		this.color = color;
+	}
+
+	public String getTeam() {
+		return team;
+	}
+
+	public void setTeam(String team) {
+		this.team = team;
+	}
 }

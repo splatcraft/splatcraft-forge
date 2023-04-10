@@ -1,15 +1,14 @@
 package net.splatcraft.forge.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
@@ -19,23 +18,24 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class InkStainedBlock extends Block implements IColoredBlock
+import java.util.Objects;
+
+public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
 {
     public InkStainedBlock(String name, Properties properties)
     {
         super(properties);
         SplatcraftBlocks.inkColoredBlocks.add(this);
-        setRegistryName(name);
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader level, BlockPos pos, PlayerEntity player)
+    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state)
     {
-        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, level, pos, player), getColor((World) level, pos)), true);
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getCloneItemStack(level, pos, state), getColor((Level) level, pos)), true);
     }
 
     @Override
-    public void setPlacedBy(World level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
     {
         if (!level.isClientSide && stack.getTag() != null && level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
@@ -44,30 +44,12 @@ public class InkStainedBlock extends Block implements IColoredBlock
         super.setPlacedBy(level, pos, state, entity, stack);
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state)
-    {
-        return true;
-    }
-
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader level)
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
     {
-        return SplatcraftTileEntities.colorTileEntity.create();
+        return SplatcraftTileEntities.colorTileEntity.get().create(pos, state);
     }
-
-    @Override
-    public ItemStack getCloneItemStack(IBlockReader reader, BlockPos pos, BlockState state)
-    {
-        ItemStack stack = super.getCloneItemStack(reader, pos, state);
-
-        if (reader.getBlockEntity(pos) instanceof InkColorTileEntity)
-            ColorUtils.setColorLocked(ColorUtils.setInkColor(stack, ColorUtils.getInkColor(reader.getBlockEntity(pos))), true);
-
-        return stack;
-    }
-
 
     @Override
     public boolean canClimb()
@@ -89,7 +71,7 @@ public class InkStainedBlock extends Block implements IColoredBlock
 
 
     @Override
-    public int getColor(World level, BlockPos pos)
+    public int getColor(Level level, BlockPos pos)
     {
         if (level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
@@ -99,7 +81,7 @@ public class InkStainedBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean remoteColorChange(World level, BlockPos pos, int newColor)
+    public boolean remoteColorChange(Level level, BlockPos pos, int newColor)
     {
         BlockState state = level.getBlockState(pos);
         if (level.getBlockEntity(pos) instanceof InkColorTileEntity && ((InkColorTileEntity) level.getBlockEntity(pos)).getColor() != newColor)
@@ -112,7 +94,7 @@ public class InkStainedBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean inkBlock(World level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    public boolean inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
         if (InkedBlock.isTouchingLiquid(level, pos) || !SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INKABLE_GROUND))
         {
@@ -129,7 +111,7 @@ public class InkStainedBlock extends Block implements IColoredBlock
         BlockState state = level.getBlockState(pos);
         BlockState inkState = InkBlockUtils.getInkState(inkType, level, pos);
         level.setBlock(pos, inkState, 3);
-        level.setBlockEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(inkState, level));
+        level.setBlockEntity(Objects.requireNonNull(SplatcraftBlocks.inkedBlock.get().newBlockEntity(pos, inkState)));
         InkedBlockTileEntity inkte = (InkedBlockTileEntity) level.getBlockEntity(pos);
         if (inkte == null)
         {
@@ -143,7 +125,7 @@ public class InkStainedBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean remoteInkClear(World level, BlockPos pos)
+    public boolean remoteInkClear(Level level, BlockPos pos)
     {
         return false;
     }

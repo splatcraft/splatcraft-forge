@@ -1,20 +1,22 @@
 package net.splatcraft.forge.crafting;
 
 import com.google.gson.JsonArray;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 
-public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventory>
+
+public abstract class AbstractWeaponWorkbenchRecipe implements Recipe<Container>
 {
     protected final ResourceLocation id;
     protected final ItemStack recipeOutput;
@@ -31,9 +33,9 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
 
 
     @Override
-    public boolean matches(IInventory inv, @NotNull World levelIn)
+    public boolean matches(Container inv, @NotNull Level levelIn)
     {
-        java.util.List<ItemStack> inputs = new java.util.ArrayList<>();
+        List<ItemStack> inputs = new java.util.ArrayList<>();
         int i = 0;
 
         for (int j = 0; j < inv.getContainerSize(); ++j)
@@ -49,13 +51,13 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
         return i == this.recipeItems.size() && net.minecraftforge.common.util.RecipeMatcher.findMatches(inputs, this.recipeItems) != null;
     }
 
-    public TextComponent getName()
+    public Component getName()
     {
-        return new TranslationTextComponent(name);
+        return new TranslatableComponent(name);
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull IInventory inv)
+    public @NotNull ItemStack assemble(@NotNull Container inv)
     {
         return recipeOutput;
     }
@@ -79,13 +81,13 @@ public abstract class AbstractWeaponWorkbenchRecipe implements IRecipe<IInventor
     }
 
     @Override
-    public @NotNull IRecipeSerializer<?> getSerializer()
+    public @NotNull RecipeSerializer<?> getSerializer()
     {
         return SplatcraftRecipeTypes.WEAPON_STATION;
     }
 
     @Override
-    public @NotNull IRecipeType<?> getType()
+    public @NotNull RecipeType<?> getType()
     {
         return SplatcraftRecipeTypes.WEAPON_STATION_TYPE;
     }

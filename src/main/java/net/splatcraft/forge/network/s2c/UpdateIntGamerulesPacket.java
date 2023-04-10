@@ -1,7 +1,7 @@
 package net.splatcraft.forge.network.s2c;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.GameRules;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.GameRules;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 
 import java.util.Map;
@@ -15,13 +15,13 @@ public class UpdateIntGamerulesPacket extends PlayToClientPacket {
         this.intRules = intRules;
     }
 
-    public UpdateIntGamerulesPacket(GameRules.RuleKey<GameRules.IntegerValue> rule, int value) {
-        this.intRules = new TreeMap<Integer, Integer>() {{
+    public UpdateIntGamerulesPacket(GameRules.Key<GameRules.IntegerValue> rule, int value) {
+        this.intRules = new TreeMap<>() {{
             put(SplatcraftGameRules.getRuleIndex(rule), value);
         }};
     }
 
-    public static UpdateIntGamerulesPacket decode(PacketBuffer buffer) {
+    public static UpdateIntGamerulesPacket decode(FriendlyByteBuf buffer) {
         TreeMap<Integer, Integer> intRules = new TreeMap<>();
         int entrySize = buffer.readInt();
 
@@ -33,7 +33,7 @@ public class UpdateIntGamerulesPacket extends PlayToClientPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         Set<Map.Entry<Integer, Integer>> entrySet = intRules.entrySet();
 
         buffer.writeInt(entrySet.size());

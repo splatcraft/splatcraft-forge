@@ -1,28 +1,28 @@
 package net.splatcraft.forge.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
@@ -32,10 +32,10 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.CommonUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class RemotePedestalBlock extends Block implements IColoredBlock
+public class RemotePedestalBlock extends Block implements IColoredBlock, EntityBlock
 {
 
-    private static final VoxelShape SHAPE = VoxelShapes.or(
+    private static final VoxelShape SHAPE = Shapes.or(
       box(3, 0, 3, 13, 2, 13),
       box(4, 2, 4, 12, 3, 12),
       box(5, 3, 5, 11, 11, 11),
@@ -46,47 +46,47 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
 
     public RemotePedestalBlock()
     {
-        super(Properties.of(Material.METAL).strength(2.0f).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops());
+        super(Properties.of(Material.METAL).strength(2.0f).requiresCorrectToolForDrops());
         SplatcraftBlocks.inkColoredBlocks.add(this);
         registerDefaultState(defaultBlockState().setValue(POWERED, false));
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, BlockGetter levelIn, BlockPos pos, CollisionContext context)
     {
         return SHAPE;
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader level, BlockPos pos, PlayerEntity player)
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player)
     {
-        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, level, pos, player), getColor((World) level, pos)), true);
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getCloneItemStack(state, target, level, pos, player), getColor((Level) level, pos)), true);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> container) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> container) {
         container.add(POWERED);
     }
-
+    
     @Override
-    public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace)
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult rayTrace)
     {
 
         if(level.getBlockEntity(pos) instanceof RemotePedestalTileEntity)
         {
             RemotePedestalTileEntity te = (RemotePedestalTileEntity) level.getBlockEntity(pos);
-            if(te.isEmpty() && player.getItemInHand(hand).getItem().is(SplatcraftTags.Items.REMOTES))
+            if(te.isEmpty() && player.getItemInHand(hand).is(SplatcraftTags.Items.REMOTES))
             {
                 te.setItem(0, player.getItemInHand(hand).copy());
                 player.getItemInHand(hand).setCount(0);
-                return ActionResultType.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
             else if(!te.isEmpty())
             {
                 ItemStack remote = te.removeItemNoUpdate(0);
                 if(!player.addItem(remote))
                     CommonUtils.spawnItem(level, pos.above(), remote);
-                return ActionResultType.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
 
@@ -95,7 +95,7 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
 
 
     @Override
-    public void neighborChanged(BlockState state, World levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving)
+    public void neighborChanged(BlockState state, Level levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving)
     {
         boolean isPowered = levelIn.hasNeighborSignal(pos);
 
@@ -115,22 +115,22 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public void onPlace(BlockState p_220082_1_, World level, BlockPos pos, BlockState p_220082_4_, boolean p_220082_5_)
+    public void onPlace(BlockState p_220082_1_, Level level, BlockPos pos, BlockState p_220082_4_, boolean p_220082_5_)
     {
         super.onPlace(p_220082_1_, level, pos, p_220082_4_, p_220082_5_);
         updateColor(level, pos, pos.below());
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor levelIn, BlockPos currentPos, BlockPos facingPos)
     {
 
-        if(facing.equals(Direction.DOWN) && levelIn instanceof World)
-            updateColor((World) levelIn, currentPos, facingPos);
+        if(facing.equals(Direction.DOWN) && levelIn instanceof Level)
+            updateColor((Level) levelIn, currentPos, facingPos);
         return stateIn;
     }
 
-    public void updateColor(World levelIn, BlockPos currentPos, BlockPos facingPos)
+    public void updateColor(Level levelIn, BlockPos currentPos, BlockPos facingPos)
     {
         if(levelIn.getBlockState(facingPos).getBlock() instanceof InkwellBlock)
             setColor(levelIn, currentPos, ((InkwellBlock) levelIn.getBlockState(facingPos).getBlock()).getColor(levelIn, facingPos));
@@ -142,7 +142,7 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, World level, BlockPos pos)
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos)
     {
         if(state.getValue(POWERED) && level.getBlockEntity(pos) instanceof RemotePedestalTileEntity)
             return ((RemotePedestalTileEntity) level.getBlockEntity(pos)).getSignal();
@@ -151,21 +151,9 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, IBlockReader level, BlockPos pos, @Nullable Direction side) {
+    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction side) {
         return true;
     }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader level) {
-        return SplatcraftTileEntities.remotePedestalTileEntity.create();
-    }
-
 
     @Override
     public boolean canClimb() {
@@ -183,7 +171,7 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean canRemoteColorChange(World level, BlockPos pos, int color, int newColor)
+    public boolean canRemoteColorChange(Level level, BlockPos pos, int color, int newColor)
     {
         RemotePedestalTileEntity te = (RemotePedestalTileEntity) level.getBlockEntity(pos);
         if(!te.isEmpty() && te.getItem(0).getItem() instanceof IColoredItem)
@@ -192,7 +180,7 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean remoteColorChange(World level, BlockPos pos, int newColor)
+    public boolean remoteColorChange(Level level, BlockPos pos, int newColor)
     {
         if(level.getBlockEntity(pos) instanceof RemotePedestalTileEntity)
         {
@@ -213,7 +201,7 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean setColor(World level, BlockPos pos, int color)
+    public boolean setColor(Level level, BlockPos pos, int color)
     {
         if (!(level.getBlockEntity(pos) instanceof RemotePedestalTileEntity))
             return false;
@@ -225,23 +213,28 @@ public class RemotePedestalBlock extends Block implements IColoredBlock
     }
 
     @Override
-    public boolean remoteInkClear(World level, BlockPos pos) {
+    public boolean remoteInkClear(Level level, BlockPos pos) {
         return false;
     }
 
     @Override
-    public void onRemove(BlockState state, World levelIn, BlockPos pos, BlockState newState, boolean isMoving)
+    public void onRemove(BlockState state, Level levelIn, BlockPos pos, BlockState newState, boolean isMoving)
     {
         if (!state.is(newState.getBlock()))
         {
-            TileEntity tileentity = levelIn.getBlockEntity(pos);
-            if (tileentity instanceof RemotePedestalTileEntity)
+            if (levelIn.getBlockEntity(pos) instanceof RemotePedestalTileEntity pedestal)
             {
-                InventoryHelper.dropContents(levelIn, pos, (RemotePedestalTileEntity) tileentity);
+                Containers.dropContents(levelIn, pos, pedestal);
                 levelIn.updateNeighbourForOutputSignal(pos, this);
             }
 
             super.onRemove(state, levelIn, pos, newState, isMoving);
         }
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return SplatcraftTileEntities.remotePedestalTileEntity.get().create(pos, state);
     }
 }

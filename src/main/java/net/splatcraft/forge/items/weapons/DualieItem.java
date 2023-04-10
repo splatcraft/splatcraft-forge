@@ -1,17 +1,20 @@
 package net.splatcraft.forge.items.weapons;
 
 import com.google.common.collect.Lists;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
@@ -19,12 +22,7 @@ import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.DodgeRollPacket;
 import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.ClientUtils;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.InkExplosion;
-import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponTooltip;
+import net.splatcraft.forge.util.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -39,11 +37,20 @@ public class DualieItem extends WeaponBaseItem
     public WeaponSettings settings;
     public int offhandFiringOffset;
 
-    public DualieItem(WeaponSettings settings) {
+    public static RegistryObject<DualieItem> create(DeferredRegister<Item> registry, WeaponSettings settings)
+    {
+        return registry.register(settings.name, () -> new DualieItem(settings));
+    }
+
+    public static RegistryObject<DualieItem> create(DeferredRegister<Item> registry, RegistryObject<DualieItem> parent, String name)
+    {
+        return registry.register(name, () -> new DualieItem(parent.get().settings));
+    }
+
+    protected DualieItem(WeaponSettings settings) {
         super(settings);
 
         this.settings = settings;
-        setRegistryName(this.settings.name);
 
         offhandFiringOffset = settings.firingSpeed / 2;
         addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / 1.2f * 100)));
@@ -69,7 +76,7 @@ public class DualieItem extends WeaponBaseItem
         return rollCount >= maxRolls - 1 ? dualie.settings.lastRollCooldown : dualie.settings.rollCooldown;
     }
 
-    public float performRoll(PlayerEntity player, ItemStack mainDualie, ItemStack offhandDualie) {
+    public float performRoll(Player player, ItemStack mainDualie, ItemStack offhandDualie) {
         int rollCount = getRollString(mainDualie);
         int maxRolls = 0;
         ItemStack activeDualie;
@@ -92,9 +99,9 @@ public class DualieItem extends WeaponBaseItem
         }
 
         if (reduceInk(player, this, getInkForRoll(activeDualie), settings.rollInkRecoveryCooldown, !player.level.isClientSide)) {
-            PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(activeDualie, getRollCooldown(activeDualie, maxRolls, rollCount), player.inventory.selected, player.getUsedItemHand(), false, true, false, player.isOnGround()));
+            PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(activeDualie, getRollCooldown(activeDualie, maxRolls, rollCount), player.getInventory().selected, player.getUsedItemHand(), false, true, false, player.isOnGround()));
             if (!player.level.isClientSide) {
-                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.dualieDodge, SoundCategory.PLAYERS, 0.7F, ((player.level.random.nextFloat() - player.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.dualieDodge, SoundSource.PLAYERS, 0.7F, ((player.level.random.nextFloat() - player.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 InkExplosion.createInkExplosion(player.level, player, player.blockPosition(), 1.2f, 0, 0, false, ColorUtils.getInkColor(activeDualie), InkBlockUtils.getInkType(player), activeDualie);
             }
             setRollString(mainDualie, rollCount + 1);
@@ -136,9 +143,9 @@ public class DualieItem extends WeaponBaseItem
         return stack;
     }
 
-    public IItemPropertyGetter getIsLeft()
+    public ClampedItemPropertyFunction getIsLeft()
     {
-        return (stack, level, entity) ->
+        return (stack, level, entity, seed) ->
         {
             if (entity == null)
             {
@@ -147,7 +154,7 @@ public class DualieItem extends WeaponBaseItem
             {
                 entity.getMainArm();
             }
-            boolean mainLeft = entity.getMainArm().equals(HandSide.LEFT);
+            boolean mainLeft = entity.getMainArm().equals(HumanoidArm.LEFT);
             return mainLeft && entity.getMainHandItem().equals(stack) || !mainLeft && entity.getOffhandItem().equals(stack) ? 1 : 0;
         };
     }
@@ -165,24 +172,24 @@ public class DualieItem extends WeaponBaseItem
     }
 
     @Override
-    public @NotNull ITextComponent getName(@NotNull ItemStack stack)
+    public Component getName(@NotNull ItemStack stack)
     {
         return super.getName(stack);
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int itemSlot, boolean isSelected)
     {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
-        CompoundNBT nbt = stack.getOrCreateTag();
+        CompoundTag nbt = stack.getOrCreateTag();
 
         nbt.putBoolean("IsPlural", false);
         if (entity instanceof LivingEntity)
         {
-            Hand hand = ((LivingEntity) entity).getItemInHand(Hand.MAIN_HAND).equals(stack) ? Hand.MAIN_HAND : Hand.OFF_HAND;
+            InteractionHand hand = ((LivingEntity) entity).getItemInHand(InteractionHand.MAIN_HAND).equals(stack) ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
 
-            if (((LivingEntity) entity).getItemInHand(hand).equals(stack) && ((LivingEntity) entity).getItemInHand(Hand.values()[(hand.ordinal() + 1) % Hand.values().length]).getItem().equals(stack.getItem()))
+            if (((LivingEntity) entity).getItemInHand(hand).equals(stack) && ((LivingEntity) entity).getItemInHand(InteractionHand.values()[(hand.ordinal() + 1) % InteractionHand.values().length]).getItem().equals(stack.getItem()))
             {
                 nbt.putBoolean("IsPlural", true);
             }
@@ -199,17 +206,17 @@ public class DualieItem extends WeaponBaseItem
     }
 
     @Override
-    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
+    public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft)
     {
         ItemStack offhandDualie = ItemStack.EMPTY;
-        if (entity.getUsedItemHand().equals(Hand.MAIN_HAND) && entity.getMainHandItem().equals(stack) && entity.getOffhandItem().getItem() instanceof DualieItem)
+        if (entity.getUsedItemHand().equals(InteractionHand.MAIN_HAND) && entity.getMainHandItem().equals(stack) && entity.getOffhandItem().getItem() instanceof DualieItem)
         {
             offhandDualie = entity.getOffhandItem();
         }
 
         if (level.isClientSide)
         {
-            if (entity == ClientUtils.getClientPlayer() && ClientUtils.canPerformRoll((PlayerEntity) entity))
+            if (entity == ClientUtils.getClientPlayer() && ClientUtils.canPerformRoll((Player) entity))
             {
                 ItemStack activeDualie;
                 int rollCount = getRollString(stack);
@@ -231,10 +238,10 @@ public class DualieItem extends WeaponBaseItem
                 }
 
                 if (enoughInk(entity, this, getInkForRoll(activeDualie), 0, false)) {
-                    entity.moveRelative(performRoll((PlayerEntity) entity, stack, offhandDualie), ClientUtils.getDodgeRollVector((PlayerEntity) entity));
+                    entity.moveRelative(performRoll((Player) entity, stack, offhandDualie), ClientUtils.getDodgeRollVector((Player) entity));
                     entity.setDeltaMovement(entity.getDeltaMovement().x(), 0.05, entity.getDeltaMovement().z());
                 }
-                SplatcraftPacketHandler.sendToServer(new DodgeRollPacket((PlayerEntity) entity, stack, offhandDualie));
+                SplatcraftPacketHandler.sendToServer(new DodgeRollPacket((Player) entity, stack, offhandDualie));
             }
         } else
         {
@@ -264,15 +271,15 @@ public class DualieItem extends WeaponBaseItem
         }
     }
 
-    protected void fireDualie(World level, LivingEntity entity, ItemStack stack, int timeLeft, boolean onRollCooldown)
+    protected void fireDualie(Level level, LivingEntity entity, ItemStack stack, int timeLeft, boolean onRollCooldown)
     {
         if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % (onRollCooldown ? 2 : settings.firingSpeed) == 0) {
             if (reduceInk(entity, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
                 InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.projectileSize, settings).setShooterTrail();
                 proj.isOnRollCooldown = onRollCooldown;
-                proj.shootFromRotation(entity, entity.xRot, entity.yRot, 0.0f, settings.projectileSpeed, entity instanceof PlayerEntity && PlayerCooldown.hasPlayerCooldown((PlayerEntity) entity) ? settings.rollInaccuracy : (entity.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy));
+                proj.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0f, settings.projectileSpeed, entity instanceof Player && PlayerCooldown.hasPlayerCooldown((Player) entity) ? settings.rollInaccuracy : (entity.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy));
                 level.addFreshEntity(proj);
-                level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.dualieShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+                level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.dualieShot, SoundSource.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }
         }
     }

@@ -4,10 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.core.BlockPos;
 import net.splatcraft.forge.commands.arguments.InkColorArgument;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
@@ -16,7 +16,7 @@ import net.splatcraft.forge.items.remotes.RemoteItem;
 
 public class ReplaceColorCommand
 {
-    public static void register(CommandDispatcher<CommandSource> dispatcher)
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
     {
         dispatcher.register(Commands.literal("replacecolor").requires(commandSource -> commandSource.hasPermission(2))
                 .then(Commands.argument("from", BlockPosArgument.blockPos()).then(Commands.argument("to", BlockPosArgument.blockPos())
@@ -38,7 +38,7 @@ public class ReplaceColorCommand
         );
     }
 
-    public static int executeStage(CommandContext<CommandSource> context, int mode) throws CommandSyntaxException
+    public static int executeStage(CommandContext<CommandSourceStack> context, int mode) throws CommandSyntaxException
     {
         String stageId = StringArgumentType.getString(context, "stage");
         Stage stage = SaveInfoCapability.get(context.getSource().getServer()).getStages().get(stageId);
@@ -53,7 +53,7 @@ public class ReplaceColorCommand
         return execute(context.getSource(), stage.cornerA, stage.cornerB, InkColorArgument.getInkColor(context, "color"), InkColorArgument.getInkColor(context, "affectedColor"), mode, stageId, "");
     }
 
-    public static int executeStageForTeam(CommandContext<CommandSource> context, int mode) throws CommandSyntaxException
+    public static int executeStageForTeam(CommandContext<CommandSourceStack> context, int mode) throws CommandSyntaxException
     {
         String stageId = StringArgumentType.getString(context, "stage");
         Stage stage = SaveInfoCapability.get(context.getSource().getServer()).getStages().get(stageId);
@@ -76,16 +76,16 @@ public class ReplaceColorCommand
         return execute(context.getSource(), stage.cornerA, stage.cornerB, color, teamColor, mode, stageId, team);
     }
 
-    public static int execute(CommandContext<CommandSource> context, int mode) throws CommandSyntaxException
+    public static int execute(CommandContext<CommandSourceStack> context, int mode) throws CommandSyntaxException
     {
         if (mode == 0)
         {
             return execute(context.getSource(), BlockPosArgument.getLoadedBlockPos(context, "from"), BlockPosArgument.getLoadedBlockPos(context, "to"), InkColorArgument.getInkColor(context, "color"), -1, mode, "", "");
         }
-        return execute(context.getSource(), BlockPosArgument.getOrLoadBlockPos(context, "from"), BlockPosArgument.getOrLoadBlockPos(context, "to"), InkColorArgument.getInkColor(context, "color"), InkColorArgument.getInkColor(context, "affectedColor"), mode, "", "");
+        return execute(context.getSource(), StageCommand.getOrLoadBlockPos(context, "from"), StageCommand.getOrLoadBlockPos(context, "to"), InkColorArgument.getInkColor(context, "color"), InkColorArgument.getInkColor(context, "affectedColor"), mode, "", "");
     }
 
-    public static int execute(CommandSource source, BlockPos from, BlockPos to, int color, int affectedColor, int mode, String affectedStage, String affectedTeam)
+    public static int execute(CommandSourceStack source, BlockPos from, BlockPos to, int color, int affectedColor, int mode, String affectedStage, String affectedTeam)
     {
         RemoteItem.RemoteResult result = ColorChangerItem.replaceColor(source.getLevel(), from, to, color, mode, affectedColor, affectedStage, affectedTeam);
 

@@ -1,23 +1,17 @@
 package net.splatcraft.forge.network;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.simple.SimpleChannel;
 import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.network.c2s.ChargeableReleasePacket;
-import net.splatcraft.forge.network.c2s.CraftWeaponPacket;
-import net.splatcraft.forge.network.c2s.DodgeRollPacket;
-import net.splatcraft.forge.network.c2s.PlayerSetSquidServerPacket;
-import net.splatcraft.forge.network.c2s.RequestPlayerInfoPacket;
-import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
-import net.splatcraft.forge.network.c2s.UpdateBlockColorPacket;
+import net.splatcraft.forge.network.c2s.*;
 import net.splatcraft.forge.network.s2c.*;
 
 import java.util.function.BiConsumer;
@@ -54,22 +48,22 @@ public class SplatcraftPacketHandler
         registerMessage(UpdateStageListPacket.class, UpdateStageListPacket::decode);
     }
 
-    private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, Function<PacketBuffer, MSG> decoder)
+    private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, Function<FriendlyByteBuf, MSG> decoder)
     {
         registerMessage(messageType, SplatcraftPacket::encode, decoder, SplatcraftPacket::consume);
     }
 
-    private static <MSG> void registerMessage(Class<MSG> messageType, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> messageConsumer)
+    private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, BiConsumer<MSG, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> messageConsumer)
     {
         INSTANCE.registerMessage(ID++, messageType, encoder, decoder, messageConsumer);
     }
 
-    public static <MSG> void sendToPlayer(MSG message, ServerPlayerEntity player)
+    public static <MSG> void sendToPlayer(MSG message, ServerPlayer player)
     {
         INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
 
-    public static <MSG> void sendToDim(MSG message, RegistryKey<World> level) {
+    public static <MSG> void sendToDim(MSG message, ResourceKey<Level> level) {
         INSTANCE.send(PacketDistributor.DIMENSION.with(() -> level), message);
     }
 

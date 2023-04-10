@@ -1,26 +1,22 @@
 package net.splatcraft.forge.client.particles;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.*;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
-public class SquidSoulParticle extends SpriteTexturedParticle
+public class SquidSoulParticle extends TextureSheetParticle
 {
-    private final IAnimatedSprite spriteProvider;
+    private final SpriteSet spriteProvider;
 
-    public SquidSoulParticle(ClientWorld level, double x, double y, double z, double motionX, double motionY, double motionZ, SquidSoulParticleData data, IAnimatedSprite sprite)
+    public SquidSoulParticle(ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ, SquidSoulParticleData data, SpriteSet sprite)
     {
         super(level, x, y, z, motionX, motionY, motionZ);
 
@@ -58,18 +54,18 @@ public class SquidSoulParticle extends SpriteTexturedParticle
     }
 
     @Override
-    public IParticleRenderType getRenderType()
+    public ParticleRenderType getRenderType()
     {
-        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
-    public void render(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks)
     {
-        Vector3d renderPos = renderInfo.getPosition();
-        float lvt_5_1_ = (float) (MathHelper.lerp(partialTicks, this.xo, this.x) - renderPos.x());
-        float lvt_6_1_ = (float) (MathHelper.lerp(partialTicks, this.yo, this.y) - renderPos.y());
-        float lvt_7_1_ = (float) (MathHelper.lerp(partialTicks, this.zo, this.z) - renderPos.z());
+        Vec3 renderPos = renderInfo.getPosition();
+        float lvt_5_1_ = (float) (Mth.lerp(partialTicks, this.xo, this.x) - renderPos.x());
+        float lvt_6_1_ = (float) (Mth.lerp(partialTicks, this.yo, this.y) - renderPos.y());
+        float lvt_7_1_ = (float) (Mth.lerp(partialTicks, this.zo, this.z) - renderPos.z());
         Quaternion rotation;
         if (this.roll == 0.0F)
         {
@@ -77,7 +73,7 @@ public class SquidSoulParticle extends SpriteTexturedParticle
         } else
         {
             rotation = new Quaternion(renderInfo.rotation());
-            float lvt_9_1_ = MathHelper.lerp(partialTicks, this.roll, this.oRoll);
+            float lvt_9_1_ = Mth.lerp(partialTicks, this.roll, this.oRoll);
             rotation.mul(Vector3f.ZP.rotation(lvt_9_1_));
         }
 
@@ -122,19 +118,19 @@ public class SquidSoulParticle extends SpriteTexturedParticle
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<SquidSoulParticleData>
+    public static class Factory implements ParticleProvider<SquidSoulParticleData>
     {
 
-        private final IAnimatedSprite spriteSet;
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite sprite)
+        public Factory(SpriteSet sprite)
         {
             this.spriteSet = sprite;
         }
 
         @Nullable
         @Override
-        public Particle createParticle(SquidSoulParticleData typeIn, ClientWorld levelIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+        public Particle createParticle(SquidSoulParticleData typeIn, ClientLevel levelIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
         {
             System.out.println("factory X: " + x + " Y: " + y + " Z: " + z);
             return new SquidSoulParticle(levelIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn, this.spriteSet);

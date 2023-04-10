@@ -1,19 +1,19 @@
 package net.splatcraft.forge.items.remotes;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.*;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.*;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.blocks.InkwellBlock;
 import net.splatcraft.forge.commands.InkColorCommand;
@@ -38,20 +38,20 @@ import java.util.List;
 
 public class ColorChangerItem extends RemoteItem implements IColoredItem
 {
-    public ColorChangerItem(String name)
+    public ColorChangerItem()
     {
-        super(name, new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1).rarity(Rarity.UNCOMMON), 3);
+        super(new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1).rarity(Rarity.UNCOMMON), 3);
         SplatcraftItems.inkColoredItems.add(this);
     }
 
-    public static RemoteResult replaceColor(World level, BlockPos from, BlockPos to, int color, int mode, int affectedColor, String stage, String affectedTeam)
+    public static RemoteResult replaceColor(Level level, BlockPos from, BlockPos to, int color, int mode, int affectedColor, String stage, String affectedTeam)
     {
         BlockPos blockpos2 = new BlockPos(Math.min(from.getX(), to.getX()), Math.min(to.getY(), from.getY()), Math.min(from.getZ(), to.getZ()));
         BlockPos blockpos3 = new BlockPos(Math.max(from.getX(), to.getX()), Math.max(to.getY(), from.getY()), Math.max(from.getZ(), to.getZ()));
 
         if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
         {
-            return createResult(false, new TranslationTextComponent("status.change_color.out_of_world"));
+            return createResult(false, new TranslatableComponent("status.change_color.out_of_world"));
         }
 
         /*
@@ -61,7 +61,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
             {
                 if (!level.isLoaded(new BlockPos(k, blockpos3.getY() - blockpos2.getY(), j)))
                 {
-                    return createResult(false, new TranslationTextComponent("status.change_color.out_of_world"));
+                    return createResult(false, new TranslatableComponent("status.change_color.out_of_world"));
                 }
             }
         }
@@ -76,7 +76,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
                 {
                     BlockPos pos = new BlockPos(x, y, z);
                     Block block = level.getBlockState(pos).getBlock();
-                    TileEntity tileEntity = level.getBlockEntity(pos);
+                    BlockEntity tileEntity = level.getBlockEntity(pos);
                     if (block instanceof IColoredBlock)
                     {
                         int teColor = ((IColoredBlock) block).getColor(level, pos);
@@ -100,15 +100,15 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
                 SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
         }
 
-        return createResult(true, new TranslationTextComponent("status.change_color.success", count, level.isClientSide ? ColorUtils.getFormatedColorName(color, false) : InkColorCommand.getColorName(color))).setIntResults(count, count * 15 / blockTotal);
+        return createResult(true, new TranslatableComponent("status.change_color.success", count, level.isClientSide ? ColorUtils.getFormatedColorName(color, false) : InkColorCommand.getColorName(color))).setIntResults(count, count * 15 / blockTotal);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World level, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
     {
         super.appendHoverText(stack, level, tooltip, flag);
 
-        CompoundNBT nbt = stack.getOrCreateTag();
+        CompoundTag nbt = stack.getOrCreateTag();
 
         if(nbt.contains("Team") && !nbt.getString("Team").isEmpty())
         {
@@ -116,7 +116,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
 
             if(nbt.contains("Stage") && ClientUtils.clientStages.containsKey(nbt.getString("Stage")))
                 color = ClientUtils.clientStages.get(nbt.getString("Stage")).getTeamColor(nbt.getString("Team"));
-            tooltip.add(TextComponentUtils.mergeStyles(new StringTextComponent(nbt.getString("Team")), color <= -1 ? TARGETS_STYLE : TARGETS_STYLE.withColor(Color.fromRgb(color))));
+            tooltip.add(ComponentUtils.mergeStyles(new TextComponent(nbt.getString("Team")), color <= -1 ? TARGETS_STYLE : TARGETS_STYLE.withColor(TextColor.fromRgb(color))));
         }
 
 
@@ -125,14 +125,14 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int itemSlot, boolean isSelected)
     {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
-        if (entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity)
+        if (entity instanceof Player && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((Player) entity)
                 && PlayerInfoCapability.hasCapability((LivingEntity) entity))
         {
-            ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor((PlayerEntity) entity));
+            ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor((Player) entity));
         }
     }
 
@@ -156,7 +156,7 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
     }
 
     @Override
-    public RemoteResult onRemoteUse(World usedOnWorld, BlockPos from, BlockPos to, ItemStack stack, int colorIn, int mode, Collection<ServerPlayerEntity> targets)
+    public RemoteResult onRemoteUse(Level usedOnWorld, BlockPos from, BlockPos to, ItemStack stack, int colorIn, int mode, Collection<ServerPlayer> targets)
     {
         String stage = "";
         String team = "";

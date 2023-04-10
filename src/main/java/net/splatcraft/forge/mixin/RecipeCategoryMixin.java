@@ -1,9 +1,9 @@
 package net.splatcraft.forge.mixin;
 
-import net.minecraft.client.util.ClientRecipeBook;
-import net.minecraft.client.util.RecipeBookCategories;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.client.ClientRecipeBook;
+import net.minecraft.client.RecipeBookCategories;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.crafting.SplatcraftRecipeTypes;
@@ -17,9 +17,9 @@ public class RecipeCategoryMixin
 {
 	@OnlyIn(Dist.CLIENT)
 	@Inject(method = "getCategory", at = @At("HEAD"), cancellable = true)
-	private static void getCategory(IRecipe<?> itemstack, CallbackInfoReturnable<RecipeBookCategories> cir)
+	private static void getCategory(Recipe<?> itemstack, CallbackInfoReturnable<RecipeBookCategories> cir)
 	{
-		IRecipeType<?> type = itemstack.getType();
+		RecipeType<?> type = itemstack.getType();
 		if(type == SplatcraftRecipeTypes.INK_VAT_COLOR_CRAFTING_TYPE || type == SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE
 			|| type == SplatcraftRecipeTypes.WEAPON_STATION_TYPE)
 		{

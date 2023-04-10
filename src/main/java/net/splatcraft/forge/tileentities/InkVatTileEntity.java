@@ -1,23 +1,24 @@
 package net.splatcraft.forge.tileentities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.LockableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.splatcraft.forge.blocks.InkVatBlock;
@@ -29,7 +30,7 @@ import net.splatcraft.forge.tileentities.container.InkVatContainer;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class InkVatTileEntity extends LockableTileEntity implements ISidedInventory, ITickableTileEntity
+public class InkVatTileEntity extends BaseContainerBlockEntity implements WorldlyContainer
 {
     private static final int[] INPUT_SLOTS = new int[]{0, 1, 2, 3};
     private static final int[] OUTPUT_SLOTS = new int[]{4};
@@ -40,9 +41,9 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     private int color = -1;
     private int recipeEntries = 0;
 
-    public InkVatTileEntity()
+    public InkVatTileEntity(BlockPos pos, BlockState state)
     {
-        super(SplatcraftTileEntities.inkVatTileEntity);
+        super(SplatcraftTileEntities.inkVatTileEntity.get(), pos, state);
     }
 
     @Override
@@ -89,7 +90,7 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
             return ItemStack.EMPTY;
         }
 
-        ItemStack itemstack = ItemStackHelper.removeItem(inventory, index, count);
+        ItemStack itemstack = ContainerHelper.removeItem(inventory, index, count);
         if (!itemstack.isEmpty())
         {
             this.setChanged();
@@ -114,7 +115,7 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     {
         if (hasRcipe())
         {
-            setItem(4, ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkwell, Math.min(SplatcraftItems.inkwell.getMaxStackSize(),
+            setItem(4, ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkwell.get(), Math.min(SplatcraftItems.inkwell.get().getMaxStackSize(),
                     Math.min(Math.min(inventory.get(0).getCount(), inventory.get(1).getCount()), inventory.get(2).getCount()))), getColor()), true));
         } else setItem(4, ItemStack.EMPTY);
     }
@@ -126,18 +127,15 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
 
     public boolean hasOmniFilter()
     {
-        Item filter = inventory.get(3).getItem();
-        if (filter instanceof FilterItem)
-        {
-            return ((FilterItem) filter).isOmni();
-        }
+        if (inventory.get(3).getItem() instanceof FilterItem filter)
+            return filter.isOmni();
         return false;
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int index)
     {
-        return ItemStackHelper.takeItem(inventory, index);
+        return ContainerHelper.takeItem(inventory, index);
     }
 
     @Override
@@ -153,7 +151,7 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player)
+    public boolean stillValid(Player player)
     {
         if (this.level.getBlockEntity(this.getBlockPos()) != this)
         {
@@ -176,11 +174,11 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
             case 0:
                 return ItemStack.isSame(stack, new ItemStack(Items.INK_SAC));
             case 1:
-                return ItemStack.isSame(stack, new ItemStack(SplatcraftItems.powerEgg));
+                return ItemStack.isSame(stack, new ItemStack(SplatcraftItems.powerEgg.get()));
             case 2:
-                return ItemStack.isSame(stack, new ItemStack(SplatcraftItems.emptyInkwell));
+                return ItemStack.isSame(stack, new ItemStack(SplatcraftItems.emptyInkwell.get()));
             case 3:
-                return SplatcraftTags.Items.FILTERS.contains(stack.getItem());
+                return stack.is(SplatcraftTags.Items.FILTERS);
         }
 
         return false;
@@ -192,67 +190,61 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt)
+    public void saveAdditional(CompoundTag nbt)
     {
         nbt.putInt("Color", color);
         nbt.putInt("Pointer", pointer);
         nbt.putInt("RecipeEntries", recipeEntries);
-        ItemStackHelper.saveAllItems(nbt, inventory);
-        return super.save(nbt);
+        ContainerHelper.saveAllItems(nbt, inventory);
+        super.saveAdditional(nbt);
     }
 
     @Override
-    protected ITextComponent getDefaultName()
+    protected Component getDefaultName()
     {
-        return new TranslationTextComponent("container.ink_vat");
+        return new TranslatableComponent("container.ink_vat");
     }
 
     @Override
-    protected Container createMenu(int id, PlayerInventory player)
+    protected AbstractContainerMenu createMenu(int id, Inventory player)
     {
         return new InkVatContainer(id, player, this, false);
     }
 
+
     //Nbt Read
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
+    public void load(CompoundTag nbt)
     {
-        super.load(state, nbt);
+        super.load(nbt);
         color = ColorUtils.getColorFromNbt(nbt);
         pointer = nbt.getInt("Pointer");
         recipeEntries = nbt.getInt("RecipeEntries");
 
         clearContent();
-        ItemStackHelper.loadAllItems(nbt, inventory);
+        ContainerHelper.loadAllItems(nbt, inventory);
     }
 
     @Override
-    public CompoundNBT getUpdateTag()
+    public CompoundTag getUpdateTag()
     {
-        return this.save(new CompoundNBT());
+        return new CompoundTag(){{saveAdditional(this);}};
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag)
-    {
-        this.load(state, tag);
-    }
-
-    @Nullable
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket()
-    {
-        return new SUpdateTileEntityPacket(getBlockPos(), 2, getUpdateTag());
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        // Will get tag from #getUpdateTag
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
     {
         if (level != null)
         {
             BlockState state = level.getBlockState(getBlockPos());
             level.sendBlockUpdated(getBlockPos(), state, state, 2);
-            handleUpdateTag(state, pkt.getTag());
+            handleUpdateTag(pkt.getTag());
         }
     }
 
@@ -279,6 +271,7 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
         this.color = color;
     }
 
+    /* TODO come up with a better way to update Ink Vat blockstate when a recipe is selected
     @Override
     public void tick()
     {
@@ -288,6 +281,7 @@ public class InkVatTileEntity extends LockableTileEntity implements ISidedInvent
             level.setBlock(getBlockPos(), getBlockState().setValue(InkVatBlock.ACTIVE, hasRcipe()), 3);
         }
     }
+    */
 
     public int getRecipeEntries()
     {

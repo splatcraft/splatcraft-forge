@@ -2,22 +2,22 @@ package net.splatcraft.forge.crafting;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<WeaponWorkbenchRecipe>
+public class WeaponWorkbenchRecipe implements Recipe<Container>, Comparable<WeaponWorkbenchRecipe>
 {
     protected final ResourceLocation id;
     protected final ResourceLocation tab;
@@ -33,13 +33,13 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
     }
 
     @Override
-    public boolean matches(IInventory inv, World levelIn)
+    public boolean matches(Container inv, Level levelIn)
     {
         return true;
     }
 
     @Override
-    public ItemStack assemble(IInventory inv)
+    public ItemStack assemble(Container inv)
     {
         return ItemStack.EMPTY;
     }
@@ -63,13 +63,13 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer()
+    public RecipeSerializer<?> getSerializer()
     {
         return SplatcraftRecipeTypes.WEAPON_STATION;
     }
 
     @Override
-    public IRecipeType<?> getType()
+    public RecipeType<?> getType()
     {
         return SplatcraftRecipeTypes.WEAPON_STATION_TYPE;
     }
@@ -80,7 +80,7 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
         return pos - o.pos;
     }
 
-    public WeaponWorkbenchTab getTab(World level)
+    public WeaponWorkbenchTab getTab(Level level)
     {
         return (WeaponWorkbenchTab) level.getRecipeManager().byKey(tab).get();
     }
@@ -95,7 +95,7 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
         return subRecipes.size();
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<WeaponWorkbenchRecipe>
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<WeaponWorkbenchRecipe>
     {
 
         public Serializer(String name)
@@ -116,12 +116,12 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
                 recipes.add(WeaponWorkbenchSubtypeRecipe.fromJson(id, arr.get(i).getAsJsonObject()));
             }
 
-            return new WeaponWorkbenchRecipe(recipeId, new ResourceLocation(JSONUtils.getAsString(json, "tab")), json.has("pos") ? JSONUtils.getAsInt(json, "pos") : Integer.MAX_VALUE, recipes);
+            return new WeaponWorkbenchRecipe(recipeId, new ResourceLocation(GsonHelper.getAsString(json, "tab")), json.has("pos") ? GsonHelper.getAsInt(json, "pos") : Integer.MAX_VALUE, recipes);
         }
 
         @Nullable
         @Override
-        public WeaponWorkbenchRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer)
+        public WeaponWorkbenchRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
         {
             List<WeaponWorkbenchSubtypeRecipe> s = new ArrayList<>();
             int count = buffer.readInt();
@@ -137,7 +137,7 @@ public class WeaponWorkbenchRecipe implements IRecipe<IInventory>, Comparable<We
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, WeaponWorkbenchRecipe recipe)
+        public void toNetwork(FriendlyByteBuf buffer, WeaponWorkbenchRecipe recipe)
         {
             buffer.writeInt(recipe.subRecipes.size());
 

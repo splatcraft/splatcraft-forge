@@ -1,8 +1,7 @@
 package net.splatcraft.forge;
 
-import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -10,23 +9,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 import net.splatcraft.forge.client.handlers.ClientSetupHandler;
 import net.splatcraft.forge.client.handlers.SplatcraftKeyHandler;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftCapabilities;
-import net.splatcraft.forge.registries.SplatcraftCommands;
-import net.splatcraft.forge.registries.SplatcraftEntities;
-import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftStats;
-import net.splatcraft.forge.registries.SplatcraftTileEntities;
+import net.splatcraft.forge.registries.*;
 import net.splatcraft.forge.world.gen.SplatcraftOreGen;
 
 import java.util.Objects;
@@ -40,12 +31,16 @@ public class Splatcraft {
     public static String version;
 
     public Splatcraft() {
-        for (ModInfo m : ModList.get().getMods()) { // Forge is stupid
-            if (Objects.equals(m.getModId(), MODID) && m.getVersion() != null) {
+        for (IModInfo m : ModList.get().getMods()) { // Forge is stupid
+            if (Objects.equals(m.getModId(), MODID) && m.getVersion() != null)
+            {
                 version = m.getVersion().toString();
                 break;
             }
         }
+
+        SplatcraftRegisties.register();
+
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SplatcraftConfig.clientConfig);
         SplatcraftConfig.loadConfig(SplatcraftConfig.clientConfig, FMLPaths.CONFIGDIR.get().resolve(Splatcraft.MODID + "-client.toml").toString());
 
@@ -58,15 +53,9 @@ public class Splatcraft {
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-        SplatcraftCapabilities.registerCapabilities();
         SplatcraftPacketHandler.registerMessages();
 
-        event.enqueueWork(() ->
-        {
-            SplatcraftEntities.setEntityAttributes();
-            SplatcraftGameRules.registerGamerules();
-        });
-
+        SplatcraftGameRules.registerGamerules();
         SplatcraftTags.register();
         SplatcraftStats.register();
         ScoreboardHandler.register();
@@ -76,7 +65,7 @@ public class Splatcraft {
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
-        SplatcraftEntities.bindRenderers();
+        //SplatcraftEntities.bindRenderers();
         SplatcraftKeyHandler.registerKeys();
         SplatcraftBlocks.setRenderLayers();
         SplatcraftTileEntities.bindTESR();
@@ -85,24 +74,15 @@ public class Splatcraft {
         event.enqueueWork(() ->
         {
             SplatcraftItems.registerModelProperties();
-            SplatcraftItems.registerArmorModels();
+            //SplatcraftItems.registerArmorModels();
             ClientSetupHandler.bindScreenContainers();
         });
     }
 
     @SubscribeEvent
-    public void onServerStarted(FMLServerStartedEvent event)
+    public void onServerStarted(ServerStartedEvent event)
     {
         SplatcraftGameRules.booleanRules.replaceAll((k, v) -> event.getServer().getGameRules().getBoolean(SplatcraftGameRules.getRuleFromIndex(k)));
         SplatcraftGameRules.intRules.replaceAll((k, v) -> event.getServer().getGameRules().getInt(SplatcraftGameRules.getRuleFromIndex(k)));
-    }
-
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents
-    {
-        @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent)
-        {
-        }
     }
 }

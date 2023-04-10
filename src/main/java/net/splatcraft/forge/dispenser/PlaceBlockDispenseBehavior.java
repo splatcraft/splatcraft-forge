@@ -1,19 +1,19 @@
 package net.splatcraft.forge.dispenser;
 
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.dispenser.OptionalDispenseBehavior;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.DirectionalPlaceContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockSource;
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.DirectionalPlaceContext;
+import net.minecraft.world.level.block.DispenserBlock;
 
-public class PlaceBlockDispenseBehavior extends OptionalDispenseBehavior
+public class PlaceBlockDispenseBehavior extends OptionalDispenseItemBehavior
 {
     @Override
-    protected ItemStack execute(IBlockSource source, ItemStack stack)
+    protected ItemStack execute(BlockSource source, ItemStack stack)
     {
         this.setSuccess(false);
         Item item = stack.getItem();

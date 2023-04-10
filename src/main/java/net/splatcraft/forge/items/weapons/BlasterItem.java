@@ -1,11 +1,14 @@
 package net.splatcraft.forge.items.weapons;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.CooldownTracker;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemCooldowns;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftSounds;
@@ -13,8 +16,19 @@ import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponTooltip;
 
-public class BlasterItem extends ShooterItem {
-    public BlasterItem(WeaponSettings settings) {
+public class BlasterItem extends ShooterItem
+{
+    public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, WeaponSettings settings)
+    {
+        return registry.register(settings.name, () -> new BlasterItem(settings));
+    }
+
+    public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, RegistryObject<BlasterItem> parent, String name)
+    {
+        return registry.register(name, () -> new BlasterItem(parent.get().settings));
+    }
+
+    protected BlasterItem(WeaponSettings settings) {
         super(settings);
 
         addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / settings.projectileLifespan * 100)));
@@ -23,10 +37,10 @@ public class BlasterItem extends ShooterItem {
     }
 
     @Override
-    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft) {
-        CooldownTracker cooldownTracker = ((PlayerEntity) entity).getCooldowns();
+    public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft) {
+        ItemCooldowns cooldownTracker = ((Player) entity).getCooldowns();
         if (!cooldownTracker.isOnCooldown(this)) {
-            PlayerCooldown.setPlayerCooldown((PlayerEntity) entity, new PlayerCooldown(stack, settings.startupTicks, ((PlayerEntity) entity).inventory.selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
+            PlayerCooldown.setPlayerCooldown((Player) entity, new PlayerCooldown(stack, settings.startupTicks, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
             if (!level.isClientSide) {
                 cooldownTracker.addCooldown(this, settings.firingSpeed);
             }
@@ -34,14 +48,14 @@ public class BlasterItem extends ShooterItem {
     }
 
     @Override
-    public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown) {
+    public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown) {
         if (!level.isClientSide) {
             if (reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
                 InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize, settings).setShooterTrail();
                 proj.setBlasterStats(settings.projectileLifespan);
-                proj.shootFromRotation(player, player.xRot, player.yRot, 0.0f, settings.projectileSpeed, player.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy);
+                proj.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0f, settings.projectileSpeed, player.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy);
                 level.addFreshEntity(proj);
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.blasterShot, SoundCategory.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.blasterShot, SoundSource.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }
         }
     }

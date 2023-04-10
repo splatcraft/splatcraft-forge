@@ -1,13 +1,12 @@
 package net.splatcraft.forge.entities.subs;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
@@ -21,34 +20,33 @@ public class BurstBombEntity extends AbstractSubWeaponEntity
     public static final float DIRECT_DAMAGE = 12;
     public static final float EXPLOSION_SIZE = 2;
 
-    public BurstBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, World level)
+    public BurstBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, Level level)
     {
         super(type, level);
     }
 
     @Override
-    protected void onHitEntity(EntityRayTraceResult result)
+    protected void onHitEntity(EntityHitResult result)
     {
         super.onHitEntity(result);
 
-        Entity target = result.getEntity();
-        if (target instanceof LivingEntity)
-            InkDamageUtils.doDamage(level, (LivingEntity) target, DIRECT_DAMAGE, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, SPLASH_DAMAGE_TYPE, false);
+        if (result.getEntity() instanceof LivingEntity target)
+            InkDamageUtils.doDamage(level, target, DIRECT_DAMAGE, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, SPLASH_DAMAGE_TYPE, false);
         InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), EXPLOSION_SIZE, DAMAGE, DIRECT_DAMAGE, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
 
         level.broadcastEntityEvent(this, (byte) 1);
-        level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+        level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundSource.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
         if (!level.isClientSide())
-            remove();
+            discard();
     }
 
     @Override
-    protected void onBlockHit(BlockRayTraceResult result)
+    protected void onBlockHit(BlockHitResult result)
     {
         InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), EXPLOSION_SIZE, DAMAGE, DIRECT_DAMAGE, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
         level.broadcastEntityEvent(this, (byte) 1);
-        level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundCategory.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-        remove();
+        level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundSource.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+        discard();
     }
 
 
@@ -64,7 +62,7 @@ public class BurstBombEntity extends AbstractSubWeaponEntity
     @Override
     protected Item getDefaultItem()
     {
-        return SplatcraftItems.burstBomb;
+        return SplatcraftItems.burstBomb.get();
     }
 
 }

@@ -1,27 +1,26 @@
 package net.splatcraft.forge.crafting;
 
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.splatcraft.forge.blocks.InkwellBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.ColorUtils;
-import net.minecraft.block.Block;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
-public class SingleUseSubRecipe extends SpecialRecipe
+public class SingleUseSubRecipe extends CustomRecipe
 {
     public SingleUseSubRecipe(ResourceLocation idIn) {
         super(idIn);
     }
 
     @Override
-    public boolean matches(CraftingInventory inv, World levelIn) {
+    public boolean matches(CraftingContainer inv, Level levelIn) {
         int sub = 0;
         int inkwell = 0;
         int sardinium = 0;
@@ -36,7 +35,7 @@ public class SingleUseSubRecipe extends SpecialRecipe
                     ++sardinium;
                 else
                 {
-                    if (!itemstack.getItem().is(SplatcraftTags.Items.SUB_WEAPONS))
+                    if (!itemstack.is(SplatcraftTags.Items.SUB_WEAPONS))
                         return false;
                     ++sub;
                 }
@@ -50,7 +49,7 @@ public class SingleUseSubRecipe extends SpecialRecipe
     }
 
     @Override
-    public ItemStack assemble(CraftingInventory inv)
+    public ItemStack assemble(CraftingContainer inv)
     {
 
         ItemStack itemstack = ItemStack.EMPTY;
@@ -58,11 +57,11 @@ public class SingleUseSubRecipe extends SpecialRecipe
 
         for(int i = 0; i < inv.getContainerSize(); ++i) {
             ItemStack itemstack1 = inv.getItem(i);
-            if (!itemstack1.isEmpty()) {
-                Item item = itemstack1.getItem();
-                if (item.is(SplatcraftTags.Items.SUB_WEAPONS))
+            if (!itemstack1.isEmpty())
+            {
+                if (itemstack1.is(SplatcraftTags.Items.SUB_WEAPONS))
                     itemstack = itemstack1;
-                else if(Block.byItem(item) instanceof InkwellBlock)
+                else if(Block.byItem(itemstack1.getItem()) instanceof InkwellBlock)
                     color = ColorUtils.getInkColor(itemstack1);
             }
         }
@@ -75,17 +74,16 @@ public class SingleUseSubRecipe extends SpecialRecipe
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
     {
         NonNullList<ItemStack> restult = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
         for(int i = 0; i < inv.getContainerSize(); ++i)
         {
             ItemStack stack = inv.getItem(i);
-            Item item = stack.getItem();
-            if(Block.byItem(item) instanceof InkwellBlock)
-                restult.set(i, new ItemStack(SplatcraftItems.emptyInkwell));
-            else if(item.is(SplatcraftTags.Items.SUB_WEAPONS))
+            if(Block.byItem(stack.getItem()) instanceof InkwellBlock)
+                restult.set(i, new ItemStack(SplatcraftItems.emptyInkwell.get()));
+            else if(stack.is(SplatcraftTags.Items.SUB_WEAPONS))
                 restult.set(i, stack.copy());
         }
 
@@ -98,7 +96,7 @@ public class SingleUseSubRecipe extends SpecialRecipe
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return SplatcraftRecipeTypes.SINGLE_USE_SUB;
     }
 }

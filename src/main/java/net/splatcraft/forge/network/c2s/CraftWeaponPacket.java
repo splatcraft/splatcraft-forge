@@ -1,17 +1,18 @@
 package net.splatcraft.forge.network.c2s;
 
-import java.util.Optional;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.splatcraft.forge.crafting.SplatcraftRecipeTypes;
 import net.splatcraft.forge.crafting.StackedIngredient;
 import net.splatcraft.forge.crafting.WeaponWorkbenchRecipe;
 import net.splatcraft.forge.crafting.WeaponWorkbenchSubtypeRecipe;
 import net.splatcraft.forge.registries.SplatcraftStats;
+
+import java.util.Optional;
 
 public class CraftWeaponPacket extends PlayToServerPacket
 {
@@ -24,22 +25,22 @@ public class CraftWeaponPacket extends PlayToServerPacket
         this.subtype = subtype;
     }
 
-    public static CraftWeaponPacket decode(PacketBuffer buffer)
+    public static CraftWeaponPacket decode(FriendlyByteBuf buffer)
     {
         return new CraftWeaponPacket(buffer.readResourceLocation(), buffer.readInt());
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeResourceLocation(recipeID);
         buffer.writeInt(subtype);
     }
 
     @Override
-    public void execute(PlayerEntity player)
+    public void execute(Player player)
     {
-        Optional<? extends IRecipe<?>> recipeOptional = player.level.getRecipeManager().byKey(recipeID);
+        Optional<? extends Recipe<?>> recipeOptional = player.level.getRecipeManager().byKey(recipeID);
 
         if (recipeOptional.isPresent() && recipeOptional.get() instanceof WeaponWorkbenchRecipe)
         {

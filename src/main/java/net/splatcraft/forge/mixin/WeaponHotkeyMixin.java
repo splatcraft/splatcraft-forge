@@ -1,9 +1,9 @@
 package net.splatcraft.forge.mixin;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.PlayerController;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Hand;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.splatcraft.forge.client.handlers.SplatcraftKeyHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class WeaponHotkeyMixin
 {
 
-	@Mixin(PlayerController.class)
+	@Mixin(MultiPlayerGameMode.class)
 	public static abstract class PlayerControllerMix
 	{
 		@Inject(method = "releaseUsingItem", at = @At("HEAD"), cancellable = true)
-		private void releaseUsingItem(PlayerEntity player, CallbackInfo callbackInfo)
+		private void releaseUsingItem(Player player, CallbackInfo callbackInfo)
 		{
-			if(SplatcraftKeyHandler.subWeaponHotkey.isDown() && player.getUsedItemHand() == Hand.OFF_HAND)
+			if(SplatcraftKeyHandler.subWeaponHotkey.isDown() && player.getUsedItemHand() == InteractionHand.OFF_HAND)
 				callbackInfo.cancel();
 		}
 	}
@@ -32,7 +32,7 @@ public class WeaponHotkeyMixin
 		{
 			if(SplatcraftKeyHandler.subWeaponHotkey.isDown())
 			{
-				SplatcraftKeyHandler.startUsingItemInHand(Hand.OFF_HAND);
+				SplatcraftKeyHandler.startUsingItemInHand(InteractionHand.OFF_HAND);
 				ci.cancel();
 			}
 		}

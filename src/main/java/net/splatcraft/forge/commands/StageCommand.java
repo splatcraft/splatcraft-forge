@@ -7,21 +7,22 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.coordinates.Coordinates;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.splatcraft.forge.blocks.SpawnPadBlock;
 import net.splatcraft.forge.commands.arguments.InkColorArgument;
 import net.splatcraft.forge.data.Stage;
@@ -42,15 +43,15 @@ import java.util.HashMap;
 public class StageCommand
 {
 
-	private static final DynamicCommandExceptionType NO_SPAWN_PADS_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stageWarp.noSpawnPads", p_208663_0_));
-	private static final DynamicCommandExceptionType NO_PLAYERS_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stageWarp.noPlayers", p_208663_0_));
-	public static final DynamicCommandExceptionType TEAM_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stageTeam.notFound", ((Object[])p_208663_0_)[0], ((Object[])p_208663_0_)[1]));
-	public static final DynamicCommandExceptionType STAGE_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stage.notFound", p_208663_0_));
-	public static final DynamicCommandExceptionType STAGE_ALREADY_EXISTS = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stage.alreadyExists", p_208663_0_));
-	public static final DynamicCommandExceptionType SETTING_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslationTextComponent("arg.stageSetting.notFound", p_208663_0_));
+	private static final DynamicCommandExceptionType NO_SPAWN_PADS_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslatableComponent("arg.stageWarp.noSpawnPads", p_208663_0_));
+	private static final DynamicCommandExceptionType NO_PLAYERS_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslatableComponent("arg.stageWarp.noPlayers", p_208663_0_));
+	public static final DynamicCommandExceptionType TEAM_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslatableComponent("arg.stageTeam.notFound", ((Object[])p_208663_0_)[0], ((Object[])p_208663_0_)[1]));
+	public static final DynamicCommandExceptionType STAGE_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslatableComponent("arg.stage.notFound", p_208663_0_));
+	public static final DynamicCommandExceptionType STAGE_ALREADY_EXISTS = new DynamicCommandExceptionType(p_208663_0_ -> new TranslatableComponent("arg.stage.alreadyExists", p_208663_0_));
+	public static final DynamicCommandExceptionType SETTING_NOT_FOUND = new DynamicCommandExceptionType(p_208663_0_ -> new TranslatableComponent("arg.stageSetting.notFound", p_208663_0_));
 
 
-	public static void register(CommandDispatcher<CommandSource> dispatcher)
+	public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
 	{
 		dispatcher.register(Commands.literal("stage").requires(commandSource -> commandSource.hasPermission(2))
 				.then(Commands.literal("add")
@@ -83,12 +84,12 @@ public class StageCommand
 		);
 	}
 
-	public static RequiredArgumentBuilder<CommandSource, String> stageId(String argumentName)
+	public static RequiredArgumentBuilder<CommandSourceStack, String> stageId(String argumentName)
 	{
-		return Commands.argument(argumentName, StringArgumentType.word()).suggests((context, builder) -> ISuggestionProvider.suggest((context.getSource().getLevel().isClientSide() ? ClientUtils.clientStages : SaveInfoCapability.get(context.getSource().getServer()).getStages()).keySet(), builder));
+		return Commands.argument(argumentName, StringArgumentType.word()).suggests((context, builder) -> SharedSuggestionProvider.suggest((context.getSource().getLevel().isClientSide() ? ClientUtils.clientStages : SaveInfoCapability.get(context.getSource().getServer()).getStages()).keySet(), builder));
 	}
 
-	public static RequiredArgumentBuilder<CommandSource, String> stageTeam(String argumentName, String stageArgumentName)
+	public static RequiredArgumentBuilder<CommandSourceStack, String> stageTeam(String argumentName, String stageArgumentName)
 	{
 		return Commands.argument(argumentName, StringArgumentType.word()).suggests((context, builder) ->
 		{
@@ -98,70 +99,70 @@ public class StageCommand
 				if(stage == null)
 					return Suggestions.empty();
 
-				return ISuggestionProvider.suggest(stage.getTeamIds(), builder);
+				return SharedSuggestionProvider.suggest(stage.getTeamIds(), builder);
 			} catch (IllegalArgumentException ignored) {} //happens when used inside execute, vanilla won't bother to fix it so neither will i >_>
 
 			return Suggestions.empty();
 		});
 	}
 
-	public static RequiredArgumentBuilder<CommandSource, String> stageSetting(String argumentName)
+	public static RequiredArgumentBuilder<CommandSourceStack, String> stageSetting(String argumentName)
 	{
 		return Commands.argument(argumentName, StringArgumentType.word()).suggests((context, builder) ->
-				ISuggestionProvider.suggest(Stage.VALID_SETTINGS, builder));
+				SharedSuggestionProvider.suggest(Stage.VALID_SETTINGS, builder));
 	}
 
-	private static int add(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		return add(context.getSource(), StringArgumentType.getString(context, "name"), BlockPosArgument.getOrLoadBlockPos(context, "from"), BlockPosArgument.getOrLoadBlockPos(context, "to"));
+	private static int add(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+		return add(context.getSource(), StringArgumentType.getString(context, "name"), getOrLoadBlockPos(context, "from"), getOrLoadBlockPos(context, "to"));
 	}
 
-	private static int remove(CommandContext<CommandSource> context) throws CommandSyntaxException {
+	private static int remove(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		return remove(context.getSource(), StringArgumentType.getString(context, "stage"));
 	}
 
-	private static int setSetting(CommandContext<CommandSource> context, @Nullable Boolean value) throws CommandSyntaxException
+	private static int setSetting(CommandContext<CommandSourceStack> context, @Nullable Boolean value) throws CommandSyntaxException
 	{
 		return setSetting(context.getSource(), StringArgumentType.getString(context, "stage"), StringArgumentType.getString(context, "setting"), value);
 	}
 
-	private static int setStageCorner(CommandContext<CommandSource> context, boolean isCornerA) throws CommandSyntaxException
+	private static int setStageCorner(CommandContext<CommandSourceStack> context, boolean isCornerA) throws CommandSyntaxException
 	{
-		return setStageCoords(context.getSource(), StringArgumentType.getString(context, "stage"), BlockPosArgument.getOrLoadBlockPos(context, "pos"), isCornerA);
+		return setStageCoords(context.getSource(), StringArgumentType.getString(context, "stage"), BlockPosArgument.getLoadedBlockPos(context, "pos"), isCornerA);
 	}
 
-	private static int getStageCorner(CommandContext<CommandSource> context, boolean isCornerA) throws CommandSyntaxException
+	private static int getStageCorner(CommandContext<CommandSourceStack> context, boolean isCornerA) throws CommandSyntaxException
 	{
 		return getStageCoords(context.getSource(), StringArgumentType.getString(context, "stage"), isCornerA);
 	}
 
-	private static int getSetting(CommandContext<CommandSource> context) throws CommandSyntaxException
+	private static int getSetting(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		return getSetting(context.getSource(), StringArgumentType.getString(context, "stage"), StringArgumentType.getString(context, "setting"));
 	}
 
 
-	private static int setTeam(CommandContext<CommandSource> context) throws CommandSyntaxException {
+	private static int setTeam(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		return setTeam(context.getSource(), StringArgumentType.getString(context, "stage"), StringArgumentType.getString(context, "teamName"), InkColorArgument.getInkColor(context, "teamColor"));
 	}
 
-	private static int getTeam(CommandContext<CommandSource> context) throws CommandSyntaxException {
+	private static int getTeam(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		return getTeam(context.getSource(), StringArgumentType.getString(context, "stage"), StringArgumentType.getString(context, "teamName"));
 	}
 
-	private static int removeTeam(CommandContext<CommandSource> context) throws CommandSyntaxException {
+	private static int removeTeam(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		return removeTeam(context.getSource(), StringArgumentType.getString(context, "stage"), StringArgumentType.getString(context, "teamName"));
 	}
 
-	private static int warp(CommandContext<CommandSource> context, boolean setSpawn) throws CommandSyntaxException {
+	private static int warp(CommandContext<CommandSourceStack> context, boolean setSpawn) throws CommandSyntaxException {
 		return warpPlayers(context.getSource(), StringArgumentType.getString(context, "stage"), EntityArgument.getPlayers(context, "players"), setSpawn);
 	}
 
-	private static int warpSelf(CommandContext<CommandSource> context) throws CommandSyntaxException {
+	private static int warpSelf(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 		return warpPlayers(context.getSource(), StringArgumentType.getString(context, "stage"), Collections.singleton(context.getSource().getPlayerOrException()), false);
 	}
 
 
-	private static int add(CommandSource source, String stageId, BlockPos from, BlockPos to) throws CommandSyntaxException {
+	private static int add(CommandSourceStack source, String stageId, BlockPos from, BlockPos to) throws CommandSyntaxException {
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 		
 		if(stages.containsKey(stageId))
@@ -169,14 +170,14 @@ public class StageCommand
 
 		stages.put(stageId, new Stage(source.getLevel(), from, to));
 
-		source.sendSuccess(new TranslationTextComponent("commands.stage.add.success", stageId), true);
+		source.sendSuccess(new TranslatableComponent("commands.stage.add.success", stageId), true);
 
 		SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
 
 		return 1;
 	}
 
-	private static int remove(CommandSource source, String stageId) throws CommandSyntaxException {
+	private static int remove(CommandSourceStack source, String stageId) throws CommandSyntaxException {
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
 		if(!stages.containsKey(stageId))
@@ -184,14 +185,14 @@ public class StageCommand
 
 		stages.remove(stageId);
 
-		source.sendSuccess(new TranslationTextComponent("commands.stage.remove.success", stageId), true);
+		source.sendSuccess(new TranslatableComponent("commands.stage.remove.success", stageId), true);
 
 		SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
 
 		return 1;
 	}
 
-	private static int setSetting(CommandSource source, String stageId, String setting, @Nullable Boolean value) throws CommandSyntaxException
+	private static int setSetting(CommandSourceStack source, String stageId, String setting, @Nullable Boolean value) throws CommandSyntaxException
 	{
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
@@ -206,15 +207,15 @@ public class StageCommand
 		stage.applySetting(setting, value);
 
 		if(value == null)
-			source.sendSuccess(new TranslationTextComponent("commands.stage.setting.success.default", setting, stageId), true);
-		else source.sendSuccess(new TranslationTextComponent("commands.stage.setting.success", setting, stageId, value), true);
+			source.sendSuccess(new TranslatableComponent("commands.stage.setting.success.default", setting, stageId), true);
+		else source.sendSuccess(new TranslatableComponent("commands.stage.setting.success", setting, stageId, value), true);
 
 		SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
 
 		return 1;
 	}
 
-	private static int getSetting(CommandSource source, String stageId, String setting) throws CommandSyntaxException
+	private static int getSetting(CommandSourceStack source, String stageId, String setting) throws CommandSyntaxException
 	{
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
@@ -228,13 +229,13 @@ public class StageCommand
 
 
 		if(!stage.hasSetting(setting))
-			source.sendSuccess(new TranslationTextComponent("commands.stage.setting.get.default", setting, stageId), true);
-		else source.sendSuccess(new TranslationTextComponent("commands.stage.setting.get", setting, stageId, stage.getSetting(setting)), true);
+			source.sendSuccess(new TranslatableComponent("commands.stage.setting.get.default", setting, stageId), true);
+		else source.sendSuccess(new TranslatableComponent("commands.stage.setting.get", setting, stageId, stage.getSetting(setting)), true);
 
 		return 1;
 	}
 
-	private static int setTeam(CommandSource source, String stageId, String teamId, int teamColor) throws CommandSyntaxException
+	private static int setTeam(CommandSourceStack source, String stageId, String teamId, int teamColor) throws CommandSyntaxException
 	{
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
@@ -242,7 +243,7 @@ public class StageCommand
 			throw STAGE_NOT_FOUND.create(stageId);
 
 		Stage stage = stages.get(stageId);
-		World stageLevel = source.getServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, stage.dimID));
+		Level stageLevel = source.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, stage.dimID));
 
 		BlockPos blockpos2 = new BlockPos(Math.min(stage.cornerA.getX(), stage.cornerB.getX()), Math.min(stage.cornerB.getY(), stage.cornerA.getY()), Math.min(stage.cornerA.getZ(), stage.cornerB.getZ()));
 		BlockPos blockpos3 = new BlockPos(Math.max(stage.cornerA.getX(), stage.cornerB.getX()), Math.max(stage.cornerB.getY(), stage.cornerA.getY()), Math.max(stage.cornerA.getZ(), stage.cornerB.getZ()));
@@ -267,14 +268,14 @@ public class StageCommand
 				}
 
 		stage.setTeamColor(teamId, teamColor);
-		source.sendSuccess(new TranslationTextComponent("commands.stage.teams.set.success", affectedBlocks, stageId, new StringTextComponent(teamId).withStyle(Style.EMPTY.withColor(Color.fromRgb(teamColor)))), true);
+		source.sendSuccess(new TranslatableComponent("commands.stage.teams.set.success", affectedBlocks, stageId, new TextComponent(teamId).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(teamColor)))), true);
 
 		SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
 
 		return 1;
 	}
 
-	private static int getTeam(CommandSource source, String stageId, String teamId) throws CommandSyntaxException {
+	private static int getTeam(CommandSourceStack source, String stageId, String teamId) throws CommandSyntaxException {
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
 		if(!stages.containsKey(stageId))
@@ -287,7 +288,25 @@ public class StageCommand
 
 		int teamColor = stage.getTeamColor(teamId);
 
-		World stageLevel = source.getServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, stage.dimID));
+		source.sendSuccess(new TranslatableComponent("commands.stage.teams.get.success", teamId, stageId, ColorUtils.getFormatedColorName(teamColor, false)), true);
+		return teamColor;
+	}
+
+	private static int removeTeam(CommandSourceStack source, String stageId, String teamId) throws CommandSyntaxException {
+		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
+
+		if(!stages.containsKey(stageId))
+			throw STAGE_NOT_FOUND.create(stageId);
+
+		Stage stage = stages.get(stageId);
+
+		if(!stage.hasTeam(teamId))
+			throw TEAM_NOT_FOUND.create(new Object[] {teamId, stageId});
+
+		int teamColor = stage.getTeamColor(teamId);
+
+
+		Level stageLevel = source.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, stage.dimID));
 		BlockPos blockpos2 = new BlockPos(Math.min(stage.cornerA.getX(), stage.cornerB.getX()), Math.min(stage.cornerB.getY(), stage.cornerA.getY()), Math.min(stage.cornerA.getZ(), stage.cornerB.getZ()));
 		BlockPos blockpos3 = new BlockPos(Math.max(stage.cornerA.getX(), stage.cornerB.getX()), Math.max(stage.cornerB.getY(), stage.cornerA.getY()), Math.max(stage.cornerA.getZ(), stage.cornerB.getZ()));
 
@@ -310,29 +329,13 @@ public class StageCommand
 					}
 				}
 
-		source.sendSuccess(new TranslationTextComponent("commands.stage.teams.get.success", teamId, stageId, ColorUtils.getFormatedColorName(teamColor, false), affectedBlocks), true);
-		return teamColor;
-	}
-
-	private static int removeTeam(CommandSource source, String stageId, String teamId) throws CommandSyntaxException {
-		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
-
-		if(!stages.containsKey(stageId))
-			throw STAGE_NOT_FOUND.create(stageId);
-
-		Stage stage = stages.get(stageId);
-
-		if(!stage.hasTeam(teamId))
-			throw TEAM_NOT_FOUND.create(new Object[] {teamId, stageId});
-
-		int teamColor = stage.getTeamColor(teamId);
 		stage.removeTeam(teamId);
 
-		source.sendSuccess(new TranslationTextComponent("commands.stage.teams.remove.success", new StringTextComponent(teamId).withStyle(Style.EMPTY.withColor(Color.fromRgb(teamColor))), stageId), true);
+		source.sendSuccess(new TranslatableComponent("commands.stage.teams.remove.success", new TextComponent(teamId).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(teamColor))), stageId, affectedBlocks), true);
 		return teamColor;
 	}
 
-	private static int warpPlayers(CommandSource source, String stageId, Collection<ServerPlayerEntity> targets, boolean setSpawn) throws CommandSyntaxException
+	private static int warpPlayers(CommandSourceStack source, String stageId, Collection<ServerPlayer> targets, boolean setSpawn) throws CommandSyntaxException
 	{
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
@@ -340,7 +343,7 @@ public class StageCommand
 			throw STAGE_NOT_FOUND.create(stageId);
 
 		Stage stage = stages.get(stageId);
-		World stageLevel = source.getServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, stage.dimID));
+		Level stageLevel = source.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, stage.dimID));
 
 
 		BlockPos blockpos2 = new BlockPos(Math.min(stage.cornerA.getX(), stage.cornerB.getX()), Math.min(stage.cornerB.getY(), stage.cornerA.getY()), Math.min(stage.cornerA.getZ(), stage.cornerB.getZ()));
@@ -365,7 +368,7 @@ public class StageCommand
 			throw NO_SPAWN_PADS_FOUND.create(stageId);
 
 		HashMap<Integer, Integer> playersTeleported = new HashMap<>();
-		for (ServerPlayerEntity player : targets) {
+		for (ServerPlayer player : targets) {
 			int playerColor = ColorUtils.getPlayerColor(player);
 
 			if (spawnPads.containsKey(playerColor)) {
@@ -379,7 +382,7 @@ public class StageCommand
 				if (stageLevel == player.level)
 					player.connection.teleport(te.getBlockPos().getX() + .5, te.getBlockPos().getY() + .5, te.getBlockPos().getZ() + .5, pitch, 0);
 				else
-					player.teleportTo((ServerWorld) stageLevel, te.getBlockPos().getX() + .5, te.getBlockPos().getY() + .5, te.getBlockPos().getZ(), pitch, 0);
+					player.teleportTo((ServerLevel) stageLevel, te.getBlockPos().getX() + .5, te.getBlockPos().getY() + .5, te.getBlockPos().getZ(), pitch, 0);
 
 				if(setSpawn)
 					player.setRespawnPosition(player.level.dimension(), te.getBlockPos(), player.level.getBlockState(te.getBlockPos()).getValue(SpawnPadBlock.DIRECTION).toYRot(), false, true);
@@ -395,11 +398,11 @@ public class StageCommand
 		if(result == 0)
 			throw NO_PLAYERS_FOUND.create(stageId);
 
-		source.sendSuccess(new TranslationTextComponent("commands.stage.warp.success", result, stageId), true);
+		source.sendSuccess(new TranslatableComponent("commands.stage.warp.success", result, stageId), true);
 		return result;
 	}
 
-	private static int setStageCoords(CommandSource source, String stageId, BlockPos pos, boolean isCornerA) throws CommandSyntaxException {
+	private static int setStageCoords(CommandSourceStack source, String stageId, BlockPos pos, boolean isCornerA) throws CommandSyntaxException {
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
 		if (!stages.containsKey(stageId))
@@ -412,11 +415,11 @@ public class StageCommand
 		else stage.cornerB = pos;
 
 		SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
-		source.sendSuccess(new TranslationTextComponent("commands.stage.setting.area.success", isCornerA ? "A" : "B", stageId, pos.getX(), pos.getY(), pos.getZ()), true);
+		source.sendSuccess(new TranslatableComponent("commands.stage.setting.area.success", isCornerA ? "A" : "B", stageId, pos.getX(), pos.getY(), pos.getZ()), true);
 		return 1;
 	}
 
-	private static int getStageCoords(CommandSource source, String stageId, boolean isCornerA) throws CommandSyntaxException {
+	private static int getStageCoords(CommandSourceStack source, String stageId, boolean isCornerA) throws CommandSyntaxException {
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
 		if (!stages.containsKey(stageId))
@@ -426,8 +429,17 @@ public class StageCommand
 
 		BlockPos pos = isCornerA ? stage.cornerA : stage.cornerB;
 
-		source.sendSuccess(new TranslationTextComponent("commands.stage.setting.area.get", isCornerA ? "A" : "B", stageId, pos.getX(), pos.getY(), pos.getZ()), true);
+		source.sendSuccess(new TranslatableComponent("commands.stage.setting.area.get", isCornerA ? "A" : "B", stageId, pos.getX(), pos.getY(), pos.getZ()), true);
 
 		return 1;
+	}
+
+	public static BlockPos getOrLoadBlockPos(CommandContext<CommandSourceStack> p_118243_, String p_118244_) throws CommandSyntaxException {
+		BlockPos blockpos = p_118243_.getArgument(p_118244_, Coordinates.class).getBlockPos(p_118243_.getSource());
+		 if (!p_118243_.getSource().getUnsidedLevel().isInWorldBounds(blockpos)) {
+			throw BlockPosArgument.ERROR_OUT_OF_WORLD.create();
+		} else {
+			return blockpos;
+		}
 	}
 }

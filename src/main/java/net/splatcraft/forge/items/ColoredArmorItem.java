@@ -1,27 +1,23 @@
 package net.splatcraft.forge.items;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.IDyeableArmorItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.DyeableArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.blocks.InkwellBlock;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
@@ -33,44 +29,45 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IColoredItem
+public class ColoredArmorItem extends DyeableArmorItem implements IColoredItem
 {
-    public ColoredArmorItem(String name, IArmorMaterial material, EquipmentSlotType slot, Properties properties)
+    public ColoredArmorItem(ArmorMaterial material, EquipmentSlot slot, Properties properties)
     {
         super(material, slot, properties);
         SplatcraftItems.inkColoredItems.add(this);
-        setRegistryName(name);
+
+        CauldronInteraction.WATER.put(this, CauldronInteraction.DYED_ITEM);
     }
 
-    public ColoredArmorItem(String name, IArmorMaterial material, EquipmentSlotType slot)
+    public ColoredArmorItem(ArmorMaterial material, EquipmentSlot slot)
     {
-        this(name, material, slot, new Properties().tab(SplatcraftItemGroups.GROUP_WEAPONS).stacksTo(1));
+        this( material, slot, new Properties().tab(SplatcraftItemGroups.GROUP_WEAPONS).stacksTo(1));
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag)
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag)
     {
         super.appendHoverText(stack, level, tooltip, flag);
 
 
         if (I18n.exists(getDescriptionId() + ".tooltip"))
-            tooltip.add(new TranslationTextComponent(getDescriptionId() + ".tooltip").withStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 
         if (ColorUtils.isColorLocked(stack))
             tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
         else
-            tooltip.add(new TranslationTextComponent( "item.splatcraft.tooltip.matches_color").withStyle(TextFormatting.GRAY));
+            tooltip.add(new TranslatableComponent( "item.splatcraft.tooltip.matches_color").withStyle(ChatFormatting.GRAY));
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected)
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int itemSlot, boolean isSelected)
     {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
-        if (entity instanceof PlayerEntity && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((PlayerEntity) entity)
-                && PlayerInfoCapability.hasCapability((LivingEntity) entity))
+        if (entity instanceof Player player && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor(player)
+                && PlayerInfoCapability.hasCapability(player))
         {
-            ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor((PlayerEntity) entity));
+            ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor(player));
         }
     }
 
@@ -95,30 +92,10 @@ public class ColoredArmorItem extends ArmorItem implements IDyeableArmorItem, IC
 
 
     @Override
-    public @NotNull ActionResultType useOn(ItemUseContext context)
+    public @NotNull InteractionResult useOn(UseOnContext context)
     {
         BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-        if (ColorUtils.isColorLocked(context.getItemInHand()) && state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && !context.getPlayer().isCrouching())
-        {
-            int i = state.getValue(CauldronBlock.LEVEL);
 
-            if (i > 0)
-            {
-                World level = context.getLevel();
-                PlayerEntity player = context.getPlayer();
-                ColorUtils.setColorLocked(context.getItemInHand(), false);
-
-                context.getPlayer().awardStat(Stats.USE_CAULDRON);
-
-                if (!player.isCreative())
-                {level.setBlock(context.getClickedPos(), state.setValue(CauldronBlock.LEVEL, MathHelper.clamp(i - 1, 0, 3)), 2);
-                    level.updateNeighbourForOutputSignal(context.getClickedPos(), state.getBlock());
-                }
-
-                return ActionResultType.SUCCESS;
-            }
-
-        }
 
         return super.useOn(context);
     }

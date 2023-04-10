@@ -1,45 +1,36 @@
 package net.splatcraft.forge.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.Half;
-import net.minecraft.state.properties.StairsShape;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class BarrierBarBlock extends Block implements IWaterLoggable
+public class BarrierBarBlock extends Block implements SimpleWaterloggedBlock
 {
-    public static final DirectionProperty FACING = HorizontalBlock.FACING;
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    protected static final AxisAlignedBB STRAIGHT_AABB = new AxisAlignedBB(0, 13 / 16f, 13 / 16f, 1, 1, 1);
-    protected static final AxisAlignedBB EDGE_AABB = new AxisAlignedBB(0, 13 / 16f, 13 / 16f, 3 / 16f, 1, 1);
-    protected static final AxisAlignedBB ROTATED_STRAIGHT_AABB = modifyShapeForDirection(Direction.EAST, VoxelShapes.create(STRAIGHT_AABB)).bounds();
-    protected static final AxisAlignedBB TOP_AABB = new AxisAlignedBB(0, 13 / 16f, 0, 1, 1, 1);
+    protected static final AABB STRAIGHT_AABB = new AABB(0, 13 / 16f, 13 / 16f, 1, 1, 1);
+    protected static final AABB EDGE_AABB = new AABB(0, 13 / 16f, 13 / 16f, 3 / 16f, 1, 1);
+    protected static final AABB ROTATED_STRAIGHT_AABB = modifyShapeForDirection(Direction.EAST, Shapes.create(STRAIGHT_AABB)).bounds();
+    protected static final AABB TOP_AABB = new AABB(0, 13 / 16f, 0, 1, 1, 1);
 
     protected static final VoxelShape NU_STRAIGHT = Block.box(0, 13, 0, 16, 16, 3);
     protected static final VoxelShape SU_STRAIGHT = modifyShapeForDirection(Direction.SOUTH, NU_STRAIGHT);
@@ -63,47 +54,46 @@ public class BarrierBarBlock extends Block implements IWaterLoggable
     protected static final VoxelShape[] TOP_SHAPES = new VoxelShape[]{NU_STRAIGHT, SU_STRAIGHT, WU_STRAIGHT, EU_STRAIGHT, NU_CORNER, SU_CORNER, WU_CORNER, EU_CORNER};
     protected static final VoxelShape[] BOTTOM_SHAPES = new VoxelShape[]{ND_STRAIGHT, SD_STRAIGHT, WD_STRAIGHT, ED_STRAIGHT, ND_CORNER, SD_CORNER, WD_CORNER, ED_CORNER};
 
-    public BarrierBarBlock(String name)
+    public BarrierBarBlock()
     {
-        super(Properties.of(Material.METAL, MaterialColor.NONE).strength(3.0f).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops());
+        super(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.NONE).strength(3.0f).requiresCorrectToolForDrops());
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(HALF, Half.BOTTOM).setValue(SHAPE, StairsShape.STRAIGHT).setValue(WATERLOGGED, false));
-        setRegistryName(name);
     }
 
     protected static VoxelShape modifyShapeForDirection(Direction facing, VoxelShape shape)
     {
-        AxisAlignedBB bb = shape.bounds();
+        AABB bb = shape.bounds();
 
         switch (facing)
         {
             case EAST:
-                return VoxelShapes.create(new AxisAlignedBB(1 - bb.maxZ, bb.minY, bb.minX, 1 - bb.minZ, bb.maxY, bb.maxX));
+                return Shapes.create(new AABB(1 - bb.maxZ, bb.minY, bb.minX, 1 - bb.minZ, bb.maxY, bb.maxX));
             case SOUTH:
-                return VoxelShapes.create(new AxisAlignedBB(1 - bb.maxX, bb.minY, 1 - bb.maxZ, 1 - bb.minX, bb.maxY, 1 - bb.minZ));
+                return Shapes.create(new AABB(1 - bb.maxX, bb.minY, 1 - bb.maxZ, 1 - bb.minX, bb.maxY, 1 - bb.minZ));
             case WEST:
-                return VoxelShapes.create(new AxisAlignedBB(bb.minZ, bb.minY, 1 - bb.maxX, bb.maxZ, bb.maxY, 1 - bb.minX));
+                return Shapes.create(new AABB(bb.minZ, bb.minY, 1 - bb.maxX, bb.maxZ, bb.maxY, 1 - bb.minX));
         }
         return shape;
     }
 
     public static VoxelShape mirrorShapeY(VoxelShape shape)
     {
-        AxisAlignedBB bb = shape.bounds();
+        AABB bb = shape.bounds();
 
-        return VoxelShapes.create(new AxisAlignedBB(bb.minX, 1 - bb.minY, bb.minZ, bb.maxX, 1 - bb.maxY, bb.maxZ));
+        return Shapes.create(new AABB(bb.minX, 1 - bb.minY, bb.minZ, bb.maxX, 1 - bb.maxY, bb.maxZ));
     }
 
     public static VoxelShape mirrorShapeX(VoxelShape shape)
     {
-        AxisAlignedBB bb = shape.bounds();
+        AABB bb = shape.bounds();
 
-        return VoxelShapes.create(new AxisAlignedBB(1 - bb.minX, bb.minY, bb.minZ, 1 - bb.maxX, bb.maxY, bb.maxZ));
+        return Shapes.create(new AABB(1 - bb.minX, bb.minY, bb.minZ, 1 - bb.maxX, bb.maxY, bb.maxZ));
     }
 
     /**
      * Returns a stair shape property based on the surrounding stairs from the given blockstate and position
      */
-    private static StairsShape getShapeProperty(BlockState state, IBlockReader levelIn, BlockPos pos)
+    private static StairsShape getShapeProperty(BlockState state, BlockGetter levelIn, BlockPos pos)
     {
         Direction direction = state.getValue(FACING);
         BlockState blockstate = levelIn.getBlockState(pos.relative(direction));
@@ -139,7 +129,7 @@ public class BarrierBarBlock extends Block implements IWaterLoggable
         return StairsShape.STRAIGHT;
     }
 
-    private static boolean isDifferentBar(BlockState state, IBlockReader levelIn, BlockPos pos, Direction face)
+    private static boolean isDifferentBar(BlockState state, BlockGetter levelIn, BlockPos pos, Direction face)
     {
         BlockState blockstate = levelIn.getBlockState(pos.relative(face));
         return !isBar(blockstate) || blockstate.getValue(FACING) != state.getValue(FACING) || blockstate.getValue(HALF) != state.getValue(HALF);
@@ -151,7 +141,7 @@ public class BarrierBarBlock extends Block implements IWaterLoggable
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader levelIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, BlockGetter levelIn, BlockPos pos, CollisionContext context)
     {
         VoxelShape[] shapeArray = state.getValue(HALF).equals(Half.TOP) ? TOP_SHAPES : BOTTOM_SHAPES;
         int dirIndex = state.getValue(FACING).ordinal() - 2;
@@ -167,9 +157,9 @@ public class BarrierBarBlock extends Block implements IWaterLoggable
             case OUTER_RIGHT:
                 return shapeArray[rotatedDirIndex + 4];
             case INNER_LEFT:
-                return VoxelShapes.or(shapeArray[dirIndex], shapeArray[rotatedCCWDirIndex]);
+                return Shapes.or(shapeArray[dirIndex], shapeArray[rotatedCCWDirIndex]);
             case INNER_RIGHT:
-                return VoxelShapes.or(shapeArray[dirIndex], shapeArray[rotatedDirIndex]);
+                return Shapes.or(shapeArray[dirIndex], shapeArray[rotatedDirIndex]);
         }
 
         return Block.box(1, 1, 1, 15, 15, 15);
@@ -182,7 +172,7 @@ public class BarrierBarBlock extends Block implements IWaterLoggable
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     {
         Direction direction = context.getClickedFace();
         BlockPos blockpos = context.getClickedPos();
@@ -192,11 +182,11 @@ public class BarrierBarBlock extends Block implements IWaterLoggable
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor levelIn, BlockPos currentPos, BlockPos facingPos)
     {
         if (stateIn.getValue(WATERLOGGED))
         {
-            levelIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelIn));
+            levelIn.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelIn));
         }
 
         return facing.getAxis().isHorizontal() ? stateIn.setValue(SHAPE, getShapeProperty(stateIn, levelIn, currentPos)) : super.updateShape(stateIn, facing, facingState, levelIn, currentPos, facingPos);
@@ -256,7 +246,7 @@ public class BarrierBarBlock extends Block implements IWaterLoggable
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
         builder.add(FACING, HALF, SHAPE, WATERLOGGED);
     }
@@ -268,7 +258,7 @@ public class BarrierBarBlock extends Block implements IWaterLoggable
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, IBlockReader levelIn, BlockPos pos, PathType type)
+    public boolean isPathfindable(BlockState state, BlockGetter levelIn, BlockPos pos, PathComputationType type)
     {
         return false;
     }

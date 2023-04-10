@@ -1,8 +1,8 @@
 package net.splatcraft.forge.network.c2s;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.splatcraft.forge.items.weapons.DualieItem;
 
 import java.util.UUID;
@@ -13,7 +13,7 @@ public class DodgeRollPacket extends PlayToServerPacket
     ItemStack mainDualie;
     ItemStack offhandDualie;
 
-    public DodgeRollPacket(PlayerEntity player, ItemStack mainDualie, ItemStack offhandDualie)
+    public DodgeRollPacket(Player player, ItemStack mainDualie, ItemStack offhandDualie)
     {
         this(player.getUUID(), mainDualie, offhandDualie);
     }
@@ -25,20 +25,20 @@ public class DodgeRollPacket extends PlayToServerPacket
         this.offhandDualie = offhandDualie;
     }
 
-    public static DodgeRollPacket decode(PacketBuffer buffer)
+    public static DodgeRollPacket decode(FriendlyByteBuf buffer)
     {
         return new DodgeRollPacket(buffer.readUUID(), buffer.readItem(), buffer.readItem());
     }
 
     @Override
-    public void execute(PlayerEntity player)
+    public void execute(Player player)
     {
-        PlayerEntity target = player.level.getPlayerByUUID(this.target);
+        Player target = player.level.getPlayerByUUID(this.target);
         ((DualieItem) mainDualie.getItem()).performRoll(target, mainDualie, offhandDualie);
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeUUID(target);
         buffer.writeItem(mainDualie);

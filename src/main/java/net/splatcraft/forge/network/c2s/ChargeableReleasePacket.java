@@ -1,8 +1,8 @@
 package net.splatcraft.forge.network.c2s;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.splatcraft.forge.items.weapons.ChargerItem;
 import net.splatcraft.forge.util.PlayerCharge;
 
@@ -17,13 +17,13 @@ public class ChargeableReleasePacket extends PlayToServerPacket
         this.stack = stack;
     }
 
-    public static ChargeableReleasePacket decode(PacketBuffer buffer)
+    public static ChargeableReleasePacket decode(FriendlyByteBuf buffer)
     {
         return new ChargeableReleasePacket(buffer.readFloat(), buffer.readItem());
     }
 
     @Override
-    public void execute(PlayerEntity player)
+    public void execute(Player player)
     {
         PlayerCharge.setCharge(player, new PlayerCharge(stack, charge));
 
@@ -35,7 +35,7 @@ public class ChargeableReleasePacket extends PlayToServerPacket
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeFloat(charge);
         buffer.writeItem(stack);

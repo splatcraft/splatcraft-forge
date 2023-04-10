@@ -31,7 +31,7 @@ if (System.env.CI == "true") {
 }
 
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 
 
 repositories {
@@ -112,7 +112,7 @@ mixin {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
-    implementation fg.deobf("curse.maven:obfuscate-${project.obfuscate_version}")
+    //implementation fg.deobf("curse.maven:obfuscate-${project.obfuscate_version}")
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
     implementation 'org.jetbrains:annotations:23.0.0'
 }

@@ -1,28 +1,24 @@
 package net.splatcraft.forge.handlers;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingDestroyBlockEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -30,9 +26,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.data.capabilities.inkoverlay.IInkOverlayInfo;
+import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
-import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.items.InkTankItem;
@@ -61,7 +57,7 @@ public class SplatcraftCommonHandler
     {
         LivingEntity entity = event.getEntityLiving();
 
-        if (!(entity instanceof PlayerEntity))
+        if (!(entity instanceof Player))
         {
             return;
         }
@@ -81,8 +77,8 @@ public class SplatcraftCommonHandler
         InkedBlockTileEntity te = (InkedBlockTileEntity) event.getEntity().level.getBlockEntity(event.getPos());
         BlockState savedState = te.getSavedState();
         if(event.getState().getBlock() instanceof IColoredBlock && (event.isCanceled() ||
-                (event.getEntityLiving() instanceof EnderDragonEntity && savedState.is(BlockTags.DRAGON_IMMUNE)) ||
-                (event.getEntityLiving() instanceof WitherEntity && savedState.is(BlockTags.WITHER_IMMUNE))))
+                (event.getEntityLiving() instanceof EnderDragon && savedState.is(BlockTags.DRAGON_IMMUNE)) ||
+                (event.getEntityLiving() instanceof WitherBoss && savedState.is(BlockTags.WITHER_IMMUNE))))
         {
             ((IColoredBlock) event.getState().getBlock()).remoteInkClear(event.getEntityLiving().level, event.getPos());
             event.setCanceled(true);
@@ -92,8 +88,8 @@ public class SplatcraftCommonHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerClone(final PlayerEvent.Clone event)
     {
-        PlayerEntity player = event.getPlayer();
-        PlayerInfoCapability.get(player).readNBT(PlayerInfoCapability.get(event.getOriginal()).writeNBT(new CompoundNBT()));
+        Player player = event.getPlayer();
+        PlayerInfoCapability.get(player).readNBT(PlayerInfoCapability.get(event.getOriginal()).writeNBT(new CompoundTag()));
 
         NonNullList<ItemStack> matchInv = PlayerInfoCapability.get(player).getMatchInventory();
 
@@ -102,7 +98,7 @@ public class SplatcraftCommonHandler
             for (int i = 0; i < matchInv.size(); i++)
             {
                 ItemStack stack = matchInv.get(i);
-                if (!stack.isEmpty() && !putStackInSlot(player.inventory, stack, i) && !player.inventory.add(stack))
+                if (!stack.isEmpty() && !putStackInSlot(player.getInventory(), stack, i) && !player.getInventory().add(stack))
                 {
                     player.drop(stack, true, true);
                 }
@@ -113,7 +109,7 @@ public class SplatcraftCommonHandler
         PlayerCooldown.setPlayerCooldown(player, null);
     }
 
-    private static boolean putStackInSlot(PlayerInventory inventory, ItemStack stack, int i)
+    private static boolean putStackInSlot(Inventory inventory, ItemStack stack, int i)
     {
         ItemStack invStack = inventory.getItem(i);
 
@@ -138,7 +134,7 @@ public class SplatcraftCommonHandler
     public static void onLivingDeath(final LivingDeathEvent event)
     {
         LivingEntity entity = event.getEntityLiving();
-        ItemStack stack = entity.getItemBySlot(EquipmentSlotType.CHEST);
+        ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
 
         if (stack.getItem() instanceof InkTankItem)
         {
@@ -150,23 +146,23 @@ public class SplatcraftCommonHandler
     public static void onLivingDeathDrops(LivingDropsEvent event)
     {
         //handle inked wool drops
-        if(event.getEntityLiving() instanceof SheepEntity && InkOverlayCapability.hasCapability(event.getEntityLiving()))
+        if(event.getEntityLiving() instanceof Sheep && InkOverlayCapability.hasCapability(event.getEntityLiving()))
         {
-            IInkOverlayInfo info = InkOverlayCapability.get(event.getEntityLiving());
+            InkOverlayInfo info = InkOverlayCapability.get(event.getEntityLiving());
 
             if(info.getWoolColor() >= -1)
             for(ItemEntity itemEntity : event.getDrops())
             {
                 ItemStack stack = itemEntity.getItem();
-                if(stack.getItem().is(ItemTags.WOOL))
-                    itemEntity.setItem(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool, stack.getCount()), info.getWoolColor()));
+                if(stack.is(ItemTags.WOOL))
+                    itemEntity.setItem(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool.get(), stack.getCount()), info.getWoolColor()));
             }
         }
 
         //Handle keepMatchItems
-        if (event.getEntityLiving() instanceof PlayerEntity)
+        if (event.getEntityLiving() instanceof Player)
         {
-            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+            Player player = (Player) event.getEntityLiving();
             NonNullList<ItemStack> matchInv = PlayerInfoCapability.get(player).getMatchInventory();
 
             event.getDrops().removeIf(drop -> matchInv.contains(drop.getItem()));
@@ -174,9 +170,9 @@ public class SplatcraftCommonHandler
             for (int i = 0; i < matchInv.size(); i++)
             {
                 ItemStack stack = matchInv.get(i);
-                if (!stack.isEmpty() && !putStackInSlot(player.inventory, stack, i))
+                if (!stack.isEmpty() && !putStackInSlot(player.getInventory(), stack, i))
                 {
-                    player.inventory.add(stack);
+                    player.getInventory().add(stack);
                 }
             }
 
@@ -186,15 +182,15 @@ public class SplatcraftCommonHandler
     @SubscribeEvent
     public static void onPlayerAboutToDie(LivingDamageEvent event)
     {
-        if (!(event.getEntityLiving() instanceof PlayerEntity) || event.getEntityLiving().getHealth() - event.getAmount() > 0)
+        if (!(event.getEntityLiving() instanceof Player) || event.getEntityLiving().getHealth() - event.getAmount() > 0)
         {
             return;
         }
 
-        PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+        Player player = (Player) event.getEntityLiving();
         if (!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.KEEP_MATCH_ITEMS))
         {
-            IPlayerInfo playerCapability;
+            PlayerInfo playerCapability;
             try
             {
                 playerCapability = PlayerInfoCapability.get(player);
@@ -203,12 +199,12 @@ public class SplatcraftCommonHandler
                 return;
             }
 
-            NonNullList<ItemStack> matchInv = NonNullList.withSize(player.inventory.getContainerSize(), ItemStack.EMPTY);
+            NonNullList<ItemStack> matchInv = NonNullList.withSize(player.getInventory().getContainerSize(), ItemStack.EMPTY);
 
             for (int i = 0; i < matchInv.size(); i++)
             {
-                ItemStack stack = player.inventory.getItem(i);
-                if (SplatcraftTags.Items.MATCH_ITEMS.contains(stack.getItem()))
+                ItemStack stack = player.getInventory().getItem(i);
+                if (stack.is(SplatcraftTags.Items.MATCH_ITEMS))
                 {
                     matchInv.set(i, stack);
                 }
@@ -221,9 +217,9 @@ public class SplatcraftCommonHandler
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
     {
-        PlayerEntity player = event.getPlayer();
-        SplatcraftPacketHandler.sendToPlayer(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.booleanRules), (ServerPlayerEntity) player);
-        SplatcraftPacketHandler.sendToPlayer(new UpdateIntGamerulesPacket(SplatcraftGameRules.intRules), (ServerPlayerEntity) player);
+        Player player = event.getPlayer();
+        SplatcraftPacketHandler.sendToPlayer(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.booleanRules), (ServerPlayer) player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateIntGamerulesPacket(SplatcraftGameRules.intRules), (ServerPlayer) player);
 
         int[] colors = new int[ScoreboardHandler.getCriteriaKeySet().size()];
         int i = 0;
@@ -232,29 +228,29 @@ public class SplatcraftCommonHandler
 
         TreeMap<String, Integer> playerColors = new TreeMap<>();
 
-        for (PlayerEntity p : event.getPlayer().level.players())
+        for (Player p : event.getPlayer().level.players())
         {
             if (PlayerInfoCapability.hasCapability(p))
                 playerColors.put(p.getDisplayName().getString(), PlayerInfoCapability.get(p).getColor());
         }
 
         SplatcraftPacketHandler.sendToAll(new UpdateClientColorsPacket(event.getPlayer().getDisplayName().getString(), PlayerInfoCapability.get(event.getPlayer()).getColor()));
-        SplatcraftPacketHandler.sendToPlayer(new UpdateClientColorsPacket(playerColors), (ServerPlayerEntity) player);
-        SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, colors), (ServerPlayerEntity) player);
-        SplatcraftPacketHandler.sendToPlayer(new UpdateStageListPacket(SaveInfoCapability.get(event.getPlayer().level.getServer()).getStages()), (ServerPlayerEntity) player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateClientColorsPacket(playerColors), (ServerPlayer) player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, colors), (ServerPlayer) player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateStageListPacket(SaveInfoCapability.get(event.getPlayer().level.getServer()).getStages()), (ServerPlayer) player);
     }
 
     @Deprecated
-    public static final HashMap<PlayerEntity, Integer> LOCAL_COLOR = new HashMap<>();
+    public static final HashMap<Player, Integer> LOCAL_COLOR = new HashMap<>();
 
     @SubscribeEvent
     public static void capabilityUpdateEvent(TickEvent.PlayerTickEvent event)
     {
-        IPlayerInfo info = PlayerInfoCapability.get(event.player);
+        PlayerInfo info = PlayerInfoCapability.get(event.player);
         if(PlayerInfoCapability.hasCapability(event.player))
         {
             if(!event.player.level.isClientSide) {
-                ItemStack inkBand = CommonUtils.getItemInInventory(event.player, itemStack -> itemStack.getItem().is(SplatcraftTags.Items.INK_BANDS) && InkBlockUtils.hasInkType(itemStack));
+                ItemStack inkBand = CommonUtils.getItemInInventory(event.player, itemStack -> itemStack.is(SplatcraftTags.Items.INK_BANDS) && InkBlockUtils.hasInkType(itemStack));
 
                 if (!info.getInkBand().equals(inkBand, false)) {
                     info.setInkBand(inkBand);
@@ -277,7 +273,7 @@ public class SplatcraftCommonHandler
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event)
     {
-        World level = event.world;
+        Level level = event.world;
         if (level.isClientSide) {
             return;
         }

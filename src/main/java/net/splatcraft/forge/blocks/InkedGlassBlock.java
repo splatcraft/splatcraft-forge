@@ -1,39 +1,37 @@
 package net.splatcraft.forge.blocks;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.AbstractGlassBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.AbstractGlassBlock;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.HitResult;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock
+public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock, EntityBlock
 {
     public InkedGlassBlock(String name)
     {
-        super(AbstractBlock.Properties.of(Material.GLASS).strength(0.3F).sound(SoundType.GLASS).noOcclusion()
+        super(Properties.of(Material.GLASS).strength(0.3F).sound(SoundType.GLASS).noOcclusion()
                 .isValidSpawn((state, level, pos, entity) -> false)
                 .isRedstoneConductor((state, level, pos) -> false)
                 .isSuffocating((state, level, pos) -> false)
                 .isViewBlocking((state, level, pos) -> false));
         SplatcraftBlocks.inkColoredBlocks.add(this);
-        setRegistryName(name);
     }
 
     @Override
@@ -43,19 +41,19 @@ public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock
 
     @Nullable
     @Override
-    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader level, BlockPos pos, BlockPos beaconPos)
+    public float[] getBeaconColorMultiplier(BlockState state, LevelReader level, BlockPos pos, BlockPos beaconPos)
     {
-        return ColorUtils.hexToRGB(getColor((World) level, pos));
+        return ColorUtils.hexToRGB(getColor((Level) level, pos));
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader level, BlockPos pos, PlayerEntity player)
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player)
     {
-        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getPickBlock(state, target, level, pos, player), getColor((World) level, pos)), true);
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getCloneItemStack(state, target, level, pos, player), getColor((Level) level, pos)), true);
     }
 
     @Override
-    public void setPlacedBy(World level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
     {
         if (!level.isClientSide && stack.getTag() != null && level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
@@ -64,21 +62,9 @@ public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock
         super.setPlacedBy(level, pos, state, entity, stack);
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state)
-    {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader level)
-    {
-        return SplatcraftTileEntities.colorTileEntity.create();
-    }
 
     @Override
-    public ItemStack getCloneItemStack(IBlockReader reader, BlockPos pos, BlockState state)
+    public ItemStack getCloneItemStack(BlockGetter reader, BlockPos pos, BlockState state)
     {
         ItemStack stack = super.getCloneItemStack(reader, pos, state);
 
@@ -109,7 +95,7 @@ public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock
 
 
     @Override
-    public int getColor(World level, BlockPos pos)
+    public int getColor(Level level, BlockPos pos)
     {
         if (level.getBlockEntity(pos) instanceof InkColorTileEntity)
         {
@@ -119,7 +105,7 @@ public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock
     }
 
     @Override
-    public boolean remoteColorChange(World level, BlockPos pos, int newColor)
+    public boolean remoteColorChange(Level level, BlockPos pos, int newColor)
     {
         BlockState state = level.getBlockState(pos);
         if (level.getBlockEntity(pos) instanceof InkColorTileEntity && ((InkColorTileEntity) level.getBlockEntity(pos)).getColor() != newColor)
@@ -132,7 +118,7 @@ public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock
     }
 
     @Override
-    public boolean inkBlock(World level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    public boolean inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
         if (InkedBlock.isTouchingLiquid(level, pos) || !SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INKABLE_GROUND))
         {
@@ -149,7 +135,7 @@ public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock
         BlockState state = level.getBlockState(pos);
         BlockState inkState = InkBlockUtils.getInkState(inkType, level, pos);
         level.setBlock(pos, inkState, 3);
-        level.setBlockEntity(pos, SplatcraftBlocks.inkedBlock.createTileEntity(inkState, level));
+        level.setBlockEntity(SplatcraftBlocks.inkedBlock.get().newBlockEntity(pos, inkState));
         InkedBlockTileEntity inkte = (InkedBlockTileEntity) level.getBlockEntity(pos);
         if (inkte == null)
         {
@@ -163,8 +149,14 @@ public class InkedGlassBlock extends AbstractGlassBlock implements IColoredBlock
     }
 
     @Override
-    public boolean remoteInkClear(World level, BlockPos pos)
+    public boolean remoteInkClear(Level level, BlockPos pos)
     {
         return false;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
+        return null;
     }
 }

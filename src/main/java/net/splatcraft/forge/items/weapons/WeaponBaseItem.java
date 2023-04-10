@@ -1,32 +1,30 @@
 package net.splatcraft.forge.items.weapons;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.blocks.InkwellBlock;
@@ -66,11 +64,28 @@ public class WeaponBaseItem extends Item implements IColoredItem
         SplatcraftItems.inkColoredItems.add(this);
         SplatcraftItems.weapons.add(this);
         this.damageCalculator = damageCalculator;
+
+        CauldronInteraction.WATER.put(this, (state, level, pos, player, hand, stack) ->
+        {
+	        if (ColorUtils.isColorLocked(stack)  && !player.isCrouching())
+	        {
+				ColorUtils.setColorLocked(stack, false);
+
+	            player.awardStat(Stats.USE_CAULDRON);
+
+               if (!player.isCreative())
+				   LayeredCauldronBlock.lowerFillLevel(state, level, pos);
+
+			   return InteractionResult.SUCCESS;
+
+
+	        } return InteractionResult.PASS;
+        });
     }
 
     public static boolean reduceInk(LivingEntity player, Item item, float amount, int recoveryCooldown, boolean sendMessage) {
         if (!enoughInk(player, item, amount, recoveryCooldown, sendMessage, false)) return false;
-        ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
+        ItemStack tank = player.getItemBySlot(EquipmentSlot.CHEST);
         if (tank.getItem() instanceof InkTankItem)
             InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);
         return true;
@@ -81,9 +96,9 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     public static boolean enoughInk(LivingEntity player, Item item, float consumption, int recoveryCooldown, boolean sendMessage, boolean sub) {
-        ItemStack tank = player.getItemBySlot(EquipmentSlotType.CHEST);
+        ItemStack tank = player.getItemBySlot(EquipmentSlot.CHEST);
         if (!SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.REQUIRE_INK_TANK)
-                || player instanceof PlayerEntity && ((PlayerEntity) player).isCreative()
+                || player instanceof Player && ((Player) player).isCreative()
                 && SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.INFINITE_INK_IN_CREATIVE)) {
             return true;
         }
@@ -103,19 +118,19 @@ public class WeaponBaseItem extends Item implements IColoredItem
 
     public static void sendNoInkMessage(LivingEntity entity, SoundEvent sound)
     {
-        if (entity instanceof PlayerEntity)
+        if (entity instanceof Player)
         {
-            ((PlayerEntity) entity).displayClientMessage(new TranslationTextComponent("status.no_ink").withStyle(TextFormatting.RED), true);
+            ((Player) entity).displayClientMessage(new TranslatableComponent("status.no_ink").withStyle(ChatFormatting.RED), true);
             if (sound != null)
             {
-                entity.level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundCategory.PLAYERS, 0.8F,
+                entity.level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 0.8F,
                         ((entity.level.getRandom().nextFloat() - entity.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }
         }
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable World level, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flag)
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag)
     {
         super.appendHoverText(stack, level, tooltip, flag);
 
@@ -124,11 +139,11 @@ public class WeaponBaseItem extends Item implements IColoredItem
             tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
         } else
         {
-            tooltip.add(new StringTextComponent(""));
+            tooltip.add(new TextComponent(""));
         }
 
         for (WeaponTooltip stat : stats) {
-            tooltip.add(stat.getTextComponent(stack, level).withStyle(TextFormatting.DARK_GREEN));
+            tooltip.add(stat.getTextComponent(stack, level).withStyle(ChatFormatting.DARK_GREEN));
         }
     }
 
@@ -137,7 +152,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public void fillItemCategory(@NotNull ItemGroup group, @NotNull NonNullList<ItemStack> list)
+    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> list)
     {
         if (!secret)
         {
@@ -146,11 +161,11 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected) {
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
-        if (entity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) entity;
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
             if (!ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor(player)
                     && PlayerInfoCapability.hasCapability(player))
                 ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor(player));
@@ -164,7 +179,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
                 if(level.isClientSide())
                     SplatcraftKeyHandler.canUseHotkeys = false;
                 player.setSprinting(false);
-                player.inventory.selected = itemSlot;
+                player.getInventory().selected = itemSlot;
             }
         }
     }
@@ -191,25 +206,26 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public double getDurabilityForDisplay(ItemStack stack)
+    public int getBarWidth(ItemStack stack)
     {
         try
         {
-            return ClientUtils.getDurabilityForDisplay(stack);
+            return (int) (ClientUtils.getDurabilityForDisplay(stack) * 13);
         } catch (NoClassDefFoundError e)
         {
-            return 1;
+            return 13;
         }
     }
 
     @Override
-    public int getRGBDurabilityForDisplay(ItemStack stack)
+    public int getBarColor(ItemStack stack)
     {
-        return !SplatcraftConfig.Client.vanillaInkDurability.get() ? ColorUtils.getInkColor(stack) : super.getRGBDurabilityForDisplay(stack);
+        return !SplatcraftConfig.Client.vanillaInkDurability.get() ? ColorUtils.getInkColor(stack) : super.getBarColor(stack);
     }
 
+
     @Override
-    public boolean showDurabilityBar(ItemStack stack)
+    public boolean isBarVisible(ItemStack stack)
     {
         try
         {
@@ -226,13 +242,13 @@ public class WeaponBaseItem extends Item implements IColoredItem
         return USE_DURATION;
     }
 
-    public final ActionResult<ItemStack> useSuper(World level, PlayerEntity player, Hand hand)
+    public final InteractionResultHolder<ItemStack> useSuper(Level level, Player player, InteractionHand hand)
     {
         return super.use(level, player, hand);
     }
 
     @Override
-    public @NotNull ActionResult<ItemStack> use(@NotNull World level, PlayerEntity player, @NotNull Hand hand)
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand)
     {
         if(!(player.isSwimming() && !player.isInWater()))
             player.startUsingItem(hand);
@@ -240,53 +256,23 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     @Override
-    public @NotNull ActionResultType useOn(ItemUseContext context)
-    {
-        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-        if (ColorUtils.isColorLocked(context.getItemInHand()) && state.getBlock() instanceof CauldronBlock && context.getPlayer() != null && !context.getPlayer().isCrouching())
-        {
-            int i = state.getValue(CauldronBlock.LEVEL);
-
-            if (i > 0)
-            {
-                World level = context.getLevel();
-                PlayerEntity player = context.getPlayer();
-                ColorUtils.setColorLocked(context.getItemInHand(), false);
-
-                context.getPlayer().awardStat(Stats.USE_CAULDRON);
-
-                if (!player.isCreative())
-                {
-                    level.setBlock(context.getClickedPos(), state.setValue(CauldronBlock.LEVEL, MathHelper.clamp(i - 1, 0, 3)), 2);
-                    level.updateNeighbourForOutputSignal(context.getClickedPos(), state.getBlock());
-                }
-
-                return ActionResultType.SUCCESS;
-            }
-
-        }
-
-        return super.useOn(context);
-    }
-
-    @Override
-    public void onUseTick(@NotNull World p_219972_1_, @NotNull LivingEntity p_219972_2_, @NotNull ItemStack p_219972_3_, int p_219972_4_) {
+    public void onUseTick(@NotNull Level p_219972_1_, @NotNull LivingEntity p_219972_2_, @NotNull ItemStack p_219972_3_, int p_219972_4_) {
         super.onUseTick(p_219972_1_, p_219972_2_, p_219972_3_, p_219972_4_);
     }
 
     @Override
-    public void releaseUsing(@NotNull ItemStack stack, @NotNull World level, LivingEntity entity, int timeLeft)
+    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, LivingEntity entity, int timeLeft)
     {
         entity.stopUsingItem();
         super.releaseUsing(stack, level, entity, timeLeft);
     }
 
-    public void weaponUseTick(World level, LivingEntity entity, ItemStack stack, int timeLeft)
+    public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft)
     {
 
     }
 
-    public void onPlayerCooldownEnd(World level, PlayerEntity player, ItemStack stack, PlayerCooldown cooldown)
+    public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown)
     {
 
     }

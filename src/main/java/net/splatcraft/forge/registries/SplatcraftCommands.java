@@ -1,9 +1,9 @@
 package net.splatcraft.forge.registries;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.arguments.ArgumentSerializer;
-import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.synchronization.ArgumentTypes;
+import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,7 +18,7 @@ public class SplatcraftCommands
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event)
     {
-        CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
 
         InkColorCommand.register(dispatcher);
         ScanTurfCommand.register(dispatcher);
@@ -32,7 +32,7 @@ public class SplatcraftCommands
 
     public static void registerArguments()
     {
-        ArgumentTypes.register(Splatcraft.MODID + ":ink_color", InkColorArgument.class, new ArgumentSerializer<>(InkColorArgument::inkColor));
-        ArgumentTypes.register(Splatcraft.MODID + ":color_criterion", ColorCriterionArgument.class, new ArgumentSerializer<>(ColorCriterionArgument::colorCriterion));
+        ArgumentTypes.register(Splatcraft.MODID + ":ink_color", InkColorArgument.class, new EmptyArgumentSerializer<>(InkColorArgument::inkColor));
+        ArgumentTypes.register(Splatcraft.MODID + ":color_criterion", ColorCriterionArgument.class, new EmptyArgumentSerializer<>(ColorCriterionArgument::colorCriterion));
     }
 }

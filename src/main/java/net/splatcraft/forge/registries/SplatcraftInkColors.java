@@ -1,19 +1,19 @@
 package net.splatcraft.forge.registries;
 
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkColor;
-import net.minecraft.item.DyeColor;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
-import net.minecraftforge.registries.RegistryBuilder;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkColor;
 
-@ObjectHolder(Splatcraft.MODID)
-@Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+import static net.splatcraft.forge.Splatcraft.MODID;
+
+@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftInkColors
 {
     //Starter Colors
@@ -93,8 +93,7 @@ public class SplatcraftInkColors
 
     public static final InkColor undyed = new InkColor("default", ColorUtils.DEFAULT);
 
-    public static IForgeRegistry<InkColor> REGISTRY;
-
+    /*
     @SubscribeEvent
     public static void registerInkColors(final RegistryEvent.Register<InkColor> event)
     {
@@ -166,7 +165,9 @@ public class SplatcraftInkColors
         registry.register(undyed);
 
     }
+    */
 
+    /* TODO Data-Driven Ink
     @SubscribeEvent
     public static void registerRegistry(final RegistryEvent.NewRegistry event)
     {
@@ -188,4 +189,5 @@ public class SplatcraftInkColors
             return new InkColor.DummyType().setRegistryName(key);
         }
     }
+    */
 }

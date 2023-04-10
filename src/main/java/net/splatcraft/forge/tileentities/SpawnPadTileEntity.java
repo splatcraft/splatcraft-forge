@@ -1,9 +1,10 @@
 package net.splatcraft.forge.tileentities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import org.jetbrains.annotations.NotNull;
@@ -14,9 +15,9 @@ public class SpawnPadTileEntity extends InkColorTileEntity
 {
 	private UUID spawnShieldUuid;
 
-	public SpawnPadTileEntity()
+	public SpawnPadTileEntity(BlockPos pos, BlockState state)
 	{
-		super(SplatcraftTileEntities.spawnPadTileEntity);
+		super(SplatcraftTileEntities.spawnPadTileEntity.get(), pos, state);
 	}
 
 	public boolean isSpawnShield(SpawnShieldEntity otherShield)
@@ -29,7 +30,7 @@ public class SpawnPadTileEntity extends InkColorTileEntity
 		if(level.isClientSide() || spawnShieldUuid == null)
 			return null;
 
-		Entity res = ((ServerWorld) level).getEntity(spawnShieldUuid);
+		Entity res = ((ServerLevel) level).getEntity(spawnShieldUuid);
 			return (res instanceof SpawnShieldEntity) ? (SpawnShieldEntity) res : null;
 	}
 
@@ -42,17 +43,17 @@ public class SpawnPadTileEntity extends InkColorTileEntity
 	}
 
 	@Override
-	public @NotNull CompoundNBT save(CompoundNBT nbt)
+	public @NotNull void saveAdditional(CompoundTag nbt)
 	{
 		if(spawnShieldUuid != null)
 			nbt.putUUID("SpawnShield", spawnShieldUuid);
-		return super.save(nbt);
+		super.saveAdditional(nbt);
 	}
 
 	@Override
-	public void load(@NotNull BlockState state, @NotNull CompoundNBT nbt)
+	public void load(@NotNull CompoundTag nbt)
 	{
-		super.load(state, nbt);
+		super.load(nbt);
 
 		if(nbt.hasUUID("SpawnShield"))
 			spawnShieldUuid = nbt.getUUID("SpawnShield");

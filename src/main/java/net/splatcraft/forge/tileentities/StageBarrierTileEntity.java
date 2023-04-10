@@ -1,41 +1,42 @@
 package net.splatcraft.forge.tileentities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.StageBarrierBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.ClientUtils;
-import org.jetbrains.annotations.Nullable;
 
 import static net.splatcraft.forge.util.InkDamageUtils.VOID_DAMAGE;
 
-public class StageBarrierTileEntity extends TileEntity implements ITickableTileEntity
+public class StageBarrierTileEntity extends BlockEntity
 {
     public final int maxActiveTime = 20;
     protected int activeTime = maxActiveTime;
 
 
-    public StageBarrierTileEntity()
+    public StageBarrierTileEntity(BlockPos pos, BlockState state)
     {
-        super(SplatcraftTileEntities.stageBarrierTileEntity);
+        super(SplatcraftTileEntities.stageBarrierTileEntity.get(), pos, state);
     }
 
-    public StageBarrierTileEntity(TileEntityType<? extends StageBarrierTileEntity> type)
+    public StageBarrierTileEntity(BlockEntityType<? extends StageBarrierTileEntity> type, BlockPos pos, BlockState state)
     {
-        super(type);
+        super(type, pos, state);
     }
 
-    @Override
+    //@Override
     public void tick()
     {
         if (activeTime > 0)
@@ -43,11 +44,11 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
             activeTime--;
         }
 
-        for (Entity entity : level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(getBlockPos()).inflate(0.05)))
+        for (Entity entity : level.getEntitiesOfClass(Entity.class, new AABB(getBlockPos()).inflate(0.05)))
         {
             resetActiveTime();
             if (getBlockState().getBlock() instanceof StageBarrierBlock && ((StageBarrierBlock) getBlockState().getBlock()).damagesPlayer &&
-                    entity instanceof PlayerEntity)
+                    entity instanceof Player)
             {
                 entity.hurt(VOID_DAMAGE, Float.MAX_VALUE);
             }
@@ -57,15 +58,15 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
         if (level.isClientSide && ClientUtils.getClientPlayer().isCreative())
         {
             boolean canRender = true;
-            PlayerEntity player = ClientUtils.getClientPlayer();
+            Player player = ClientUtils.getClientPlayer();
             int renderDistance = SplatcraftConfig.Client.barrierRenderDistance.get();
 
             if(player.distanceToSqr(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ()) > renderDistance*renderDistance)
                 canRender = false;
             else if (SplatcraftConfig.Client.holdBarrierToRender.get())
             {
-                canRender = player.getMainHandItem().getItem().is(SplatcraftTags.Items.REVEALS_BARRIERS) ||
-                        player.getMainHandItem().getItem().is(SplatcraftTags.Items.REVEALS_BARRIERS);
+                canRender = player.getMainHandItem().is(SplatcraftTags.Items.REVEALS_BARRIERS) ||
+                        player.getMainHandItem().is(SplatcraftTags.Items.REVEALS_BARRIERS);
             }
             if (canRender)
                 resetActiveTime();
@@ -73,7 +74,7 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
 
     }
 
-    @Override
+    //@Override
     public double getViewDistance() {
         return SplatcraftConfig.Client.barrierRenderDistance.get();
     }
@@ -84,9 +85,9 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
+    public void load(CompoundTag nbt)
     {
-        super.load(state, nbt);
+        super.load(nbt);
 
         if (nbt.contains("ActiveTime"))
         {
@@ -95,40 +96,33 @@ public class StageBarrierTileEntity extends TileEntity implements ITickableTileE
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound)
+    public void saveAdditional(CompoundTag compound)
     {
         compound.putInt("ActiveTime", activeTime);
-        return super.save(compound);
+        super.saveAdditional(compound);
     }
 
 
     @Override
-    public CompoundNBT getUpdateTag()
+    public CompoundTag getUpdateTag()
     {
-        return this.save(new CompoundNBT());
+        return new CompoundTag(){{saveAdditional(this);}};
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag)
-    {
-        this.load(state, tag);
-    }
-
-    @Nullable
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket()
-    {
-        return new SUpdateTileEntityPacket(getBlockPos(), 2, getUpdateTag());
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        // Will get tag from #getUpdateTag
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
     {
         if (level != null)
         {
             BlockState state = level.getBlockState(getBlockPos());
             level.sendBlockUpdated(getBlockPos(), state, state, 2);
-            handleUpdateTag(state, pkt.getTag());
+            handleUpdateTag(pkt.getTag());
         }
     }
 

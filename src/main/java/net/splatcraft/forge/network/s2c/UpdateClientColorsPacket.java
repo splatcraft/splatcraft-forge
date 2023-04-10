@@ -1,6 +1,6 @@
 package net.splatcraft.forge.network.s2c;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.splatcraft.forge.util.ClientUtils;
 
 import java.util.TreeMap;
@@ -28,7 +28,7 @@ public class UpdateClientColorsPacket extends PlayToClientPacket
         reset = false;
     }
 
-    public static UpdateClientColorsPacket decode(PacketBuffer buffer)
+    public static UpdateClientColorsPacket decode(FriendlyByteBuf buffer)
     {
         TreeMap<String, Integer> colors = new TreeMap<>();
 
@@ -52,7 +52,7 @@ public class UpdateClientColorsPacket extends PlayToClientPacket
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeBoolean(reset);
         buffer.writeVarInt(colors.entrySet().size());

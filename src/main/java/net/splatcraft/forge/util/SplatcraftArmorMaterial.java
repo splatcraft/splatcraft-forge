@@ -1,13 +1,13 @@
 package net.splatcraft.forge.util;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.splatcraft.forge.Splatcraft;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 
-public class SplatcraftArmorMaterial implements IArmorMaterial
+public class SplatcraftArmorMaterial implements ArmorMaterial
 {
 
     private final int durability;
@@ -42,13 +42,13 @@ public class SplatcraftArmorMaterial implements IArmorMaterial
     }
 
     @Override
-    public int getDurabilityForSlot(EquipmentSlotType slotIn)
+    public int getDurabilityForSlot(EquipmentSlot slotIn)
     {
         return durability;
     }
 
     @Override
-    public int getDefenseForSlot(EquipmentSlotType slotIn)
+    public int getDefenseForSlot(EquipmentSlot slotIn)
     {
         return damageReduction;
     }

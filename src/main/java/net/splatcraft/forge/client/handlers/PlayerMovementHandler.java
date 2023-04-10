@@ -1,17 +1,16 @@
 package net.splatcraft.forge.client.handlers;
 
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.MovementInput;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.player.Input;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,13 +37,13 @@ public class PlayerMovementHandler
     @SubscribeEvent
     public static void playerMovement(TickEvent.PlayerTickEvent event)
     {
-        if (!(event.player instanceof ClientPlayerEntity) || event.phase != TickEvent.Phase.END)
+        if (!(event.player instanceof LocalPlayer) || event.phase != TickEvent.Phase.END)
             return;
 
-        ClientPlayerEntity player = (ClientPlayerEntity) event.player;
+        LocalPlayer player = (LocalPlayer) event.player;
         //MovementInput input = player.movementInput;
-        ModifiableAttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        ModifiableAttributeInstance swimAttribute = player.getAttribute(ForgeMod.SWIM_SPEED.get());
+        AttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        AttributeInstance swimAttribute = player.getAttribute(ForgeMod.SWIM_SPEED.get());
 
         if (speedAttribute.hasModifier(INK_SWIM_SPEED))
             speedAttribute.removeModifier(INK_SWIM_SPEED);
@@ -81,24 +80,24 @@ public class PlayerMovementHandler
         if (PlayerCooldown.hasPlayerCooldown(player))
         {
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
-            player.inventory.selected = cooldown.getSlotIndex();
+            player.getInventory().selected = cooldown.getSlotIndex();
         }
 
-        if (!player.abilities.flying)
+        if (!player.getAbilities().flying)
         {
             if (speedAttribute.hasModifier(INK_SWIM_SPEED))
-                player.moveRelative((float) player.getAttributeValue(SplatcraftItems.INK_SWIM_SPEED) * (player.isOnGround() ? 1 : 0.75f), new Vector3d(player.xxa, 0.0f, player.zza).normalize());
+                player.moveRelative((float) player.getAttributeValue(SplatcraftItems.INK_SWIM_SPEED) * (player.isOnGround() ? 1 : 0.75f), new Vec3(player.xxa, 0.0f, player.zza).normalize());
 
         }
 
     }
 
     @SubscribeEvent
-    public static void onInputUpdate(InputUpdateEvent event)
+    public static void onInputUpdate(net.minecraftforge.client.event.MovementInputUpdateEvent event)
     {
 
-        MovementInput input = event.getMovementInput();
-        PlayerEntity player = event.getPlayer();
+        Input input = event.getInput();
+        Player player = event.getPlayer();
 
         float speedMod = !input.shiftKeyDown ? PlayerInfoCapability.isSquid(player) && InkBlockUtils.canSquidHide(player) ? 30f : 2f : 1f;
 
@@ -107,11 +106,11 @@ public class PlayerMovementHandler
         input.leftImpulse *= speedMod;
         //input = player.movementInput;
 
-        if (PlayerInfoCapability.isSquid(player) && InkBlockUtils.canSquidClimb(player) && !player.abilities.flying)
+        if (PlayerInfoCapability.isSquid(player) && InkBlockUtils.canSquidClimb(player) && !player.getAbilities().flying)
         {
-            ModifiableAttributeInstance gravity = player.getAttribute(net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get());
+            AttributeInstance gravity = player.getAttribute(net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get());
             boolean flag = player.getDeltaMovement().y <= 0.0D;
-            if (flag && player.hasEffect(Effects.SLOW_FALLING)) {
+            if (flag && player.hasEffect(MobEffects.SLOW_FALLING)) {
                 if (!gravity.hasModifier(SLOW_FALLING))
                     gravity.addTransientModifier(SLOW_FALLING);
                 player.fallDistance = 0.0F;
@@ -120,9 +119,9 @@ public class PlayerMovementHandler
             //player.setDeltaMovement(player.getDeltaMovement().add(0.0D, d0 / 4.0D, 0.0D));
 
             if (player.getDeltaMovement().y() < (input.jumping ? 0.46f : 0.4f))
-                player.moveRelative(0.06f * (input.jumping ? 2f : 1.7f), new Vector3d(0.0f, player.zza, -Math.min(0, player.zza)).normalize());
+                player.moveRelative(0.06f * (input.jumping ? 2f : 1.7f), new Vec3(0.0f, player.zza, -Math.min(0, player.zza)).normalize());
             if (player.getDeltaMovement().y() <= 0 && !input.shiftKeyDown)
-                player.moveRelative(0.035f, new Vector3d(0.0f, 1, 0.0f));
+                player.moveRelative(0.035f, new Vec3(0.0f, 1, 0.0f));
 
             if (input.shiftKeyDown)
                 player.setDeltaMovement(player.getDeltaMovement().x, Math.max(0, player.getDeltaMovement().y()), player.getDeltaMovement().z);
@@ -160,7 +159,7 @@ public class PlayerMovementHandler
                 input.leftImpulse = Math.min(1, Math.abs(input.leftImpulse)) * Math.signum(input.leftImpulse) * ((RollerItem) cooldown.storedStack.getItem()).settings.swingMobility;
             }
             if (cooldown.forceCrouch() && cooldown.getTime() > 1) {
-                input.shiftKeyDown = !player.abilities.flying;
+                input.shiftKeyDown = !player.getAbilities().flying;
             }
         }
     }

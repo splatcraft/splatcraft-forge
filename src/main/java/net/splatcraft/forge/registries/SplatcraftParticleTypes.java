@@ -2,28 +2,21 @@ package net.splatcraft.forge.registries;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.splatcraft.forge.client.particles.InkExplosionParticle;
-import net.splatcraft.forge.client.particles.InkExplosionParticleData;
-import net.splatcraft.forge.client.particles.InkSplashParticle;
-import net.splatcraft.forge.client.particles.InkSplashParticleData;
-import net.splatcraft.forge.client.particles.SquidSoulParticle;
-import net.splatcraft.forge.client.particles.SquidSoulParticleData;
+import net.splatcraft.forge.client.particles.*;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftParticleTypes
 {
 
-    public static final ParticleType<InkSplashParticleData> INK_SPLASH = new ParticleType<InkSplashParticleData>(false, InkSplashParticleData.DESERIALIZER)
-    {
+    public static final ParticleType<InkSplashParticleData> INK_SPLASH = new ParticleType<>(false, InkSplashParticleData.DESERIALIZER) {
         @Override
-        public Codec<InkSplashParticleData> codec()
-        {
+        public Codec<InkSplashParticleData> codec() {
             return InkSplashParticleData.CODEC;
         }
     };

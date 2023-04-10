@@ -1,67 +1,60 @@
 package net.splatcraft.forge.registries;
 
-import net.minecraft.block.Block;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.network.IContainerFactory;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.splatcraft.forge.client.renderer.tileentity.InkedBlockTileEntityRenderer;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.client.renderer.tileentity.RemotePedestalTileEntityRenderer;
-import net.splatcraft.forge.client.renderer.tileentity.StageBarrierTileEntityRenderer;
 import net.splatcraft.forge.tileentities.*;
 import net.splatcraft.forge.tileentities.container.InkVatContainer;
 import net.splatcraft.forge.tileentities.container.WeaponWorkbenchContainer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
+import static net.splatcraft.forge.Splatcraft.MODID;
 import static net.splatcraft.forge.registries.SplatcraftBlocks.*;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SplatcraftTileEntities
 {
+    protected static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
+    protected static final DeferredRegister<MenuType<?>> CONTAINER_REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
 
-    private static final List<TileEntityType<?>> te_registry = new ArrayList<>();
-    public static final TileEntityType<InkColorTileEntity> colorTileEntity = registerTileEntity("color", InkColorTileEntity::new, inkedWool, canvas, splatSwitch);
-    public static final TileEntityType<InkwellTileEntity> inkwellTileEntity = registerTileEntity("inkwell", InkwellTileEntity::new, inkwell);
-    public static final TileEntityType<InkedBlockTileEntity> inkedTileEntity = registerTileEntity("inked_block", InkedBlockTileEntity::new, inkedBlock, glowingInkedBlock, clearInkedBlock);
-    public static final TileEntityType<CrateTileEntity> crateTileEntity = registerTileEntity("crate", CrateTileEntity::new, crate, sunkenCrate);
-    public static final TileEntityType<StageBarrierTileEntity> stageBarrierTileEntity = registerTileEntity("stage_barrier", StageBarrierTileEntity::new, stageBarrier, stageVoid);
-    public static final TileEntityType<ColoredBarrierTileEntity> colorBarrierTileEntity = registerTileEntity("color_barrier", ColoredBarrierTileEntity::new, allowedColorBarrier, deniedColorBarrier);
-    public static final TileEntityType<InkVatTileEntity> inkVatTileEntity = registerTileEntity("ink_vat", InkVatTileEntity::new, inkVat);
-    public static final TileEntityType<RemotePedestalTileEntity> remotePedestalTileEntity = registerTileEntity("remote_pedestal", RemotePedestalTileEntity::new, remotePedestal);
-    public static final TileEntityType<SpawnPadTileEntity> spawnPadTileEntity = registerTileEntity("spawn_pad", SpawnPadTileEntity::new, spawnPad);
+    public static final RegistryObject<BlockEntityType<InkColorTileEntity>> colorTileEntity = registerTileEntity("color", InkColorTileEntity::new, inkedWool, canvas, splatSwitch, inkwell);
+    public static final RegistryObject<BlockEntityType<InkedBlockTileEntity>> inkedTileEntity = registerTileEntity("inked_block", InkedBlockTileEntity::new, inkedBlock);
+    public static final RegistryObject<BlockEntityType<CrateTileEntity>> crateTileEntity = registerTileEntity("crate", CrateTileEntity::new, crate, sunkenCrate);
+    public static final RegistryObject<BlockEntityType<StageBarrierTileEntity>> stageBarrierTileEntity = registerTileEntity("stage_barrier", StageBarrierTileEntity::new, stageBarrier, stageVoid);
+    public static final RegistryObject<BlockEntityType<ColoredBarrierTileEntity>> colorBarrierTileEntity = registerTileEntity("color_barrier", ColoredBarrierTileEntity::new, allowedColorBarrier, deniedColorBarrier);
+    public static final RegistryObject<BlockEntityType<InkVatTileEntity>> inkVatTileEntity = registerTileEntity("ink_vat", InkVatTileEntity::new, inkVat);
+    public static final RegistryObject<BlockEntityType<RemotePedestalTileEntity>>remotePedestalTileEntity = registerTileEntity("remote_pedestal", RemotePedestalTileEntity::new, remotePedestal);
+    public static final RegistryObject<BlockEntityType<SpawnPadTileEntity>> spawnPadTileEntity = registerTileEntity("spawn_pad", SpawnPadTileEntity::new, spawnPad);
 
-    private static final List<ContainerType<?>> c_registry = new ArrayList<>();
-
-    public static final ContainerType<InkVatContainer> inkVatContainer = registerContainer("ink_vat", InkVatContainer::new);
-    public static final ContainerType<WeaponWorkbenchContainer> weaponWorkbenchContainer = registerMenu("weapon_workbench", WeaponWorkbenchContainer::new);
+    public static final RegistryObject<MenuType<InkVatContainer>> inkVatContainer = registerContainer("ink_vat", InkVatContainer::new);
+    public static final RegistryObject<MenuType<WeaponWorkbenchContainer>> weaponWorkbenchContainer = registerContainer("weapon_workbench", WeaponWorkbenchContainer::new);
 
     @SuppressWarnings("ConstantConditions")
-    private static <T extends TileEntity> TileEntityType<T> registerTileEntity(String name, Supplier<T> factoryIn, Block... allowedBlocks)
+    private static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> registerTileEntity(String name, BlockEntityType.BlockEntitySupplier<T> factoryIn, RegistryObject<? extends Block>... allowedBlocks)
     {
-        TileEntityType<T> te = TileEntityType.Builder.of(factoryIn, allowedBlocks).build(null);
-        te.setRegistryName(name);
-        te_registry.add(te);
-        return te;
+        return REGISTRY.register(name, () ->
+        {
+            Block[] blocks = new Block[allowedBlocks.length];
+            for(int i = 0; i < blocks.length; i++)
+                blocks[i] = allowedBlocks[i].get();
+
+            return BlockEntityType.Builder.of(factoryIn, blocks).build(null);
+        });
     }
 
-    private static <T extends Container> ContainerType<T> registerContainer(String name, IContainerFactory<T> factoryIn)
+    private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerContainer(String name, MenuType.MenuSupplier<T> factoryIn)
     {
-        ContainerType<T> container = IForgeContainerType.create(factoryIn);
-        container.setRegistryName(name);
-        c_registry.add(container);
-        return container;
+        return CONTAINER_REGISTRY.register(name, () -> new MenuType<>(factoryIn));
     }
 
+    /*
     private static <T extends Container> ContainerType<T> registerMenu(String name, ContainerType.IFactory<T> factory)
     {
         ContainerType<T> container = new ContainerType<>(factory);
@@ -71,25 +64,19 @@ public class SplatcraftTileEntities
     }
 
     @SubscribeEvent
-    public static void tileEntityInit(final RegistryEvent.Register<TileEntityType<?>> event)
-    {
-        IForgeRegistry<TileEntityType<?>> registry = event.getRegistry();
-        te_registry.forEach(registry::register);
-    }
-
-    @SubscribeEvent
     public static void containerInit(final RegistryEvent.Register<ContainerType<?>> event)
     {
         IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
 
         c_registry.forEach(registry::register);
     }
-
+    */
     public static void bindTESR()
     {
-        ClientRegistry.bindTileEntityRenderer(inkedTileEntity, InkedBlockTileEntityRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(stageBarrierTileEntity, StageBarrierTileEntityRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(colorBarrierTileEntity, StageBarrierTileEntityRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(remotePedestalTileEntity, RemotePedestalTileEntityRenderer::new);
+
+        //BlockEntityRenderers.register(inkedTileEntity, InkedBlockTileEntityRenderer::new);
+        //BlockEntityRenderers.register(stageBarrierTileEntity.get(), StageBarrierTileEntityRenderer::new);
+        //BlockEntityRenderers.register(colorBarrierTileEntity, StageBarrierTileEntityRenderer::new);
+        BlockEntityRenderers.register(remotePedestalTileEntity.get(), RemotePedestalTileEntityRenderer::new);
     }
 }

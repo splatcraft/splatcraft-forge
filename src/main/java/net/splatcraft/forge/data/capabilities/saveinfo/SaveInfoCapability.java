@@ -1,51 +1,45 @@
 package net.splatcraft.forge.data.capabilities.saveinfo;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SaveInfoCapability implements ICapabilitySerializable<CompoundNBT>
+public class SaveInfoCapability implements ICapabilityProvider, INBTSerializable<CompoundTag>
 {
-    @CapabilityInject(ISaveInfo.class)
-    public static final Capability<ISaveInfo> CAPABILITY = null;
-    private static final ISaveInfo DEFAULT = new SaveInfo();
-    private final LazyOptional<ISaveInfo> instance = LazyOptional.of(CAPABILITY::getDefaultInstance);
+    public static Capability<SaveInfo> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static void register()
-    {
-        CapabilityManager.INSTANCE.register(ISaveInfo.class, new SaveInfoStorage(), SaveInfo::new);
-    }
+    private SaveInfo saveInfo = null;
+    private final LazyOptional<SaveInfo> opt = LazyOptional.of(() ->
+            saveInfo == null ? (saveInfo = new SaveInfo()) : saveInfo);
 
-    public static ISaveInfo get(MinecraftServer server) throws NullPointerException
+    public static SaveInfo get(MinecraftServer server) throws NullPointerException
     {
-        return server.getLevel(World.OVERWORLD).getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find WorldData capability!"));
+        return server.getLevel(Level.OVERWORLD).getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find WorldData capability!"));
     }
 
     @NotNull
     @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
-    {
-        return CAPABILITY.orEmpty(cap, instance);
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        return cap == CAPABILITY ? opt.cast() : LazyOptional.empty();
     }
 
     @Override
-    public CompoundNBT serializeNBT()
-    {
-        return (CompoundNBT) CAPABILITY.getStorage().writeNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null);
+    public CompoundTag serializeNBT() {
+        return opt.orElse(null).writeNBT(new CompoundTag());
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt)
+    public void deserializeNBT(CompoundTag nbt)
     {
-        CAPABILITY.getStorage().readNBT(CAPABILITY, instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null, nbt);
+        opt.orElse(null).readNBT(nbt);
     }
-
 }

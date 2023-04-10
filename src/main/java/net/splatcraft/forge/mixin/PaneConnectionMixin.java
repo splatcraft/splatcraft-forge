@@ -1,44 +1,28 @@
 package net.splatcraft.forge.mixin;
 
-import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.PaneBlock;
-import net.minecraft.block.SixWayBlock;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.IronBarsBlock;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Map;
-
-@Mixin(PaneBlock.class)
+@Mixin(IronBarsBlock.class)
 public class PaneConnectionMixin
 {
 
+    /*
     private static final Map<Direction, BooleanProperty> PROPERTY_BY_DIRECTION = SixWayBlock.PROPERTY_BY_DIRECTION.entrySet().stream().filter((facingProperty) -> facingProperty.getKey().getAxis().isHorizontal()).collect(Util.toMap());
 
     @Inject(at = @At("TAIL"), method = "updateShape", cancellable = true)
-    private void updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld levelIn, BlockPos currentPos, BlockPos facingPos, CallbackInfoReturnable<BlockState> callback)
+    private void updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor levelIn, BlockPos currentPos, BlockPos facingPos, CallbackInfoReturnable<BlockState> callback)
     {
         BlockState state = callback.getReturnValue();
 
-        if(levelIn instanceof World)
+        if(levelIn instanceof Level)
         {
-            callback.setReturnValue(facing.getAxis().getPlane() == Direction.Plane.HORIZONTAL ? state.setValue(PROPERTY_BY_DIRECTION.get(facing), state.getValue(PROPERTY_BY_DIRECTION.get(facing)) || this.canConnect((World) levelIn, facingPos, facing)) : state);
+            callback.setReturnValue(facing.getAxis().getPlane() == Direction.Plane.HORIZONTAL ? state.setValue(PROPERTY_BY_DIRECTION.get(facing), state.getValue(PROPERTY_BY_DIRECTION.get(facing)) || this.canConnect((Level) levelIn, facingPos, facing)) : state);
         }
     }
 
     @Inject(at = @At("TAIL"), method = "getStateForPlacement", cancellable = true)
-    private void getStateForPlacement(BlockItemUseContext context, CallbackInfoReturnable<BlockState> callback)
+    private void getStateForPlacement(BlockPlaceContext context, CallbackInfoReturnable<BlockState> callback)
     {
         BlockState state = callback.getReturnValue();
 
@@ -53,7 +37,7 @@ public class PaneConnectionMixin
         callback.setReturnValue(state);
     }
 
-    private boolean canConnect(World level, BlockPos pos, Direction direction)
+    private boolean canConnect(Level level, BlockPos pos, Direction direction)
     {
 
         if(!(level.getBlockEntity(pos) instanceof InkedBlockTileEntity))
@@ -65,4 +49,6 @@ public class PaneConnectionMixin
 
         return !Block.isExceptionForConnection(block) || block instanceof PaneBlock || block.is(BlockTags.WALLS);
     }
+
+     */
 }

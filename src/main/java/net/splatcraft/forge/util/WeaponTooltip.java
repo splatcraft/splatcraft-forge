@@ -1,9 +1,9 @@
 package net.splatcraft.forge.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class WeaponTooltip {
@@ -15,17 +15,17 @@ public class WeaponTooltip {
         this.valueGetter = valueGetter;
     }
 
-    public int getStatValue(ItemStack stack, @Nullable World level) {
+    public int getStatValue(ItemStack stack, @Nullable Level level) {
         return valueGetter.get(stack, level);
     }
 
-    public TextComponent getTextComponent(ItemStack stack, World level)
+    public MutableComponent getTextComponent(ItemStack stack, Level level)
     {
-        return new TranslationTextComponent("weaponStat." + name, getStatValue(stack, level));
+        return new TranslatableComponent("weaponStat." + name, getStatValue(stack, level));
     }
 
     public interface IStatValueGetter
     {
-        int get(ItemStack stack, @Nullable World level);
+        int get(ItemStack stack, @Nullable Level level);
     }
 }

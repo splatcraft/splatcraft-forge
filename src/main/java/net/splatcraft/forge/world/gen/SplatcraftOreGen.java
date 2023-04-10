@@ -1,44 +1,42 @@
 package net.splatcraft.forge.world.gen;
 
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.core.Holder;
+import net.minecraft.data.worldgen.features.FeatureUtils;
+import net.minecraft.data.worldgen.features.OreFeatures;
+import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.splatcraft.forge.registries.SplatcraftBlocks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Mod.EventBusSubscriber
 public class SplatcraftOreGen
 {
-    private static final ArrayList<ConfiguredFeature<?, ?>> overlevelGen = new ArrayList<>();
-    private static final ArrayList<ConfiguredFeature<?, ?>> beachGen = new ArrayList<>();
-    private static final ArrayList<ConfiguredFeature<?, ?>> oceanGen = new ArrayList<>();
+    private static final ArrayList<Holder<PlacedFeature>> overworldGen = new ArrayList<>();
+    private static final ArrayList<Holder<PlacedFeature>> beachGen = new ArrayList<>();
+    private static final ArrayList<Holder<PlacedFeature>> oceanGen = new ArrayList<>();
 
     public static void registerOres()
     {
-        beachGen.add(register("sardinium", Feature.ORE.configured(
-                new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE, SplatcraftBlocks.sardiniumOre.defaultBlockState(), 6))
-                .range(40).countRandom(8)));
+        OreConfiguration.TargetBlockState sardiniumTarget = OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, SplatcraftBlocks.sardiniumOre.get().defaultBlockState());
 
-        oceanGen.add(register("sardinium_ocean", Feature.ORE.configured(
-                new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE, SplatcraftBlocks.sardiniumOre.defaultBlockState(), 12))
-                .range(60).countRandom(8)));
-    }
+        Holder<ConfiguredFeature<OreConfiguration, ?>> sardinium_small = FeatureUtils.register("ore_sardinium_small", Feature.ORE, new OreConfiguration(Arrays.asList(sardiniumTarget), 6));
+        Holder<ConfiguredFeature<OreConfiguration, ?>> sardinium = FeatureUtils.register("ore_sardinium", Feature.ORE, new OreConfiguration(Arrays.asList(sardiniumTarget), 12));
 
-    protected static <FC extends IFeatureConfig> ConfiguredFeature<FC, ?> register(String name, ConfiguredFeature<FC, ?> feature)
-    {
-        return Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, new ResourceLocation(Splatcraft.MODID, name), feature);
+        beachGen.add(PlacementUtils.register("ore_sardinium_beach", sardinium_small, commonOrePlacement(6, HeightRangePlacement.triangle(VerticalAnchor.aboveBottom(0), VerticalAnchor.aboveBottom(40)))));
+        oceanGen.add(PlacementUtils.register("ore_sardinium_ocean", sardinium, commonOrePlacement(12, HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.aboveBottom(60)))));
     }
 
     @SubscribeEvent
@@ -46,17 +44,23 @@ public class SplatcraftOreGen
     {
         BiomeGenerationSettingsBuilder generation = event.getGeneration();
 
-        if (!event.getCategory().equals(Biome.Category.NETHER) && !event.getCategory().equals(Biome.Category.THEEND))
+        if (!event.getCategory().equals(Biome.BiomeCategory.NETHER) && !event.getCategory().equals(Biome.BiomeCategory.THEEND))
         {
-
-            for (ConfiguredFeature<?, ?> gen : event.getCategory().equals(Biome.Category.OCEAN) ? oceanGen :
-                    event.getCategory().equals(Biome.Category.BEACH) ? beachGen : overlevelGen)
-            {
-                if (gen != null)
-                {
-                    generation.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, gen);
-                }
-            }
+            generation.getFeatures(GenerationStep.Decoration.UNDERGROUND_ORES).addAll(event.getCategory().equals(Biome.BiomeCategory.OCEAN) ? oceanGen :
+                    event.getCategory().equals(Biome.BiomeCategory.BEACH) ? beachGen : overworldGen);
         }
+    }
+
+
+    private static List<PlacementModifier> orePlacement(PlacementModifier p_195347_, PlacementModifier p_195348_) {
+        return Arrays.asList(p_195347_, InSquarePlacement.spread(), p_195348_, BiomeFilter.biome());
+    }
+
+    private static List<PlacementModifier> commonOrePlacement(int veinsPerChunk, PlacementModifier modifier) {
+        return orePlacement(CountPlacement.of(veinsPerChunk), modifier);
+    }
+
+    private static List<PlacementModifier> rareOrePlacement(int chunksPerVein, PlacementModifier modifier) {
+        return orePlacement(RarityFilter.onAverageOnceEvery(chunksPerVein), modifier);
     }
 }

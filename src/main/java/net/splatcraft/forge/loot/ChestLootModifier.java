@@ -1,12 +1,12 @@
 package net.splatcraft.forge.loot;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -28,7 +28,7 @@ public class ChestLootModifier extends LootModifier
      *
      * @param conditionsIn the ILootConditions that need to be matched before the loot is modified.
      */
-    protected ChestLootModifier(ILootCondition[] conditionsIn, Item itemIn, int countMin, int countMax, float chance, ResourceLocation parentTable)
+    protected ChestLootModifier(LootItemCondition[] conditionsIn, Item itemIn, int countMin, int countMax, float chance, ResourceLocation parentTable)
     {
         super(conditionsIn);
         item = itemIn;
@@ -59,15 +59,14 @@ public class ChestLootModifier extends LootModifier
 
     public static class Serializer extends GlobalLootModifierSerializer<ChestLootModifier>
     {
-
         @Override
-        public ChestLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] ailootcondition)
+        public ChestLootModifier read(ResourceLocation location, JsonObject object, LootItemCondition[] ailootcondition)
         {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(object, "item")));
-            int countMin = JSONUtils.getAsInt(object, "countMin");
-            int countMax = JSONUtils.getAsInt(object, "countMax");
-            float chance = JSONUtils.getAsFloat(object, "chance");
-            ResourceLocation partentTable = new ResourceLocation(JSONUtils.getAsString(object, "parent"));
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(GsonHelper.getAsString(object, "item")));
+            int countMin = GsonHelper.getAsInt(object, "countMin");
+            int countMax = GsonHelper.getAsInt(object, "countMax");
+            float chance = GsonHelper.getAsFloat(object, "chance");
+            ResourceLocation partentTable = new ResourceLocation(GsonHelper.getAsString(object, "parent"));
             return new ChestLootModifier(ailootcondition, item, countMin, countMax, chance, partentTable);
         }
 

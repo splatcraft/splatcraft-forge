@@ -1,21 +1,21 @@
 package net.splatcraft.forge.tileentities.container;
 
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IWorldPosCallable;
 
-public abstract class PlayerInventoryContainer<T extends PlayerInventoryContainer<?>> extends Container
+public abstract class PlayerInventoryContainer<T extends PlayerInventoryContainer<?>> extends AbstractContainerMenu
 {
-    protected final IWorldPosCallable levelPosCallable;
+    protected final ContainerLevelAccess levelPosCallable;
     int xPos;
     int yPos;
 
-    public PlayerInventoryContainer(ContainerType<T> containerType, PlayerInventory player, IWorldPosCallable levelPosCallable, int invX, int invY, int id)
+    public PlayerInventoryContainer(MenuType<T> containerType, Inventory player, ContainerLevelAccess levelPosCallable, int invX, int invY, int id)
     {
         super(containerType, id);
         this.levelPosCallable = levelPosCallable;
@@ -37,13 +37,13 @@ public abstract class PlayerInventoryContainer<T extends PlayerInventoryContaine
     }
 
     @Override
-    public boolean stillValid(PlayerEntity playerIn)
+    public boolean stillValid(Player playerIn)
     {
-        return stillValid(this.levelPosCallable, playerIn, SplatcraftBlocks.weaponWorkbench);
+        return stillValid(this.levelPosCallable, playerIn, SplatcraftBlocks.weaponWorkbench.get());
     }
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity playerIn, int index)
+    public ItemStack quickMoveStack(Player playerIn, int index)
     {
         Slot slot = this.slots.get(index);
         ItemStack stack = slot.getItem();

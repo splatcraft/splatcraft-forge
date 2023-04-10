@@ -1,20 +1,18 @@
 package net.splatcraft.forge.loot;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.FishingPredicate;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.critereon.FishingHookPredicate;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -37,7 +35,7 @@ public class FishingLootModifier extends LootModifier
      *
      * @param conditionsIn the ILootConditions that need to be matched before the loot is modified.
      */
-    protected FishingLootModifier(ILootCondition[] conditionsIn, Item itemIn, int countMin, int countMax, float chance, int quality, boolean isTreasure)
+    protected FishingLootModifier(LootItemCondition[] conditionsIn, Item itemIn, int countMin, int countMax, float chance, int quality, boolean isTreasure)
     {
         super(conditionsIn);
         item = itemIn;
@@ -52,19 +50,17 @@ public class FishingLootModifier extends LootModifier
     @Override
     protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context)
     {
-        if (!(context.getParamOrNull(LootParameters.THIS_ENTITY) instanceof FishingBobberEntity) || isTreasure && !FishingPredicate.inOpenWater(true).matches(Objects.requireNonNull(context.getParamOrNull(LootParameters.THIS_ENTITY))))
+        if (!(context.getParamOrNull(LootContextParams.THIS_ENTITY) instanceof FishingHook) || isTreasure && !FishingHookPredicate.inOpenWater(true).matches(Objects.requireNonNull(context.getParamOrNull(LootContextParams.THIS_ENTITY))))
         {
             return generatedLoot;
         }
 
         float chanceMod = 0;
-        if (context.getParamOrNull(LootParameters.KILLER_ENTITY) instanceof LivingEntity)
+        if (context.getParamOrNull(LootContextParams.KILLER_ENTITY) instanceof LivingEntity entity)
         {
-            LivingEntity entity = (LivingEntity) context.getParamOrNull(LootParameters.KILLER_ENTITY);
-            assert entity != null;
             ItemStack stack = entity.getUseItem();
             int fishingLuck = EnchantmentHelper.getFishingLuckBonus(stack);
-            float luck = entity instanceof PlayerEntity ? ((PlayerEntity) entity).getLuck() : 0;
+            float luck = entity instanceof Player ? ((Player) entity).getLuck() : 0;
 
             if (isTreasure)
             {
@@ -89,42 +85,15 @@ public class FishingLootModifier extends LootModifier
     public static class Serializer extends GlobalLootModifierSerializer<FishingLootModifier>
     {
 
-        protected static int getInt(JsonObject json, String memberName)
-        {
-            if (json.has(memberName))
-            {
-                return getInt(json.get(memberName), memberName);
-            } else
-            {
-                throw new JsonSyntaxException("Missing " + memberName + ", expected to find a Int");
-            }
-        }
-
-        protected static boolean isBoolean(JsonObject json, String memberName)
-        {
-            return JSONUtils.isValidPrimitive(json, memberName) && json.getAsJsonPrimitive(memberName).isBoolean();
-        }
-
-        protected static int getInt(JsonElement json, String memberName)
-        {
-            if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isNumber())
-            {
-                return json.getAsInt();
-            } else
-            {
-                throw new JsonSyntaxException("Expected " + memberName + " to be a Int, was " + JSONUtils.convertToString(json, "???"));
-            }
-        }
-
         @Override
-        public FishingLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] ailootcondition)
+        public FishingLootModifier read(ResourceLocation location, JsonObject object, LootItemCondition[] ailootcondition)
         {
-            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(object, "item")));
-            int countMin = JSONUtils.getAsInt(object, "countMin");
-            int countMax = JSONUtils.getAsInt(object, "countMax");
-            float chance = JSONUtils.getAsFloat(object, "chance");
-            int quality = getInt(object, "quality");
-            boolean isTreasure = isBoolean(object, "isTreasure") && JSONUtils.getAsBoolean(object, "isTreasure");
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(GsonHelper.getAsString(object, "item")));
+            int countMin = GsonHelper.getAsInt(object, "countMin");
+            int countMax = GsonHelper.getAsInt(object, "countMax");
+            float chance = GsonHelper.getAsFloat(object, "chance");
+            int quality = GsonHelper.getAsInt(object, "quality");
+            boolean isTreasure = GsonHelper.isBooleanValue(object, "isTreasure") && GsonHelper.getAsBoolean(object, "isTreasure");
             return new FishingLootModifier(ailootcondition, item, countMin, countMax, chance, quality, isTreasure);
         }
 

@@ -1,48 +1,7 @@
 package net.splatcraft.forge.client.renderer.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockModelRenderer;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.math.vector.Vector4f;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.mixin.BlockRenderMixin;
-import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
-import net.splatcraft.forge.util.ClientUtils;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.system.MemoryStack;
-
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-import java.util.Random;
-
-public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockTileEntity> {
+public class InkedBlockTileEntityRenderer{// extends TileEntityRenderer<InkedBlockTileEntity> {
+    /*
     public static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "blocks/inked_block");
     public static final ArrayList<ResourceLocation> TEXTURES = new ArrayList<>();
     public static final ResourceLocation TEXTURE_GLOWING = new ResourceLocation(Splatcraft.MODID, "blocks/glitter");
@@ -73,8 +32,8 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
     {
         type = InkBlockUtils.getInkType(te.getBlockState());
         BlockState blockStateIn = te.getBlockState();
-        BlockRenderType blockrendertype = te.getSavedState().getRenderShape();
-        if (blockrendertype.equals(BlockRenderType.MODEL))
+        RenderShape blockrendertype = te.getSavedState().getRenderShape();
+        if (blockrendertype.equals(RenderShape.MODEL))
         {
             blockStateIn = te.getSavedState();
         }
@@ -111,9 +70,9 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
         BitSet bitset = new BitSet(3);
         float[] afloat = new float[Direction.values().length * 2];
 
-        float f = MathHelper.clamp(red, 0.0F, 1.0F);
-        float f1 = MathHelper.clamp(green, 0.0F, 1.0F);
-        float f2 = MathHelper.clamp(blue, 0.0F, 1.0F);
+        float f = Mth.clamp(red, 0.0F, 1.0F);
+        float f1 = Mth.clamp(green, 0.0F, 1.0F);
+        float f2 = Mth.clamp(blue, 0.0F, 1.0F);
 
         int[] combinedLights = new int[]{combinedLightIn};
         float[] brightness = new float[]{1};
@@ -244,4 +203,5 @@ public class InkedBlockTileEntityRenderer extends TileEntityRenderer<InkedBlockT
         //blockRenderer.renderBlock(SplatcraftBlocks.sardiniumBlock.defaultBlockState(), matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
         //blockRenderer.renderBlock(tileEntityIn.getSavedState(), matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
+    */
 }

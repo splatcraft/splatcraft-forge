@@ -1,9 +1,9 @@
 package net.splatcraft.forge.network.c2s;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.splatcraft.forge.tileentities.InkVatTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 
@@ -25,15 +25,15 @@ public class UpdateBlockColorPacket extends PlayToServerPacket
         inkVatPointer = pointer;
     }
 
-    public static UpdateBlockColorPacket decode(PacketBuffer buffer)
+    public static UpdateBlockColorPacket decode(FriendlyByteBuf buffer)
     {
         return new UpdateBlockColorPacket(new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt()), buffer.readInt(), buffer.readInt());
     }
 
     @Override
-    public void execute(PlayerEntity player)
+    public void execute(Player player)
     {
-        TileEntity te = player.level.getBlockEntity(pos);
+        BlockEntity te = player.level.getBlockEntity(pos);
 
         if (te instanceof InkVatTileEntity)
         {
@@ -44,7 +44,7 @@ public class UpdateBlockColorPacket extends PlayToServerPacket
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeInt(pos.getX());
         buffer.writeInt(pos.getY());

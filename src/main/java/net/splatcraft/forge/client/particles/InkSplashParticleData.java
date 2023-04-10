@@ -1,25 +1,25 @@
 package net.splatcraft.forge.client.particles;
 
-import net.splatcraft.forge.commands.arguments.InkColorArgument;
-import net.splatcraft.forge.registries.SplatcraftParticleTypes;
-import net.splatcraft.forge.util.ColorUtils;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.splatcraft.forge.commands.arguments.InkColorArgument;
+import net.splatcraft.forge.registries.SplatcraftParticleTypes;
+import net.splatcraft.forge.util.ColorUtils;
 
 import java.util.Locale;
 
-public class InkSplashParticleData implements IParticleData
+public class InkSplashParticleData implements ParticleOptions
 {
     @SuppressWarnings("deprecation")
-    public static final IDeserializer<InkSplashParticleData> DESERIALIZER = new IDeserializer<InkSplashParticleData>()
+    public static final Deserializer<InkSplashParticleData> DESERIALIZER = new Deserializer<InkSplashParticleData>()
     {
         @Override
         public InkSplashParticleData fromCommand(ParticleType<InkSplashParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException
@@ -31,7 +31,7 @@ public class InkSplashParticleData implements IParticleData
         }
 
         @Override
-        public InkSplashParticleData fromNetwork(ParticleType<InkSplashParticleData> particleTypeIn, PacketBuffer buffer)
+        public InkSplashParticleData fromNetwork(ParticleType<InkSplashParticleData> particleTypeIn, FriendlyByteBuf buffer)
         {
             return new InkSplashParticleData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
@@ -74,7 +74,7 @@ public class InkSplashParticleData implements IParticleData
     }
 
     @Override
-    public void writeToNetwork(PacketBuffer buffer)
+    public void writeToNetwork(FriendlyByteBuf buffer)
     {
         buffer.writeFloat(red);
         buffer.writeFloat(green);

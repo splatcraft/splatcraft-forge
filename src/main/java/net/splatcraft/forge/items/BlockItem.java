@@ -1,9 +1,9 @@
 package net.splatcraft.forge.items;
 
+import net.minecraft.world.level.block.Block;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
-import net.minecraft.block.Block;
 
-public class BlockItem extends net.minecraft.item.BlockItem
+public class BlockItem extends net.minecraft.world.item.BlockItem
 {
     public BlockItem(Block block)
     {

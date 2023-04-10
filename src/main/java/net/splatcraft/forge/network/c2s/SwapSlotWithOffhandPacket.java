@@ -1,9 +1,9 @@
 package net.splatcraft.forge.network.c2s;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class SwapSlotWithOffhandPacket extends PlayToServerPacket
 {
@@ -17,22 +17,22 @@ public class SwapSlotWithOffhandPacket extends PlayToServerPacket
 	}
 
 	@Override
-	public void execute(PlayerEntity player)
+	public void execute(Player player)
 	{
 		ItemStack stack = player.getOffhandItem();
-		player.setItemInHand(Hand.OFF_HAND, player.inventory.getItem(slot));
-		player.inventory.setItem(slot, stack);
+		player.setItemInHand(InteractionHand.OFF_HAND, player.getInventory().getItem(slot));
+		player.getInventory().setItem(slot, stack);
 		player.stopUsingItem();
 	}
 
 	@Override
-	public void encode(PacketBuffer buffer)
+	public void encode(FriendlyByteBuf buffer)
 	{
 		buffer.writeInt(slot);
 		buffer.writeBoolean(stopUsing);
 	}
 
-	public static SwapSlotWithOffhandPacket decode(PacketBuffer buffer)
+	public static SwapSlotWithOffhandPacket decode(FriendlyByteBuf buffer)
 	{
 		return new SwapSlotWithOffhandPacket(buffer.readInt(), buffer.readBoolean());
 	}

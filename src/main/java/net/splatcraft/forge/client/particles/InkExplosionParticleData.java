@@ -1,13 +1,13 @@
 package net.splatcraft.forge.client.particles;
 
-import net.splatcraft.forge.commands.arguments.InkColorArgument;
-import net.splatcraft.forge.registries.SplatcraftParticleTypes;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.splatcraft.forge.commands.arguments.InkColorArgument;
+import net.splatcraft.forge.registries.SplatcraftParticleTypes;
 
 public class InkExplosionParticleData extends InkSplashParticleData
 {
@@ -20,7 +20,7 @@ public class InkExplosionParticleData extends InkSplashParticleData
             ).apply(p_239803_0_, InkExplosionParticleData::new)
     );
     @SuppressWarnings("deprecation")
-    public static final IDeserializer<InkExplosionParticleData> DESERIALIZER = new IDeserializer<InkExplosionParticleData>()
+    public static final Deserializer<InkExplosionParticleData> DESERIALIZER = new Deserializer<InkExplosionParticleData>()
     {
         @Override
         public InkExplosionParticleData fromCommand(ParticleType<InkExplosionParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException
@@ -32,7 +32,7 @@ public class InkExplosionParticleData extends InkSplashParticleData
         }
 
         @Override
-        public InkExplosionParticleData fromNetwork(ParticleType<InkExplosionParticleData> particleTypeIn, PacketBuffer buffer)
+        public InkExplosionParticleData fromNetwork(ParticleType<InkExplosionParticleData> particleTypeIn, FriendlyByteBuf buffer)
         {
             return new InkExplosionParticleData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }

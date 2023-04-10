@@ -1,8 +1,8 @@
 package net.splatcraft.forge.network.s2c;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 
@@ -21,7 +21,7 @@ public class SendScanTurfResultsPacket extends PlayToClientPacket
         this.length = Math.min(colors.length, scores.length);
     }
 
-    public static SendScanTurfResultsPacket decode(PacketBuffer buffer)
+    public static SendScanTurfResultsPacket decode(FriendlyByteBuf buffer)
     {
         ArrayList<Integer> colorList = new ArrayList<>();
         ArrayList<Float> scoreList = new ArrayList<>();
@@ -36,7 +36,7 @@ public class SendScanTurfResultsPacket extends PlayToClientPacket
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeInt(length);
         for (int i = 0; i < length; i++)
@@ -49,13 +49,13 @@ public class SendScanTurfResultsPacket extends PlayToClientPacket
     @Override
     public void execute()
     {
-        PlayerEntity player = ClientUtils.getClientPlayer();
+        Player player = ClientUtils.getClientPlayer();
         int winner = -1;
         float winnerScore = -1;
 
         for (int i = 0; i < colors.length; i++)
         {
-            player.displayClientMessage(new TranslationTextComponent("status.scan_turf.score", ColorUtils.getFormatedColorName(colors[i], false), String.format("%.1f", scores[i])), false);
+            player.displayClientMessage(new TranslatableComponent("status.scan_turf.score", ColorUtils.getFormatedColorName(colors[i], false), String.format("%.1f", scores[i])), false);
             if (winnerScore < scores[i])
             {
                 winnerScore = scores[i];
@@ -65,7 +65,7 @@ public class SendScanTurfResultsPacket extends PlayToClientPacket
 
         if (winner != -1)
         {
-            player.displayClientMessage(new TranslationTextComponent("status.scan_turf.winner", ColorUtils.getFormatedColorName(winner, false)), false);
+            player.displayClientMessage(new TranslatableComponent("status.scan_turf.winner", ColorUtils.getFormatedColorName(winner, false)), false);
         }
 
     }

@@ -1,8 +1,8 @@
 package net.splatcraft.forge.network.s2c;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 
@@ -21,12 +21,12 @@ public class PlayerColorPacket extends PlayToClientPacket
         this.playerName = name;
     }
 
-    public PlayerColorPacket(PlayerEntity player, int color)
+    public PlayerColorPacket(Player player, int color)
     {
         this(player.getUUID(), player.getDisplayName().getString(), color);
     }
 
-    public static PlayerColorPacket decode(PacketBuffer buffer)
+    public static PlayerColorPacket decode(FriendlyByteBuf buffer)
     {
         int color = buffer.readInt();
         String name = buffer.readUtf();
@@ -35,7 +35,7 @@ public class PlayerColorPacket extends PlayToClientPacket
     }
 
     @Override
-    public void encode(PacketBuffer buffer)
+    public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeInt(color);
         buffer.writeUtf(playerName);
@@ -45,7 +45,7 @@ public class PlayerColorPacket extends PlayToClientPacket
     @Override
     public void execute()
     {
-        PlayerEntity player = Minecraft.getInstance().level.getPlayerByUUID(target);
+        Player player = Minecraft.getInstance().level.getPlayerByUUID(target);
         if (player != null)
         {
             ColorUtils.setPlayerColor(player, color, false);

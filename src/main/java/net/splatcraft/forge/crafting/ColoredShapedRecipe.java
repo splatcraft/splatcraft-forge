@@ -1,17 +1,15 @@
 package net.splatcraft.forge.crafting;
 
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.splatcraft.forge.items.ColoredBlockItem;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.Level;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.ColorUtils;
 
@@ -24,7 +22,7 @@ public class ColoredShapedRecipe extends ShapedRecipe
 
 
 	@Override
-	public ItemStack assemble(CraftingInventory inventory)
+	public ItemStack assemble(CraftingContainer inventory)
 	{
 		int color = 0, j = 0, curColor = 0;
 		boolean colorLock = false;
@@ -33,7 +31,7 @@ public class ColoredShapedRecipe extends ShapedRecipe
 		{
 			ItemStack stack = inventory.getItem(i);
 
-			if(stack.getItem() == SplatcraftItems.inkwell && ColorUtils.getInkColor(stack) != -1)
+			if(stack.getItem() == SplatcraftItems.inkwell.get() && ColorUtils.getInkColor(stack) != -1)
 			{
 				color += ColorUtils.getInkColor(stack);
 				j++;
@@ -51,13 +49,13 @@ public class ColoredShapedRecipe extends ShapedRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingInventory p_77569_1_, World p_77569_2_)
+	public boolean matches(CraftingContainer p_77569_1_, Level p_77569_2_)
 	{
 		return super.matches(p_77569_1_, p_77569_2_);
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return super.getSerializer();
 	}
 
@@ -78,7 +76,7 @@ public class ColoredShapedRecipe extends ShapedRecipe
 		}
 
 		@Override
-		public ShapedRecipe fromNetwork(ResourceLocation p_199426_1_, PacketBuffer p_199426_2_)
+		public ShapedRecipe fromNetwork(ResourceLocation p_199426_1_, FriendlyByteBuf p_199426_2_)
 		{
 			ShapedRecipe recipe = super.fromNetwork(p_199426_1_, p_199426_2_);
 			return new ColoredShapedRecipe(recipe.getId(), recipe.getGroup(), recipe.getRecipeWidth(), recipe.getRecipeHeight(), recipe.getIngredients(), recipe.getResultItem().copy());

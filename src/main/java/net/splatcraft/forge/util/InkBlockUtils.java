@@ -1,23 +1,21 @@
 package net.splatcraft.forge.util;
 
-import java.util.HashMap;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.blocks.InkedBlock;
@@ -31,9 +29,11 @@ import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 
+import java.util.HashMap;
+
 public class InkBlockUtils
 {
-    public static boolean playerInkBlock(PlayerEntity player, World level, BlockPos pos, int color, float damage, InkType inkType)
+    public static boolean playerInkBlock(Player player, Level level, BlockPos pos, int color, float damage, InkType inkType)
     {
         boolean inked = inkBlock(level, pos, color, damage, inkType);
 
@@ -45,7 +45,7 @@ public class InkBlockUtils
         return inked;
     }
 
-    public static boolean inkBlock(World level, BlockPos pos, int color, float damage, InkType inkType)
+    public static boolean inkBlock(Level level, BlockPos pos, int color, float damage, InkType inkType)
     {
         BlockState state = level.getBlockState(pos);
 
@@ -61,13 +61,13 @@ public class InkBlockUtils
         if(!SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INKABLE_GROUND))
             return false;
 
-        for(SpawnShieldEntity shieldEntity : level.getEntitiesOfClass(SpawnShieldEntity.class, new AxisAlignedBB(pos)))
+        for(SpawnShieldEntity shieldEntity : level.getEntitiesOfClass(SpawnShieldEntity.class, new AABB(pos)))
             if(!ColorUtils.colorEquals(level, pos, ColorUtils.getEntityColor(shieldEntity), color))
                 return false;
 
         BlockState inkState = getInkState(inkType, level, pos);
 
-        InkedBlockTileEntity inkte = (InkedBlockTileEntity) SplatcraftBlocks.inkedBlock.createTileEntity(inkState, level);
+        InkedBlockTileEntity inkte = (InkedBlockTileEntity) SplatcraftBlocks.inkedBlock.get().newBlockEntity(pos, inkState);
         if (inkte == null) {
             return false;
         }
@@ -75,7 +75,7 @@ public class InkBlockUtils
         inkte.setSavedState(state);
 
         level.setBlock(pos, inkState, 0);
-        level.setBlockEntity(pos, inkte);
+        level.setBlockEntity(inkte);
         level.markAndNotifyBlock(pos, level.getChunkAt(pos), inkState, inkState, 3, 512);
 
         for(Direction facing : Direction.values())
@@ -91,14 +91,14 @@ public class InkBlockUtils
     }
 
 
-    public static BlockState getInkState(InkType inkType, World level, BlockPos pos)
+    public static BlockState getInkState(InkType inkType, Level level, BlockPos pos)
     {
         return (inkType == null ? InkType.NORMAL : inkType).block.defaultBlockState();
 
     }
 
 
-    public static boolean canInkFromFace(World level, BlockPos pos, Direction face)
+    public static boolean canInkFromFace(Level level, BlockPos pos, Direction face)
     {
         if (!(level.getBlockState(pos).getBlock() instanceof IColoredBlock) && isUninkable(level, pos))
             return false;
@@ -106,14 +106,12 @@ public class InkBlockUtils
         return canInkPassthrough(level, pos.relative(face)) || !level.getBlockState(pos.relative(face)).is(SplatcraftTags.Blocks.BLOCKS_INK);
     }
 
-    public static boolean isUninkable(World level, BlockPos pos) {
+    public static boolean isUninkable(Level level, BlockPos pos) {
 
         if (InkedBlock.isTouchingLiquid(level, pos))
             return true;
 
-        Block block = level.getBlockState(pos).getBlock();
-
-        if (SplatcraftTags.Blocks.UNINKABLE_BLOCKS.contains(block))
+        if (level.getBlockState(pos).is(SplatcraftTags.Blocks.UNINKABLE_BLOCKS))
             return true;
 
         if (!(level.getBlockEntity(pos) instanceof InkColorTileEntity) && level.getBlockEntity(pos) != null)
@@ -122,7 +120,7 @@ public class InkBlockUtils
         return canInkPassthrough(level, pos);
     }
 
-    public static boolean canInkPassthrough(World level, BlockPos pos)
+    public static boolean canInkPassthrough(Level level, BlockPos pos)
     {
         BlockState state = level.getBlockState(pos);
 
@@ -155,7 +153,7 @@ public class InkBlockUtils
         {
             result = new BlockPos(entity.getX(), entity.getY()+i, entity.getZ());
 
-            VoxelShape shape = entity.level.getBlockState(result).getCollisionShape(entity.level, result, ISelectionContext.of(entity));
+            VoxelShape shape = entity.level.getBlockState(result).getCollisionShape(entity.level, result, CollisionContext.of(entity));
 
             if(!shape.isEmpty() && shape.bounds().minY <= entity.getY()-result.getY())
                 return result;
@@ -186,7 +184,7 @@ public class InkBlockUtils
             float xOff = (i < 2 ? .32f : 0) * (i % 2 == 0 ? 1 : -1), zOff = (i < 2 ? 0 : .32f) * (i % 2 == 0 ? 1 : -1);
             BlockPos pos = new BlockPos(entity.getX() - xOff, entity.getY(), entity.getZ() - zOff);
             Block block = entity.level.getBlockState(pos).getBlock();
-            VoxelShape shape = entity.level.getBlockState(pos).getCollisionShape(entity.level, pos, ISelectionContext.of(entity));
+            VoxelShape shape = entity.level.getBlockState(pos).getCollisionShape(entity.level, pos, CollisionContext.of(entity));
 
             if(pos.equals(getBlockStandingOnPos(entity)) || (!shape.isEmpty() && (shape.bounds().maxY < (entity.getY()-entity.blockPosition().getY()) || shape.bounds().minY > (entity.getY()-entity.blockPosition().getY()))))
                 continue;
@@ -231,13 +229,13 @@ public class InkBlockUtils
         return InkType.NORMAL;
     }
 
-    public static class InkType implements Comparable<InkType>, IStringSerializable
+    public static class InkType implements Comparable<InkType>
     {
         public static final HashMap<ResourceLocation, InkType> values = new HashMap<>();
 
-        public static final InkType NORMAL = new InkType(new ResourceLocation(Splatcraft.MODID, "normal"), SplatcraftBlocks.inkedBlock);
-        public static final InkType GLOWING = new InkType(new ResourceLocation(Splatcraft.MODID, "glowing"), SplatcraftItems.splatfestBand, SplatcraftBlocks.glowingInkedBlock);
-        public static final InkType CLEAR = new InkType(new ResourceLocation(Splatcraft.MODID, "clear"), SplatcraftItems.clearBand, SplatcraftBlocks.clearInkedBlock);
+        public static final InkType NORMAL = new InkType(new ResourceLocation(Splatcraft.MODID, "normal"), SplatcraftBlocks.inkedBlock.get());
+        public static final InkType GLOWING = new InkType(new ResourceLocation(Splatcraft.MODID, "glowing"), SplatcraftItems.splatfestBand.get(), SplatcraftBlocks.inkedBlock.get());
+        public static final InkType CLEAR = new InkType(new ResourceLocation(Splatcraft.MODID, "clear"), SplatcraftItems.clearBand.get(), SplatcraftBlocks.inkedBlock.get());
 
         private final ResourceLocation name;
         private final Item repItem;
@@ -278,7 +276,6 @@ public class InkBlockUtils
             return name.toString();
         }
 
-        @Override
         public String getSerializedName() {
             return getName().toString();
         }

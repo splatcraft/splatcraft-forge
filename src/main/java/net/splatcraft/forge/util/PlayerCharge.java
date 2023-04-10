@@ -1,9 +1,9 @@
 package net.splatcraft.forge.util;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.ChargerItem;
 
@@ -18,39 +18,39 @@ public class PlayerCharge
         this.charge = charge;
     }
 
-    public static PlayerCharge getCharge(PlayerEntity player)
+    public static PlayerCharge getCharge(Player player)
     {
         return PlayerInfoCapability.get(player).getPlayerCharge();
     }
 
-    public static void setCharge(PlayerEntity player, PlayerCharge charge)
+    public static void setCharge(Player player, PlayerCharge charge)
     {
         PlayerInfoCapability.get(player).setPlayerCharge(charge);
     }
 
-    public static boolean hasCharge(PlayerEntity player)
+    public static boolean hasCharge(Player player)
     {
         if (player == null || !PlayerInfoCapability.hasCapability(player))
             return false;
-        IPlayerInfo capability = PlayerInfoCapability.get(player);
+        PlayerInfo capability = PlayerInfoCapability.get(player);
         return capability.getPlayerCharge() != null && capability.getPlayerCharge().charge > 0;
     }
 
-    public static boolean shouldCreateCharge(PlayerEntity player)
+    public static boolean shouldCreateCharge(Player player)
     {
         if (player == null)
         {
             return false;
         }
-        IPlayerInfo capability = PlayerInfoCapability.get(player);
+        PlayerInfo capability = PlayerInfoCapability.get(player);
         return capability.getPlayerCharge() == null;
     }
 
-    public static boolean chargeMatches(PlayerEntity player, ItemStack stack) {
+    public static boolean chargeMatches(Player player, ItemStack stack) {
         return hasCharge(player) && getCharge(player).chargedWeapon.sameItem(stack);
     }
 
-    public static void addChargeValue(PlayerEntity player, ItemStack stack, float value) {
+    public static void addChargeValue(Player player, ItemStack stack, float value) {
         if (shouldCreateCharge(player)) {
             setCharge(player, new PlayerCharge(stack, 0));
         }
@@ -64,12 +64,12 @@ public class PlayerCharge
         }
     }
 
-    public static float getChargeValue(PlayerEntity player, ItemStack stack)
+    public static float getChargeValue(Player player, ItemStack stack)
     {
         return chargeMatches(player, stack) ? getCharge(player).charge : 0;
     }
 
-    public static void reset(PlayerEntity entity)
+    public static void reset(Player entity)
     {
         if (shouldCreateCharge(entity))
         {
@@ -80,7 +80,7 @@ public class PlayerCharge
         }
     }
 
-    public static void dischargeWeapon(PlayerEntity player)
+    public static void dischargeWeapon(Player player)
     {
         if (!player.level.isClientSide || !hasCharge(player))
         {
