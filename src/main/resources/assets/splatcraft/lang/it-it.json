@@ -395,7 +395,7 @@
   "status.no_ink": "Ricarica!",
   "status.cant_use": "Non disponibile!",
   "status.remote_mode": "telecomando in modalità %s",
-  "status.remote.undefined_area": "§cCoordinate invalide!"
+  "status.remote.undefined_area": "§cCoordinate invalide!",
   "status.scan_turf.out_of_world": "§cNon è possibile rilevare inchiostro fuori dal mondo!",
   "status.scan_turf.score": "%s = %s%%",
   "status.scan_turf.winner": "%s §evince!",
