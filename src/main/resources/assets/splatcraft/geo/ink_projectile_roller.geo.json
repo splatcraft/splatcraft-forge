@@ -1,0 +1,27 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.RollerInkProjectileModel",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "main",
+					"pivot": [0, 1, 0],
+					"cubes": [
+						{"origin": [-1, 1, -1], "size": [2, 2, 2], "uv": [6, 6]},
+						{"origin": [-0.75, 1.25, 1.5], "size": [1, 1, 1], "uv": [5, 0]},
+						{"origin": [1, 2, -0.5], "size": [1, 1, 3], "uv": [0, 4]},
+						{"origin": [-1.75, 3, -0.5], "size": [1, 1, 3], "inflate": -0.25, "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

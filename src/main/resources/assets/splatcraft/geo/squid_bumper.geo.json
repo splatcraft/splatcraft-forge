@@ -1,0 +1,52 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.SquidBumperModel",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "Base",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-5, 0, -5], "size": [10, 2, 10], "uv": [0, 46]}
+					]
+				},
+				{
+					"name": "Bumper",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-7, 2, -7], "size": [14, 14, 14], "uv": [0, 0]},
+						{"origin": [-6, 16, -6], "size": [12, 6, 12], "uv": [0, 28]},
+						{"origin": [-5, 22, -5], "size": [10, 5, 10], "uv": [56, 1]},
+						{"origin": [-4, 27, -4], "size": [8, 3, 8], "uv": [56, 17]}
+					]
+				},
+				{
+					"name": "Left_Side",
+					"parent": "Bumper",
+					"pivot": [3.3308, 12.7034, 0.5],
+					"rotation": [0, 0, 45.00011],
+					"cubes": [
+						{"origin": [-8, 14.7499, -1], "size": [10, 10, 2], "uv": [72, 28]}
+					]
+				},
+				{
+					"name": "Right_Side",
+					"parent": "Bumper",
+					"pivot": [-3.3308, 12.7034, 0.5],
+					"rotation": [0, 0, -45.00011],
+					"cubes": [
+						{"origin": [-2.0047, 14.7499, -1], "size": [10, 10, 2], "uv": [48, 28], "mirror": true}
+					]
+				}
+			]
+		}
+	]
+}

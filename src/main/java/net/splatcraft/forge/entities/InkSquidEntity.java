@@ -22,11 +22,15 @@ import net.splatcraft.forge.client.particles.SquidSoulParticleData;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class InkSquidEntity extends PathfinderMob implements IColoredEntity
+public class InkSquidEntity extends PathfinderMob implements IColoredEntity, IAnimatable
 {
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(InkSquidEntity.class, EntityDataSerializers.INT);
-
+    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     public InkSquidEntity(EntityType<? extends PathfinderMob> type, Level level)
     {
@@ -145,5 +149,15 @@ public class InkSquidEntity extends PathfinderMob implements IColoredEntity
     public boolean removeWhenFarAway(double distanceToClosestPlayer)
     {
         return false;
+    }
+
+    @Override
+    public void registerControllers(AnimationData data) {
+
+    }
+
+    @Override
+    public AnimationFactory getFactory() {
+        return factory;
     }
 }

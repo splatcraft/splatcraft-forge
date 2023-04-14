@@ -38,6 +38,7 @@ repositories {
     maven {
         url "https://www.cursemaven.com"
     }
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     mavenCentral()
 }
 
@@ -112,9 +113,10 @@ mixin {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
-    //implementation fg.deobf("curse.maven:obfuscate-${project.obfuscate_version}")
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
     implementation 'org.jetbrains:annotations:23.0.0'
+
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${project.geckolib_version}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

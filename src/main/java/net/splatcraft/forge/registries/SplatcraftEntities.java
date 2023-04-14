@@ -1,5 +1,6 @@
 package net.splatcraft.forge.registries;
 
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,6 +19,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryObject;
+import net.splatcraft.forge.client.renderer.InkProjectileRenderer;
+import net.splatcraft.forge.client.renderer.InkSquidRenderer;
+import net.splatcraft.forge.client.renderer.SquidBumperRenderer;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.entities.InkSquidEntity;
 import net.splatcraft.forge.entities.SpawnShieldEntity;
@@ -58,9 +62,14 @@ public class SplatcraftEntities
         return create(name, supplier, classification, 1, 1);
     }
 
-    /*
+
     public static void bindRenderers()
     {
+        EntityRenderers.register(INK_SQUID.get(), InkSquidRenderer::new);
+        EntityRenderers.register(SQUID_BUMPER.get(), SquidBumperRenderer::new);
+        EntityRenderers.register(INK_PROJECTILE.get(), InkProjectileRenderer::new);
+
+        /*
         RenderingRegistry.registerEntityRenderingHandler(INK_PROJECTILE, InkProjectileRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(INK_SQUID, InkSquidRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SQUID_BUMPER, SquidBumperRenderer::new);
@@ -70,8 +79,9 @@ public class SplatcraftEntities
         RenderingRegistry.registerEntityRenderingHandler(SUCTION_BOMB, SuctionBombRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(SPLAT_BOMB, SplatBombRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(CURLING_BOMB, CurlingBombRenderer::new);
+         */
     }
-    */
+
 
     @SubscribeEvent
     public static void setEntityAttributes(EntityAttributeCreationEvent event)
