@@ -113,7 +113,6 @@ public class SquidBumperItem extends Item implements IColoredItem
                     bumper.moveTo(bumper.getX(), bumper.getY(), bumper.getZ(), f, 0);
                     bumper.setYHeadRot(f);
                     bumper.yHeadRotO = f;
-
                     level.addFreshEntity(bumper);
                     level.playSound(null, bumper.getX(), bumper.getY(), bumper.getZ(), SplatcraftSounds.squidBumperPlace, SoundSource.BLOCKS, 0.75F, 0.8F);
                 }

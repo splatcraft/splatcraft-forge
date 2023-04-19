@@ -11,8 +11,9 @@ import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.util.Color;
+import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
 
-public class InkProjectileRenderer extends GeoNonLivingRenderer<InkProjectileEntity>
+public class InkProjectileRenderer extends GeoProjectilesRenderer<InkProjectileEntity>
 {
 	public InkProjectileRenderer(EntityRendererProvider.Context renderManager)
 	{

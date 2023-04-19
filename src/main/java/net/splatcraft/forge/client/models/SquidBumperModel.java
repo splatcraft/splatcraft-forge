@@ -3,7 +3,9 @@ package net.splatcraft.forge.client.models;
 import net.minecraft.resources.ResourceLocation;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.entities.SquidBumperEntity;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class SquidBumperModel extends AnimatedGeoModel<SquidBumperEntity>
 {
@@ -24,10 +26,8 @@ public class SquidBumperModel extends AnimatedGeoModel<SquidBumperEntity>
 	}
 
 	@Override
-	public void setCustomAnimations(SquidBumperEntity animatable, int instanceId)
+	public void setCustomAnimations(SquidBumperEntity animatable, int instanceId, AnimationEvent animationEvent)
 	{
-		super.setCustomAnimations(animatable, instanceId);
-
-		//IBone head = this.getAnimationProcessor().getBone("head");
+		super.setCustomAnimations(animatable, instanceId, animationEvent);
 	}
 }

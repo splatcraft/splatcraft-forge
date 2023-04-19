@@ -62,6 +62,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity, I
     private boolean playPopAnim = false;
     private boolean playHealAnim = false;
     private boolean playRespawnAnim = false;
+    private boolean playInkAnim = false;
 
     public int prevRespawnTime = 0;
     private final AnimationFactory animFactory = GeckoLibUtil.createFactory(this);
@@ -264,7 +265,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity, I
             case 31:
                 if (this.level.isClientSide)
                 {
-                    hurtCooldown = level.getGameTime();
+                    playInkAnim = true;
                     this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SplatcraftSounds.squidBumperInk, this.getSoundSource(), 0.3F, 1.0F, false);
                 }
                 break;
@@ -478,7 +479,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity, I
     {
         if (getInkHealth() <= 0)
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.squidBumperReady, getSoundSource(), 1, 1);
-        else playHealAnim = true;
+        else if(getInkHealth() < getMaxHealth()) playHealAnim = true;
         setInkHealth(maxInkHealth);
         setRespawnTime(0);
 
@@ -497,9 +498,26 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity, I
     @Override
     public void registerControllers(AnimationData data)
     {
+
+        data.addAnimationController(new AnimationController<>(this, "hurtController", 0, event ->
+        {
+            if(punchCooldown == level.getGameTime())
+            {
+                event.getController().markNeedsReload();
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.squid_bumper.break"));
+            }
+            else if(playInkAnim)
+            {
+                event.getController().markNeedsReload();
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.squid_bumper.ink"));
+                playInkAnim = false;
+            }
+
+            return PlayState.CONTINUE;
+        }));
+
         AnimationController<SquidBumperEntity> controller = new AnimationController<>(this, "controller", 0, event ->
         {
-
             if(playRespawnAnim)
             {
                 event.getController().markNeedsReload();
@@ -523,6 +541,8 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity, I
             return PlayState.CONTINUE;
         });
 
+        data.addAnimationController(controller);
+
         controller.registerCustomInstructionListener(event ->
         {
             if(event.instructions.equals("playPopEffect"))
@@ -539,9 +559,6 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity, I
             }
         });
 
-
-
-        data.addAnimationController(controller);
     }
 
     @Override
