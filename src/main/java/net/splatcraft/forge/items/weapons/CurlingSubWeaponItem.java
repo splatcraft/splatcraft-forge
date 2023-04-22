@@ -9,6 +9,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,8 +17,8 @@ public class CurlingSubWeaponItem extends SubWeaponItem {
     public static final float MAX_INK_RECOVERY_COOLDOWN = 70f / 3f;
     public static final float INK_RECOVERY_COOLDOWN_MULTIPLIER = 40f / 3f;
 
-    public CurlingSubWeaponItem(String name, EntityType<? extends AbstractSubWeaponEntity> entityType, float directDamage, float explosionSize, float inkConsumption, int inkRecoveryCooldown, int maxUseTime, SubWeaponAction useTick) {
-        super(name, entityType, directDamage, explosionSize, inkConsumption, inkRecoveryCooldown, maxUseTime, useTick);
+    public CurlingSubWeaponItem(EntityType<? extends AbstractSubWeaponEntity> entityType, WeaponSettings settings, int maxUseTime, SubWeaponAction useTick) {
+        super(entityType, settings, maxUseTime, useTick);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class CurlingSubWeaponItem extends SubWeaponItem {
                 stack.shrink(1);
         } else {
             int cookTime = stack.getTag().getCompound("EntityData").getInt("CookTime");
-            reduceInk(entity, this, inkConsumption, (int) (MAX_INK_RECOVERY_COOLDOWN - cookTime / CurlingBombEntity.MAX_COOK_TIME * INK_RECOVERY_COOLDOWN_MULTIPLIER), false);
+            reduceInk(entity, this, settings.inkConsumption, (int) (MAX_INK_RECOVERY_COOLDOWN - cookTime / CurlingBombEntity.MAX_COOK_TIME * INK_RECOVERY_COOLDOWN_MULTIPLIER), false);
         }
     }
 }

@@ -27,148 +27,136 @@ import net.splatcraft.forge.util.PlayerCooldown;
 
 public class SuperJumpCommand
 {
-	public static void register(CommandDispatcher<CommandSource> dispatcher)
-	{
-		dispatcher.register(Commands.literal("superjump").requires(commandSource -> commandSource.hasPermission(2)).then(Commands.argument("to", BlockPosArgument.blockPos()).executes(context ->
-		{
-			BlockPos target = BlockPosArgument.getOrLoadBlockPos(context, "to");
-			return execute(context, new Vector3d(target.getX() + .5d, target.getY(), target.getZ() + .5d));
-		})).then(Commands.argument("target", EntityArgument.entity()).executes(context ->
-				execute(context, EntityArgument.getEntity(context, "target").position()))));
-	}
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+        dispatcher.register(Commands.literal("superjump").requires(commandSource -> commandSource.hasPermission(2)).then(Commands.argument("to", BlockPosArgument.blockPos()).executes(context ->
+        {
+            BlockPos target = BlockPosArgument.getOrLoadBlockPos(context, "to");
+            return execute(context, new Vector3d(target.getX() + .5d, target.getY(), target.getZ() + .5d));
+        })).then(Commands.argument("target", EntityArgument.entity()).executes(context ->
+                execute(context, EntityArgument.getEntity(context, "target").position()))));
+    }
 
-	private static int execute(CommandContext<CommandSource> context, Vector3d target) throws CommandSyntaxException
-	{
-		ServerPlayerEntity player = context.getSource().getPlayerOrException();
+    private static int execute(CommandContext<CommandSource> context, Vector3d target) throws CommandSyntaxException {
+        ServerPlayerEntity player = context.getSource().getPlayerOrException();
 
+        PlayerCooldown.setPlayerCooldown(player, new SuperJump(player.inventory.selected, target, player.position(), player.noPhysics));
 
-		PlayerCooldown.setPlayerCooldown(player, new SuperJump(player.inventory.selected, target, player.position(), player.noPhysics));
+        player.displayClientMessage(new StringTextComponent("pchoooooo"), false);
+        SplatcraftPacketHandler.sendToPlayer(new UpdatePlayerInfoPacket(player), player);
 
-		player.displayClientMessage(new StringTextComponent("pchoooooo"), false);
-		SplatcraftPacketHandler.sendToPlayer(new UpdatePlayerInfoPacket(player), player);
+        return 0;
+    }
 
-		return 0;
-	}
+    @Mod.EventBusSubscriber
+    public static class Subscriber {
+        @SubscribeEvent
+        public static void playerTick(LivingEvent.LivingUpdateEvent event) {
+            if(!(event.getEntityLiving() instanceof PlayerEntity))
+                return;
 
-	@Mod.EventBusSubscriber
-	public static class Subscriber
-	{
-		@SubscribeEvent
-		public static void playerTick(LivingEvent.LivingUpdateEvent event)
-		{
-			if(!(event.getEntityLiving() instanceof PlayerEntity))
-				return;
+            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+            if(!PlayerCooldown.hasPlayerCooldown(player))
+                return;
 
-			if(!PlayerCooldown.hasPlayerCooldown(player))
-				return;
+            IPlayerInfo info = PlayerInfoCapability.get(player);
+            PlayerCooldown cooldown = info.getPlayerCooldown();
 
-			IPlayerInfo info = PlayerInfoCapability.get(player);
-			PlayerCooldown cooldown = info.getPlayerCooldown();
+            if(cooldown instanceof SuperJump) {
+                Vector3d target = ((SuperJump) cooldown).target;
 
-			if(cooldown instanceof SuperJump)
-			{
-				Vector3d target = ((SuperJump) cooldown).target;
+                double distLeft = (player.position().multiply(1,0,1).distanceTo(target.multiply(1,0,1)));
 
-				double distLeft = (player.position().multiply(1,0,1).distanceTo(target.multiply(1,0,1)));
+                if(distLeft >= ((SuperJump) cooldown).distanceLeft)
+                    cooldown.setTime(0);
 
-				if(distLeft >= ((SuperJump) cooldown).distanceLeft)
-					cooldown.setTime(0);
+                ((SuperJump) cooldown).setDistanceLeft(distLeft);
 
-				((SuperJump) cooldown).setDistanceLeft(distLeft);
+                player.stopFallFlying();
+                player.abilities.flying = false;
+                double distancePctg = ((SuperJump) cooldown).distanceLeft / ((SuperJump) cooldown).distance;
 
-				player.stopFallFlying();
-				player.abilities.flying = false;
-				double distancePctg = ((SuperJump) cooldown).distanceLeft/((SuperJump) cooldown).distance;
+                player.fallDistance = 0;
 
-				player.fallDistance = 0;
+                boolean squid = info.isSquid();
+                if (distancePctg > .2f != squid) {
+                    info.setIsSquid(!squid);
+                    if (!player.level.isClientSide())
+                        SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(player.getUUID(), !squid), player);
+                }
 
-				if (distancePctg > .2f != info.isSquid()) {
-					info.setIsSquid(!info.isSquid());
-					if (!player.level.isClientSide())
-						SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(player.getUUID(), info.isSquid()), player);
-				}
+                player.noPhysics = true;
 
-				player.noPhysics = true;
+                if (((SuperJump) cooldown).distanceLeft < 0.01)
+                    cooldown.setTime(0);
+                else {
+                    Vector3d dist = target.subtract(player.position());
 
-				if(((SuperJump) cooldown).distanceLeft < 0.01)
-					cooldown.setTime(0);
-				else
-				{
-					Vector3d dist = target.subtract(player.position());
+                    dist = dist.multiply(1, 0, 1).scale(.1f).add(0, distancePctg > 0.9 ? Math.max(2, dist.y) * 1.25 : player.getDeltaMovement().y, 0);
 
-					dist = dist.multiply(1, 0, 1).scale(.1f).add(0, distancePctg > 0.9 ? Math.max(2, dist.y) * 1.25 : player.getDeltaMovement().y, 0);
+                    dist = new Vector3d(Math.min(3, dist.x), dist.y, Math.min(3, dist.z));
 
-					dist = new Vector3d(Math.min(3, dist.x), dist.y, Math.min(3, dist.z));
+                    player.setDeltaMovement(dist);
+                    player.hurtMarked = true;
 
-					player.setDeltaMovement(dist);
-					player.hurtMarked = true;
+                    //new Vector3d((entitylivingbaseIn.getX() - entitylivingbaseIn.xo), (entitylivingbaseIn.getY() - entitylivingbaseIn.yo), (entitylivingbaseIn.getZ() - entitylivingbaseIn.zo)).normalize().y
+                }
+            }
 
-					//new Vector3d((entitylivingbaseIn.getX() - entitylivingbaseIn.xo), (entitylivingbaseIn.getY() - entitylivingbaseIn.yo), (entitylivingbaseIn.getZ() - entitylivingbaseIn.zo)).normalize().y
-				}
-			}
+        }
+    }
 
-		}
-	}
-
-	public static class SuperJump extends PlayerCooldown
-	{
-		final Vector3d target;
-		double distance;
-		double distanceLeft;
-		boolean noClip = false;
+    public static class SuperJump extends PlayerCooldown {
+        final Vector3d target;
+        double distance;
+        double distanceLeft;
+        boolean noClip = false;
 
 
-		public SuperJump(int slotIndex, Vector3d target, Vector3d from, boolean canClip)
-		{
-			this(slotIndex, target, target.multiply(1,0,1).distanceTo(from.multiply(1,0,1)));
-			this.noClip = canClip;
-		}
+        public SuperJump(int slotIndex, Vector3d target, Vector3d from, boolean canClip) {
+            this(slotIndex, target, target.multiply(1,0,1).distanceTo(from.multiply(1,0,1)));
+            this.noClip = canClip;
+        }
 
-		public SuperJump(int slotIndex, Vector3d target, double distance)
-		{
-			super(ItemStack.EMPTY, (int) distance, slotIndex, Hand.MAIN_HAND, false, false, false, false);
-			this.target = target;
-			this.distance = distance;
-			distanceLeft = distance;
-		}
+        public SuperJump(int slotIndex, Vector3d target, double distance) {
+            super(ItemStack.EMPTY, (int) distance, slotIndex, Hand.MAIN_HAND, false, false, false, false);
+            this.target = target;
+            this.distance = distance;
+            distanceLeft = distance;
+        }
 
-		public SuperJump(CompoundNBT nbt)
-		{
-			this(nbt.getInt("SlotIndex"), new Vector3d(nbt.getDouble("TargetX"), nbt.getDouble("TargetY"), nbt.getDouble("TargetZ")), nbt.getDouble("Distance"));
-			distanceLeft = nbt.getDouble("DistanceLeft");
-			noClip = nbt.getBoolean("CanClip");
-		}
+        public SuperJump(CompoundNBT nbt) {
+            this(nbt.getInt("SlotIndex"), new Vector3d(nbt.getDouble("TargetX"), nbt.getDouble("TargetY"), nbt.getDouble("TargetZ")), nbt.getDouble("Distance"));
+            distanceLeft = nbt.getDouble("DistanceLeft");
+            noClip = nbt.getBoolean("CanClip");
+        }
 
-		public void setDistanceLeft(double distanceLeft) {
-			this.distanceLeft = distanceLeft;
-		}
+        public void setDistanceLeft(double distanceLeft) {
+            this.distanceLeft = distanceLeft;
+        }
 
-		@Override
-		public PlayerCooldown setTime(int v)
-		{
-			if(getTime() > 0)
-				super.setTime((int) distanceLeft);
+        @Override
+        public PlayerCooldown setTime(int v) {
+            if(getTime() > 0)
+                super.setTime((int) distanceLeft);
 
-			return this;
-		}
+            return this;
+        }
 
-		@Override
-		public CompoundNBT writeNBT(CompoundNBT nbt)
-		{
-			nbt.putInt("SlotIndex", getSlotIndex());
-			nbt.putDouble("Distance", distance);
-			nbt.putDouble("DistanceLeft", distanceLeft);
+        @Override
+        public CompoundNBT writeNBT(CompoundNBT nbt) {
+            nbt.putInt("SlotIndex", getSlotIndex());
+            nbt.putDouble("Distance", distance);
+            nbt.putDouble("DistanceLeft", distanceLeft);
 
-			nbt.putDouble("TargetX", target.x);
-			nbt.putDouble("TargetY", target.y);
-			nbt.putDouble("TargetZ", target.z);
+            nbt.putDouble("TargetX", target.x);
+            nbt.putDouble("TargetY", target.y);
+            nbt.putDouble("TargetZ", target.z);
 
-			nbt.putBoolean("SuperJump", true);
-			nbt.putBoolean("CanClip", noClip);
+            nbt.putBoolean("SuperJump", true);
+            nbt.putBoolean("CanClip", noClip);
 
-			return nbt;
-		}
-	}
+            return nbt;
+        }
+    }
 }

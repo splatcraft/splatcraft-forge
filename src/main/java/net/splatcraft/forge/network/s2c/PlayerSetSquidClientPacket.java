@@ -1,6 +1,7 @@
 package net.splatcraft.forge.network.s2c;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.splatcraft.forge.data.capabilities.playerinfo.IPlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
@@ -31,10 +32,11 @@ public class PlayerSetSquidClientPacket extends PlayToClientPacket
 
     @Override
     public void execute() {
-        if (Minecraft.getInstance().level.getPlayerByUUID(this.target) == null) {
+        PlayerEntity player = Minecraft.getInstance().level.getPlayerByUUID(this.target);
+        if (player == null || this.target.equals(Minecraft.getInstance().player.getUUID())) {
             return;
         }
-        IPlayerInfo target = PlayerInfoCapability.get(Minecraft.getInstance().level.getPlayerByUUID(this.target));
+        IPlayerInfo target = PlayerInfoCapability.get(player);
         target.setIsSquid(squid);
     }
 }

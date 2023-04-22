@@ -104,7 +104,7 @@ public class InkTankItem extends ColoredArmorItem
     public void inventoryTick(@NotNull ItemStack stack, @NotNull World level, @NotNull Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
-        if (entity instanceof PlayerEntity && SplatcraftGameRules.getLocalizedRule(level, entity.blockPosition(), SplatcraftGameRules.RECHARGEABLE_INK_TANK)) {
+        if (entity instanceof PlayerEntity && !level.isClientSide && SplatcraftGameRules.getLocalizedRule(level, entity.blockPosition(), SplatcraftGameRules.RECHARGEABLE_INK_TANK)) {
             PlayerEntity player = (PlayerEntity) entity;
             float ink = getInkAmount(stack);
 

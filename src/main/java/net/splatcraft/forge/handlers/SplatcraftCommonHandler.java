@@ -39,7 +39,12 @@ import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.InkWaxerItem;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.RequestPlayerInfoPacket;
-import net.splatcraft.forge.network.s2c.*;
+import net.splatcraft.forge.network.s2c.UpdateBooleanGamerulesPacket;
+import net.splatcraft.forge.network.s2c.UpdateClientColorsPacket;
+import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
+import net.splatcraft.forge.network.s2c.UpdateIntGamerulesPacket;
+import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
+import net.splatcraft.forge.network.s2c.UpdateStageListPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
@@ -253,23 +258,23 @@ public class SplatcraftCommonHandler
         IPlayerInfo info = PlayerInfoCapability.get(event.player);
         if(PlayerInfoCapability.hasCapability(event.player))
         {
-            if(!event.player.level.isClientSide) {
-                ItemStack inkBand = CommonUtils.getItemInInventory(event.player, itemStack -> itemStack.getItem().is(SplatcraftTags.Items.INK_BANDS) && InkBlockUtils.hasInkType(itemStack));
-
-                if (!info.getInkBand().equals(inkBand, false)) {
-                    info.setInkBand(inkBand);
-                    SplatcraftPacketHandler.sendToTrackersAndSelf(new UpdatePlayerInfoPacket(event.player), event.player);
-                }
-            }
-
             if (event.player.deathTime <= 0 && !info.isInitialized()) {
                 info.setInitialized(true);
                 info.setPlayer(event.player);
                 if (LOCAL_COLOR.containsKey(event.player))
                     info.setColor(LOCAL_COLOR.get(event.player));
 
-                if (event.player.level.isClientSide)
+                if (event.side.isClient())
                     SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
+            }
+
+            if (event.side.isServer()) {
+                ItemStack inkBand = CommonUtils.getItemInInventory(event.player, itemStack -> itemStack.getItem().is(SplatcraftTags.Items.INK_BANDS) && InkBlockUtils.hasInkType(itemStack));
+
+                if (!info.getInkBand().equals(inkBand, false)) {
+                    info.setInkBand(inkBand);
+                    SplatcraftPacketHandler.sendToTrackersAndSelf(new UpdatePlayerInfoPacket(event.player), event.player);
+                }
             }
         }
     }

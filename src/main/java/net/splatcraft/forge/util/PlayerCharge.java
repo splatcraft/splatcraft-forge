@@ -11,6 +11,7 @@ public class PlayerCharge
 {
     public ItemStack chargedWeapon;
     public float charge;
+    public boolean discharging;
 
     public PlayerCharge(ItemStack stack, float charge)
     {
@@ -56,6 +57,7 @@ public class PlayerCharge
         }
 
         PlayerCharge charge = getCharge(player);
+        charge.discharging = false;
 
         if (chargeMatches(player, stack)) {
             charge.charge = Math.max(0, Math.min(charge.charge + value, 1f));
@@ -80,21 +82,18 @@ public class PlayerCharge
         }
     }
 
-    public static void dischargeWeapon(PlayerEntity player)
-    {
-        if (!player.level.isClientSide || !hasCharge(player))
-        {
+    public static void dischargeWeapon(PlayerEntity player) {
+        if (!player.level.isClientSide || !hasCharge(player)) {
             return;
         }
         PlayerCharge charge = getCharge(player);
         Item dischargeItem = charge.chargedWeapon.getItem();
 
-        if (dischargeItem instanceof ChargerItem)
-        {
+        if (!(dischargeItem instanceof ChargerItem) || !charge.discharging && charge.charge < 1.0f) {
+            charge.charge = 0f;
+        } else {
             charge.charge = Math.max(0, charge.charge - ((ChargerItem) dischargeItem).dischargeSpeed);
-        } else
-        {
-            charge.charge = 0;
+            charge.discharging = true;
         }
     }
 

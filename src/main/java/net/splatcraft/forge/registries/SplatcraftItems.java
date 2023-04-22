@@ -168,27 +168,27 @@ public class SplatcraftItems {
     //Chargers
     public static final ChargerItem splatCharger = new ChargerItem(new WeaponSettings("splat_charger")
             .setProjectileSize(0.7f).setProjectileLifespan(13).setProjectileSpeed(1.8f)
-            .setStartupTicks(20).setDischargeTicks(20)
+            .setStartupTicks(20).setDischargeTicks(25)
             .setMinInkConsumption(2.25f).setInkConsumption(18).setInkRecoveryCooldown(7)
-            .setBaseDamage(32)
+            .setMinDamage(8).setBaseDamage(16).setChargedDamage(32)
             .setChargerMobility(0.4f)
             .setFastMidAirCharge(false)
-            .setChargerPiercesAt(1.1f));
+            .setChargerPiercesAt(1.0f));
     public static final ChargerItem bentoSplatCharger = new ChargerItem(splatCharger.settings.setName("bento_splat_charger"));
     public static final ChargerItem kelpSplatCharger = new ChargerItem(splatCharger.settings.setName("kelp_splat_charger"));
     public static final ChargerItem eLiter4K = new ChargerItem(new WeaponSettings("e_liter_4k")
             .setProjectileSize(0.85f).setProjectileLifespan(16).setProjectileSpeed(2.4f)
-            .setStartupTicks(35).setDischargeTicks(40)
+            .setStartupTicks(35).setDischargeTicks(25)
             .setMinInkConsumption(2.25f).setInkConsumption(25).setInkRecoveryCooldown(7)
-            .setBaseDamage(36)
+            .setMinDamage(8).setBaseDamage(16).setChargedDamage(36)
             .setChargerMobility(0.15f)
             .setFastMidAirCharge(false)
             .setChargerPiercesAt(1.0f));
     public static final ChargerItem bamboozler14mk1 = new ChargerItem(new WeaponSettings("bamboozler_14_mk1")
             .setProjectileSize(0.75f).setProjectileLifespan(8).setProjectileSpeed(1.9f)
-            .setStartupTicks(4).setDischargeTicks(0) // no charge storage
-            .setMinInkConsumption(2.8f).setInkConsumption(7).setInkRecoveryCooldown(7)
-            .setBaseDamage(16) // bamboo without MPU :trollface:
+            .setStartupTicks(7).setDischargeTicks(0) // no charge storage
+            .setMinInkConsumption(3.36f).setInkConsumption(8.4f).setInkRecoveryCooldown(7)
+            .setMinDamage(6).setBaseDamage(17) // bamboo without MPU :trollface:
             .setChargerMobility(0.8f)
             .setFastMidAirCharge(false)
             .setChargerPiercesAt(1.1f));
@@ -197,7 +197,7 @@ public class SplatcraftItems {
             .setProjectileSize(0.7f).setProjectileLifespan(12).setProjectileSpeed(1.85f)
             .setStartupTicks(15).setDischargeTicks(25)
             .setMinInkConsumption(1.87f).setInkConsumption(10.5f).setInkRecoveryCooldown(7)
-            .setBaseDamage(28f)
+            .setMinDamage(8).setBaseDamage(16).setChargedDamage(28)
             .setChargerMobility(0.3f)
             .setFastMidAirCharge(true)
             .setChargerPiercesAt(1.0f));
@@ -270,11 +270,28 @@ public class SplatcraftItems {
     public static final InkTankItem armoredInkTank = new InkTankItem("armored_ink_tank", 85, ARMORED_INK_TANK);
 
     //Sub Weapons
-    public static final SubWeaponItem splatBomb = new SubWeaponItem("splat_bomb", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70, 20);
-    public static final SubWeaponItem splatBomb2 = (SubWeaponItem) new SubWeaponItem("splat_bomb_2", SplatcraftEntities.SPLAT_BOMB, SplatBombEntity.DIRECT_DAMAGE, SplatBombEntity.EXPLOSION_SIZE, 70, 20).setSecret();
-    public static final SubWeaponItem burstBomb = new SubWeaponItem("burst_bomb", SplatcraftEntities.BURST_BOMB, BurstBombEntity.DIRECT_DAMAGE, BurstBombEntity.EXPLOSION_SIZE, 45, 20);
-    public static final SubWeaponItem suctionBomb = new SubWeaponItem("suction_bomb", SplatcraftEntities.SUCTION_BOMB, SuctionBombEntity.DIRECT_DAMAGE, SuctionBombEntity.EXPLOSION_SIZE, 70, 20);
-    public static final SubWeaponItem curlingBomb = new CurlingSubWeaponItem("curling_bomb", SplatcraftEntities.CURLING_BOMB, CurlingBombEntity.DIRECT_DAMAGE, CurlingBombEntity.EXPLOSION_SIZE, 70, 0 /* see CurlingSubWeaponItem */, CurlingBombEntity.MAX_COOK_TIME, CurlingBombEntity::onItemUseTick);
+    public static final SubWeaponItem splatBomb = new SubWeaponItem(SplatcraftEntities.SPLAT_BOMB, new WeaponSettings("splat_bomb")
+            .setBaseDamage(SplatBombEntity.DIRECT_DAMAGE)
+            .setProjectileSize(SplatBombEntity.EXPLOSION_SIZE)
+            .setInkConsumption(70)
+            .setInkRecoveryCooldown(20));
+    public static final SubWeaponItem splatBomb2 = (SubWeaponItem) new SubWeaponItem(SplatcraftEntities.SPLAT_BOMB, splatBomb.settings.setName("splat_bomb_2")).setSecret();
+    public static final SubWeaponItem burstBomb = new SubWeaponItem(SplatcraftEntities.BURST_BOMB, new WeaponSettings("burst_bomb")
+            .setBaseDamage(BurstBombEntity.DIRECT_DAMAGE)
+            .setProjectileSize(BurstBombEntity.EXPLOSION_SIZE)
+            .setInkConsumption(40)
+            .setInkRecoveryCooldown(20));
+    public static final SubWeaponItem suctionBomb = new SubWeaponItem(SplatcraftEntities.SUCTION_BOMB, new WeaponSettings("suction_bomb")
+            .setBaseDamage(SuctionBombEntity.DIRECT_DAMAGE)
+            .setProjectileSize(SuctionBombEntity.EXPLOSION_SIZE)
+            .setInkConsumption(70)
+            .setInkRecoveryCooldown(20));
+    public static final SubWeaponItem curlingBomb = new CurlingSubWeaponItem(SplatcraftEntities.CURLING_BOMB, new WeaponSettings("curling_bomb")
+            .setBaseDamage(CurlingBombEntity.DIRECT_DAMAGE)
+            .setProjectileSize(CurlingBombEntity.EXPLOSION_SIZE)
+            .setInkConsumption(70)
+            .setInkRecoveryCooldown(0), // see items/weapons/CurlingSubWeaponItem
+            CurlingBombEntity.MAX_COOK_TIME, CurlingBombEntity::onItemUseTick);
 
     //Vanity
     public static final Item inkClothHelmet = new ColoredArmorItem("ink_cloth_helmet", INK_CLOTH, EquipmentSlotType.HEAD);

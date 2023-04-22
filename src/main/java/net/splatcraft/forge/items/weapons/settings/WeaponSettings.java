@@ -22,6 +22,7 @@ public class WeaponSettings implements IDamageCalculator {
 
     public float baseDamage;
     public float minDamage;
+    public float chargedDamage;
     public int damageDecayStartTick;
     public float damageDecayPerTick;
 
@@ -54,8 +55,9 @@ public class WeaponSettings implements IDamageCalculator {
             int e = tickCount - rollDamageDecayStartTick;
             return Math.max(e > 0 ? rollBaseDamage - (e * rollDamageDecayPerTick) : rollBaseDamage, rollMinDamage);
         }
+
         if (charge > 0.0f)
-            return charge > 0.95f ? baseDamage : baseDamage * charge / 5f + baseDamage / 5f;
+            return charge >= 1.0f ? chargedDamage : minDamage + (baseDamage - minDamage) * charge;
 
         int e = tickCount - damageDecayStartTick;
         return Math.max(e > 0 ? baseDamage - (e * damageDecayPerTick) : baseDamage, minDamage);
@@ -134,12 +136,18 @@ public class WeaponSettings implements IDamageCalculator {
     public WeaponSettings setBaseDamage(float baseDamage) {
         this.baseDamage = baseDamage;
         this.rollBaseDamage = baseDamage;
+        this.chargedDamage = baseDamage;
         return this;
     }
 
     public WeaponSettings setMinDamage(float minDamage) {
         this.minDamage = minDamage;
         this.rollMinDamage = minDamage;
+        return this;
+    }
+
+    public WeaponSettings setChargedDamage(float chargedDamage) {
+        this.chargedDamage = chargedDamage;
         return this;
     }
 

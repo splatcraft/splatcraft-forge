@@ -112,14 +112,11 @@ public class RendererHandler {
             event.setCanceled(true);
             if (squidRenderer == null)
                 squidRenderer = new InkSquidRenderer(event.getRenderer().getDispatcher());
-            if (!InkBlockUtils.canSquidHide(player))
-            {
+            if (!InkBlockUtils.canSquidHide(player)) {
                 squidRenderer.render(player, player.yHeadRot, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
                 net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(player, squidRenderer, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight()));
-            }
-            //else player.setInvisible(true);
+            } else event.getRenderer().getDispatcher().setRenderShadow(false);
         }
-        event.getRenderer().getDispatcher().setRenderShadow(false);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

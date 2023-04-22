@@ -1,7 +1,5 @@
 package net.splatcraft.forge.items.remotes;
 
-import java.util.*;
-
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.resources.I18n;
@@ -9,7 +7,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -29,9 +26,14 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextComponentUtils;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.splatcraft.forge.data.Stage;
@@ -41,13 +43,16 @@ import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class RemoteItem extends Item implements ICommandSource
-{
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+
+public abstract class RemoteItem extends Item implements ICommandSource {
     public static final List<RemoteItem> remotes = new ArrayList<>();
     protected final int totalModes;
 
-    public RemoteItem(String name, Properties properties)
-    {
+    public RemoteItem(String name, Properties properties) {
         this(name, properties, 1);
     }
 
@@ -239,13 +244,12 @@ public abstract class RemoteItem extends Item implements ICommandSource
 
         Collection<ServerPlayerEntity> targets = ALL_TARGETS;
 
-        if(stack.getTag().contains("Targets") && !stack.getTag().getString("Targets").isEmpty())
-        try {
-            targets = EntityArgument.players().parse(new StringReader(stack.getTag().getString("Targets"))).findPlayers(createCommandSourceStack(stack, (ServerWorld) usedOnWorld, pos, user));
-        } catch (CommandSyntaxException e) {
-            targets = Collections.emptyList();
-            System.out.println(e.getMessage());
-        }
+        if (stack.getTag().contains("Targets") && !stack.getTag().getString("Targets").isEmpty())
+            try {
+                targets = EntityArgument.players().parse(new StringReader(stack.getTag().getString("Targets"))).findPlayers(createCommandSourceStack(stack, (ServerWorld) usedOnWorld, pos, user));
+            } catch (CommandSyntaxException e) {
+                return new RemoteResult(false, new StringTextComponent(e.getMessage()));
+            }
 
         return onRemoteUse(usedOnWorld, coordSet.getA(), coordSet.getB(), stack, colorIn, getRemoteMode(stack), targets);
     }
