@@ -16,10 +16,15 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
+import net.splatcraft.forge.entities.SquidBumperEntity;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkExplosion;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class SuctionBombEntity extends AbstractSubWeaponEntity {
     public static final float DAMAGE = 6;
@@ -37,7 +42,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
     @Nullable
     private Direction stickFacing;
     protected boolean inGround;
-    public int shakeTime;
+    public boolean playShakeAnim;
     protected boolean playedActivationSound = false;
 
     public SuctionBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, Level level) {
@@ -59,9 +64,6 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
     public void tick() {
         super.tick();
         BlockState state = this.level.getBlockState(blockPosition());
-
-        if (shakeTime > 0)
-            --shakeTime;
 
         prevFuseTime = fuseTime;
 
@@ -134,7 +136,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
     {
         if(!inGround)
         {
-            shakeTime = 7;
+            playShakeAnim = true;
             inGround = true;
             inBlockState = level.getBlockState(result.getBlockPos());
 
@@ -164,7 +166,6 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
         if(nbt.contains("StickFacing"))
             stickFacing = Direction.byName(nbt.getString("StickFacing"));
         inGround = nbt.getBoolean("InGround");
-        shakeTime = nbt.getInt("ShakeTime");
         if (nbt.contains("InBlockState", 10))
             this.inBlockState = NbtUtils.readBlockState(nbt.getCompound("inBlockState"));
 
@@ -181,11 +182,25 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
         if(stickFacing != null)
             nbt.putString("StickFacing", stickFacing.name());
         nbt.putBoolean("InGround", inGround);
-        nbt.putInt("ShakeTime", shakeTime);
         if (this.inBlockState != null)
             nbt.put("InBlockState", NbtUtils.writeBlockState(this.inBlockState));
 
         nbt.putInt("FuseTime", fuseTime);
     }
 
+    @Override
+    public void registerControllers(AnimationData data)
+    {
+        data.addAnimationController(new AnimationController<>(this, "controller", 0, event ->
+        {
+            if(playShakeAnim)
+            {
+                event.getController().markNeedsReload();
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.suction_bomb.shake"));
+                playShakeAnim = false;
+            }
+
+            return PlayState.CONTINUE;
+        }));
+    }
 }

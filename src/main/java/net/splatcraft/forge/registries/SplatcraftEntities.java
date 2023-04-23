@@ -22,6 +22,10 @@ import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.client.renderer.InkProjectileRenderer;
 import net.splatcraft.forge.client.renderer.InkSquidRenderer;
 import net.splatcraft.forge.client.renderer.SquidBumperRenderer;
+import net.splatcraft.forge.client.renderer.subs.BurstBombRenderer;
+import net.splatcraft.forge.client.renderer.subs.CurlingBombRenderer;
+import net.splatcraft.forge.client.renderer.subs.SplatBombRenderer;
+import net.splatcraft.forge.client.renderer.subs.SuctionBombRenderer;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.entities.InkSquidEntity;
 import net.splatcraft.forge.entities.SpawnShieldEntity;
@@ -65,9 +69,14 @@ public class SplatcraftEntities
 
     public static void bindRenderers()
     {
+        EntityRenderers.register(INK_PROJECTILE.get(), InkProjectileRenderer::new);
         EntityRenderers.register(INK_SQUID.get(), InkSquidRenderer::new);
         EntityRenderers.register(SQUID_BUMPER.get(), SquidBumperRenderer::new);
-        EntityRenderers.register(INK_PROJECTILE.get(), InkProjectileRenderer::new);
+
+        EntityRenderers.register(SPLAT_BOMB.get(), SplatBombRenderer::new);
+        EntityRenderers.register(BURST_BOMB.get(), BurstBombRenderer::new);
+        EntityRenderers.register(SUCTION_BOMB.get(), SuctionBombRenderer::new);
+        EntityRenderers.register(CURLING_BOMB.get(), CurlingBombRenderer::new);
 
         /*
         RenderingRegistry.registerEntityRenderingHandler(INK_PROJECTILE, InkProjectileRenderer::new);

@@ -41,10 +41,7 @@ public class SquidBumperRenderer extends GeoEntityRenderer<SquidBumperEntity>
 	{
 		//float entityYaw = Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot()) % 360;
 
-		float entityYaw = model
 		model.getBone("Base").get().setRotationY((float) Math.toRadians(entityYaw));
-
-		System.out.println(entityYaw);
 
 		super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 	}

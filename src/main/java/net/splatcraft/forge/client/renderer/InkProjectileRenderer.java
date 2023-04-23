@@ -26,8 +26,8 @@ public class InkProjectileRenderer extends GeoProjectilesRenderer<InkProjectileE
 		float scale = animatable.getProjectileSize() * (animatable.getProjectileType().equals(InkProjectileEntity.Types.DEFAULT) ? 1 : 2.5f);
 
 		poseStack.pushPose();
-		poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot()) - 180.0F));
-		poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTick, animatable.xRotO, animatable.getXRot())));
+		//poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot()) - 180.0F));
+		//poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTick, animatable.xRotO, animatable.getXRot())));
 		poseStack.scale(scale, scale, scale);
 
 		super.render(animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
