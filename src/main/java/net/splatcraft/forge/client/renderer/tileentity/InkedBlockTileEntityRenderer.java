@@ -1,7 +1,50 @@
 package net.splatcraft.forge.client.renderer.tileentity;
 
-public class InkedBlockTileEntityRenderer{// extends TileEntityRenderer<InkedBlockTileEntity> {
-    /*
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.mixin.BlockRenderMixin;
+import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
+import net.splatcraft.forge.util.ClientUtils;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import org.lwjgl.system.MemoryStack;
+
+import javax.annotation.Nullable;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.Random;
+
+public class InkedBlockTileEntityRenderer implements BlockEntityRenderer<InkedBlockTileEntity> {
+
     public static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "blocks/inked_block");
     public static final ArrayList<ResourceLocation> TEXTURES = new ArrayList<>();
     public static final ResourceLocation TEXTURE_GLOWING = new ResourceLocation(Splatcraft.MODID, "blocks/glitter");
@@ -9,6 +52,10 @@ public class InkedBlockTileEntityRenderer{// extends TileEntityRenderer<InkedBlo
     public static final ResourceLocation TEXTURE_PERMANENT = new ResourceLocation(Splatcraft.MODID, "blocks/permanent_ink_overlay");
 
     public static final Random random = new Random();
+
+    public InkedBlockTileEntityRenderer(BlockEntityRendererProvider.Context context) {
+
+    }
 
     static {
         int i = 1;
@@ -23,12 +70,7 @@ public class InkedBlockTileEntityRenderer{// extends TileEntityRenderer<InkedBlo
 
     protected static InkBlockUtils.InkType type;
 
-    public InkedBlockTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
-    {
-        super(rendererDispatcherIn);
-    }
-
-    private static void renderBlock(InkedBlockTileEntity te, BlockRendererDispatcher blockRendererDispatcher, MatrixStack matrixStackIn, IRenderTypeBuffer bufferTypeIn, int combinedLightIn, int combinedOverlayIn)
+    private static void renderBlock(InkedBlockTileEntity te, BlockRenderDispatcher blockRendererDispatcher, PoseStack matrixStackIn, MultiBufferSource bufferTypeIn, int combinedLightIn, int combinedOverlayIn)
     {
         type = InkBlockUtils.getInkType(te.getBlockState());
         BlockState blockStateIn = te.getBlockState();
@@ -38,7 +80,7 @@ public class InkedBlockTileEntityRenderer{// extends TileEntityRenderer<InkedBlo
             blockStateIn = te.getSavedState();
         }
 
-        IBakedModel ibakedmodel = blockRendererDispatcher.getBlockModel(blockStateIn);
+        BakedModel ibakedmodel = blockRendererDispatcher.getBlockModel(blockStateIn);
 
 
         int color = ColorUtils.getInkColor(te);
@@ -53,7 +95,7 @@ public class InkedBlockTileEntityRenderer{// extends TileEntityRenderer<InkedBlo
 
     }
 
-    private static void renderModel(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, @Nullable BlockState state, IBakedModel modelIn, float red, float green, float blue, int combinedLightIn, int combinedOverlayIn, net.minecraftforge.client.model.data.IModelData modelData, InkedBlockTileEntity te) {
+    private static void renderModel(PoseStack.Pose matrixEntry, MultiBufferSource buffer, @Nullable BlockState state, BakedModel modelIn, float red, float green, float blue, int combinedLightIn, int combinedOverlayIn, net.minecraftforge.client.model.data.IModelData modelData, InkedBlockTileEntity te) {
         for (Direction direction : Direction.values()) {
             random.setSeed(42L);
             if (ClientUtils.shouldRenderSide(te, direction))
@@ -65,8 +107,8 @@ public class InkedBlockTileEntityRenderer{// extends TileEntityRenderer<InkedBlo
             renderModelBrightnessColorQuads(matrixEntry, buffer, state, red, green, blue, modelIn.getQuads(state, null, random, modelData), combinedLightIn, combinedOverlayIn, te);
     }
 
-    private static void renderModelBrightnessColorQuads(MatrixStack.Entry matrixEntry, IRenderTypeBuffer buffer, BlockState state, float red, float green, float blue, List<BakedQuad> quads, int combinedLightIn, int combinedOverlayIn, InkedBlockTileEntity te) {
-        IVertexBuilder builder = type.equals(InkBlockUtils.InkType.GLOWING) ? buffer.getBuffer(RenderType.translucent()) : buffer.getBuffer(RenderTypeLookup.getRenderType(state, false));
+    private static void renderModelBrightnessColorQuads(PoseStack.Pose matrixEntry, MultiBufferSource buffer, BlockState state, float red, float green, float blue, List<BakedQuad> quads, int combinedLightIn, int combinedOverlayIn, InkedBlockTileEntity te) {
+        VertexConsumer builder = type.equals(InkBlockUtils.InkType.GLOWING) ? buffer.getBuffer(RenderType.translucent()) : buffer.getBuffer(ItemBlockRenderTypes.getRenderType(state, false));
         BitSet bitset = new BitSet(3);
         float[] afloat = new float[Direction.values().length * 2];
 
@@ -79,7 +121,7 @@ public class InkedBlockTileEntityRenderer{// extends TileEntityRenderer<InkedBlo
 
         for (BakedQuad bakedquad : quads) {
             if (te.getLevel() != null && Minecraft.useAmbientOcclusion()) {
-                BlockModelRenderer.AmbientOcclusionFace ambientOcclusionFace =
+                ModelBlockRenderer.AmbientOcclusionFace ambientOcclusionFace =
                         Minecraft.getInstance().getBlockRenderer().getModelRenderer().new AmbientOcclusionFace();
 
                 ((BlockRenderMixin.ModelRenderer) Minecraft.getInstance().getBlockRenderer().getModelRenderer())
@@ -101,21 +143,21 @@ public class InkedBlockTileEntityRenderer{// extends TileEntityRenderer<InkedBlo
                         + (Math.abs(pos.getX()) % Integer.MAX_VALUE) + "" + (Math.abs(pos.getY()) % Integer.MAX_VALUE) + "" + (Math.abs(pos.getZ()) % Integer.MAX_VALUE) + ""));
                 random.setSeed(random.nextLong());
 
-                putBulkData(builder, Minecraft.getInstance().getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(TEXTURES.get(random.nextInt(TEXTURES.size()))), matrixEntry, bakedquad, f, f1, f2, brightness, combinedLights, combinedOverlayIn);
+                putBulkData(builder, Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(TEXTURES.get(random.nextInt(TEXTURES.size()))), matrixEntry, bakedquad, f, f1, f2, brightness, combinedLights, combinedOverlayIn);
                 if (type.equals(InkBlockUtils.InkType.GLOWING))
-                    putBulkData(builder, Minecraft.getInstance().getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(TEXTURES_GLOWING.get(random.nextInt(TEXTURES_GLOWING.size()))), matrixEntry, bakedquad, 1, 1, 1, brightness, combinedLights, combinedOverlayIn);
+                    putBulkData(builder, Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(TEXTURES_GLOWING.get(random.nextInt(TEXTURES_GLOWING.size()))), matrixEntry, bakedquad, 1, 1, 1, brightness, combinedLights, combinedOverlayIn);
             }
 
             if(Minecraft.getInstance().options.renderDebug && te.getColor() == te.getPermanentColor())
-                putBulkData(builder, Minecraft.getInstance().getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(TEXTURE_PERMANENT), matrixEntry, bakedquad, 1, 1, 1, brightness, combinedLights, combinedOverlayIn);
+                putBulkData(builder, Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(TEXTURE_PERMANENT), matrixEntry, bakedquad, 1, 1, 1, brightness, combinedLights, combinedOverlayIn);
         }
 
     }
 
-    private static void putBulkData(IVertexBuilder builder, TextureAtlasSprite sprite, MatrixStack.Entry matrixEntry, BakedQuad quad, float r, float g, float b, float[] brightness, int[] combinedLights, int combinedOverlay)
+    private static void putBulkData(VertexConsumer builder, TextureAtlasSprite sprite, PoseStack.Pose matrixEntry, BakedQuad quad, float r, float g, float b, float[] brightness, int[] combinedLights, int combinedOverlay)
     {
         int[] aint = quad.getVertices();
-        Vector3i vector3i = quad.getDirection().getNormal();
+        Vec3i vector3i = quad.getDirection().getNormal();
         Vector3f vector3f = new Vector3f((float)vector3i.getX(), (float)vector3i.getY(), (float)vector3i.getZ());
         Matrix4f matrix4f = matrixEntry.pose();
         vector3f.transform(matrixEntry.normal());
@@ -123,7 +165,7 @@ public class InkedBlockTileEntityRenderer{// extends TileEntityRenderer<InkedBlo
 
         try (MemoryStack memorystack = MemoryStack.stackPush())
         {
-            ByteBuffer bytebuffer = memorystack.malloc(DefaultVertexFormats.BLOCK.getVertexSize());
+            ByteBuffer bytebuffer = memorystack.malloc(DefaultVertexFormat.BLOCK.getVertexSize());
             IntBuffer intbuffer = bytebuffer.asIntBuffer();
             VertexData[] vertexArray = new VertexData[j];
 
@@ -196,12 +238,11 @@ public class InkedBlockTileEntityRenderer{// extends TileEntityRenderer<InkedBlo
     }
 
     @Override
-    public void render(InkedBlockTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+    public void render(InkedBlockTileEntity tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
-        BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         renderBlock(tileEntityIn, blockRenderer, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
         //blockRenderer.renderBlock(SplatcraftBlocks.sardiniumBlock.defaultBlockState(), matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE);
         //blockRenderer.renderBlock(tileEntityIn.getSavedState(), matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
-    */
 }

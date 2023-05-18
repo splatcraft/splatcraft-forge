@@ -2,22 +2,44 @@ package net.splatcraft.forge.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class InkedBlock extends Block implements EntityBlock
+import java.util.Objects;
+import java.util.Random;
+
+public class InkedBlock extends Block implements EntityBlock, IColoredBlock
 {
     public static final int GLOWING_LIGHT_LEVEL = 6;
     public InkedBlock()
@@ -87,11 +109,9 @@ public class InkedBlock extends Block implements EntityBlock
         return SplatcraftTileEntities.inkedTileEntity.get().create(pos, state);
     }
 
-
-    /*
-    public static InkedBlock glowing(String name)
+    public static InkedBlock glowing()
     {
-        return new InkedBlock(name, defaultProperties().lightLevel(state -> GLOWING_LIGHT_LEVEL));
+        return new InkedBlock(defaultProperties().lightLevel(state -> GLOWING_LIGHT_LEVEL));
     }
 
 
@@ -113,7 +133,7 @@ public class InkedBlock extends Block implements EntityBlock
                 newTe.setSavedColor(te.getSavedColor());
                 newTe.setPermanentInkType(te.getPermanentInkType());
                 newTe.setPermanentColor(te.getPermanentColor());
-                ((Level)level).setBlockEntity(pos, newTe);
+                ((Level)level).setBlockEntity(newTe);
                 te = newTe;
             }
             te.setColor(color);
@@ -125,12 +145,9 @@ public class InkedBlock extends Block implements EntityBlock
 
             if (te.hasSavedColor() && te.getSavedState().getBlock() instanceof IColoredBlock)
             {
-                ((Level) level).setBlockEntity(pos, te.getSavedState().getBlock().createTileEntity(te.getSavedState(), level));
-                if (level.getBlockEntity(pos) instanceof InkColorTileEntity)
-                {
-                    InkColorTileEntity newte = (InkColorTileEntity) level.getBlockEntity(pos);
-                    newte.setColor(te.getSavedColor());
-                }
+                if(te.getSavedState().getBlock() instanceof EntityBlock)
+                ((Level) level).setBlockEntity(Objects.requireNonNull(((EntityBlock) te.getSavedState().getBlock()).newBlockEntity(pos, te.getSavedState())));
+                ((IColoredBlock) te.getSavedState().getBlock()).setColor((Level) level, pos, te.getSavedColor());
             }
 
             return te.getSavedState();
@@ -292,12 +309,6 @@ public class InkedBlock extends Block implements EntityBlock
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    {
-        return true;
-    }
-
-    @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random rand)
     {
         if (SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INK_DECAY) && level.getBlockEntity(pos) instanceof InkedBlockTileEntity)
@@ -345,12 +356,6 @@ public class InkedBlock extends Block implements EntityBlock
         return super.updateShape(stateIn, facing, facingState, levelIn, currentPos, facingPos);
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter level)
-    {
-        return SplatcraftTileEntities.inkedTileEntity.create();
-    }
 
     @Override
     public boolean canClimb()
@@ -435,5 +440,4 @@ public class InkedBlock extends Block implements EntityBlock
 
         return changeColor;
     }
-    */
 }

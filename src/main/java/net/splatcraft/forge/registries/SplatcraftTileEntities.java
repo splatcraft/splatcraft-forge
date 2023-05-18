@@ -10,7 +10,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.splatcraft.forge.client.renderer.tileentity.InkedBlockTileEntityRenderer;
 import net.splatcraft.forge.client.renderer.tileentity.RemotePedestalTileEntityRenderer;
+import net.splatcraft.forge.client.renderer.tileentity.StageBarrierTileEntityRenderer;
 import net.splatcraft.forge.tileentities.*;
 import net.splatcraft.forge.tileentities.container.InkVatContainer;
 import net.splatcraft.forge.tileentities.container.WeaponWorkbenchContainer;
@@ -74,9 +76,9 @@ public class SplatcraftTileEntities
     public static void bindTESR()
     {
 
-        //BlockEntityRenderers.register(inkedTileEntity, InkedBlockTileEntityRenderer::new);
-        //BlockEntityRenderers.register(stageBarrierTileEntity.get(), StageBarrierTileEntityRenderer::new);
-        //BlockEntityRenderers.register(colorBarrierTileEntity, StageBarrierTileEntityRenderer::new);
+        BlockEntityRenderers.register(inkedTileEntity.get(), InkedBlockTileEntityRenderer::new);
+        BlockEntityRenderers.register(stageBarrierTileEntity.get(), StageBarrierTileEntityRenderer::new);
+        BlockEntityRenderers.register(colorBarrierTileEntity.get(), StageBarrierTileEntityRenderer::new);
         BlockEntityRenderers.register(remotePedestalTileEntity.get(), RemotePedestalTileEntityRenderer::new);
     }
 }
