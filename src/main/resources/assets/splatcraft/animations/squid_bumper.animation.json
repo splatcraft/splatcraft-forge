@@ -15,7 +15,7 @@
 				}
 			},
 			"timeline": {
-				"0.04": "playHealEffect;"
+				"0.04": "playHealEffect"
 			}
 		},
 		"animation.squid_bumper.respawn": {
@@ -42,21 +42,50 @@
 			}
 		},
 		"animation.squid_bumper.pop": {
-			"animation_length": 0.24,
+			"animation_length": 60,
 			"bones": {
 				"Bumper": {
 					"scale": {
 						"0.0": [1, 1, 1],
 						"0.04": {
-							"pre": [1.2, 1.2, 1.2],
-							"post": [0, 0, 0]
+							"vector": [1.2, 1.2, 1.2]
 						},
-						"0.24": [0, 0, 0]
+						"0.041": [0, 0, 0]
 					}
 				}
 			},
 			"timeline": {
-				"0.04": "playPopEffect;"
+				"0.04": "playPopEffect"
+			}
+		},
+		"animation.squid_bumper.ink": {
+			"animation_length": 0.8,
+			"bones": {
+				"Bumper": {
+					"rotation": {
+						"0.0": {
+							"vector": ["math.sin(query.anim_time * -5000) * math.exp(-15 * query.anim_time) * 20", 0, 0]
+						},
+						"0.8": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"animation.squid_bumper.break": {
+			"animation_length": 0.8,
+			"bones": {
+				"Bumper": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, "math.sin(query.anim_time * -5000) * math.exp(-15 * query.anim_time) * 20", 0]
+						},
+						"0.8": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
 			}
 		}
 	},

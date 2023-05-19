@@ -49,10 +49,8 @@ public class ColorChangerItem extends RemoteItem implements IColoredItem
         BlockPos blockpos2 = new BlockPos(Math.min(from.getX(), to.getX()), Math.min(to.getY(), from.getY()), Math.min(from.getZ(), to.getZ()));
         BlockPos blockpos3 = new BlockPos(Math.max(from.getX(), to.getX()), Math.max(to.getY(), from.getY()), Math.max(from.getZ(), to.getZ()));
 
-        if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
-        {
+        if (!level.isInWorldBounds(blockpos2) || !level.isInWorldBounds(blockpos3))
             return createResult(false, new TranslatableComponent("status.change_color.out_of_world"));
-        }
 
         /*
         for (int j = blockpos2.getZ(); j <= blockpos3.getZ(); j += 16)

@@ -1,0 +1,25 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.squid_bumper_hit.ink": {
+			"loop": true,
+			"bones": {
+				"Bumper": {
+					"rotation": {
+						"vector": ["math.sin(query.anim_time * -5000) * math.exp(-15 * query.anim_time) * 20", 0, 0]
+					}
+				}
+			}
+		},
+		"animation.squid_bumper_hit.break": {
+			"loop": true,
+			"bones": {
+				"Bumper": {
+					"rotation": {
+						"vector": [0, "math.sin(query.anim_time * -5000) * math.exp(-15 * query.anim_time) * 20", 0]
+					}
+				}
+			}
+		}
+	}
+}

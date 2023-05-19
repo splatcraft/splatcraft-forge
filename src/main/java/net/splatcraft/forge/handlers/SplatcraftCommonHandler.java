@@ -87,6 +87,9 @@ public class SplatcraftCommonHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerClone(final PlayerEvent.Clone event)
     {
+        if(!event.isWasDeath())
+            return;
+        
         Player player = event.getPlayer();
         PlayerInfoCapability.get(player).readNBT(PlayerInfoCapability.get(event.getOriginal()).writeNBT(new CompoundTag()));
 

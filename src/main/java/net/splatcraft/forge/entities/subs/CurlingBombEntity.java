@@ -26,6 +26,10 @@ import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.InkExplosion;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.manager.AnimationData;
 
 import java.util.List;
 
@@ -47,6 +51,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	public float bladeRot = 0;
 	public float prevBladeRot = 0;
 	private boolean playedActivationSound = false;
+	private boolean playAlertAnim = false;
 
 
 	public CurlingBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, Level level) {
@@ -97,6 +102,9 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 
 		prevFuseTime = fuseTime;
 		fuseTime--;
+
+		if(fuseTime == MAX_FUSE_TIME - 30)
+			playAlertAnim = true;
 
 		if (fuseTime <= 20 && !playedActivationSound)
 		{
@@ -307,5 +315,21 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 			fuseTime = getInitialFuseTime();
 		}
 
+	}
+
+	@Override
+	public void registerControllers(AnimationData data)
+	{
+		data.addAnimationController(new AnimationController<>(this, "controller", 0, event ->
+		{
+			if(playAlertAnim)
+			{
+				event.getController().markNeedsReload();
+				event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.curling_bomb.alert"));
+				playAlertAnim = false;
+			}
+
+			return PlayState.CONTINUE;
+		}));
 	}
 }

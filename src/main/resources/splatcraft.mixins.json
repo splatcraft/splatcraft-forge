@@ -18,6 +18,8 @@
     "defaultRequire": 1
   },
   "client": [
+    "BlockRenderMixin$AOFace",
+    "BlockRenderMixin$ModelRenderer",
     "ClientPlayerInventoryMixin",
     "GameRendererMixin",
     "MinecraftClientAccessor",

@@ -12,6 +12,8 @@ import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.InkExplosion;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class BurstBombEntity extends AbstractSubWeaponEntity
 {
@@ -64,5 +66,4 @@ public class BurstBombEntity extends AbstractSubWeaponEntity
     {
         return SplatcraftItems.burstBomb.get();
     }
-
 }

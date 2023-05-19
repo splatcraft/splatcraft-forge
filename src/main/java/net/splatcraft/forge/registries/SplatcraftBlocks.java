@@ -29,6 +29,8 @@ public class SplatcraftBlocks
     public static final ArrayList<Block> inkColoredBlocks = new ArrayList<>();
 
     public static final RegistryObject<InkedBlock> inkedBlock = REGISTRY.register("inked_block", InkedBlock::new);
+    public static final RegistryObject<InkedBlock> glowingInkedBlock = REGISTRY.register("glowing_inked_block", InkedBlock::glowing);
+    public static final RegistryObject<InkedBlock> clearInkedBlock = REGISTRY.register("clear_inked_block", InkedBlock::new);
 
     public static final RegistryObject<Block> sardiniumBlock =  REGISTRY.register("sardinium_block", () -> new MetalBlock(Material.METAL, MaterialColor.TERRACOTTA_WHITE));
     public static final RegistryObject<Block> sardiniumOre =  REGISTRY.register("sardinium_ore", OreBlock::new);

@@ -37,10 +37,8 @@ public class TurfScannerItem extends RemoteItem
         BlockPos blockpos3 = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos1.getY(), blockpos.getY()), Math.max(blockpos.getZ(), blockpos1.getZ()));
 
 
-        if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
-        {
+        if (!level.isInWorldBounds(blockpos2) || !level.isInWorldBounds(blockpos3))
             return createResult(false, new TranslatableComponent("status.scan_turf.out_of_world"));
-        }
 
         /*
         for (int j = blockpos2.getZ(); j <= blockpos3.getZ(); j += 16)

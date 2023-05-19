@@ -11,8 +11,9 @@ import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.util.Color;
+import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
 
-public class InkProjectileRenderer extends GeoNonLivingRenderer<InkProjectileEntity>
+public class InkProjectileRenderer extends GeoProjectilesRenderer<InkProjectileEntity>
 {
 	public InkProjectileRenderer(EntityRendererProvider.Context renderManager)
 	{
@@ -25,8 +26,8 @@ public class InkProjectileRenderer extends GeoNonLivingRenderer<InkProjectileEnt
 		float scale = animatable.getProjectileSize() * (animatable.getProjectileType().equals(InkProjectileEntity.Types.DEFAULT) ? 1 : 2.5f);
 
 		poseStack.pushPose();
-		poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot()) - 180.0F));
-		poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTick, animatable.xRotO, animatable.getXRot())));
+		//poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot()) - 180.0F));
+		//poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTick, animatable.xRotO, animatable.getXRot())));
 		poseStack.scale(scale, scale, scale);
 
 		super.render(animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
