@@ -100,9 +100,8 @@ public class RendererHandler
                 squidRenderer.render(player, player.yHeadRot, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
                 net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(player, squidRenderer, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight()));
             }
-            //else player.setInvisible(true);
+            //else event.getRenderer().getDispatcher().setRenderShadow(false);
         }
-        event.getRenderer().getDispatcher().setRenderShadow(false);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -391,9 +390,8 @@ public class RendererHandler
     public static void onChatMessage(ClientChatReceivedEvent event)
     {
         ClientLevel level = Minecraft.getInstance().level;
-        if (level != null && SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.COLORED_PLAYER_NAMES) && event.getMessage() instanceof TranslatableComponent)
+        if (level != null && SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.COLORED_PLAYER_NAMES) && event.getMessage() instanceof TranslatableComponent component)
         {
-            TranslatableComponent component = (TranslatableComponent) event.getMessage();
             //TreeMap<String, AbstractClientPlayer> players = Maps.newTreeMap();
             //Minecraft.getInstance().level.getPlayers().forEach(player -> players.put(player.getDisplayName().getString(), player));
 
@@ -405,10 +403,9 @@ public class RendererHandler
 
             for (Object obj : component.getArgs())
             {
-                if (!(obj instanceof MutableComponent))
+                if (!(obj instanceof MutableComponent msgChildren))
                     continue;
 
-                MutableComponent msgChildren = (MutableComponent) obj;
                 String key = msgChildren.getString();
 
                 if (!msgChildren.getSiblings().isEmpty() && players.contains(key))

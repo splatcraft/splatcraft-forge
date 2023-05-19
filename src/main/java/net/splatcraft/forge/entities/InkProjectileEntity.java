@@ -225,9 +225,9 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         if (target instanceof LivingEntity) {
             if (InkDamageUtils.isSplatted((LivingEntity) target)) return;
 
-            if(InkDamageUtils.doDamage(level, (LivingEntity) target, dmg, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, damageType, causesHurtCooldown) &&
-                    charge >= .95f && getOwner() instanceof ServerPlayer)
-                ((ServerPlayer)getOwner()).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+            if (InkDamageUtils.doDamage(level, (LivingEntity) target, dmg, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, damageType, causesHurtCooldown) &&
+                    charge >= 1.0f && getOwner() instanceof ServerPlayer)
+                ((ServerPlayer) getOwner()).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
         }
 
         if (!canPierce) {
