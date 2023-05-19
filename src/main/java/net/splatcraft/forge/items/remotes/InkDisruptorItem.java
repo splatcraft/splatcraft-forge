@@ -29,10 +29,8 @@ public class InkDisruptorItem extends RemoteItem
         BlockPos blockpos2 = new BlockPos(Math.min(posA.getX(), posB.getX()), Math.min(posB.getY(), posA.getY()), Math.min(posA.getZ(), posB.getZ()));
         BlockPos blockpos3 = new BlockPos(Math.max(posA.getX(), posB.getX()), Math.max(posB.getY(), posA.getY()), Math.max(posA.getZ(), posB.getZ()));
 
-        if (!(blockpos2.getY() >= 0 && blockpos3.getY() < 256))
-        {
+        if (!level.isInWorldBounds(blockpos2) || !level.isInWorldBounds(blockpos3))
             return createResult(false, new TranslatableComponent("status.clear_ink.out_of_world"));
-        }
 
         /*
         for (int j = blockpos2.getZ(); j <= blockpos3.getZ(); j += 16)

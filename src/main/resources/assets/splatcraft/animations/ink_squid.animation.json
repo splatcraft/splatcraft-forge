@@ -31,6 +31,17 @@
 					}
 				}
 			}
+		},
+		"animation.ink_squid.swim": {
+			"loop": true,
+			"animation_length": 2.24,
+			"bones": {
+				"LeftLimb": {
+					"rotation": {
+						"vector": [0, "math.cos(limb_swing * 0.6662F) * 1.4 * limb_swing_amount", 0]
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2
