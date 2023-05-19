@@ -24,16 +24,13 @@ public class ShooterItem extends WeaponBaseItem {
 
     public static RegistryObject<ShooterItem> create(DeferredRegister<Item> registry, RegistryObject<ShooterItem> parent, String name)
     {
-        return registry.register(name, () -> new ShooterItem(parent.get().settings.setSecret(name.equals("ancient_splattershot") /* might be smart to come up with a better way to do this*/)));
+        return registry.register(name, () -> new ShooterItem(parent.get().settings.setName(name, "ancient_splattershot") /* might be smart to come up with a better way to do this*/));
     }
 
     protected ShooterItem(WeaponSettings settings)
     {
         super(settings);
         this.settings = settings;
-
-        if(settings.secret)
-            setSecret();
 
         if (!(this instanceof BlasterItem)) {
             addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / 1.2f * 100)));

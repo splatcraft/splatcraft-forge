@@ -1,8 +1,6 @@
 package net.splatcraft.forge.items.weapons.settings;
 
-public class WeaponSettings implements IDamageCalculator {
-    public String name;
-
+public class WeaponSettings extends AbstractWeaponSettings {
     public float projectileSize;
     public int projectileLifespan;
     public float projectileSpeed;
@@ -50,6 +48,7 @@ public class WeaponSettings implements IDamageCalculator {
         this.name = name;
     }
 
+    @Override
     public float calculateDamage(int tickCount, boolean airborne, float charge, boolean isOnRollCooldown) {
         if (isOnRollCooldown) {
             int e = tickCount - rollDamageDecayStartTick;
@@ -63,12 +62,20 @@ public class WeaponSettings implements IDamageCalculator {
         return Math.max(e > 0 ? baseDamage - (e * damageDecayPerTick) : baseDamage, minDamage);
     }
 
+    @Override
     public float getMinDamage() {
         return minDamage;
     }
 
-    public WeaponSettings setName(String setName) {
-        this.name = setName;
+    public WeaponSettings setName(String newName, String secretName) {
+        this.name = newName;
+        this.secret = newName.equals(secretName);
+        return this;
+    }
+
+    public WeaponSettings setSecretName(String newName) {
+        this.name = newName;
+        this.secret = true;
         return this;
     }
 

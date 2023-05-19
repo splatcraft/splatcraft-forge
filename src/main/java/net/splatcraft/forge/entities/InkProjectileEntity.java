@@ -28,7 +28,7 @@ import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.items.weapons.settings.IDamageCalculator;
+import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -67,7 +67,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
     public float charge;
     public boolean isOnRollCooldown = false;
 
-    public IDamageCalculator damage = WeaponSettings.DEFAULT;
+    public AbstractWeaponSettings damage = WeaponSettings.DEFAULT;
     public InkBlockUtils.InkType inkType;
 
     private final AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
@@ -77,7 +77,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         super(type, level);
     }
 
-    public InkProjectileEntity(Level level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float projectileSize, IDamageCalculator damage, ItemStack sourceWeapon) {
+    public InkProjectileEntity(Level level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float projectileSize, AbstractWeaponSettings damage, ItemStack sourceWeapon) {
         super(SplatcraftEntities.INK_PROJECTILE.get(), thrower, level);
         setColor(color);
         setProjectileSize(projectileSize);
@@ -87,11 +87,11 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         this.sourceWeapon = sourceWeapon;
     }
 
-    public InkProjectileEntity(Level level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float projectileSize, IDamageCalculator damage) {
+    public InkProjectileEntity(Level level, LivingEntity thrower, int color, InkBlockUtils.InkType inkType, float projectileSize, AbstractWeaponSettings damage) {
         this(level, thrower, color, inkType, projectileSize, damage, ItemStack.EMPTY);
     }
 
-    public InkProjectileEntity(Level level, LivingEntity thrower, ItemStack sourceWeapon, InkBlockUtils.InkType inkType, float projectileSize, IDamageCalculator damage) {
+    public InkProjectileEntity(Level level, LivingEntity thrower, ItemStack sourceWeapon, InkBlockUtils.InkType inkType, float projectileSize, AbstractWeaponSettings damage) {
         this(level, thrower, ColorUtils.getInkColor(sourceWeapon), inkType, projectileSize, damage, sourceWeapon);
     }
 
@@ -190,21 +190,18 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         super.handleEntityEvent(id);
 
         switch (id) {
-            case -1:
-                level.addParticle(new InkExplosionParticleData(getColor(), .5f), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-                break;
-            case 1:
+            case -1 ->
+                    level.addParticle(new InkExplosionParticleData(getColor(), .5f), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+            case 1 -> {
                 if (getProjectileType().equals(Types.CHARGER))
                     level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getX() - this.getDeltaMovement().x() * 0.25D, this.getY() - this.getDeltaMovement().y() * 0.25D, this.getZ() - this.getDeltaMovement().z() * 0.25D, 0, -0.1, 0);
                 else
                     level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getX() - this.getDeltaMovement().x() * 0.25D, this.getY() - this.getDeltaMovement().y() * 0.25D, this.getZ() - this.getDeltaMovement().z() * 0.25D, this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z());
-                break;
-            case 2:
-                level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize() * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-                break;
-            case 3:
-                level.addParticle(new InkExplosionParticleData(getColor(), getProjectileSize() * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-                break;
+            }
+            case 2 ->
+                    level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize() * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+            case 3 ->
+                    level.addParticle(new InkExplosionParticleData(getColor(), getProjectileSize() * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
         }
 
     }
@@ -329,7 +326,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         sourceWeapon = ItemStack.of(nbt.getCompound("SourceWeapon"));
 
         if(sourceWeapon.getItem() instanceof WeaponBaseItem)
-            damage = ((WeaponBaseItem) sourceWeapon.getItem()).damageCalculator;
+            damage = ((WeaponBaseItem) sourceWeapon.getItem()).settings;
     }
 
     @Override
