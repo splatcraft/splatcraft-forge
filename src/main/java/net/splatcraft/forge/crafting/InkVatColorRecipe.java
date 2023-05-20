@@ -2,6 +2,7 @@ package net.splatcraft.forge.crafting;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -114,23 +115,23 @@ public class InkVatColorRecipe implements Recipe<Container>
         }
 
         @Override
-        public InkVatColorRecipe fromJson(ResourceLocation recipeId, JsonObject json)
-        {
+        public InkVatColorRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             Ingredient ingredient = json.has("filter") ? Ingredient.fromJson(json.get("filter")) : Ingredient.EMPTY;
             boolean disableOmni = json.has("not_on_omni_filter") && GsonHelper.getAsBoolean(json, "not_on_omni_filter");
             int color;
 
-            color = GsonHelper.getAsInt(json, "color");
+            try {
+                color = GsonHelper.getAsInt(json, "color");
+            } catch (JsonSyntaxException e) {
+                color = -1;
+            }
 
-            if(color < 0 || color > 0xFFFFFF)
-            {
+            if (color < 0 || color > 0xFFFFFF) {
                 String colorStr = GsonHelper.getAsString(json, "color");
                 try {
                     color = Integer.parseInt(colorStr, 16);
-                } catch (NumberFormatException nfe)
-                {
-                    try
-                    {
+                } catch (NumberFormatException nfe) {
+                    try {
                         color = SplatcraftInkColors.cobalt.getColor(); //SaveInfoRY.getValue(new ResourceLocation(colorStr)).getColor();
                     } catch (NullPointerException npe)
                     {
