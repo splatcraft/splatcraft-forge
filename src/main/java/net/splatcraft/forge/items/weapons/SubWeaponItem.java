@@ -52,7 +52,6 @@ public class SubWeaponItem extends WeaponBaseItem implements IAnimatable
 
     public SubWeaponItem(RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, WeaponSettings settings, int maxUseTime, SubWeaponAction useTick) {
         super(settings);
-        setRegistryName(settings.name);
         this.settings = settings;
         this.entityType = entityType;
         this.useTick = useTick;
