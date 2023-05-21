@@ -1,6 +1,6 @@
 package net.splatcraft.forge.items.weapons.settings;
 
-public class RollerWeaponSettings implements IDamageCalculator {
+public class RollerWeaponSettings extends AbstractWeaponSettings {
     public String name;
     public boolean isBrush;
 

@@ -38,7 +38,10 @@ import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class RemoteItem extends Item implements CommandSource
 {
@@ -232,18 +235,17 @@ public abstract class RemoteItem extends Item implements CommandSource
     {
         Tuple<BlockPos, BlockPos> coordSet = getCoordSet(stack, usedOnWorld);
 
-        if(coordSet == null)
+        if (coordSet == null)
             return new RemoteResult(false, new TranslatableComponent("status.remote.undefined_area"));
 
         Collection<ServerPlayer> targets = ALL_TARGETS;
 
-        if(stack.getTag().contains("Targets") && !stack.getTag().getString("Targets").isEmpty())
-        try {
-            targets = EntityArgument.players().parse(new StringReader(stack.getTag().getString("Targets"))).findPlayers(createCommandSourceStack(stack, (ServerLevel) usedOnWorld, pos, user));
-        } catch (CommandSyntaxException e) {
-            targets = Collections.emptyList();
-            System.out.println(e.getMessage());
-        }
+        if (stack.getTag().contains("Targets") && !stack.getTag().getString("Targets").isEmpty())
+            try {
+                targets = EntityArgument.players().parse(new StringReader(stack.getTag().getString("Targets"))).findPlayers(createCommandSourceStack(stack, (ServerLevel) usedOnWorld, pos, user));
+            } catch (CommandSyntaxException e) {
+                return new RemoteResult(false, new TextComponent(e.getMessage()));
+            }
 
         return onRemoteUse(usedOnWorld, coordSet.getA(), coordSet.getB(), stack, colorIn, getRemoteMode(stack), targets);
     }

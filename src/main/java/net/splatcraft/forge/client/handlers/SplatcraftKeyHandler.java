@@ -60,7 +60,7 @@ public class SplatcraftKeyHandler {
     {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
-        if (player == null || !PlayerInfoCapability.hasCapability(player) || !canUseHotkeys)
+        if (player == null || !PlayerInfoCapability.hasCapability(player) || PlayerCooldown.hasPlayerCooldown(player) || !canUseHotkeys)
             return;
 
         if (subWeaponHotkey.isDown())
@@ -78,7 +78,7 @@ public class SplatcraftKeyHandler {
             else {
                 if (cap.isSquid()) {
                     cap.setIsSquid(false);
-                    SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player.getUUID(), false));
+                    SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(false));
                 }
 
                 if (!player.getItemInHand(InteractionHand.OFF_HAND).equals(sub))
@@ -142,7 +142,7 @@ public class SplatcraftKeyHandler {
             PlayerInfo capability = PlayerInfoCapability.get(player);
             boolean newSquid = !capability.isSquid();
             capability.setIsSquid(newSquid);
-            SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(player.getUUID(), newSquid));
+            SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(newSquid));
         }
     }
 

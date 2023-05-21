@@ -40,39 +40,36 @@ import java.util.function.Consumer;
 
 public class SubWeaponItem extends WeaponBaseItem implements IAnimatable
 {
-    public float inkConsumption;
-    public int inkRecoveryCooldown;
     public final RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType;
     public final SubWeaponAction useTick;
     public final int maxUseTime;
+    public final WeaponSettings settings;
 
     public static final ArrayList<SubWeaponItem> subs = new ArrayList<>();
     public static final float throwVelocity = 0.75f;
     public static final float throwAngle = -30f;
     private final AnimationFactory animFactory = GeckoLibUtil.createFactory(this);
 
-    public SubWeaponItem( RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, float directDamage, float explosionSize, float inkConsumption, int inkRecoveryCooldown, int maxUseTime, SubWeaponAction useTick)
-    {
-        super(WeaponSettings.DEFAULT); //it's either keeping this here or making another interface for main weapons >_>
-        this.inkConsumption = inkConsumption;
-        this.inkRecoveryCooldown = inkRecoveryCooldown;
+    public SubWeaponItem(RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, WeaponSettings settings, int maxUseTime, SubWeaponAction useTick) {
+        super(settings);
+        this.settings = settings;
         this.entityType = entityType;
         this.useTick = useTick;
         this.maxUseTime = maxUseTime;
 
         subs.add(this);
 
-        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (directDamage / 20 * 100)));
-        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (explosionSize / 4 * 100)));
-        addStat(new WeaponTooltip("ink_consumption", (stack, level) -> (int) (inkConsumption)));
+        addStat(new WeaponTooltip("damage", (stack, level) -> (int) settings.baseDamage / 20 * 100));
+        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (settings.projectileSize / 4 * 100)));
+        addStat(new WeaponTooltip("ink_consumption", (stack, level) -> (int) (settings.inkConsumption)));
 
 
         DispenserBlock.registerBehavior(this, new SubWeaponItem.DispenseBehavior());
     }
 
-    public SubWeaponItem(RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, float directDamage, float explosionSize, float inkConsumption, int inkRecoveryCooldown)
-    {
-        this(entityType, directDamage, explosionSize, inkConsumption, inkRecoveryCooldown, USE_DURATION, ((level, entity, stack, useTime) -> {}));
+    public SubWeaponItem(RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, WeaponSettings settings) {
+        this(entityType, settings, USE_DURATION, (level, entity, stack, useTime) -> {
+        });
     }
 
     public static boolean singleUse(ItemStack stack) {
@@ -85,11 +82,11 @@ public class SubWeaponItem extends WeaponBaseItem implements IAnimatable
             tooltip.add(new TranslatableComponent("item.splatcraft.tooltip.single_use"));
         super.appendHoverText(stack, level, tooltip, flag);
     }
-    
+
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand)
     {
-        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, this, inkConsumption, inkRecoveryCooldown, true, true)))
+        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, this, settings.inkConsumption, 0, true, true)))
             player.startUsingItem(hand);
         return useSuper(level, player, hand);
     }
@@ -141,7 +138,7 @@ public class SubWeaponItem extends WeaponBaseItem implements IAnimatable
         if (SubWeaponItem.singleUse(stack)) {
             if (entity instanceof Player && !((Player) entity).isCreative())
                 stack.shrink(1);
-        } else reduceInk(entity, this, inkConsumption, 0, false);
+        } else reduceInk(entity, this, settings.inkConsumption, settings.inkRecoveryCooldown, false);
 
     }
 

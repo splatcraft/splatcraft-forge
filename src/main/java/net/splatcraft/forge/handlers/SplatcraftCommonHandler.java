@@ -26,8 +26,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
-import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
+import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
@@ -71,10 +71,9 @@ public class SplatcraftCommonHandler
     @SubscribeEvent
     public static void onLivingDestroyBlock(LivingDestroyBlockEvent event)
     {
-        if(!(event.getEntity().level.getBlockEntity(event.getPos()) instanceof InkedBlockTileEntity))
+        if(!(event.getEntity().level.getBlockEntity(event.getPos()) instanceof InkedBlockTileEntity te))
             return;
 
-        InkedBlockTileEntity te = (InkedBlockTileEntity) event.getEntity().level.getBlockEntity(event.getPos());
         BlockState savedState = te.getSavedState();
         if(event.getState().getBlock() instanceof IColoredBlock && (event.isCanceled() ||
                 (event.getEntityLiving() instanceof EnderDragon && savedState.is(BlockTags.DRAGON_IMMUNE)) ||
@@ -163,9 +162,8 @@ public class SplatcraftCommonHandler
         }
 
         //Handle keepMatchItems
-        if (event.getEntityLiving() instanceof Player)
+        if (event.getEntityLiving() instanceof Player player)
         {
-            Player player = (Player) event.getEntityLiving();
             NonNullList<ItemStack> matchInv = PlayerInfoCapability.get(player).getMatchInventory();
 
             event.getDrops().removeIf(drop -> matchInv.contains(drop.getItem()));
@@ -185,12 +183,11 @@ public class SplatcraftCommonHandler
     @SubscribeEvent
     public static void onPlayerAboutToDie(LivingDamageEvent event)
     {
-        if (!(event.getEntityLiving() instanceof Player) || event.getEntityLiving().getHealth() - event.getAmount() > 0)
+        if (!(event.getEntityLiving() instanceof Player player) || event.getEntityLiving().getHealth() - event.getAmount() > 0)
         {
             return;
         }
 
-        Player player = (Player) event.getEntityLiving();
         if (!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) && SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.KEEP_MATCH_ITEMS))
         {
             PlayerInfo playerCapability;
@@ -249,26 +246,26 @@ public class SplatcraftCommonHandler
     @SubscribeEvent
     public static void capabilityUpdateEvent(TickEvent.PlayerTickEvent event)
     {
-        PlayerInfo info = PlayerInfoCapability.get(event.player);
         if(PlayerInfoCapability.hasCapability(event.player))
         {
-            if(!event.player.level.isClientSide) {
-                ItemStack inkBand = CommonUtils.getItemInInventory(event.player, itemStack -> itemStack.is(SplatcraftTags.Items.INK_BANDS) && InkBlockUtils.hasInkType(itemStack));
-
-                if (!info.getInkBand().equals(inkBand, false)) {
-                    info.setInkBand(inkBand);
-                    SplatcraftPacketHandler.sendToTrackersAndSelf(new UpdatePlayerInfoPacket(event.player), event.player);
-                }
-            }
-
+            PlayerInfo info = PlayerInfoCapability.get(event.player);
             if (event.player.deathTime <= 0 && !info.isInitialized()) {
                 info.setInitialized(true);
                 info.setPlayer(event.player);
                 if (LOCAL_COLOR.containsKey(event.player))
                     info.setColor(LOCAL_COLOR.get(event.player));
 
-                if (event.player.level.isClientSide)
+                if (event.side.isClient())
                     SplatcraftPacketHandler.sendToServer(new RequestPlayerInfoPacket(event.player));
+            }
+
+            if (event.side.isServer()) {
+                ItemStack inkBand = CommonUtils.getItemInInventory(event.player, itemStack -> itemStack.is(SplatcraftTags.Items.INK_BANDS) && InkBlockUtils.hasInkType(itemStack));
+
+                if (!info.getInkBand().equals(inkBand, false)) {
+                    info.setInkBand(inkBand);
+                    SplatcraftPacketHandler.sendToTrackersAndSelf(new UpdatePlayerInfoPacket(event.player), event.player);
+                }
             }
         }
     }

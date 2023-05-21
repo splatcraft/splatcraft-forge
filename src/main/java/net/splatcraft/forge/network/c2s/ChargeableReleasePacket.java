@@ -27,9 +27,7 @@ public class ChargeableReleasePacket extends PlayToServerPacket
     {
         PlayerCharge.setCharge(player, new PlayerCharge(stack, charge));
 
-        if (stack.getItem() instanceof ChargerItem)
-        {
-            ChargerItem weapon = (ChargerItem) stack.getItem();
+        if (stack.getItem() instanceof ChargerItem weapon) {
             weapon.onRelease(player.level, player, stack, charge);
         }
     }

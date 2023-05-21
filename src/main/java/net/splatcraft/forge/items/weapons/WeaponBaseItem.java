@@ -33,7 +33,7 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.items.InkTankItem;
-import net.splatcraft.forge.items.weapons.settings.IDamageCalculator;
+import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
@@ -55,21 +55,19 @@ public class WeaponBaseItem extends Item implements IColoredItem
 {
     public static final int USE_DURATION = 72000;
     protected final List<WeaponTooltip> stats = new ArrayList<>();
-    protected boolean secret = false;
 
-    public IDamageCalculator damageCalculator;
+    public AbstractWeaponSettings settings;
 
-    public WeaponBaseItem(IDamageCalculator damageCalculator) {
+    public WeaponBaseItem(AbstractWeaponSettings settings) {
         super(new Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_WEAPONS));
         SplatcraftItems.inkColoredItems.add(this);
         SplatcraftItems.weapons.add(this);
-        this.damageCalculator = damageCalculator;
+        this.settings = settings;
 
         CauldronInteraction.WATER.put(this, (state, level, pos, player, hand, stack) ->
         {
-	        if (ColorUtils.isColorLocked(stack)  && !player.isCrouching())
-	        {
-				ColorUtils.setColorLocked(stack, false);
+            if (ColorUtils.isColorLocked(stack) && !player.isCrouching()) {
+                ColorUtils.setColorLocked(stack, false);
 
 	            player.awardStat(Stats.USE_CAULDRON);
 
@@ -154,8 +152,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
     @Override
     public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> list)
     {
-        if (!secret)
-        {
+        if (!settings.secret) {
             super.fillItemCategory(group, list);
         }
     }
@@ -164,8 +161,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             if (!ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor(player)
                     && PlayerInfoCapability.hasCapability(player))
                 ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor(player));
@@ -290,11 +286,5 @@ public class WeaponBaseItem extends Item implements IColoredItem
     public PlayerPosingHandler.WeaponPose getPose()
     {
         return PlayerPosingHandler.WeaponPose.NONE;
-    }
-
-    public WeaponBaseItem setSecret()
-    {
-        secret = true;
-        return this;
     }
 }
