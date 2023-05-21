@@ -89,9 +89,13 @@ public class SplatcraftCommonHandler
     {
         if(!event.isWasDeath())
             return;
-        
+
+        event.getOriginal().reviveCaps();
+
         Player player = event.getPlayer();
         PlayerInfoCapability.get(player).readNBT(PlayerInfoCapability.get(event.getOriginal()).writeNBT(new CompoundTag()));
+
+        event.getOriginal().invalidateCaps();
 
         NonNullList<ItemStack> matchInv = PlayerInfoCapability.get(player).getMatchInventory();
 
