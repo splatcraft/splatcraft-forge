@@ -39,8 +39,11 @@ import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.client.layer.InkAccessoryLayer;
 import net.splatcraft.forge.client.layer.InkOverlayLayer;
+import net.splatcraft.forge.client.renderer.InkSquidRenderer;
+import net.splatcraft.forge.client.renderer.SquidFormRenderer;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.entities.SquidFormPlayer;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.weapons.ChargerItem;
@@ -49,7 +52,9 @@ import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
+import software.bernie.example.client.renderer.entity.ReplacedCreeperRenderer;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -76,14 +81,13 @@ public class RendererHandler
     });
     */
     private static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/widgets.png");
-    //private static InkSquidRenderer squidRenderer = null;
+    private static SquidFormRenderer squidRenderer = null;
     private static float tickTime = 0;
     private static float oldCooldown = 0;
     private static int squidTime = 0;
     private static float prevInkPctg = 0;
     private static float inkFlash = 0;
 
-    /* TODO
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void playerRender(RenderPlayerEvent event)
     {
@@ -94,17 +98,19 @@ public class RendererHandler
         {
             event.setCanceled(true);
             if (squidRenderer == null)
-                squidRenderer = new InkSquidRenderer(event.getRenderer().getDispatcher());
+                squidRenderer = new SquidFormRenderer(InkSquidRenderer.getRenderManager());
             if (!InkBlockUtils.canSquidHide(player))
             {
-                squidRenderer.render(player, player.yHeadRot, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight());
-                net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(player, squidRenderer, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), event.getLight()));
+                squidRenderer.render(player, player.yHeadRot, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
+                //net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(player, squidRenderer, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
             }
             //else player.setInvisible(true);
         }
-        event.getRenderer().getDispatcher().setRenderShadow(false);
+
+        //event.getRenderer().getDispatcher().setRenderShadow(false);
     }
 
+    /*
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void livingRenderer(RenderLivingEvent.Pre<?, ?> event)
     {

@@ -14,17 +14,26 @@ import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class InkSquidRenderer extends GeoEntityRenderer<InkSquidEntity>
 {
-	public InkSquidRenderer(EntityRendererProvider.Context renderManager)
+	private static EntityRendererProvider.Context renderManager;
+
+	public InkSquidRenderer(EntityRendererProvider.Context context)
 	{
-		super(renderManager, new InkSquidModel());
+		super(context, new InkSquidModel());
 		shadowRadius = .5f;
 
 		addLayer(new EntityColorLayer<>(this, "ink_squid"));
+		renderManager = context;
 	}
 
 	@Override
-	public void render(InkSquidEntity animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight)
+	public void render(GeoModel model, InkSquidEntity animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
 	{
-		super.render(animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+		SquidFormRenderer.animate(model, animatable, partialTick);
+		super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+	}
+
+	//this is really dumb
+	public static EntityRendererProvider.Context getRenderManager() {
+		return renderManager;
 	}
 }
