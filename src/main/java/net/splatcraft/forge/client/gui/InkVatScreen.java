@@ -79,7 +79,6 @@ public class InkVatScreen extends AbstractContainerScreen<InkVatContainer>
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY)
     {
-        this.font.draw(matrixStack, title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
         font.draw(matrixStack, title.getString(), (float) imageWidth / 2 - (float) font.width(title.getString()) / 2, 6, 4210752);
 
         List<Integer> colors = Collections.emptyList();//getMenu().sortRecipeList();
@@ -141,40 +140,15 @@ public class InkVatScreen extends AbstractContainerScreen<InkVatContainer>
         }
     }
 
-    @SuppressWarnings({"ConstantConditions", "deprecation"})
     @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY)
     {
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        TextureManager textureManager = minecraft.getTextureManager();
-        if (textureManager != null)
-        {
-            textureManager.bindForSetup(TEXTURES);
-            int x = (width - imageWidth) / 2;
-            int y = (height - imageHeight) / 2;
+        RenderSystem.setShaderTexture(0, TEXTURES);
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
 
-            blit(matrixStack, x, y, 0, 0, imageWidth, imageHeight);
-
-            /*
-            InkVatTileEntity te = getMenu().te;
-            if (te.getItem(0).isEmpty())
-            {
-                blit(matrixStack, leftPos + 26, topPos + 70, 176, 0, 16, 16);
-            }
-            if (te.getItem(1).isEmpty())
-            {
-                blit(matrixStack, leftPos + 46, topPos + 70, 192, 0, 16, 16);
-            }
-            if (te.getItem(2).isEmpty())
-            {
-                blit(matrixStack, leftPos + 92, topPos + 82, 208, 0, 16, 16);
-            }
-            if (te.getItem(3).isEmpty())
-            {
-                blit(matrixStack, leftPos + 36, topPos + 89, 224, 0, 16, 16);
-            }
-            */
-        }
+        blit(matrixStack, x, y, 0, 0, imageWidth, imageHeight);
     }
 
 
