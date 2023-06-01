@@ -3,7 +3,6 @@ package net.splatcraft.forge.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -12,10 +11,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -36,8 +36,7 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-    public InkVatBlock(String name)
-    {
+    public InkVatBlock() {
         super(Properties.of(Material.METAL).strength(2.0f).requiresCorrectToolForDrops());
         SplatcraftBlocks.inkColoredBlocks.add(this);
 
@@ -105,15 +104,9 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
     }
 
     @Override
-    public int getColor(Level level, BlockPos pos)
-    {
-        if (level.getBlockEntity(pos) instanceof InkVatTileEntity)
-        {
-            InkVatTileEntity tileEntity = (InkVatTileEntity) level.getBlockEntity(pos);
-            if (tileEntity != null)
-            {
-                return tileEntity.getColor();
-            }
+    public int getColor(Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof InkVatTileEntity tileEntity) {
+            return tileEntity.getColor();
         }
         return -1;
     }
@@ -121,15 +114,10 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
     @Override
     public boolean setColor(Level level, BlockPos pos, int color)
     {
-        if (!(level.getBlockEntity(pos) instanceof InkVatTileEntity))
-        {
+        if (!(level.getBlockEntity(pos) instanceof InkVatTileEntity tileEntity)) {
             return false;
         }
-        InkVatTileEntity tileEntity = (InkVatTileEntity) level.getBlockEntity(pos);
-        if (tileEntity != null)
-        {
-            tileEntity.setColor(color);
-        }
+        tileEntity.setColor(color);
         level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 2);
         return true;
     }
@@ -199,15 +187,9 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
     public void neighborChanged(BlockState state, Level levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving)
     {
         boolean isPowered = levelIn.hasNeighborSignal(pos);
-        if (isPowered != state.getValue(POWERED))
-        {
-            if (isPowered && levelIn.getBlockEntity(pos) instanceof InkVatTileEntity)
-            {
-                InkVatTileEntity tileEntity = (InkVatTileEntity) levelIn.getBlockEntity(pos);
-                if (tileEntity != null)
-                {
-                    tileEntity.onRedstonePulse();
-                }
+        if (isPowered != state.getValue(POWERED)) {
+            if (isPowered && levelIn.getBlockEntity(pos) instanceof InkVatTileEntity tileEntity) {
+                tileEntity.onRedstonePulse();
             }
 
             levelIn.setBlock(pos, state.setValue(POWERED, isPowered), 3);
@@ -219,5 +201,11 @@ public class InkVatBlock extends BaseEntityBlock implements IColoredBlock
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return SplatcraftTileEntities.inkVatTileEntity.get().create(pos, state);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return createTickerHelper(type, SplatcraftTileEntities.inkVatTileEntity.get(), InkVatTileEntity::tick);
     }
 }

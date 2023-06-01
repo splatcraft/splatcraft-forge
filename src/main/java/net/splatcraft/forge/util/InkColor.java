@@ -3,15 +3,13 @@ package net.splatcraft.forge.util;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.splatcraft.forge.Splatcraft;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.TreeMap;
 
-public class InkColor implements Comparable<InkColor>
-{
+public class InkColor implements Comparable<InkColor>, IForgeRegistryEntry<InkColor> {
     private static final TreeMap<Integer, InkColor> colorMap = new TreeMap<>();
     private static int idIndex = 0;
     private final int hexCode;
@@ -19,8 +17,7 @@ public class InkColor implements Comparable<InkColor>
     private final DyeColor dyeColor;
     private final int ID;
 
-    public InkColor(String name, int color, @Nullable DyeColor dyeColor)
-    {
+    public InkColor(String name, int color, @Nullable DyeColor dyeColor) {
         hexCode = color;
         this.name = name;
         this.dyeColor = dyeColor;
@@ -72,26 +69,31 @@ public class InkColor implements Comparable<InkColor>
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name + ": #" + getHexCode().toUpperCase();
     }
 
     @Override
-    public int compareTo(InkColor other)
-    {
+    public int compareTo(InkColor other) {
         return ID - other.ID;
     }
 
-    public ResourceLocation getRegistryName()
-    {
+    public ResourceLocation getRegistryName() {
         return new ResourceLocation(Splatcraft.MODID, name);
     }
 
-    public static class DummyType extends InkColor
-    {
-        public DummyType()
-        {
+    @Override
+    public InkColor setRegistryName(ResourceLocation name) {
+        return this;
+    }
+
+    @Override
+    public Class<InkColor> getRegistryType() {
+        return InkColor.class;
+    }
+
+    public static class DummyType extends InkColor {
+        public DummyType() {
             super("dummy", ColorUtils.DEFAULT);
         }
     }

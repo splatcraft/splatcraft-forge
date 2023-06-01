@@ -19,7 +19,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.splatcraft.forge.dispenser.PlaceBlockDispenseBehavior;
-import net.splatcraft.forge.registries.SplatcraftItems;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +36,6 @@ public class EmptyInkwellBlock extends AbstractGlassBlock
     {
         super(properties.noOcclusion());
         this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false));
-
 
         DispenserBlock.registerBehavior(this, new PlaceBlockDispenseBehavior());
     }

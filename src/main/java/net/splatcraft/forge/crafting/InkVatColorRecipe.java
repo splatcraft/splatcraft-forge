@@ -132,7 +132,7 @@ public class InkVatColorRecipe implements Recipe<Container>
                     color = Integer.parseInt(colorStr, 16);
                 } catch (NumberFormatException nfe) {
                     try {
-                        color = SplatcraftInkColors.cobalt.getColor(); //SaveInfoRY.getValue(new ResourceLocation(colorStr)).getColor();
+                        color = SplatcraftInkColors.REGISTRY.get().getValue(new ResourceLocation(colorStr)).getColor();
                     } catch (NullPointerException npe)
                     {
                         LOGGER.error("Parsing error loading recipe {}", recipeId, npe);

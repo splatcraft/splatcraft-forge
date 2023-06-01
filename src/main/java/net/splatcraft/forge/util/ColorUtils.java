@@ -21,7 +21,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
-import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.IColoredEntity;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
@@ -32,7 +31,6 @@ import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 
 import java.util.Objects;
-import java.util.Random;
 
 public class ColorUtils
 {
@@ -53,19 +51,17 @@ public class ColorUtils
 
         if(!str.isEmpty())
         {
-            /* TODO data ink
             if (CommonUtils.isResourceNameValid(str)) {
-                InkColor colorObj = SplatcraftInkColors.REGISTRY.getValue(new ResourceLocation(str));
+                InkColor colorObj = SplatcraftInkColors.REGISTRY.get().getValue(new ResourceLocation(str));
 
                 if (colorObj != null)
                     return colorObj.getColor();
             }
-            */
 
             if (str.charAt(0) == '#')
                 return Integer.parseInt(str.substring(1), 16);
         }
-        
+
         return nbt.getInt("Color");
     }
 
