@@ -13,7 +13,7 @@ public class InkColor implements Comparable<InkColor>, IForgeRegistryEntry<InkCo
     private static final TreeMap<Integer, InkColor> colorMap = new TreeMap<>();
     private static int idIndex = 0;
     private final int hexCode;
-    private final String name;
+    private String name;
     private final DyeColor dyeColor;
     private final int ID;
 
@@ -84,6 +84,7 @@ public class InkColor implements Comparable<InkColor>, IForgeRegistryEntry<InkCo
 
     @Override
     public InkColor setRegistryName(ResourceLocation name) {
+        this.name = name.getPath();
         return this;
     }
 

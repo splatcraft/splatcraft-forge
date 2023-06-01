@@ -174,6 +174,15 @@ public class SplatcraftInkColors {
         REGISTRY = event.create(new RegistryBuilder<InkColor>()
                 .setName(new ResourceLocation(Splatcraft.MODID, "ink_colors"))
                 .setType(InkColor.class)
-                .disableSaving());
+                .set(DummyFactory.INSTANCE));
+    }
+
+    private static class DummyFactory implements IForgeRegistry.DummyFactory<InkColor> {
+        private static final DummyFactory INSTANCE = new DummyFactory();
+
+        @Override
+        public InkColor createDummy(ResourceLocation key) {
+            return new InkColor.DummyType().setRegistryName(key);
+        }
     }
 }

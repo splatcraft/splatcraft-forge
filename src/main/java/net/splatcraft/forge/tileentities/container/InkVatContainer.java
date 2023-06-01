@@ -226,7 +226,7 @@ public class InkVatContainer extends AbstractContainerMenu {
                 int countA = inv.get(0).getCount();
                 int countB = inv.get(1).getCount();
                 int countC = inv.get(2).getCount();
-                int itemCount = Math.min(Math.max(0, Math.min(countA, Math.min(countB, countC))), new ItemStack(SplatcraftBlocks.emptyInkwell.get()).getMaxStackSize());
+                int itemCount = Math.min(Math.max(0, Math.min(countA, Math.min(countB, countC))), new ItemStack(SplatcraftBlocks.inkwell.get()).getMaxStackSize());
                 itemstack1.setCount(itemCount);
 
                 if (this.moveItemStackTo(itemstack1, 5, this.slots.size(), true) && itemCount > 0) {
