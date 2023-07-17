@@ -384,6 +384,13 @@
   "gamerule.splatcraft.inkMobDamagePercentage.description": "Determina quanto moltiplicare il danno da inchiostro contro i mob",
   "gamerule.splatcraft.infiniteInkInCreative": "Inchiostro infinito in creativa",
   "gamerule.splatcraft.infiniteInkInCreative.description": "I giocatori in creativa hanno inchiostro infinito",
+
+  "gamerule.splatcraft.inkHealingConsumesHunger": "La rigenerazione in immersione consuma la fame",
+  "gamerule.splatcraft.inkableGround": "Le armi Splatcraft possono colorare terreno",
+  "gamerule.splatcraft.inkableGround.description": "Permette alle armi Splatcraft di colorare i blocchi ovunque",
+  "gamerule.splatcraft.rechargeableInkTank": "Serbatoio ricaricabile",
+  "gamerule.splatcraft.rechargeableInkTank.description": "Permette ai serbatoi di ricarsi passivamente, più velocemente mentre si è immersi.",
+
   "status.coord_set.a": "Prima posizione: X: %s Y: %s Z: %s",
   "status.coord_set.b": "Seconda posizione: X: %s Y: %s Z: %s",
   "status.no_ink": "Ricarica!",
