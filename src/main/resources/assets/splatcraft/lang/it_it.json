@@ -433,12 +433,12 @@
 
   "arg.colorCriterion.notFound": "Nessun criterio geristrato per %s",
   "arg.inkColor.notFound": "Colore sconosciuto: %s",
-  "arg.stageWarp.noSpawnPads": "No available Spawn Pads were found on stage [%s]", # TRANSLATE ME
-  "arg.stageWarp.noPlayers": "No players were found with a Spawn Pad matching their ink color on stage [%s]", # TRANSLATE ME
-  "arg.stage.notFound": "Stage [%s] does not exist", # TRANSLATE ME
-  "arg.stage.alreadyExists": "Stage [%s] already exists", # TRANSLATE ME
-  "arg.stageTeam.notFound": "Unknown team %s for stage [%s]", # TRANSLATE ME
-  "arg.stageSetting.notFound": "Setting %s does not exist", # TRANSLATE ME
+  "arg.stageWarp.noSpawnPads": "Non ci sono basi disponibili nello scenario [%s]",
+  "arg.stageWarp.noPlayers": "Non sono stati trovati giocatori con colori abbinati alle basi nello scenario [%s]",
+  "arg.stage.notFound": "Scenario inesistente: [%s]",
+  "arg.stage.alreadyExists": "Scenario già esistente: [%s]",
+  "arg.stageTeam.notFound": "Sqadra sconosciuta: %s §7nello scenario [%s]",
+  "arg.stageSetting.notFound": "Impostazione sconosciuta: %s",
 
   "stat.splatcraft.turf_wars_won": "Mischie Mollusche Vinte",
   "stat.splatcraft.squid_time": "Tempo come Calamaro",
