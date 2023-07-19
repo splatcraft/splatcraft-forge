@@ -42,7 +42,20 @@ public class CurlingBombRenderer extends SubWeaponRenderer<CurlingBombEntity>
 	@Override
 	public void render(GeoModel model, CurlingBombEntity animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
 	{
-		model.getBone("blades").get().setRotationY(Mth.lerp(partialTick, animatable.prevBladeRot, animatable.bladeRot));
+		if(!animatable.isItem)
+		{
+			if (model.getBone("blades").isPresent())
+				model.getBone("blades").get().setRotationY(Mth.lerp(partialTick, animatable.prevBladeRot, animatable.bladeRot));
+
+			float f = animatable.getFlashIntensity(partialTick);
+			float f1 = 1.0F + Mth.sin(f * 100.0F) * f * 0.01F;
+			f = Mth.clamp(f, 0.0F, 1.0F);
+			f = f * f;
+			f = f * f;
+			float f2 = (1.0F + f * 0.4F) * f1;
+			float f3 = (1.0F + f * 0.1F) / f1;
+			poseStack.scale(f2, f3, f2);
+		}
 
 		super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 	}

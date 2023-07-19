@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.util.Color;
 import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
 
-public class InkProjectileRenderer extends GeoProjectilesRenderer<InkProjectileEntity>
+public class InkProjectileRenderer extends GeoNonLivingRenderer<InkProjectileEntity>
 {
 	public InkProjectileRenderer(EntityRendererProvider.Context renderManager)
 	{
@@ -23,15 +23,18 @@ public class InkProjectileRenderer extends GeoProjectilesRenderer<InkProjectileE
 	@Override
 	public void render(InkProjectileEntity animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight)
 	{
-		float scale = animatable.getProjectileSize() * (animatable.getProjectileType().equals(InkProjectileEntity.Types.DEFAULT) ? 1 : 2.5f);
+		if (animatable.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(animatable) < 12.25D))
+		{
+			float scale = animatable.getProjectileSize() * (animatable.getProjectileType().equals(InkProjectileEntity.Types.DEFAULT) ? 1 : 2.5f);
 
-		poseStack.pushPose();
-		//poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot()) - 180.0F));
-		//poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTick, animatable.xRotO, animatable.getXRot())));
-		poseStack.scale(scale, scale, scale);
+			poseStack.pushPose();
+			poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot()) - 180.0F));
+			poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTick, animatable.xRotO, animatable.getXRot())));
+			poseStack.scale(scale, scale, scale);
 
-		super.render(animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-		poseStack.popPose();
+			super.render(animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+			poseStack.popPose();
+		}
 	}
 
 	@Override

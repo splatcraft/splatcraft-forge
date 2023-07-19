@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.splatcraft.forge.client.renderer.GeoNonLivingRenderer;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.entities.subs.SuctionBombEntity;
 import net.splatcraft.forge.util.ColorUtils;
@@ -17,7 +18,9 @@ import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer;
 
-public abstract class SubWeaponRenderer<T extends AbstractSubWeaponEntity> extends GeoProjectilesRenderer<T>
+import static software.bernie.geckolib3.renderers.geo.GeoProjectilesRenderer.getPackedOverlay;
+
+public abstract class SubWeaponRenderer<T extends AbstractSubWeaponEntity> extends GeoNonLivingRenderer<T>
 {
 	private final int layers;
 
