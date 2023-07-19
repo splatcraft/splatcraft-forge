@@ -32,24 +32,24 @@ public class SplatcraftBlocks
     public static final RegistryObject<InkedBlock> glowingInkedBlock = REGISTRY.register("glowing_inked_block", InkedBlock::glowing);
     public static final RegistryObject<InkedBlock> clearInkedBlock = REGISTRY.register("clear_inked_block", InkedBlock::new);
 
-    public static final RegistryObject<Block> sardiniumBlock =  REGISTRY.register("sardinium_block", () -> new MetalBlock(Material.METAL, MaterialColor.TERRACOTTA_WHITE));
-    public static final RegistryObject<Block> sardiniumOre =  REGISTRY.register("sardinium_ore", OreBlock::new);
-    public static final RegistryObject<Block> powerEggBlock =  REGISTRY.register("power_egg_block", () -> new Block(BlockBehaviour.Properties.of(Material.VEGETABLE, DyeColor.ORANGE).sound(SoundType.SLIME_BLOCK).strength(0.2f, 0).lightLevel((state) -> 9)));
-    public static final RegistryObject<Block> crate =  REGISTRY.register("crate", () -> new CrateBlock("crate", false));
-    public static final RegistryObject<Block> sunkenCrate =  REGISTRY.register("sunken_crate", () -> new CrateBlock("sunken_crate", true));
+    public static final RegistryObject<Block> sardiniumBlock = REGISTRY.register("sardinium_block", () -> new MetalBlock(Material.METAL, MaterialColor.TERRACOTTA_WHITE));
+    public static final RegistryObject<Block> sardiniumOre = REGISTRY.register("sardinium_ore", OreBlock::new);
+    public static final RegistryObject<Block> powerEggBlock = REGISTRY.register("power_egg_block", () -> new Block(BlockBehaviour.Properties.of(Material.VEGETABLE, DyeColor.ORANGE).sound(SoundType.SLIME_BLOCK).strength(0.2f, 0).lightLevel((state) -> 9)));
+    public static final RegistryObject<Block> crate = REGISTRY.register("crate", () -> new CrateBlock("crate", false));
+    public static final RegistryObject<Block> sunkenCrate = REGISTRY.register("sunken_crate", () -> new CrateBlock("sunken_crate", true));
 
-    public static final RegistryObject<Block> inkVat =  REGISTRY.register("ink_vat", () -> new InkVatBlock("ink_vat"));
-    public static final RegistryObject<Block> weaponWorkbench =  REGISTRY.register("ammo_knights_workbench", () -> new WeaponWorkbenchBlock("ammo_knights_workbench"));
-    public static final RegistryObject<Block> remotePedestal =  REGISTRY.register("remote_pedestal", RemotePedestalBlock::new);
+    public static final RegistryObject<Block> inkVat = REGISTRY.register("ink_vat", () -> new InkVatBlock());
+    public static final RegistryObject<Block> weaponWorkbench = REGISTRY.register("ammo_knights_workbench", () -> new WeaponWorkbenchBlock("ammo_knights_workbench"));
+    public static final RegistryObject<Block> remotePedestal = REGISTRY.register("remote_pedestal", RemotePedestalBlock::new);
 
     public static final RegistryObject<Block> emptyInkwell = REGISTRY.register("empty_inkwell", () -> new EmptyInkwellBlock(Block.Properties.of(Material.GLASS).strength(0.3F).sound(SoundType.GLASS)));
-    public static final RegistryObject<Block> inkwell =  REGISTRY.register("inkwell", InkwellBlock::new);
+    public static final RegistryObject<Block> inkwell = REGISTRY.register("inkwell", InkwellBlock::new);
 
-    public static final RegistryObject<Block> inkedWool =  REGISTRY.register("ink_stained_wool", () -> new InkStainedBlock("ink_stained_wool", BlockBehaviour.Properties.of(Material.WOOL).strength(0.8F).sound(SoundType.WOOL)));
-    public static final RegistryObject<Block> inkedCarpet =  REGISTRY.register("ink_stained_carpet", () -> new InkedCarpetBlock("ink_stained_carpet"));
-    public static final RegistryObject<Block> inkedGlass =  REGISTRY.register("ink_stained_glass", () -> new InkedGlassBlock("ink_stained_glass"));
-    public static final RegistryObject<Block> inkedGlassPane =  REGISTRY.register("ink_stained_glass_pane", InkedGlassPaneBlock::new);
-    public static final RegistryObject<Block> canvas =  REGISTRY.register("canvas", () -> new CanvasBlock("canvas"));
+    public static final RegistryObject<Block> inkedWool = REGISTRY.register("ink_stained_wool", () -> new InkStainedBlock("ink_stained_wool", BlockBehaviour.Properties.of(Material.WOOL).strength(0.8F).sound(SoundType.WOOL)));
+    public static final RegistryObject<Block> inkedCarpet = REGISTRY.register("ink_stained_carpet", () -> new InkedCarpetBlock("ink_stained_carpet"));
+    public static final RegistryObject<Block> inkedGlass = REGISTRY.register("ink_stained_glass", () -> new InkedGlassBlock("ink_stained_glass"));
+    public static final RegistryObject<Block> inkedGlassPane = REGISTRY.register("ink_stained_glass_pane", InkedGlassPaneBlock::new);
+    public static final RegistryObject<Block> canvas = REGISTRY.register("canvas", () -> new CanvasBlock("canvas"));
     public static final RegistryObject<Block> splatSwitch =  REGISTRY.register("splat_switch", SplatSwitchBlock::new);
     public static final RegistryObject<SpawnPadBlock> spawnPad =  REGISTRY.register("spawn_pad", SpawnPadBlock::new);
     public static final RegistryObject<Block> spawnPadEdge =  REGISTRY.register("spawn_pad_edge", () -> new SpawnPadBlock.Aux(spawnPad.get()));
@@ -70,7 +70,7 @@ public class SplatcraftBlocks
     {
         ItemBlockRenderTypes.setRenderLayer(inkedGlass.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(inkedGlassPane.get(), RenderType.translucent());
-        
+
         ItemBlockRenderTypes.setRenderLayer(emptyInkwell.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(inkwell.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(spawnPad.get(), RenderType.cutout());

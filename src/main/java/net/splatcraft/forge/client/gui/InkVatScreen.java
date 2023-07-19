@@ -15,10 +15,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.tileentities.InkVatTileEntity;
 import net.splatcraft.forge.tileentities.container.InkVatContainer;
 import net.splatcraft.forge.util.ColorUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
@@ -58,7 +58,7 @@ public class InkVatScreen extends AbstractContainerScreen<InkVatContainer>
     @Override
     protected void renderTooltip(PoseStack matrixStack, int mouseX, int mouseY)
     {
-        List<Integer> colorSelection = Collections.emptyList();//getMenu().sortRecipeList();
+        List<Integer> colorSelection = getMenu().sortRecipeList();
 
         super.renderTooltip(matrixStack, mouseX, mouseY);
         int sc = (int) Math.ceil(Math.max(0, (colorSelection.size() - 16) * scroll));
@@ -79,10 +79,9 @@ public class InkVatScreen extends AbstractContainerScreen<InkVatContainer>
     @Override
     protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY)
     {
-        this.font.draw(matrixStack, title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
         font.draw(matrixStack, title.getString(), (float) imageWidth / 2 - (float) font.width(title.getString()) / 2, 6, 4210752);
 
-        List<Integer> colors = Collections.emptyList();//getMenu().sortRecipeList();
+        List<Integer> colors = getMenu().sortRecipeList();
         drawAvailableColors(matrixStack, colors, colorSelectionX, colorSelectionY);
         canScroll = colors.size() > 16;
         maxScroll = (float) Math.ceil(colors.size() / 2.0) - 8;
@@ -90,7 +89,7 @@ public class InkVatScreen extends AbstractContainerScreen<InkVatContainer>
         drawScrollBar(matrixStack, scrollBarX, scrollBarY, 132, mouseX, mouseY);
     }
 
-    @SuppressWarnings({"ConstantConditions", "deprecation"})
+    @SuppressWarnings({"ConstantConditions"})
     protected void drawAvailableColors(PoseStack matrixStack, List<Integer> colorSelection, int x, int y)
     {
         TextureManager textureManager = minecraft.getTextureManager();
@@ -141,39 +140,27 @@ public class InkVatScreen extends AbstractContainerScreen<InkVatContainer>
         }
     }
 
-    @SuppressWarnings({"ConstantConditions", "deprecation"})
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY)
-    {
+    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        TextureManager textureManager = minecraft.getTextureManager();
-        if (textureManager != null)
-        {
-            textureManager.bindForSetup(TEXTURES);
-            int x = (width - imageWidth) / 2;
-            int y = (height - imageHeight) / 2;
+        RenderSystem.setShaderTexture(0, TEXTURES);
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
 
-            blit(matrixStack, x, y, 0, 0, imageWidth, imageHeight);
+        blit(matrixStack, x, y, 0, 0, imageWidth, imageHeight);
 
-            /*
-            InkVatTileEntity te = getMenu().te;
-            if (te.getItem(0).isEmpty())
-            {
-                blit(matrixStack, leftPos + 26, topPos + 70, 176, 0, 16, 16);
-            }
-            if (te.getItem(1).isEmpty())
-            {
-                blit(matrixStack, leftPos + 46, topPos + 70, 192, 0, 16, 16);
-            }
-            if (te.getItem(2).isEmpty())
-            {
-                blit(matrixStack, leftPos + 92, topPos + 82, 208, 0, 16, 16);
-            }
-            if (te.getItem(3).isEmpty())
-            {
-                blit(matrixStack, leftPos + 36, topPos + 89, 224, 0, 16, 16);
-            }
-            */
+        InkVatTileEntity te = getMenu().te;
+        if (te.getItem(0).isEmpty()) {
+            blit(matrixStack, leftPos + 26, topPos + 70, 176, 0, 16, 16);
+        }
+        if (te.getItem(1).isEmpty()) {
+            blit(matrixStack, leftPos + 46, topPos + 70, 192, 0, 16, 16);
+        }
+        if (te.getItem(2).isEmpty()) {
+            blit(matrixStack, leftPos + 92, topPos + 82, 208, 0, 16, 16);
+        }
+        if (te.getItem(3).isEmpty()) {
+            blit(matrixStack, leftPos + 36, topPos + 89, 224, 0, 16, 16);
         }
     }
 
@@ -181,7 +168,7 @@ public class InkVatScreen extends AbstractContainerScreen<InkVatContainer>
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
-        List<Integer> colorSelection = Collections.emptyList();//getMenu().sortRecipeList();
+        List<Integer> colorSelection = getMenu().sortRecipeList();
         scrolling = false;
 
         int sc = (int) Math.ceil(Math.max(0, (colorSelection.size() - 16) * scroll));
@@ -200,7 +187,7 @@ public class InkVatScreen extends AbstractContainerScreen<InkVatContainer>
                 {
                     this.minecraft.gameMode.handleInventoryButtonClick(this.getMenu().containerId, i);
                 }
-                //getMenu().updateInkVatColor(i, colorSelection.get(i));
+                getMenu().updateInkVatColor(i, colorSelection.get(i));
             }
         }
 

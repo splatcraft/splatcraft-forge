@@ -30,9 +30,6 @@ public class SquidSoulParticle extends TextureSheetParticle
         hasPhysics = false;
 
         spriteProvider = sprite;
-
-
-        System.out.println("create X: " + x + " Y: " + y + " Z: " + z);
     }
 
     @Override
@@ -132,7 +129,6 @@ public class SquidSoulParticle extends TextureSheetParticle
         @Override
         public Particle createParticle(SquidSoulParticleData typeIn, ClientLevel levelIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
         {
-            System.out.println("factory X: " + x + " Y: " + y + " Z: " + z);
             return new SquidSoulParticle(levelIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn, this.spriteSet);
         }
     }

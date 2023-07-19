@@ -85,7 +85,7 @@ public class InkColorArgument implements ArgumentType<Integer>
 
             reader.setCursor(start);
             ResourceLocation resourceLocation = ResourceLocation.read(reader);
-            InkColor color = null; //SplatcraftInkColors.REGISTRY.getValue(resourceLocation); TODO data ink aaaa
+            InkColor color = SplatcraftInkColors.REGISTRY.get().getValue(resourceLocation);
 
             if (color == null)
             {
@@ -151,13 +151,12 @@ public class InkColorArgument implements ArgumentType<Integer>
         return parseStatic(reader);
     }
 
-    /* TODO data ink
+
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
     {
-        return suggestIterable(SplatcraftInkColors.REGISTRY.getKeys(), builder);
+        return suggestIterable(SplatcraftInkColors.REGISTRY.get().getKeys(), builder);
     }
-    */
 
     @Override
     public Collection<String> getExamples()
@@ -167,7 +166,6 @@ public class InkColorArgument implements ArgumentType<Integer>
 
     public static class Serializer implements ArgumentSerializer<InkColorArgument>
     {
-
         @Override
         public void serializeToNetwork(InkColorArgument argument, FriendlyByteBuf buffer)
         {

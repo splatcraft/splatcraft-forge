@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
@@ -111,18 +112,19 @@ public class InkVatTileEntity extends BaseContainerBlockEntity implements Worldl
         return false;
     }
 
+    public static void tick(Level level, BlockPos pos, BlockState state, InkVatTileEntity te) {
+        te.updateRecipeOutput();
+        if (!level.isClientSide) {
+            level.setBlock(pos, state.setValue(InkVatBlock.ACTIVE, te.hasRecipe()), 3);
+        }
+    }
+
     public void updateRecipeOutput()
     {
-        if (hasRcipe())
-        {
+        if (hasRecipe()) {
             setItem(4, ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkwell.get(), Math.min(SplatcraftItems.inkwell.get().getMaxStackSize(),
                     Math.min(Math.min(inventory.get(0).getCount(), inventory.get(1).getCount()), inventory.get(2).getCount()))), getColor()), true));
         } else setItem(4, ItemStack.EMPTY);
-    }
-
-    public boolean hasRcipe()
-    {
-        return !inventory.get(0).isEmpty() && !inventory.get(1).isEmpty() && !inventory.get(2).isEmpty() && getColor() != -1;
     }
 
     public boolean hasOmniFilter()
@@ -166,22 +168,8 @@ public class InkVatTileEntity extends BaseContainerBlockEntity implements Worldl
         inventory.clear();
     }
 
-    @Override
-    public boolean canPlaceItem(int index, ItemStack stack)
-    {
-        switch (index)
-        {
-            case 0:
-                return ItemStack.isSame(stack, new ItemStack(Items.INK_SAC));
-            case 1:
-                return ItemStack.isSame(stack, new ItemStack(SplatcraftItems.powerEgg.get()));
-            case 2:
-                return ItemStack.isSame(stack, new ItemStack(SplatcraftItems.emptyInkwell.get()));
-            case 3:
-                return stack.is(SplatcraftTags.Items.FILTERS);
-        }
-
-        return false;
+    public boolean hasRecipe() {
+        return !inventory.get(0).isEmpty() && !inventory.get(1).isEmpty() && !inventory.get(2).isEmpty() && getColor() != -1;
     }
 
     public NonNullList<ItemStack> getInventory()
@@ -210,7 +198,6 @@ public class InkVatTileEntity extends BaseContainerBlockEntity implements Worldl
     {
         return new InkVatContainer(id, player, this, false);
     }
-
 
     //Nbt Read
     @Override
@@ -248,48 +235,38 @@ public class InkVatTileEntity extends BaseContainerBlockEntity implements Worldl
         }
     }
 
+    @Override
+    public boolean canPlaceItem(int index, ItemStack stack) {
+        return switch (index) {
+            case 0 -> ItemStack.isSame(stack, new ItemStack(Items.INK_SAC));
+            case 1 -> ItemStack.isSame(stack, new ItemStack(SplatcraftItems.powerEgg.get()));
+            case 2 -> ItemStack.isSame(stack, new ItemStack(SplatcraftItems.emptyInkwell.get()));
+            case 3 -> stack.is(SplatcraftTags.Items.FILTERS);
+            default -> false;
+        };
+
+    }
+
     public void onRedstonePulse()
     {
-        if (hasRcipe())
-        {
+        if (hasRecipe()) {
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
-            if (pointer != -1 && recipeEntries > 0)
-            {
+            if (pointer != -1 && recipeEntries > 0) {
                 pointer = (pointer + 1) % recipeEntries;
                 setColor(InkVatContainer.sortRecipeList(InkVatContainer.getAvailableRecipes(this)).get(pointer));
             }
         }
     }
 
-    public int getColor()
-    {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(int color)
-    {
+    public void setColor(int color) {
         this.color = color;
     }
 
-    /* TODO come up with a better way to update Ink Vat blockstate when a recipe is selected
-    @Override
-    public void tick()
-    {
-        updateRecipeOutput();
-        if (!level.isClientSide)
-        {
-            level.setBlock(getBlockPos(), getBlockState().setValue(InkVatBlock.ACTIVE, hasRcipe()), 3);
-        }
-    }
-    */
-
-    public int getRecipeEntries()
-    {
-        return recipeEntries;
-    }
-
-    public void setRecipeEntries(int v)
-    {
+    public void setRecipeEntries(int v) {
         recipeEntries = v;
     }
 
@@ -333,7 +310,7 @@ public class InkVatTileEntity extends BaseContainerBlockEntity implements Worldl
         {
             if (changeState)
             {
-                level.setBlock(getBlockPos(), getBlockState().setValue(InkVatBlock.ACTIVE, hasRcipe()), 2);
+                level.setBlock(getBlockPos(), getBlockState().setValue(InkVatBlock.ACTIVE, hasRecipe()), 2);
             } else
             {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);

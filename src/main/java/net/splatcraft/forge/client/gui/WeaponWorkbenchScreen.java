@@ -76,14 +76,13 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         tickTime++;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY)
     {
         RenderSystem.setShaderColor(1, 1, 1, 1);
+        RenderSystem.setShaderTexture(0, TEXTURES);
         if (minecraft != null)
         {
-            minecraft.getTextureManager().bindForSetup(TEXTURES);
             int x = (width - imageWidth) / 2;
             int y = (height - imageHeight) / 2;
 
@@ -197,7 +196,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
                 int iy = -5;
                 int ty = tabPos == i ? 8 : 28;
 
-                minecraft.getTextureManager().bindForSetup(TEXTURES);
+                RenderSystem.setShaderTexture(0, TEXTURES);
                 blit(matrixStack, ix - 10, iy, 211, ty, 20, 20);
 
                 ResourceLocation tabIcon = tabList.get(i).getTabIcon();
@@ -208,12 +207,12 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
                     minecraft.getItemRenderer().renderGuiItem(new ItemStack(itemIcon), ix - 8, iy + 2);
                 } else
                 {
-                    minecraft.getTextureManager().bindForSetup(tabIcon);
+                    RenderSystem.setShaderTexture(0, tabIcon);
                     blit(matrixStack, ix - 8, iy + 2, 16, 16, 0, 0, 256, 256, 256, 256);
                 }
 
             }
-            minecraft.getTextureManager().bindForSetup(TEXTURES);
+            RenderSystem.setShaderTexture(0, TEXTURES);
         }
 
         //Draw Weapon Selection
@@ -281,7 +280,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
 
             }
         }
-        minecraft.getTextureManager().bindForSetup(TEXTURES);
+        RenderSystem.setShaderTexture(0, TEXTURES);
 
         //Tab Arrows TODO
 
@@ -326,7 +325,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         String craftStr = new TranslatableComponent("gui.ammo_knights_workbench.craft").getString();
 
         font.draw(matrixStack, craftStr, (float) imageWidth / 2 - (float) font.width(craftStr) / 2, 95, ty == 0 ? 0x999999 : 0xEFEFEF);
-        minecraft.getTextureManager().bindForSetup(TEXTURES);
+        RenderSystem.setShaderTexture(0, TEXTURES);
 
         //Selected Pointer
         int selectedPos = typePos - sectionPos * 8;
@@ -456,7 +455,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
             TextureManager textureManager = minecraft.getTextureManager();
             if (textureManager != null)
             {
-                minecraft.getTextureManager().bindForSetup(TEXTURES);
+                RenderSystem.setShaderTexture(0, TEXTURES);
                 if (tabPos != i && isHovering(ix - 10, iy, 20, 20, mouseX, mouseY))
                 {
                     tabPos = i;

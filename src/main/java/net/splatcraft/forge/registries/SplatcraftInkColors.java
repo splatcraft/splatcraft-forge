@@ -1,21 +1,25 @@
 package net.splatcraft.forge.registries;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.NewRegistryEvent;
+import net.minecraftforge.registries.RegistryBuilder;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkColor;
 
+import java.util.function.Supplier;
+
 import static net.splatcraft.forge.Splatcraft.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class SplatcraftInkColors
-{
+public class SplatcraftInkColors {
+    public static Supplier<IForgeRegistry<InkColor>> REGISTRY;
+
     //Starter Colors
     public static final InkColor orange = new InkColor("orange", 0xDF641A);
     public static final InkColor blue = new InkColor("blue", 0x26229F);
@@ -93,7 +97,7 @@ public class SplatcraftInkColors
 
     public static final InkColor undyed = new InkColor("default", ColorUtils.DEFAULT);
 
-    /*
+
     @SubscribeEvent
     public static void registerInkColors(final RegistryEvent.Register<InkColor> event)
     {
@@ -163,31 +167,22 @@ public class SplatcraftInkColors
         registry.register(redwood);
 
         registry.register(undyed);
-
     }
-    */
 
-    /* TODO Data-Driven Ink
     @SubscribeEvent
-    public static void registerRegistry(final RegistryEvent.NewRegistry event)
-    {
-        REGISTRY = new RegistryBuilder<InkColor>()
+    public static void registerRegistry(final NewRegistryEvent event) {
+        REGISTRY = event.create(new RegistryBuilder<InkColor>()
                 .setName(new ResourceLocation(Splatcraft.MODID, "ink_colors"))
                 .setType(InkColor.class)
-                .set(DummyFactory.INSTANCE)
-                .tagFolder("ink_colors")
-                .create();
+                .set(DummyFactory.INSTANCE));
     }
 
-    private static class DummyFactory implements IForgeRegistry.DummyFactory<InkColor>
-    {
+    private static class DummyFactory implements IForgeRegistry.DummyFactory<InkColor> {
         private static final DummyFactory INSTANCE = new DummyFactory();
 
         @Override
-        public InkColor createDummy(ResourceLocation key)
-        {
+        public InkColor createDummy(ResourceLocation key) {
             return new InkColor.DummyType().setRegistryName(key);
         }
     }
-    */
 }

@@ -87,25 +87,22 @@ public class SplatcraftCommonHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerClone(final PlayerEvent.Clone event)
     {
-        if(!event.isWasDeath())
+        if (!event.isWasDeath())
             return;
 
-        event.getOriginal().reviveCaps();
-
         Player player = event.getPlayer();
+        event.getOriginal().reviveCaps(); // Mod devs should not have to do this
         PlayerInfoCapability.get(player).readNBT(PlayerInfoCapability.get(event.getOriginal()).writeNBT(new CompoundTag()));
+        event.getOriginal().invalidateCaps();
 
         event.getOriginal().invalidateCaps();
 
         NonNullList<ItemStack> matchInv = PlayerInfoCapability.get(player).getMatchInventory();
 
-        if (!matchInv.isEmpty())
-        {
-            for (int i = 0; i < matchInv.size(); i++)
-            {
+        if (!matchInv.isEmpty()) {
+            for (int i = 0; i < matchInv.size(); i++) {
                 ItemStack stack = matchInv.get(i);
-                if (!stack.isEmpty() && !putStackInSlot(player.getInventory(), stack, i) && !player.getInventory().add(stack))
-                {
+                if (!stack.isEmpty() && !putStackInSlot(player.getInventory(), stack, i) && !player.getInventory().add(stack)) {
                     player.drop(stack, true, true);
                 }
             }
