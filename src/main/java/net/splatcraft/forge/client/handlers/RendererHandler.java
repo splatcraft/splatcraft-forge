@@ -54,7 +54,6 @@ import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
-import software.bernie.example.client.renderer.entity.ReplacedCreeperRenderer;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -81,7 +80,7 @@ public class RendererHandler
     });
     */
     private static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/widgets.png");
-    private static SquidFormRenderer squidRenderer = null;
+    //private static SquidFormRenderer squidRenderer = null;
     private static float tickTime = 0;
     private static float oldCooldown = 0;
     private static int squidTime = 0;
@@ -97,11 +96,11 @@ public class RendererHandler
         if (PlayerInfoCapability.isSquid(player))
         {
             event.setCanceled(true);
-            if (squidRenderer == null)
-                squidRenderer = new SquidFormRenderer(InkSquidRenderer.getRenderManager());
+            //if (squidRenderer == null)
+                //squidRenderer = new SquidFormRenderer(InkSquidRenderer.getRenderManager());
             if (!InkBlockUtils.canSquidHide(player))
             {
-                squidRenderer.render(player, player.yHeadRot, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
+                //squidRenderer.render(player, player.yHeadRot, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
                 //net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(player, squidRenderer, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
             }
             //else event.getRenderer().getDispatcher().setRenderShadow(false);

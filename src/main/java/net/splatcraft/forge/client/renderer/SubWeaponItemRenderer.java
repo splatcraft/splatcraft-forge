@@ -1,19 +1,6 @@
 package net.splatcraft.forge.client.renderer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
-import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
-import net.splatcraft.forge.items.weapons.SubWeaponItem;
-import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
-
-public class SubWeaponItemRenderer extends GeoItemRenderer<SubWeaponItem>
+public class SubWeaponItemRenderer { /* extends GeoItemRenderer<SubWeaponItem>
 {
 	public SubWeaponItemRenderer()
 	{
@@ -43,5 +30,5 @@ public class SubWeaponItemRenderer extends GeoItemRenderer<SubWeaponItem>
 		sub.isItem = true;
 		Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(sub).render(sub, 0, Minecraft.getInstance().getDeltaFrameTime(), poseStack, bufferSource, packedLight);
 	}
-
+	*/
 }

@@ -1,29 +1,8 @@
 package net.splatcraft.forge.client.renderer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.splatcraft.forge.client.layer.EntityColorLayer;
-import net.splatcraft.forge.client.models.InkSquidModel;
-import net.splatcraft.forge.client.models.SquidFormModel;
-import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
-import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
-import net.splatcraft.forge.entities.InkSquidEntity;
-import net.splatcraft.forge.entities.SquidFormPlayer;
-import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
-import software.bernie.geckolib3.renderers.geo.GeoReplacedEntityRenderer;
-import software.bernie.shadowed.eliotlash.mclib.utils.MathHelper;
-
-public class SquidFormRenderer extends GeoReplacedEntityRenderer<SquidFormPlayer>
+public class SquidFormRenderer
 {
+	/*
 	public SquidFormRenderer(EntityRendererProvider.Context renderManager)
 	{
 		super(renderManager, new SquidFormModel(), new SquidFormPlayer());
@@ -85,4 +64,5 @@ public class SquidFormRenderer extends GeoReplacedEntityRenderer<SquidFormPlayer
 			}
 		}
 	}
+	*/
 }

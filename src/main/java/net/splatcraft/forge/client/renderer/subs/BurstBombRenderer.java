@@ -1,37 +1,58 @@
 package net.splatcraft.forge.client.renderer.subs;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.splatcraft.forge.client.models.SubWeaponModel;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.client.models.subs.BurstBombModel;
 import net.splatcraft.forge.entities.subs.BurstBombEntity;
-import net.splatcraft.forge.entities.subs.SuctionBombEntity;
-import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
 
-public class BurstBombRenderer extends SubWeaponRenderer<BurstBombEntity>
+public class BurstBombRenderer extends SubWeaponRenderer<BurstBombEntity, BurstBombModel>
 {
-	public BurstBombRenderer(EntityRendererProvider.Context renderManager) {
-			super(renderManager, new SubWeaponModel<>(), 2);
+	private final BurstBombModel MODEL;
+	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/weapons/sub/burst_bomb.png");
+	private static final ResourceLocation OVERLAY_TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/weapons/sub/burst_bomb_ink.png");
+
+	public BurstBombRenderer(EntityRendererProvider.Context context)
+	{
+		super(context);
+		MODEL = createModel(context, BurstBombModel.class);
 	}
 
 	@Override
-	public void render(GeoModel model, BurstBombEntity animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
-	{
-		poseStack.pushPose();
+	public void render(BurstBombEntity entityIn, float entityYaw, float partialTicks, PoseStack PoseStackIn, MultiBufferSource bufferIn, int packedLightIn) {
 
-		if(!animatable.isItem)
+		PoseStackIn.pushPose();
+		if(!entityIn.isItem)
 		{
-			poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot())));
-			poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTick, animatable.xRotO, animatable.getXRot()) - 90F));
+			PoseStackIn.translate(0.0D, 0.2/*0.15000000596046448D*/, 0.0D);
+			PoseStackIn.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 180.0F));
+			PoseStackIn.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot())+90F));
+			PoseStackIn.scale(1, -1, 1);
 		}
-
-		super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-
-		poseStack.popPose();
+		super.render(entityIn, entityYaw, partialTicks, PoseStackIn, bufferIn, packedLightIn);
+		PoseStackIn.popPose();
 	}
+
+	@Override
+	public ResourceLocation getTextureLocation(BurstBombEntity entity)
+	{
+		return TEXTURE;
+	}
+
+	@Override
+	public BurstBombModel getModel()
+	{
+		return MODEL;
+	}
+
+	@Override
+	public ResourceLocation getInkTextureLocation(BurstBombEntity entity)
+	{
+		return OVERLAY_TEXTURE;
+	}
+
 }

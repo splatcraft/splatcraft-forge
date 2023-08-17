@@ -36,14 +36,10 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.UUID;
 
-public abstract class AbstractSubWeaponEntity extends Entity implements IColoredEntity, IAnimatable
+public abstract class AbstractSubWeaponEntity extends Entity implements IColoredEntity
 {
     protected static final String SPLASH_DAMAGE_TYPE = "splat";
 
@@ -58,7 +54,6 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
     private UUID ownerUUID;
     private int ownerNetworkId;
     private boolean leftOwner;
-    private final AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
 
     @Deprecated //use AbstractWeaponEntity.create
     public AbstractSubWeaponEntity(EntityType<? extends AbstractSubWeaponEntity> type, Level level)
@@ -404,14 +399,4 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
         return Mth.lerp(0.2F, p_234614_0_, p_234614_1_);
     }
 
-    @Override
-    public void registerControllers(AnimationData data) {
-
-    }
-
-    @Override
-    public AnimationFactory getFactory()
-    {
-        return animationFactory;
-    }
 }

@@ -21,10 +21,6 @@ import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkExplosion;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class SuctionBombEntity extends AbstractSubWeaponEntity {
     public static final float DAMAGE = 6;
@@ -186,21 +182,5 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
             nbt.put("InBlockState", NbtUtils.writeBlockState(this.inBlockState));
 
         nbt.putInt("FuseTime", fuseTime);
-    }
-
-    @Override
-    public void registerControllers(AnimationData data)
-    {
-        data.addAnimationController(new AnimationController<>(this, "controller", 0, event ->
-        {
-            if(playShakeAnim)
-            {
-                event.getController().markNeedsReload();
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.suction_bomb.shake"));
-                playShakeAnim = false;
-            }
-
-            return PlayState.CONTINUE;
-        }));
     }
 }

@@ -22,19 +22,10 @@ import net.splatcraft.forge.client.particles.SquidSoulParticleData;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class InkSquidEntity extends PathfinderMob implements IColoredEntity, IAnimatable
+public class InkSquidEntity extends PathfinderMob implements IColoredEntity
 {
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(InkSquidEntity.class, EntityDataSerializers.INT);
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     public InkSquidEntity(EntityType<? extends PathfinderMob> type, Level level)
     {
@@ -153,20 +144,5 @@ public class InkSquidEntity extends PathfinderMob implements IColoredEntity, IAn
     public boolean removeWhenFarAway(double distanceToClosestPlayer)
     {
         return false;
-    }
-
-    @Override
-    public void registerControllers(AnimationData data)
-    {
-        data.addAnimationController(new AnimationController<>(this, "controller", 0, (event) ->
-        {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.ink_squid.swim", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
-        }));
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
     }
 }

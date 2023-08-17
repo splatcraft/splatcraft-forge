@@ -29,16 +29,12 @@ import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class SubWeaponItem extends WeaponBaseItem implements IAnimatable
+public class SubWeaponItem extends WeaponBaseItem
 {
     public final RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType;
     public final SubWeaponAction useTick;
@@ -48,7 +44,6 @@ public class SubWeaponItem extends WeaponBaseItem implements IAnimatable
     public static final ArrayList<SubWeaponItem> subs = new ArrayList<>();
     public static final float throwVelocity = 0.75f;
     public static final float throwAngle = -30f;
-    private final AnimationFactory animFactory = GeckoLibUtil.createFactory(this);
 
     public SubWeaponItem(RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, WeaponSettings settings, int maxUseTime, SubWeaponAction useTick) {
         super(settings);
@@ -143,28 +138,9 @@ public class SubWeaponItem extends WeaponBaseItem implements IAnimatable
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return animFactory;
-    }
-
-    @Override
     public void initializeClient(Consumer<IItemRenderProperties> consumer)
     {
         super.initializeClient(consumer);
-        consumer.accept(new IItemRenderProperties()
-        {
-            private final BlockEntityWithoutLevelRenderer renderer = new SubWeaponItemRenderer();
-
-            @Override
-            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
-                return renderer;
-            }
-        });
     }
 
     public static class DispenseBehavior extends DefaultDispenseItemBehavior

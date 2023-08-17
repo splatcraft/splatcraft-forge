@@ -36,17 +36,10 @@ import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.CommonUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.Collections;
 
-public class SquidBumperEntity extends LivingEntity implements IColoredEntity, IAnimatable {
+public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
     public static final float maxInkHealth = 20.0F;
     public static final int maxRespawnTime = 60;
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(SquidBumperEntity.class, EntityDataSerializers.INT);
@@ -65,7 +58,6 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity, I
     private boolean playInkAnim = false;
 
     public int prevRespawnTime = 0;
-    private final AnimationFactory animFactory = GeckoLibUtil.createFactory(this);
 
     public SquidBumperEntity(EntityType<? extends LivingEntity> type, Level levelIn)
     {
@@ -493,76 +485,5 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity, I
     public Packet<?> getAddEntityPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
-    public void registerControllers(AnimationData data)
-    {
-
-        data.addAnimationController(new AnimationController<>(this, "hurtController", 0, event ->
-        {
-            if(punchCooldown == level.getGameTime())
-            {
-                event.getController().markNeedsReload();
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.squid_bumper.break"));
-            }
-            else if(playInkAnim)
-            {
-                event.getController().markNeedsReload();
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.squid_bumper.ink"));
-                playInkAnim = false;
-            }
-
-            return PlayState.CONTINUE;
-        }));
-
-        AnimationController<SquidBumperEntity> controller = new AnimationController<>(this, "controller", 0, event ->
-        {
-            if(playRespawnAnim)
-            {
-                event.getController().markNeedsReload();
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.squid_bumper.respawn"));
-                playRespawnAnim = false;
-                playPopAnim = false;
-            } else if(playPopAnim)
-            {
-                event.getController().markNeedsReload();
-                event.getController().setAnimation(new AnimationBuilder().playAndHold("animation.squid_bumper.pop"));
-                playPopAnim = false;
-            }
-            else if (playHealAnim)
-            {
-
-                event.getController().markNeedsReload();
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.squid_bumper.heal"));
-                playHealAnim = false;
-            }
-
-            return PlayState.CONTINUE;
-        });
-
-        data.addAnimationController(controller);
-
-        controller.registerCustomInstructionListener(event ->
-        {
-            if(event.instructions.equals("playPopEffect"))
-            {
-                InkOverlayCapability.get(this).setAmount(0);
-                this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SplatcraftSounds.squidBumperPop, this.getSoundSource(), 0.5F, 20.0F, false);
-                playPopParticles();
-            }
-            else if(event.instructions.equals("playHealEffect"))
-            {
-                playHealParticles();
-                InkOverlayCapability.get(this).setAmount(0);
-                //this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SplatcraftSounds.squidBumperPop, this.getSoundSource(), 0.5F, 20.0F, false);
-            }
-        });
-
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return animFactory;
     }
 }

@@ -37,16 +37,8 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.InkExplosion;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class InkProjectileEntity extends ThrowableItemProjectile implements IColoredEntity, IAnimatable {
+public class InkProjectileEntity extends ThrowableItemProjectile implements IColoredEntity {
 
     private static final EntityDataAccessor<String> PROJ_TYPE = SynchedEntityData.defineId(InkProjectileEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(InkProjectileEntity.class, EntityDataSerializers.INT);
@@ -69,9 +61,6 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
     public AbstractWeaponSettings damage = WeaponSettings.DEFAULT;
     public InkBlockUtils.InkType inkType;
-
-    private final AnimationFactory animationFactory = GeckoLibUtil.createFactory(this);
-
 
     public InkProjectileEntity(EntityType<InkProjectileEntity> type, Level level) {
         super(type, level);
@@ -398,21 +387,6 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
     public void setProjectileType(String v) {
         entityData.set(PROJ_TYPE, v);
-    }
-
-    @Override
-    public void registerControllers(AnimationData data)
-    {
-        data.addAnimationController(new AnimationController<>(this, "controller", 0, (event) ->
-        {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.ink_projectile.idle", ILoopType.EDefaultLoopTypes.LOOP));
-            return PlayState.CONTINUE;
-        }));
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return animationFactory;
     }
 
     public static class Types {

@@ -1,65 +1,73 @@
 package net.splatcraft.forge.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.splatcraft.forge.client.layer.EntityColorLayer;
+import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.client.models.SquidBumperModel;
 import net.splatcraft.forge.entities.SquidBumperEntity;
-import org.jetbrains.annotations.Nullable;
-import software.bernie.example.client.renderer.entity.ExampleGeoRenderer;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
-public class SquidBumperRenderer extends GeoEntityRenderer<SquidBumperEntity>
+public class SquidBumperRenderer extends LivingEntityRenderer<SquidBumperEntity, SquidBumperModel> //implements IEntityRenderer<LivingEntity, InkSquidModel>
 {
-	public SquidBumperRenderer(EntityRendererProvider.Context renderManager)
+	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/squid_bumper_overlay.png");
+
+	
+	public SquidBumperRenderer(EntityRendererProvider.Context context)
 	{
-		super(renderManager, new SquidBumperModel());
-		shadowRadius = .5f;
-
-		addLayer(new EntityColorLayer<>(this, "squid_bumper"));
-	}
-
-	private float entityYaw;
-
-	@Override
-	public void render(SquidBumperEntity animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-
-		this.entityYaw = 0;
-		super.render(animatable, 0, partialTick, poseStack, bufferSource, packedLight);
+		super(context, new SquidBumperModel(context.bakeLayer(SquidBumperModel.LAYER_LOCATION)), 0.5f);
+		//addLayer(new SquidBumperColorLayer(this));
+		//addLayer(new SquidBumperOverlayLayer(this));
 	}
 
 	@Override
-	public void render(GeoModel model, SquidBumperEntity animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
+	protected boolean shouldShowName(SquidBumperEntity entity)
 	{
-		//float entityYaw = Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot()) % 360;
-
-		model.getBone("Base").get().setRotationY((float) Math.toRadians(entityYaw));
-
-		super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+		return !entity.hasCustomName() && !(entity.getInkHealth() >= 20) || super.shouldShowName(entity) && (entity.shouldShowName() || entity == this.entityRenderDispatcher.crosshairPickEntity);
 	}
 
 	@Override
-	public boolean shouldShowName(SquidBumperEntity animatable)
+	protected void renderNameTag(SquidBumperEntity entityIn, Component displayNameIn, PoseStack PoseStackIn, MultiBufferSource bufferIn, int packedLightIn)
 	{
-		return super.shouldShowName(animatable) || (!animatable.hasCustomName() && animatable.getInkHealth() < 20);
-	}
-
-	@Override
-	protected void renderNameTag(SquidBumperEntity animatable, Component component, PoseStack poseStack, MultiBufferSource buffer, int partialTick)
-	{
-		if(!animatable.hasCustomName())
+		if (entityIn.hasCustomName())
 		{
-			float health = 20 - animatable.getInkHealth();
-			component = new TextComponent((health >= 20 ? ChatFormatting.DARK_RED : "") + String.format("%.1f", health));
+			super.renderNameTag(entityIn, displayNameIn, PoseStackIn, bufferIn, packedLightIn);
+		} else
+		{
+			float health = 20 - entityIn.getInkHealth();
+			super.renderNameTag(entityIn, new TextComponent((health >= 20 ? ChatFormatting.DARK_RED : "") + String.format("%.1f", health)), PoseStackIn, bufferIn, packedLightIn);
+
 		}
-		super.renderNameTag(animatable, component, poseStack, buffer, partialTick);
+	}
+
+	@Override
+	protected void setupRotations(SquidBumperEntity entityLiving, PoseStack PoseStackIn, float ageInTicks, float rotationYaw, float partialTicks)
+	{
+		//PoseStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - rotationYaw));
+		float punchTime = (float) (entityLiving.level.getGameTime() - entityLiving.punchCooldown) + partialTicks;
+		float hurtTime = (float) (entityLiving.level.getGameTime() - entityLiving.hurtCooldown) + partialTicks;
+
+
+		if (punchTime < 5.0F)
+		{
+			PoseStackIn.mulPose(Vector3f.YP.rotationDegrees(Mth.sin(punchTime / 1.5F * (float) Math.PI) * 3.0F));
+		}
+		if (hurtTime < 5.0F)
+		{
+			PoseStackIn.mulPose(Vector3f.ZP.rotationDegrees(Mth.sin(hurtTime / 1.5F * (float) Math.PI) * 3.0F));
+		}
+
+	}
+
+	@Override
+	public ResourceLocation getTextureLocation(SquidBumperEntity entity)
+	{
+		return TEXTURE;
 	}
 }

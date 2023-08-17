@@ -1,18 +1,8 @@
 package net.splatcraft.forge.client.layer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.SplatcraftConfig;
-import net.splatcraft.forge.util.ColorUtils;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
-
-public class EntityColorLayer<E extends Entity & IAnimatable> extends GeoLayerRenderer<E>
+public class EntityColorLayer//<E extends Entity & IAnimatable> extends GeoLayerRenderer<E>
 {
+	/*
 	private final String textureId;
 
 	public EntityColorLayer(IGeoRenderer<E> entityRendererIn, String textureId)
@@ -41,4 +31,5 @@ public class EntityColorLayer<E extends Entity & IAnimatable> extends GeoLayerRe
 		return new ResourceLocation(Splatcraft.MODID, "textures/entity/"+textureId+".png");
 
 	}
+	*/
 }

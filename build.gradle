@@ -116,7 +116,8 @@ dependencies {
     annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
     implementation 'org.jetbrains:annotations:23.0.0'
 
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${project.geckolib_version}")
+    //implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${project.geckolib_version}")
+    implementation fg.deobf("curse.maven:playeranimator-658587:4418152")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

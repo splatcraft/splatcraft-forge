@@ -19,7 +19,6 @@ import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.registries.*;
 import net.splatcraft.forge.world.gen.SplatcraftOreGen;
-import software.bernie.geckolib3.GeckoLib;
 
 import java.util.Objects;
 
@@ -51,7 +50,6 @@ public class Splatcraft {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
-        GeckoLib.initialize();
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
