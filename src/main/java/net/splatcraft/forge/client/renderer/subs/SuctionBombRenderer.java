@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.client.models.subs.BurstBombModel;
 import net.splatcraft.forge.client.models.subs.SuctionBombModel;
 import net.splatcraft.forge.entities.subs.SuctionBombEntity;
 
@@ -19,7 +20,7 @@ public class SuctionBombRenderer extends SubWeaponRenderer<SuctionBombEntity, Su
 	public SuctionBombRenderer(EntityRendererProvider.Context context)
 	{
 		super(context);
-		MODEL = createModel(context, SuctionBombModel.class);
+		MODEL = new SuctionBombModel(context.bakeLayer(SuctionBombModel.LAYER_LOCATION));
 	}
 
 	@Override
@@ -28,9 +29,10 @@ public class SuctionBombRenderer extends SubWeaponRenderer<SuctionBombEntity, Su
 		PoseStackIn.pushPose();
 		if(!entityIn.isItem)
 		{
-			//PoseStackIn.translate(0.0D, 0.2/*0.15000000596046448D*/, 0.0D);
+			PoseStackIn.translate(0.0D, 0.15/*0.15000000596046448D*/, 0.0D);
 			PoseStackIn.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 180.0F));
 			PoseStackIn.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot())+90F));
+			PoseStackIn.translate(0.0D, -0.15/*0.15000000596046448D*/, 0.0D);
 			PoseStackIn.scale(1, -1, 1);
 
 			float f = entityIn.getFlashIntensity(partialTicks);

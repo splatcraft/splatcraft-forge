@@ -11,12 +11,13 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.client.models.AbstractSubWeaponModel;
 import net.splatcraft.forge.entities.subs.SplatBombEntity;
 
 public class SplatBombModel extends AbstractSubWeaponModel<SplatBombEntity> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("modid", "splatbombmodel"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Splatcraft.MODID, "splatbombmodel"), "main");
 	private final ModelPart Main;
 
 	public SplatBombModel(ModelPart root) {
@@ -27,7 +28,7 @@ public class SplatBombModel extends AbstractSubWeaponModel<SplatBombEntity> {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition Main = partdefinition.addOrReplaceChild("Main", CubeListBuilder.create(), PartPose.offset(0.0F, 20.0F, 0.0F));
+		PartDefinition Main = partdefinition.addOrReplaceChild("Main", CubeListBuilder.create(), PartPose.offset(0.0F, -4.0F, 0.0F));
 
 		PartDefinition bone13 = Main.addOrReplaceChild("bone13", CubeListBuilder.create(), PartPose.offset(0.0F, 3.4F, 0.3F));
 

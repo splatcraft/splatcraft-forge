@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.client.models.subs.BurstBombModel;
 import net.splatcraft.forge.client.models.subs.CurlingBombModel;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +23,7 @@ public class CurlingBombRenderer extends SubWeaponRenderer<CurlingBombEntity, Cu
 	public CurlingBombRenderer(EntityRendererProvider.Context context)
 	{
 		super(context);
-		MODEL = createModel(context, CurlingBombModel.class);
+		MODEL = new CurlingBombModel(context.bakeLayer(CurlingBombModel.LAYER_LOCATION));
 	}
 
 	@Override
@@ -34,7 +35,7 @@ public class CurlingBombRenderer extends SubWeaponRenderer<CurlingBombEntity, Cu
 		{
 			matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 180.0F));
 			//matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot)+90F));
-			matrixStackIn.scale(1, -1, 1);
+			//matrixStackIn.scale(1, -1, 1);
 
 			float f = entityIn.getFlashIntensity(partialTicks);
 			float f1 = 1.0F + sin(f * 100.0F) * f * 0.01F;
@@ -43,7 +44,7 @@ public class CurlingBombRenderer extends SubWeaponRenderer<CurlingBombEntity, Cu
 			f = f * f;
 			float f2 = (1.0F + f * 0.4F) * f1;
 			float f3 = (1.0F + f * 0.1F) / f1;
-			matrixStackIn.scale(f2, f3, f2);
+			matrixStackIn.scale(f2, -f3, f2);
 		}
 
 

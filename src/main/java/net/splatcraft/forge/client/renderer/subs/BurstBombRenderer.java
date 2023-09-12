@@ -19,7 +19,7 @@ public class BurstBombRenderer extends SubWeaponRenderer<BurstBombEntity, BurstB
 	public BurstBombRenderer(EntityRendererProvider.Context context)
 	{
 		super(context);
-		MODEL = createModel(context, BurstBombModel.class);
+		MODEL = new BurstBombModel(context.bakeLayer(BurstBombModel.LAYER_LOCATION));
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class BurstBombRenderer extends SubWeaponRenderer<BurstBombEntity, BurstB
 		PoseStackIn.pushPose();
 		if(!entityIn.isItem)
 		{
-			PoseStackIn.translate(0.0D, 0.2/*0.15000000596046448D*/, 0.0D);
+			//PoseStackIn.translate(0.0D, 0.2/*0.15000000596046448D*/, 0.0D);
 			PoseStackIn.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 180.0F));
 			PoseStackIn.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot())+90F));
 			PoseStackIn.scale(1, -1, 1);

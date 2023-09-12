@@ -27,7 +27,10 @@ import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.client.models.AbstractSubWeaponModel;
 import net.splatcraft.forge.client.models.SquidBumperModel;
+import net.splatcraft.forge.client.models.subs.BurstBombModel;
 import net.splatcraft.forge.client.models.subs.CurlingBombModel;
+import net.splatcraft.forge.client.models.subs.SplatBombModel;
+import net.splatcraft.forge.client.models.subs.SuctionBombModel;
 import net.splatcraft.forge.client.renderer.InkProjectileRenderer;
 import net.splatcraft.forge.client.renderer.InkSquidRenderer;
 import net.splatcraft.forge.client.renderer.SquidBumperRenderer;
@@ -110,6 +113,10 @@ public class SplatcraftEntities
 	{
 		event.registerLayerDefinition(SquidBumperModel.LAYER_LOCATION, SquidBumperModel::createBodyLayer);
 
+		event.registerLayerDefinition(SplatBombModel.LAYER_LOCATION, SplatBombModel::createBodyLayer);
+		event.registerLayerDefinition(BurstBombModel.LAYER_LOCATION, BurstBombModel::createBodyLayer);
+		event.registerLayerDefinition(SuctionBombModel.LAYER_LOCATION, SuctionBombModel::createBodyLayer);
+		event.registerLayerDefinition(CurlingBombModel.LAYER_LOCATION, CurlingBombModel::createBodyLayer);
 		registerModel(event, "splat_bomb", CurlingBombModel.class, CurlingBombModel::createBodyLayer);
 		registerModel(event, "suction_bomb", CurlingBombModel.class, CurlingBombModel::createBodyLayer);
 		registerModel(event, "burst_bomb", CurlingBombModel.class, CurlingBombModel::createBodyLayer);

@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.client.models.AbstractSubWeaponModel;
 import net.splatcraft.forge.entities.subs.SuctionBombEntity;
@@ -20,9 +21,14 @@ public class SuctionBombModel extends AbstractSubWeaponModel<SuctionBombEntity>
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Splatcraft.MODID, "suctionbombmodel"), "main");
 	private final ModelPart Main;
+	private final ModelPart Neck;
+	private final ModelPart Top;
 
-	public SuctionBombModel(ModelPart root) {
+	public SuctionBombModel(ModelPart root)
+	{
 		this.Main = root.getChild("Main");
+		this.Neck = Main.getChild("Neck");
+		this.Top = Neck.getChild("Top");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -30,7 +36,7 @@ public class SuctionBombModel extends AbstractSubWeaponModel<SuctionBombEntity>
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
 		PartDefinition Main = partdefinition.addOrReplaceChild("Main", CubeListBuilder.create().texOffs(0, 10).addBox(-2.0F, -3.0F, -2.0F, 4.0F, 3.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(14, 15).addBox(-1.0F, -4.25F, -1.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.2F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+		.texOffs(14, 15).addBox(-1.0F, -4.25F, -1.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.2F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition Neck = Main.addOrReplaceChild("Neck", CubeListBuilder.create().texOffs(12, 10).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(-0.2F))
 		.texOffs(0, 10).addBox(-0.5F, -1.5F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.1F)), PartPose.offset(0.0F, -3.75F, 0.0F));
@@ -45,6 +51,25 @@ public class SuctionBombModel extends AbstractSubWeaponModel<SuctionBombEntity>
 	@Override
 	public void setupAnim(SuctionBombEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
+	}
+
+	@Override
+	public void prepareMobModel(SuctionBombEntity entityIn, float limbSwing, float limbSwingAmount, float partialTick)
+	{
+		super.prepareMobModel(entityIn, limbSwing, limbSwingAmount, partialTick);
+
+		float f9 = (float)entityIn.shakeTime - partialTick;
+		if(f9 >= 0)
+		{
+			float f10 = -Mth.sin(f9*3f)/6f * f9;
+			Neck.xRot = f10/2f;
+			Top.xRot = f10;
+		}
+		else
+		{
+			Neck.xRot = 0;
+			Top.xRot = 0;
+		}
 	}
 
 	@Override

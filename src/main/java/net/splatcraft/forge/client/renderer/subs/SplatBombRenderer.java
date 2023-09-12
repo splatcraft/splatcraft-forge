@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.client.models.subs.BurstBombModel;
 import net.splatcraft.forge.client.models.subs.SplatBombModel;
 import net.splatcraft.forge.entities.subs.SplatBombEntity;
 
@@ -19,7 +20,7 @@ public class SplatBombRenderer extends SubWeaponRenderer<SplatBombEntity, SplatB
 	public SplatBombRenderer(EntityRendererProvider.Context context)
 	{
 		super(context);
-		MODEL = createModel(context, SplatBombModel.class);
+		MODEL = new SplatBombModel(context.bakeLayer(SplatBombModel.LAYER_LOCATION));
 	}
 
 	@Override
@@ -29,7 +30,7 @@ public class SplatBombRenderer extends SubWeaponRenderer<SplatBombEntity, SplatB
 
 		if(!entityIn.isItem)
 		{
-			PoseStackIn.translate(0.0D, 0.2, 0.0D);
+			//PoseStackIn.translate(0.0D, 0.2, 0.0D);
 			PoseStackIn.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot())*2 - 90f));
 			PoseStackIn.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot())*2 - 180));
 

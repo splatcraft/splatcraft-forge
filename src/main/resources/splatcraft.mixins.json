@@ -26,6 +26,11 @@
     "RecipeCategoryMixin",
     "SheepWoolLayerMixin",
     "WeaponHotkeyMixin$MinecraftInstance",
-    "WeaponHotkeyMixin$PlayerControllerMix"
+    "WeaponHotkeyMixin$PlayerControllerMix",
+    "itemrendering.HeadLayerMixin",
+    "itemrendering.ItemEntityRendererMixin",
+    "itemrendering.ItemFrameRendererMixin",
+    "itemrendering.ItemInHandLayerMixin",
+    "itemrendering.ItemRendererMixin"
   ]
 }

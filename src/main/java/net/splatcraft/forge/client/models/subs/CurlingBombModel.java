@@ -11,12 +11,13 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.client.models.AbstractSubWeaponModel;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
 
 public class CurlingBombModel extends AbstractSubWeaponModel<CurlingBombEntity> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("modid", "curlingbombmodel"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Splatcraft.MODID, "curlingbombmodel"), "main");
 	private final ModelPart blades;
 	private final ModelPart bumper1;
 	private final ModelPart bumper2;
