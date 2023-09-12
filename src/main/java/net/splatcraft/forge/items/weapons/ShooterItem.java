@@ -24,8 +24,15 @@ public class ShooterItem extends WeaponBaseItem {
 
     public static RegistryObject<ShooterItem> create(DeferredRegister<Item> registry, RegistryObject<ShooterItem> parent, String name)
     {
-        return registry.register(name, () -> new ShooterItem(parent.get().settings.setName(name, "ancient_splattershot") /* might be smart to come up with a better way to do this*/));
+        return create(registry, parent, name, false);
     }
+
+    public static RegistryObject<ShooterItem> create(DeferredRegister<Item> registry, RegistryObject<ShooterItem> parent, String name, boolean secret)
+    {
+        return registry.register(name, () -> new ShooterItem(parent.get().settings).setSecret(secret));
+    }
+
+
 
     protected ShooterItem(WeaponSettings settings)
     {

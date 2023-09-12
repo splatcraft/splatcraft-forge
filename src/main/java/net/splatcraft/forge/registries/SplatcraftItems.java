@@ -65,7 +65,7 @@ public class SplatcraftItems {
             .setBaseDamage(8).setMinDamage(4).setDamageDecayStartTick(3).setDamageDecayPerTick(0.34f));
     public static final RegistryObject<ShooterItem> tentatekSplattershot = ShooterItem.create(REGISTRY, splattershot, "tentatek_splattershot");
     public static final RegistryObject<ShooterItem> wasabiSplattershot = ShooterItem.create(REGISTRY, splattershot, "wasabi_splattershot");
-    public static final RegistryObject<ShooterItem> ancientSplattershot = ShooterItem.create(REGISTRY, splattershot, "ancient_splattershot");
+    public static final RegistryObject<ShooterItem> ancientSplattershot = ShooterItem.create(REGISTRY, splattershot, "ancient_splattershot", true);
     public static final RegistryObject<ShooterItem> splattershotJr = ShooterItem.create(REGISTRY, new WeaponSettings("splattershot_jr")
             .setProjectileSize(0.95f).setProjectileSpeed(0.55f)
             .setFiringSpeed(3)
@@ -260,7 +260,7 @@ public class SplatcraftItems {
             .setProjectileSize(SplatBombEntity.EXPLOSION_SIZE)
             .setInkConsumption(70)
             .setInkRecoveryCooldown(20)));
-    public static final RegistryObject<SubWeaponItem> splatBomb2 = REGISTRY.register("splat_bomb_2", () -> new SubWeaponItem(SplatcraftEntities.SPLAT_BOMB, splatBomb.get().settings.setSecretName("splat_bomb_2")));
+    public static final RegistryObject<SubWeaponItem> splatBomb2 = REGISTRY.register("splat_bomb_2", () -> new SubWeaponItem(SplatcraftEntities.SPLAT_BOMB, splatBomb.get().settings).setSecret(true));
     public static final RegistryObject<SubWeaponItem> burstBomb = REGISTRY.register("burst_bomb", () -> new SubWeaponItem(SplatcraftEntities.BURST_BOMB, new WeaponSettings("burst_bomb")
             .setBaseDamage(BurstBombEntity.DIRECT_DAMAGE)
             .setProjectileSize(BurstBombEntity.EXPLOSION_SIZE)

@@ -57,6 +57,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
     protected final List<WeaponTooltip> stats = new ArrayList<>();
 
     public AbstractWeaponSettings settings;
+    public boolean isSecret;
 
     public WeaponBaseItem(AbstractWeaponSettings settings) {
         super(new Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_WEAPONS));
@@ -79,6 +80,12 @@ public class WeaponBaseItem extends Item implements IColoredItem
 
 	        } return InteractionResult.PASS;
         });
+    }
+
+    public <T extends WeaponBaseItem> T setSecret(boolean secret)
+    {
+        isSecret = secret;
+        return (T) this;
     }
 
     public static boolean reduceInk(LivingEntity player, Item item, float amount, int recoveryCooldown, boolean sendMessage) {
@@ -152,7 +159,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
     @Override
     public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> list)
     {
-        if (!settings.secret) {
+        if (!isSecret) {
             super.fillItemCategory(group, list);
         }
     }
