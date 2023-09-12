@@ -1,8 +1,15 @@
 package net.splatcraft.forge.registries;
 
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -25,8 +32,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.client.layer.InkAccessoryLayer;
+import net.splatcraft.forge.client.layer.InkOverlayLayer;
 import net.splatcraft.forge.client.models.AbstractSubWeaponModel;
 import net.splatcraft.forge.client.models.SquidBumperModel;
+import net.splatcraft.forge.client.models.projectiles.BlasterInkProjectileModel;
+import net.splatcraft.forge.client.models.projectiles.InkProjectileModel;
+import net.splatcraft.forge.client.models.projectiles.RollerInkProjectileModel;
+import net.splatcraft.forge.client.models.projectiles.ShooterInkProjectileModel;
 import net.splatcraft.forge.client.models.subs.BurstBombModel;
 import net.splatcraft.forge.client.models.subs.CurlingBombModel;
 import net.splatcraft.forge.client.models.subs.SplatBombModel;
@@ -47,8 +60,10 @@ import net.splatcraft.forge.entities.subs.CurlingBombEntity;
 import net.splatcraft.forge.entities.subs.SplatBombEntity;
 import net.splatcraft.forge.entities.subs.SuctionBombEntity;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static net.splatcraft.forge.Splatcraft.MODID;
@@ -83,7 +98,7 @@ public class SplatcraftEntities
 
 	public static void bindRenderers()
 	{
-		//EntityRenderers.register(INK_PROJECTILE.get(), InkProjectileRenderer::new);
+		EntityRenderers.register(INK_PROJECTILE.get(), InkProjectileRenderer::new);
 		//EntityRenderers.register(INK_SQUID.get(), InkSquidRenderer::new);
 		EntityRenderers.register(SQUID_BUMPER.get(), SquidBumperRenderer::new);
 
@@ -117,10 +132,18 @@ public class SplatcraftEntities
 		event.registerLayerDefinition(BurstBombModel.LAYER_LOCATION, BurstBombModel::createBodyLayer);
 		event.registerLayerDefinition(SuctionBombModel.LAYER_LOCATION, SuctionBombModel::createBodyLayer);
 		event.registerLayerDefinition(CurlingBombModel.LAYER_LOCATION, CurlingBombModel::createBodyLayer);
+
+		event.registerLayerDefinition(InkProjectileModel.LAYER_LOCATION, InkProjectileModel::createBodyLayer);
+		event.registerLayerDefinition(ShooterInkProjectileModel.LAYER_LOCATION, ShooterInkProjectileModel::createBodyLayer);
+		event.registerLayerDefinition(BlasterInkProjectileModel.LAYER_LOCATION, BlasterInkProjectileModel::createBodyLayer);
+		event.registerLayerDefinition(RollerInkProjectileModel.LAYER_LOCATION, RollerInkProjectileModel::createBodyLayer);
+
+		/*
 		registerModel(event, "splat_bomb", CurlingBombModel.class, CurlingBombModel::createBodyLayer);
 		registerModel(event, "suction_bomb", CurlingBombModel.class, CurlingBombModel::createBodyLayer);
 		registerModel(event, "burst_bomb", CurlingBombModel.class, CurlingBombModel::createBodyLayer);
 		registerModel(event, "curling_bomb", CurlingBombModel.class, CurlingBombModel::createBodyLayer);
+		*/
 	}
 
 	private static void registerModel(EntityRenderersEvent.RegisterLayerDefinitions event, String id,
