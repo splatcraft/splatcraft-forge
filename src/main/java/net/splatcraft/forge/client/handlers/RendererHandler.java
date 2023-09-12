@@ -167,13 +167,8 @@ public class RendererHandler
         }
     }
 
-    public static boolean renderSubWeapon(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource source, int light, float partialTicks, boolean jim)
-    {
-        return renderSubWeapon(stack, transformType, poseStack, source, light, partialTicks);
-    }
     public static boolean renderSubWeapon(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource source, int light, float partialTicks)
     {
-
         if(stack.getItem() instanceof SubWeaponItem)
         {
             PoseStack matrixStack = poseStack;
@@ -194,6 +189,7 @@ public class RendererHandler
         return false;
     }
 
+    /*
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onItemRenderHand(RenderHandEvent event)
     {
@@ -229,6 +225,7 @@ public class RendererHandler
         }
          matrixStack.popPose();
     }
+    */
 
     @OnlyIn(Dist.CLIENT)
     private static void applyItemArmTransform(PoseStack p_228406_1_, HumanoidArm p_228406_2_, float p_228406_3_) {

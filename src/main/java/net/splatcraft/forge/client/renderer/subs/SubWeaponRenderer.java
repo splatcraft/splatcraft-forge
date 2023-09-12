@@ -44,7 +44,7 @@ public abstract class SubWeaponRenderer<E extends AbstractSubWeaponEntity, M ext
 
 
 		ItemStack stack = entityIn.getItem();
-		if(stack.getItem() instanceof SubWeaponItem && entityIn.getType().equals(((SubWeaponItem) stack.getItem()).entityType))
+		if(stack.getItem() instanceof SubWeaponItem && entityIn.getType().equals(((SubWeaponItem) stack.getItem()).entityType.get()))
 		{
 			SubWeaponItem sub = (SubWeaponItem) stack.getItem();
 
@@ -81,21 +81,6 @@ public abstract class SubWeaponRenderer<E extends AbstractSubWeaponEntity, M ext
 	{
 		return 0;
 	}
-
-
-	public <M extends AbstractSubWeaponModel> M createModel(EntityRendererProvider.Context context, Class<M> clazz)
-	{
-		try {
-			return clazz.getConstructor(ModelPart.class).newInstance(
-					context.bakeLayer(SplatcraftEntities.LAYER_LOCATIONS.get(clazz))
-			);
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-
 
 	public abstract M getModel();
 	public abstract ResourceLocation getInkTextureLocation(E entity);

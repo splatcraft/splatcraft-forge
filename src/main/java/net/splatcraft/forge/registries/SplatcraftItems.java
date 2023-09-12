@@ -261,6 +261,7 @@ public class SplatcraftItems {
             .setInkConsumption(70)
             .setInkRecoveryCooldown(20)));
     public static final RegistryObject<SubWeaponItem> splatBomb2 = REGISTRY.register("splat_bomb_2", () -> new SubWeaponItem(SplatcraftEntities.SPLAT_BOMB, splatBomb.get().settings).setSecret(true));
+
     public static final RegistryObject<SubWeaponItem> burstBomb = REGISTRY.register("burst_bomb", () -> new SubWeaponItem(SplatcraftEntities.BURST_BOMB, new WeaponSettings("burst_bomb")
             .setBaseDamage(BurstBombEntity.DIRECT_DAMAGE)
             .setProjectileSize(BurstBombEntity.EXPLOSION_SIZE)

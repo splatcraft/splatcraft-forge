@@ -1,5 +1,6 @@
 package net.splatcraft.forge.items.weapons;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.registries.RegistryObject;
+import net.splatcraft.forge.client.SplatcraftItemRenderer;
 import net.splatcraft.forge.client.renderer.SubWeaponItemRenderer;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
@@ -141,6 +143,16 @@ public class SubWeaponItem extends WeaponBaseItem
     public void initializeClient(Consumer<IItemRenderProperties> consumer)
     {
         super.initializeClient(consumer);
+        consumer.accept(new IItemRenderProperties() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getItemStackRenderer()
+            {
+                System.out.println(getRegistryName());
+                return SplatcraftItemRenderer.INSTANCE;
+            }
+
+
+        });
     }
 
     public static class DispenseBehavior extends DefaultDispenseItemBehavior

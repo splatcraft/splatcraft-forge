@@ -1,5 +1,5 @@
 {
-  "parent": "block/block",
+  "parent": "builtin/entity",
   "display": {
     "thirdperson_righthand": {
       "translation": [
