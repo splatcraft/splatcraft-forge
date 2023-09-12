@@ -2,6 +2,8 @@ package net.splatcraft.forge.client.handlers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -13,9 +15,17 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
@@ -26,10 +36,17 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HalfTransparentBlock;
+import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -64,7 +81,7 @@ import java.util.Objects;
 import static net.splatcraft.forge.items.weapons.WeaponBaseItem.enoughInk;
 
 //@Mod.EventBusSubscriber(modid = Splatcraft.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-@Mod.EventBusSubscriber(Dist.CLIENT)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Splatcraft.MODID)
 public class RendererHandler
 {
     /*
@@ -124,44 +141,7 @@ public class RendererHandler
     }
     */
 
-    private static Field field_EntityRenderersEvent$AddLayers_renderers;
 
-    @SubscribeEvent
-    @SuppressWarnings("unchecked")
-    public static void addRenderLayers(EntityRenderersEvent.AddLayers event)
-    {
-        //code from https://github.com/AlexModGuy/Rats/blob/d95ba97546663088be6804b6400226d18a9b0273/src/main/java/com/github/alexthe666/rats/client/events/ModClientEvents.java#L309
-        if (field_EntityRenderersEvent$AddLayers_renderers == null) {
-            try {
-                field_EntityRenderersEvent$AddLayers_renderers = EntityRenderersEvent.AddLayers.class.getDeclaredField("renderers");
-                field_EntityRenderersEvent$AddLayers_renderers.setAccessible(true);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-        }
-        if (field_EntityRenderersEvent$AddLayers_renderers != null) {
-            event.getSkins().forEach(renderer -> {
-                LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> skin = event.getSkin(renderer);
-                attachInkOverlay(Objects.requireNonNull(skin));
-
-                skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
-            });
-            try {
-                ((Map<EntityType<?>, EntityRenderer<?>>) field_EntityRenderersEvent$AddLayers_renderers.get(event))
-                        .values().stream()
-                        .filter(LivingEntityRenderer.class::isInstance)
-                        .map(LivingEntityRenderer.class::cast)
-                        .forEach(RendererHandler::attachInkOverlay);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static <T extends LivingEntity, M extends EntityModel<T>> void attachInkOverlay(LivingEntityRenderer<T, M> renderer)
-    {
-        renderer.addLayer(new InkOverlayLayer(renderer));
-    }
 
 
     @SubscribeEvent
@@ -187,8 +167,6 @@ public class RendererHandler
             event.setCanceled(true);
             return;
         }
-
-
 
         if (PlayerCooldown.hasPlayerCooldown(player) && PlayerCooldown.getPlayerCooldown(player).getHand().equals(event.getHand()))
         {
@@ -224,35 +202,32 @@ public class RendererHandler
         }
     }
 
-    /* TODO
-    @SubscribeEvent
-    public static void onItemRender(RenderItemEvent event)
+    public static boolean renderSubWeapon(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource source, int light, float partialTicks, boolean jim)
     {
-        if (event instanceof RenderItemEvent.Gui.Pre && event.getItem().getItem().equals(SplatcraftItems.powerEgg))
+        return renderSubWeapon(stack, transformType, poseStack, source, light, partialTicks);
+    }
+    public static boolean renderSubWeapon(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource source, int light, float partialTicks)
+    {
+
+        if(stack.getItem() instanceof SubWeaponItem)
         {
-            IBakedModel modelIn = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(event.getItem().getItem().getRegistryName() + "#inventory"));
-            renderItem(event.getItem(), event.getTransformType(), true, event.getMatrixStack(), event.getRenderTypeBuffer(), event.getLight(), event.getOverlay(), modelIn);
-            event.setCanceled(true);
-        }
-        else if(event.getItem().getItem() instanceof SubWeaponItem)
-        {
-            PoseStack matrixStack = event.getMatrixStack();
-            AbstractSubWeaponEntity sub = ((SubWeaponItem)event.getItem().getItem()).entityType.create(Minecraft.getInstance().player.level);
-            sub.setColor(ColorUtils.getInkColor(event.getItem()));
-            sub.setItem(event.getItem());
-            sub.readItemData(event.getItem().getOrCreateTag().getCompound("EntityData"));
+            PoseStack matrixStack = poseStack;
+            AbstractSubWeaponEntity sub = ((SubWeaponItem)stack.getItem()).entityType.get().create(Minecraft.getInstance().player.level);
+            sub.setColor(ColorUtils.getInkColor(stack));
+            sub.setItem(stack);
+            sub.readItemData(stack.getOrCreateTag().getCompound("EntityData"));
 
             sub.isItem = true;
 
-            Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(event.getItem().getItem().getRegistryName() + "#inventory"))
-                    .handlePerspective(event.get(), matrixStack);
-            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(sub).render(sub, 0, event.getPartialTicks(), matrixStack, event.getRenderTypeBuffer(), event.getLight());
+            Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(stack.getItem().getRegistryName() + "#inventory"))
+                    .handlePerspective(transformType, matrixStack);
+            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(sub).render(sub, 0, partialTicks, matrixStack, source, light);
             if(!matrixStack.clear())
                 matrixStack.popPose();
-            event.setCanceled(true);
+            return true;
         }
+        return false;
     }
-    */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onItemRenderHand(RenderHandEvent event)
@@ -285,8 +260,6 @@ public class RendererHandler
                     .handlePerspective(handside == HumanoidArm.RIGHT ? ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND, matrixStack);
 
             Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(sub).render(sub, 0, event.getPartialTicks(), matrixStack, event.getMultiBufferSource(), event.getPackedLight());
-            if(!matrixStack.clear())
-                matrixStack.popPose();
             event.setCanceled(true);
         }
          matrixStack.popPose();
@@ -309,15 +282,14 @@ public class RendererHandler
         p_228399_1_.mulPose(Vector3f.YP.rotationDegrees((float)i * -45.0F));
     }
 
-    /*
-    protected static void renderItem(ItemStack itemStackIn, ItemCameraTransforms.TransformType transformTypeIn, boolean leftHand, PoseStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn, IBakedModel modelIn)
+    public static void renderItem(ItemStack itemStackIn, ItemTransforms.TransformType transformTypeIn, boolean leftHand, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, BakedModel modelIn)
     {
         if (!itemStackIn.isEmpty())
         {
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
             matrixStackIn.pushPose();
-            boolean flag = transformTypeIn == ItemCameraTransforms.TransformType.GUI || transformTypeIn == ItemCameraTransforms.TransformType.GROUND || transformTypeIn == ItemCameraTransforms.TransformType.FIXED;
+            boolean flag = transformTypeIn == ItemTransforms.TransformType.GUI || transformTypeIn == ItemTransforms.TransformType.GROUND || transformTypeIn == ItemTransforms.TransformType.FIXED;
             if (itemStackIn.getItem() == Items.TRIDENT && flag)
             {
                 modelIn = itemRenderer.getItemModelShaper().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
@@ -328,10 +300,10 @@ public class RendererHandler
             if (!modelIn.isCustomRenderer() && (itemStackIn.getItem() != Items.TRIDENT || flag))
             {
                 boolean flag1;
-                if (transformTypeIn != ItemCameraTransforms.TransformType.GUI && !transformTypeIn.firstPerson() && itemStackIn.getItem() instanceof BlockItem)
+                if (transformTypeIn != ItemTransforms.TransformType.GUI && !transformTypeIn.firstPerson() && itemStackIn.getItem() instanceof BlockItem)
                 {
                     Block block = ((BlockItem) itemStackIn.getItem()).getBlock();
-                    flag1 = !(block instanceof BreakableBlock) && !(block instanceof StainedGlassPaneBlock);
+                    flag1 = !(block instanceof HalfTransparentBlock) && !(block instanceof StainedGlassPaneBlock);
                 } else
                 {
                     flag1 = true;
@@ -341,13 +313,13 @@ public class RendererHandler
                     net.minecraftforge.client.ForgeHooksClient.drawItemLayered(itemRenderer, modelIn, itemStackIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, flag1);
                 } else
                 {
-                    RenderType rendertype = getItemEntityTranslucent(PlayerContainer.BLOCK_ATLAS);
-                    IVertexBuilder ivertexbuilder;
+                    RenderType rendertype = ItemBlockRenderTypes.getRenderType(itemStackIn, flag1);//getItemEntityTranslucent(InventoryMenu.BLOCK_ATLAS);
+                    VertexConsumer ivertexbuilder;
                     if (itemStackIn.getItem() == Items.COMPASS && itemStackIn.hasFoil())
                     {
                         matrixStackIn.pushPose();
-                        PoseStack.Entry matrixstack$entry = matrixStackIn.last();
-                        if (transformTypeIn == ItemCameraTransforms.TransformType.GUI)
+                        PoseStack.Pose matrixstack$entry = matrixStackIn.last();
+                        if (transformTypeIn == ItemTransforms.TransformType.GUI)
                         {
                             matrixstack$entry.pose().multiply(0.5F);
                         } else if (transformTypeIn.firstPerson())
@@ -376,19 +348,21 @@ public class RendererHandler
                 }
             } else
             {
-                itemStackIn.getItem().getItemStackTileEntityRenderer().renderByItem(itemStackIn, transformTypeIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
+                RenderProperties.get(itemStackIn.getItem()).getItemStackRenderer().renderByItem(itemStackIn, transformTypeIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
             }
 
             matrixStackIn.popPose();
         }
     }
 
+    /*
     protected static RenderType getItemEntityTranslucent(ResourceLocation locationIn)
     {
-        RenderType.State rendertype$state = RenderType.State.builder().setTextureState(new RenderState.TextureState(locationIn, false, false)).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                /*.target(field_241712_U_)*\/.setDiffuseLightingState(new RenderState.DiffuseLightingState(true)).setAlphaState(new RenderState.AlphaState(0.003921569F)).setLightmapState(new RenderState.LightmapState(true))
+        RenderType.CompositeState rendertype$state = RenderType.CompositeState.builder().setTextureState(new RenderStateShard.TextureStateShard(locationIn, false, false)).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .target(locationIn);/*.setDiffuseLightingState(new RenderState.DiffuseLightingState(true)).setAlphaState(new RenderStateShard.AlphaState(0.003921569F)).setLightmapState(new RenderStateShard.LightmapState(true))
                 .setOverlayState(new RenderState.OverlayState(true)).createCompositeState(true);
-        return RenderType.create("item_entity_translucent", DefaultVertexFormats.NEW_ENTITY, 7, 256, true, false, rendertype$state);
+
+        return RenderType.create("item_entity_translucent", VertexFormat.Mode.NEW_ENTITY, 7, 256, true, false, rendertype$state);
     }
     */
 

@@ -166,4 +166,51 @@ public class SplatcraftEntities
 		builder.add(SplatcraftItems.INK_SWIM_SPEED, 0.075);
 		return builder;
 	}
+
+	private static Field field_EntityRenderersEvent$AddLayers_renderers;
+
+	private static <T extends LivingEntity, M extends EntityModel<T>> void attachInkOverlay(LivingEntityRenderer<T, M> renderer)
+	{
+		renderer.addLayer(new InkOverlayLayer(renderer));
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent
+	public static void addRenderLayers(EntityRenderersEvent.AddLayers event)
+	{
+		for(String skinKey : event.getSkins())
+		{
+			LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> skin = event.getSkin(skinKey);
+			skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
+		}
+
+
+        //code from https://github.com/AlexModGuy/Rats/blob/d95ba97546663088be6804b6400226d18a9b0273/src/main/java/com/github/alexthe666/rats/client/events/ModClientEvents.java#L309
+        if (field_EntityRenderersEvent$AddLayers_renderers == null) {
+            try {
+                field_EntityRenderersEvent$AddLayers_renderers = EntityRenderersEvent.AddLayers.class.getDeclaredField("renderers");
+                field_EntityRenderersEvent$AddLayers_renderers.setAccessible(true);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        }
+        if (field_EntityRenderersEvent$AddLayers_renderers != null) {
+            event.getSkins().forEach(renderer -> {
+                LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> skin = event.getSkin(renderer);
+                attachInkOverlay(Objects.requireNonNull(skin));
+
+                skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
+            });
+            try {
+                ((Map<EntityType<?>, EntityRenderer<?>>) field_EntityRenderersEvent$AddLayers_renderers.get(event))
+                        .values().stream()
+                        .filter(LivingEntityRenderer.class::isInstance)
+                        .map(LivingEntityRenderer.class::cast)
+                        .forEach(SplatcraftEntities::attachInkOverlay);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+	}
 }
