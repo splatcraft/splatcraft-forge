@@ -25,8 +25,8 @@ public class InkSquidModel extends EntityModel<LivingEntity> {
 
 	public InkSquidModel(ModelPart root) {
 		this.squid = root.getChild("squid");
-		this.rightLimb = root.getChild("RightLimb");
-		this.leftLimb = root.getChild("LeftLimb");
+		this.rightLimb = squid.getChild("RightLimb");
+		this.leftLimb = squid.getChild("LeftLimb");
 	}
 
 	public static LayerDefinition createBodyLayer() {

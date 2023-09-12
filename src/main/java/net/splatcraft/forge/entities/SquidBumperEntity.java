@@ -52,10 +52,6 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
     public long punchCooldown;
     public long hurtCooldown;
 
-    private boolean playPopAnim = false;
-    private boolean playHealAnim = false;
-    private boolean playRespawnAnim = false;
-    private boolean playInkAnim = false;
 
     public int prevRespawnTime = 0;
 
@@ -92,7 +88,6 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
         if (getRespawnTime() == 20 && getInkHealth() <= 0)
         {
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.squidBumperRespawning, getSoundSource(), 1, 1);
-            playRespawnAnim = true;
         }
         else if(getRespawnTime() == 1)
             respawn();
@@ -257,7 +252,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
             case 31:
                 if (this.level.isClientSide)
                 {
-                    playInkAnim = true;
+                    hurtCooldown = level.getGameTime();
                     this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SplatcraftSounds.squidBumperInk, this.getSoundSource(), 0.3F, 1.0F, false);
                 }
                 break;
@@ -271,7 +266,9 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
             case 34:
                 if (this.level.isClientSide)
                 {
-                    playPopAnim = true;
+                    this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SplatcraftSounds.squidBumperPop, this.getSoundSource(), 0.5F, 20.0F, false);
+                    InkOverlayCapability.get(this).setAmount(0);
+                    playPopParticles();
                 }
                 break;
 
@@ -471,7 +468,7 @@ public class SquidBumperEntity extends LivingEntity implements IColoredEntity {
     {
         if (getInkHealth() <= 0)
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.squidBumperReady, getSoundSource(), 1, 1);
-        else if(getInkHealth() < getMaxHealth()) playHealAnim = true;
+        //else if(getInkHealth() < getMaxHealth()) playHealAnim = true;
         setInkHealth(maxInkHealth);
         setRespawnTime(0);
 

@@ -1,44 +1,34 @@
 package net.splatcraft.forge.client.layer;
 
-public class SquidBumperColorLayer //extends LayerRenderer<SquidBumperEntity, SquidBumperModel>
-{
-    /*
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/squid_bumper.png");
-    private final SquidBumperModel MODEL = new SquidBumperModel();
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.resources.ResourceLocation;
+import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.SplatcraftConfig;
+import net.splatcraft.forge.client.models.SquidBumperModel;
+import net.splatcraft.forge.entities.SquidBumperEntity;
+import net.splatcraft.forge.util.ColorUtils;
 
-    public SquidBumperColorLayer(IEntityRenderer<SquidBumperEntity, SquidBumperModel> renderer)
+public class SquidBumperColorLayer extends RenderLayer<SquidBumperEntity, SquidBumperModel>
+{
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/squid_bumper.png");
+    private final SquidBumperModel model;
+
+    public SquidBumperColorLayer(RenderLayerParent<SquidBumperEntity, SquidBumperModel> renderer, EntityModelSet modelSet)
     {
         super(renderer);
-    }
-
-    protected static <T extends SquidBumperEntity> void renderCopyCutoutModel(SquidBumperModel modelParentIn, SquidBumperModel modelIn, ResourceLocation textureLocationIn, PoseStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float partialTicks, float red, float green, float blue)
-    {
-        if (!entityIn.isInvisible())
-        {
-            modelParentIn.copyPropertiesTo(modelIn);
-            modelIn.prepareMobModel(entityIn, limbSwing, limbSwingAmount, partialTicks);
-            modelIn.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-            renderCutoutModel(modelIn, textureLocationIn, matrixStackIn, bufferIn, packedLightIn, entityIn, red, green, blue);
-        }
-
-    }
-
-    protected static <T extends LivingEntity> void renderCutoutModel(SquidBumperModel modelIn, ResourceLocation textureLocationIn, PoseStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, SquidBumperEntity entityIn, float red, float green, float blue)
-    {
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(textureLocationIn));
-        modelIn.renderBase(matrixStackIn, ivertexbuilder, packedLightIn, LivingRenderer.getOverlayCoords(entityIn, 0.0F), red, green, blue, 1.0F);
-
-        float scale = entityIn.getBumperScale(Minecraft.getInstance().getDeltaFrameTime());
-        matrixStackIn.pushPose();
-        matrixStackIn.scale(scale, scale, scale);
-        modelIn.renderBumper(matrixStackIn, ivertexbuilder, packedLightIn, LivingRenderer.getOverlayCoords(entityIn, 0.0F), red, green, blue, 1.0F);
-        matrixStackIn.popPose();
-
-
+        model = new SquidBumperModel(modelSet.bakeLayer(SquidBumperModel.LAYER_LOCATION));
     }
 
     @Override
-    public void render(PoseStack matrixStack, IRenderTypeBuffer bufferIn, int packedLightIn, SquidBumperEntity entity, float v, float v1, float v2, float v3, float v4, float v5)
+    public void render(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, SquidBumperEntity entity, float limbSwing, float limbSwingAmount, float partialTickTime, float ageInTicks, float netHeadYaw, float headPitch)
     {
         int color = ColorUtils.getEntityColor(entity);
         if (SplatcraftConfig.Client.getColorLock())
@@ -49,7 +39,11 @@ public class SquidBumperColorLayer //extends LayerRenderer<SquidBumperEntity, Sq
         float g = ((color & '\uff00') >> 8) / 255.0f;
         float b = (color & 255) / 255.0f;
 
-        renderCopyCutoutModel(getParentModel(), MODEL, TEXTURE, matrixStack, bufferIn, packedLightIn, entity, v, v1, v2, v3, v4, v5, r, g, b);
+        getParentModel().copyPropertiesTo(model);
+        model.prepareMobModel(entity, limbSwing, limbSwingAmount, headPitch);
+        model.setupAnim(entity, limbSwing, limbSwingAmount, partialTickTime, ageInTicks, netHeadYaw);
+
+        VertexConsumer ivertexbuilder = bufferSource.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
+        model.renderToBuffer(poseStack, ivertexbuilder, packedLight, LivingEntityRenderer.getOverlayCoords(entity, 0.0F), r, g, b, 1.0F);
     }
-    */
 }

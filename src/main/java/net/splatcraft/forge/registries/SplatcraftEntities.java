@@ -15,26 +15,20 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryObject;
-import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.client.layer.InkAccessoryLayer;
 import net.splatcraft.forge.client.layer.InkOverlayLayer;
 import net.splatcraft.forge.client.models.AbstractSubWeaponModel;
+import net.splatcraft.forge.client.models.InkSquidModel;
 import net.splatcraft.forge.client.models.SquidBumperModel;
 import net.splatcraft.forge.client.models.projectiles.BlasterInkProjectileModel;
 import net.splatcraft.forge.client.models.projectiles.InkProjectileModel;
@@ -99,25 +93,13 @@ public class SplatcraftEntities
 	public static void bindRenderers()
 	{
 		EntityRenderers.register(INK_PROJECTILE.get(), InkProjectileRenderer::new);
-		//EntityRenderers.register(INK_SQUID.get(), InkSquidRenderer::new);
+		EntityRenderers.register(INK_SQUID.get(), InkSquidRenderer::new);
 		EntityRenderers.register(SQUID_BUMPER.get(), SquidBumperRenderer::new);
 
 		EntityRenderers.register(SPLAT_BOMB.get(), SplatBombRenderer::new);
 		EntityRenderers.register(BURST_BOMB.get(), BurstBombRenderer::new);
 		EntityRenderers.register(SUCTION_BOMB.get(), SuctionBombRenderer::new);
 		EntityRenderers.register(CURLING_BOMB.get(), CurlingBombRenderer::new);
-
-        /*
-        RenderingRegistry.registerEntityRenderingHandler(INK_PROJECTILE, InkProjectileRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(INK_SQUID, InkSquidRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(SQUID_BUMPER, SquidBumperRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(SPAWN_SHIELD, SpawnShieldRenderer::new);
-
-        RenderingRegistry.registerEntityRenderingHandler(BURST_BOMB, BurstBombRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(SUCTION_BOMB, SuctionBombRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(SPLAT_BOMB, SplatBombRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(CURLING_BOMB, CurlingBombRenderer::new);
-         */
 	}
 
 	public static final HashMap<Class<? extends AbstractSubWeaponModel>, ModelLayerLocation> LAYER_LOCATIONS = new HashMap<>();
@@ -126,6 +108,7 @@ public class SplatcraftEntities
 	@SubscribeEvent
 	public static void defineModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event)
 	{
+		event.registerLayerDefinition(InkSquidModel.LAYER_LOCATION, InkSquidModel::createBodyLayer);
 		event.registerLayerDefinition(SquidBumperModel.LAYER_LOCATION, SquidBumperModel::createBodyLayer);
 
 		event.registerLayerDefinition(SplatBombModel.LAYER_LOCATION, SplatBombModel::createBodyLayer);

@@ -5,12 +5,14 @@ package net.splatcraft.forge.client.models;// Made with Blockbench 4.7.2
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.entities.SquidBumperEntity;
 
@@ -48,9 +50,43 @@ public class SquidBumperModel extends EntityModel<SquidBumperEntity> {
 
 	}
 
+	private float scale = 1;
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void prepareMobModel(SquidBumperEntity entityIn, float limbSwing, float limbSwingAmount, float partialTick)
+	{
+		super.prepareMobModel(entityIn, limbSwing, limbSwingAmount, partialTick);
+
+		scale = entityIn.getBumperScale(Minecraft.getInstance().getDeltaFrameTime());
+		Bumper.yRot = (float) Math.PI / 180F * Mth.lerp(partialTick, entityIn.yHeadRot, entityIn.yHeadRotO) + (float) Math.PI;
+
+		Base.xRot = 0.0F;
+		Base.yRot = 0.0F;
+		Base.zRot = 0.0F;
+
+		float scale = entityIn.getBumperScale(partialTick);
+
+		Bumper.y = 24;
+
+		if (entityIn.getInkHealth() <= 0f)
+		{
+			Bumper.y *= 1 / scale;
+		}
+	}
+
+	@Override
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha)
+	{
 		Base.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+
+		poseStack.pushPose();
+		poseStack.scale(scale, scale, scale);
+		Bumper.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		poseStack.popPose();
+	}
+	public void renderBase(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		Base.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	}
+	public void renderBumper(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		Bumper.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }

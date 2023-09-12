@@ -3,40 +3,28 @@ package net.splatcraft.forge.client.handlers;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -54,13 +42,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.SplatcraftConfig;
-import net.splatcraft.forge.client.layer.InkAccessoryLayer;
-import net.splatcraft.forge.client.layer.InkOverlayLayer;
 import net.splatcraft.forge.client.renderer.InkSquidRenderer;
-import net.splatcraft.forge.client.renderer.SquidFormRenderer;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.entities.SquidFormPlayer;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.weapons.ChargerItem;
@@ -72,11 +56,8 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static net.splatcraft.forge.items.weapons.WeaponBaseItem.enoughInk;
 
@@ -104,45 +85,29 @@ public class RendererHandler
     private static float prevInkPctg = 0;
     private static float inkFlash = 0;
 
+    private static InkSquidRenderer squidRenderer;
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void playerRender(RenderPlayerEvent event)
     {
+        EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+
         Player player = event.getPlayer();
         if (player.isSpectator()) return;
 
         if (PlayerInfoCapability.isSquid(player))
         {
             event.setCanceled(true);
-            //if (squidRenderer == null)
-                //squidRenderer = new SquidFormRenderer(InkSquidRenderer.getRenderManager());
+            if (squidRenderer == null)
+                squidRenderer = new InkSquidRenderer(InkSquidRenderer.getContext());
             if (!InkBlockUtils.canSquidHide(player))
             {
-                //squidRenderer.render(player, player.yHeadRot, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
-                //net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(player, squidRenderer, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
+                squidRenderer.render(player, player.yHeadRot, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
+                net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(player, squidRenderer, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight()));
             }
-            //else event.getRenderer().getDispatcher().setRenderShadow(false);
         }
 
-        //event.getRenderer().getDispatcher().setRenderShadow(false);
     }
-
-    /*
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void livingRenderer(RenderLivingEvent.Pre<?, ?> event)
-    {
-        if(!hasCustomLayers.contains(event.getRenderer()))
-        {
-            if(event.getRenderer() instanceof PlayerRenderer)
-                ((PlayerRenderer)event.getRenderer()).addLayer(new InkAccessoryLayer((PlayerRenderer)event.getRenderer()));
-            event.getRenderer().addLayer(new InkOverlayLayer(event.getRenderer()));
-
-            hasCustomLayers.add(event.getRenderer());
-        }
-    }
-    */
-
-
-
 
     @SubscribeEvent
     public static void onRenderTick(TickEvent.RenderTickEvent event)

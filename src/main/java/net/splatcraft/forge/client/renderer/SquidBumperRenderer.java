@@ -6,15 +6,18 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.client.layer.SquidBumperColorLayer;
+import net.splatcraft.forge.client.layer.SquidBumperOverlayLayer;
 import net.splatcraft.forge.client.models.SquidBumperModel;
 import net.splatcraft.forge.entities.SquidBumperEntity;
 
-public class SquidBumperRenderer extends LivingEntityRenderer<SquidBumperEntity, SquidBumperModel> //implements IEntityRenderer<LivingEntity, InkSquidModel>
+public class SquidBumperRenderer extends LivingEntityRenderer<SquidBumperEntity, SquidBumperModel> implements RenderLayerParent<SquidBumperEntity, SquidBumperModel>
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/entity/squid_bumper_overlay.png");
 
@@ -22,8 +25,8 @@ public class SquidBumperRenderer extends LivingEntityRenderer<SquidBumperEntity,
 	public SquidBumperRenderer(EntityRendererProvider.Context context)
 	{
 		super(context, new SquidBumperModel(context.bakeLayer(SquidBumperModel.LAYER_LOCATION)), 0.5f);
-		//addLayer(new SquidBumperColorLayer(this));
-		//addLayer(new SquidBumperOverlayLayer(this));
+		addLayer(new SquidBumperColorLayer(this, context.getModelSet()));
+		//addLayer(new SquidBumperOverlayLayer(this, context.getModelSet()));
 	}
 
 	@Override
