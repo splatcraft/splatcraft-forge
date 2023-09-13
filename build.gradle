@@ -36,9 +36,9 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17) // Mojang ships Java
 
 repositories {
     maven {
-        url "https://www.cursemaven.com"
+        name "KosmX's maven"
+        url 'https://maven.kosmx.dev/'
     }
-    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     mavenCentral()
 }
 
@@ -52,14 +52,15 @@ minecraft {
         client {
             workingDirectory project.file('run')
             arg "-mixin.config=splatcraft.mixins.json"
-            arg "--uuid 42941b8f-d0c3-45dd-8cbb-1f6f388de45e"
-            arg "--username Cibernet"
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'info'
+
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             mods {
                 splatcraft {
@@ -96,6 +97,9 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'info'
 
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             args '--mod', project.archives_base_name, '--all', '--output', file('src/generated/resources/')
 
             mods {
@@ -117,7 +121,7 @@ dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
 
     //implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${project.geckolib_version}")
-    implementation fg.deobf("curse.maven:playeranimator-658587:4418152")
+    implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${project.player_anim_version}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
