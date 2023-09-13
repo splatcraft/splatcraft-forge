@@ -3,6 +3,8 @@ package net.splatcraft.forge.crafting;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -17,12 +19,9 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.util.ColorUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import static net.splatcraft.forge.Splatcraft.LOGGER;
 
 public class InkVatColorRecipe implements Recipe<Container>
 {
@@ -31,8 +30,6 @@ public class InkVatColorRecipe implements Recipe<Container>
     protected final int color;
     protected final boolean disableOmni;
     protected final ResourceLocation id;
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public InkVatColorRecipe(ResourceLocation id, Ingredient input, int outputColor, boolean disableOmni)
     {
