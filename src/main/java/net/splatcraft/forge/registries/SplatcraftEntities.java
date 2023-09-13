@@ -143,8 +143,6 @@ public class SplatcraftEntities
 		return builder;
 	}
 
-	private static Field field_EntityRenderersEvent$AddLayers_renderers;
-
 	@OnlyIn(Dist.CLIENT)
 	private static <T extends LivingEntity, M extends EntityModel<T>> void attachInkOverlay(LivingEntityRenderer<T, M> renderer)
 	{
@@ -161,33 +159,18 @@ public class SplatcraftEntities
 			skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
 		}
 
-
-        //code from https://github.com/AlexModGuy/Rats/blob/d95ba97546663088be6804b6400226d18a9b0273/src/main/java/com/github/alexthe666/rats/client/events/ModClientEvents.java#L309
-        if (field_EntityRenderersEvent$AddLayers_renderers == null) {
-            try {
-                field_EntityRenderersEvent$AddLayers_renderers = EntityRenderersEvent.AddLayers.class.getDeclaredField("renderers");
-                field_EntityRenderersEvent$AddLayers_renderers.setAccessible(true);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-        }
-        if (field_EntityRenderersEvent$AddLayers_renderers != null) {
+		if (event.renderers != null) {
             event.getSkins().forEach(renderer -> {
                 LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> skin = event.getSkin(renderer);
                 attachInkOverlay(Objects.requireNonNull(skin));
 
                 skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
             });
-            try {
-                ((Map<EntityType<?>, EntityRenderer<?>>) field_EntityRenderersEvent$AddLayers_renderers.get(event))
-                        .values().stream()
-                        .filter(LivingEntityRenderer.class::isInstance)
-                        .map(LivingEntityRenderer.class::cast)
-                        .forEach(SplatcraftEntities::attachInkOverlay);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-
+			event.renderers
+					.values().stream()
+					.filter(LivingEntityRenderer.class::isInstance)
+					.map(LivingEntityRenderer.class::cast)
+					.forEach(SplatcraftEntities::attachInkOverlay);
+		}
 	}
 }

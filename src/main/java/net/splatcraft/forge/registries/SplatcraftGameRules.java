@@ -78,46 +78,21 @@ public class SplatcraftGameRules
         return getBooleanRuleValue(level, rule);
     }
 
-    public static GameRules.Key<GameRules.BooleanValue> createBooleanRule(String name, GameRules.Category category, boolean defaultValue)
-    {
-        Method booleanValueCreate = ObfuscationReflectionHelper.findMethod(GameRules.BooleanValue.class, "m_46250_", boolean.class);
-        booleanValueCreate.setAccessible(true);
-
-        try
-        {
-            Object booleanValue = booleanValueCreate.invoke(GameRules.BooleanValue.class, defaultValue);
-            GameRules.Key<GameRules.BooleanValue> ruleKey = GameRules.register(Splatcraft.MODID + "." + name, category, (GameRules.Type<GameRules.BooleanValue>) booleanValue);
-            ruleList.add(ruleKey);
-            booleanRules.put(getRuleIndex(ruleKey), defaultValue);
-            return ruleKey;
-
-        } catch (IllegalAccessException | InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-        return null;
+    public static GameRules.Key<GameRules.BooleanValue> createBooleanRule(String name, GameRules.Category category, boolean defaultValue) {
+        GameRules.Type<GameRules.BooleanValue> booleanValue = GameRules.BooleanValue.create(defaultValue);
+        GameRules.Key<GameRules.BooleanValue> ruleKey = GameRules.register(Splatcraft.MODID + "." + name, category, booleanValue);
+        ruleList.add(ruleKey);
+        booleanRules.put(getRuleIndex(ruleKey), defaultValue);
+        return ruleKey;
     }
 
-    @SuppressWarnings("unchecked")
-    public static GameRules.Key<GameRules.IntegerValue> createIntRule(String name, GameRules.Category category, int defaultValue)
-    {
-        Method intValueCreate = ObfuscationReflectionHelper.findMethod(GameRules.IntegerValue.class, "m_46312_", int.class);
-        intValueCreate.setAccessible(true);
+    public static GameRules.Key<GameRules.IntegerValue> createIntRule(String name, GameRules.Category category, int defaultValue) {
+        GameRules.Type<GameRules.IntegerValue> intValue = GameRules.IntegerValue.create(defaultValue);
+        GameRules.Key<GameRules.IntegerValue> ruleKey = GameRules.register(Splatcraft.MODID + "." + name, category, intValue);
 
-        try
-        {
-            Object intValue = intValueCreate.invoke(GameRules.IntegerValue.class, defaultValue);
-            GameRules.Key<GameRules.IntegerValue> ruleKey = GameRules.register(Splatcraft.MODID + "." + name, category, (GameRules.Type<GameRules.IntegerValue>) intValue);
-
-            ruleList.add(ruleKey);
-            intRules.put(getRuleIndex(ruleKey), defaultValue);
-            return ruleKey;
-
-        } catch (IllegalAccessException | InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-        return null;
+        ruleList.add(ruleKey);
+        intRules.put(getRuleIndex(ruleKey), defaultValue);
+        return ruleKey;
     }
 
     public static int getRuleIndex(GameRules.Key<?> rule)

@@ -1,33 +1,23 @@
 package net.splatcraft.forge.handlers;
 
 import com.google.common.collect.Maps;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkColor;
-import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 public class ScoreboardHandler
 {
-    public static final ObjectiveCriteria COLOR = createObjectiveCriteria(Splatcraft.MODID + ".inkColor");
-    public static final ObjectiveCriteria TURF_WAR_SCORE = createObjectiveCriteria(Splatcraft.MODID + ".turfWarScore");
+    public static final ObjectiveCriteria COLOR = new ObjectiveCriteria(Splatcraft.MODID + ".inkColor");
+    public static final ObjectiveCriteria TURF_WAR_SCORE = new ObjectiveCriteria(Splatcraft.MODID + ".turfWarScore");
 
     protected static final Map<Integer, CriteriaInkColor[]> COLOR_CRITERIA = Maps.newHashMap();
-
-    protected static ObjectiveCriteria createObjectiveCriteria(String id)
-    {
-        try {
-            return ObfuscationReflectionHelper.findConstructor(ObjectiveCriteria.class, String.class).newInstance(id);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     public static void updatePlayerScore(ObjectiveCriteria criteria, Player player, int color)
     {
@@ -161,16 +151,7 @@ public class ScoreboardHandler
 
         public void remove()
         {
-            //TODO make sure this works
-            @NotNull Map<String, ObjectiveCriteria> CRITERIA_BY_NAME;
-            try {
-                CRITERIA_BY_NAME = (Map<String, ObjectiveCriteria>) ObfuscationReflectionHelper.findField(ObjectiveCriteria.class, "f_166108_").get(null);
-            } catch (IllegalAccessException | ClassCastException e) {
-                e.printStackTrace();
-                return;
-            }
-
-            CRITERIA_BY_NAME.remove(name);
+            ObjectiveCriteria.CRITERIA_CACHE.remove(name);
         }
     }
 }
