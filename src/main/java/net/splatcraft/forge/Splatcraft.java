@@ -75,7 +75,6 @@ public class Splatcraft {
         event.enqueueWork(() ->
         {
             SplatcraftItems.registerModelProperties();
-            //SplatcraftItems.registerArmorModels();
             ClientSetupHandler.bindScreenContainers();
         });
     }

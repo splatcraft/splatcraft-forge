@@ -1,5 +1,6 @@
 package net.splatcraft.forge.registries;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -10,6 +11,8 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,6 +21,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.client.models.inktanks.ArmoredInkTankModel;
+import net.splatcraft.forge.client.models.inktanks.ClassicInkTankModel;
+import net.splatcraft.forge.client.models.inktanks.InkTankJrModel;
+import net.splatcraft.forge.client.models.inktanks.InkTankModel;
 import net.splatcraft.forge.entities.subs.BurstBombEntity;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
 import net.splatcraft.forge.entities.subs.SplatBombEntity;
@@ -442,15 +449,14 @@ public class SplatcraftItems {
         ItemProperties.register(canvas.get(), new ResourceLocation(Splatcraft.MODID, "inked"), (stack, level, entity, seed) -> ColorUtils.getInkColor(stack) == -1 ? 0 : 1);
     }
 
-    /*
     @OnlyIn(Dist.CLIENT)
     public static void registerArmorModels() {
-        inkTank.get().setArmorModel(new InkTankModel());
-        classicInkTank.get().setArmorModel(new ClassicInkTankModel());
-        inkTankJr.get().setArmorModel(new InkTankJrModel());
-        armoredInkTank.get().setArmorModel(new ArmoredInkTankModel());
+        inkTank.get().setArmorModel(new InkTankModel(Minecraft.getInstance().getEntityModels().bakeLayer(InkTankModel.LAYER_LOCATION)));
+        classicInkTank.get().setArmorModel(new ClassicInkTankModel(Minecraft.getInstance().getEntityModels().bakeLayer(ClassicInkTankModel.LAYER_LOCATION)));
+        inkTankJr.get().setArmorModel(new InkTankJrModel(Minecraft.getInstance().getEntityModels().bakeLayer(InkTankJrModel.LAYER_LOCATION)));
+        armoredInkTank.get().setArmorModel(new ArmoredInkTankModel(Minecraft.getInstance().getEntityModels().bakeLayer(ArmoredInkTankModel.LAYER_LOCATION)));
     }
-    */
+
 
     @SubscribeEvent
     public static void registerAttributes(final RegistryEvent.Register<Attribute> event) {

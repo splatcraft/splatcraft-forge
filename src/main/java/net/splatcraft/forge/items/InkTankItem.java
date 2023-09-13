@@ -1,11 +1,14 @@
 package net.splatcraft.forge.items;
 
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
@@ -14,7 +17,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.splatcraft.forge.SplatcraftConfig;
+import net.splatcraft.forge.client.models.inktanks.AbstractInkTankModel;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.ChargerItem;
@@ -31,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class InkTankItem extends ColoredArmorItem
 {
@@ -39,8 +45,8 @@ public class InkTankItem extends ColoredArmorItem
     public final float capacity;
     public final Properties properties;
 
-    //@OnlyIn(Dist.CLIENT)
-    //private AbstractInkTankModel model;
+    @OnlyIn(Dist.CLIENT)
+    private AbstractInkTankModel model;
 
     public InkTankItem(String tagId, float capacity, ArmorMaterial material, Properties properties)
     {
@@ -124,70 +130,65 @@ public class InkTankItem extends ColoredArmorItem
 
     }
 
-
-    /* TODO GeckoLib Models
-    @SuppressWarnings("unchecked")
-    @Nullable
-    //@Override >:( it's an event now
-    public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot armorSlot, A _default)
-    {
-        if (entity.level.isClientSide)
-        {
-            HumanoidModel<?> model = getInkTankModel(entity, stack, slot, _default);
-            return model != null ? (A) model : null;//super.getArmorModel(entity, stack, slot, _default);
-        }
-
-        return null; //super.getArmorModel(entity, stack, slot, _default);
-    }
-
+    private static boolean initModels = false;
     @OnlyIn(Dist.CLIENT)
-    private HumanoidModel<?> getInkTankModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> _default)
+    @Override
+    public void initializeClient(Consumer<IItemRenderProperties> consumer)
     {
-        if (!(stack.getItem() instanceof InkTankItem))
+        super.initializeClient(consumer);
+        consumer.accept(new IItemRenderProperties()
         {
-            return null; //super.getArmorModel(entity, stack, slot, _default);
-        }
-
-        if (model == null)
-        {
-            return null;//super.getArmorModel(entity, stack, slot, _default);
-        }
-
-        if (!stack.isEmpty())
-        {
-            if (stack.getItem() instanceof InkTankItem)
+            @Nullable
+            @Override
+            public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default)
             {
-                model.rightLeg.visible = slot == EquipmentSlot.LEGS || slot == EquipmentSlot.FEET;
-                model.leftLeg.visible = slot == EquipmentSlot.LEGS || slot == EquipmentSlot.FEET;
+                if(!initModels) //i have NO idea where else to put this
+                {
+                    initModels = true;
+                    SplatcraftItems.registerArmorModels();
+                }
 
-                model.body.visible = slot == EquipmentSlot.CHEST;
-                model.leftArm.visible = slot == EquipmentSlot.CHEST;
-                model.rightArm.visible = slot == EquipmentSlot.CHEST;
+                if (!(itemStack.getItem() instanceof InkTankItem))
+                {
+                    return IItemRenderProperties.super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+                }
 
-                model.head.visible = slot == EquipmentSlot.HEAD;
-                model.hat.visible = slot == EquipmentSlot.HEAD;
+                if (model == null)
+                {
+                    return IItemRenderProperties.super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+                }
 
-                model.crouching = _default.crouching;
-                model.riding = _default.riding;
-                model.young = _default.young;
+                if (!itemStack.isEmpty())
+                {
+                    if (itemStack.getItem() instanceof InkTankItem)
+                    {
+                        model.rightLeg.visible = armorSlot == EquipmentSlot.LEGS || armorSlot == EquipmentSlot.FEET;
+                        model.leftLeg.visible = armorSlot == EquipmentSlot.LEGS || armorSlot == EquipmentSlot.FEET;
 
-                model.rightArmPose = _default.rightArmPose;
-                model.leftArmPose = _default.leftArmPose;
+                        model.body.visible = armorSlot == EquipmentSlot.CHEST;
+                        model.leftArm.visible = armorSlot == EquipmentSlot.CHEST;
+                        model.rightArm.visible = armorSlot == EquipmentSlot.CHEST;
 
-                model.setInkLevels(InkTankItem.getInkAmount(stack) / ((InkTankItem) stack.getItem()).capacity);
+                        model.head.visible = armorSlot == EquipmentSlot.HEAD;
+                        model.hat.visible = armorSlot == EquipmentSlot.HEAD;
 
-                return model;
+                        model.crouching = _default.crouching;
+                        model.riding = _default.riding;
+                        model.young = _default.young;
+
+                        model.rightArmPose = _default.rightArmPose;
+                        model.leftArmPose = _default.leftArmPose;
+
+                        model.setInkLevels(InkTankItem.getInkAmount(itemStack) / ((InkTankItem) itemStack.getItem()).capacity);
+
+                        return model;
+                    }
+                }
+
+                return IItemRenderProperties.super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
             }
-        }
-        return null;
+        });
     }
-
-    @OnlyIn(Dist.CLIENT)
-    public void setArmorModel(AbstractInkTankModel model)
-    {
-        this.model = model;
-    }
-    */
 
     @Override
     public int getBarWidth(ItemStack stack)
@@ -229,5 +230,10 @@ public class InkTankItem extends ColoredArmorItem
     public void refill(ItemStack stack)
     {
         setInkAmount(stack, capacity);
+    }
+
+    public void setArmorModel(AbstractInkTankModel inkTankModel)
+    {
+        this.model = inkTankModel;
     }
 }

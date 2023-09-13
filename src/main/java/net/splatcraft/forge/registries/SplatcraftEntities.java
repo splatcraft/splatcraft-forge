@@ -30,6 +30,10 @@ import net.splatcraft.forge.client.layer.InkOverlayLayer;
 import net.splatcraft.forge.client.models.AbstractSubWeaponModel;
 import net.splatcraft.forge.client.models.InkSquidModel;
 import net.splatcraft.forge.client.models.SquidBumperModel;
+import net.splatcraft.forge.client.models.inktanks.ArmoredInkTankModel;
+import net.splatcraft.forge.client.models.inktanks.ClassicInkTankModel;
+import net.splatcraft.forge.client.models.inktanks.InkTankJrModel;
+import net.splatcraft.forge.client.models.inktanks.InkTankModel;
 import net.splatcraft.forge.client.models.projectiles.BlasterInkProjectileModel;
 import net.splatcraft.forge.client.models.projectiles.InkProjectileModel;
 import net.splatcraft.forge.client.models.projectiles.RollerInkProjectileModel;
@@ -104,6 +108,7 @@ public class SplatcraftEntities
 
 	public static final HashMap<Class<? extends AbstractSubWeaponModel>, ModelLayerLocation> LAYER_LOCATIONS = new HashMap<>();
 
+
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void defineModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event)
@@ -121,20 +126,10 @@ public class SplatcraftEntities
 		event.registerLayerDefinition(BlasterInkProjectileModel.LAYER_LOCATION, BlasterInkProjectileModel::createBodyLayer);
 		event.registerLayerDefinition(RollerInkProjectileModel.LAYER_LOCATION, RollerInkProjectileModel::createBodyLayer);
 
-		/*
-		registerModel(event, "splat_bomb", CurlingBombModel.class, CurlingBombModel::createBodyLayer);
-		registerModel(event, "suction_bomb", CurlingBombModel.class, CurlingBombModel::createBodyLayer);
-		registerModel(event, "burst_bomb", CurlingBombModel.class, CurlingBombModel::createBodyLayer);
-		registerModel(event, "curling_bomb", CurlingBombModel.class, CurlingBombModel::createBodyLayer);
-		*/
-	}
-
-	private static void registerModel(EntityRenderersEvent.RegisterLayerDefinitions event, String id,
-	                                  Class<? extends AbstractSubWeaponModel> clazz, Supplier<LayerDefinition> layerDefinition)
-	{
-		ModelLayerLocation loc = new ModelLayerLocation(new ResourceLocation(MODID, id), "main");
-		event.registerLayerDefinition(loc, layerDefinition);
-		LAYER_LOCATIONS.put(clazz, loc);
+		event.registerLayerDefinition(InkTankModel.LAYER_LOCATION, InkTankModel::createBodyLayer);
+		event.registerLayerDefinition(ClassicInkTankModel.LAYER_LOCATION, ClassicInkTankModel::createBodyLayer);
+		event.registerLayerDefinition(InkTankJrModel.LAYER_LOCATION, InkTankJrModel::createBodyLayer);
+		event.registerLayerDefinition(ArmoredInkTankModel.LAYER_LOCATION, ArmoredInkTankModel::createBodyLayer);
 	}
 
 	@SubscribeEvent
