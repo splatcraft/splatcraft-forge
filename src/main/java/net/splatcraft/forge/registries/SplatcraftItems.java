@@ -423,6 +423,7 @@ public class SplatcraftItems {
     }
     */
 
+    @OnlyIn(Dist.CLIENT)
     public static void registerModelProperties() {
         ResourceLocation activeProperty = new ResourceLocation(Splatcraft.MODID, "active");
         ResourceLocation modeProperty = new ResourceLocation(Splatcraft.MODID, "mode");

@@ -23,8 +23,6 @@ public class SplatcraftItemRenderer extends BlockEntityWithoutLevelRenderer
 	@Override
 	public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay)
 	{
-		System.out.println(stack + " " + transformType);
-
 		if(!RendererHandler.renderSubWeapon(stack, transformType, poseStack, bufferSource, packedLight, Minecraft.getInstance().getDeltaFrameTime()))
 			super.renderByItem(stack, transformType, poseStack, bufferSource, packedLight, packedOverlay);
 	}

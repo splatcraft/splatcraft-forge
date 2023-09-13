@@ -22,11 +22,12 @@
     "BlockRenderMixin$ModelRenderer",
     "ClientPlayerInventoryMixin",
     "GameRendererMixin",
+    "ItemRendererMixin",
     "MinecraftClientAccessor",
+    "PlayerModelMixin",
     "RecipeCategoryMixin",
     "SheepWoolLayerMixin",
     "WeaponHotkeyMixin$MinecraftInstance",
-    "WeaponHotkeyMixin$PlayerControllerMix",
-    "ItemRendererMixin"
+    "WeaponHotkeyMixin$PlayerControllerMix"
   ]
 }

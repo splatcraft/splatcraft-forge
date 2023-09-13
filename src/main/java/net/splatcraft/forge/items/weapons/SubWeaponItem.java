@@ -147,7 +147,6 @@ public class SubWeaponItem extends WeaponBaseItem
             @Override
             public BlockEntityWithoutLevelRenderer getItemStackRenderer()
             {
-                System.out.println(getRegistryName());
                 return SplatcraftItemRenderer.INSTANCE;
             }
 
