@@ -26,11 +26,8 @@ public class PlayerPosingHandler
 
     @SuppressWarnings("all")
     @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public static void setupPlayerAngles(RenderPlayerEvent.Pre event)
+    public static void setupPlayerAngles(Player player, PlayerModel model, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float deltaTicks)
     {
-        Player player = event.getPlayer();
-        PlayerModel<?> model = event.getRenderer().getModel();
 
         if (model == null || player == null || PlayerInfoCapability.isSquid(player))
             return;
@@ -85,8 +82,8 @@ public class PlayerPosingHandler
 
                     if (PlayerCooldown.hasPlayerCooldown(player)) {
                         cooldown = PlayerCooldown.getPlayerCooldown(player);
-                        angle = (cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTick()) / animTime;
-                        angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTick()) / animTime * Math.PI) + ((float) Math.PI) / 1.8f;
+                        angle = (cooldown.getMaxTime() - cooldown.getTime() + deltaTicks) / animTime;
+                        angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + deltaTicks) / animTime * Math.PI) + ((float) Math.PI) / 1.8f;
                         if (angle < 6.5f)
                             mainHand.xRot = Mth.cos(angle * 0.6662F);
                     }
@@ -111,7 +108,7 @@ public class PlayerPosingHandler
                     if (PlayerCooldown.hasPlayerCooldown(player)) {
                         cooldown = PlayerCooldown.getPlayerCooldown(player);
                         animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).settings.swingTime : ((RollerItem) mainStack.getItem()).settings.flingTime;
-                        angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTick()) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
+                        angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + deltaTicks) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
                         mainHand.xRot = Mth.cos(angle) + (0.1F * 0.5F - ((float) Math.PI / 10F));//+ 0.36f;
                     } else {
                         mainHand.xRot = 0.1F * 0.5F - ((float) Math.PI / 10F);
@@ -124,7 +121,7 @@ public class PlayerPosingHandler
                     if (PlayerCooldown.hasPlayerCooldown(player)) {
                         cooldown = PlayerCooldown.getPlayerCooldown(player);
                         animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).settings.swingTime : ((RollerItem) mainStack.getItem()).settings.flingTime;
-                        angle = (float) -((cooldown.getMaxTime() - cooldown.getTime() + event.getPartialTick()) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
+                        angle = (float) -((cooldown.getMaxTime() - cooldown.getTime() + deltaTicks) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
 
                         mainHand.yRot = model.getHead().yRot + Mth.cos(angle);
                     } else mainHand.yRot = model.getHead().yRot;
