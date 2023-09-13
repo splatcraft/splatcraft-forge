@@ -1,12 +1,11 @@
 package net.splatcraft.forge.registries;
 
+import java.util.Objects;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +25,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.client.layer.InkAccessoryLayer;
 import net.splatcraft.forge.client.layer.InkOverlayLayer;
-import net.splatcraft.forge.client.models.AbstractSubWeaponModel;
 import net.splatcraft.forge.client.models.InkSquidModel;
 import net.splatcraft.forge.client.models.SquidBumperModel;
 import net.splatcraft.forge.client.models.inktanks.ArmoredInkTankModel;
@@ -56,11 +54,6 @@ import net.splatcraft.forge.entities.subs.BurstBombEntity;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
 import net.splatcraft.forge.entities.subs.SplatBombEntity;
 import net.splatcraft.forge.entities.subs.SuctionBombEntity;
-
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 import static net.splatcraft.forge.Splatcraft.MODID;
 
@@ -104,9 +97,6 @@ public class SplatcraftEntities
 		EntityRenderers.register(CURLING_BOMB.get(), CurlingBombRenderer::new);
 	}
 
-	public static final HashMap<Class<? extends AbstractSubWeaponModel>, ModelLayerLocation> LAYER_LOCATIONS = new HashMap<>();
-
-
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void defineModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event)
@@ -146,17 +136,18 @@ public class SplatcraftEntities
 	@OnlyIn(Dist.CLIENT)
 	private static <T extends LivingEntity, M extends EntityModel<T>> void attachInkOverlay(LivingEntityRenderer<T, M> renderer)
 	{
-		renderer.addLayer(new InkOverlayLayer(renderer));
+		renderer.addLayer(new InkOverlayLayer<>(renderer));
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void addRenderLayers(EntityRenderersEvent.AddLayers event)
 	{
-		for(String skinKey : event.getSkins())
-		{
+		for (String skinKey : event.getSkins()) {
 			LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> skin = event.getSkin(skinKey);
-			skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
+			if (skin != null) {
+				skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel<AbstractClientPlayer>(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
+			}
 		}
 
 		if (event.renderers != null) {
@@ -164,7 +155,7 @@ public class SplatcraftEntities
                 LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> skin = event.getSkin(renderer);
                 attachInkOverlay(Objects.requireNonNull(skin));
 
-                skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
+				skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel<AbstractClientPlayer>(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
             });
 			event.renderers
 					.values().stream()

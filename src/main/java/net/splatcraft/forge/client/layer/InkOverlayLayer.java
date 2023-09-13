@@ -2,6 +2,8 @@ package net.splatcraft.forge.client.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -16,10 +18,7 @@ import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
 import net.splatcraft.forge.entities.SquidBumperEntity;
 import net.splatcraft.forge.util.ColorUtils;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class InkOverlayLayer<E extends LivingEntity> extends RenderLayer<E, EntityModel<E>>
+public class InkOverlayLayer<E extends LivingEntity, M extends EntityModel<E>> extends RenderLayer<E, M>
 {
 	private final List<RenderType> BUFFERS = Arrays.asList(
 			RenderType.entitySmoothCutout(new ResourceLocation(Splatcraft.MODID, "textures/entity/ink_overlay_" + 0 + ".png")),
@@ -29,7 +28,7 @@ public class InkOverlayLayer<E extends LivingEntity> extends RenderLayer<E, Enti
 			RenderType.entitySmoothCutout(new ResourceLocation(Splatcraft.MODID, "textures/entity/ink_overlay_" + 4 + ".png"))
 	);
 
-	public InkOverlayLayer(RenderLayerParent<E, EntityModel<E>> parent) {
+	public InkOverlayLayer(RenderLayerParent<E, M> parent) {
 		super(parent);
 	}
 

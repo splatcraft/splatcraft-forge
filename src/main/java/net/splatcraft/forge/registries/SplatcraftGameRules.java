@@ -1,22 +1,17 @@
 package net.splatcraft.forge.registries;
 
+import java.util.ArrayList;
+import java.util.TreeMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.util.ClientUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.TreeMap;
-
-public class SplatcraftGameRules
-{
+public class SplatcraftGameRules {
     public static final TreeMap<Integer, Boolean> booleanRules = new TreeMap<>();
     public static final TreeMap<Integer, Integer> intRules = new TreeMap<>();
     public static final ArrayList<GameRules.Key<?>> ruleList = new ArrayList<>();
@@ -37,8 +32,7 @@ public class SplatcraftGameRules
     public static GameRules.Key<GameRules.BooleanValue> INKABLE_GROUND;
     public static GameRules.Key<GameRules.BooleanValue> RECHARGEABLE_INK_TANK;
 
-    public static void registerGamerules()
-    {
+    public static void registerGamerules() {
         INK_DECAY = createBooleanRule("inkDecay", GameRules.Category.UPDATES, true);
         COLORED_PLAYER_NAMES = createBooleanRule("coloredPlayerNames", GameRules.Category.PLAYER, false);
         KEEP_MATCH_ITEMS = createBooleanRule("keepMatchItems", GameRules.Category.PLAYER, false);
@@ -56,23 +50,21 @@ public class SplatcraftGameRules
         RECHARGEABLE_INK_TANK = createBooleanRule("rechargeableInkTank", GameRules.Category.PLAYER, true);
     }
 
-    public static boolean getLocalizedRule(Level level, BlockPos pos, GameRules.Key<GameRules.BooleanValue> rule)
-    {
+    public static boolean getLocalizedRule(Level level, BlockPos pos, GameRules.Key<GameRules.BooleanValue> rule) {
         ArrayList<Stage> stages = new ArrayList<>(level.isClientSide ? ClientUtils.clientStages.values() : SaveInfoCapability.get(level.getServer()).getStages().values());
 
         Stage localStage = null;
 
-        for(Object obj : stages.stream().filter(stage -> stage.dimID.equals(level.dimension().location()) && new AABB(stage.cornerA, stage.cornerB).expandTowards(1, 1, 1).contains(pos.getX(), pos.getY(), pos.getZ())).toArray())
-        {
+        for (Object obj : stages.stream().filter(stage -> stage.dimID.equals(level.dimension().location()) && new AABB(stage.cornerA, stage.cornerB).expandTowards(1, 1, 1).contains(pos.getX(), pos.getY(), pos.getZ())).toArray()) {
             Stage stage = (Stage) obj;
-            if(localStage == null ||
-                    Math.abs(stage.cornerA.getX()-stage.cornerB.getX()) < Math.abs(localStage.cornerA.getX()-localStage.cornerB.getX()) ||
-                    Math.abs(stage.cornerA.getY()-stage.cornerB.getY()) < Math.abs(localStage.cornerA.getY()-localStage.cornerB.getY()) ||
-                    Math.abs(stage.cornerA.getZ()-stage.cornerB.getZ()) < Math.abs(localStage.cornerA.getZ()-localStage.cornerB.getZ()))
+            if (localStage == null ||
+                    Math.abs(stage.cornerA.getX() - stage.cornerB.getX()) < Math.abs(localStage.cornerA.getX() - localStage.cornerB.getX()) ||
+                    Math.abs(stage.cornerA.getY() - stage.cornerB.getY()) < Math.abs(localStage.cornerA.getY() - localStage.cornerB.getY()) ||
+                    Math.abs(stage.cornerA.getZ() - stage.cornerB.getZ()) < Math.abs(localStage.cornerA.getZ() - localStage.cornerB.getZ()))
                 localStage = stage;
         }
 
-        if(localStage != null && localStage.hasSetting(rule))
+        if (localStage != null && localStage.hasSetting(rule))
             return localStage.getSetting(rule);
 
         return getBooleanRuleValue(level, rule);
@@ -95,34 +87,27 @@ public class SplatcraftGameRules
         return ruleKey;
     }
 
-    public static int getRuleIndex(GameRules.Key<?> rule)
-    {
+    public static int getRuleIndex(GameRules.Key<?> rule) {
         return ruleList.indexOf(rule);
     }
 
-    @SuppressWarnings("rawtypes")
-    public static GameRules.Key getRuleFromIndex(int index)
-    {
-        return ruleList.get(index);
+    public static <T extends GameRules.Value<T>> GameRules.Key<T> getRuleFromIndex(int index) {
+        return (GameRules.Key<T>) ruleList.get(index);
     }
 
-    public static boolean getBooleanRuleValue(Level level, GameRules.Key<GameRules.BooleanValue> rule)
-    {
+    public static boolean getBooleanRuleValue(Level level, GameRules.Key<GameRules.BooleanValue> rule) {
         return level.isClientSide ? getClientsideBooleanValue(rule) : level.getGameRules().getBoolean(rule);
     }
 
-    public static int getIntRuleValue(Level level, GameRules.Key<GameRules.IntegerValue> rule)
-    {
+    public static int getIntRuleValue(Level level, GameRules.Key<GameRules.IntegerValue> rule) {
         return level.isClientSide ? getClientsideIntValue(rule) : level.getGameRules().getInt(rule);
     }
 
-    public static boolean getClientsideBooleanValue(GameRules.Key<GameRules.BooleanValue> rule)
-    {
+    public static boolean getClientsideBooleanValue(GameRules.Key<GameRules.BooleanValue> rule) {
         return booleanRules.get(getRuleIndex(rule));
     }
 
-    public static int getClientsideIntValue(GameRules.Key<GameRules.IntegerValue> rule)
-    {
+    public static int getClientsideIntValue(GameRules.Key<GameRules.IntegerValue> rule) {
         return intRules.get(getRuleIndex(rule));
     }
 }
