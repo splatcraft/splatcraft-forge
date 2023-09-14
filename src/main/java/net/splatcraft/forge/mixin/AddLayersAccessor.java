@@ -7,7 +7,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(EntityRenderersEvent.AddLayers.class)
+@Mixin(value = EntityRenderersEvent.AddLayers.class, remap = false)
 public interface AddLayersAccessor {
     @Accessor
     Map<EntityType<?>, EntityRenderer<?>> getRenderers();
