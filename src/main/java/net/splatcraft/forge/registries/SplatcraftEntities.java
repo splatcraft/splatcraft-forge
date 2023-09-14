@@ -54,6 +54,7 @@ import net.splatcraft.forge.entities.subs.BurstBombEntity;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
 import net.splatcraft.forge.entities.subs.SplatBombEntity;
 import net.splatcraft.forge.entities.subs.SuctionBombEntity;
+import net.splatcraft.forge.mixin.AddLayersAccessor;
 
 import static net.splatcraft.forge.Splatcraft.MODID;
 
@@ -147,12 +148,10 @@ public class SplatcraftEntities {
 
             skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel<AbstractClientPlayer>(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
         });
-        if (event.renderers != null) {
-            event.renderers
-                    .values().stream()
-                    .filter(LivingEntityRenderer.class::isInstance)
-                    .map(LivingEntityRenderer.class::cast)
-                    .forEach(SplatcraftEntities::attachInkOverlay);
-        }
+        ((AddLayersAccessor) event).getRenderers()
+                .values().stream()
+                .filter(LivingEntityRenderer.class::isInstance)
+                .map(LivingEntityRenderer.class::cast)
+                .forEach(SplatcraftEntities::attachInkOverlay);
     }
 }

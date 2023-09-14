@@ -28,6 +28,7 @@
     "RecipeCategoryMixin",
     "SheepWoolLayerMixin",
     "WeaponHotkeyMixin$MinecraftInstance",
-    "WeaponHotkeyMixin$PlayerControllerMix"
+    "WeaponHotkeyMixin$PlayerControllerMix",
+    "AddLayersAccessor"
   ]
 }
