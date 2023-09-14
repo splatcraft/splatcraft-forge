@@ -1,17 +1,18 @@
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://maven.neoforged.net/releases' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         maven { url = "https://plugins.gradle.org/m2/" }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+', changing: true
+        classpath group: 'net.neoforged', name: 'NeoGradle', version: '6.+', changing: true
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7.+'
-        classpath group: 'net.kyori', name: 'indra-git', version: '2.+'
+        classpath group: 'net.kyori', name: 'indra-git', version: '3.+'
     }
 }
-apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'net.neoforged.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
@@ -30,9 +31,7 @@ if (System.env.CI == "true") {
     version = "${project.mod_version}-${project.minecraft_version}".replace("-SNAPSHOT", "-${commitHash}")
 }
 
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17) // Mojang ships Java 8 to end users, so your mod should target Java 8.
-
+java.toolchain.languageVersion = JavaLanguageVersion.of(17) // Mojang ships Java 17 to end users, so your mod should target Java 17.
 
 repositories {
     maven {

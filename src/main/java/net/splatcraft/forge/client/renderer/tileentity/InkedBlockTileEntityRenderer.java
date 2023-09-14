@@ -6,6 +6,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.Random;
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -22,7 +29,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,14 +41,6 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.lwjgl.system.MemoryStack;
 
-import javax.annotation.Nullable;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-import java.util.Random;
-
 public class InkedBlockTileEntityRenderer implements BlockEntityRenderer<InkedBlockTileEntity> {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "blocks/inked_block");
@@ -53,8 +51,7 @@ public class InkedBlockTileEntityRenderer implements BlockEntityRenderer<InkedBl
 
     public static final Random random = new Random();
 
-    public InkedBlockTileEntityRenderer(BlockEntityRendererProvider.Context context) {
-
+    public InkedBlockTileEntityRenderer(BlockEntityRendererProvider.Context ignored) {
     }
 
     static {
@@ -140,7 +137,7 @@ public class InkedBlockTileEntityRenderer implements BlockEntityRenderer<InkedBl
             else {
                 BlockPos pos = te.getBlockPos();
                 random.setSeed(Long.parseLong((Math.signum(pos.getX()) > 0 ? "1" : "0") + (Math.signum(pos.getY()) > 0 ? "1" : "0") + (Math.signum(pos.getZ()) > 0 ? "1" : "0")
-                        + (Math.abs(pos.getX()) % Integer.MAX_VALUE) + "" + (Math.abs(pos.getY()) % Integer.MAX_VALUE) + "" + (Math.abs(pos.getZ()) % Integer.MAX_VALUE) + ""));
+                        + (Math.abs(pos.getX()) % Integer.MAX_VALUE) + (Math.abs(pos.getY()) % Integer.MAX_VALUE) + (Math.abs(pos.getZ()) % Integer.MAX_VALUE)));
                 random.setSeed(random.nextLong());
 
                 putBulkData(builder, Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(TEXTURES.get(random.nextInt(TEXTURES.size()))), matrixEntry, bakedquad, f, f1, f2, brightness, combinedLights, combinedOverlayIn);
@@ -151,7 +148,6 @@ public class InkedBlockTileEntityRenderer implements BlockEntityRenderer<InkedBl
             if(Minecraft.getInstance().options.renderDebug && te.getColor() == te.getPermanentColor())
                 putBulkData(builder, Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(TEXTURE_PERMANENT), matrixEntry, bakedquad, 1, 1, 1, brightness, combinedLights, combinedOverlayIn);
         }
-
     }
 
     private static void putBulkData(VertexConsumer builder, TextureAtlasSprite sprite, PoseStack.Pose matrixEntry, BakedQuad quad, float r, float g, float b, float[] brightness, int[] combinedLights, int combinedOverlay)
