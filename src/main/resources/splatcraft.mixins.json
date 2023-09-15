@@ -18,6 +18,7 @@
     "defaultRequire": 1
   },
   "client": [
+    "AddLayersAccessor",
     "BlockRenderMixin$AOFace",
     "BlockRenderMixin$ModelRenderer",
     "ClientPlayerInventoryMixin",
@@ -28,7 +29,6 @@
     "RecipeCategoryMixin",
     "SheepWoolLayerMixin",
     "WeaponHotkeyMixin$MinecraftInstance",
-    "WeaponHotkeyMixin$PlayerControllerMix",
-    "AddLayersAccessor"
+    "WeaponHotkeyMixin$PlayerControllerMix"
   ]
 }

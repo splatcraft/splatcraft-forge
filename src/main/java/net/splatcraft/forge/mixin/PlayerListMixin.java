@@ -11,7 +11,9 @@ import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
 
@@ -21,20 +23,22 @@ public abstract class PlayerListMixin
 
 	private boolean canRespawn = true;
 
-	//@Inject(method = "getRespawnPosition", at = @At(value = "TAIL"), cancellable = true)
-	@Redirect(method = "respawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getRespawnPosition()Lnet/minecraft/core/BlockPos;"))
-	public BlockPos getRespawnPosition(ServerPlayer instance)
+	@Inject(method = "respawn", at = @At(value = "HEAD"))
+	public void getRespawnPosition(ServerPlayer instance, boolean p_11238_, CallbackInfoReturnable<ServerPlayer> cir)
 	{
 		BlockPos res = instance.getRespawnPosition();
 
-		if(res == null)
-			return res;
-
-		BlockEntity te = instance.getLevel().getBlockEntity(res);
-
-		canRespawn = !(te instanceof SpawnPadTileEntity) || ColorUtils.colorEquals(instance, te);
-
-		return res;
+		if(res != null)
+		{
+			if(instance.server.getLevel(instance.getRespawnDimension()).getBlockEntity(res) instanceof SpawnPadTileEntity te)
+			{
+				instance.reviveCaps();
+				canRespawn = ColorUtils.colorEquals(instance, te);
+				instance.invalidateCaps();
+				return;
+			}
+		}
+		canRespawn = true;
 	}
 
 	@Redirect(method = "respawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;findRespawnPositionAndUseSpawnBlock(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;FZZ)Ljava/util/Optional;"))
