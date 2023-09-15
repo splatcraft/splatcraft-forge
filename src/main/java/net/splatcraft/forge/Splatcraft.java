@@ -1,6 +1,5 @@
 package net.splatcraft.forge;
 
-import java.util.Objects;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,17 +17,12 @@ import net.splatcraft.forge.client.handlers.SplatcraftKeyHandler;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.registries.SplatcraftBlocks;
-import net.splatcraft.forge.registries.SplatcraftCommands;
-import net.splatcraft.forge.registries.SplatcraftEntities;
-import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.registries.SplatcraftRegisties;
-import net.splatcraft.forge.registries.SplatcraftStats;
-import net.splatcraft.forge.registries.SplatcraftTileEntities;
+import net.splatcraft.forge.registries.*;
 import net.splatcraft.forge.world.gen.SplatcraftOreGen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Objects;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Splatcraft.MODID)
@@ -71,6 +65,7 @@ public class Splatcraft {
         SplatcraftCommands.registerArguments();
 
         SplatcraftOreGen.registerOres();
+        SplatcraftItems.registerDispenserBehavior();
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {

@@ -11,6 +11,7 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
@@ -25,6 +26,7 @@ import net.splatcraft.forge.client.models.inktanks.ArmoredInkTankModel;
 import net.splatcraft.forge.client.models.inktanks.ClassicInkTankModel;
 import net.splatcraft.forge.client.models.inktanks.InkTankJrModel;
 import net.splatcraft.forge.client.models.inktanks.InkTankModel;
+import net.splatcraft.forge.dispenser.PlaceBlockDispenseBehavior;
 import net.splatcraft.forge.entities.subs.BurstBombEntity;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
 import net.splatcraft.forge.entities.subs.SplatBombEntity;
@@ -422,6 +424,13 @@ public class SplatcraftItems {
         registry.register(clearBand);
     }
     */
+
+    public static void registerDispenserBehavior()
+    {
+
+        DispenserBlock.registerBehavior(SplatcraftItems.emptyInkwell.get(), new PlaceBlockDispenseBehavior());
+        DispenserBlock.registerBehavior(SplatcraftItems.inkwell.get(), new PlaceBlockDispenseBehavior());
+    }
 
     @OnlyIn(Dist.CLIENT)
     public static void registerModelProperties() {

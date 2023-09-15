@@ -58,8 +58,6 @@ public class InkwellBlock extends Block implements IColoredBlock, SimpleWaterlog
         this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false));
 
         SplatcraftBlocks.inkColoredBlocks.add(this);
-
-        DispenserBlock.registerBehavior(this, new PlaceBlockDispenseBehavior());
     }
 
     @Nullable
