@@ -171,7 +171,6 @@ public class RendererHandler
     {
         if(stack.getItem() instanceof SubWeaponItem)
         {
-            PoseStack matrixStack = poseStack;
             AbstractSubWeaponEntity sub = ((SubWeaponItem)stack.getItem()).entityType.get().create(Minecraft.getInstance().player.level);
             sub.setColor(ColorUtils.getInkColor(stack));
             sub.setItem(stack);
@@ -179,11 +178,10 @@ public class RendererHandler
 
             sub.isItem = true;
 
-            Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(stack.getItem().getRegistryName() + "#inventory"))
-                    .handlePerspective(transformType, matrixStack);
-            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(sub).render(sub, 0, partialTicks, matrixStack, source, light);
-            if(!matrixStack.clear())
-                matrixStack.popPose();
+            float i = Minecraft.getInstance().player.getInventory().selected / 4f;
+            poseStack.translate(.5f, .55f, .5f);
+
+            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(sub).render(sub, 0, partialTicks, poseStack, source, light);
             return true;
         }
         return false;
