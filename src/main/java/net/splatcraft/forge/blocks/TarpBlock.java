@@ -65,7 +65,7 @@ public class TarpBlock extends Block implements SimpleWaterloggedBlock
     public BlockState getStateForPlacement(BlockPlaceContext context)
     {
         BlockState state = context.getLevel().getBlockState(context.getClickedPos()).is(this) ? context.getLevel().getBlockState(context.getClickedPos()) :
-                super.getStateForPlacement(context).setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
+                super.getStateForPlacement(context).setValue(DOWN, false).setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
 
         state = state.setValue(FACING_TO_PROPERTY_MAP.get(context.getClickedFace().getOpposite()), true);
 
