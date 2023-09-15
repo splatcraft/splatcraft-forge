@@ -30,9 +30,9 @@ public class SplatBombRenderer extends SubWeaponRenderer<SplatBombEntity, SplatB
 
 		if(!entityIn.isItem)
 		{
-			//PoseStackIn.translate(0.0D, 0.2, 0.0D);
+			poseStack.translate(0.0D, 0.2, 0.0D);
 			poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot())*2 - 90f));
-			poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot())*2 - 180));
+			poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot())*2 - 180f));
 
 			float f = entityIn.getFlashIntensity(partialTicks);
 			float f1 = 1.0F + Mth.sin(f * 100.0F) * f * 0.01F;
@@ -44,10 +44,8 @@ public class SplatBombRenderer extends SubWeaponRenderer<SplatBombEntity, SplatB
 			poseStack.scale(f2, f3, f2);
 		}
 
-		poseStack.popPose();
-
-
 		super.render(entityIn, entityYaw, partialTicks, poseStack, bufferIn, packedLightIn);
+		poseStack.popPose();
 	}
 
 	@Override

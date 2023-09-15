@@ -61,7 +61,6 @@ public abstract class SubWeaponRenderer<E extends AbstractSubWeaponEntity, M ext
 				overlay = new ResourceLocation(sub.getRegistryName().getNamespace(), "textures/weapons/sub/"+sub.getRegistryName().getPath()+customModelData+"_overlay.png");
 		}
 
-
 		model.setupAnim(entityIn, 0, 0, this.handleRotationFloat(entityIn, partialTicks), entityYaw, entityIn.getXRot());
 		model.prepareMobModel(entityIn, 0, 0, partialTicks);
 		int i = OverlayTexture.pack(OverlayTexture.u(getOverlayProgress(entityIn, partialTicks)), OverlayTexture.v(false));
@@ -73,6 +72,7 @@ public abstract class SubWeaponRenderer<E extends AbstractSubWeaponEntity, M ext
 			float[] overlayRgb = getOverlayColor(entityIn, partialTicks);
 			model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(model.renderType(overlay)), packedLightIn, i, overlayRgb[0], overlayRgb[1], overlayRgb[2], 1);
 		}
+
 
 		super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}

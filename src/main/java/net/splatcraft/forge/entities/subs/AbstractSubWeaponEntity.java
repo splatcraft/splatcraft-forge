@@ -336,12 +336,12 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
         return true;
     }
 
-    public void shoot(double p_70186_1_, double p_70186_3_, double p_70186_5_, float p_70186_7_, float p_70186_8_) {
-        Vec3 vector3d = (new Vec3(p_70186_1_, p_70186_3_, p_70186_5_)).normalize().add(this.random.nextGaussian() * (double) 0.0075F * (double) p_70186_8_, this.random.nextGaussian() * (double) 0.0075F * (double) p_70186_8_, this.random.nextGaussian() * (double) 0.0075F * (double) p_70186_8_).scale(p_70186_7_);
-        this.setDeltaMovement(vector3d);
-        float f = Mth.sqrt((float) distanceToSqr(vector3d));
-        this.setYRot((float) (Mth.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI)));
-        this.setXRot((float) (Mth.atan2(vector3d.y, f) * (double) (180F / (float) Math.PI)));
+    public void shoot(double p_37266_, double p_37267_, double p_37268_, float p_37269_, float p_37270_) {
+        Vec3 vec3 = (new Vec3(p_37266_, p_37267_, p_37268_)).normalize().add(this.random.nextGaussian() * (double)0.0075F * (double)p_37270_, this.random.nextGaussian() * (double)0.0075F * (double)p_37270_, this.random.nextGaussian() * (double)0.0075F * (double)p_37270_).scale((double)p_37269_);
+        this.setDeltaMovement(vec3);
+        double d0 = vec3.horizontalDistance();
+        this.setYRot((float)(Mth.atan2(vec3.x, vec3.z) * (double)(180F / (float)Math.PI)));
+        this.setXRot((float)(Mth.atan2(vec3.y, d0) * (double)(180F / (float)Math.PI)));
         this.yRotO = this.getYRot();
         this.xRotO = this.getXRot();
     }
@@ -379,12 +379,10 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
     }
 
     protected void updateRotation() {
-        Vec3 vector3d = this.getDeltaMovement();
-        float f = Mth.sqrt((float) distanceToSqr(vector3d));
-        this.setXRot(lerpRotation(this.xRotO, (float) (Mth.atan2(vector3d.y, f) * (double) (180F / (float) Math.PI))));
-
-        if(vector3d.multiply(1, 0, 1).length() >= 0.001)
-            this.setYRot(lerpRotation(this.yRotO, (float) (Mth.atan2(vector3d.x, vector3d.z) * (double) (180F / (float) Math.PI))));
+        Vec3 vec3 = this.getDeltaMovement();
+        double d0 = vec3.horizontalDistance();
+        this.setXRot(lerpRotation(this.xRotO, (float)(Mth.atan2(vec3.y, d0) * (double)(180F / (float)Math.PI))));
+        this.setYRot(lerpRotation(this.yRotO, (float)(Mth.atan2(vec3.x, vec3.z) * (double)(180F / (float)Math.PI))));
     }
 
     protected static float lerpRotation(float p_234614_0_, float p_234614_1_) {
