@@ -236,7 +236,18 @@ public class CrateBlock extends Block implements IColoredBlock, EntityBlock
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return SplatcraftTileEntities.crateTileEntity.get().create(pos, state);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+    {
+        CrateTileEntity te = SplatcraftTileEntities.crateTileEntity.get().create(pos, state);
+
+        if (te != null)
+        {
+            te.setMaxHealth(hasLoot ? 25 : 20);
+            te.resetHealth();
+            te.setHasLoot(hasLoot);
+            te.setColor(-1);
+        }
+        
+        return te;
     }
 }
