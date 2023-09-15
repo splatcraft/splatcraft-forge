@@ -1,6 +1,7 @@
 package net.splatcraft.forge.util;
 
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -37,14 +38,14 @@ public class InkColor implements Comparable<InkColor>, IForgeRegistryEntry<InkCo
         return colorMap.get(hexCode);
     }
 
-    public String getLocalizedName()
+    public TranslatableComponent getLocalizedName()
     {
-        return I18n.get(getUnlocalizedName());
+        return new TranslatableComponent(getUnlocalizedName());
     }
 
     public String getUnlocalizedName()
     {
-        return "ink_color." + name;
+        return "ink_color." + getRegistryName().getNamespace() + "." + name;
     }
 
     public String getHexCode()

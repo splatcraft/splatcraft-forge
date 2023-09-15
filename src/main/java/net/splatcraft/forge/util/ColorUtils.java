@@ -168,7 +168,7 @@ public class ColorUtils
 
         if (colorObj != null)
         {
-            return new TextComponent(colorObj.getLocalizedName());
+            return colorObj.getLocalizedName();
         }
 
         String fallbackUnloc;
@@ -215,7 +215,7 @@ public class ColorUtils
     {
         InkColor colorObj = InkColor.getByHex(color);
         if (colorObj != null)
-            return colorObj.getLocalizedName();
+            return colorObj.getUnlocalizedName();
         else return String.format("#%06X", color).toLowerCase();
     }
 
