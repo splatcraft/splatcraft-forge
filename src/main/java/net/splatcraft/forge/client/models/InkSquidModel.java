@@ -72,6 +72,19 @@ public class InkSquidModel extends EntityModel<LivingEntity> {
 	}
 
 	@Override
+	public void copyPropertiesTo(EntityModel<LivingEntity> other)
+	{
+		super.copyPropertiesTo(other);
+
+		if(other instanceof InkSquidModel otherSquid)
+		{
+			otherSquid.squid.copyFrom(squid);
+			otherSquid.leftLimb.copyFrom(leftLimb);
+			otherSquid.rightLimb.copyFrom(rightLimb);
+		}
+	}
+
+	@Override
 	public void prepareMobModel(LivingEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime)
 	{
 		super.prepareMobModel(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);

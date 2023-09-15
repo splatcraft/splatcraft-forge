@@ -42,8 +42,6 @@ public class InkSquidColorLayer extends RenderLayer<LivingEntity, InkSquidModel>
     protected static <T extends LivingEntity> void coloredCutoutModelCopyLayerRender(EntityModel<T> parentModel, EntityModel<T> model, ResourceLocation textureLoc, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTickTime, float ageInTicks, float netHeadYaw, float headPitch, float red, float green, float blue) {
         if (!entity.isInvisible()) {
             parentModel.copyPropertiesTo(model);
-            model.prepareMobModel(entity, limbSwing, limbSwingAmount, headPitch);
-            model.setupAnim(entity, limbSwing, limbSwingAmount, partialTickTime, ageInTicks, netHeadYaw);
             renderColoredCutoutModel(model, textureLoc, poseStack, bufferSource, packedLight, entity, red, green, blue);
         }
 
