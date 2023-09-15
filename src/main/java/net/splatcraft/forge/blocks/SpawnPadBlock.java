@@ -12,10 +12,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -33,6 +31,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
+import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
@@ -40,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterloggedBlock
+public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterloggedBlock, EntityBlock
 {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
@@ -55,6 +54,11 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 		this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false).setValue(DIRECTION, Direction.NORTH));
 
 		SplatcraftBlocks.inkColoredBlocks.add(this);
+	}
+	@Nullable
+	@Override
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return SplatcraftTileEntities.spawnPadTileEntity.get().create(pos, state);
 	}
 
 	@Override

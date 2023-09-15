@@ -1,9 +1,14 @@
 package net.splatcraft.forge.client.renderer.tileentity;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -24,7 +29,7 @@ import net.splatcraft.forge.util.ColorUtils;
 
 public class StageBarrierTileEntityRenderer implements BlockEntityRenderer<StageBarrierTileEntity>
 {
-    /*
+
     protected static final RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("translucent_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -32,11 +37,10 @@ public class StageBarrierTileEntityRenderer implements BlockEntityRenderer<Stage
         RenderSystem.disableBlend();
         RenderSystem.defaultBlendFunc();
     });
-    public static final RenderType BARRIER_RENDER = RenderType.create("splatcraft:stage_barriers", DefaultVertexFormat.BLOCK, 7, 262144, false, true, RenderType.CompositeState.builder()
-            .setShadeModelState(new RenderStateShard.ShadeModelStateShard(true)).setLightmapStateShard(new RenderStateShard.LightmapStateShard(true)).setTextureStateShard(new RenderStateShard.TextureStateShard(new ResourceLocation(Splatcraft.MODID, "textures/blocks/allowed_color_barrier_fancy.png"), false, true))
-            .setAlphaStateShard(new RenderStateShard.AlphaStateShard(0.003921569F)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).createCompositeState(true));
+    public static final RenderType BARRIER_RENDER = RenderType.create("splatcraft:stage_barriers", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 262144, false, true, RenderType.CompositeState.builder()
+            .setLightmapState(new RenderStateShard.LightmapStateShard(true)).setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation(Splatcraft.MODID, "textures/blocks/allowed_color_barrier_fancy.png"), false, true))
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY).createCompositeState(true));
 
-    */
 
     public StageBarrierTileEntityRenderer(BlockEntityRendererProvider.Context context)
     {

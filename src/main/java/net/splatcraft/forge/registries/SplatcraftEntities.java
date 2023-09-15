@@ -41,6 +41,7 @@ import net.splatcraft.forge.client.models.subs.SplatBombModel;
 import net.splatcraft.forge.client.models.subs.SuctionBombModel;
 import net.splatcraft.forge.client.renderer.InkProjectileRenderer;
 import net.splatcraft.forge.client.renderer.InkSquidRenderer;
+import net.splatcraft.forge.client.renderer.SpawnShieldRenderer;
 import net.splatcraft.forge.client.renderer.SquidBumperRenderer;
 import net.splatcraft.forge.client.renderer.subs.BurstBombRenderer;
 import net.splatcraft.forge.client.renderer.subs.CurlingBombRenderer;
@@ -92,7 +93,9 @@ public class SplatcraftEntities {
         EntityRenderers.register(BURST_BOMB.get(), BurstBombRenderer::new);
         EntityRenderers.register(SUCTION_BOMB.get(), SuctionBombRenderer::new);
         EntityRenderers.register(CURLING_BOMB.get(), CurlingBombRenderer::new);
-    }
+
+		EntityRenderers.register(SPAWN_SHIELD.get(), SpawnShieldRenderer::new);
+	}
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
