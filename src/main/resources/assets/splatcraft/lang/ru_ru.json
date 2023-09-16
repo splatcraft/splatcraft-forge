@@ -425,5 +425,7 @@
   "key.subWeaponHotkey": "Горячая клавиша для запасного оружия",
   "key.specialWeaponHotkey": "Горячая клавиша для особого оружия",
 
-  "attribute.splatcraft.ink_swim_speed": "Скорость краскоплыва"
+  "attribute.splatcraft.ink_swim_speed": "Скорость краскоплыва",
+
+  "disconnect.lost": "Произошла ошибка связи"
 }

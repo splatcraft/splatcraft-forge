@@ -23,6 +23,7 @@ public class RollerWeaponSettings extends AbstractWeaponSettings {
     public float swingMinDamage;
     public float swingProjectileSpeed;
     public int swingTime;
+    public float swingProjectilePitchCompensation;
 
     public float flingConsumption;
     public int flingInkRecoveryCooldown;
@@ -152,6 +153,11 @@ public class RollerWeaponSettings extends AbstractWeaponSettings {
     public RollerWeaponSettings setSwingTime(int swingTime) {
         this.swingTime = swingTime;
         this.flingTime = swingTime;
+        return this;
+    }
+
+    public RollerWeaponSettings setSwingProjectilePitchCompensation(float swingProjectilePitchCompensation) {
+        this.swingProjectilePitchCompensation = swingProjectilePitchCompensation;
         return this;
     }
 

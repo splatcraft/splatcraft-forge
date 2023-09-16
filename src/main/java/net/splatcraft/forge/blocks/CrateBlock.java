@@ -1,5 +1,7 @@
 package net.splatcraft.forge.blocks;
 
+import java.util.Collections;
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,12 +39,10 @@ import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.CrateTileEntity;
+import net.splatcraft.forge.util.BlockInkedResult;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.List;
 
 public class CrateBlock extends Block implements IColoredBlock, EntityBlock
 {
@@ -167,9 +167,8 @@ public class CrateBlock extends Block implements IColoredBlock, EntityBlock
 
         BlockEntity te = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
 
-        if (te instanceof CrateTileEntity)
+        if (te instanceof CrateTileEntity crate)
         {
-            CrateTileEntity crate = (CrateTileEntity) te;
 
             boolean silkTouched = tool != null && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, tool) > 0;
 
@@ -183,14 +182,14 @@ public class CrateBlock extends Block implements IColoredBlock, EntityBlock
     }
 
     @Override
-    public boolean inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    public BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
         if (level.getBlockEntity(pos) instanceof CrateTileEntity)
         {
             ((CrateTileEntity) level.getBlockEntity(pos)).ink(color, damage);
         }
 
-        return false;
+        return BlockInkedResult.FAIL;
     }
 
     @Override
@@ -220,9 +219,8 @@ public class CrateBlock extends Block implements IColoredBlock, EntityBlock
     @Override
     public boolean remoteInkClear(Level level, BlockPos pos)
     {
-        if (level.getBlockEntity(pos) instanceof CrateTileEntity)
+        if (level.getBlockEntity(pos) instanceof CrateTileEntity crate)
         {
-            CrateTileEntity crate = (CrateTileEntity) level.getBlockEntity(pos);
             if (crate.getHealth() == crate.getMaxHealth())
             {
                 return false;

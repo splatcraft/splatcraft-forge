@@ -1,5 +1,7 @@
 package net.splatcraft.forge.blocks;
 
+import java.util.Objects;
+import java.util.Random;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -32,12 +34,10 @@ import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
+import net.splatcraft.forge.util.BlockInkedResult;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-import java.util.Random;
 
 public class InkedBlock extends Block implements EntityBlock, IColoredBlock
 {
@@ -127,7 +127,7 @@ public class InkedBlock extends Block implements EntityBlock, IColoredBlock
 
             if(!InkBlockUtils.getInkType(level.getBlockState(pos)).equals(te.getPermanentInkType()) && (level instanceof Level))
             {
-                level.setBlock(pos, InkBlockUtils.getInkState(te.getPermanentInkType(), (Level) level, pos), 2);
+                level.setBlock(pos, InkBlockUtils.getInkState(te.getPermanentInkType()), 2);
                 InkedBlockTileEntity newTe = (InkedBlockTileEntity) level.getBlockEntity(pos);
                 newTe.setSavedState(te.getSavedState());
                 newTe.setSavedColor(te.getSavedColor());
@@ -271,9 +271,8 @@ public class InkedBlock extends Block implements EntityBlock, IColoredBlock
     @Override
     public float getDestroyProgress(BlockState state, Player player, BlockGetter levelIn, BlockPos pos)
     {
-        if (!(levelIn.getBlockEntity(pos) instanceof InkedBlockTileEntity))
+        if (!(levelIn.getBlockEntity(pos) instanceof InkedBlockTileEntity te))
             return super.getDestroyProgress(state, player, levelIn, pos);
-        InkedBlockTileEntity te = (InkedBlockTileEntity) levelIn.getBlockEntity(pos);
 
         if (te.getSavedState().getBlock() instanceof InkedBlock)
             return super.getDestroyProgress(state, player, levelIn, pos);
@@ -284,9 +283,8 @@ public class InkedBlock extends Block implements EntityBlock, IColoredBlock
     @Override
     public float getExplosionResistance(BlockState state, BlockGetter level, BlockPos pos, Explosion explosion)
     {
-        if (!(level.getBlockEntity(pos) instanceof InkedBlockTileEntity))
+        if (!(level.getBlockEntity(pos) instanceof InkedBlockTileEntity te))
             return super.getExplosionResistance(state, level, pos, explosion);
-        InkedBlockTileEntity te = (InkedBlockTileEntity) level.getBlockEntity(pos);
 
         if (te.getSavedState().getBlock() instanceof InkedBlock)
             return super.getExplosionResistance(state, level, pos, explosion);
@@ -409,19 +407,18 @@ public class InkedBlock extends Block implements EntityBlock, IColoredBlock
     }
 
     @Override
-    public boolean inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    public BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
-        if (!(level.getBlockEntity(pos) instanceof InkedBlockTileEntity))
-            return false;
+        if (!(level.getBlockEntity(pos) instanceof InkedBlockTileEntity te))
+            return BlockInkedResult.FAIL;
 
-        InkedBlockTileEntity te = (InkedBlockTileEntity) level.getBlockEntity(pos);
         BlockState oldState = level.getBlockState(pos);
         BlockState state = level.getBlockState(pos);
         boolean changeColor = te.getColor() != color;
 
         if (changeColor)
             te.setColor(color);
-        BlockState inkState = InkBlockUtils.getInkState(inkType, level, pos);
+        BlockState inkState = InkBlockUtils.getInkState(inkType);
 
         if (inkState.getBlock() != state.getBlock())
         {
@@ -438,6 +435,6 @@ public class InkedBlock extends Block implements EntityBlock, IColoredBlock
         }
         level.sendBlockUpdated(pos, oldState, state, 2);
 
-        return changeColor;
+        return changeColor ? BlockInkedResult.SUCCESS : BlockInkedResult.ALREADY_INKED;
     }
 }

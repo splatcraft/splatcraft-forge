@@ -67,18 +67,6 @@ public class WeaponSettings extends AbstractWeaponSettings {
         return minDamage;
     }
 
-    public WeaponSettings setName(String newName, String secretName) {
-        this.name = newName;
-        this.secret = newName.equals(secretName);
-        return this;
-    }
-
-    public WeaponSettings setSecretName(String newName) {
-        this.name = newName;
-        this.secret = true;
-        return this;
-    }
-
     public WeaponSettings setProjectileSize(float projectileSize) {
         this.projectileSize = projectileSize;
         return this;

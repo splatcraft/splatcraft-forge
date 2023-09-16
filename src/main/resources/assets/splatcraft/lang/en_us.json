@@ -456,5 +456,8 @@
   "key.subWeaponHotkey": "Sub Weapon Hotkey",
   "key.specialWeaponHotkey": "Special Weapon Hotkey",
 
-  "attribute.splatcraft.ink_swim_speed": "Ink Swim Speed Bonus"
+  "attribute.splatcraft.ink_swim_speed": "Ink Swim Speed Bonus",
+
+  "disconnect.lost": "A communication error occurred"
 }
+

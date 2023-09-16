@@ -25,6 +25,7 @@ import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.util.BlockInkedResult;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -145,20 +146,19 @@ public class SplatSwitchBlock extends Block implements IColoredBlock, SimpleWate
     }
 
     @Override
-    public boolean inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    public BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
-        if(!(level.getBlockState(pos).getBlock().equals(this)) || !(level.getBlockEntity(pos) instanceof InkColorTileEntity))
-            return false;
+        if(!(level.getBlockState(pos).getBlock().equals(this)) || !(level.getBlockEntity(pos) instanceof InkColorTileEntity te))
+            return BlockInkedResult.FAIL;
 
         BlockState state = level.getBlockState(pos);
-        InkColorTileEntity te = (InkColorTileEntity) level.getBlockEntity(pos);
         int switchColor = te.getColor();
 
         te.setColor(color);
         level.setBlock(pos, state.setValue(POWERED, true), 3);
         playSound(level, pos, state);
         updateNeighbors(state, level, pos);
-        return color != switchColor;
+        return color != switchColor ? BlockInkedResult.SUCCESS : BlockInkedResult.ALREADY_INKED;
     }
 
     @Override

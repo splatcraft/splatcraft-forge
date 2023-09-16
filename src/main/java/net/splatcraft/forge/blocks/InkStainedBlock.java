@@ -1,5 +1,6 @@
 package net.splatcraft.forge.blocks;
 
+import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -14,11 +15,10 @@ import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
+import net.splatcraft.forge.util.BlockInkedResult;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
 {
@@ -94,11 +94,11 @@ public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
     }
 
     @Override
-    public boolean inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    public BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
         if (InkedBlock.isTouchingLiquid(level, pos) || !SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INKABLE_GROUND))
         {
-            return false;
+            return BlockInkedResult.FAIL;
         }
 
         int woolColor = -1;
@@ -109,19 +109,19 @@ public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
         }
 
         BlockState state = level.getBlockState(pos);
-        BlockState inkState = InkBlockUtils.getInkState(inkType, level, pos);
+        BlockState inkState = InkBlockUtils.getInkState(inkType);
         level.setBlock(pos, inkState, 3);
         level.setBlockEntity(Objects.requireNonNull(SplatcraftBlocks.inkedBlock.get().newBlockEntity(pos, inkState)));
         InkedBlockTileEntity inkte = (InkedBlockTileEntity) level.getBlockEntity(pos);
         if (inkte == null)
         {
-            return false;
+            return BlockInkedResult.FAIL;
         }
         inkte.setColor(color);
         inkte.setSavedState(state);
         inkte.setSavedColor(woolColor);
 
-        return true;
+        return BlockInkedResult.SUCCESS;
     }
 
     @Override

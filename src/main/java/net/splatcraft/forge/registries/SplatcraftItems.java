@@ -1,5 +1,9 @@
 package net.splatcraft.forge.registries;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -31,21 +35,30 @@ import net.splatcraft.forge.entities.subs.BurstBombEntity;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
 import net.splatcraft.forge.entities.subs.SplatBombEntity;
 import net.splatcraft.forge.entities.subs.SuctionBombEntity;
-import net.splatcraft.forge.items.*;
+import net.splatcraft.forge.items.BlockItem;
+import net.splatcraft.forge.items.ColoredArmorItem;
+import net.splatcraft.forge.items.ColoredBlockItem;
+import net.splatcraft.forge.items.FilterItem;
+import net.splatcraft.forge.items.InkTankItem;
+import net.splatcraft.forge.items.InkWaxerItem;
+import net.splatcraft.forge.items.PowerEggCanItem;
+import net.splatcraft.forge.items.SquidBumperItem;
 import net.splatcraft.forge.items.remotes.ColorChangerItem;
 import net.splatcraft.forge.items.remotes.InkDisruptorItem;
 import net.splatcraft.forge.items.remotes.RemoteItem;
 import net.splatcraft.forge.items.remotes.TurfScannerItem;
-import net.splatcraft.forge.items.weapons.*;
+import net.splatcraft.forge.items.weapons.BlasterItem;
+import net.splatcraft.forge.items.weapons.ChargerItem;
+import net.splatcraft.forge.items.weapons.CurlingSubWeaponItem;
+import net.splatcraft.forge.items.weapons.DualieItem;
+import net.splatcraft.forge.items.weapons.RollerItem;
+import net.splatcraft.forge.items.weapons.ShooterItem;
+import net.splatcraft.forge.items.weapons.SlosherItem;
+import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.SplatcraftArmorMaterial;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 import static net.splatcraft.forge.Splatcraft.MODID;
 
@@ -84,10 +97,10 @@ public class SplatcraftItems {
     public static final RegistryObject<ShooterItem> kensaSplattershotJr = ShooterItem.create(REGISTRY, splattershotJr, "kensa_splattershot_jr");
     public static final RegistryObject<ShooterItem> aerosprayMG = ShooterItem.create(REGISTRY, new WeaponSettings("aerospray_mg")
             .setProjectileSize(1.2f).setProjectileSpeed(0.45f)
-            .setFiringSpeed(3)
+            .setFiringSpeed(2)
             .setGroundInaccuracy(13).setAirInaccuracy(16)
             .setInkConsumption(0.5f).setInkRecoveryCooldown(5)
-            .setBaseDamage(5).setMinDamage(2.5f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.45f));
+            .setBaseDamage(5.3f).setMinDamage(2.7f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.4f));
     public static final RegistryObject<ShooterItem> aerosprayRG = ShooterItem.create(REGISTRY, aerosprayMG, "aerospray_rg");
     public static final RegistryObject<ShooterItem> gal52 = ShooterItem.create(REGISTRY, new WeaponSettings("52_gal")
             .setProjectileSize(1.1f).setProjectileSpeed(0.78f)
@@ -106,7 +119,7 @@ public class SplatcraftItems {
     public static final RegistryObject<ShooterItem> gal96Deco = ShooterItem.create(REGISTRY, gal96, "96_gal_deco");
     public static final RegistryObject<ShooterItem> nzap85 = ShooterItem.create(REGISTRY, new WeaponSettings("n-zap85")
             .setProjectileSize(1).setProjectileSpeed(0.75f)
-            .setFiringSpeed(2)
+            .setFiringSpeed(3)
             .setGroundInaccuracy(6).setAirInaccuracy(12)
             .setInkConsumption(0.8f).setInkRecoveryCooldown(7)
             .setBaseDamage(5.9f).setMinDamage(2.8f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.53f));
@@ -137,21 +150,21 @@ public class SplatcraftItems {
     public static final RegistryObject<RollerItem> splatRoller = RollerItem.create(REGISTRY, new RollerWeaponSettings("splat_roller").setBrush(false)
             .setRollSize(3).setRollConsumption(0.06f).setRollInkRecoveryCooldown(7).setRollDamage(25).setRollMobility(1.08f)
             .setDashMobility(1.32f).setDashConsumption(0.3f).setDashTime(30)
-            .setSwingMobility(0.48f).setSwingConsumption(9).setSwingInkRecoveryCooldown(15).setSwingProjectileSpeed(0.55f).setSwingTime(6)
+            .setSwingMobility(0.48f).setSwingConsumption(9).setSwingInkRecoveryCooldown(15).setSwingProjectileSpeed(0.55f).setSwingTime(6).setSwingProjectilePitchCompensation(-67.5f)
             .setSwingBaseDamage(30).setSwingMinDamage(7).setSwingDamageDecayStartTick(8).setSwingDamageDecayPerTick(3.45f));
     public static final RegistryObject<RollerItem> krakOnSplatRoller = RollerItem.create(REGISTRY, splatRoller, "krak_on_splat_roller");
     public static final RegistryObject<RollerItem> coroCoroSplatRoller = RollerItem.create(REGISTRY, splatRoller, "corocoro_splat_roller");
     public static final RegistryObject<RollerItem> carbonRoller = RollerItem.create(REGISTRY, new RollerWeaponSettings("carbon_roller").setBrush(false)
             .setRollSize(2).setRollConsumption(0.06f).setRollInkRecoveryCooldown(7).setRollDamage(14).setRollMobility(1.28f)
             .setDashMobility(1.52f).setDashConsumption(0.3f).setDashTime(10)
-            .setSwingMobility(0.6f).setSwingConsumption(4).setSwingInkRecoveryCooldown(13).setSwingProjectileSpeed(0.45f).setSwingTime(3)
+            .setSwingMobility(0.6f).setSwingConsumption(4).setSwingInkRecoveryCooldown(13).setSwingProjectileSpeed(0.45f).setSwingTime(3).setSwingProjectilePitchCompensation(-67.5f)
             .setSwingBaseDamage(20).setSwingMinDamage(5).setSwingDamageDecayStartTick(8).setSwingDamageDecayPerTick(2.25f)
             .setFlingInkRecoveryCooldown(15).setFlingProjectileSpeed(0.58f).setFlingTime(4)
             .setFlingBaseDamage(24).setFlingMinDamage(7).setFlingDamageDecayStartTick(10).setFlingDamageDecayPerTick(3.4f));
     public static final RegistryObject<RollerItem> dynamoRoller = RollerItem.create(REGISTRY, new RollerWeaponSettings("dynamo_roller").setBrush(false)
-            .setRollSize(4).setRollConsumption(0.012f).setRollInkRecoveryCooldown(7).setRollDamage(32).setRollMobility(0.88f)
-            .setDashMobility(1.08f).setDashConsumption(0.06f).setDashTime(20)
-            .setSwingMobility(0.24f).setSwingConsumption(18).setSwingInkRecoveryCooldown(22).setSwingProjectileSpeed(0.85f).setSwingTime(12)
+            .setRollSize(4).setRollConsumption(0.06f).setRollInkRecoveryCooldown(7).setRollDamage(32).setRollMobility(0.88f)
+            .setDashMobility(1.08f).setDashConsumption(0.3f).setDashTime(30)
+            .setSwingMobility(0.24f).setSwingConsumption(18).setSwingInkRecoveryCooldown(22).setSwingProjectileSpeed(0.85f).setSwingTime(15).setSwingProjectilePitchCompensation(-41.25f)
             .setSwingBaseDamage(25).setSwingMinDamage(5).setSwingDamageDecayStartTick(18).setSwingDamageDecayPerTick(1.125f)
             .setFlingInkRecoveryCooldown(26).setFlingProjectileSpeed(0.98f).setFlingTime(18)
             .setFlingBaseDamage(36).setFlingMinDamage(7).setFlingDamageDecayStartTick(18).setFlingDamageDecayPerTick(1.6f));
