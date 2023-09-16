@@ -24,6 +24,9 @@ import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.client.models.inktanks.AbstractInkTankModel;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.items.weapons.ChargerItem;
+import net.splatcraft.forge.items.weapons.RollerItem;
+import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -34,8 +37,7 @@ import net.splatcraft.forge.util.SplatcraftArmorMaterial;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class InkTankItem extends ColoredArmorItem
-{
+public class InkTankItem extends ColoredArmorItem {
     public static final ArrayList<InkTankItem> inkTanks = new ArrayList<>();
 
     public final float capacity;
@@ -44,8 +46,7 @@ public class InkTankItem extends ColoredArmorItem
     @OnlyIn(Dist.CLIENT)
     private AbstractInkTankModel model;
 
-    public InkTankItem(String tagId, float capacity, ArmorMaterial material, Properties properties)
-    {
+    public InkTankItem(String tagId, float capacity, ArmorMaterial material, Properties properties) {
         super(material, EquipmentSlot.CHEST, properties);
         this.capacity = capacity;
         this.properties = properties;
@@ -55,19 +56,16 @@ public class InkTankItem extends ColoredArmorItem
         SplatcraftTags.Items.putInkTankTags(this, tagId);
     }
 
-    public InkTankItem(String tagId, float capacity, ArmorMaterial material)
-    {
+    public InkTankItem(String tagId, float capacity, ArmorMaterial material) {
         this(tagId, capacity, material, new Properties().tab(SplatcraftItemGroups.GROUP_WEAPONS).stacksTo(1));
 
     }
 
-    public InkTankItem(String name, InkTankItem parent)
-    {
+    public InkTankItem(String name, InkTankItem parent) {
         this(name, parent.capacity, new SplatcraftArmorMaterial(name, (SplatcraftArmorMaterial) parent.material), parent.properties);
     }
 
-    public InkTankItem(String name, float capacity)
-    {
+    public InkTankItem(String name, float capacity) {
         this(name, capacity, new SplatcraftArmorMaterial(name, SoundEvents.ARMOR_EQUIP_CHAIN, 0, 0, 0));
     }
 
@@ -82,8 +80,7 @@ public class InkTankItem extends ColoredArmorItem
         stack.getOrCreateTag().putFloat("Ink", Math.max(0, Math.min(((InkTankItem) stack.getItem()).capacity, value)));
     }
 
-    public static boolean canRecharge(ItemStack stack, boolean fromTick)
-    {
+    public static boolean canRecharge(ItemStack stack, boolean fromTick) {
         CompoundTag tag = stack.getOrCreateTag();
         boolean cannotRecharge = tag.contains("CannotRecharge");
         if (!tag.contains("RecoveryCooldown"))
@@ -105,17 +102,21 @@ public class InkTankItem extends ColoredArmorItem
 
         if (entity instanceof Player player && !level.isClientSide && SplatcraftGameRules.getLocalizedRule(level, entity.blockPosition(), SplatcraftGameRules.RECHARGEABLE_INK_TANK)) {
             float ink = getInkAmount(stack);
+            Item using = player.getUseItem().getItem();
 
             if (canRecharge(stack, true) && player.getItemBySlot(EquipmentSlot.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
-                    && !PlayerCooldown.hasPlayerCooldown(player)) {
+                    && !PlayerCooldown.hasPlayerCooldown(player)
+                    && (!(using instanceof WeaponBaseItem)
+                    || using instanceof ChargerItem
+                    || (using instanceof RollerItem r && !r.isMoving))
+            ) {
                 setInkAmount(stack, ink + (100f / 20f / ((InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player)) ? 3f : 10f)));
             }
         }
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag)
-    {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
         if (!canRecharge(stack, false)) {
             tooltip.add(new TranslatableComponent("item.splatcraft.ink_tank.cant_recharge"));
@@ -127,37 +128,31 @@ public class InkTankItem extends ColoredArmorItem
     }
 
     private static boolean initModels = false;
+
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void initializeClient(Consumer<IItemRenderProperties> consumer)
-    {
+    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
         super.initializeClient(consumer);
-        consumer.accept(new IItemRenderProperties()
-        {
+        consumer.accept(new IItemRenderProperties() {
             @Nullable
             @Override
-            public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default)
-            {
-                if(!initModels) //i have NO idea where else to put this
+            public HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
+                if (!initModels) //i have NO idea where else to put this
                 {
                     initModels = true;
                     SplatcraftItems.registerArmorModels();
                 }
 
-                if (!(itemStack.getItem() instanceof InkTankItem))
-                {
+                if (!(itemStack.getItem() instanceof InkTankItem)) {
                     return IItemRenderProperties.super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
                 }
 
-                if (model == null)
-                {
+                if (model == null) {
                     return IItemRenderProperties.super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
                 }
 
-                if (!itemStack.isEmpty())
-                {
-                    if (itemStack.getItem() instanceof InkTankItem)
-                    {
+                if (!itemStack.isEmpty()) {
+                    if (itemStack.getItem() instanceof InkTankItem) {
                         model.rightLeg.visible = armorSlot == EquipmentSlot.LEGS || armorSlot == EquipmentSlot.FEET;
                         model.leftLeg.visible = armorSlot == EquipmentSlot.LEGS || armorSlot == EquipmentSlot.FEET;
 
@@ -187,48 +182,41 @@ public class InkTankItem extends ColoredArmorItem
     }
 
     @Override
-    public int getBarWidth(ItemStack stack)
-    {
+    public int getBarWidth(ItemStack stack) {
         return (int) (1 - getInkAmount(stack) / capacity * 13);
     }
 
 
     @Override
-    public int getBarColor(ItemStack stack)
-    {
+    public int getBarColor(ItemStack stack) {
         return !SplatcraftConfig.Client.vanillaInkDurability.get() ? ColorUtils.getInkColor(stack) : super.getBarColor(stack);
     }
 
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public boolean isBarVisible(ItemStack stack)
-    {
+    public boolean isBarVisible(ItemStack stack) {
         return (SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.DURABILITY)) &&
                 stack.getOrCreateTag().contains("Ink") && getInkAmount(stack) < capacity;
     }
 
     @Override
-    public boolean isRepairable(@Nullable ItemStack stack)
-    {
+    public boolean isRepairable(@Nullable ItemStack stack) {
         return false;
     }
 
-    public boolean canUse(Item item)
-    {
+    public boolean canUse(Item item) {
         boolean inWhitelist = item.builtInRegistryHolder().is(SplatcraftTags.Items.INK_TANK_WHITELIST.get(this));
         boolean inBlacklist = item.builtInRegistryHolder().is(SplatcraftTags.Items.INK_TANK_BLACKLIST.get(this));
 
         return !inBlacklist && inWhitelist;
     }
 
-    public void refill(ItemStack stack)
-    {
+    public void refill(ItemStack stack) {
         setInkAmount(stack, capacity);
     }
 
-    public void setArmorModel(AbstractInkTankModel inkTankModel)
-    {
+    public void setArmorModel(AbstractInkTankModel inkTankModel) {
         this.model = inkTankModel;
     }
 }

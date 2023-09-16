@@ -42,6 +42,7 @@ public class RollerItem extends WeaponBaseItem {
     public static final ArrayList<RollerItem> rollers = Lists.newArrayList();
 
     public RollerWeaponSettings settings;
+    public boolean isMoving;
 
     public static RegistryObject<RollerItem> create(DeferredRegister<Item> registry, RollerWeaponSettings settings) {
         return registry.register(settings.name, () -> new RollerItem(settings));
@@ -114,9 +115,8 @@ public class RollerItem extends WeaponBaseItem {
         }
 
         float toConsume = Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) settings.dashTime) * (settings.dashConsumption - settings.rollConsumption) + settings.rollConsumption;
-        boolean isMoving = Math.abs(entity.yHeadRotO - entity.yHeadRot) > 0 || (level.isClientSide ? Math.abs(entity.getDeltaMovement().x()) > 0 || Math.abs(entity.getDeltaMovement().z()) > 0
-                : new Vec3(entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ())
-                .multiply(1, 0, 1).distanceTo(WeaponHandler.getPlayerPrevPos((Player) entity).multiply(1, 0, 1)) > 0);
+        isMoving = Math.abs(entity.yHeadRotO - entity.yHeadRot) > 0 || (level.isClientSide ? Math.abs(entity.getDeltaMovement().x()) > 0 || Math.abs(entity.getDeltaMovement().z()) > 0
+                : entity.position().multiply(1, 0, 1).distanceTo(WeaponHandler.getPlayerPrevPos((Player) entity).multiply(1, 0, 1)) > 0);
 
         double dxOff = 0;
         double dzOff = 0;
@@ -216,7 +216,7 @@ public class RollerItem extends WeaponBaseItem {
                 InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), 1.6f, settings);
                 proj.throwerAirborne = airborne;
                 proj.setRollerSwingStats();
-                proj.shootFromRotation(player, player.getXRot(), player.getYRot(), airborne ? 0.0f : -67.5f, airborne ? settings.flingProjectileSpeed : settings.swingProjectileSpeed, 0.05f);
+                proj.shootFromRotation(player, player.getXRot(), player.getYRot(), airborne ? 0.0f : settings.swingProjectilePitchCompensation, airborne ? settings.flingProjectileSpeed : settings.swingProjectileSpeed, 0.05f);
                 if (airborne) {
                     double off = (double) i - (settings.rollSize - 1) / 2d;
                     double yOff = Math.sin(Math.toRadians(player.getXRot() + 90));
