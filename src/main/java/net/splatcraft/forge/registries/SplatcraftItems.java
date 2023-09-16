@@ -84,10 +84,10 @@ public class SplatcraftItems {
     public static final RegistryObject<ShooterItem> kensaSplattershotJr = ShooterItem.create(REGISTRY, splattershotJr, "kensa_splattershot_jr");
     public static final RegistryObject<ShooterItem> aerosprayMG = ShooterItem.create(REGISTRY, new WeaponSettings("aerospray_mg")
             .setProjectileSize(1.2f).setProjectileSpeed(0.45f)
-            .setFiringSpeed(3)
+            .setFiringSpeed(2)
             .setGroundInaccuracy(13).setAirInaccuracy(16)
             .setInkConsumption(0.5f).setInkRecoveryCooldown(5)
-            .setBaseDamage(5).setMinDamage(2.5f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.45f));
+            .setBaseDamage(5.3f).setMinDamage(2.7f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.4f));
     public static final RegistryObject<ShooterItem> aerosprayRG = ShooterItem.create(REGISTRY, aerosprayMG, "aerospray_rg");
     public static final RegistryObject<ShooterItem> gal52 = ShooterItem.create(REGISTRY, new WeaponSettings("52_gal")
             .setProjectileSize(1.1f).setProjectileSpeed(0.78f)
@@ -106,7 +106,7 @@ public class SplatcraftItems {
     public static final RegistryObject<ShooterItem> gal96Deco = ShooterItem.create(REGISTRY, gal96, "96_gal_deco");
     public static final RegistryObject<ShooterItem> nzap85 = ShooterItem.create(REGISTRY, new WeaponSettings("n-zap85")
             .setProjectileSize(1).setProjectileSpeed(0.75f)
-            .setFiringSpeed(2)
+            .setFiringSpeed(3)
             .setGroundInaccuracy(6).setAirInaccuracy(12)
             .setInkConsumption(0.8f).setInkRecoveryCooldown(7)
             .setBaseDamage(5.9f).setMinDamage(2.8f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.53f));
