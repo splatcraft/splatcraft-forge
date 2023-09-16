@@ -27,6 +27,31 @@
           "count": 5
         }
       ]
+    },
+    {
+      "name": "weaponType.3k",
+      "result": {
+        "item": "splatcraft:e_liter_3k",
+        "count": 1
+      },
+      "ingredients": [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 10
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 18
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 10
+        },
+        {
+          "item": "minecraft:iron_ingot",
+          "count": 5
+        }
+      ]
     }
   ]
 }

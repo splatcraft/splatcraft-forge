@@ -126,6 +126,12 @@ public class SplatcraftItems {
             .setGroundInaccuracy(0).setAirInaccuracy(8)
             .setInkConsumption(4).setInkRecoveryCooldown(13).setBaseDamage(12).setMinDamage(6));
     public static final RegistryObject<BlasterItem> clashBlasterNeo = BlasterItem.createBlaster(REGISTRY, clashBlaster, "clash_blaster_neo");
+    public static final RegistryObject<BlasterItem> lunaBlaster = BlasterItem.createBlaster(REGISTRY, (new WeaponSettings("luna_blaster")
+            .setProjectileSize(2.25f).setProjectileLifespan(4).setProjectileSpeed(1f)
+            .setFiringSpeed(13).setStartupTicks(5)
+            .setGroundInaccuracy(0).setAirInaccuracy(8)
+            .setInkConsumption(7.5f).setInkRecoveryCooldown(18)
+            .setBaseDamage(25).setMinDamage(8)));
 
     //Rollers
     public static final RegistryObject<RollerItem> splatRoller = RollerItem.create(REGISTRY, new RollerWeaponSettings("splat_roller").setBrush(false)
@@ -178,6 +184,7 @@ public class SplatcraftItems {
             .setChargerMobility(0.15f)
             .setFastMidAirCharge(false)
             .setChargerPiercesAt(1.0f));
+    public static final RegistryObject<ChargerItem> eliter3K = ChargerItem.create(REGISTRY, eLiter4K, "e_liter_3k");
     public static final RegistryObject<ChargerItem> bamboozler14mk1 = ChargerItem.create(REGISTRY, new WeaponSettings("bamboozler_14_mk1")
             .setProjectileSize(0.75f).setProjectileLifespan(8).setProjectileSpeed(1.9f)
             .setStartupTicks(7).setDischargeTicks(0) // no charge storage

@@ -1,0 +1,28 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/blasters",
+  "pos": 2,
+  "recipes": [
+    {
+      "name": "weaponType.original",
+      "result": {
+        "item": "splatcraft:luna_blaster",
+        "count": 1
+      },
+      "ingredients": [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 16
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 24
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 10
+        }
+      ]
+    }
+  ]
+}
