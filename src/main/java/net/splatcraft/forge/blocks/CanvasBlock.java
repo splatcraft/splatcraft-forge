@@ -146,6 +146,9 @@ public class CanvasBlock extends Block implements IColoredBlock, EntityBlock
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player)
     {
-        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getCloneItemStack(state, target, level, pos, player), getColor((Level) level, pos)), true);
+        ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
+        if(state.getValue(INKED))
+            return ColorUtils.setColorLocked(ColorUtils.setInkColor(stack, getColor((Level) level, pos)), true);
+        return stack;
     }
 }
