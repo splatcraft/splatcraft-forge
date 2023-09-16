@@ -44,8 +44,6 @@ public class SplatcraftOreGen
     {
         BiomeGenerationSettingsBuilder generation = event.getGeneration();
 
-        System.out.println("hi chat " + event.getCategory());
-
         switch(event.getCategory())
         {
             case OCEAN -> generation.getFeatures(GenerationStep.Decoration.UNDERGROUND_ORES).addAll(oceanGen);

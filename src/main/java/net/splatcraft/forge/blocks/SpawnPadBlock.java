@@ -50,7 +50,7 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 
 	public SpawnPadBlock()
 	{
-		super(Properties.of(Material.GLASS).strength(0.35f));
+		super(Properties.of(Material.METAL).strength(2.0f));
 		this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false).setValue(DIRECTION, Direction.NORTH));
 
 		SplatcraftBlocks.inkColoredBlocks.add(this);
