@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "splatcraft:sardinium_block",
+    "splatcraft:sardinium_ore",
+    "splatcraft:ink_vat",
+    "splatcraft:ammo_knights_workbench",
+    "splatcraft:grate",
+    "splatcraft:grate_ramp",
+    "splatcraft:barrier_bar",
+    "splatcraft:plated_barrier_bar",
+    "splatcraft:caution_barrier_bar",
+    "splatcraft:remote_pedestal",
+    "splatcraft:splat_switch",
+    "splatcraft:spawn_pad_edge",
+    "splatcraft:spawn_pad"
+  ]
+}
