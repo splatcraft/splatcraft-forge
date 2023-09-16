@@ -35,8 +35,8 @@ public class SplatcraftOreGen
         Holder<ConfiguredFeature<OreConfiguration, ?>> sardinium_small = FeatureUtils.register("ore_sardinium_small", Feature.ORE, new OreConfiguration(Arrays.asList(sardiniumTarget), 6));
         Holder<ConfiguredFeature<OreConfiguration, ?>> sardinium = FeatureUtils.register("ore_sardinium", Feature.ORE, new OreConfiguration(Arrays.asList(sardiniumTarget), 12));
 
-        beachGen.add(PlacementUtils.register("ore_sardinium_beach", sardinium_small, commonOrePlacement(6, HeightRangePlacement.triangle(VerticalAnchor.aboveBottom(0), VerticalAnchor.aboveBottom(40)))));
-        oceanGen.add(PlacementUtils.register("ore_sardinium_ocean", sardinium, commonOrePlacement(12, HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(0), VerticalAnchor.aboveBottom(60)))));
+        beachGen.add(PlacementUtils.register("ore_sardinium_beach", sardinium_small, commonOrePlacement(12, HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(40)))));
+        oceanGen.add(PlacementUtils.register("ore_sardinium_ocean", sardinium, commonOrePlacement(24, HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(60)))));
     }
 
     @SubscribeEvent
@@ -44,10 +44,12 @@ public class SplatcraftOreGen
     {
         BiomeGenerationSettingsBuilder generation = event.getGeneration();
 
-        if (!event.getCategory().equals(Biome.BiomeCategory.NETHER) && !event.getCategory().equals(Biome.BiomeCategory.THEEND))
+        System.out.println("hi chat " + event.getCategory());
+
+        switch(event.getCategory())
         {
-            generation.getFeatures(GenerationStep.Decoration.UNDERGROUND_ORES).addAll(event.getCategory().equals(Biome.BiomeCategory.OCEAN) ? oceanGen :
-                    event.getCategory().equals(Biome.BiomeCategory.BEACH) ? beachGen : overworldGen);
+            case OCEAN -> generation.getFeatures(GenerationStep.Decoration.UNDERGROUND_ORES).addAll(oceanGen);
+            case BEACH -> generation.getFeatures(GenerationStep.Decoration.UNDERGROUND_ORES).addAll(beachGen);
         }
     }
 
