@@ -149,9 +149,9 @@ public class SplatcraftItems {
             .setFlingInkRecoveryCooldown(15).setFlingProjectileSpeed(0.58f).setFlingTime(4)
             .setFlingBaseDamage(24).setFlingMinDamage(7).setFlingDamageDecayStartTick(10).setFlingDamageDecayPerTick(3.4f));
     public static final RegistryObject<RollerItem> dynamoRoller = RollerItem.create(REGISTRY, new RollerWeaponSettings("dynamo_roller").setBrush(false)
-            .setRollSize(4).setRollConsumption(0.012f).setRollInkRecoveryCooldown(7).setRollDamage(32).setRollMobility(0.88f)
-            .setDashMobility(1.08f).setDashConsumption(0.06f).setDashTime(20)
-            .setSwingMobility(0.24f).setSwingConsumption(18).setSwingInkRecoveryCooldown(22).setSwingProjectileSpeed(0.85f).setSwingTime(12)
+            .setRollSize(4).setRollConsumption(0.06f).setRollInkRecoveryCooldown(7).setRollDamage(32).setRollMobility(0.88f)
+            .setDashMobility(1.08f).setDashConsumption(0.3f).setDashTime(30)
+            .setSwingMobility(0.24f).setSwingConsumption(18).setSwingInkRecoveryCooldown(22).setSwingProjectileSpeed(0.85f).setSwingTime(15)
             .setSwingBaseDamage(25).setSwingMinDamage(5).setSwingDamageDecayStartTick(18).setSwingDamageDecayPerTick(1.125f)
             .setFlingInkRecoveryCooldown(26).setFlingProjectileSpeed(0.98f).setFlingTime(18)
             .setFlingBaseDamage(36).setFlingMinDamage(7).setFlingDamageDecayStartTick(18).setFlingDamageDecayPerTick(1.6f));
