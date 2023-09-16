@@ -220,11 +220,10 @@ public class InkTankItem extends ColoredArmorItem
 
     public boolean canUse(Item item)
     {
-        boolean hasWhitelist = false; //SplatcraftTags.Items.INK_TANK_WHITELIST.get(this).isFor().size() > 0; TODO
         boolean inWhitelist = item.builtInRegistryHolder().is(SplatcraftTags.Items.INK_TANK_WHITELIST.get(this));
         boolean inBlacklist = item.builtInRegistryHolder().is(SplatcraftTags.Items.INK_TANK_BLACKLIST.get(this));
 
-        return !inBlacklist && (!hasWhitelist || inWhitelist);
+        return !inBlacklist && inWhitelist;
     }
 
     public void refill(ItemStack stack)
