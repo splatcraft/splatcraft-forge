@@ -78,12 +78,6 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
 
     public boolean canAllowThrough(BlockPos pos, Entity entity)
     {
-        if(entity instanceof InkProjectileEntity)
-        {
-            System.out.println(blocksColor + " " + ColorUtils.colorEquals(entity, entity.level.getBlockEntity(pos)) +
-                    " " + ColorUtils.getEntityColor(entity) + " " + ColorUtils.getInkColor(entity.level.getBlockEntity(pos)));
-            System.out.println(blocksColor != ColorUtils.colorEquals(entity, entity.level.getBlockEntity(pos)));
-        }
         return blocksColor != ColorUtils.colorEquals(entity, entity.level.getBlockEntity(pos));
     }
 
