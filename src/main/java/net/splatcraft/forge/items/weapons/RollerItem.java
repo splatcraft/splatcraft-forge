@@ -1,6 +1,7 @@
 package net.splatcraft.forge.items.weapons;
 
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.core.BlockPos;
@@ -28,12 +29,13 @@ import net.splatcraft.forge.entities.SquidBumperEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.*;
-
-import java.util.ArrayList;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.InkDamageUtils;
+import net.splatcraft.forge.util.PlayerCooldown;
+import net.splatcraft.forge.util.WeaponTooltip;
 
 public class RollerItem extends WeaponBaseItem
 {
@@ -156,16 +158,16 @@ public class RollerItem extends WeaponBaseItem
                                 consumeInk = InkBlockUtils.playerInkBlock((Player) entity, level, pos, ColorUtils.getInkColor(stack), settings.rollDamage, InkBlockUtils.getInkType(entity));
                                 double blockHeight = shape.isEmpty() ? 0 : shape.bounds().maxY;
 
-                                level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xOff + dxOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zOff + dzOff, 0, 0, 0);
-
                                 if(yOff != -3 && !(shape.bounds().minX <= 0 && shape.bounds().minZ <= 0 && shape.bounds().maxX >= 1 && shape.bounds().maxZ >= 1))
                                     consumeInk |= InkBlockUtils.playerInkBlock((Player) entity, level, pos.below(), ColorUtils.getInkColor(stack), settings.rollDamage, InkBlockUtils.getInkType(entity));
 
-                                if (i > 0)
-                                {
-                                    double xhOff = dxOff + Math.cos(Math.toRadians(entity.getYRot())) * (off - 0.5);
-                                    double zhOff = dzOff + Math.sin(Math.toRadians(entity.getYRot())) * (off - 0.5);
-                                    level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xhOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zhOff, 0, 0, 0);
+                                if (consumeInk) {
+                                    level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xOff + dxOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zOff + dzOff, 0, 0, 0);
+                                    if (i > 0) {
+                                        double xhOff = dxOff + Math.cos(Math.toRadians(entity.getYRot())) * (off - 0.5);
+                                        double zhOff = dzOff + Math.sin(Math.toRadians(entity.getYRot())) * (off - 0.5);
+                                        level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xhOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zhOff, 0, 0, 0);
+                                    }
                                 }
                                 break;
                             }

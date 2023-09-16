@@ -86,11 +86,10 @@ public class ChargerItem extends WeaponBaseItem
 
     @Override
     public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft) {
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             float prevCharge = PlayerCharge.getChargeValue(player, stack);
             float newCharge = prevCharge + (chargeSpeed * (!entity.isOnGround() && !settings.fastMidAirCharge ? 0.33f : 1));
-            if (enoughInk(entity, this, getInkConsumption(newCharge), 0, timeLeft % 4 == 0) && level.isClientSide && !player.getCooldowns().isOnCooldown(this)) {
+            if (level.isClientSide && !player.getCooldowns().isOnCooldown(this) && enoughInk(entity, this, getInkConsumption(newCharge), 0, timeLeft % 4 == 0)) {
                 if (prevCharge < 1 && newCharge >= 1) {
                     playChargeReadySound(player);
                 } else if (newCharge < 1)
