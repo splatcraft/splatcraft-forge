@@ -131,7 +131,7 @@ public class SplatcraftItems {
             .setFiringSpeed(13).setStartupTicks(5)
             .setGroundInaccuracy(0).setAirInaccuracy(8)
             .setInkConsumption(7.5f).setInkRecoveryCooldown(18)
-            .setBaseDamage(25).setMinDamage(8)));
+            .setBaseDamage(25).setMinDamage(12)));
 
     //Rollers
     public static final RegistryObject<RollerItem> splatRoller = RollerItem.create(REGISTRY, new RollerWeaponSettings("splat_roller").setBrush(false)
