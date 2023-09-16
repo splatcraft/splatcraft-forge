@@ -72,7 +72,7 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
 
         if (ColorUtils.getEntityColor(entityContext.getEntity()) > -1)
             return !canAllowThrough(pos, entityContext.getEntity()) ? super.getCollisionShape(state, levelIn, pos, context) : Shapes.empty();
-        return super.getCollisionShape(state, levelIn, pos, context);
+        return entityContext.getEntity() == null || blocksColor ? super.getCollisionShape(state, levelIn, pos, context) : Shapes.empty();
 
     }
 
