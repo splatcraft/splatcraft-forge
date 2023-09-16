@@ -13,6 +13,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.splatcraft.forge.entities.IColoredEntity;
+import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.ColoredBarrierTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
@@ -70,11 +72,18 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
 
         if (ColorUtils.getEntityColor(entityContext.getEntity()) > -1)
             return !canAllowThrough(pos, entityContext.getEntity()) ? super.getCollisionShape(state, levelIn, pos, context) : Shapes.empty();
-        return blocksColor ? super.getCollisionShape(state, levelIn, pos, context) : Shapes.empty();
+        return super.getCollisionShape(state, levelIn, pos, context);
+
     }
 
     public boolean canAllowThrough(BlockPos pos, Entity entity)
     {
+        if(entity instanceof InkProjectileEntity)
+        {
+            System.out.println(blocksColor + " " + ColorUtils.colorEquals(entity, entity.level.getBlockEntity(pos)) +
+                    " " + ColorUtils.getEntityColor(entity) + " " + ColorUtils.getInkColor(entity.level.getBlockEntity(pos)));
+            System.out.println(blocksColor != ColorUtils.colorEquals(entity, entity.level.getBlockEntity(pos)));
+        }
         return blocksColor != ColorUtils.colorEquals(entity, entity.level.getBlockEntity(pos));
     }
 
