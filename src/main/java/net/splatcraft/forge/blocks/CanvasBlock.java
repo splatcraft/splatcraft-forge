@@ -20,6 +20,7 @@ import net.minecraft.world.phys.HitResult;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.util.BlockInkedResult;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.NotNull;
@@ -75,13 +76,13 @@ public class CanvasBlock extends Block implements IColoredBlock, EntityBlock
     }
 
     @Override
-    public boolean inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    public BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
         if (InkedBlock.isTouchingLiquid(level, pos))
-            return false;
+            return BlockInkedResult.FAIL;
 
         if (color == getColor(level, pos))
-            return false;
+            return BlockInkedResult.ALREADY_INKED;
 
         BlockEntity tileEntity = level.getBlockEntity(pos);
         if (tileEntity instanceof InkColorTileEntity)
@@ -90,10 +91,10 @@ public class CanvasBlock extends Block implements IColoredBlock, EntityBlock
             ((InkColorTileEntity) tileEntity).setColor(color);
             level.setBlock(pos, state.setValue(INKED, true), 2);
             level.sendBlockUpdated(pos, state, state.setValue(INKED, true), 2);
-            return true;
+            return BlockInkedResult.SUCCESS;
         }
 
-        return false;
+        return BlockInkedResult.FAIL;
     }
 
     @Override

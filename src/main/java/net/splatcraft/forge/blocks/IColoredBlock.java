@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.util.BlockInkedResult;
 import net.splatcraft.forge.util.InkBlockUtils;
 
 public interface IColoredBlock
@@ -38,8 +39,8 @@ public interface IColoredBlock
         return false;
     }
 
-    default boolean inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
+    default BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
-        return false;
+        return BlockInkedResult.FAIL;
     }
 }

@@ -31,25 +31,23 @@ import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
+import net.splatcraft.forge.util.BlockInkedResult;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponTooltip;
 
-public class RollerItem extends WeaponBaseItem
-{
+public class RollerItem extends WeaponBaseItem {
     public static final ArrayList<RollerItem> rollers = Lists.newArrayList();
 
     public RollerWeaponSettings settings;
 
-    public static RegistryObject<RollerItem> create(DeferredRegister<Item> registry, RollerWeaponSettings settings)
-    {
+    public static RegistryObject<RollerItem> create(DeferredRegister<Item> registry, RollerWeaponSettings settings) {
         return registry.register(settings.name, () -> new RollerItem(settings));
     }
 
-    public static RegistryObject<RollerItem> create(DeferredRegister<Item> registry, RegistryObject<RollerItem> parent, String name)
-    {
+    public static RegistryObject<RollerItem> create(DeferredRegister<Item> registry, RegistryObject<RollerItem> parent, String name) {
         return registry.register(name, () -> new RollerItem(parent.get().settings));
     }
 
@@ -63,22 +61,23 @@ public class RollerItem extends WeaponBaseItem
         addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((20 - (settings.flingTime + settings.swingTime) / 2f) * 5)));
     }
 
-    public static void applyRecoilKnockback(LivingEntity entity, double pow)
-    {
+    public static void applyRecoilKnockback(LivingEntity entity, double pow) {
         entity.setDeltaMovement(new Vec3(Math.cos(Math.toRadians(entity.getYRot() + 90)) * -pow, entity.getDeltaMovement().y(), Math.sin(Math.toRadians(entity.getYRot() + 90)) * -pow));
         entity.hurtMarked = true;
     }
 
-    public ClampedItemPropertyFunction getUnfolded()
-    {
+    @OnlyIn(Dist.CLIENT)
+    protected static void playRollSound(boolean isBrush) {
+        Minecraft.getInstance().getSoundManager().queueTickingSound(new RollerRollTickableSound(Minecraft.getInstance().player, isBrush));
+    }
+
+    public ClampedItemPropertyFunction getUnfolded() {
         return (stack, level, entity, seed) ->
         {
-            if (entity instanceof Player && PlayerCooldown.hasOverloadedPlayerCooldown((Player) entity))
-            {
+            if (entity instanceof Player && PlayerCooldown.hasOverloadedPlayerCooldown((Player) entity)) {
 
                 PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown((Player) entity);
-                if(cooldown.getTime() > (cooldown.isGrounded() ? -10 : 0))
-                {
+                if (cooldown.getTime() > (cooldown.isGrounded() ? -10 : 0)) {
                     ItemStack cooldownStack = cooldown.getHand() == (InteractionHand.MAIN_HAND) ? ((Player) entity).getInventory().items.get(cooldown.getSlotIndex())
                             : entity.getOffhandItem();
                     return stack.equals(cooldownStack) && (settings.isBrush || cooldown.isGrounded()) ? 1 : 0;
@@ -111,97 +110,100 @@ public class RollerItem extends WeaponBaseItem
                     level.addFreshEntity(proj);
                 }
             }
-        } else
-        {
-            float toConsume = Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) settings.dashTime) * (settings.dashConsumption - settings.rollConsumption) + settings.rollConsumption;
-            boolean isMoving = Math.abs(entity.yHeadRotO - entity.yHeadRot) > 0 || (level.isClientSide ? Math.abs(entity.getDeltaMovement().x()) > 0 || Math.abs(entity.getDeltaMovement().z()) > 0
-                    : new Vec3(entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ())
-                    .multiply(1, 0, 1).distanceTo(WeaponHandler.getPlayerPrevPos((Player) entity).multiply(1, 0, 1)) > 0);
+            return;
+        }
 
-            double dxOff = 0;
-            double dzOff = 0;
-            for(int i = 1; i <= 2; i++)
-            {
-                dxOff = Math.cos(Math.toRadians(entity.getYRot() + 90)) * i;
-                dzOff = Math.sin(Math.toRadians(entity.getYRot() + 90)) * i;
+        float toConsume = Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) settings.dashTime) * (settings.dashConsumption - settings.rollConsumption) + settings.rollConsumption;
+        boolean isMoving = Math.abs(entity.yHeadRotO - entity.yHeadRot) > 0 || (level.isClientSide ? Math.abs(entity.getDeltaMovement().x()) > 0 || Math.abs(entity.getDeltaMovement().z()) > 0
+                : new Vec3(entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ())
+                .multiply(1, 0, 1).distanceTo(WeaponHandler.getPlayerPrevPos((Player) entity).multiply(1, 0, 1)) > 0);
 
-                    BlockPos pos = new BlockPos(entity.getX() + dxOff, entity.getY(), entity.getZ() + dzOff);
-                    if (!InkBlockUtils.canInkPassthrough(level, pos))
+        double dxOff = 0;
+        double dzOff = 0;
+        for (int i = 1; i <= 2; i++) {
+            dxOff = Math.cos(Math.toRadians(entity.getYRot() + 90)) * i;
+            dzOff = Math.sin(Math.toRadians(entity.getYRot() + 90)) * i;
+
+            BlockPos pos = new BlockPos(entity.getX() + dxOff, entity.getY(), entity.getZ() + dzOff);
+            if (!InkBlockUtils.canInkPassthrough(level, pos))
+                break;
+        }
+
+        boolean doPush = false;
+        if (isMoving) {
+            BlockInkedResult result = BlockInkedResult.FAIL;
+            for (int i = 0; i < settings.rollSize; i++) {
+                double off = (double) i - (settings.rollSize - 1) / 2d;
+                double xOff = Math.cos(Math.toRadians(entity.getYRot())) * off;
+                double zOff = Math.sin(Math.toRadians(entity.getYRot())) * off;
+
+                for (float yOff = 0; yOff >= -3; yOff--) {
+                    if (!enoughInk(entity, this, toConsume, 0, timeLeft % 4 == 0)) {
                         break;
-            }
-
-            boolean doPush = false;
-            if (isMoving)
-            {
-                for (int i = 0; i < settings.rollSize; i++) {
-                    double off = (double) i - (settings.rollSize - 1) / 2d;
-                    double xOff = Math.cos(Math.toRadians(entity.getYRot())) * off;
-                    double zOff = Math.sin(Math.toRadians(entity.getYRot())) * off;
-
-                    if (enoughInk(entity, this, toConsume, 0, timeLeft % 4 == 0)) {
-                        boolean consumeInk = false;
-                        for (float yOff = 0; yOff >= -3; yOff--) {
-                            if (yOff == -3) {
-                                dxOff = Math.cos(Math.toRadians(entity.getYRot() + 90));
-                                dzOff = Math.sin(Math.toRadians(entity.getYRot() + 90));
-                            }
-
-                            BlockPos pos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() + yOff, entity.getZ() + zOff + dzOff);
-
-                            if (level.getBlockState(pos).getBlock() instanceof ColoredBarrierBlock && ((ColoredBarrierBlock) level.getBlockState(pos).getBlock()).canAllowThrough(pos, entity))
-                                continue;
-
-                            if (!InkBlockUtils.canInkPassthrough(level, pos))
-                            {
-                                VoxelShape shape = level.getBlockState(pos).getCollisionShape(level, pos);
-
-                                consumeInk = InkBlockUtils.playerInkBlock((Player) entity, level, pos, ColorUtils.getInkColor(stack), settings.rollDamage, InkBlockUtils.getInkType(entity));
-                                double blockHeight = shape.isEmpty() ? 0 : shape.bounds().maxY;
-
-                                if(yOff != -3 && !(shape.bounds().minX <= 0 && shape.bounds().minZ <= 0 && shape.bounds().maxX >= 1 && shape.bounds().maxZ >= 1))
-                                    consumeInk |= InkBlockUtils.playerInkBlock((Player) entity, level, pos.below(), ColorUtils.getInkColor(stack), settings.rollDamage, InkBlockUtils.getInkType(entity));
-
-                                if (consumeInk) {
-                                    level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xOff + dxOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zOff + dzOff, 0, 0, 0);
-                                    if (i > 0) {
-                                        double xhOff = dxOff + Math.cos(Math.toRadians(entity.getYRot())) * (off - 0.5);
-                                        double zhOff = dzOff + Math.sin(Math.toRadians(entity.getYRot())) * (off - 0.5);
-                                        level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xhOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zhOff, 0, 0, 0);
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                        if (consumeInk)
-                            reduceInk(entity, this, Math.min(1, (float) (getUseDuration(stack) - timeLeft) / (float) settings.dashTime) * (settings.dashConsumption - settings.rollConsumption) + settings.rollConsumption, settings.rollInkRecoveryCooldown, false);
                     }
 
-                    if (!level.isClientSide) {
-                        BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
-                        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AABB(attackPos, attackPos.offset(1, 2, 1)), EntitySelector.NO_SPECTATORS.and(e ->
-                        {
+                    if (yOff == -3) {
+                        dxOff = Math.cos(Math.toRadians(entity.getYRot() + 90));
+                        dzOff = Math.sin(Math.toRadians(entity.getYRot() + 90));
+                    }
 
-                            if (e instanceof LivingEntity) {
-                                if (InkDamageUtils.isSplatted((LivingEntity) e)) return false;
-                                return InkDamageUtils.canDamage(e, entity) || e instanceof SquidBumperEntity;
-                            }
-                            return false;
-                        }))) {
-                            if (!target.equals(entity) && (!enoughInk(entity, this, toConsume, 0, false) || !InkDamageUtils.doRollDamage(level, target, settings.rollDamage, ColorUtils.getInkColor(stack), entity, stack, false) || !InkDamageUtils.isSplatted(target))) {
-                                doPush = true;
+                    BlockPos pos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() + yOff, entity.getZ() + zOff + dzOff);
+
+                    if (level.getBlockState(pos).getBlock() instanceof ColoredBarrierBlock && ((ColoredBarrierBlock) level.getBlockState(pos).getBlock()).canAllowThrough(pos, entity))
+                        continue;
+
+                    if (!InkBlockUtils.canInkPassthrough(level, pos)) {
+                        VoxelShape shape = level.getBlockState(pos).getCollisionShape(level, pos);
+
+                        result = InkBlockUtils.playerInkBlock((Player) entity, level, pos, ColorUtils.getInkColor(stack), settings.rollDamage, InkBlockUtils.getInkType(entity));
+                        double blockHeight = shape.isEmpty() ? 0 : shape.bounds().maxY;
+
+                        if (yOff != -3 && !(shape.bounds().minX <= 0 && shape.bounds().minZ <= 0 && shape.bounds().maxX >= 1 && shape.bounds().maxZ >= 1)) {
+                            BlockInkedResult secondResult = InkBlockUtils.playerInkBlock((Player) entity, level, pos.below(), ColorUtils.getInkColor(stack), settings.rollDamage, InkBlockUtils.getInkType(entity));
+                            if (result == BlockInkedResult.FAIL) {
+                                result = secondResult;
                             }
                         }
+
+                        if (result != BlockInkedResult.FAIL) {
+                            level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xOff + dxOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zOff + dzOff, 0, 0, 0);
+                            if (i > 0) {
+                                double xhOff = dxOff + Math.cos(Math.toRadians(entity.getYRot())) * (off - 0.5);
+                                double zhOff = dzOff + Math.sin(Math.toRadians(entity.getYRot())) * (off - 0.5);
+                                level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xhOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zhOff, 0, 0, 0);
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                if (level.isClientSide) {
+                    break;
+                }
+
+                BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
+                for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, new AABB(attackPos, attackPos.offset(1, 2, 1)), EntitySelector.NO_SPECTATORS.and(e ->
+                {
+                    if (e instanceof LivingEntity) {
+                        if (InkDamageUtils.isSplatted((LivingEntity) e)) return false;
+                        return InkDamageUtils.canDamage(e, entity) || e instanceof SquidBumperEntity;
+                    }
+                    return false;
+                }))) {
+                    if (!target.equals(entity) && (!enoughInk(entity, this, toConsume, 0, false) || !InkDamageUtils.doRollDamage(level, target, settings.rollDamage, ColorUtils.getInkColor(stack), entity, stack, false) || !InkDamageUtils.isSplatted(target))) {
+                        doPush = true;
                     }
                 }
             }
-            if (doPush)
-                applyRecoilKnockback(entity, 0.8);
+            if (result != BlockInkedResult.FAIL)
+                reduceInk(entity, this, toConsume, settings.rollInkRecoveryCooldown, false);
         }
+        if (doPush)
+            applyRecoilKnockback(entity, 0.8);
     }
 
     @Override
-    public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown)
-    {
+    public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown) {
         boolean airborne = !cooldown.isGrounded();
 
         if (level.isClientSide)
@@ -222,8 +224,7 @@ public class RollerItem extends WeaponBaseItem
                     double xOff = Math.cos(Math.toRadians(player.getYRot() + 90)) * off * y2Off;
                     double zOff = Math.sin(Math.toRadians(player.getYRot() + 90)) * off * y2Off;
                     proj.moveTo(proj.getX() + xOff, proj.getY() + yOff * off, proj.getZ() + zOff);
-                } else
-                {
+                } else {
                     double off = (double) i - (settings.rollSize - 1) / 2d;
                     double xOff = Math.cos(Math.toRadians(player.getYRot())) * off;
                     double zOff = Math.sin(Math.toRadians(player.getYRot())) * off;
@@ -234,23 +235,15 @@ public class RollerItem extends WeaponBaseItem
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected static void playRollSound(boolean isBrush)
-    {
-        Minecraft.getInstance().getSoundManager().queueTickingSound(new RollerRollTickableSound(Minecraft.getInstance().player, isBrush));
-    }
-
     @Override
-    public boolean hasSpeedModifier(LivingEntity entity, ItemStack stack)
-    {
+    public boolean hasSpeedModifier(LivingEntity entity, ItemStack stack) {
         if (entity instanceof Player && PlayerCooldown.hasPlayerCooldown((Player) entity) || !entity.getUseItem().equals(stack))
             return false;
         return super.hasSpeedModifier(entity, stack);
     }
 
     @Override
-    public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack)
-    {
+    public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack) {
         double appliedMobility;
         int useTime = entity.getUseItemRemainingTicks() - entity.getUseItemRemainingTicks();
 
@@ -267,8 +260,7 @@ public class RollerItem extends WeaponBaseItem
     }
 
     @Override
-    public PlayerPosingHandler.WeaponPose getPose()
-    {
+    public PlayerPosingHandler.WeaponPose getPose() {
         return settings.isBrush ? PlayerPosingHandler.WeaponPose.BRUSH : PlayerPosingHandler.WeaponPose.ROLL;
     }
 }
