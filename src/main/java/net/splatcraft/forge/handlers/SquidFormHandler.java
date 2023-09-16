@@ -183,12 +183,10 @@ public class SquidFormHandler {
     @SubscribeEvent
     public static void playerVisibility(LivingEvent.LivingVisibilityEvent event)
     {
-        if (!(event.getEntityLiving() instanceof Player))
+        if (!(event.getEntityLiving() instanceof Player player))
         {
             return;
         }
-
-        Player player = (Player) event.getEntityLiving();
 
         if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidHide(player)) {
             event.modifyVisibility(Math.abs(player.getX() - player.xo) > 0.14 || Math.abs(player.getY() - player.yo) > 0.07 || Math.abs(player.getZ() - player.zo) > 0.14 ? 0.7 : 0);
@@ -239,6 +237,20 @@ public class SquidFormHandler {
 
             info.setSquidRot(Math.abs(living.getY() - prev.y()) * new Vec3((living.getX() - prev.x), (living.getY() - prev.y), (living.getZ() - prev.z)).normalize().y);
             info.setPrevPos(living.position());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerJump(LivingEvent.LivingJumpEvent event)
+    {
+        if (!(event.getEntityLiving() instanceof Player player) || !PlayerInfoCapability.hasCapability(event.getEntityLiving()))
+        {
+            return;
+        }
+
+        if (PlayerInfoCapability.get(player).isSquid() && InkBlockUtils.canSquidSwim(player))
+        {
+            player.setDeltaMovement(player.getDeltaMovement().x(), player.getDeltaMovement().y() * 1.1, player.getDeltaMovement().z());
         }
     }
 }
