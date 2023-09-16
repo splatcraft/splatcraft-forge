@@ -67,6 +67,11 @@ public class InkedBlockTileEntityRenderer implements BlockEntityRenderer<InkedBl
 
     protected static InkBlockUtils.InkType type;
 
+    @Override
+    public int getViewDistance() {
+        return Minecraft.getInstance().options.renderDistance*12;
+    }
+
     private static void renderBlock(InkedBlockTileEntity te, BlockRenderDispatcher blockRendererDispatcher, PoseStack matrixStackIn, MultiBufferSource bufferTypeIn, int combinedLightIn, int combinedOverlayIn)
     {
         type = InkBlockUtils.getInkType(te.getBlockState());
