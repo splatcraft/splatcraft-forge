@@ -50,7 +50,7 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 
 	public SpawnPadBlock()
 	{
-		super(Properties.of(Material.METAL).strength(2.0f));
+		super(Properties.of(Material.METAL).strength(2.0f).requiresCorrectToolForDrops());
 		this.registerDefaultState(this.getStateDefinition().any().setValue(WATERLOGGED, false).setValue(DIRECTION, Direction.NORTH));
 
 		SplatcraftBlocks.inkColoredBlocks.add(this);
@@ -322,35 +322,13 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 		}
 
 		@Override
-		public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean p_196243_5_)
+		public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid)
 		{
 			BlockPos parentPos = getParentPos(state, pos);
 			if(level.getBlockState(parentPos).getBlock() == parent)
-				level.destroyBlock(parentPos, p_196243_5_);
-
-			super.onRemove(state, level, pos, newState, p_196243_5_);
+				level.destroyBlock(parentPos, willHarvest);
+			return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
 		}
-
-		@Override
-		public void destroy(LevelAccessor levelAccessor, BlockPos pos, BlockState state)
-		{
-			BlockPos parentPos = getParentPos(state, pos);
-			if(levelAccessor.getBlockState(parentPos).getBlock() == parent)
-				levelAccessor.removeBlock(parentPos, true);
-			super.destroy(levelAccessor, pos, state);
-		}
-
-		/*
-		@Override
-		public boolean removedByPlayer(BlockState state, Level world, BlockPos pos, Player player, boolean willHarvest, FluidState fluid)
-		{
-			BlockPos parentPos = getParentPos(state, pos);
-			if(player.level.getBlockState(parentPos).getBlock() == parent)
-				player.level.destroyBlock(parentPos, !player.isCreative(), player);
-
-			return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
-		}
-		*/
 
 		@Override
 		public PushReaction getPistonPushReaction(BlockState state)
