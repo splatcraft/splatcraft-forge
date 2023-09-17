@@ -165,7 +165,7 @@ public class RollerItem extends WeaponBaseItem {
                             }
                         }
 
-                        if (result != BlockInkedResult.FAIL) {
+                        if (result != BlockInkedResult.FAIL && i < settings.rollHitboxSize) {
                             level.addParticle(new InkSplashParticleData(ColorUtils.getInkColor(stack), 1), entity.getX() + xOff + dxOff, pos.getY() + blockHeight + 0.1, entity.getZ() + zOff + dzOff, 0, 0, 0);
                             if (i > 0) {
                                 double xhOff = dxOff + Math.cos(Math.toRadians(entity.getYRot())) * (off - 0.5);
@@ -179,6 +179,10 @@ public class RollerItem extends WeaponBaseItem {
 
                 if (level.isClientSide) {
                     // Damage and knockback are dealt server-side
+                    continue;
+                }
+
+                if (i >= settings.rollHitboxSize) {
                     continue;
                 }
 

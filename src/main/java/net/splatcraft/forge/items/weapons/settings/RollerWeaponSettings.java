@@ -5,6 +5,7 @@ public class RollerWeaponSettings extends AbstractWeaponSettings {
     public boolean isBrush;
 
     public int rollSize;
+    public int rollHitboxSize;
     public float rollConsumption;
     public int rollInkRecoveryCooldown;
     public float rollDamage;
@@ -63,6 +64,12 @@ public class RollerWeaponSettings extends AbstractWeaponSettings {
 
     public RollerWeaponSettings setRollSize(int rollSize) {
         this.rollSize = rollSize;
+        this.rollHitboxSize = rollSize;
+        return this;
+    }
+
+    public RollerWeaponSettings setRollHitboxSize(int rollHitboxSize) {
+        this.rollHitboxSize = rollHitboxSize;
         return this;
     }
 
