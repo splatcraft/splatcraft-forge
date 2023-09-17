@@ -79,11 +79,9 @@ public class RendererHandler
     */
     private static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/widgets.png");
     //private static SquidFormRenderer squidRenderer = null;
-    private static float tickTime = 0;
     private static float oldCooldown = 0;
-    private static int squidTime = 0;
-    private static float prevInkPctg = 0;
-    private static float inkFlash = 0;
+    private static float tickTime = 0;
+
 
     private static InkSquidRenderer squidRenderer;
 
@@ -186,44 +184,6 @@ public class RendererHandler
         }
         return false;
     }
-
-    /*
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onItemRenderHand(RenderHandEvent event)
-    {
-        PoseStack matrixStack = event.getPoseStack();
-
-        matrixStack.pushPose();
-        if(event.getItemStack().getItem() instanceof SubWeaponItem)
-        {
-            HumanoidArm handside = event.getHand() == InteractionHand.MAIN_HAND ? Minecraft.getInstance().player.getMainArm() : Minecraft.getInstance().player.getMainArm().getOpposite();
-            AbstractSubWeaponEntity sub = ((SubWeaponItem)event.getItemStack().getItem()).entityType.get().create(Minecraft.getInstance().player.level);
-            sub.setColor(ColorUtils.getInkColor(event.getItemStack()));
-            sub.setItem(event.getItemStack());
-            sub.readItemData(event.getItemStack().getOrCreateTag().getCompound("EntityData"));
-
-            sub.isItem = true;
-
-            float p_228405_5_ = event.getSwingProgress();
-            float p_228405_7_ = event.getEquipProgress();
-
-            float f5 = -0.4F * Mth.sin(Mth.sqrt(p_228405_5_) * (float)Math.PI);
-            float f6 = 0.2F * Mth.sin(Mth.sqrt(p_228405_5_) * ((float)Math.PI * 2F));
-            float f10 = -0.2F * Mth.sin(p_228405_5_ * (float)Math.PI);
-            int l = handside == HumanoidArm.RIGHT ? 1 : -1;
-            matrixStack.translate((float) l * f5, f6, f10);
-            applyItemArmTransform(matrixStack, handside, p_228405_7_);
-            applyItemArmAttackTransform(matrixStack, handside, p_228405_5_);
-
-            Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(new ModelResourceLocation(event.getItemStack().getItem().getRegistryName() + "#inventory"))
-                    .handlePerspective(handside == HumanoidArm.RIGHT ? ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND : ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND, matrixStack);
-
-            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(sub).render(sub, 0, event.getPartialTicks(), matrixStack, event.getMultiBufferSource(), event.getPackedLight());
-            event.setCanceled(true);
-        }
-         matrixStack.popPose();
-    }
-    */
 
     @OnlyIn(Dist.CLIENT)
     private static void applyItemArmTransform(PoseStack p_228406_1_, HumanoidArm p_228406_2_, float p_228406_3_) {
@@ -376,10 +336,22 @@ public class RendererHandler
         return info.getTabListDisplayName() != null ? info.getTabListDisplayName().copy() : PlayerTeam.formatNameForTeam(info.getTeam(), new TextComponent(info.getProfile().getName()));
     }
 
+
+    //Render Player HUD elements
+
+    private static float squidTime = 0;
+    private static float prevInkPctg = 0;
+    private static float inkFlash = 0;
+
+
     @SuppressWarnings("deprecation")
     @SubscribeEvent
-    public static void renderGui(RenderGameOverlayEvent event)
+    public static void renderGui(RenderGameOverlayEvent.Pre event)
     {
+
+        if(!event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER))
+            return;
+
         Player player = Minecraft.getInstance().player;
         if (player == null || !PlayerInfoCapability.hasCapability(player))
         {
@@ -390,7 +362,7 @@ public class RendererHandler
         int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
         int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 
-        if (event instanceof RenderGameOverlayEvent.Pre && event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER))
+        //if (event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER))
         {
             if (player.getMainHandItem().getItem() instanceof ChargerItem || player.getOffhandItem().getItem() instanceof ChargerItem)
             {
@@ -424,12 +396,13 @@ public class RendererHandler
                 canUse = ((InkTankItem) stack.getItem()).canUse(player.getMainHandItem().getItem()) || ((InkTankItem) stack.getItem()).canUse(player.getOffhandItem().getItem());
         }
         if (info.isSquid() || showLowInkWarning || !canUse) {
-            if (event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER)) {
-                squidTime++;
+            //if (event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER))
+            {
+                squidTime += 1/20f;
 
                 if (showCrosshairInkIndicator) {
-                    int heightAnim = Math.min(14, squidTime);
-                    int glowAnim = Math.max(0, Math.min(18, squidTime - 16));
+                    int heightAnim = Math.min(14, (int)squidTime);
+                    int glowAnim = Math.max(0, Math.min(18, (int)squidTime - 16));
                     float[] rgb = ColorUtils.hexToRGB(info.getColor());
 
                     PoseStack matrixStack = event.getMatrixStack();
@@ -450,9 +423,9 @@ public class RendererHandler
                         Screen.blit(matrixStack, width / 2 + 9, height / 2 - 9 + 14 - heightAnim, 18, 4 + heightAnim, 0, 95, 18, 4 + heightAnim, 256, 256);
 
                         if (inkPctg != prevInkPctg && inkPctg == 1) {
-                            inkFlash = 0.1f;
+                            inkFlash = 0.2f;
                         }
-                        inkFlash = Math.max(0, inkFlash - 0.002f);
+                        inkFlash = Math.max(0, inkFlash - 0.0004f);
 
                         float inkPctgLerp = lerp(prevInkPctg, inkPctg, 0.05f);
                         float inkSize = (1 - inkPctg) * 18;
