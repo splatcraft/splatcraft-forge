@@ -11,7 +11,11 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
@@ -112,10 +116,9 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
     public InkProjectileEntity setRollerSwingStats() {
         setProjectileType(Types.ROLLER);
 
-        if (!throwerAirborne) {
-            damageType = "roll";
-            causesHurtCooldown = true;
-        } else trailSize = getProjectileSize() * 0.5f;
+        if (throwerAirborne) {
+            trailSize = getProjectileSize() * 0.5f;
+        }
         return this;
     }
 
@@ -202,8 +205,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         Entity target = result.getEntity();
         float dmg = damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown);
 
-        if(!level.isClientSide() && target instanceof SpawnShieldEntity && !InkDamageUtils.canDamage(target, this))
-        {
+        if (!level.isClientSide() && target instanceof SpawnShieldEntity && !InkDamageUtils.canDamage(target, this)) {
             discard();
             level.broadcastEntityEvent(this, (byte) -1);
         }
@@ -224,7 +226,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
             } else
                 level.broadcastEntityEvent(this, (byte) 2);
 
-            if(!level.isClientSide)
+            if (!level.isClientSide)
                 discard();
         }
     }
@@ -245,7 +247,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         if (explodes) {
             level.broadcastEntityEvent(this, (byte) 3);
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundSource.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-        } else if(level.getBlockState(result.getBlockPos()).getBlock() instanceof StageBarrierBlock)
+        } else if (level.getBlockState(result.getBlockPos()).getBlock() instanceof StageBarrierBlock)
             level.broadcastEntityEvent(this, (byte) -1);
         else level.broadcastEntityEvent(this, (byte) 2);
         if (!level.isClientSide)
@@ -314,7 +316,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
         sourceWeapon = ItemStack.of(nbt.getCompound("SourceWeapon"));
 
-        if(sourceWeapon.getItem() instanceof WeaponBaseItem)
+        if (sourceWeapon.getItem() instanceof WeaponBaseItem)
             damage = ((WeaponBaseItem) sourceWeapon.getItem()).settings;
     }
 
