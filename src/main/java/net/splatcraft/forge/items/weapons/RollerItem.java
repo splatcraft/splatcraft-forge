@@ -178,7 +178,8 @@ public class RollerItem extends WeaponBaseItem {
                 }
 
                 if (level.isClientSide) {
-                    break;
+                    // Damage and knockback are dealt server-side
+                    continue;
                 }
 
                 BlockPos attackPos = new BlockPos(entity.getX() + xOff + dxOff, entity.getY() - 1, entity.getZ() + zOff + dzOff);
