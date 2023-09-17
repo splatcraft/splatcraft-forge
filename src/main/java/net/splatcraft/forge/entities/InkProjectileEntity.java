@@ -162,14 +162,21 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
             discard();
         }
 
-        if (trailSize > 0 && (trailCooldown == 0 || tickCount % trailCooldown == 0)) {
-            for (double y = getY(); y >= 0 && getY() - y <= 8; y--) {
-                BlockPos inkPos = new BlockPos(getX(), y, getZ());
-                if (!InkBlockUtils.canInkPassthrough(level, inkPos)) {
-                    if (!isInvisible())
-                        level.broadcastEntityEvent(this, (byte) 1);
+        if (trailSize > 0 && (trailCooldown == 0 || tickCount % trailCooldown == 0))
+        {
+            if (!isInvisible())
+                level.broadcastEntityEvent(this, (byte) 1);
+            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), trailSize, 0, 0, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
+
+            for (int y = getBlockY(); getBlockY() - y <= 8; y--)
+            {
+                BlockPos inkPos = new BlockPos(getBlockX(), y, getBlockZ());
+                if(!level.isInWorldBounds(inkPos))
+                    break;
+
+                if (!InkBlockUtils.canInkPassthrough(level, inkPos))
+                {
                     InkExplosion.createInkExplosion(level, getOwner(), inkPos.relative(Direction.UP), trailSize, 0, 0, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
-                    InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), trailSize, 0, 0, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
                     break;
                 }
             }
