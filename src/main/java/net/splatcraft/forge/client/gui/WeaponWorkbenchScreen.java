@@ -91,12 +91,12 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
             Level level = player.level;
             List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
             tabList.sort(WeaponWorkbenchTab::compareTo);
-            List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level);
+            List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level, player);
             recipeList.sort(WeaponWorkbenchRecipe::compareTo);
 
             if (!recipeList.isEmpty())
             {
-                if (recipeList.get(typePos).getTotalRecipes() == 1)
+                if (recipeList.get(typePos).getAvailableRecipesTotal(player) == 1)
                 {
                     drawRecipeStack(level, matrixStack, recipeList, x, y, 0);
                 } else
@@ -113,7 +113,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
     @SuppressWarnings("ConstantConditions")
     private void drawRecipeStack(Level level, PoseStack matrixStack, List<WeaponWorkbenchRecipe> recipeList, int x, int y, int i)
     {
-        WeaponWorkbenchSubtypeRecipe selectedRecipe = recipeList.get(typePos).getRecipeFromIndex(subTypePos + i < 0 ? recipeList.get(typePos).getTotalRecipes() - 1 : (subTypePos + i) % recipeList.get(typePos).getTotalRecipes());
+        WeaponWorkbenchSubtypeRecipe selectedRecipe = recipeList.get(typePos).getRecipeFromIndex(player, subTypePos + i < 0 ? recipeList.get(typePos).getAvailableRecipesTotal(player) - 1 : (subTypePos + i) % recipeList.get(typePos).getAvailableRecipesTotal(player));
         ItemStack displayStack = selectedRecipe.getOutput().copy();
         ColorUtils.setInkColor(displayStack, PlayerInfoCapability.get(player).getColor());
 
@@ -152,14 +152,14 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         Level level = player.level;
         List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
         tabList.sort(WeaponWorkbenchTab::compareTo);
-        List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level);
+        List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level, player);
         recipeList.sort(WeaponWorkbenchRecipe::compareTo);
         selectedWeapon = null;
         selectedRecipe = null;
         if (!recipeList.isEmpty())
         {
             selectedWeapon = recipeList.get(typePos);
-            selectedRecipe = selectedWeapon.getRecipeFromIndex(subTypePos);
+            selectedRecipe = selectedWeapon.getRecipeFromIndex(player, subTypePos);
         }
 
         //Update Craft Button
@@ -295,7 +295,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         }
 
         //Subtype Arrows
-        boolean hasSubtypes = !recipeList.isEmpty() && recipeList.get(typePos).getTotalRecipes() > 1;
+        boolean hasSubtypes = !recipeList.isEmpty() && recipeList.get(typePos).getAvailableRecipesTotal(player) > 1;
         int ty = hasSubtypes ? isHovering(126, 67, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
         blit(matrixStack, 126, 67, 231, ty, 7, 11);
         ty = hasSubtypes ? isHovering(43, 67, 7, 11, mouseX, mouseY) ? 24 : 12 : 36;
@@ -443,7 +443,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         Level level = player.level;
         List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
         tabList.sort(WeaponWorkbenchTab::compareTo);
-        List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level);
+        List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level, player);
         recipeList.sort(WeaponWorkbenchRecipe::compareTo);
 
         //Tab Buttons
@@ -506,7 +506,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         }
 
         //Subtype Arrows
-        int totalSubtypes = recipeList.isEmpty() ? 0 : recipeList.get(typePos).getTotalRecipes();
+        int totalSubtypes = recipeList.isEmpty() ? 0 : recipeList.get(typePos).getAvailableRecipesTotal(player);
         if (!recipeList.isEmpty() && totalSubtypes > 1)
         {
             if (isHovering(126, 67, 7, 11, mouseX, mouseY) || isHovering(107, 66, 14, 14, mouseX, mouseY))

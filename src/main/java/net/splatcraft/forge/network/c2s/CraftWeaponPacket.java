@@ -44,7 +44,7 @@ public class CraftWeaponPacket extends PlayToServerPacket
 
         if (recipeOptional.isPresent() && recipeOptional.get() instanceof WeaponWorkbenchRecipe)
         {
-            WeaponWorkbenchSubtypeRecipe recipe = ((WeaponWorkbenchRecipe) recipeOptional.get()).getRecipeFromIndex(subtype);
+            WeaponWorkbenchSubtypeRecipe recipe = ((WeaponWorkbenchRecipe) recipeOptional.get()).getRecipeFromIndex(player, subtype);
             for (StackedIngredient ing : recipe.getInput())
             {
                 if (!SplatcraftRecipeTypes.getItem(player, ing.getIngredient(), ing.getCount(), false))

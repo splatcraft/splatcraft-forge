@@ -6,6 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -85,14 +86,19 @@ public class WeaponWorkbenchRecipe implements Recipe<Container>, Comparable<Weap
         return (WeaponWorkbenchTab) level.getRecipeManager().byKey(tab).get();
     }
 
-    public WeaponWorkbenchSubtypeRecipe getRecipeFromIndex(int subTypePos)
+    public WeaponWorkbenchSubtypeRecipe getRecipeFromIndex(Player player, int subTypePos)
     {
-        return subRecipes.get(subTypePos);
+        return getAvailableRecipes(player).get(subTypePos);
     }
 
-    public int getTotalRecipes()
+    public int getAvailableRecipesTotal(Player player)
     {
-        return subRecipes.size();
+        return getAvailableRecipes(player).size();
+    }
+
+    public List<WeaponWorkbenchSubtypeRecipe> getAvailableRecipes(Player player)
+    {
+        return subRecipes.stream().filter(weaponWorkbenchSubtypeRecipe -> weaponWorkbenchSubtypeRecipe.isAvailable(player)).toList();
     }
 
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<WeaponWorkbenchRecipe>

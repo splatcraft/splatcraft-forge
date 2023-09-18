@@ -6,6 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -73,9 +74,9 @@ public class WeaponWorkbenchTab implements Recipe<Container>, Comparable<WeaponW
         return SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE;
     }
 
-    public List<WeaponWorkbenchRecipe> getTabRecipes(Level level)
+    public List<WeaponWorkbenchRecipe> getTabRecipes(Level level, Player player)
     {
-        List<Recipe<?>> stream = level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe instanceof WeaponWorkbenchRecipe && ((WeaponWorkbenchRecipe) recipe).getTab(level).equals(this)).collect(Collectors.toList());
+        List<Recipe<?>> stream = level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe instanceof WeaponWorkbenchRecipe wwRecipe && wwRecipe.getTab(level).equals(this) && !wwRecipe.getAvailableRecipes(player).isEmpty()).collect(Collectors.toList());
         ArrayList<WeaponWorkbenchRecipe> recipes = Lists.newArrayList();
 
         stream.forEach(recipe -> recipes.add((WeaponWorkbenchRecipe) recipe));
