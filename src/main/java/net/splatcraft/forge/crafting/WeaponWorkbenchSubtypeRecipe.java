@@ -31,8 +31,6 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
 
     public boolean isAvailable(Player player)
     {
-        System.out.println(player.level.isClientSide() + " " + player + " " + (player instanceof LocalPlayer));
-
         if(advancement == null)
             return true;
         if(player.level.isClientSide())
