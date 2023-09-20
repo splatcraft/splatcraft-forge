@@ -76,7 +76,7 @@ public class WeaponWorkbenchTab implements Recipe<Container>, Comparable<WeaponW
 
     public List<WeaponWorkbenchRecipe> getTabRecipes(Level level, Player player)
     {
-        List<Recipe<?>> stream = level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe instanceof WeaponWorkbenchRecipe wwRecipe && wwRecipe.getTab(level).equals(this) && !wwRecipe.getAvailableRecipes(player).isEmpty()).collect(Collectors.toList());
+        List<Recipe<?>> stream = level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe instanceof WeaponWorkbenchRecipe wwRecipe && this.equals(wwRecipe.getTab(level)) && !wwRecipe.getAvailableRecipes(player).isEmpty()).collect(Collectors.toList());
         ArrayList<WeaponWorkbenchRecipe> recipes = Lists.newArrayList();
 
         stream.forEach(recipe -> recipes.add((WeaponWorkbenchRecipe) recipe));

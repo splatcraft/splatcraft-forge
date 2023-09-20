@@ -81,9 +81,10 @@ public class WeaponWorkbenchRecipe implements Recipe<Container>, Comparable<Weap
         return pos - o.pos;
     }
 
+    @Nullable
     public WeaponWorkbenchTab getTab(Level level)
     {
-        return (WeaponWorkbenchTab) level.getRecipeManager().byKey(tab).get();
+        return (WeaponWorkbenchTab) level.getRecipeManager().byKey(tab).orElse(null);
     }
 
     public WeaponWorkbenchSubtypeRecipe getRecipeFromIndex(Player player, int subTypePos)

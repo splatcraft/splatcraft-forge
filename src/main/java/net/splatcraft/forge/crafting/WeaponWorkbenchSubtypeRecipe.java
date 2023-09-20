@@ -35,7 +35,7 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
             return true;
         if(player.level.isClientSide())
             return isAvailableOnClient(player);
-        if(player instanceof ServerPlayer serverPlayer)
+        if(player instanceof ServerPlayer serverPlayer && serverPlayer.getServer().getAdvancements().getAdvancement(advancement) != null)
             return serverPlayer.getAdvancements().getOrStartProgress(serverPlayer.getServer().getAdvancements().getAdvancement(advancement)).isDone();
 
         return true;

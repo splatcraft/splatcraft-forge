@@ -1,10 +1,12 @@
 package net.splatcraft.forge.registries;
 
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.criteriaTriggers.CraftWeaponTrigger;
 
 public class SplatcraftStats
 {
@@ -14,6 +16,8 @@ public class SplatcraftStats
     public static final ResourceLocation WEAPONS_CRAFTED = register("weapons_crafted", StatFormatter.DEFAULT);
     public static final ResourceLocation INKWELLS_CRAFTED = register("inkwells_crafted", StatFormatter.DEFAULT);
     public static final ResourceLocation SQUID_TIME = register("squid_time", StatFormatter.TIME);
+
+    public static final CraftWeaponTrigger CRAFT_WEAPON_TRIGGER = CriteriaTriggers.register(new CraftWeaponTrigger());
 
     public static void register()
     {

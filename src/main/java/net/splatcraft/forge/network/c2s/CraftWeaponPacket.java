@@ -2,6 +2,8 @@ package net.splatcraft.forge.network.c2s;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -72,6 +74,9 @@ public class CraftWeaponPacket extends PlayToServerPacket
                 {
                     player.containerMenu.broadcastChanges();
                 }
+
+                SplatcraftStats.CRAFT_WEAPON_TRIGGER.trigger((ServerPlayer) player, output);
+                player.awardStat(Stats.ITEM_CRAFTED.get(output.getItem()));
                 player.awardStat(SplatcraftStats.WEAPONS_CRAFTED);
             }
 
