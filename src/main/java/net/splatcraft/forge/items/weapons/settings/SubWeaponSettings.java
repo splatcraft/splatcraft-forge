@@ -57,7 +57,7 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings.
 		setPropDamage(data.propDamage);
 
 		setExplosionSize(data.explosionSize);
-		setFuseTime(data.fuseTime);
+		data.fuseTime.ifPresent(this::setFuseTime);
 
 		setInkConsumption(data.inkConsumption);
 		setInkRecoveryCooldown(data.inkRecoveryCooldown);
@@ -75,7 +75,7 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings.
 
 	@Override
 	public DataRecord serialize() {
-		return new DataRecord(directDamage, indirectDamage, propDamage, explosionSize, fuseTime, inkConsumption, inkRecoveryCooldown, Optional.of(throwVelocity), Optional.of(throwAngle), Optional.of(holdTime),
+		return new DataRecord(directDamage, indirectDamage, propDamage, explosionSize, Optional.of(fuseTime), inkConsumption, inkRecoveryCooldown, Optional.of(throwVelocity), Optional.of(throwAngle), Optional.of(holdTime),
 				Optional.of(new CurlingDataRecord(cookTime, contactDamage)));
 	}
 
@@ -144,7 +144,7 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings.
 			float indirectDamage,
 			float propDamage,
 			float explosionSize,
-			int fuseTime,
+			Optional<Integer> fuseTime,
 			float inkConsumption,
 			int inkRecoveryCooldown,
 			Optional<Float> throwVelocity,
@@ -162,7 +162,7 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings.
 								.forGetter(DataRecord::propDamage),
 						Codec.FLOAT.fieldOf("explosion_size")
 								.forGetter(DataRecord::explosionSize),
-						Codec.INT.fieldOf("fuse_time")
+						Codec.INT.optionalFieldOf("fuse_time")
 								.forGetter(DataRecord::fuseTime),
 						Codec.FLOAT.fieldOf("ink_consumption")
 								.forGetter(DataRecord::inkConsumption),
