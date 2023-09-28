@@ -34,8 +34,9 @@ public class BlasterInkProjectileModel extends InkProjectileModel {
 	}
 
 	@Override
-	public void setupAnim(InkProjectileEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+	public void setupAnim(InkProjectileEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+	{
+		main.zRot = ageInTicks * 0.6f;
 	}
 
 	@Override
