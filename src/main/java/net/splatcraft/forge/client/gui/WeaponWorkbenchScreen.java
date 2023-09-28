@@ -344,7 +344,7 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
             if (isHovering(ix - 10, iy, 18, 18, mouseX, mouseY))
             {
                 ArrayList<Component> tooltip = new ArrayList<>();
-                tooltip.add(new TranslatableComponent("weaponTab." + tabList.get(i).getId().toString()));
+                tooltip.add(tabList.get(i).getName());
                 renderComponentTooltip(matrixStack, tooltip, mouseX - leftPos, mouseY - topPos, font);
             }
             //matrixStack.translate(0,0,-500);

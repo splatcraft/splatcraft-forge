@@ -3,6 +3,9 @@ package net.splatcraft.forge.crafting;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
@@ -25,11 +28,14 @@ public class WeaponWorkbenchTab implements Recipe<Container>, Comparable<WeaponW
     protected final ResourceLocation iconLoc;
     protected final int pos;
 
-    public WeaponWorkbenchTab(ResourceLocation id, ResourceLocation iconLoc, int pos)
+    protected final Component name;
+
+    public WeaponWorkbenchTab(ResourceLocation id, ResourceLocation iconLoc, int pos, Component name)
     {
         this.id = id;
         this.iconLoc = iconLoc;
         this.pos = pos;
+        this.name = name != null ? name : new TranslatableComponent("weaponTab." + getId().toString());
     }
 
     @Override
@@ -101,6 +107,11 @@ public class WeaponWorkbenchTab implements Recipe<Container>, Comparable<WeaponW
         return getId().toString();
     }
 
+    public Component getName()
+    {
+        return name;
+    }
+
     public static class WeaponWorkbenchTabSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<WeaponWorkbenchTab>
     {
 
@@ -113,14 +124,20 @@ public class WeaponWorkbenchTab implements Recipe<Container>, Comparable<WeaponW
         @Override
         public WeaponWorkbenchTab fromJson(ResourceLocation recipeId, JsonObject json)
         {
-            return new WeaponWorkbenchTab(recipeId, new ResourceLocation(GsonHelper.getAsString(json, "icon")), json.has("pos") ? GsonHelper.getAsInt(json, "pos") : Integer.MAX_VALUE);
+            Component displayComponent;
+
+            if(GsonHelper.isStringValue(json, "name"))
+                displayComponent = new TranslatableComponent(GsonHelper.getAsString(json, "name"));
+            else displayComponent = json.has("name") ? Component.Serializer.fromJson(json.getAsJsonObject("name")) : null;
+
+            return new WeaponWorkbenchTab(recipeId, new ResourceLocation(GsonHelper.getAsString(json, "icon")), json.has("pos") ? GsonHelper.getAsInt(json, "pos") : Integer.MAX_VALUE, displayComponent);
         }
 
         @Nullable
         @Override
         public WeaponWorkbenchTab fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
         {
-            return new WeaponWorkbenchTab(recipeId, buffer.readResourceLocation(), buffer.readInt());
+            return new WeaponWorkbenchTab(recipeId, buffer.readResourceLocation(), buffer.readInt(), buffer.readComponent());
         }
 
         @Override
@@ -128,6 +145,7 @@ public class WeaponWorkbenchTab implements Recipe<Container>, Comparable<WeaponW
         {
             buffer.writeResourceLocation(recipe.iconLoc);
             buffer.writeInt(recipe.pos);
+            buffer.writeComponent(recipe.name);
         }
     }
 }

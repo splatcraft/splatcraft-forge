@@ -6,6 +6,9 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.commands.AdvancementCommands;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +26,7 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
 {
     private final ResourceLocation advancement;
 
-    public WeaponWorkbenchSubtypeRecipe(ResourceLocation id, String name, ItemStack recipeOutput, NonNullList<StackedIngredient> recipeItems, ResourceLocation advancement)
+    public WeaponWorkbenchSubtypeRecipe(ResourceLocation id, Component name, ItemStack recipeOutput, NonNullList<StackedIngredient> recipeItems, ResourceLocation advancement)
     {
         super(id, name, recipeOutput, recipeItems);
         this.advancement = advancement;
@@ -61,12 +64,17 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
             output.setTag(JsonUtils.readNBT(resultJson, "nbt"));
 
         NonNullList<StackedIngredient> input = readIngredients(json.getAsJsonArray("ingredients"));
-        String name = json.has("name") ? GsonHelper.getAsString(json, "name") : "null";
+
+        Component displayComponent;
+
+        if(GsonHelper.isStringValue(json, "name"))
+            displayComponent = new TranslatableComponent(GsonHelper.getAsString(json, "name"));
+        else displayComponent = json.has("name") ? Component.Serializer.fromJson(json.getAsJsonObject("name")) : new TextComponent("null");
 
         ResourceLocation advancement = json.has("advancement") && !GsonHelper.getAsString(json, "advancement").isEmpty()
                 ? new ResourceLocation(GsonHelper.getAsString(json, "advancement")) : null;
 
-        return new WeaponWorkbenchSubtypeRecipe(recipeId, name, output, input, advancement);
+        return new WeaponWorkbenchSubtypeRecipe(recipeId, displayComponent, output, input, advancement);
     }
 
     public static WeaponWorkbenchSubtypeRecipe fromBuffer(ResourceLocation recipeId, FriendlyByteBuf buffer)
@@ -79,7 +87,7 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
             input.set(j, new StackedIngredient(Ingredient.fromNetwork(buffer), buffer.readInt()));
         }
 
-        return new WeaponWorkbenchSubtypeRecipe(recipeId, buffer.readUtf(), buffer.readItem(), input, buffer.readBoolean() ? new ResourceLocation(buffer.readUtf()) : null);
+        return new WeaponWorkbenchSubtypeRecipe(recipeId, buffer.readComponent(), buffer.readItem(), input, buffer.readBoolean() ? new ResourceLocation(buffer.readUtf()) : null);
     }
 
     public void toBuffer(FriendlyByteBuf buffer)
@@ -90,7 +98,7 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
             ingredient.getIngredient().toNetwork(buffer);
             buffer.writeInt(ingredient.getCount());
         }
-        buffer.writeUtf(this.name);
+        buffer.writeComponent(this.name);
         buffer.writeItem(this.recipeOutput);
 
         buffer.writeBoolean(advancement != null);
