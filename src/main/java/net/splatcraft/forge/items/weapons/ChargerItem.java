@@ -28,45 +28,42 @@ import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 
-public class ChargerItem extends WeaponBaseItem
+public class ChargerItem extends WeaponBaseItem<WeaponSettings>
 {
-    private final AttributeModifier SPEED_MODIFIER;
-    public WeaponSettings settings;
-    public float chargeSpeed;
-    public float dischargeSpeed;
+    private AttributeModifier SPEED_MODIFIER;
 
-    public static RegistryObject<ChargerItem> create(DeferredRegister<Item> register, WeaponSettings settings)
+    public static RegistryObject<ChargerItem> create(DeferredRegister<Item> register, String settings, String name)
     {
-        return register.register(settings.name, () -> new ChargerItem(settings));
+        return register.register(name, () -> new ChargerItem(settings));
     }
 
     public static RegistryObject<ChargerItem> create(DeferredRegister<Item> register, RegistryObject<ChargerItem> parent, String name)
     {
-        return register.register(name, () -> new ChargerItem(parent.get().settings));
+        return register.register(name, () -> new ChargerItem(parent.get().settingsId.toString()));
     }
 
-    protected ChargerItem(WeaponSettings settings)
+    protected ChargerItem(String settings)
     {
         super(settings);
-        this.settings = settings;
-        this.chargeSpeed = 1f / (float)settings.startupTicks;
-        this.dischargeSpeed = 1f / (float)settings.dischargeTicks;
 
-        SPEED_MODIFIER = new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, "Charger mobility", settings.chargerMobility - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) (getSettings(stack).projectileSpeed / getSettings(stack).projectileLifespan * 100)));
+        addStat(new WeaponTooltip("charge_speed", (stack, level) -> (int) ((40 - getSettings(stack).startupTicks) / 40f * 100)));
+        addStat(new WeaponTooltip("mobility", (stack, level) -> (int) (getSettings(stack).chargerMobility * 100)));
+    }
 
-        addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / settings.projectileLifespan * 100)));
-        addStat(new WeaponTooltip("charge_speed", (stack, level) -> (int) ((40 - settings.startupTicks) / 40f * 100)));
-        addStat(new WeaponTooltip("mobility", (stack, level) -> (int) (settings.chargerMobility * 100)));
+    @Override
+    public Class<WeaponSettings> getSettingsClass() {
+        return WeaponSettings.class;
     }
 
     public void onRelease(Level level, Player player, ItemStack stack, float charge)
     {
-        InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize, settings);
-        proj.setChargerStats(charge, (int) (settings.projectileLifespan * charge), charge >= settings.chargerPiercesAt);
-        proj.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0f, settings.projectileSpeed, 0.1f);
+        InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), getSettings(stack).projectileSize, getSettings(stack));
+        proj.setChargerStats(charge, (int) (getSettings(stack).projectileLifespan * charge), charge >= getSettings(stack).chargerPiercesAt);
+        proj.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0f, getSettings(stack).projectileSpeed, 0.1f);
         level.addFreshEntity(proj);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerShot, SoundSource.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-        reduceInk(player, this, getInkConsumption(charge), settings.inkRecoveryCooldown, false);
+        reduceInk(player, this, getInkConsumption(charge, stack), getSettings(stack).inkRecoveryCooldown, false);
         PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, 10, player.getInventory().selected, player.getUsedItemHand(), true, false, false, player.isOnGround()));
         player.getCooldowns().addCooldown(this, 7);
     }
@@ -88,8 +85,8 @@ public class ChargerItem extends WeaponBaseItem
     public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft) {
         if (entity instanceof Player player) {
             float prevCharge = PlayerCharge.getChargeValue(player, stack);
-            float newCharge = prevCharge + (chargeSpeed * (!entity.isOnGround() && !settings.fastMidAirCharge ? 0.33f : 1));
-            if (level.isClientSide && !player.getCooldowns().isOnCooldown(this) && enoughInk(entity, this, getInkConsumption(newCharge), 0, timeLeft % 4 == 0)) {
+            float newCharge = prevCharge + (getSettings(stack).chargeSpeed * (!entity.isOnGround() && !getSettings(stack).fastMidAirCharge ? 0.33f : 1));
+            if (level.isClientSide && !player.getCooldowns().isOnCooldown(this) && enoughInk(entity, this, getInkConsumption(newCharge, stack), 0, timeLeft % 4 == 0)) {
                 if (prevCharge < 1 && newCharge >= 1) {
                     playChargeReadySound(player);
                 } else if (newCharge < 1)
@@ -117,19 +114,22 @@ public class ChargerItem extends WeaponBaseItem
     }
 
 
-    public float getInkConsumption(float charge)
+    public float getInkConsumption(float charge, ItemStack stack)
     {
+        WeaponSettings settings = getSettings(stack);
         return settings.minInkConsumption + (settings.inkConsumption - settings.minInkConsumption) * charge;
     }
 
     @Override
     public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack)
     {
+        if(SPEED_MODIFIER == null)
+            SPEED_MODIFIER = new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, "Charger mobility", getSettings(stack).chargerMobility - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
         return SPEED_MODIFIER;
     }
 
     @Override
-    public PlayerPosingHandler.WeaponPose getPose()
+    public PlayerPosingHandler.WeaponPose getPose(ItemStack stack)
     {
         return PlayerPosingHandler.WeaponPose.BOW_CHARGE;
     }

@@ -89,7 +89,7 @@ public class PlayerCharge
         if (!(dischargeItem instanceof ChargerItem) || !charge.discharging && charge.charge < 1.0f) {
             charge.charge = 0f;
         } else {
-            charge.charge = Math.max(0, charge.charge - ((ChargerItem) dischargeItem).dischargeSpeed);
+            charge.charge = Math.max(0, charge.charge - ((ChargerItem) dischargeItem).getSettings(charge.chargedWeapon).dischargeSpeed);
             charge.discharging = true;
         }
     }

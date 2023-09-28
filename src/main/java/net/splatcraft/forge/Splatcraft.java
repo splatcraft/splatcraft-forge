@@ -41,6 +41,8 @@ public class Splatcraft {
             }
         }
 
+
+
         SplatcraftRegisties.register();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SplatcraftConfig.clientConfig);

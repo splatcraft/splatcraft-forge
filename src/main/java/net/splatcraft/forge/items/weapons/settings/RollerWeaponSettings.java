@@ -1,6 +1,14 @@
 package net.splatcraft.forge.items.weapons.settings;
 
-public class RollerWeaponSettings extends AbstractWeaponSettings {
+import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.GsonHelper;
+
+import java.util.Optional;
+
+public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSettings.DataRecord> {
+    public static final RollerWeaponSettings DEFAULT = new RollerWeaponSettings("default");
     public String name;
     public boolean isBrush;
 
@@ -36,7 +44,7 @@ public class RollerWeaponSettings extends AbstractWeaponSettings {
     public int flingTime;
 
     public RollerWeaponSettings(String name) {
-        this.name = name;
+        super(name);
     }
 
     public float calculateDamage(int tickCount, boolean airborne, float charge, boolean isOnRollCooldown) {
@@ -50,6 +58,61 @@ public class RollerWeaponSettings extends AbstractWeaponSettings {
 
     public float getMinDamage() {
         return 0;
+    }
+
+    @Override
+    public Codec<DataRecord> getCodec() {
+        return DataRecord.CODEC;
+    }
+
+    @Override
+    public void deserialize(DataRecord data)
+    {
+        setBrush(data.isBrush);
+
+        RollDataRecord roll = data.roll;
+
+        setRollSize(roll.inkSize);
+        setRollHitboxSize(roll.hitboxSize);
+        setRollConsumption(roll.inkConsumption);
+        setRollInkRecoveryCooldown(roll.inkRecoveryCooldown);
+        setRollDamage(roll.damage);
+        setRollMobility(roll.mobility);
+
+        setDashMobility(roll.dashMobility);
+        setDashConsumption(roll.dashConsumption);
+        setDashTime(roll.dashTime);
+
+        SwingDataRecord swing = data.swing;
+
+        setSwingMobility(swing.mobility);
+        setSwingConsumption(swing.inkConsumption);
+        setSwingInkRecoveryCooldown(swing.inkRecoveryCooldown);
+        setSwingProjectileSpeed(swing.projectileSpeed);
+        setSwingTime(swing.startupTime);
+        setSwingProjectilePitchCompensation(swing.projectilePitchCompensation);
+        setSwingBaseDamage(swing.baseDamage);
+        setSwingMinDamage(swing.minDamage);
+        setSwingDamageDecayStartTick(swing.damageDecayStartTick);
+        setSwingDamageDecayPerTick(swing.damageDecayPerTick);
+
+        FlingDataRecord fling = data.fling;
+        setFlingConsumption(fling.inkConsumption);
+        setFlingInkRecoveryCooldown(fling.inkRecoveryCooldown);
+        setFlingProjectileSpeed(fling.projectileSpeed);
+        setFlingTime(fling.startupTime);
+        setFlingBaseDamage(fling.baseDamage);
+        setFlingMinDamage(fling.minDamage);
+        setFlingDamageDecayStartTick(fling.damageDecayStartTick);
+        setFlingDamageDecayPerTick(fling.damageDecayPerTick);
+    }
+
+    @Override
+    public DataRecord serialize()
+    {
+        return new DataRecord(isBrush, new RollDataRecord(rollSize, rollHitboxSize, rollConsumption, rollInkRecoveryCooldown, rollDamage, rollMobility, dashMobility, dashConsumption, dashTime),
+                new SwingDataRecord(swingMobility, swingConsumption, swingInkRecoveryCooldown, swingProjectileSpeed, swingTime, swingProjectilePitchCompensation, swingBaseDamage, swingMinDamage, swingDamageDecayStartTick, swingDamageDecayPerTick),
+                new FlingDataRecord(flingConsumption, flingInkRecoveryCooldown, flingProjectileSpeed, flingTime, flingBaseDamage, flingMinDamage, flingDamageDecayStartTick, flingDamageDecayPerTick));
     }
 
     public RollerWeaponSettings setName(String name) {
@@ -206,5 +269,103 @@ public class RollerWeaponSettings extends AbstractWeaponSettings {
     public RollerWeaponSettings setFlingTime(int flingTime) {
         this.flingTime = flingTime;
         return this;
+    }
+
+    public record DataRecord(
+        boolean isBrush,
+        RollDataRecord roll,
+        SwingDataRecord swing,
+        FlingDataRecord fling
+    )
+    {
+        public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                        Codec.BOOL.fieldOf("mobility").forGetter(DataRecord::isBrush),
+                        RollDataRecord.CODEC.fieldOf("roll").forGetter(DataRecord::roll),
+                        SwingDataRecord.CODEC.fieldOf("swing").forGetter(DataRecord::swing),
+                        FlingDataRecord.CODEC.fieldOf("fling").forGetter(DataRecord::fling)
+                ).apply(instance, DataRecord::new)
+        );
+    }
+
+    record RollDataRecord(
+           int inkSize,
+           int hitboxSize,
+           float inkConsumption,
+           int inkRecoveryCooldown,
+           float damage,
+           float mobility,
+           float dashMobility,
+           float dashConsumption,
+           int dashTime
+    )
+    {
+        public static final Codec<RollDataRecord> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                        Codec.INT.fieldOf("ink_size").forGetter(RollDataRecord::inkSize),
+                        Codec.INT.fieldOf("hitbox_size").forGetter(RollDataRecord::hitboxSize),
+                        Codec.FLOAT.fieldOf("ink_consumption").forGetter(RollDataRecord::inkConsumption),
+                        Codec.INT.fieldOf("ink_recovery_cooldown").forGetter(RollDataRecord::inkRecoveryCooldown),
+                        Codec.FLOAT.fieldOf("damage").forGetter(RollDataRecord::damage),
+                        Codec.FLOAT.fieldOf("mobility").forGetter(RollDataRecord::mobility),
+                        Codec.FLOAT.fieldOf("dash_mobility").forGetter(RollDataRecord::dashMobility),
+                        Codec.FLOAT.fieldOf("dash_consumption").forGetter(RollDataRecord::dashConsumption),
+                        Codec.INT.fieldOf("dash_time").forGetter(RollDataRecord::dashTime)
+                ).apply(instance, RollDataRecord::new)
+        );
+    }
+
+    record SwingDataRecord(
+            float mobility,
+            float inkConsumption,
+            int inkRecoveryCooldown,
+            float projectileSpeed,
+            int startupTime,
+            float projectilePitchCompensation,
+            float baseDamage,
+            float minDamage,
+            int damageDecayStartTick,
+            float damageDecayPerTick
+    )
+    {
+        public static final Codec<SwingDataRecord> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                        Codec.FLOAT.fieldOf("mobility").forGetter(SwingDataRecord::mobility),
+                        Codec.FLOAT.fieldOf("ink_consumption").forGetter(SwingDataRecord::inkConsumption),
+                        Codec.INT.fieldOf("ink_recovery_cooldown").forGetter(SwingDataRecord::inkRecoveryCooldown),
+                        Codec.FLOAT.fieldOf("projectile_speed").forGetter(SwingDataRecord::projectileSpeed),
+                        Codec.INT.fieldOf("startup_time").forGetter(SwingDataRecord::startupTime),
+                        Codec.FLOAT.fieldOf("projectile_pitch_compensation").forGetter(SwingDataRecord::projectilePitchCompensation),
+                        Codec.FLOAT.fieldOf("base_damage").forGetter(SwingDataRecord::baseDamage),
+                        Codec.FLOAT.fieldOf("min_damage").forGetter(SwingDataRecord::minDamage),
+                        Codec.INT.fieldOf("damage_decay_start_tick").forGetter(SwingDataRecord::damageDecayStartTick),
+                        Codec.FLOAT.fieldOf("damage_decay_per_tick").forGetter(SwingDataRecord::damageDecayPerTick)
+                ).apply(instance, SwingDataRecord::new)
+        );
+    }
+
+    record FlingDataRecord(
+            float inkConsumption,
+            int inkRecoveryCooldown,
+            float projectileSpeed,
+            int startupTime,
+            float baseDamage,
+            float minDamage,
+            int damageDecayStartTick,
+            float damageDecayPerTick
+    )
+    {
+        public static final Codec<FlingDataRecord> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                        Codec.FLOAT.fieldOf("ink_consumption").forGetter(FlingDataRecord::inkConsumption),
+                        Codec.INT.fieldOf("ink_recovery_cooldown").forGetter(FlingDataRecord::inkRecoveryCooldown),
+                        Codec.FLOAT.fieldOf("projectile_speed").forGetter(FlingDataRecord::projectileSpeed),
+                        Codec.INT.fieldOf("startup_time").forGetter(FlingDataRecord::startupTime),
+                        Codec.FLOAT.fieldOf("base_damage").forGetter(FlingDataRecord::baseDamage),
+                        Codec.FLOAT.fieldOf("min_damage").forGetter(FlingDataRecord::minDamage),
+                        Codec.INT.fieldOf("damage_decay_start_tick").forGetter(FlingDataRecord::damageDecayStartTick),
+                        Codec.FLOAT.fieldOf("damage_decay_per_tick").forGetter(FlingDataRecord::damageDecayPerTick)
+                ).apply(instance, FlingDataRecord::new)
+        );
     }
 }

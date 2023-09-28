@@ -146,7 +146,7 @@ public class RendererHandler
 
             if (player != null && player.getItemInHand(event.getHand()).getItem() instanceof WeaponBaseItem)
             {
-                switch (((WeaponBaseItem) player.getItemInHand(event.getHand()).getItem()).getPose())
+                switch (((WeaponBaseItem) player.getItemInHand(event.getHand()).getItem()).getPose(player.getItemInHand(event.getHand())))
                 {
                     case ROLL:
                         yOff = -((time - event.getPartialTicks()) / maxTime) + 0.5f;

@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
+import net.splatcraft.forge.items.weapons.settings.SubWeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkExplosion;
@@ -19,10 +20,10 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
     public static final float DAMAGE = 6;
     public static final float DIRECT_DAMAGE = 36;
     public static final float EXPLOSION_SIZE = 3.25f;
-    public static final int FUSE_START = 10;
+    public static final int FLASH_DURATION = 10;
 
-    protected int fuseTime = 20;
-    protected int prevFuseTime = fuseTime;
+    protected int fuseTime = 0;
+    protected int prevFuseTime = 0;
 
     public SplatBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, Level level) {
         super(type, level);
@@ -34,10 +35,12 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
     }
 
     @Override
-    public void tick() {
+    public void tick()
+    {
         super.tick();
 
         prevFuseTime = fuseTime;
+        SubWeaponSettings settings = getSettings();
 
         if (!this.onGround || distanceToSqr(this.getDeltaMovement()) > (double)1.0E-5F)
         {
@@ -59,10 +62,10 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
 
 
         if(onGround)
-            fuseTime--;
-        if(fuseTime <= 0)
+            fuseTime++;
+        if(fuseTime >= settings.fuseTime)
         {
-            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), EXPLOSION_SIZE, DAMAGE, DAMAGE, DIRECT_DAMAGE, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
+            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), settings.explosionSize, settings.propDamage, settings.indirectDamage, settings.directDamage, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
             level.broadcastEntityEvent(this, (byte) 1);
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundSource.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             if(!level.isClientSide())
@@ -78,7 +81,7 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
     public void handleEntityEvent(byte id) {
         super.handleEntityEvent(id);
         if (id == 1) {
-            level.addAlwaysVisibleParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+            level.addAlwaysVisibleParticle(new InkExplosionParticleData(getColor(), getSettings().explosionSize * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
         }
 
     }
@@ -131,6 +134,7 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
 
     public float getFlashIntensity(float partialTicks)
     {
-        return 1f-Math.min(FUSE_START, Mth.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float)FUSE_START;
+        SubWeaponSettings settings = getSettings();
+        return 1f-Math.min(settings.fuseTime-FLASH_DURATION, Mth.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float) (settings.fuseTime-FLASH_DURATION);
     }
 }

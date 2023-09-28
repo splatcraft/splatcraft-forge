@@ -46,6 +46,7 @@ public class SplatcraftPacketHandler
         registerMessage(ChargeableReleasePacket.class, ChargeableReleasePacket::decode);
         registerMessage(SwapSlotWithOffhandPacket.class, SwapSlotWithOffhandPacket::decode);
         registerMessage(UpdateStageListPacket.class, UpdateStageListPacket::decode);
+        registerMessage(UpdateWeaponSettingsPacket.class, UpdateWeaponSettingsPacket::decode);
     }
 
     private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, Function<FriendlyByteBuf, MSG> decoder)

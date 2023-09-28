@@ -5,6 +5,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.entities.InkProjectileEntity;
@@ -14,12 +15,11 @@ import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.WeaponTooltip;
 
-public class ShooterItem extends WeaponBaseItem {
-    public WeaponSettings settings;
-
-    public static RegistryObject<ShooterItem> create(DeferredRegister<Item> registry, WeaponSettings settings)
+public class ShooterItem extends WeaponBaseItem<WeaponSettings>
+{
+    public static RegistryObject<ShooterItem> create(DeferredRegister<Item> registry, String settings, String name)
     {
-        return registry.register(settings.name, () -> new ShooterItem(settings));
+        return registry.register(name, () -> new ShooterItem(settings));
     }
 
     public static RegistryObject<ShooterItem> create(DeferredRegister<Item> registry, RegistryObject<ShooterItem> parent, String name)
@@ -29,26 +29,33 @@ public class ShooterItem extends WeaponBaseItem {
 
     public static RegistryObject<ShooterItem> create(DeferredRegister<Item> registry, RegistryObject<ShooterItem> parent, String name, boolean secret)
     {
-        return registry.register(name, () -> new ShooterItem(parent.get().settings).setSecret(secret));
+        return registry.register(name, () -> new ShooterItem(parent.get().settingsId.toString()).setSecret(secret));
     }
 
 
 
-    protected ShooterItem(WeaponSettings settings)
+    protected ShooterItem(String settings)
     {
         super(settings);
-        this.settings = settings;
 
         if (!(this instanceof BlasterItem)) {
-            addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / 1.2f * 100)));
-            addStat(new WeaponTooltip("damage", (stack, level) -> (int) (settings.baseDamage / 20 * 100)));
-            addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - settings.firingSpeed) / 15f * 100)));
+            addStat(new WeaponTooltip("range", (stack, level) -> (int) (getSettings(stack).projectileSpeed / 1.2f * 100)));
+            addStat(new WeaponTooltip("damage", (stack, level) -> (int) (getSettings(stack).baseDamage / 20 * 100)));
+            addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - getSettings(stack).firingSpeed) / 15f * 100)));
         }
     }
 
     @Override
-    public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft) {
-        if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % settings.firingSpeed == 0) {
+    public Class<WeaponSettings> getSettingsClass() {
+        return WeaponSettings.class;
+    }
+
+    @Override
+    public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft)
+    {
+        WeaponSettings settings = getSettings(stack);
+        if (!level.isClientSide && settings.firingSpeed > 0 && (getUseDuration(stack) - timeLeft - 1) % settings.firingSpeed == 0)
+        {
             if (reduceInk(entity, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
                 InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.projectileSize, settings).setShooterTrail();
                 proj.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0f, settings.projectileSpeed, entity.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy);
@@ -59,7 +66,7 @@ public class ShooterItem extends WeaponBaseItem {
     }
 
     @Override
-    public PlayerPosingHandler.WeaponPose getPose()
+    public PlayerPosingHandler.WeaponPose getPose(ItemStack stack)
     {
         return PlayerPosingHandler.WeaponPose.FIRE;
     }

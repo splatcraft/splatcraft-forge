@@ -85,7 +85,7 @@ public class CurlingBombRenderer extends SubWeaponRenderer<CurlingBombEntity, Cu
 	@Override
 	public float[] getOverlayColor(CurlingBombEntity entity, float partialTicks)
 	{
-		float v = clamp((CurlingBombEntity.MAX_FUSE_TIME - lerp(partialTicks, entity.prevFuseTime, entity.fuseTime)) / CurlingBombEntity.MAX_COOK_TIME, 0, 1);
+		float v = clamp((entity.getSettings().fuseTime - lerp(partialTicks, entity.prevFuseTime, entity.fuseTime)) / entity.getSettings().cookTime, 0, 1);
 		return new float[] {v, 1-v, 0};
 	}
 }
