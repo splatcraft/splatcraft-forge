@@ -32,6 +32,7 @@ import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.SplatcraftArmorMaterial;
 import org.jetbrains.annotations.NotNull;
@@ -102,12 +103,14 @@ public class InkTankItem extends ColoredArmorItem {
 
         if (entity instanceof Player player && !level.isClientSide && SplatcraftGameRules.getLocalizedRule(level, entity.blockPosition(), SplatcraftGameRules.RECHARGEABLE_INK_TANK)) {
             float ink = getInkAmount(stack);
-            Item using = player.getUseItem().getItem();
+            ItemStack usingStack = player.getUseItem();
+            Item using = usingStack.getItem();
+            PlayerCharge charge = PlayerCharge.getCharge(player);
 
             if (canRecharge(stack, true) && player.getItemBySlot(EquipmentSlot.CHEST).equals(stack) && ColorUtils.colorEquals(player, stack) && ink < capacity
                     && !PlayerCooldown.hasPlayerCooldown(player)
                     && (!(using instanceof WeaponBaseItem)
-                    || using instanceof ChargerItem
+                    || (using instanceof ChargerItem && (charge == null || charge.charge < 1.0f && !charge.discharging))
                     || (using instanceof RollerItem r && !r.isMoving))
             ) {
                 setInkAmount(stack, ink + (100f / 20f / ((InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.isSquid(player)) ? 3f : 10f)));
