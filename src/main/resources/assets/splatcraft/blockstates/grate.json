@@ -1,10 +1,29 @@
 {
   "variants": {
-    "half=bottom": {
+    "facing=down": {
       "model": "splatcraft:block/grate_bottom"
     },
-    "half=top": {
+    "facing=up": {
       "model": "splatcraft:block/grate_top"
+    },
+    "facing=south": {
+      "model": "splatcraft:block/grate_bottom",
+      "x": 90
+    },
+    "facing=west": {
+      "model": "splatcraft:block/grate_bottom",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "splatcraft:block/grate_bottom",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east": {
+      "model": "splatcraft:block/grate_bottom",
+      "x": 90,
+      "y": 270
     }
   }
 }

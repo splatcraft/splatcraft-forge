@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "splatcraft:glass_cover"
+    ]
+  },
+  "criteria": {
+    "has_sardinium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "splatcraft:sardinium"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "splatcraft:glass_cover"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_sardinium",
+      "has_the_recipe"
+    ]
+  ]
+}

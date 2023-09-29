@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "splatcraft:tarp",
+    "splatcraft:glass_cover",
     "splatcraft:ink_stained_carpet",
     "#minecraft:carpets"
   ]

@@ -50,7 +50,12 @@ public class TarpBlock extends Block implements SimpleWaterloggedBlock
 
     public TarpBlock()
     {
-        super(Properties.of(Material.WOOL));
+        this(Properties.of(Material.WOOL));
+    }
+
+    public TarpBlock(Properties properties)
+    {
+        super(properties);
         this.registerDefaultState(defaultBlockState().setValue(WATERLOGGED, Boolean.FALSE).setValue(DOWN, Boolean.TRUE).setValue(UP, Boolean.FALSE).setValue(NORTH, Boolean.FALSE).setValue(EAST, Boolean.FALSE).setValue(SOUTH, Boolean.FALSE).setValue(WEST, Boolean.FALSE));
         this.stateToShapeMap = ImmutableMap.copyOf(this.getStateDefinition().getPossibleStates().stream().collect(Collectors.toMap(Function.identity(), TarpBlock::getShapeForState)));
     }
@@ -132,5 +137,30 @@ public class TarpBlock extends Block implements SimpleWaterloggedBlock
             voxelshape = Shapes.or(voxelshape, EAST_AABB);
 
         return voxelshape;
+    }
+
+    public static class Seethrough extends TarpBlock
+    {
+        public Seethrough()
+        {
+            super(Properties.of(Material.GLASS).noOcclusion());
+        }
+
+        public VoxelShape getVisualShape(BlockState p_48735_, BlockGetter p_48736_, BlockPos p_48737_, CollisionContext p_48738_) {
+            return Shapes.empty();
+        }
+
+        public float getShadeBrightness(BlockState p_48731_, BlockGetter p_48732_, BlockPos p_48733_) {
+            return 1.0F;
+        }
+
+        public boolean propagatesSkylightDown(BlockState p_48740_, BlockGetter p_48741_, BlockPos p_48742_) {
+            return true;
+        }
+
+        @Override
+        public boolean useShapeForLightOcclusion(BlockState p_60576_) {
+            return true;
+        }
     }
 }

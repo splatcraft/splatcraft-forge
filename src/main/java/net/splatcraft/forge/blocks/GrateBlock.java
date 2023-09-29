@@ -11,10 +11,7 @@ import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
@@ -22,24 +19,34 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.HashMap;
+
 public class GrateBlock extends Block implements SimpleWaterloggedBlock
 {
-    public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final Properties PROPERTIES = Properties.of(Material.METAL).noOcclusion().requiresCorrectToolForDrops().strength(4.0f).sound(SoundType.METAL);
-    protected static final VoxelShape BOTTOM_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 3.0D, 16.0D);
-    protected static final VoxelShape TOP_AABB = Block.box(0.0D, 13.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+
+    protected static final HashMap<Direction, VoxelShape> AABBS = new HashMap<>()
+    {{
+        put(Direction.NORTH, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 3.0D));
+        put(Direction.SOUTH, Block.box(0.0D, 0.0D, 13.0D, 16.0D, 16.0D, 16.0D));
+        put(Direction.WEST, Block.box(0.0D, 0.0D, 0.0D, 3.0D, 16.0D, 16.0D));
+        put(Direction.EAST, Block.box(13.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D));
+        put(Direction.DOWN, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 3.0D, 16.0D));
+       put(Direction.UP, Block.box(0.0D, 13.0D, 0.0D, 16.0D, 16.0D, 16.0D));
+    }};
 
     public GrateBlock()
     {
         super(PROPERTIES);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(HALF, Half.BOTTOM).setValue(WATERLOGGED, false));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.DOWN).setValue(WATERLOGGED, false));
     }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter levelIn, BlockPos pos, CollisionContext context)
     {
-        return state.getValue(HALF) == Half.TOP ? TOP_AABB : BOTTOM_AABB;
+        return AABBS.get(state.getValue(FACING));
     }
 
     public boolean isPathfindable(BlockState state, BlockGetter levelIn, BlockPos pos, PathComputationType type) {
@@ -53,13 +60,13 @@ public class GrateBlock extends Block implements SimpleWaterloggedBlock
         BlockState blockstate = this.defaultBlockState();
         FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
         Direction direction = context.getClickedFace();
-        if (!context.replacingClickedOnBlock() && direction.getAxis().isHorizontal())
-        {
-            blockstate = blockstate.setValue(HALF, context.getClickLocation().y - (double) context.getClickedPos().getY() > 0.5D ? Half.TOP : Half.BOTTOM);
-        } else
-        {
-            blockstate = blockstate.setValue(HALF, direction == Direction.UP ? Half.BOTTOM : Half.TOP);
-        }
+
+        if(context.getPlayer() != null && context.getPlayer().isShiftKeyDown())
+            blockstate = blockstate.setValue(FACING, direction.getOpposite());
+        else if (!context.replacingClickedOnBlock() && direction.getAxis().isHorizontal())
+            blockstate = blockstate.setValue(FACING, context.getClickLocation().y - (double) context.getClickedPos().getY() > 0.5D ? Direction.UP : Direction.DOWN);
+        else
+            blockstate = blockstate.setValue(FACING, direction == Direction.UP ? Direction.DOWN : Direction.UP);
 
         return blockstate.setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
     }
@@ -67,7 +74,7 @@ public class GrateBlock extends Block implements SimpleWaterloggedBlock
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
-        builder.add(HALF, WATERLOGGED);
+        builder.add(FACING, WATERLOGGED);
     }
 
     @Override

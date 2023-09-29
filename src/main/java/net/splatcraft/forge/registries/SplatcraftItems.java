@@ -352,6 +352,7 @@ public class SplatcraftItems {
     public static final RegistryObject<Item> platedBarrierBar = REGISTRY.register("plated_barrier_bar", () -> new BlockItem(SplatcraftBlocks.platedBarrierBar.get()));
     public static final RegistryObject<Item> cautionBarrierBar = REGISTRY.register("caution_barrier_bar", () -> new BlockItem(SplatcraftBlocks.cautionBarrierBar.get()));
     public static final RegistryObject<Item> tarp = REGISTRY.register("tarp", () -> new BlockItem(SplatcraftBlocks.tarp.get()));
+    public static final RegistryObject<Item> glassCover = REGISTRY.register("glass_cover", () -> new BlockItem(SplatcraftBlocks.glassCover.get()));
     public static final RegistryObject<Item> canvas = REGISTRY.register("canvas", () -> new ColoredBlockItem(SplatcraftBlocks.canvas.get()).setMatchColor(false));
     public static final RegistryObject<Item> squidBumper = REGISTRY.register("squid_bumper", SquidBumperItem::new);
     public static final RegistryObject<Item> sunkenCrate = REGISTRY.register("sunken_crate", () -> new BlockItem(SplatcraftBlocks.sunkenCrate.get()));

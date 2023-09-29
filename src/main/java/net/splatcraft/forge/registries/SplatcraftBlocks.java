@@ -60,6 +60,7 @@ public class SplatcraftBlocks
     public static final RegistryObject<Block> cautionBarrierBar =  REGISTRY.register("caution_barrier_bar", BarrierBarBlock::new);
     public static final RegistryObject<Block> platedBarrierBar =  REGISTRY.register("plated_barrier_bar", BarrierBarBlock::new);
     public static final RegistryObject<Block> tarp =  REGISTRY.register("tarp", TarpBlock::new);
+    public static final RegistryObject<Block> glassCover =  REGISTRY.register("glass_cover", TarpBlock.Seethrough::new);
     public static final RegistryObject<Block> stageBarrier =  REGISTRY.register("stage_barrier", () -> new StageBarrierBlock(false));
     public static final RegistryObject<Block> stageVoid =  REGISTRY.register("stage_void", () -> new StageBarrierBlock(true));
     public static final RegistryObject<Block> allowedColorBarrier =  REGISTRY.register("allowed_color_barrier", () -> new ColoredBarrierBlock(false));
@@ -80,6 +81,7 @@ public class SplatcraftBlocks
         ItemBlockRenderTypes.setRenderLayer(sunkenCrate.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(remotePedestal.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(splatSwitch.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(glassCover.get(), RenderType.cutout());
     }
 
 
