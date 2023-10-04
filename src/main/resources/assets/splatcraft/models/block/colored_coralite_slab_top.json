@@ -1,8 +1,8 @@
 {
-  "parent": "minecraft:block/slab",
+  "parent": "minecraft:block/slab_top",
   "textures": {
-    "all": "splatcraft:blocks/colored_chromaphorite",
-    "particle": "splatcraft:blocks/colored_chromaphorite"
+    "all": "splatcraft:blocks/colored_coralite",
+    "particle": "splatcraft:blocks/colored_coralite"
   },
   "elements": [
         {   "from": [ 0, 0, 0 ],

@@ -1,0 +1,11 @@
+{
+  "parent": "splatcraft:block/coralite_slab",
+  "overrides": [
+    {
+      "predicate": {
+        "splatcraft:colored": 1
+      },
+      "model": "splatcraft:block/colored_coralite_slab"
+    }
+  ]
+}

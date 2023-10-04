@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "splatcraft:blocks/chromaphorite",
-    "top": "splatcraft:blocks/chromaphorite",
-    "side": "splatcraft:blocks/chromaphorite"
-  }
-}

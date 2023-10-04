@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "type=bottom,colored=false": {
+      "model": "splatcraft:block/coralite_slab"
+    },
+    "type=double,colored=false": {
+      "model": "splatcraft:block/coralite"
+    },
+    "type=top,colored=false": {
+      "model": "splatcraft:block/coralite_slab_top"
+    },
+    "type=bottom,colored=true": {
+      "model": "splatcraft:block/colored_coralite_slab"
+    },
+    "type=double,colored=true": {
+      "model": "splatcraft:block/colored_coralite"
+    },
+    "type=top,colored=true": {
+      "model": "splatcraft:block/colored_coralite_slab_top"
+    }
+  }
+}

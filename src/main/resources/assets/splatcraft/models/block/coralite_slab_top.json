@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "splatcraft:blocks/coralite",
+    "top": "splatcraft:blocks/coralite",
+    "side": "splatcraft:blocks/coralite"
+  }
+}

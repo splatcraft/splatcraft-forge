@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "colored=false": {
+      "model": "splatcraft:block/coralite"
+    },
+    "colored=true": {
+      "model": "splatcraft:block/colored_coralite"
+    }
+  }
+}
