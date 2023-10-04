@@ -8,6 +8,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -26,11 +27,9 @@ import java.util.Objects;
 
 import static net.splatcraft.forge.blocks.InkStainedBlock.COLORED;
 
-public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
+public class InkStainedSlabBlock extends SlabBlock implements IColoredBlock, EntityBlock
 {
-    public static final BooleanProperty COLORED = BooleanProperty.create("colored");
-
-    public InkStainedBlock(Properties properties)
+    public InkStainedSlabBlock(Properties properties)
     {
         super(properties);
         SplatcraftBlocks.inkColoredBlocks.add(this);
@@ -152,7 +151,7 @@ public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
         return false;
     }
 
-    public static class WithUninkedVariant extends InkStainedBlock
+    public static class WithUninkedVariant extends InkStainedSlabBlock
     {
         public WithUninkedVariant(Properties properties)
         {
@@ -164,6 +163,7 @@ public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
         @Override
         protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
         {
+            super.createBlockStateDefinition(builder);
             builder.add(COLORED);
         }
 

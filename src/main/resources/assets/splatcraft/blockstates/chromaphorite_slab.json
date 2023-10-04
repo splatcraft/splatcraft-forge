@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "type=bottom,colored=false": {
+      "model": "splatcraft:block/chromaphorite_slab"
+    },
+    "type=double,colored=false": {
+      "model": "splatcraft:block/chromaphorite"
+    },
+    "type=top,colored=false": {
+      "model": "splatcraft:block/chromaphorite_slab_top"
+    },
+    "type=bottom,colored=true": {
+      "model": "splatcraft:block/colored_chromaphorite_slab"
+    },
+    "type=double,colored=true": {
+      "model": "splatcraft:block/colored_chromaphorite"
+    },
+    "type=top,colored=true": {
+      "model": "splatcraft:block/colored_chromaphorite_slab_top"
+    }
+  }
+}

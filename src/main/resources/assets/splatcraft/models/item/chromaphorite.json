@@ -1,0 +1,11 @@
+{
+  "parent": "splatcraft:block/chromaphorite",
+  "overrides": [
+    {
+      "predicate": {
+        "splatcraft:colored": 1
+      },
+      "model": "splatcraft:block/colored_chromaphorite"
+    }
+  ]
+}

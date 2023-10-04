@@ -8,10 +8,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
@@ -23,16 +23,15 @@ import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import static net.splatcraft.forge.blocks.InkStainedBlock.COLORED;
 
-public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
+public class InkStainedStairBlock extends StairBlock implements IColoredBlock, EntityBlock
 {
-    public static final BooleanProperty COLORED = BooleanProperty.create("colored");
-
-    public InkStainedBlock(Properties properties)
+    public InkStainedStairBlock(Supplier<BlockState> parent, Properties properties)
     {
-        super(properties);
+        super(parent, properties);
         SplatcraftBlocks.inkColoredBlocks.add(this);
 
     }
@@ -152,11 +151,11 @@ public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
         return false;
     }
 
-    public static class WithUninkedVariant extends InkStainedBlock
+    public static class WithUninkedVariant extends InkStainedStairBlock
     {
-        public WithUninkedVariant(Properties properties)
+        public WithUninkedVariant(Supplier<BlockState> parent, Properties properties)
         {
-            super(properties);
+            super(parent, properties);
 
             registerDefaultState(defaultBlockState().setValue(COLORED, false));
         }
@@ -164,6 +163,7 @@ public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
         @Override
         protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
         {
+            super.createBlockStateDefinition(builder);
             builder.add(COLORED);
         }
 

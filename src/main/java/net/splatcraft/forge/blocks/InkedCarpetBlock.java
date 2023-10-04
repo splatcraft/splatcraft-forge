@@ -16,7 +16,7 @@ public class InkedCarpetBlock extends InkStainedBlock
 {
     public InkedCarpetBlock(String name)
     {
-        super(name, Properties.of(Material.CLOTH_DECORATION).strength(0.1F).sound(SoundType.WOOL));
+        super(Properties.of(Material.CLOTH_DECORATION).strength(0.1F).sound(SoundType.WOOL));
     }
 
     protected static final VoxelShape SHAPE = box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);

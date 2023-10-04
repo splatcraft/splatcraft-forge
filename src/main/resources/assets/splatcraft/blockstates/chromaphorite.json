@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "colored=false": {
+      "model": "splatcraft:block/chromaphorite"
+    },
+    "colored=true": {
+      "model": "splatcraft:block/colored_chromaphorite"
+    }
+  }
+}
