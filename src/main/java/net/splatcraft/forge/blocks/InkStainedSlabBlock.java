@@ -43,6 +43,17 @@ public class InkStainedSlabBlock extends SlabBlock implements IColoredBlock, Ent
     }
 
     @Override
+    public boolean canBeReplaced(BlockState state, BlockPlaceContext context)
+    {
+        ItemStack stack = context.getItemInHand();
+
+        if(getColor(context.getLevel(), context.getClickedPos()) != ColorUtils.getInkColor(stack))
+            return false;
+        
+        return super.canBeReplaced(state, context);
+    }
+
+    @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
     {
         if (!level.isClientSide && stack.getTag() != null && level.getBlockEntity(pos) instanceof InkColorTileEntity)
