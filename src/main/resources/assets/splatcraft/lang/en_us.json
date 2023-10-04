@@ -26,6 +26,7 @@
   "block.splatcraft.sunken_crate": "Sunken Crate",
   "block.splatcraft.power_egg_block": "Power Egg Block",
   "block.splatcraft.sardinium_block": "Block of Sardinium",
+  "block.splatcraft.raw_sardinium_block": "Block of Raw Sardinium",
   "block.splatcraft.sardinium_ore": "Sardinium Ore",
   "block.splatcraft.chromaphorite": "Chromaphorite",
   "block.splatcraft.chromaphorite_slab": "Chromaphorite Slab",
@@ -41,6 +42,7 @@
   "block.splatcraft.allowed_color_barrier": "Colored Stage Barrier (Allow)",
   "block.splatcraft.denied_color_barrier": "Colored Stage Barrier (Deny)",
 
+  "item.splatcraft.raw_sardinium": "Raw Sardinium",
   "item.splatcraft.sardinium": "Sardinium",
   "item.splatcraft.power_egg": "Power Egg",
   "item.splatcraft.power_egg_can": "Can of Power Eggs",

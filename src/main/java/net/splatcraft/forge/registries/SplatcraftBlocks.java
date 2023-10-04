@@ -33,6 +33,7 @@ public class SplatcraftBlocks
     public static final RegistryObject<InkedBlock> clearInkedBlock = REGISTRY.register("clear_inked_block", InkedBlock::new);
 
     public static final RegistryObject<Block> sardiniumBlock = REGISTRY.register("sardinium_block", () -> new MetalBlock(Material.METAL, MaterialColor.TERRACOTTA_WHITE));
+    public static final RegistryObject<Block> rawSardiniumBlock = REGISTRY.register("raw_sardinium_block", () -> new Block(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.TERRACOTTA_WHITE).requiresCorrectToolForDrops().strength(5, 6)));
     public static final RegistryObject<Block> sardiniumOre = REGISTRY.register("sardinium_ore", OreBlock::new);
     public static final RegistryObject<Block> powerEggBlock = REGISTRY.register("power_egg_block", () -> new Block(BlockBehaviour.Properties.of(Material.VEGETABLE, DyeColor.ORANGE).sound(SoundType.SLIME_BLOCK).strength(0.2f, 0).lightLevel((state) -> 9)));
     public static final RegistryObject<Block> crate = REGISTRY.register("crate", () -> new CrateBlock("crate", false));

@@ -317,7 +317,9 @@ public class SplatcraftItems {
     //Materials
     public static final RegistryObject<Item> sardinium = REGISTRY.register("sardinium", () -> new Item(new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL)));
     public static final RegistryObject<Item> sardiniumBlock = REGISTRY.register("sardinium_block", () -> new BlockItem(SplatcraftBlocks.sardiniumBlock.get()));
+    public static final RegistryObject<Item> rawSardinium = REGISTRY.register("raw_sardinium", () -> new Item(new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL)));
     public static final RegistryObject<Item> sardiniumOre = REGISTRY.register("sardinium_ore", () -> new BlockItem(SplatcraftBlocks.sardiniumOre.get()));
+    public static final RegistryObject<Item> rawSardiniumBlock = REGISTRY.register("raw_sardinium_block", () -> new BlockItem(SplatcraftBlocks.rawSardiniumBlock.get()));
     public static final RegistryObject<Item> chromaphorite = REGISTRY.register("chromaphorite", () -> new ColoredBlockItem(SplatcraftBlocks.chromaphorite.get()).setMatchColor(false));
     public static final RegistryObject<Item> chromaphoriteSlab = REGISTRY.register("chromaphorite_slab", () -> new ColoredBlockItem(SplatcraftBlocks.chromaphoriteSlab.get()).setMatchColor(false));
     public static final RegistryObject<Item> chromaphoriteStairs = REGISTRY.register("chromaphorite_stairs", () -> new ColoredBlockItem(SplatcraftBlocks.chromaphoriteStairs.get()).setMatchColor(false));
