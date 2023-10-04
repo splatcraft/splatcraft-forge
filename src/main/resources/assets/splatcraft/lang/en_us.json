@@ -43,6 +43,9 @@
   "item.splatcraft.power_egg_can": "Can of Power Eggs",
   "item.splatcraft.toni_kensa_pin": "Toni Kensa Pin",
 
+  "item.splatcraft.blueprint": "Blueprint",
+  "item.splatcraft.blueprint.tooltip": "§o§7It appears to be blank.",
+
   "item.splatcraft.filter": "Filter",
   "item.splatcraft.organic_filter": "Organic Filter",
   "item.splatcraft.pastel_filter": "Pastel Filter",
@@ -411,6 +414,10 @@
   "status.clear_ink.success": "Successfully cleared %s blocks",
   "status.change_color.out_of_world": "§cCannot clear ink outside of the world",
   "status.change_color.success": "Successfully recolored %s blocks to %s",
+
+  "status.blueprint.invalid": "This Blueprint is empty.",
+  "status.blueprint.already_unlocked": "You already have this Blueprint.",
+  "status.blueprint.unlock": "% has been unlocked.",
 
   "commands.scanturf.success": "Successfully scanned %s blocks of turf",
   "commands.inkcolor.success.single": "Changed %s's ink color to %s",
