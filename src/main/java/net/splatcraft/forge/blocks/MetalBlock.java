@@ -10,6 +10,6 @@ public class MetalBlock extends Block
 {
     public MetalBlock(Material material, MaterialColor color)
     {
-        super(BlockBehaviour.Properties.of(material, color).strength(5.0F, 6.0F).sound(SoundType.METAL));
+        super(BlockBehaviour.Properties.of(material, color).requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL));
     }
 }
