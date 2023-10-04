@@ -1,13 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "EEE",
-    "#I#",
+    "# #",
+    "EIE",
     "###"
   ],
   "key": {
     "#": {
-      "item": "minecraft:iron_ingot"
+      "item": "splatcraft:sardinium"
     },
     "E": {
       "item": "splatcraft:power_egg"

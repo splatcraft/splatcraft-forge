@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "splatcraft:raw_sardinium_block"
+    }
+  },
+  "result": {
+    "item": "splatcraft:raw_sardinium",
+    "count": 9
+  }
+}

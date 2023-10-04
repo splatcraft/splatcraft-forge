@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": [
+      {
+        "item": "splatcraft:coralite"
+      }
+    ]
+  },
+  "result": {
+    "item": "splatcraft:coralite_stairs",
+    "count": 4
+  }
+}

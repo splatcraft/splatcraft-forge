@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "splatcraft:sardinium_ore",
+    "splatcraft:raw_sardinium_block",
+    "splatcraft:sardinium_block",
+    "splatcraft:coralite",
+    "splatcraft:coralite_slab",
+    "splatcraft:coralite_stairs"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "splatcraft",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "splatcraft:raw_sardinium"
+    }
+  },
+  "result": {
+    "item": "splatcraft:raw_sardinium_block"
+  }
+}

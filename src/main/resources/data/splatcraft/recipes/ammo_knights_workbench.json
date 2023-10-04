@@ -7,13 +7,13 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:iron_ingot"
+      "item": "splatcraft:sardinium"
     },
     "E": {
-      "item": "splatcraft:power_egg"
+      "item": "minecraft:orange_concrete"
     },
     "S": {
-      "item": "splatcraft:sardinium"
+      "item": "splatcraft:ammo_knights_scrap"
     }
   },
   "result": {

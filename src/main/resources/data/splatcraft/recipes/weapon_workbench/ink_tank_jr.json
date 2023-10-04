@@ -12,11 +12,7 @@
       "ingredients": [
         {
           "item": "splatcraft:sardinium",
-          "count": 10
-        },
-        {
-          "item": "splatcraft:power_egg",
-          "count": 8
+          "count": 16
         },
         {
           "item": "splatcraft:empty_inkwell",

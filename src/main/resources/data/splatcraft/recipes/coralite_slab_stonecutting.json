@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "splatcraft:coralite"
+  },
+  "result": "splatcraft:coralite_slab",
+  "count": 2
+}

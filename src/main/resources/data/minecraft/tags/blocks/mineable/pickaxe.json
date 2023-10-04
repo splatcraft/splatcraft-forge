@@ -3,6 +3,7 @@
   "values": [
     "splatcraft:sardinium_block",
     "splatcraft:sardinium_ore",
+    "splatcraft:raw_sardinium_block",
     "splatcraft:ink_vat",
     "splatcraft:ammo_knights_workbench",
     "splatcraft:grate",
@@ -13,6 +14,10 @@
     "splatcraft:remote_pedestal",
     "splatcraft:splat_switch",
     "splatcraft:spawn_pad_edge",
-    "splatcraft:spawn_pad"
+    "splatcraft:spawn_pad",
+    "splatcraft:coralite",
+    "splatcraft:coralite_slab",
+    "splatcraft:coralite_stairs",
+    "splatcraft:ammo_knights_debris"
   ]
 }

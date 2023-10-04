@@ -3,14 +3,17 @@
   "pattern": [
     "SSS",
     "#I#",
-    "PPP"
+    "PAP"
   ],
   "key": {
     "S": {
       "item": "splatcraft:sardinium"
     },
+    "A": {
+      "item": "splatcraft:ammo_knights_scrap"
+    },
     "P": {
-      "item": "splatcraft:power_egg"
+      "item": "splatcraft:power_egg_block"
     },
     "I": {
       "item": "splatcraft:inkwell"

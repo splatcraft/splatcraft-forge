@@ -12,10 +12,6 @@
       "ingredients": [
         {
           "item": "splatcraft:sardinium",
-          "count": 4
-        },
-        {
-          "item": "splatcraft:power_egg",
           "count": 8
         },
         {
@@ -37,10 +33,6 @@
       "ingredients": [
         {
           "item": "splatcraft:sardinium",
-          "count": 4
-        },
-        {
-          "item": "splatcraft:power_egg",
           "count": 8
         },
         {
