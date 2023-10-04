@@ -38,6 +38,7 @@ public class SplatcraftBlocks
     public static final RegistryObject<Block> powerEggBlock = REGISTRY.register("power_egg_block", () -> new Block(BlockBehaviour.Properties.of(Material.VEGETABLE, DyeColor.ORANGE).sound(SoundType.SLIME_BLOCK).strength(0.2f, 0).lightLevel((state) -> 9)));
     public static final RegistryObject<Block> crate = REGISTRY.register("crate", () -> new CrateBlock("crate", false));
     public static final RegistryObject<Block> sunkenCrate = REGISTRY.register("sunken_crate", () -> new CrateBlock("sunken_crate", true));
+    public static final RegistryObject<Block> ammoKnightsDebris = REGISTRY.register("ammo_knights_debris", () -> new MetalBlock(Material.METAL, MaterialColor.EMERALD));
     public static final RegistryObject<Block> coralite = REGISTRY.register("coralite", () -> new InkStainedBlock.WithUninkedVariant(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.CLAY).strength(3, 3).requiresCorrectToolForDrops()));
     public static final RegistryObject<Block> coraliteSlab = REGISTRY.register("coralite_slab", () -> new InkStainedSlabBlock.WithUninkedVariant(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.CLAY).strength(3, 3).requiresCorrectToolForDrops()));
     public static final RegistryObject<Block> coraliteStairs = REGISTRY.register("coralite_stairs", () -> new InkStainedStairBlock.WithUninkedVariant(() -> coralite.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.STONE, MaterialColor.CLAY).strength(3, 3).requiresCorrectToolForDrops()));

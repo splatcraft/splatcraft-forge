@@ -321,6 +321,7 @@ public class SplatcraftItems {
     public static final RegistryObject<Item> powerEggCan = REGISTRY.register("power_egg_can", PowerEggCanItem::new);
     public static final RegistryObject<Item> powerEggBlock = REGISTRY.register("power_egg_block", () -> new BlockItem(SplatcraftBlocks.powerEggBlock.get()));
     public static final RegistryObject<Item> emptyInkwell = REGISTRY.register("empty_inkwell", () -> new BlockItem(SplatcraftBlocks.emptyInkwell.get()));
+    public static final RegistryObject<Item> ammoKnightsScrap = REGISTRY.register("ammo_knights_scrap", () -> new Item(new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL)));
     public static final RegistryObject<Item> blueprint = REGISTRY.register("blueprint", BlueprintItem::new);
     public static final RegistryObject<Item> kensaPin = REGISTRY.register("toni_kensa_pin", () -> new Item(new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).rarity(Rarity.UNCOMMON)));
 
@@ -479,9 +480,9 @@ public class SplatcraftItems {
 
         ItemPropertyFunction coloredProperty = (stack, level, entity, seed) -> ColorUtils.getInkColor(stack) == -1 ? 0 : 1;
         ItemProperties.register(canvas.get(), new ResourceLocation(Splatcraft.MODID, "inked"), coloredProperty);
-        ItemProperties.register(chromaphorite.get(), new ResourceLocation(Splatcraft.MODID, "colored"), coloredProperty);
-        ItemProperties.register(chromaphoriteSlab.get(), new ResourceLocation(Splatcraft.MODID, "colored"), coloredProperty);
-        ItemProperties.register(chromaphoriteStairs.get(), new ResourceLocation(Splatcraft.MODID, "colored"), coloredProperty);
+        ItemProperties.register(coralite.get(), new ResourceLocation(Splatcraft.MODID, "colored"), coloredProperty);
+        ItemProperties.register(coraliteSlab.get(), new ResourceLocation(Splatcraft.MODID, "colored"), coloredProperty);
+        ItemProperties.register(coraliteStairs.get(), new ResourceLocation(Splatcraft.MODID, "colored"), coloredProperty);
     }
 
     @OnlyIn(Dist.CLIENT)
