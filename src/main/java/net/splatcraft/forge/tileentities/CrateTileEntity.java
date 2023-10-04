@@ -22,8 +22,7 @@ public class CrateTileEntity extends InkColorTileEntity implements Container
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
     private float health;
     private float maxHealth;
-    private boolean hasLoot;
-    private ResourceLocation lootTable = CrateBlock.STORAGE_SUNKEN_CRATE;
+    private ResourceLocation lootTable = null;
 
     public CrateTileEntity(BlockPos pos, BlockState state)
     {
@@ -67,12 +66,16 @@ public class CrateTileEntity extends InkColorTileEntity implements Container
 
     public List<ItemStack> getDrops()
     {
-        return hasLoot ? CrateBlock.generateLoot(level, getBlockPos(), getBlockState(), 0f) : getInventory();
+        return hasLoot() ? CrateBlock.generateLoot(level, this, getBlockState(), 0f) : getInventory();
     }
 
     public ResourceLocation getLootTable()
     {
         return lootTable;
+    }
+
+    public void setLootTable(ResourceLocation lootTable) {
+        this.lootTable = lootTable;
     }
 
     @Override
@@ -84,12 +87,8 @@ public class CrateTileEntity extends InkColorTileEntity implements Container
         maxHealth = nbt.getFloat("MaxHealth");
         ContainerHelper.loadAllItems(nbt, inventory);
 
-        if (getBlockState().getBlock() instanceof CrateBlock)
-        {
-            hasLoot = ((CrateBlock) getBlockState().getBlock()).hasLoot;
-            if(nbt.contains("LootTable"))
-                lootTable = new ResourceLocation(nbt.getString("LootTable"));
-        }
+        if(nbt.contains("LootTable"))
+            lootTable = new ResourceLocation(nbt.getString("LootTable"));
     }
 
     @Override
@@ -99,7 +98,7 @@ public class CrateTileEntity extends InkColorTileEntity implements Container
         nbt.putFloat("MaxHealth", maxHealth);
         ContainerHelper.saveAllItems(nbt, inventory);
 
-        if(hasLoot)
+        if(hasLoot())
             nbt.putString("LootTable", lootTable.toString());
 
         super.saveAdditional(nbt);
@@ -108,7 +107,12 @@ public class CrateTileEntity extends InkColorTileEntity implements Container
     @Override
     public int getContainerSize()
     {
-        return getBlockState().getBlock() instanceof CrateBlock && ((CrateBlock) getBlockState().getBlock()).hasLoot ? 0 : 1;
+        return getBlockState().getBlock() instanceof CrateBlock && hasLoot() ? 0 : 1;
+    }
+
+    private boolean hasLoot()
+    {
+        return lootTable != null;
     }
 
     @Override
@@ -126,7 +130,7 @@ public class CrateTileEntity extends InkColorTileEntity implements Container
     @Override
     public ItemStack removeItem(int index, int count)
     {
-        if (getBlockState().getBlock() instanceof CrateBlock && ((CrateBlock) getBlockState().getBlock()).hasLoot)
+        if (getBlockState().getBlock() instanceof CrateBlock && hasLoot())
         {
             return ItemStack.EMPTY;
         }
@@ -210,8 +214,4 @@ public class CrateTileEntity extends InkColorTileEntity implements Container
         return 4 - Math.round(health * 4 / maxHealth);
     }
 
-    public void setHasLoot(boolean hasLoot)
-    {
-        this.hasLoot = hasLoot;
-    }
 }

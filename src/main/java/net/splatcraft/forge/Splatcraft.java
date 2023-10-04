@@ -18,7 +18,7 @@ import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.registries.*;
-import net.splatcraft.forge.world.gen.SplatcraftOreGen;
+import net.splatcraft.forge.worldgen.SplatcraftOreGen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -48,27 +49,28 @@ public class CrateBlock extends Block implements IColoredBlock, EntityBlock
 {
     public static final IntegerProperty STATE = IntegerProperty.create("state", 0, 4);
     public static final ResourceLocation STORAGE_SUNKEN_CRATE = new ResourceLocation(Splatcraft.MODID, "storage/sunken_crate");
+    public static final ResourceLocation STORAGE_EGG_CRATE = new ResourceLocation(Splatcraft.MODID, "storage/egg_crate");
 
-    public final boolean hasLoot;
+    public final boolean isSunken;
 
-    public CrateBlock(String name, boolean hasLoot)
+    public CrateBlock(String name, boolean isSunken)
     {
-        super(Properties.of(Material.WOOD).requiresCorrectToolForDrops().sound(SoundType.WOOD).strength(2.0f));
+        super(Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2.0f));
 
-        this.hasLoot = hasLoot;
+        this.isSunken = isSunken;
 
         SplatcraftBlocks.inkColoredBlocks.add(this);
     }
 
-    public static List<ItemStack> generateLoot(Level level, BlockPos pos, BlockState state, float luckValue)
+    public static List<ItemStack> generateLoot(Level level, CrateTileEntity crate, BlockState state, float luckValue)
     {
         if (level == null || level.isClientSide)
             return Collections.emptyList();
 
-        BlockEntity crate = level.getBlockEntity(pos);
+        BlockPos pos = crate.getBlockPos();
 
         LootContext.Builder contextBuilder = new LootContext.Builder((ServerLevel) level);
-        return level.getServer().getLootTables().get((crate instanceof CrateTileEntity) ? ((CrateTileEntity) crate).getLootTable() : STORAGE_SUNKEN_CRATE).getRandomItems(contextBuilder.withLuck(luckValue)
+        return level.getServer().getLootTables().get(crate.getLootTable()).getRandomItems(contextBuilder.withLuck(luckValue)
                 .withParameter(LootContextParams.BLOCK_STATE, state).withParameter(LootContextParams.TOOL, ItemStack.EMPTY).withParameter(LootContextParams.ORIGIN, new Vec3(pos.getX(), pos.getY(), pos.getZ())).create(LootContextParamSets.BLOCK));
     }
 
@@ -78,7 +80,12 @@ public class CrateBlock extends Block implements IColoredBlock, EntityBlock
         super.appendHoverText(stack, levelIn, tooltip, flagIn);
         CompoundTag compoundnbt = stack.getTagElement("BlockEntityTag");
 
-        if (compoundnbt != null && !hasLoot && compoundnbt.contains("Items", 9))
+        if(!isSunken && compoundnbt == null)
+            return;
+
+        if(isSunken || compoundnbt.contains("LootTable"))
+            tooltip.add(new TranslatableComponent("block.splatcraft.crate.loot"));
+        else if (compoundnbt.contains("Items", 9))
         {
             NonNullList<ItemStack> nonnulllist = NonNullList.withSize(27, ItemStack.EMPTY);
             
@@ -128,14 +135,14 @@ public class CrateBlock extends Block implements IColoredBlock, EntityBlock
     @Override
     public boolean hasAnalogOutputSignal(@NotNull BlockState state)
     {
-        return !hasLoot;
+        return !isSunken;
     }
 
     @Override
     public int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level levelIn, @NotNull BlockPos pos)
     {
 
-        if (hasLoot || !(levelIn.getBlockEntity(pos) instanceof CrateTileEntity))
+        if (isSunken || !(levelIn.getBlockEntity(pos) instanceof CrateTileEntity))
         {
             return 0;
         }
@@ -232,6 +239,15 @@ public class CrateBlock extends Block implements IColoredBlock, EntityBlock
         return false;
     }
 
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
+    {
+        super.setPlacedBy(level, pos, state, entity, stack);
+
+        if(level.getBlockEntity(pos) instanceof CrateTileEntity crate)
+            if(isSunken) crate.setLootTable(CrateBlock.STORAGE_SUNKEN_CRATE);
+    }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
@@ -240,9 +256,8 @@ public class CrateBlock extends Block implements IColoredBlock, EntityBlock
 
         if (te != null)
         {
-            te.setMaxHealth(hasLoot ? 25 : 20);
+            te.setMaxHealth(isSunken ? 25 : 20);
             te.resetHealth();
-            te.setHasLoot(hasLoot);
             te.setColor(-1);
         }
         
