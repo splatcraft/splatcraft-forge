@@ -1,9 +1,0 @@
-{
-  "type": "splatcraft:fishing",
-  "conditions": [],
-  "item": "splatcraft:power_egg",
-  "countMin": 1,
-  "countMax": 5,
-  "chance": 0.1,
-  "quality": 1
-}

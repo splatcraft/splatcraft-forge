@@ -6,20 +6,6 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "splatcraft:power_egg",
-          "weight": 40,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 5,
-                "max": 15
-              }
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
           "name": "splatcraft:sardinium",
           "weight": 30,
           "functions": [
@@ -73,7 +59,7 @@
         {
           "type": "minecraft:item",
           "name": "splatcraft:toni_kensa_pin",
-          "weight": 5
+          "weight": 1
         }
       ]
     }
