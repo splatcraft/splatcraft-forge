@@ -1,0 +1,17 @@
+{
+  "type": "splatcraft:main",
+  "projectile": {
+	"size": 0.85,
+	"lifespan": 16,
+	"speed": 2.4,
+	"ink_consumption": 25,
+	"ink_recovery_cooldown": 7,
+	"min_damage": 8,
+	"base_damage": 16
+  },
+  "charger": {
+	"charged_damage": 36,
+	"mobility": 0.15,
+	"pierces_at_charge": 1
+  }
+}

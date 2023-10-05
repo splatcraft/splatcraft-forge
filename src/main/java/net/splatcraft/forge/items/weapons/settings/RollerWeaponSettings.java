@@ -96,15 +96,18 @@ public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSet
         setSwingDamageDecayStartTick(swing.damageDecayStartTick);
         setSwingDamageDecayPerTick(swing.damageDecayPerTick);
 
-        FlingDataRecord fling = data.fling;
-        setFlingConsumption(fling.inkConsumption);
-        setFlingInkRecoveryCooldown(fling.inkRecoveryCooldown);
-        setFlingProjectileSpeed(fling.projectileSpeed);
-        setFlingTime(fling.startupTime);
-        setFlingBaseDamage(fling.baseDamage);
-        setFlingMinDamage(fling.minDamage);
-        setFlingDamageDecayStartTick(fling.damageDecayStartTick);
-        setFlingDamageDecayPerTick(fling.damageDecayPerTick);
+        if(data.fling.isPresent())
+        {
+            FlingDataRecord fling = data.fling.get();
+            setFlingConsumption(fling.inkConsumption);
+            setFlingInkRecoveryCooldown(fling.inkRecoveryCooldown);
+            setFlingProjectileSpeed(fling.projectileSpeed);
+            setFlingTime(fling.startupTime);
+            setFlingBaseDamage(fling.baseDamage);
+            setFlingMinDamage(fling.minDamage);
+            setFlingDamageDecayStartTick(fling.damageDecayStartTick);
+            setFlingDamageDecayPerTick(fling.damageDecayPerTick);
+        }
     }
 
     @Override
@@ -112,7 +115,7 @@ public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSet
     {
         return new DataRecord(isBrush, new RollDataRecord(rollSize, rollHitboxSize, rollConsumption, rollInkRecoveryCooldown, rollDamage, rollMobility, dashMobility, dashConsumption, dashTime),
                 new SwingDataRecord(swingMobility, swingConsumption, swingInkRecoveryCooldown, swingProjectileSpeed, swingTime, swingProjectilePitchCompensation, swingBaseDamage, swingMinDamage, swingDamageDecayStartTick, swingDamageDecayPerTick),
-                new FlingDataRecord(flingConsumption, flingInkRecoveryCooldown, flingProjectileSpeed, flingTime, flingBaseDamage, flingMinDamage, flingDamageDecayStartTick, flingDamageDecayPerTick));
+                Optional.of(new FlingDataRecord(flingConsumption, flingInkRecoveryCooldown, flingProjectileSpeed, flingTime, flingBaseDamage, flingMinDamage, flingDamageDecayStartTick, flingDamageDecayPerTick)));
     }
 
     public RollerWeaponSettings setName(String name) {
@@ -275,7 +278,7 @@ public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSet
         boolean isBrush,
         RollDataRecord roll,
         SwingDataRecord swing,
-        FlingDataRecord fling
+        Optional<FlingDataRecord> fling
     )
     {
         public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
@@ -283,7 +286,7 @@ public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSet
                         Codec.BOOL.fieldOf("mobility").forGetter(DataRecord::isBrush),
                         RollDataRecord.CODEC.fieldOf("roll").forGetter(DataRecord::roll),
                         SwingDataRecord.CODEC.fieldOf("swing").forGetter(DataRecord::swing),
-                        FlingDataRecord.CODEC.fieldOf("fling").forGetter(DataRecord::fling)
+                        FlingDataRecord.CODEC.optionalFieldOf("fling").forGetter(DataRecord::fling)
                 ).apply(instance, DataRecord::new)
         );
     }

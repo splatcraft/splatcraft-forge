@@ -116,10 +116,10 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
         data.dualieTurret.ifPresent(dualieTurret ->
         {
             setRollInaccuracy(dualieTurret.fireInaccuracy);
-            setRollBaseDamage(dualieTurret.baseDamage);
-            setRollMinDamage(dualieTurret.minDamage);
-            setRollDamageDecayStartTick(dualieTurret.damageDecayStartTick);
-            setRollDamageDecayPerTick(dualieTurret.damageDecayPerTick);
+            dualieTurret.baseDamage.ifPresent(this::setRollBaseDamage);
+            dualieTurret.minDamage.ifPresent(this::setRollMinDamage);
+            dualieTurret.damageDecayPerTick.ifPresent(this::setRollDamageDecayPerTick);
+            dualieTurret.damageDecayStartTick.ifPresent(this::setRollDamageDecayStartTick);
         });
 
         data.charger.ifPresent(charger ->
@@ -136,7 +136,7 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
         return new DataRecord(new ProjectileDataRecord(projectileSize, projectileSpeed, Optional.of(projectileLifespan), Optional.of(projectileCount), firingSpeed,
                 groundInaccuracy, airInaccuracy, inkConsumption, inkRecoveryCooldown, baseDamage, minDamage, damageDecayStartTick, damageDecayPerTick),
                 Optional.of(new DualieRollDataRecord(rollCount, rollSpeed, rollInkConsumption, rollCooldown, lastRollCooldown)),
-                Optional.of(new DualieTurretDataRecord(rollInaccuracy, rollBaseDamage, rollMinDamage, rollDamageDecayStartTick, rollDamageDecayPerTick)),
+                Optional.of(new DualieTurretDataRecord(rollInaccuracy, Optional.of(rollBaseDamage), Optional.of(rollMinDamage), Optional.of(rollDamageDecayStartTick), Optional.of(rollDamageDecayPerTick))),
                 Optional.of(new ChargerDataRecord(chargedDamage, chargerMobility, fastMidAirCharge, chargerPiercesAt)));
     }
 
@@ -383,19 +383,19 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
 
     public record DualieTurretDataRecord(
             float fireInaccuracy,
-            float baseDamage,
-            float minDamage,
-            int damageDecayStartTick,
-            float damageDecayPerTick
+            Optional<Float> baseDamage,
+            Optional<Float> minDamage,
+            Optional<Integer> damageDecayStartTick,
+            Optional<Float> damageDecayPerTick
     )
     {
         public static final Codec<DualieTurretDataRecord> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
                         Codec.FLOAT.fieldOf("fire_inaccuracy").forGetter(DualieTurretDataRecord::fireInaccuracy),
-                        Codec.FLOAT.fieldOf("base_damage").forGetter(DualieTurretDataRecord::baseDamage),
-                        Codec.FLOAT.fieldOf("min_damage").forGetter(DualieTurretDataRecord::minDamage),
-                        Codec.INT.fieldOf("damage_decay_start_tick").forGetter(DualieTurretDataRecord::damageDecayStartTick),
-                        Codec.FLOAT.fieldOf("damage_decay_per_tick").forGetter(DualieTurretDataRecord::damageDecayPerTick)
+                        Codec.FLOAT.optionalFieldOf("base_damage").forGetter(DualieTurretDataRecord::baseDamage),
+                        Codec.FLOAT.optionalFieldOf("min_damage").forGetter(DualieTurretDataRecord::minDamage),
+                        Codec.INT.optionalFieldOf("damage_decay_start_tick").forGetter(DualieTurretDataRecord::damageDecayStartTick),
+                        Codec.FLOAT.optionalFieldOf("damage_decay_per_tick").forGetter(DualieTurretDataRecord::damageDecayPerTick)
                 ).apply(instance, DualieTurretDataRecord::new)
         );
     }

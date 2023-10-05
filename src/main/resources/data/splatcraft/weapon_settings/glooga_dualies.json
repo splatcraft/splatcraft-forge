@@ -1,0 +1,29 @@
+{
+  "type": "splatcraft:main",
+  "projectile": {
+	"size": 0.8,
+	"speed": 0.72,
+	"firing_speed": 10,
+	"ground_inaccuracy": 4,
+	"air_inaccuracy": 8,
+	"ink_consumption": 1.4,
+	"ink_recovery_cooldown": 7,
+	"base_damage": 7.3,
+	"min_damage": 3.6,
+	"damage_decay_start_tick": 2,
+	"damage_decay_per_tick": 1.35
+  },
+  "dualie_roll": {
+	"count": 1,
+	"speed": 0.7,
+	"ink_consumption": 8,
+	"duration": 9,
+	"final_roll_duration": 24
+  },
+  "dualie_turret": {
+	"base_damage": 10.6,
+	"min_damage": 5.26,
+	"damage_decay_per_tick": 2,
+	"fire_inaccuracy": 3
+  }
+}
