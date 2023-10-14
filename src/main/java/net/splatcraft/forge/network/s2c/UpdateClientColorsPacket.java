@@ -1,11 +1,10 @@
 package net.splatcraft.forge.network.s2c;
 
+import java.util.TreeMap;
 import net.minecraft.network.FriendlyByteBuf;
 import net.splatcraft.forge.util.ClientUtils;
 
-import java.util.TreeMap;
-
-public class UpdateClientColorsPacket extends PlayToClientPacket
+public class UpdateClientColorsPacket extends PlayS2CPacket
 {
     final TreeMap<String, Integer> colors;
     final boolean reset;

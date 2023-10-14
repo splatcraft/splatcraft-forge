@@ -5,7 +5,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class SwapSlotWithOffhandPacket extends PlayToServerPacket
+public class SwapSlotWithOffhandPacket extends PlayC2SPacket
 {
 	final int slot;
 	final boolean stopUsing;

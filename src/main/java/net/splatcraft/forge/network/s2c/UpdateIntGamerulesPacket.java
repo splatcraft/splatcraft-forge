@@ -1,14 +1,13 @@
 package net.splatcraft.forge.network.s2c;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.GameRules;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-public class UpdateIntGamerulesPacket extends PlayToClientPacket {
+public class UpdateIntGamerulesPacket extends PlayS2CPacket {
     public TreeMap<Integer, Integer> intRules;
 
     public UpdateIntGamerulesPacket(TreeMap<Integer, Integer> intRules) {

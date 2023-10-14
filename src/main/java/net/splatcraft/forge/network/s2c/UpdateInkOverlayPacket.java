@@ -5,10 +5,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
+import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
 
-public class UpdateInkOverlayPacket extends PlayToClientPacket
+public class UpdateInkOverlayPacket extends PlayS2CPacket
 {
     int entityId;
     CompoundTag nbt;

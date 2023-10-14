@@ -7,7 +7,7 @@ import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
 
-public class RequestColorScoresPacket extends PlayToServerPacket
+public class RequestColorScoresPacket extends PlayC2SPacket
 {
 
     public RequestColorScoresPacket()
