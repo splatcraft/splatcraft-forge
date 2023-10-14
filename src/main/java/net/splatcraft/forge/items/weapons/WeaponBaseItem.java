@@ -20,6 +20,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -30,14 +31,13 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.blocks.InkwellBlock;
-import net.splatcraft.forge.client.handlers.SplatcraftKeyHandler;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -179,13 +179,14 @@ public class WeaponBaseItem extends Item implements IColoredItem
             if (player.getCooldowns().isOnCooldown(stack.getItem())) {
                 if (PlayerInfoCapability.isSquid(player)) {
                     PlayerInfoCapability.get(player).setIsSquid(false);
-                    if (!level.isClientSide)
-                        SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(player.getUUID(), false), player);
+                    if (!level.isClientSide) {
+                        SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidS2CPacket(player.getUUID(), false), player);
+                    }
                 }
-                if (level.isClientSide)
-                    SplatcraftKeyHandler.canUseHotkeys = false;
                 player.setSprinting(false);
-                player.getInventory().selected = itemSlot;
+                if (Inventory.isHotbarSlot(itemSlot)) {
+                    player.getInventory().selected = itemSlot;
+                }
             }
         }
     }
@@ -259,11 +260,6 @@ public class WeaponBaseItem extends Item implements IColoredItem
         if(!(player.isSwimming() && !player.isInWater()))
             player.startUsingItem(hand);
         return useSuper(level, player, hand);
-    }
-
-    @Override
-    public void onUseTick(@NotNull Level p_219972_1_, @NotNull LivingEntity p_219972_2_, @NotNull ItemStack p_219972_3_, int p_219972_4_) {
-        super.onUseTick(p_219972_1_, p_219972_2_, p_219972_3_, p_219972_4_);
     }
 
     @Override
