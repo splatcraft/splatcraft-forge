@@ -21,7 +21,6 @@
     "AddLayersAccessor",
     "BlockRenderMixin$AOFace",
     "BlockRenderMixin$ModelRenderer",
-    "ClientPlayerInventoryMixin",
     "GameRendererMixin",
     "ItemRendererMixin",
     "MinecraftClientAccessor",

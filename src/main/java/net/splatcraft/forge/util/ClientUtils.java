@@ -1,6 +1,8 @@
 package net.splatcraft.forge.util;
 
 import com.mojang.math.Vector3f;
+import java.util.HashMap;
+import java.util.TreeMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
@@ -18,11 +20,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.data.Stage;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.items.InkTankItem;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.c2s.PlayerSetSquidC2SPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
-
-import java.util.HashMap;
-import java.util.TreeMap;
 
 public class ClientUtils
 {
@@ -113,5 +115,10 @@ public class ClientUtils
         }
 
         return false;
+    }
+
+    public static void setSquid(PlayerInfo cap, boolean newSquid) {
+        cap.setIsSquid(newSquid);
+        SplatcraftPacketHandler.sendToServer(new PlayerSetSquidC2SPacket(newSquid));
     }
 }

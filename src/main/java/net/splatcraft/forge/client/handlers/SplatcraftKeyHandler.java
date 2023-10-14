@@ -1,5 +1,8 @@
 package net.splatcraft.forge.client.handlers;
 
+import com.google.common.collect.Iterables;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import java.util.List;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -23,36 +26,33 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.mixin.MinecraftClientAccessor;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.c2s.PlayerSetSquidServerPacket;
 import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
+import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.CommonUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.HashMap;
-
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class SplatcraftKeyHandler {
-    // TODO for Octo: make a proper input queue
-    public static final HashMap<KeyMapping, Integer> pressState = new HashMap<>();
+    private static final List<ToggleableKey> pressState = new ObjectArrayList<>();
 
-    public static KeyMapping squidKey;
-    public static KeyMapping subWeaponHotkey;
-
-    public static boolean canUseHotkeys = true;
+    private static ToggleableKey squidKey;
+    private static ToggleableKey subWeaponHotkey;
 
     private static int slot = -1;
 
     public static void registerKeys() {
-        squidKey = new KeyMapping("key.squidForm", GLFW.GLFW_KEY_Z, "key.categories.splatcraft");
-        pressState.put(squidKey, 0);
-        ClientRegistry.registerKeyBinding(squidKey);
+        KeyMapping squidMapping = new KeyMapping("key.squidForm", GLFW.GLFW_KEY_Z, "key.categories.splatcraft");
+        ClientRegistry.registerKeyBinding(squidMapping);
+        squidKey = new ToggleableKey(squidMapping);
 
-        subWeaponHotkey = new KeyMapping("key.subWeaponHotkey", -1, "key.categories.splatcraft");
-        pressState.put(subWeaponHotkey, -2);
-        ClientRegistry.registerKeyBinding(subWeaponHotkey);
+        KeyMapping subWeaponMapping = new KeyMapping("key.subWeaponHotkey", -1, "key.categories.splatcraft");
+        ClientRegistry.registerKeyBinding(subWeaponMapping);
+        subWeaponHotkey = new ToggleableKey(subWeaponMapping);
+    }
 
-
+    public static boolean isSubWeaponHotkeyDown() {
+        return subWeaponHotkey.active;
     }
 
     @SubscribeEvent
@@ -60,25 +60,50 @@ public class SplatcraftKeyHandler {
     {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
-        if (player == null || !PlayerInfoCapability.hasCapability(player) || PlayerCooldown.hasPlayerCooldown(player) || !canUseHotkeys)
+
+        if (player == null || player.isSpectator() || !PlayerInfoCapability.hasCapability(player) || PlayerCooldown.hasPlayerCooldown(player)) {
             return;
+        }
 
-        if (subWeaponHotkey.isDown())
-            pressState.put(subWeaponHotkey, Math.max(0,Math.min(pressState.get(subWeaponHotkey) + 1, 2)));
-        else pressState.put(subWeaponHotkey, Math.min(0,Math.max(pressState.get(subWeaponHotkey)-1, -2)));
+        boolean canHold = canHoldKeys(Minecraft.getInstance());
 
-        if(pressState.get(subWeaponHotkey) == 1)
+        KeyMode squidKeyMode = SplatcraftConfig.Client.squidKeyMode.get();
+        squidKey.tick(squidKeyMode, canHold);
+        if (squidKey.active) {
+            if (!pressState.contains(squidKey)) {
+                pressState.add(squidKey);
+            }
+        } else {
+            pressState.remove(squidKey);
+        }
+
+        subWeaponHotkey.tick(KeyMode.HOLD, canHold);
+        if (subWeaponHotkey.active) {
+            if (!pressState.contains(subWeaponHotkey)) {
+                pressState.add(subWeaponHotkey);
+            }
+        } else {
+            pressState.remove(subWeaponHotkey);
+        }
+
+        if (CommonUtils.anyWeaponOnCooldown(player)) {
+            return;
+        }
+
+        PlayerInfo info = PlayerInfoCapability.get(player);
+
+        ToggleableKey last = !pressState.isEmpty() ? Iterables.getLast(pressState) : null;
+
+        if (subWeaponHotkey.equals(last))
         {
             ItemStack sub = CommonUtils.getItemInInventory(player, itemStack -> itemStack.getItem() instanceof SubWeaponItem);
-            PlayerInfo cap = PlayerInfoCapability.get(player);
 
-            if (sub.isEmpty() || (cap.isSquid() && player.level.getBlockCollisions(player,
+            if (sub.isEmpty() || (info.isSquid() && player.level.getBlockCollisions(player,
                     new AABB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).iterator().hasNext()))
                 player.displayClientMessage(new TranslatableComponent("status.cant_use"), true);
             else {
-                if (cap.isSquid()) {
-                    cap.setIsSquid(false);
-                    SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(false));
+                if (info.isSquid()) {
+                    ClientUtils.setSquid(info, false);
                 }
 
                 if (!player.getItemInHand(InteractionHand.OFF_HAND).equals(sub))
@@ -90,16 +115,16 @@ public class SplatcraftKeyHandler {
                     player.setItemInHand(InteractionHand.OFF_HAND, player.getInventory().getItem(slot));
                     player.getInventory().setItem(slot, stack);
                     player.stopUsingItem();
+                } else {
+                    slot = -1;
                 }
-                else slot = -1;
 
                 startUsingItemInHand(InteractionHand.OFF_HAND);
             }
-        }
-        else if(pressState.get(subWeaponHotkey) == -1)
-        {
-            if(player.getUsedItemHand() == InteractionHand.OFF_HAND)
+        } else {
+            if (mc.gameMode != null && player.getUsedItemHand() == InteractionHand.OFF_HAND) {
                 mc.gameMode.releaseUsingItem(player);
+            }
 
             if (slot != -1)
             {
@@ -110,40 +135,22 @@ public class SplatcraftKeyHandler {
 
                 SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
             }
-
         }
 
 
-        if (player.getVehicle() == null && !PlayerCooldown.hasPlayerCooldown(player) &&
+        if (player.getVehicle() == null &&
                 !player.level.getBlockCollisions(player,
-                        new AABB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).iterator().hasNext())
-        {
-            if (KeyMode.HOLD.equals(SplatcraftConfig.Client.squidKeyMode.get()))
-            {
-                boolean isPlayerSquid = PlayerInfoCapability.isSquid(player);
-                if (isPlayerSquid && !squidKey.isDown() || !isPlayerSquid && squidKey.isDown())
-                    pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 1));
-                else pressState.put(squidKey, 0);
-            } else {
-                if (squidKey.isDown())
-                    pressState.put(squidKey, Math.min(pressState.get(squidKey) + 1, 2));
-                else pressState.put(squidKey, 0);
+                        new AABB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).iterator().hasNext()) {
+            if (squidKey.equals(last) || !squidKey.active) {
+                if (info.isSquid() != squidKey.active) {
+                    ClientUtils.setSquid(info, squidKey.active);
+                }
             }
-
-
-            if (pressState.get(squidKey) == 1)
-                onSquidKeyPress();
-        } else pressState.put(squidKey, 0);
+        }
     }
 
-    public static void onSquidKeyPress() {
-        Player player = Minecraft.getInstance().player;
-        if (player != null && !player.isSpectator() && PlayerInfoCapability.hasCapability(player) && Minecraft.getInstance().screen == null) {
-            PlayerInfo capability = PlayerInfoCapability.get(player);
-            boolean newSquid = !capability.isSquid();
-            capability.setIsSquid(newSquid);
-            SplatcraftPacketHandler.sendToServer(new PlayerSetSquidServerPacket(newSquid));
-        }
+    private static boolean canHoldKeys(Minecraft minecraft) {
+        return minecraft.screen == null && minecraft.getOverlay() == null;
     }
 
     public enum KeyMode
@@ -152,21 +159,13 @@ public class SplatcraftKeyHandler {
         TOGGLE
     }
 
+    @SuppressWarnings("all") // VanillaCopy
     public static void startUsingItemInHand(InteractionHand hand)
     {
         Minecraft mc = Minecraft.getInstance();
         if (!mc.gameMode.isDestroying())
         {
             ((MinecraftClientAccessor)mc).setRightClickDelay(4);
-            /*
-            mc.rightClickDelay = 4;
-            if (!mc.player.isHandsBusy()) {
-                if (mc.hitResult == null) {
-                    LOGGER.warn("Null returned as 'hitResult', mc shouldn't happen!");
-                }
-                */
-
-            //for(InteractionHand hand : InteractionHand.values())
             {
                 net.minecraftforge.client.event.InputEvent.ClickInputEvent inputEvent = net.minecraftforge.client.ForgeHooksClient.onClickInput(1, mc.options.keyUse, hand);
                 if (inputEvent.isCanceled()) {
@@ -230,6 +229,29 @@ public class SplatcraftKeyHandler {
                 }
             }
 
+        }
+    }
+
+    private static class ToggleableKey {
+        private final KeyMapping key;
+        private boolean active;
+        private boolean wasKeyDown;
+
+        public ToggleableKey(KeyMapping key) {
+            this.key = key;
+        }
+
+        public void tick(KeyMode mode, boolean canHold) {
+            boolean isKeyDown = key.isDown() && canHold;
+            if (mode.equals(KeyMode.HOLD)) {
+                active = isKeyDown;
+                return;
+            }
+
+            if (isKeyDown && !wasKeyDown) {
+                active = !active;
+            }
+            wasKeyDown = isKeyDown;
         }
     }
 }
