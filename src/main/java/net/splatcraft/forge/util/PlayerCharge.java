@@ -63,7 +63,7 @@ public class PlayerCharge {
 
     public static void addChargeValue(Player player, ItemStack stack, float value) {
         if (value < 0.0f) {
-            throw new IllegalArgumentException("Attempted to add negative charge");
+            throw new IllegalArgumentException("Attempted to add negative charge: " + value);
         }
         if (shouldCreateCharge(player)) {
             setCharge(player, new PlayerCharge(stack, 0));
@@ -110,7 +110,7 @@ public class PlayerCharge {
         }
 
         if (hasChargeServerPlayerMap.containsKey(serverPlayer) && hasChargeServerPlayerMap.get(serverPlayer) == hasCharge) {
-            throw new IllegalStateException("Charge state did not change");
+            throw new IllegalStateException("Charge state did not change: " + hasCharge);
         }
 
         hasChargeServerPlayerMap.put(serverPlayer, hasCharge);
