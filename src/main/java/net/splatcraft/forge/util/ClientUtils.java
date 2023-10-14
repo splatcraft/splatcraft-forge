@@ -65,10 +65,10 @@ public class ClientUtils
     public static boolean showDurabilityBar(ItemStack stack)
     {
         return (SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.DURABILITY)) &&
-                getClientPlayer().getItemInHand(InteractionHand.MAIN_HAND).equals(stack) && getDurabilityForDisplay(stack) > 0;
+                getClientPlayer().getItemInHand(InteractionHand.MAIN_HAND).equals(stack) && getDurabilityForDisplay() > 0;
     }
 
-    public static double getDurabilityForDisplay(ItemStack stack)
+    public static double getDurabilityForDisplay()
     {
         Player player = getClientPlayer();
 
@@ -118,6 +118,9 @@ public class ClientUtils
     }
 
     public static void setSquid(PlayerInfo cap, boolean newSquid) {
+        if (cap.isSquid() == newSquid) {
+            return;
+        }
         cap.setIsSquid(newSquid);
         SplatcraftPacketHandler.sendToServer(new PlayerSetSquidC2SPacket(newSquid));
     }

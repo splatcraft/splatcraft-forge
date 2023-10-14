@@ -217,7 +217,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
     {
         try
         {
-            return (int) (ClientUtils.getDurabilityForDisplay(stack) * 13);
+            return (int) (ClientUtils.getDurabilityForDisplay() * 13);
         } catch (NoClassDefFoundError e)
         {
             return 13;

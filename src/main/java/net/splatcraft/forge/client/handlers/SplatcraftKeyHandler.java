@@ -36,12 +36,15 @@ import org.lwjgl.glfw.GLFW;
 public class SplatcraftKeyHandler {
     private static final List<ToggleableKey> pressState = new ObjectArrayList<>();
 
+    private static ToggleableKey fireKey;
     private static ToggleableKey squidKey;
     private static ToggleableKey subWeaponHotkey;
 
     private static int slot = -1;
 
     public static void registerKeys() {
+        fireKey = new ToggleableKey(Minecraft.getInstance().options.keyUse);
+
         KeyMapping squidMapping = new KeyMapping("key.squidForm", GLFW.GLFW_KEY_Z, "key.categories.splatcraft");
         ClientRegistry.registerKeyBinding(squidMapping);
         squidKey = new ToggleableKey(squidMapping);
@@ -56,8 +59,7 @@ public class SplatcraftKeyHandler {
     }
 
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event)
-    {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
 
@@ -67,24 +69,15 @@ public class SplatcraftKeyHandler {
 
         boolean canHold = canHoldKeys(Minecraft.getInstance());
 
+        fireKey.tick(KeyMode.HOLD, canHold);
+        updatePressState(fireKey);
+
         KeyMode squidKeyMode = SplatcraftConfig.Client.squidKeyMode.get();
         squidKey.tick(squidKeyMode, canHold);
-        if (squidKey.active) {
-            if (!pressState.contains(squidKey)) {
-                pressState.add(squidKey);
-            }
-        } else {
-            pressState.remove(squidKey);
-        }
+        updatePressState(squidKey);
 
         subWeaponHotkey.tick(KeyMode.HOLD, canHold);
-        if (subWeaponHotkey.active) {
-            if (!pressState.contains(subWeaponHotkey)) {
-                pressState.add(subWeaponHotkey);
-            }
-        } else {
-            pressState.remove(subWeaponHotkey);
-        }
+        updatePressState(subWeaponHotkey);
 
         if (CommonUtils.anyWeaponOnCooldown(player)) {
             return;
@@ -94,20 +87,21 @@ public class SplatcraftKeyHandler {
 
         ToggleableKey last = !pressState.isEmpty() ? Iterables.getLast(pressState) : null;
 
-        if (subWeaponHotkey.equals(last))
-        {
+        if (fireKey.equals(last)) {
+            // Unsquid so we can actually fire
+            ClientUtils.setSquid(info, false);
+        }
+
+        if (subWeaponHotkey.equals(last)) {
             ItemStack sub = CommonUtils.getItemInInventory(player, itemStack -> itemStack.getItem() instanceof SubWeaponItem);
 
             if (sub.isEmpty() || (info.isSquid() && player.level.getBlockCollisions(player,
-                    new AABB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).iterator().hasNext()))
+                    new AABB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).iterator().hasNext())) {
                 player.displayClientMessage(new TranslatableComponent("status.cant_use"), true);
-            else {
-                if (info.isSquid()) {
-                    ClientUtils.setSquid(info, false);
-                }
+            } else {
+                ClientUtils.setSquid(info, false);
 
-                if (!player.getItemInHand(InteractionHand.OFF_HAND).equals(sub))
-                {
+                if (!player.getItemInHand(InteractionHand.OFF_HAND).equals(sub)) {
                     slot = player.getInventory().findSlotMatchingItem(sub);
                     SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
 
@@ -126,8 +120,7 @@ public class SplatcraftKeyHandler {
                 mc.gameMode.releaseUsingItem(player);
             }
 
-            if (slot != -1)
-            {
+            if (slot != -1) {
                 ItemStack stack = player.getOffhandItem();
                 player.setItemInHand(InteractionHand.OFF_HAND, player.getInventory().getItem(slot));
                 player.getInventory().setItem(slot, stack);
@@ -142,10 +135,18 @@ public class SplatcraftKeyHandler {
                 !player.level.getBlockCollisions(player,
                         new AABB(-0.3 + player.getX(), player.getY(), -0.3 + player.getZ(), 0.3 + player.getX(), 0.6 + player.getY(), 0.3 + player.getZ())).iterator().hasNext()) {
             if (squidKey.equals(last) || !squidKey.active) {
-                if (info.isSquid() != squidKey.active) {
-                    ClientUtils.setSquid(info, squidKey.active);
-                }
+                ClientUtils.setSquid(info, squidKey.active);
             }
+        }
+    }
+
+    private static void updatePressState(ToggleableKey key) {
+        if (key.active) {
+            if (!pressState.contains(key)) {
+                pressState.add(key);
+            }
+        } else {
+            pressState.remove(key);
         }
     }
 
@@ -153,30 +154,24 @@ public class SplatcraftKeyHandler {
         return minecraft.screen == null && minecraft.getOverlay() == null;
     }
 
-    public enum KeyMode
-    {
-        HOLD,
-        TOGGLE
-    }
-
     @SuppressWarnings("all") // VanillaCopy
-    public static void startUsingItemInHand(InteractionHand hand)
-    {
+    public static void startUsingItemInHand(InteractionHand hand) {
         Minecraft mc = Minecraft.getInstance();
-        if (!mc.gameMode.isDestroying())
-        {
-            ((MinecraftClientAccessor)mc).setRightClickDelay(4);
+        if (!mc.gameMode.isDestroying()) {
+            ((MinecraftClientAccessor) mc).setRightClickDelay(4);
             {
                 net.minecraftforge.client.event.InputEvent.ClickInputEvent inputEvent = net.minecraftforge.client.ForgeHooksClient.onClickInput(1, mc.options.keyUse, hand);
                 if (inputEvent.isCanceled()) {
-                    if (inputEvent.shouldSwingHand()) mc.player.swing(hand);
+                    if (inputEvent.shouldSwingHand()) {
+                        mc.player.swing(hand);
+                    }
                     return;
                 }
                 ItemStack itemstack = mc.player.getItemInHand(hand);
                 if (mc.hitResult != null) {
-                    switch(mc.hitResult.getType()) {
+                    switch (mc.hitResult.getType()) {
                         case ENTITY:
-                            EntityHitResult entityraytraceresult = (EntityHitResult)mc.hitResult;
+                            EntityHitResult entityraytraceresult = (EntityHitResult) mc.hitResult;
                             Entity entity = entityraytraceresult.getEntity();
                             InteractionResult actionresulttype = mc.gameMode.interactAt(mc.player, entity, entityraytraceresult, hand);
                             if (!actionresulttype.consumesAction()) {
@@ -185,21 +180,23 @@ public class SplatcraftKeyHandler {
 
                             if (actionresulttype.consumesAction()) {
                                 if (actionresulttype.shouldSwing()) {
-                                    if (inputEvent.shouldSwingHand())
+                                    if (inputEvent.shouldSwingHand()) {
                                         mc.player.swing(hand);
+                                    }
                                 }
 
                                 return;
                             }
                             break;
                         case BLOCK:
-                            BlockHitResult blockraytraceresult = (BlockHitResult)mc.hitResult;
+                            BlockHitResult blockraytraceresult = (BlockHitResult) mc.hitResult;
                             int i = itemstack.getCount();
                             InteractionResult actionresulttype1 = mc.gameMode.useItemOn(mc.player, mc.level, hand, blockraytraceresult);
                             if (actionresulttype1.consumesAction()) {
                                 if (actionresulttype1.shouldSwing()) {
-                                    if (inputEvent.shouldSwingHand())
+                                    if (inputEvent.shouldSwingHand()) {
                                         mc.player.swing(hand);
+                                    }
                                     if (!itemstack.isEmpty() && (itemstack.getCount() != i || mc.gameMode.hasInfiniteItems())) {
                                         mc.gameRenderer.itemInHandRenderer.itemUsed(hand);
                                     }
@@ -214,8 +211,9 @@ public class SplatcraftKeyHandler {
                     }
                 }
 
-                if (itemstack.isEmpty() && (mc.hitResult == null || mc.hitResult.getType() == HitResult.Type.MISS))
+                if (itemstack.isEmpty() && (mc.hitResult == null || mc.hitResult.getType() == HitResult.Type.MISS)) {
                     net.minecraftforge.common.ForgeHooks.onEmptyClick(mc.player, hand);
+                }
 
                 if (!itemstack.isEmpty()) {
                     InteractionResult actionresulttype2 = mc.gameMode.useItem(mc.player, mc.level, hand);
@@ -230,6 +228,11 @@ public class SplatcraftKeyHandler {
             }
 
         }
+    }
+
+    public enum KeyMode {
+        HOLD,
+        TOGGLE
     }
 
     private static class ToggleableKey {
