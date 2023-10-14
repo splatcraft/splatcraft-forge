@@ -1,14 +1,13 @@
 package net.splatcraft.forge.network.s2c;
 
+import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 
-import java.util.UUID;
-
-public class PlayerColorPacket extends PlayToClientPacket
+public class PlayerColorPacket extends PlayS2CPacket
 {
     private final int color;
     UUID target;
