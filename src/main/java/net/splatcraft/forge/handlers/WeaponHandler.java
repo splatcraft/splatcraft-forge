@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.Splatcraft;
@@ -17,14 +18,22 @@ import net.splatcraft.forge.commands.SuperJumpCommand;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
 import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.CommonUtils;
 import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID)
 public class WeaponHandler {
 	private static final Map<Player, Vec3> prevPosMap = new LinkedHashMap<>();
+
+	@SubscribeEvent
+	public static void onItemUse(LivingEntityUseItemEvent event) {
+		if (event.getItem().getItem() instanceof WeaponBaseItem && event.getEntityLiving() instanceof Player player && CommonUtils.anyWeaponOnCooldown(player)) {
+			event.setCanceled(true);
+		}
+	}
 
 	@SubscribeEvent
 	public static void onLivingDeath(LivingDeathEvent event) {
@@ -38,7 +47,7 @@ public class WeaponHandler {
 			}
 
 			if (event.getSource().getDirectEntity() instanceof Player source) {
-				if (ScoreboardHandler.hasColorCriterion(color) && source != null)
+				if (ScoreboardHandler.hasColorCriterion(color))
 					target.getScoreboard().forAllObjectives(ScoreboardHandler.getColorKills(color), source.getScoreboardName(), score -> score.add(1));
 				if (ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(source)))
 					target.getScoreboard().forAllObjectives(ScoreboardHandler.getKillsAsColor(ColorUtils.getPlayerColor(source)), source.getScoreboardName(), score -> score.add(1));
@@ -67,8 +76,9 @@ public class WeaponHandler {
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
 			if (!(cooldown instanceof SuperJumpCommand.SuperJump) && PlayerInfoCapability.isSquid(player)) {
 				PlayerInfoCapability.get(player).setIsSquid(false);
-				if (event.side.isServer())
-					SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(player.getUUID(), false), player);
+				if (event.side.isServer()) {
+					SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidS2CPacket(player.getUUID(), false), player);
+				}
 			}
 
 			canUseWeapon = !cooldown.preventWeaponUse();
