@@ -38,6 +38,7 @@ repositories {
         name "KosmX's maven"
         url 'https://maven.kosmx.dev/'
     }
+    maven { url = 'https://maven.minecraftforge.net' }
     mavenCentral()
 }
 
