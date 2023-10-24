@@ -7,7 +7,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
-import net.splatcraft.forge.items.weapons.ChargerItem;
+import net.splatcraft.forge.items.weapons.IChargeableWeapon;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.PlayerCharge;
 
@@ -39,18 +39,19 @@ public class ChargerChargingTickableSound extends AbstractTickableSoundInstance
         y = player.getY();
         z = player.getZ();
 
-        if (player.isAlive() && player.getUseItem().getItem() instanceof ChargerItem && PlayerInfoCapability.hasCapability(player))
+        if (player.isAlive() && player.getUseItem().getItem() instanceof IChargeableWeapon && PlayerInfoCapability.hasCapability(player))
         {
             PlayerInfo info = PlayerInfoCapability.get(player);
             if (!info.isSquid())
             {
-                if (PlayerCharge.getChargeValue(player, player.getUseItem()) >= 1 && !isStopped())
+                float charge = PlayerCharge.getChargeValue(player, player.getUseItem());
+                if (charge >= 1 && !isStopped())
                 {
                     stop();
                     return;
                 }
-                pitch = PlayerCharge.getChargeValue(player, player.getUseItem()) + 0.5f;
-                pitch = Mth.lerp(Minecraft.getInstance().getDeltaFrameTime(), pitch, prevPitch);
+                pitch = charge + 0.5f;
+                pitch = Mth.lerp(Minecraft.getInstance().getDeltaFrameTime(), prevPitch, pitch);
                 prevPitch = pitch;
                 return;
             }

@@ -1,6 +1,8 @@
 package net.splatcraft.forge.handlers;
 
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -20,17 +22,13 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID)
 public class WeaponHandler {
 	private static final Map<Player, Vec3> prevPosMap = new LinkedHashMap<>();
 
 	@SubscribeEvent
 	public static void onLivingDeath(LivingDeathEvent event) {
-		if (event.getEntityLiving() instanceof Player && !event.getEntityLiving().isSpectator()) {
-			Player target = (Player) event.getEntityLiving();
+		if (event.getEntityLiving() instanceof Player target && !event.getEntityLiving().isSpectator()) {
 
 			int color = ColorUtils.getPlayerColor(target);
 			((ServerLevel) target.level).sendParticles(new SquidSoulParticleData(color), target.getX(), target.getY() + 0.5f, target.getZ(), 1, 0, 0, 0, 1.5f);
@@ -39,8 +37,7 @@ public class WeaponHandler {
 				target.getScoreboard().forAllObjectives(ScoreboardHandler.getDeathsAsColor(color), target.getScoreboardName(), score -> score.add(1));
 			}
 
-			if (event.getSource().getDirectEntity() instanceof Player) {
-				Player source = (Player) event.getSource().getDirectEntity();
+			if (event.getSource().getDirectEntity() instanceof Player source) {
 				if (ScoreboardHandler.hasColorCriterion(color) && source != null)
 					target.getScoreboard().forAllObjectives(ScoreboardHandler.getColorKills(color), source.getScoreboardName(), score -> score.add(1));
 				if (ScoreboardHandler.hasColorCriterion(ColorUtils.getPlayerColor(source)))
@@ -89,8 +86,9 @@ public class WeaponHandler {
 				((WeaponBaseItem) stack.getItem()).weaponUseTick(player.level, player, stack, player.getUseItemRemainingTicks());
 				player.setSprinting(false);
 			}
-		} else
+		} else {
 			PlayerCharge.dischargeWeapon(player);
+		}
 
 		prevPosMap.put(player, player.position());
 	}

@@ -1,5 +1,7 @@
 package net.splatcraft.forge.items.weapons;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -48,9 +50,6 @@ import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class WeaponBaseItem extends Item implements IColoredItem
 {
     public static final int USE_DURATION = 72000;
@@ -89,7 +88,11 @@ public class WeaponBaseItem extends Item implements IColoredItem
     }
 
     public static boolean reduceInk(LivingEntity player, Item item, float amount, int recoveryCooldown, boolean sendMessage) {
-        if (!enoughInk(player, item, amount, recoveryCooldown, sendMessage, false)) return false;
+        return reduceInk(player, item, amount, recoveryCooldown, sendMessage, false);
+    }
+
+    public static boolean reduceInk(LivingEntity player, Item item, float amount, int recoveryCooldown, boolean sendMessage, boolean force) {
+        if (!force && !enoughInk(player, item, amount, recoveryCooldown, sendMessage, false)) return false;
         ItemStack tank = player.getItemBySlot(EquipmentSlot.CHEST);
         if (tank.getItem() instanceof InkTankItem)
             InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);
@@ -179,7 +182,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
                     if (!level.isClientSide)
                         SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(player.getUUID(), false), player);
                 }
-                if(level.isClientSide())
+                if (level.isClientSide)
                     SplatcraftKeyHandler.canUseHotkeys = false;
                 player.setSprinting(false);
                 player.getInventory().selected = itemSlot;
