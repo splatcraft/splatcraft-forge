@@ -92,7 +92,8 @@ public class SplatcraftKeyHandler {
             ClientUtils.setSquid(info, false);
         }
 
-        if (subWeaponHotkey.equals(last)) {
+        if (subWeaponHotkey.equals(last))
+        {
             ItemStack sub = CommonUtils.getItemInInventory(player, itemStack -> itemStack.getItem() instanceof SubWeaponItem);
 
             if (sub.isEmpty() || (info.isSquid() && player.level.getBlockCollisions(player,
@@ -101,19 +102,21 @@ public class SplatcraftKeyHandler {
             } else {
                 ClientUtils.setSquid(info, false);
 
-                if (!player.getItemInHand(InteractionHand.OFF_HAND).equals(sub)) {
-                    slot = player.getInventory().findSlotMatchingItem(sub);
-                    SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
+                if(subWeaponHotkey.pressed)
+                {
+                    if (!player.getItemInHand(InteractionHand.OFF_HAND).equals(sub)) {
+                        slot = player.getInventory().findSlotMatchingItem(sub);
+                        SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
 
-                    ItemStack stack = player.getOffhandItem();
-                    player.setItemInHand(InteractionHand.OFF_HAND, player.getInventory().getItem(slot));
-                    player.getInventory().setItem(slot, stack);
-                    player.stopUsingItem();
-                } else {
-                    slot = -1;
+                        ItemStack stack = player.getOffhandItem();
+                        player.setItemInHand(InteractionHand.OFF_HAND, player.getInventory().getItem(slot));
+                        player.getInventory().setItem(slot, stack);
+                        player.stopUsingItem();
+                    } else slot = -1;
+
+                    startUsingItemInHand(InteractionHand.OFF_HAND);
                 }
 
-                startUsingItemInHand(InteractionHand.OFF_HAND);
             }
         } else {
             if (mc.gameMode != null && player.getUsedItemHand() == InteractionHand.OFF_HAND) {
@@ -127,6 +130,7 @@ public class SplatcraftKeyHandler {
                 player.stopUsingItem();
 
                 SplatcraftPacketHandler.sendToServer(new SwapSlotWithOffhandPacket(slot, false));
+                slot = -1;
             }
         }
 
@@ -239,22 +243,28 @@ public class SplatcraftKeyHandler {
         private final KeyMapping key;
         private boolean active;
         private boolean wasKeyDown;
+        private boolean pressed;
 
         public ToggleableKey(KeyMapping key) {
             this.key = key;
         }
 
-        public void tick(KeyMode mode, boolean canHold) {
+        public void tick(KeyMode mode, boolean canHold)
+        {
             boolean isKeyDown = key.isDown() && canHold;
-            if (mode.equals(KeyMode.HOLD)) {
+            if (mode.equals(KeyMode.HOLD))
+            {
+                pressed = isKeyDown && !active;
                 active = isKeyDown;
                 return;
             }
-
             if (isKeyDown && !wasKeyDown) {
                 active = !active;
             }
+
+            pressed = isKeyDown && !wasKeyDown;
             wasKeyDown = isKeyDown;
+
         }
     }
 }
