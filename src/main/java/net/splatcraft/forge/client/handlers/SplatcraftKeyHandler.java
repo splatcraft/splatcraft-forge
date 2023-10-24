@@ -119,7 +119,7 @@ public class SplatcraftKeyHandler {
 
             }
         } else {
-            if (mc.gameMode != null && player.getUsedItemHand() == InteractionHand.OFF_HAND) {
+            if (subWeaponHotkey.released && mc.gameMode != null && player.getUsedItemHand() == InteractionHand.OFF_HAND) {
                 mc.gameMode.releaseUsingItem(player);
             }
 
@@ -244,6 +244,7 @@ public class SplatcraftKeyHandler {
         private boolean active;
         private boolean wasKeyDown;
         private boolean pressed;
+        private boolean released;
 
         public ToggleableKey(KeyMapping key) {
             this.key = key;
@@ -255,6 +256,7 @@ public class SplatcraftKeyHandler {
             if (mode.equals(KeyMode.HOLD))
             {
                 pressed = isKeyDown && !active;
+                released = !isKeyDown && active;
                 active = isKeyDown;
                 return;
             }
@@ -263,6 +265,7 @@ public class SplatcraftKeyHandler {
             }
 
             pressed = isKeyDown && !wasKeyDown;
+            released = !isKeyDown && wasKeyDown;
             wasKeyDown = isKeyDown;
 
         }
