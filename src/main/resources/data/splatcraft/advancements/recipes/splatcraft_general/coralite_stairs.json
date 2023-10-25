@@ -2,7 +2,8 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "splatcraft:midnight_filter"
+      "splatcraft:coralite_stairs",
+      "splatcraft:coralite_stairs_stonecutting"
     ]
   },
   "criteria": {
@@ -12,7 +13,7 @@
         "items": [
           {
             "items": [
-              "splatcraft:filter"
+              "splatcraft:coralite"
             ]
           }
         ]
@@ -21,7 +22,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "splatcraft:midnight_filter"
+        "recipe": "splatcraft:coralite_stairs"
       }
     }
   },

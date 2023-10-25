@@ -2,16 +2,19 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "splatcraft:weapon_workbench"
+      "splatcraft:ammo_knights_workbench"
     ]
   },
   "criteria": {
-    "sardinium_to_block": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "splatcraft:sardinium"
+            "items": [
+              "splatcraft:sardinium",
+              "splatcraft:ammo_knights_scrap"
+            ]
           }
         ]
       }
@@ -25,7 +28,7 @@
   },
   "requirements": [
     [
-      "sardinium_to_block",
+      "has_item",
       "has_the_recipe"
     ]
   ]

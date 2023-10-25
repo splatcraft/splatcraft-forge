@@ -7,12 +7,14 @@
     ]
   },
   "criteria": {
-    "sardinium_to_block": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "splatcraft:barrier_bar"
+            "items": [
+              "splatcraft:barrier_bar"
+            ]
           }
         ]
       }
@@ -26,7 +28,7 @@
   },
   "requirements": [
     [
-      "sardinium_to_block",
+      "has_item",
       "has_the_recipe"
     ]
   ]

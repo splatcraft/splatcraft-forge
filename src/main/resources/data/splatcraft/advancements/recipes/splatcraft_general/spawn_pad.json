@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "splatcraft:midnight_filter"
+      "splatcraft:spawn_pad"
     ]
   },
   "criteria": {
@@ -12,7 +12,7 @@
         "items": [
           {
             "items": [
-              "splatcraft:filter"
+              "splatcraft:ammo_knights_scrap"
             ]
           }
         ]
@@ -21,7 +21,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "splatcraft:midnight_filter"
+        "recipe": "splatcraft:spawn_pad"
       }
     }
   },

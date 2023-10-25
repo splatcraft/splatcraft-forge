@@ -1,22 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " I ",
+    " # ",
     "#S#",
-    "#P#"
+    "PAP"
   ],
   "key": {
     "#": {
       "item": "splatcraft:sardinium"
     },
     "P": {
-      "item": "splatcraft:power_egg_block"
+      "item": "splatcraft:power_egg"
+    },
+    "A": {
+      "item": "splatcraft:ammo_knights_scrap"
     },
     "S": {
-      "item": "minecraft:nether_star"
-    },
-    "I": {
-      "item": "minecraft:iron_ingot"
+      "item": "splatcraft:power_egg_block"
     }
   },
   "result": {

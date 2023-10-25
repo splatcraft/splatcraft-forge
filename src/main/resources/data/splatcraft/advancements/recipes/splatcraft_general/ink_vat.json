@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "splatcraft:midnight_filter"
+      "splatcraft:ink_vat"
     ]
   },
   "criteria": {
@@ -12,7 +12,8 @@
         "items": [
           {
             "items": [
-              "splatcraft:filter"
+              "splatcraft:power_egg",
+              "splatcraft:empty_inkwell"
             ]
           }
         ]
@@ -21,7 +22,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "splatcraft:midnight_filter"
+        "recipe": "splatcraft:ink_vat"
       }
     }
   },

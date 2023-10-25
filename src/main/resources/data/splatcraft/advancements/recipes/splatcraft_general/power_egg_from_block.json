@@ -2,16 +2,18 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "splatcraft:power_egg"
+      "splatcraft:power_egg_from_block"
     ]
   },
   "criteria": {
-    "has_power_egg": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "splatcraft:power_egg"
+            "items": [
+              "splatcraft:power_egg_block"
+            ]
           }
         ]
       }
@@ -19,13 +21,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "splatcraft:sardinium_from_block"
+        "recipe": "splatcraft:power_egg_from_block"
       }
     }
   },
   "requirements": [
     [
-      "has_power_egg",
+      "has_item",
       "has_the_recipe"
     ]
   ]

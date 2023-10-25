@@ -2,16 +2,18 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "splatcraft:sardinium_block"
+      "splatcraft:sardinium_from_block"
     ]
   },
   "criteria": {
-    "has_sardinium_block": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "splatcraft:sardinium_block"
+            "items": [
+              "splatcraft:sardinium_block"
+            ]
           }
         ]
       }
@@ -25,7 +27,7 @@
   },
   "requirements": [
     [
-      "has_sardinium_block",
+      "has_item",
       "has_the_recipe"
     ]
   ]
