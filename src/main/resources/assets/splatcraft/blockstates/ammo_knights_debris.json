@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "splatcraft:block/ammo_knights_debris",
+      "y": 90
+    },
+    "facing=east": {
+      "model": "splatcraft:block/ammo_knights_debris",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "splatcraft:block/ammo_knights_debris",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "splatcraft:block/ammo_knights_debris"
+    }
+  }
+}
