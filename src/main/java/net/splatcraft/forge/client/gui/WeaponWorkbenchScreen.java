@@ -90,7 +90,9 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
 
             Level level = player.level;
             List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
+            tabList.removeIf(tab -> tab.hidden && tab.getTabRecipes(level, player).isEmpty());
             tabList.sort(WeaponWorkbenchTab::compareTo);
+
             List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level, player);
             recipeList.sort(WeaponWorkbenchRecipe::compareTo);
 
@@ -152,8 +154,10 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         Level level = player.level;
         List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
         tabList.sort(WeaponWorkbenchTab::compareTo);
+        tabList.removeIf(tab -> tab.hidden && tab.getTabRecipes(level, player).isEmpty());
         List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level, player);
         recipeList.sort(WeaponWorkbenchRecipe::compareTo);
+
         selectedWeapon = null;
         selectedRecipe = null;
         if (!recipeList.isEmpty())
@@ -443,6 +447,8 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         Level level = player.level;
         List<WeaponWorkbenchTab> tabList = level.getRecipeManager().getRecipesFor(SplatcraftRecipeTypes.WEAPON_STATION_TAB_TYPE, inventory, level);
         tabList.sort(WeaponWorkbenchTab::compareTo);
+        tabList.removeIf(tab -> tab.hidden && tab.getTabRecipes(level, player).isEmpty());
+
         List<WeaponWorkbenchRecipe> recipeList = tabList.get(tabPos).getTabRecipes(level, player);
         recipeList.sort(WeaponWorkbenchRecipe::compareTo);
 

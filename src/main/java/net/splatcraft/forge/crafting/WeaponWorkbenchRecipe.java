@@ -123,6 +123,14 @@ public class WeaponWorkbenchRecipe implements Recipe<Container>, Comparable<Weap
                 recipes.add(WeaponWorkbenchSubtypeRecipe.fromJson(id, arr.get(i).getAsJsonObject()));
             }
 
+            for(WeaponWorkbenchSubtypeRecipe r : recipes)
+            {
+                r.siblings.clear();
+                r.siblings.addAll(recipes);
+                r.siblings.removeIf(o -> o.equals(r));
+            }
+
+
             return new WeaponWorkbenchRecipe(recipeId, new ResourceLocation(GsonHelper.getAsString(json, "tab")), json.has("pos") ? GsonHelper.getAsInt(json, "pos") : Integer.MAX_VALUE, recipes);
         }
 

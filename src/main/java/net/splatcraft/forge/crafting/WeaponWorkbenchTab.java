@@ -24,12 +24,14 @@ public class WeaponWorkbenchTab implements Recipe<Container>, Comparable<WeaponW
     protected final ResourceLocation id;
     protected final ResourceLocation iconLoc;
     protected final int pos;
+    public final boolean hidden;
 
-    public WeaponWorkbenchTab(ResourceLocation id, ResourceLocation iconLoc, int pos)
+    public WeaponWorkbenchTab(ResourceLocation id, ResourceLocation iconLoc, int pos, boolean hidden)
     {
         this.id = id;
         this.iconLoc = iconLoc;
         this.pos = pos;
+        this.hidden = hidden;
     }
 
     @Override
@@ -113,14 +115,14 @@ public class WeaponWorkbenchTab implements Recipe<Container>, Comparable<WeaponW
         @Override
         public WeaponWorkbenchTab fromJson(ResourceLocation recipeId, JsonObject json)
         {
-            return new WeaponWorkbenchTab(recipeId, new ResourceLocation(GsonHelper.getAsString(json, "icon")), json.has("pos") ? GsonHelper.getAsInt(json, "pos") : Integer.MAX_VALUE);
+            return new WeaponWorkbenchTab(recipeId, new ResourceLocation(GsonHelper.getAsString(json, "icon")), GsonHelper.getAsInt(json, "pos", Integer.MAX_VALUE), GsonHelper.getAsBoolean(json, "hidden", false));
         }
 
         @Nullable
         @Override
         public WeaponWorkbenchTab fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
         {
-            return new WeaponWorkbenchTab(recipeId, buffer.readResourceLocation(), buffer.readInt());
+            return new WeaponWorkbenchTab(recipeId, buffer.readResourceLocation(), buffer.readInt(), buffer.readBoolean());
         }
 
         @Override
@@ -128,6 +130,7 @@ public class WeaponWorkbenchTab implements Recipe<Container>, Comparable<WeaponW
         {
             buffer.writeResourceLocation(recipe.iconLoc);
             buffer.writeInt(recipe.pos);
+            buffer.writeBoolean(recipe.hidden);
         }
     }
 }

@@ -18,19 +18,31 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.JsonUtils;
+import org.antlr.v4.runtime.atn.ATNConfigSet;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
 {
     private final ResourceLocation advancement;
+    private final boolean requireOther;
+    public final List<WeaponWorkbenchSubtypeRecipe> siblings = new ArrayList<>();
 
-    public WeaponWorkbenchSubtypeRecipe(ResourceLocation id, String name, ItemStack recipeOutput, NonNullList<StackedIngredient> recipeItems, ResourceLocation advancement)
+	public WeaponWorkbenchSubtypeRecipe(ResourceLocation id, String name, ItemStack recipeOutput, NonNullList<StackedIngredient> recipeItems, ResourceLocation advancement, boolean requireOther)
     {
         super(id, name, recipeOutput, recipeItems);
         this.advancement = advancement;
+        this.requireOther = requireOther;
     }
 
     public boolean isAvailable(Player player)
     {
+        if(requireOther)
+            for(WeaponWorkbenchSubtypeRecipe sibling : siblings)
+                if(!sibling.isAvailable(player))
+                    return false;
+
         if(advancement == null)
             return true;
         if(player.level.isClientSide())
@@ -66,7 +78,7 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
         ResourceLocation advancement = json.has("advancement") && !GsonHelper.getAsString(json, "advancement").isEmpty()
                 ? new ResourceLocation(GsonHelper.getAsString(json, "advancement")) : null;
 
-        return new WeaponWorkbenchSubtypeRecipe(recipeId, name, output, input, advancement);
+        return new WeaponWorkbenchSubtypeRecipe(recipeId, name, output, input, advancement, GsonHelper.getAsBoolean(json, "requires_other", false));
     }
 
     public static WeaponWorkbenchSubtypeRecipe fromBuffer(ResourceLocation recipeId, FriendlyByteBuf buffer)
@@ -79,7 +91,7 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
             input.set(j, new StackedIngredient(Ingredient.fromNetwork(buffer), buffer.readInt()));
         }
 
-        return new WeaponWorkbenchSubtypeRecipe(recipeId, buffer.readUtf(), buffer.readItem(), input, buffer.readBoolean() ? new ResourceLocation(buffer.readUtf()) : null);
+        return new WeaponWorkbenchSubtypeRecipe(recipeId, buffer.readUtf(), buffer.readItem(), input, buffer.readBoolean() ? new ResourceLocation(buffer.readUtf()) : null, buffer.readBoolean());
     }
 
     public void toBuffer(FriendlyByteBuf buffer)
@@ -96,6 +108,8 @@ public class WeaponWorkbenchSubtypeRecipe extends AbstractWeaponWorkbenchRecipe
         buffer.writeBoolean(advancement != null);
         if(advancement != null)
             buffer.writeUtf(advancement.toString());
+
+        buffer.writeBoolean(requireOther);
 
     }
 }
