@@ -12,6 +12,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.Serializer;
+import net.splatcraft.forge.items.BlueprintItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,11 @@ import java.util.List;
 public class BlueprintLootFunction implements LootItemFunction
 {
 	final List<String> advancementIds;
+	final String weaponType;
 
-	public BlueprintLootFunction(List<String> advancements)
+	public BlueprintLootFunction(String weaponType, List<String> advancements)
 	{
+		this.weaponType = weaponType;
 		advancementIds = advancements;
 	}
 
@@ -33,14 +36,9 @@ public class BlueprintLootFunction implements LootItemFunction
 	@Override
 	public ItemStack apply(ItemStack stack, LootContext lootContext)
 	{
-		ListTag listtag = new ListTag();
+		BlueprintItem.setPoolFromWeaponType(stack, weaponType);
 
-		this.advancementIds.stream().map(StringTag::valueOf).forEach(listtag::add);
-
-
-
-		stack.getOrCreateTag().put("Advancements", listtag);
-		return stack;
+		return BlueprintItem.addToAdvancementPool(stack, this.advancementIds.stream());
 	}
 
 	public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<BlueprintLootFunction>
@@ -53,16 +51,18 @@ public class BlueprintLootFunction implements LootItemFunction
 			lootFunction.advancementIds.forEach(array::add);
 
 			json.add("advancements", array);
+			if(!lootFunction.weaponType.isEmpty())
+				json.addProperty("weapon_pool", lootFunction.weaponType);
 		}
 		@Override
 		public BlueprintLootFunction deserialize(JsonObject json, JsonDeserializationContext context)
 		{
-			JsonArray array = GsonHelper.getAsJsonArray(json, "advancements");
 			List<String> advancements = new ArrayList<>();
 
+			JsonArray array = GsonHelper.getAsJsonArray(json, "advancements", new JsonArray());
 			array.forEach(element -> advancements.add(element.getAsString()));
 
-			return new BlueprintLootFunction(advancements);
+			return new BlueprintLootFunction(GsonHelper.getAsString(json, "weapon_pool", ""), advancements);
 		}
 	}
 }

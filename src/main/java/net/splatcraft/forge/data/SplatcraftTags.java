@@ -31,6 +31,7 @@ public class SplatcraftTags
         public static final HashMap<InkTankItem, TagKey<Item>> INK_TANK_BLACKLIST = new HashMap<>();
 
         public static final TagKey<Item> MATCH_ITEMS = createTag("match_items");
+        public static final TagKey<Item> BLUEPRINT_EXCLUDED = createTag("excluded_from_blueprint_pool");
         public static final TagKey<Item> REVEALS_BARRIERS = createTag("reveals_barriers");
 
         public static final TagKey<Item> SHOOTERS = createTag("shooters");
