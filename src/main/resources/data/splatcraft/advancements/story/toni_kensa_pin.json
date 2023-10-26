@@ -1,0 +1,41 @@
+{
+  "parent": "splatcraft:story/get_weapon_workbench",
+  "display": {
+    "icon": {
+      "item": "splatcraft:toni_kensa_pin"
+    },
+    "title": {
+      "translate": "advancements.splatcraft.story.toni_kensa_pin.name"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.story.toni_kensa_pin.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "splatcraft:toni_kensa_pin"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ],
+  "rewards":
+  {
+    "function": "splatcraft:advancements/unlock_kensa_set"
+  }
+}

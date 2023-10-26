@@ -20,6 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -106,7 +107,6 @@ public class SquidFormHandler {
             player.awardStat(SplatcraftStats.SQUID_TIME);
 
             if (InkBlockUtils.canSquidHide(player)) {
-                player.fallDistance = 0;
                 if (player.getHealth() < player.getMaxHealth() && SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.INK_HEALING) && player.tickCount % 5 == 0 && !player.hasEffect(MobEffects.POISON) && !player.hasEffect(MobEffects.WITHER)) {
                     player.heal(0.5f);
                     if (SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.INK_HEALING_CONSUMES_HUNGER))
@@ -147,6 +147,17 @@ public class SquidFormHandler {
         }
         if (InkOverlayCapability.hasCapability(player)) {
             InkOverlayCapability.get(player).addAmount(-0.01f);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingFall(LivingFallEvent event)
+    {
+        if(event.getEntityLiving() instanceof ServerPlayer player && PlayerInfoCapability.get(player).isSquid())
+        {
+            if(InkBlockUtils.canSquidHide(player))
+                SplatcraftStats.FALL_INTO_INK_TRIGGER.trigger(player, event.getDistance());
+            event.setCanceled(true);
         }
     }
 

@@ -1,0 +1,31 @@
+{
+  "parent": "splatcraft:story/get_weapon_workbench",
+  "display": {
+    "icon": {
+      "item": "splatcraft:inkwell"
+    },
+    "title": {
+      "translate": "advancements.splatcraft.story.fall_into_ink.name"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.story.fall_into_ink.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "fall_into_ink": {
+      "trigger": "splatcraft:fall_into_ink",
+      "conditions": {
+        "distance": 28
+      }
+    }
+  },
+  "requirements": [
+    [
+      "fall_into_ink"
+    ]
+  ]
+}

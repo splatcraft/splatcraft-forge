@@ -1,0 +1,37 @@
+{
+  "parent": "splatcraft:story/get_weapon_workbench",
+  "display": {
+    "icon": {
+      "item": "splatcraft:blueprint"
+    },
+    "title": {
+      "translate": "advancements.splatcraft.story.get_blueprint.name"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.story.get_blueprint.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "splatcraft:blueprint"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

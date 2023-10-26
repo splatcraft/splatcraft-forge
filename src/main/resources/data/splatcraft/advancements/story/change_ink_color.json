@@ -1,0 +1,29 @@
+{
+  "parent": "splatcraft:story/get_sardinium",
+  "display": {
+    "icon": {
+      "item": "splatcraft:ink_vat"
+    },
+    "title": {
+      "translate": "advancements.splatcraft.story.change_ink_color.name"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.story.change_ink_color.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "changed_color": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {}
+    }
+  },
+  "requirements": [
+    [
+      "changed_color"
+    ]
+  ]
+}

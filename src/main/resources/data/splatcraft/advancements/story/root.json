@@ -1,0 +1,93 @@
+{
+  "display": {
+    "icon": {
+      "item": "splatcraft:splattershot",
+      "nbt": "{Color:\"splatcraft:orange\"}"
+    },
+    "title": {
+      "translate": "advancements.splatcraft.story.root.name"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.story.root.description"
+    },
+    "background": "splatcraft:textures/blocks/raw_sardinium_block.png",
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "minecraft:ocean": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "biome": "minecraft:ocean"
+        }
+      }
+    },
+    "minecraft:warm_ocean": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "biome": "minecraft:warm_ocean"
+        }
+      }
+    },
+    "minecraft:lukewarm_ocean": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "biome": "minecraft:lukewarm_ocean"
+        }
+      }
+    },
+    "minecraft:cold_ocean": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "biome": "minecraft:cold_ocean"
+        }
+      }
+    },
+    "minecraft:deep_lukewarm_ocean": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "biome": "minecraft:deep_lukewarm_ocean"
+        }
+      }
+    },
+    "minecraft:deep_cold_ocean": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "biome": "minecraft:deep_cold_ocean"
+        }
+      }
+    },
+    "minecraft:deep_frozen_ocean": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "biome": "minecraft:deep_frozen_ocean"
+        }
+      }
+    }
+
+  },
+  "requirements": [
+    [
+      "minecraft:ocean",
+      "minecraft:warm_ocean",
+      "minecraft:lukewarm_ocean",
+      "minecraft:cold_ocean",
+      "minecraft:deep_lukewarm_ocean",
+      "minecraft:deep_cold_ocean",
+      "minecraft:deep_frozen_ocean"
+    ]
+  ],
+  "rewards":
+  {
+    "function": "splatcraft:advancements/unlock_categories"
+  }
+}

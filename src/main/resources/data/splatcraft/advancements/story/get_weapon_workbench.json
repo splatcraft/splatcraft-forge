@@ -1,0 +1,37 @@
+{
+  "parent": "splatcraft:story/get_sardinium",
+  "display": {
+    "icon": {
+      "item": "splatcraft:ammo_knights_workbench"
+    },
+    "title": {
+      "translate": "advancements.splatcraft.story.get_weapon_workbench.name"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.story.get_weapon_workbench.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "splatcraft:ammo_knights_workbench"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

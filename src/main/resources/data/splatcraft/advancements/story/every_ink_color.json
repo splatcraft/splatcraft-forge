@@ -1,0 +1,297 @@
+{
+  "parent": "splatcraft:story/change_ink_color",
+  "display": {
+    "icon": {
+      "item": "splatcraft:creative_filter"
+    },
+    "title": {
+      "translate": "advancements.splatcraft.story.every_ink_color.name"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.story.every_ink_color.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "orange": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:orange"}
+    },
+    "blue": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:blue"}
+    },
+    "green": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:green"}
+    },
+    "pink": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:pink"}
+    },
+    "light_blue": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:light_blue"}
+    },
+    "turquoise": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:turquoise"}
+    },
+    "yellow": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:yellow"}
+    },
+    "lilac": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:lilac"}
+    },
+    "lemon": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:lemon"}
+    },
+    "plum": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:plum"}
+    },
+    "cyan": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:cyan"}
+    },
+    "peach": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:peach"}
+    },
+    "mint": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:mint"}
+    },
+    "cherry": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:cherry"}
+    },
+    "neon_pink": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:neon_pink"}
+    },
+    "neon_green": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:neon_green"}
+    },
+    "neon_orange": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:neon_orange"}
+    },
+    "neon_blue": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:neon_blue"}
+    },
+    "hero_yellow": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:hero_yellow"}
+    },
+    "octo_pink": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:octo_pink"}
+    },
+    "mojang": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:mojang"}
+    },
+    "cobalt": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:cobalt"}
+    },
+    "ice": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:ice"}
+    },
+    "floral": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:floral"}
+    },
+    "omni_green": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:omni_green"}
+    },
+    "mana": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:mana"}
+    },
+    "dye_white": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_white"}
+    },
+    "dye_orange": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_orange"}
+    },
+    "dye_magenta": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_magenta"}
+    },
+    "dye_yellow": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_yellow"}
+    },
+    "dye_lime": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_lime"}
+    },
+    "dye_pink": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_pink"}
+    },
+    "dye_gray": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_gray"}
+    },
+    "dye_light_gray": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_light_gray"}
+    },
+    "dye_cyan": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_cyan"}
+    },
+    "dye_purple": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_purple"}
+    },
+    "dye_blue": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_blue"}
+    },
+    "dye_brown": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_brown"}
+    },
+    "dye_green": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_green"}
+    },
+    "dye_red": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_red"}
+    },
+    "dye_black": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dye_black"}
+    },
+    "royal_blue": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:royal_blue"}
+    },
+    "moth_green": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:moth_green"}
+    },
+    "light_green": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:light_green"}
+    },
+    "purple": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:purple"}
+    },
+    "mustard": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:mustard"}
+    },
+    "lumigreen": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:lumigreen"}
+    },
+    "dark_blue": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:dark_blue"}
+    },
+    "soda": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:soda"}
+    },
+    "deep_blue": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:deep_blue"}
+    },
+    "fuchsia": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:fuchsia"}
+    },
+    "winter_green": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:winter_green"}
+    },
+    "pumpkin": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:pumpkin"}
+    },
+    "redwood": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:redwood"}
+    },
+    "default": {
+      "trigger": "splatcraft:change_ink_color",
+      "conditions": {"color": "splatcraft:default"}
+    }
+  },
+  "requirements": [
+    ["orange"],
+    ["blue"],
+    ["green"],
+    ["pink"],
+    ["light_blue"],
+    ["turquoise"],
+    ["yellow"],
+    ["lilac"],
+    ["lemon"],
+    ["plum"],
+    ["cyan"],
+    ["peach"],
+    ["mint"],
+    ["cherry"],
+    ["neon_pink"],
+    ["neon_green"],
+    ["neon_orange"],
+    ["neon_blue"],
+    ["hero_yellow"],
+    ["octo_pink"],
+    ["mojang"],
+    ["cobalt"],
+    ["ice"],
+    ["floral"],
+    ["omni_green"],
+    ["mana"],
+    ["dye_white"],
+    ["dye_orange"],
+    ["dye_magenta"],
+    ["dye_yellow"],
+    ["dye_lime"],
+    ["dye_pink"],
+    ["dye_gray"],
+    ["dye_light_gray"],
+    ["dye_cyan"],
+    ["dye_purple"],
+    ["dye_blue"],
+    ["dye_brown"],
+    ["dye_green"],
+    ["dye_red"],
+    ["dye_black"],
+    ["royal_blue"],
+    ["moth_green"],
+    ["light_green"],
+    ["purple"],
+    ["mustard"],
+    ["lumigreen"],
+    ["dark_blue"],
+    ["soda"],
+    ["deep_blue"],
+    ["fuchsia"],
+    ["winter_green"],
+    ["pumpkin"],
+    ["redwood"],
+    ["default"]
+  ]
+}

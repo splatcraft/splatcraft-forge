@@ -1,0 +1,562 @@
+{
+  "parent": "splatcraft:story/get_blueprint",
+  "display": {
+    "icon": {
+      "item": "splatcraft:ancient_splattershot"
+    },
+    "title": {
+      "translate": "advancements.splatcraft.story.get_all_weapons.name"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.story.get_all_weapons.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "splattershot_jr": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:splattershot_jr"
+        ]
+      }}
+    },
+    "kensa_splattershot_jr": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:kensa_splattershot_jr"
+        ]
+      }}
+    },
+    "splattershot": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:splattershot"
+        ]
+      }}
+    },
+    "tentatek_splattershot": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:tentatek_splattershot"
+        ]
+      }}
+    },
+    "wasabi_splattershot": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:wasabi_splattershot"
+        ]
+      }}
+    },
+    "aerospray_mg": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:aerospray_mg"
+        ]
+      }}
+    },
+    "aerospray_rg": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:aerospray_rg"
+        ]
+      }}
+    },
+    "52_gal": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:52_gal"
+        ]
+      }}
+    },
+    "52_gal_deco": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:52_gal_deco"
+        ]
+      }}
+    },
+    "kensa_52_gal": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:kensa_52_gal"
+        ]
+      }}
+    },
+    "96_gal": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:96_gal"
+        ]
+      }}
+    },
+    "96_gal_deco": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:96_gal_deco"
+        ]
+      }}
+    },
+    "n-zap85": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:n-zap85"
+        ]
+      }}
+    },
+    "n-zap89": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:n-zap89"
+        ]
+      }}
+    },
+    "blaster": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:blaster"
+        ]
+      }}
+    },
+    "grim_blaster": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:grim_blaster"
+        ]
+      }}
+    },
+    "clash_blaster": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:clash_blaster"
+        ]
+      }}
+    },
+    "clash_blaster_neo": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:clash_blaster_neo"
+        ]
+      }}
+    },
+    "luna_blaster": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:luna_blaster"
+        ]
+      }}
+    },
+    "splat_roller": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:splat_roller"
+        ]
+      }}
+    },
+    "krak_on_splat_roller": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:krak_on_splat_roller"
+        ]
+      }}
+    },
+    "corocoro_splat_roller": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:corocoro_splat_roller"
+        ]
+      }}
+    },
+    "carbon_roller": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:carbon_roller"
+        ]
+      }}
+    },
+    "dynamo_roller": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:dynamo_roller"
+        ]
+      }}
+    },
+    "inkbrush": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:inkbrush"
+        ]
+      }}
+    },
+    "octobrush": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:octobrush"
+        ]
+      }}
+    },
+    "kensa_octobrush": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:kensa_octobrush"
+        ]
+      }}
+    },
+    "splat_charger": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:splat_charger"
+        ]
+      }}
+    },
+    "kelp_splat_charger": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:kelp_splat_charger"
+        ]
+      }}
+    },
+    "bento_splat_charger": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:bento_splat_charger"
+        ]
+      }}
+    },
+    "e_liter_4k": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:e_liter_4k"
+        ]
+      }}
+    },
+    "e_liter_3k": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:e_liter_3k"
+        ]
+      }}
+    },
+    "bamboozler_14_mk1": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:bamboozler_14_mk1"
+        ]
+      }}
+    },
+    "bamboozler_14_mk2": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:bamboozler_14_mk2"
+        ]
+      }}
+    },
+    "classic_squiffer": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:classic_squiffer"
+        ]
+      }}
+    },
+    "splat_dualies": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:splat_dualies"
+        ]
+      }}
+    },
+    "enperry_splat_dualies": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:enperry_splat_dualies"
+        ]
+      }}
+    },
+    "dualie_squelchers": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:dualie_squelchers"
+        ]
+      }}
+    },
+    "glooga_dualies": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:glooga_dualies"
+        ]
+      }}
+    },
+    "glooga_dualies_deco": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:glooga_dualies_deco"
+        ]
+      }}
+    },
+    "kensa_glooga_dualies": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:kensa_glooga_dualies"
+        ]
+      }}
+    },
+    "slosher": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:slosher"
+        ]
+      }}
+    },
+    "classic_slosher": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:classic_slosher"
+        ]
+      }}
+    },
+    "soda_slosher": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:soda_slosher"
+        ]
+      }}
+    },
+    "tri_slosher": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:tri_slosher"
+        ]
+      }}
+    },
+    "explosher": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:explosher"
+        ]
+      }}
+    },
+    "ink_tank": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:ink_tank"
+        ]
+      }}
+    },
+    "classic_ink_tank": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:classic_ink_tank"
+        ]
+      }}
+    },
+    "ink_tank_jr": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:ink_tank_jr"
+        ]
+      }}
+    },
+    "armored_ink_tank": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:armored_ink_tank"
+        ]
+      }}
+    },
+    "splat_bomb": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:splat_bomb"
+        ]
+      }}
+    },
+    "burst_bomb": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:burst_bomb"
+        ]
+      }}
+    },
+    "suction_bomb": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:suction_bomb"
+        ]
+      }}
+    },
+    "curling_bomb": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:curling_bomb"
+        ]
+      }}
+    }
+  },
+  "requirements": [
+    ["splattershot_jr"],
+    ["kensa_splattershot_jr"],
+    ["splattershot"],
+    ["tentatek_splattershot"],
+    ["wasabi_splattershot"],
+    ["aerospray_mg"],
+    ["aerospray_rg"],
+    ["52_gal"],
+    ["52_gal_deco"],
+    ["kensa_52_gal"],
+    ["96_gal"],
+    ["96_gal_deco"],
+    ["n-zap85"],
+    ["n-zap89"],
+    ["blaster"],
+    ["grim_blaster"],
+    ["clash_blaster"],
+    ["clash_blaster_neo"],
+    ["luna_blaster"],
+    ["splat_roller"],
+    ["krak_on_splat_roller"],
+    ["corocoro_splat_roller"],
+    ["carbon_roller"],
+    ["dynamo_roller"],
+    ["inkbrush"],
+    ["octobrush"],
+    ["kensa_octobrush"],
+    ["splat_charger"],
+    ["kelp_splat_charger"],
+    ["bento_splat_charger"],
+    ["e_liter_4k"],
+    ["e_liter_3k"],
+    ["bamboozler_14_mk1"],
+    ["bamboozler_14_mk2"],
+    ["classic_squiffer"],
+    ["splat_dualies"],
+    ["enperry_splat_dualies"],
+    ["dualie_squelchers"],
+    ["glooga_dualies"],
+    ["glooga_dualies_deco"],
+    ["kensa_glooga_dualies"],
+    ["slosher"],
+    ["classic_slosher"],
+    ["soda_slosher"],
+    ["tri_slosher"],
+    ["explosher"],
+    ["ink_tank"],
+    ["classic_ink_tank"],
+    ["ink_tank_jr"],
+    ["armored_ink_tank"],
+    ["splat_bomb"],
+    ["burst_bomb"],
+    ["suction_bomb"],
+    ["curling_bomb"]
+  ]
+}

@@ -6,7 +6,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.criteriaTriggers.ChangeInkColorTrigger;
 import net.splatcraft.forge.criteriaTriggers.CraftWeaponTrigger;
+import net.splatcraft.forge.criteriaTriggers.FallIntoInkTrigger;
+import net.splatcraft.forge.criteriaTriggers.ScanTurfTrigger;
 
 public class SplatcraftStats
 {
@@ -18,6 +21,9 @@ public class SplatcraftStats
     public static final ResourceLocation SQUID_TIME = register("squid_time", StatFormatter.TIME);
 
     public static final CraftWeaponTrigger CRAFT_WEAPON_TRIGGER = CriteriaTriggers.register(new CraftWeaponTrigger());
+    public static final ChangeInkColorTrigger CHANGE_INK_COLOR_TRIGGER = CriteriaTriggers.register(new ChangeInkColorTrigger());
+    public static final ScanTurfTrigger SCAN_TURF_TRIGGER = CriteriaTriggers.register(new ScanTurfTrigger());
+    public static final FallIntoInkTrigger FALL_INTO_INK_TRIGGER = CriteriaTriggers.register(new FallIntoInkTrigger());
 
     public static void register()
     {

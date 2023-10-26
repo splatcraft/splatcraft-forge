@@ -1,0 +1,32 @@
+{
+  "parent": "splatcraft:story/turf_war_won",
+  "display": {
+    "icon": {
+      "item": "splatcraft:clear_ink_band"
+    },
+    "title": {
+      "translate": "advancements.splatcraft.story.turf_war_ruler.name"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.story.turf_war_ruler.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "scan_turf": {
+      "trigger": "splatcraft:scan_turf",
+      "conditions": {
+        "blocks_inked": 500,
+        "winner": true
+      }
+    }
+  },
+  "scan_turf": [
+    [
+      "changed_color"
+    ]
+  ]
+}

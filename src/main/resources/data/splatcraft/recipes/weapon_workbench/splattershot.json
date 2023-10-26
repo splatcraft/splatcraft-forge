@@ -72,6 +72,28 @@
           "count": 2
         }
       ]
+    },
+    {
+      "name": "weaponType.special",
+      "advancement": "splatcraft:story/get_all_weapons",
+      "result": {
+        "item": "splatcraft:ancient_splattershot",
+        "count": 1
+      },
+      "ingredients": [
+        {
+          "item": "minecraft:netherite_scrap",
+          "count": 5
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 14
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 4
+        }
+      ]
     }
   ]
 }

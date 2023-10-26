@@ -10,6 +10,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -28,6 +29,7 @@ import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerColorPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftInkColors;
+import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 
 import java.util.Objects;
@@ -83,10 +85,14 @@ public class ColorUtils
 
     public static void setPlayerColor(Player player, int color, boolean updateClient)
     {
-        if (PlayerInfoCapability.hasCapability(player))
+        if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).getColor() != color)
         {
+            if(player instanceof ServerPlayer serverPlayer)
+                SplatcraftStats.CHANGE_INK_COLOR_TRIGGER.trigger(serverPlayer);
+
             PlayerInfoCapability.get(player).setColor(color);
             ScoreboardHandler.updatePlayerScore(ScoreboardHandler.COLOR, player, color);
+
         }
 
         Level level = player.level;

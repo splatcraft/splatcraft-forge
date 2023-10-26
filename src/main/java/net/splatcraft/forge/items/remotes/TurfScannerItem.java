@@ -178,6 +178,9 @@ public class TurfScannerItem extends RemoteItem
         {
             int color = ColorUtils.getPlayerColor(player);
 
+            if(scores.containsKey(color) && player instanceof ServerPlayer serverPlayer)
+                SplatcraftStats.SCAN_TURF_TRIGGER.trigger(serverPlayer, scores.get(color), color == winner);
+
             if(color == winner)
                 player.awardStat(SplatcraftStats.TURF_WARS_WON);
 

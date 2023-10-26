@@ -1,0 +1,37 @@
+{
+  "parent": "splatcraft:story/root",
+  "display": {
+    "icon": {
+      "item": "splatcraft:sardinium"
+    },
+    "title": {
+      "translate": "advancements.splatcraft.story.get_sardinium.name"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.story.get_sardinium.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "splatcraft:sardinium"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

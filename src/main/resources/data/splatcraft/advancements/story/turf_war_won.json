@@ -1,0 +1,31 @@
+{
+  "parent": "splatcraft:story/get_sardinium",
+  "display": {
+    "icon": {
+      "item": "splatcraft:turf_scanner"
+    },
+    "title": {
+      "translate": "advancements.splatcraft.story.turf_war_won.name"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.story.turf_war_won.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "scan_turf": {
+      "trigger": "splatcraft:scan_turf",
+      "conditions": {
+        "winner": true
+      }
+    }
+  },
+  "scan_turf": [
+    [
+      "changed_color"
+    ]
+  ]
+}
