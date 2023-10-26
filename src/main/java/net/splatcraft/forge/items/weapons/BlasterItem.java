@@ -16,16 +16,23 @@ import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponTooltip;
 
-public class BlasterItem extends ShooterItem
+public class BlasterItem extends WeaponBaseItem
 {
-    public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, WeaponSettings settings)
+    public WeaponSettings settings;
+
+    public static RegistryObject<ShooterItem> createBlaster(DeferredRegister<Item> registry, WeaponSettings settings)
     {
-        return registry.register(settings.name, () -> new BlasterItem(settings));
+        return registry.register(settings.name, () -> new ShooterItem(settings));
     }
 
-    public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, RegistryObject<BlasterItem> parent, String name)
+    public static RegistryObject<ShooterItem> createBlaster(DeferredRegister<Item> registry, RegistryObject<ShooterItem> parent, String name)
     {
-        return registry.register(name, () -> new BlasterItem(parent.get().settings));
+        return createBlaster(registry, parent, name, false);
+    }
+
+    public static RegistryObject<ShooterItem> createBlaster(DeferredRegister<Item> registry, RegistryObject<ShooterItem> parent, String name, boolean secret)
+    {
+        return registry.register(name, () -> new ShooterItem(parent.get().settings).setSecret(secret));
     }
 
     protected BlasterItem(WeaponSettings settings) {

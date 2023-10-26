@@ -32,18 +32,14 @@ public class ShooterItem extends WeaponBaseItem {
         return registry.register(name, () -> new ShooterItem(parent.get().settings).setSecret(secret));
     }
 
-
-
     protected ShooterItem(WeaponSettings settings)
     {
         super(settings);
         this.settings = settings;
 
-        if (!(this instanceof BlasterItem)) {
-            addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / 1.2f * 100)));
-            addStat(new WeaponTooltip("damage", (stack, level) -> (int) (settings.baseDamage / 20 * 100)));
-            addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - settings.firingSpeed) / 15f * 100)));
-        }
+	    addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / 1.2f * 100)));
+	    addStat(new WeaponTooltip("damage", (stack, level) -> (int) (settings.baseDamage / 20 * 100)));
+	    addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - settings.firingSpeed) / 15f * 100)));
     }
 
     @Override
