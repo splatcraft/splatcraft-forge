@@ -19,6 +19,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -164,6 +165,22 @@ public class WeaponWorkbenchScreen extends AbstractContainerScreen<WeaponWorkben
         {
             selectedWeapon = recipeList.get(typePos);
             selectedRecipe = selectedWeapon.getRecipeFromIndex(player, subTypePos);
+        }
+        else
+        {
+            int boxSize = 106;
+            Component emptyText = new TranslatableComponent("gui.ammo_knights_workbench.empty");
+            List<FormattedCharSequence> split = font.split(emptyText, boxSize);
+
+            float yy = 73 - split.size() * 0.5f * font.lineHeight;
+
+
+
+            for(FormattedCharSequence formattedcharsequence : split)
+            {
+                this.font.draw(matrixStack, formattedcharsequence, imageWidth / 2f - font.width(formattedcharsequence) / 2f, yy, 0xFFFFFF);
+                yy += font.lineHeight;
+            }
         }
 
         //Update Craft Button
