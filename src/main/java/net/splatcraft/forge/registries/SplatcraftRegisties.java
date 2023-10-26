@@ -5,7 +5,7 @@ import net.splatcraft.forge.worldgen.SplatcraftOreGen;
 
 public class SplatcraftRegisties
 {
-	public static final void register()
+	public static void register()
 	{
 		SplatcraftBlocks.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 		SplatcraftEntities.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -13,5 +13,6 @@ public class SplatcraftRegisties
 		SplatcraftTileEntities.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 		SplatcraftTileEntities.CONTAINER_REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 		SplatcraftOreGen.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
+		SplatcraftLoot.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 }
