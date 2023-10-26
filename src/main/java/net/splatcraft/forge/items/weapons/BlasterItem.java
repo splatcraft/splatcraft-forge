@@ -20,23 +20,24 @@ public class BlasterItem extends WeaponBaseItem
 {
     public WeaponSettings settings;
 
-    public static RegistryObject<ShooterItem> createBlaster(DeferredRegister<Item> registry, WeaponSettings settings)
+    public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, WeaponSettings settings)
     {
-        return registry.register(settings.name, () -> new ShooterItem(settings));
+        return registry.register(settings.name, () -> new BlasterItem(settings));
     }
 
-    public static RegistryObject<ShooterItem> createBlaster(DeferredRegister<Item> registry, RegistryObject<ShooterItem> parent, String name)
+    public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, RegistryObject<BlasterItem> parent, String name)
     {
         return createBlaster(registry, parent, name, false);
     }
 
-    public static RegistryObject<ShooterItem> createBlaster(DeferredRegister<Item> registry, RegistryObject<ShooterItem> parent, String name, boolean secret)
+    public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, RegistryObject<BlasterItem> parent, String name, boolean secret)
     {
-        return registry.register(name, () -> new ShooterItem(parent.get().settings).setSecret(secret));
+        return registry.register(name, () -> new BlasterItem(parent.get().settings).setSecret(secret));
     }
 
     protected BlasterItem(WeaponSettings settings) {
         super(settings);
+        this.settings = settings;
 
         addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / settings.projectileLifespan * 100)));
         addStat(new WeaponTooltip("impact", (stack, level) -> (int) (settings.projectileSize / 2.0f * 100)));
