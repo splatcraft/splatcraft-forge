@@ -1,0 +1,6 @@
+{
+  "type": "splatcraft:weapon_workbench_tab",
+  "icon": "splatcraft:textures/gui/icons/rare.png",
+  "pos": 13,
+  "hidden": true
+}

@@ -1,0 +1,29 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/rare",
+  "pos": 0,
+  "recipes": [
+    {
+      "name": "inkType.clear",
+      "advancement": "splatcraft:story/turf_war_ruler",
+      "result": {
+        "item": "splatcraft:clear_ink_band",
+        "count": 1
+      },
+      "ingredients": [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 16
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 64
+        },
+        {
+          "item": "minecraft:glass",
+          "count": 8
+        }
+      ]
+    }
+  ]
+}

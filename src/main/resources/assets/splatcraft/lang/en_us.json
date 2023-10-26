@@ -4,7 +4,7 @@
 
   "advancements.splatcraft.story.root.name": "Splatcraft",
   "advancements.splatcraft.story.root.description": "A tale of kid and squid",
-  "advancements.splatcraft.story.get_sardinium.name": "Fish out of water",
+  "advancements.splatcraft.story.get_sardinium.name": "Fish Out of Water",
   "advancements.splatcraft.story.get_sardinium.description": "Find Sardinium deposits underwater, and smelt their ore into something more handy",
   "advancements.splatcraft.story.get_weapon_workbench.name": "Ink Tinkerer",
   "advancements.splatcraft.story.get_weapon_workbench.description": "Use Sardinium and Ammo Knights Scraps found underwater to make a Weapon Workbench",
@@ -254,6 +254,7 @@
   "weaponTab.splatcraft:weapon_workbench_tabs/sub_weapons": "Sub Weapons",
   "weaponTab.splatcraft:weapon_workbench_tabs/special_weapons": "Special Weapons",
   "weaponTab.splatcraft:weapon_workbench_tabs/ink_tanks": "Ink Tanks",
+  "weaponTab.splatcraft:weapon_workbench_tabs/rare": "Fresh Swag",
 
   "weaponTab.description.splatcraft:weapon_workbench_tabs/shooters": "War, war never changes",
   "weaponTab.description.splatcraft:weapon_workbench_tabs/blasters": "Business is boomin'",
@@ -266,6 +267,7 @@
   "weaponTab.description.splatcraft:weapon_workbench_tabs/sub_weapons": "Lamp oil? Rope? Bombs?",
   "weaponTab.description.splatcraft:weapon_workbench_tabs/special_weapons": "Bring out the big guns!",
   "weaponTab.description.splatcraft:weapon_workbench_tabs/ink_tanks": "Carry no less than 5 at a time, like a sensible person",
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/rare": "Reserved for the best of the best",
 
   "weaponRecipe.splatcraft:weapon_workbench/aerospray": "Aerospray",
   "weaponRecipe.splatcraft:weapon_workbench/n-zap": "N-ZAP",
@@ -304,6 +306,9 @@
   "weaponType.85": "'85",
   "weaponType.89": "'89",
 
+  "inkType.glowing": "Glowing Ink",
+  "inkType.clear": "Clear Ink",
+
   "subtitle.shooter_firing": "Shooter Firing",
   "subtitle.blaster_firing": "Blaster Firing",
   "subtitle.blaster_explosion": "Blaster Projectile Explodes",
@@ -336,6 +341,7 @@
   "container.ammo_knights_workbench": "Weapon Crafting",
 
   "gui.ammo_knights_workbench.craft": "Craft",
+  "gui.ammo_knights_workbench.empty": "Find Blueprints to unlock more weapons!",
 
   "ink_color.invert": "Inverted %s",
   "ink_color.splatcraft.orange": "Orange",
