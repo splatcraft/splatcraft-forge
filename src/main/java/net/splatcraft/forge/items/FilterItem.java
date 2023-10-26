@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
@@ -21,9 +22,9 @@ public class FilterItem extends Item
     protected final boolean isGlowing;
     protected final boolean isOmni;
 
-    public FilterItem(boolean isGlowing, boolean isOmni)
+    public FilterItem(Rarity rarity, boolean isGlowing, boolean isOmni)
     {
-        super(new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1));
+        super(new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1).rarity(rarity));
 
         this.isGlowing = isGlowing;
         this.isOmni = isOmni;
@@ -33,7 +34,7 @@ public class FilterItem extends Item
 
     public FilterItem()
     {
-        this(false, false);
+        this(Rarity.COMMON, false, false);
     }
 
 

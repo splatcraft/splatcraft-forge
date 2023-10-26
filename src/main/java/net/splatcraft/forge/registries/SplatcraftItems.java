@@ -335,10 +335,10 @@ public class SplatcraftItems {
     public static final RegistryObject<FilterItem> pastelFilter = REGISTRY.register("pastel_filter", FilterItem::new);
     public static final RegistryObject<FilterItem> organicFilter = REGISTRY.register("organic_filter", FilterItem::new);
     public static final RegistryObject<FilterItem> neonFilter = REGISTRY.register("neon_filter", FilterItem::new);
-    public static final RegistryObject<FilterItem> enchantedFilter = REGISTRY.register("enchanted_filter", () -> new FilterItem(true, false));
+    public static final RegistryObject<FilterItem> enchantedFilter = REGISTRY.register("enchanted_filter", () -> new FilterItem(Rarity.UNCOMMON, true, false));
     public static final RegistryObject<FilterItem> overgrownFilter = REGISTRY.register("overgrown_filter", FilterItem::new);
     public static final RegistryObject<FilterItem> midnightFilter = REGISTRY.register("midnight_filter", FilterItem::new);
-    public static final RegistryObject<FilterItem> creativeFilter = REGISTRY.register("creative_filter", () -> new FilterItem(true, true));
+    public static final RegistryObject<FilterItem> creativeFilter = REGISTRY.register("creative_filter", () -> new FilterItem(Rarity.RARE, false, true));
 
     //Crafting Stations
     public static final RegistryObject<Item> inkVat = REGISTRY.register("ink_vat", () -> new BlockItem(SplatcraftBlocks.inkVat.get()));
