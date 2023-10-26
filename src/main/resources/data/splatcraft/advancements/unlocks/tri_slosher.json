@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/sloshers",
+  "display": {
+    "icon": {
+      "item": "splatcraft:tri_slosher"
+    },
+    "title": {
+      "translate": "item.splatcraft.tri_slosher"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.tri_slosher"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

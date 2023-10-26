@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/e_liter_4k",
+  "display": {
+    "icon": {
+      "item": "splatcraft:e_liter_3k"
+    },
+    "title": {
+      "translate": "item.splatcraft.e_liter_3k"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.e_liter_3k"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

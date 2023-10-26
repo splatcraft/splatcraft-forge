@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/ink_tank",
       "result": {
         "item": "splatcraft:ink_tank",
         "count": 1
@@ -26,6 +27,7 @@
     },
     {
       "name": "weaponType.classic",
+      "advancement": "splatcraft:unlocks/classic_ink_tank",
       "result": {
         "item": "splatcraft:classic_ink_tank",
         "count": 1

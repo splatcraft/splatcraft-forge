@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/octobrush",
       "result": {
         "item": "splatcraft:octobrush",
         "count": 1
@@ -35,6 +36,8 @@
     },
     {
       "name": "weaponType.kensa",
+      "advancement": "splatcraft:unlocks/kensa_octobrush",
+      "requires_other": true,
       "result": {
         "item": "splatcraft:kensa_octobrush",
         "count": 1

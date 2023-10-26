@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/shooters",
+  "display": {
+    "icon": {
+      "item": "splatcraft:n-zap85"
+    },
+    "title": {
+      "translate": "item.splatcraft.n-zap85"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.n-zap85"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

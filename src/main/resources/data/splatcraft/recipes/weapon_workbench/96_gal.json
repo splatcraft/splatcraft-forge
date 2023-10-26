@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/96_gal",
       "result": {
         "item": "splatcraft:96_gal",
         "count": 1
@@ -26,6 +27,7 @@
     },
     {
       "name": "weaponType.deco",
+      "advancement": "splatcraft:unlocks/96_gal_deco",
       "result": {
         "item": "splatcraft:96_gal_deco",
         "count": 1

@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/shooters",
+  "display": {
+    "icon": {
+      "item": "splatcraft:splattershot"
+    },
+    "title": {
+      "translate": "item.splatcraft.splattershot"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.splattershot"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

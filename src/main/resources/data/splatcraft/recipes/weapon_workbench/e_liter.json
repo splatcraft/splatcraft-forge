@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.4k",
+      "advancement": "splatcraft:unlocks/e_liter_4k",
       "result": {
         "item": "splatcraft:e_liter_4k",
         "count": 1
@@ -30,6 +31,7 @@
     },
     {
       "name": "weaponType.3k",
+      "advancement": "splatcraft:unlocks/e_liter_3k",
       "result": {
         "item": "splatcraft:e_liter_3k",
         "count": 1

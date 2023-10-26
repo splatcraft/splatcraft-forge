@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/dualie_squelchers",
       "result": {
         "item": "splatcraft:dualie_squelchers",
         "count": 1

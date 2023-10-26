@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/52_gal",
       "result": {
         "item": "splatcraft:52_gal",
         "count": 1
@@ -26,6 +27,7 @@
     },
     {
       "name": "weaponType.deco",
+      "advancement": "splatcraft:unlocks/52_gal_deco",
       "result": {
         "item": "splatcraft:52_gal_deco",
         "count": 1
@@ -51,6 +53,8 @@
     },
     {
       "name": "weaponType.kensa",
+      "advancement": "splatcraft:unlocks/kensa_52_gal",
+      "requires_other": true,
       "result": {
         "item": "splatcraft:kensa_52_gal",
         "count": 1

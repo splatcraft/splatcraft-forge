@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/clash_blaster",
+  "display": {
+    "icon": {
+      "item": "splatcraft:clash_blaster_neo"
+    },
+    "title": {
+      "translate": "item.splatcraft.clash_blaster_neo"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.clash_blaster_neo"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

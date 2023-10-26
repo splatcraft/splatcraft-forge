@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/bamboozler_14_mk1",
+  "display": {
+    "icon": {
+      "item": "splatcraft:bamboozler_14_mk2"
+    },
+    "title": {
+      "translate": "item.splatcraft.bamboozler_14_mk2"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.bamboozler_14_mk2"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

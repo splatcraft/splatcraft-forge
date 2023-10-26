@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/aerospray_mg",
+  "display": {
+    "icon": {
+      "item": "splatcraft:aerospray_rg"
+    },
+    "title": {
+      "translate": "item.splatcraft.aerospray_rg"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.aerospray_rg"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

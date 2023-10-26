@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/luna_blaster",
       "result": {
         "item": "splatcraft:luna_blaster",
         "count": 1

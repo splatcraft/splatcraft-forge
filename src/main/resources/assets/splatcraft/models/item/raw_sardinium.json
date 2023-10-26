@@ -2,5 +2,63 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "splatcraft:items/raw_sardinium"
-  }
+  },
+  "overrides": [
+    {
+      "predicate":
+      {
+        "minecraft:custom_model_data": 1
+      }, "model": "splatcraft:item/advancement_icons/shooters"
+    },{
+      "predicate":
+      {
+        "minecraft:custom_model_data": 2
+      }, "model": "splatcraft:item/advancement_icons/blasters"
+    },{
+      "predicate":
+      {
+        "minecraft:custom_model_data": 3
+      }, "model": "splatcraft:item/advancement_icons/rollers"
+    },{
+      "predicate":
+      {
+        "minecraft:custom_model_data": 4
+      }, "model": "splatcraft:item/advancement_icons/chargers"
+    },{
+      "predicate":
+      {
+        "minecraft:custom_model_data": 5
+      }, "model": "splatcraft:item/advancement_icons/sloshers"
+    },{
+      "predicate":
+      {
+        "minecraft:custom_model_data": 6
+      }, "model": "splatcraft:item/advancement_icons/dualies"
+    },{
+      "predicate":
+      {
+        "minecraft:custom_model_data": 7
+      }, "model": "splatcraft:item/advancement_icons/splatlings"
+    },{
+      "predicate":
+      {
+        "minecraft:custom_model_data": 8
+      }, "model": "splatcraft:item/advancement_icons/brellas"
+    },{
+      "predicate":
+      {
+        "minecraft:custom_model_data": 9
+      }, "model": "splatcraft:item/advancement_icons/ink_tanks"
+    },{
+      "predicate":
+      {
+        "minecraft:custom_model_data": 10
+      }, "model": "splatcraft:item/advancement_icons/sub_weapons"
+    },{
+      "predicate":
+      {
+        "minecraft:custom_model_data": 11
+      }, "model": "splatcraft:item/advancement_icons/special_weapons"
+    }
+  ]
 }

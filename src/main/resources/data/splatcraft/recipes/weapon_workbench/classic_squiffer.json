@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.classic",
+      "advancement": "splatcraft:unlocks/classic_squiffer",
       "result": {
         "item": "splatcraft:classic_squiffer",
         "count": 1

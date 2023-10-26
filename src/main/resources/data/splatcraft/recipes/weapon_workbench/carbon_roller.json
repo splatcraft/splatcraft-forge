@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/carbon_roller",
       "result": {
         "item": "splatcraft:carbon_roller",
         "count": 1

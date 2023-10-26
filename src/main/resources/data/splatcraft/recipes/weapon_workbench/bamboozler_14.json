@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.mk1",
+      "advancement": "splatcraft:unlocks/bamboozler_14_mk1",
       "result": {
         "item": "splatcraft:bamboozler_14_mk1",
         "count": 1
@@ -30,6 +31,7 @@
     },
     {
       "name": "weaponType.mk2",
+      "advancement": "splatcraft:unlocks/bamboozler_14_mk2",
       "result": {
         "item": "splatcraft:bamboozler_14_mk2",
         "count": 1

@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.85",
+      "advancement": "splatcraft:unlocks/zap85",
       "result": {
         "item": "splatcraft:n-zap85",
         "count": 1
@@ -26,6 +27,7 @@
     },
     {
       "name": "weaponType.89",
+      "advancement": "splatcraft:unlocks/zap89",
       "result": {
         "item": "splatcraft:n-zap89",
         "count": 1

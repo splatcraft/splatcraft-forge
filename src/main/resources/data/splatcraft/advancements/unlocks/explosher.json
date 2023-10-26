@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/sloshers",
+  "display": {
+    "icon": {
+      "item": "splatcraft:explosher"
+    },
+    "title": {
+      "translate": "item.splatcraft.explosher"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.explosher"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

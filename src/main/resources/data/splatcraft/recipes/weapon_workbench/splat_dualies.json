@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/splat_dualies",
       "result": {
         "item": "splatcraft:splat_dualies",
         "count": 1
@@ -30,6 +31,7 @@
     },
     {
       "name": "weaponType.enperry",
+      "advancement": "splatcraft:unlocks/enperry_splat_dualies",
       "result": {
         "item": "splatcraft:enperry_splat_dualies",
         "count": 1

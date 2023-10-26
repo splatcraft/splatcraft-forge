@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/curling_bomb",
       "result": {
         "item": "splatcraft:curling_bomb",
         "count": 1

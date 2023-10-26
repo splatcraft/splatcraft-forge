@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/splattershot",
+  "display": {
+    "icon": {
+      "item": "splatcraft:tentatek_splattershot"
+    },
+    "title": {
+      "translate": "item.splatcraft.tentatek_splattershot"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.tentatek_splattershot"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

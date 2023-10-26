@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/armored_ink_tank",
       "result": {
         "item": "splatcraft:armored_ink_tank",
         "count": 1

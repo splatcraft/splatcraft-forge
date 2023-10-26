@@ -1,0 +1,24 @@
+{
+  "parent": "splatcraft:unlocks/root",
+  "display": {
+    "icon": {
+      "item": "splatcraft:raw_sardinium",
+      "nbt": "{CustomModelData:5}"
+    },
+    "title": {
+      "translate": "weaponTab.splatcraft:weapon_workbench_tabs/buckets"
+    },
+    "description": {
+      "translate": "weaponTab.description.splatcraft:weapon_workbench_tabs/buckets"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

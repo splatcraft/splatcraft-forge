@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/splattershot_jr",
+  "display": {
+    "icon": {
+      "item": "splatcraft:kensa_splattershot_jr"
+    },
+    "title": {
+      "translate": "item.splatcraft.kensa_splattershot_jr"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.kensa_splattershot_jr"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

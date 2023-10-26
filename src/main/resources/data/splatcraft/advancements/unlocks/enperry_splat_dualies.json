@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/splat_dualies",
+  "display": {
+    "icon": {
+      "item": "splatcraft:enperry_splat_dualies"
+    },
+    "title": {
+      "translate": "item.splatcraft.enperry_splat_dualies"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.enperry_splat_dualies"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

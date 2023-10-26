@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/ink_tanks",
+  "display": {
+    "icon": {
+      "item": "splatcraft:ink_tank_jr"
+    },
+    "title": {
+      "translate": "item.splatcraft.ink_tank_jr"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.ink_tank_jr"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

@@ -52,7 +52,20 @@
   "item.splatcraft.ammo_knights_scrap": "Ammo Knights™ Scrap",
 
   "item.splatcraft.blueprint": "Blueprint",
-  "item.splatcraft.blueprint.tooltip": "§o§7It appears to be blank.",
+  "item.splatcraft.blueprint.tooltip": "§o§7Use to unlock a new weapon!",
+  "item.splatcraft.blueprint.tooltip.empty": "§o§7It appears to be blank.",
+
+  "item.splatcraft.blueprint.tooltip.shooters": "Shooter set",
+  "item.splatcraft.blueprint.tooltip.blasters": "Blaster set",
+  "item.splatcraft.blueprint.tooltip.rollers": "Roller set",
+  "item.splatcraft.blueprint.tooltip.chargers": "Charger set",
+  "item.splatcraft.blueprint.tooltip.sloshers": "Slosher set",
+  "item.splatcraft.blueprint.tooltip.dualies": "Dualie set",
+  "item.splatcraft.blueprint.tooltip.splatlings": "Splatling set",
+  "item.splatcraft.blueprint.tooltip.brellas": "Brella set",
+  "item.splatcraft.blueprint.tooltip.ink_tanks": "Ink Tank set",
+  "item.splatcraft.blueprint.tooltip.sub_weapons": "Sub Weapon set",
+  "item.splatcraft.blueprint.tooltip.special_weapons": "Special Weapon set",
 
   "item.splatcraft.filter": "Filter",
   "item.splatcraft.organic_filter": "Organic Filter",
@@ -213,6 +226,18 @@
   "weaponTab.splatcraft:weapon_workbench_tabs/sub_weapons": "Sub Weapons",
   "weaponTab.splatcraft:weapon_workbench_tabs/special_weapons": "Special Weapons",
   "weaponTab.splatcraft:weapon_workbench_tabs/ink_tanks": "Ink Tanks",
+
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/shooters": "Shooters",
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/blasters": "Blasters",
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/rollers": "Rollers",
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/chargers": "Chargers",
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/dualies": "Dualies",
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/buckets": "Sloshers",
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/splatlings": "Splatlings",
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/brellas": "Brellas",
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/sub_weapons": "Sub Weapons",
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/special_weapons": "Special Weapons",
+  "weaponTab.description.splatcraft:weapon_workbench_tabs/ink_tanks": "Ink Tanks",
 
   "weaponRecipe.splatcraft:weapon_workbench/aerospray": "Aerospray",
   "weaponRecipe.splatcraft:weapon_workbench/n-zap": "N-ZAP",
@@ -424,7 +449,8 @@
   "status.change_color.success": "Successfully recolored %s blocks to %s",
 
   "status.blueprint.invalid": "This Blueprint is empty.",
-  "status.blueprint.already_unlocked": "You already have this Blueprint.",
+  "status.blueprint.already_unlocked.single": "You already have this Blueprint.",
+  "status.blueprint.already_unlocked": "You already completed this Blueprint set.",
   "status.blueprint.unlock": "% has been unlocked.",
 
   "commands.scanturf.success": "Successfully scanned %s blocks of turf",

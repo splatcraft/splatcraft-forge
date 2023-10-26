@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/chargers",
+  "display": {
+    "icon": {
+      "item": "splatcraft:classic_squiffer"
+    },
+    "title": {
+      "translate": "item.splatcraft.classic_squiffer"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.classic_squiffer"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

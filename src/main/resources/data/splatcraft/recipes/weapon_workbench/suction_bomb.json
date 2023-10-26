@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/suction_bomb",
       "result": {
         "item": "splatcraft:suction_bomb",
         "count": 1

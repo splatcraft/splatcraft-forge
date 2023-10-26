@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/glooga_dualies",
+  "display": {
+    "icon": {
+      "item": "splatcraft:glooga_dualies_deco"
+    },
+    "title": {
+      "translate": "item.splatcraft.glooga_dualies_deco"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.glooga_dualies_deco"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/octobrush",
+  "display": {
+    "icon": {
+      "item": "splatcraft:kensa_octobrush"
+    },
+    "title": {
+      "translate": "item.splatcraft.kensa_octobrush"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.kensa_octobrush"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

@@ -12,6 +12,10 @@
       "ingredients": [
         {
           "item": "splatcraft:sardinium",
+          "count": 4
+        },
+        {
+          "item": "splatcraft:power_egg",
           "count": 8
         },
         {
@@ -26,6 +30,8 @@
     },
     {
       "name": "weaponType.kensa",
+      "advancement": "splatcraft:unlocks/kensa_splattershot_jr",
+      "requires_other": true,
       "result": {
         "item": "splatcraft:kensa_splattershot_jr",
         "count": 1
@@ -33,6 +39,10 @@
       "ingredients": [
         {
           "item": "splatcraft:sardinium",
+          "count": 4
+        },
+        {
+          "item": "splatcraft:power_egg",
           "count": 8
         },
         {

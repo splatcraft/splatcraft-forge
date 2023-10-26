@@ -5,6 +5,7 @@
   "recipes": [
     {
       "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/tri_slosher",
       "result": {
         "item": "splatcraft:tri_slosher",
         "count": 1
