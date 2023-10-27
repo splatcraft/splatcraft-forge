@@ -23,6 +23,7 @@ import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.IColoredEntity;
+import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerColorPacket;
@@ -31,6 +32,7 @@ import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class ColorUtils
 {
@@ -275,14 +277,11 @@ public class ColorUtils
         return new float[]{r, g, b};
     }
 
+    private static final Random random = new Random();
+
     public static int getRandomStarterColor()
     {
-        return 14640154;
-        /* TODO data driven ink
-        return SplatcraftTags.InkColors.STARTER_COLORS.getValues().isEmpty()
-                ? SplatcraftInkColors.undyed.getColor()
-                : SplatcraftTags.InkColors.STARTER_COLORS.getRandomElement(new Random()).getColor();
-        */
+        return DataHandler.InkColorTagsListener.STARTER_COLORS.getRandom(random);
     }
 
     public static void addInkSplashParticle(Level level, LivingEntity source, float size)
