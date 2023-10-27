@@ -63,6 +63,10 @@ public class CraftWeaponPacket extends PlayToServerPacket
 
             if(!output.isEmpty())
             {
+                SplatcraftStats.CRAFT_WEAPON_TRIGGER.trigger((ServerPlayer) player, output.copy());
+                player.awardStat(Stats.ITEM_CRAFTED.get(output.copy().getItem()));
+                player.awardStat(SplatcraftStats.WEAPONS_CRAFTED);
+
                 if (!player.addItem(output))
                 {
                     ItemEntity item = player.drop(output, false);
@@ -74,10 +78,6 @@ public class CraftWeaponPacket extends PlayToServerPacket
                 {
                     player.containerMenu.broadcastChanges();
                 }
-
-                SplatcraftStats.CRAFT_WEAPON_TRIGGER.trigger((ServerPlayer) player, output);
-                player.awardStat(Stats.ITEM_CRAFTED.get(output.getItem()));
-                player.awardStat(SplatcraftStats.WEAPONS_CRAFTED);
             }
 
 

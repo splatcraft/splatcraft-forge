@@ -1,5 +1,8 @@
 package net.splatcraft.forge.network;
 
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -11,12 +14,24 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.network.c2s.*;
-import net.splatcraft.forge.network.s2c.*;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import net.splatcraft.forge.network.c2s.CraftWeaponPacket;
+import net.splatcraft.forge.network.c2s.DodgeRollPacket;
+import net.splatcraft.forge.network.c2s.PlayerSetSquidServerPacket;
+import net.splatcraft.forge.network.c2s.ReleaseChargePacket;
+import net.splatcraft.forge.network.c2s.RequestPlayerInfoPacket;
+import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
+import net.splatcraft.forge.network.c2s.UpdateBlockColorPacket;
+import net.splatcraft.forge.network.c2s.UpdateChargeStatePacket;
+import net.splatcraft.forge.network.s2c.PlayerColorPacket;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
+import net.splatcraft.forge.network.s2c.SendScanTurfResultsPacket;
+import net.splatcraft.forge.network.s2c.UpdateBooleanGamerulesPacket;
+import net.splatcraft.forge.network.s2c.UpdateClientColorsPacket;
+import net.splatcraft.forge.network.s2c.UpdateColorScoresPacket;
+import net.splatcraft.forge.network.s2c.UpdateInkOverlayPacket;
+import net.splatcraft.forge.network.s2c.UpdateIntGamerulesPacket;
+import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
+import net.splatcraft.forge.network.s2c.UpdateStageListPacket;
 
 public class SplatcraftPacketHandler
 {
@@ -43,7 +58,8 @@ public class SplatcraftPacketHandler
         registerMessage(CraftWeaponPacket.class, CraftWeaponPacket::decode);
         registerMessage(UpdateClientColorsPacket.class, UpdateClientColorsPacket::decode);
         registerMessage(UpdateInkOverlayPacket.class, UpdateInkOverlayPacket::decode);
-        registerMessage(ChargeableReleasePacket.class, ChargeableReleasePacket::decode);
+        registerMessage(ReleaseChargePacket.class, ReleaseChargePacket::decode);
+        registerMessage(UpdateChargeStatePacket.class, UpdateChargeStatePacket::decode);
         registerMessage(SwapSlotWithOffhandPacket.class, SwapSlotWithOffhandPacket::decode);
         registerMessage(UpdateStageListPacket.class, UpdateStageListPacket::decode);
         registerMessage(UpdateWeaponSettingsPacket.class, UpdateWeaponSettingsPacket::decode);

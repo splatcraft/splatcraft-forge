@@ -18,7 +18,7 @@ public class PlayerCooldown
     final boolean forceCrouch;
     final boolean preventWeaponUse;
     final boolean isGrounded;
-    public ItemStack storedStack = new ItemStack(Items.AIR);
+    public ItemStack storedStack;
     int time;
 
     public static final int OVERLOAD_LIMIT = -28800;

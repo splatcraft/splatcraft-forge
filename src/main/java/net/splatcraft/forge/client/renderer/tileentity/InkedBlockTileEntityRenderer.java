@@ -142,7 +142,8 @@ public class InkedBlockTileEntityRenderer implements BlockEntityRenderer<InkedBl
             else {
                 BlockPos pos = te.getBlockPos();
                 random.setSeed(Long.parseLong((Math.signum(pos.getX()) > 0 ? "1" : "0") + (Math.signum(pos.getY()) > 0 ? "1" : "0") + (Math.signum(pos.getZ()) > 0 ? "1" : "0")
-                        + (Math.abs(pos.getX()) % Integer.MAX_VALUE) + (Math.abs(pos.getY()) % Integer.MAX_VALUE) + (Math.abs(pos.getZ()) % Integer.MAX_VALUE)));
+                        + (Long.parseLong((Math.abs(pos.getX()) % Integer.MAX_VALUE) + (Math.abs(pos.getY()) % Integer.MAX_VALUE) + (Math.abs(pos.getZ()) % Integer.MAX_VALUE) + "") %
+                        Long.parseLong(Long.toString(Long.MAX_VALUE).substring(Math.max(0, Long.toString(Long.MAX_VALUE).length()-16))))));
                 random.setSeed(random.nextLong());
 
                 putBulkData(builder, Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(TEXTURES.get(random.nextInt(TEXTURES.size()))), matrixEntry, bakedquad, f, f1, f2, brightness, combinedLights, combinedOverlayIn);
