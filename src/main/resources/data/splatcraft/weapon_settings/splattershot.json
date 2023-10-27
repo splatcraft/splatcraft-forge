@@ -1,0 +1,16 @@
+{
+  "type": "splatcraft:main",
+  "projectile": {
+	"size": 1,
+	"speed": 0.75,
+	"firing_speed": 3,
+	"ground_inaccuracy": 6,
+	"air_inaccuracy": 12,
+	"ink_consumption": 0.9,
+	"ink_recovery_cooldown": 7,
+	"base_damage": 8,
+	"min_damage": 4,
+	"damage_decay_start_tick": 3,
+	"damage_decay_per_tick": 0.34
+  }
+}

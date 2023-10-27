@@ -9,8 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
@@ -58,9 +56,9 @@ public class PlayerPosingHandler
 
             PlayerCooldown cooldown;
 
-            switch (((WeaponBaseItem) mainStack.getItem()).getPose()) {
+            switch (((WeaponBaseItem) mainStack.getItem()).getPose(mainStack)) {
                 case DUAL_FIRE:
-                    if (offStack.getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) offStack.getItem()).getPose().equals(WeaponPose.DUAL_FIRE)) {
+                    if (offStack.getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) offStack.getItem()).getPose(offStack).equals(WeaponPose.DUAL_FIRE)) {
                         offHand.yRot = -0.1F + model.getHead().yRot;
                         offHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
                     }
@@ -69,14 +67,14 @@ public class PlayerPosingHandler
                     mainHand.xRot = -((float) Math.PI / 2F) + model.getHead().xRot;
                     break;
                 case SUB_HOLD:
-                    if (!(mainStack.getItem() instanceof SubWeaponItem) || useTime < ((SubWeaponItem) mainStack.getItem()).maxUseTime) {
+                    if (!(mainStack.getItem() instanceof SubWeaponItem) || useTime < ((SubWeaponItem) mainStack.getItem()).getSettings(mainStack).holdTime) {
                         mainHand.yRot = -0.1F + model.getHead().yRot;
                         mainHand.xRot = ((float) Math.PI / 8F);
                         mainHand.zRot = ((float) Math.PI / 6F) * (mainHand == model.leftArm ? -1 : 1);
                     }
                     break;
                 case BUCKET_SWING:
-                    animTime = ((SlosherItem) mainStack.getItem()).settings.startupTicks;
+                    animTime = ((SlosherItem) mainStack.getItem()).getSettings(mainStack).startupTicks;
                     mainHand.yRot = 0;
                     mainHand.xRot = -0.36f;
 
@@ -107,7 +105,7 @@ public class PlayerPosingHandler
 
                     if (PlayerCooldown.hasPlayerCooldown(player)) {
                         cooldown = PlayerCooldown.getPlayerCooldown(player);
-                        animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).settings.swingTime : ((RollerItem) mainStack.getItem()).settings.flingTime;
+                        animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).getSettings(mainStack).swingTime : ((RollerItem) mainStack.getItem()).getSettings(mainStack).flingTime;
                         angle = (float) ((cooldown.getMaxTime() - cooldown.getTime() + deltaTicks) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
                         mainHand.xRot = Mth.cos(angle) + (0.1F * 0.5F - ((float) Math.PI / 10F));//+ 0.36f;
                     } else {
@@ -120,7 +118,7 @@ public class PlayerPosingHandler
 
                     if (PlayerCooldown.hasPlayerCooldown(player)) {
                         cooldown = PlayerCooldown.getPlayerCooldown(player);
-                        animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).settings.swingTime : ((RollerItem) mainStack.getItem()).settings.flingTime;
+                        animTime = cooldown.isGrounded() ? ((RollerItem) mainStack.getItem()).getSettings(mainStack).swingTime : ((RollerItem) mainStack.getItem()).getSettings(mainStack).flingTime;
                         angle = (float) -((cooldown.getMaxTime() - cooldown.getTime() + deltaTicks) / animTime * Math.PI / 2f) + ((float) Math.PI) / 1.8f;
 
                         mainHand.yRot = model.getHead().yRot + Mth.cos(angle);

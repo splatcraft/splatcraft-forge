@@ -32,6 +32,8 @@ import net.minecraftforge.network.NetworkHooks;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.entities.IColoredEntity;
 import net.splatcraft.forge.handlers.WeaponHandler;
+import net.splatcraft.forge.items.weapons.SubWeaponItem;
+import net.splatcraft.forge.items.weapons.settings.SubWeaponSettings;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.NotNull;
@@ -206,11 +208,20 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
         return true;
     }
 
+    public SubWeaponSettings getSettings()
+    {
+        if(getItemRaw().getItem() instanceof SubWeaponItem sub)
+        {
+            return sub.getSettings(getItemRaw());
+        }
+        return SubWeaponSettings.DEFAULT;
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag nbt)
     {
         nbt.putInt("Color", getColor());
-        nbt.putBoolean("DypassMobDamageMultiplier", bypassMobDamageMultiplier);
+        nbt.putBoolean("BypassMobDamageMultiplier", bypassMobDamageMultiplier);
         nbt.putString("InkType", inkType.getSerializedName());
         nbt.put("SourceWeapon", sourceWeapon.save(new CompoundTag()));
 

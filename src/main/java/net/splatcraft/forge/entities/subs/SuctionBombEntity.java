@@ -16,23 +16,20 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
-import net.splatcraft.forge.entities.SquidBumperEntity;
+import net.splatcraft.forge.items.weapons.settings.SubWeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkExplosion;
 import org.jetbrains.annotations.Nullable;
 
 public class SuctionBombEntity extends AbstractSubWeaponEntity {
-    public static final float DAMAGE = 6;
-    public static final float DIRECT_DAMAGE = 36;
-    public static final float EXPLOSION_SIZE = 3.75f;
 
     private static final EntityDataAccessor<Boolean> ACTIVATED = SynchedEntityData.defineId(SuctionBombEntity.class, EntityDataSerializers.BOOLEAN);
 
-    public static final int FUSE_START = 10;
+    public static final int FLASH_DURATION = 20;
 
-    protected int fuseTime = 40;
-    protected int prevFuseTime = 40;
+    protected int fuseTime = 0;
+    protected int prevFuseTime = 0;
     @Nullable
     private BlockState inBlockState;
     @Nullable
@@ -60,6 +57,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
     public void tick() {
         super.tick();
         BlockState state = this.level.getBlockState(blockPosition());
+        SubWeaponSettings settings = getSettings();
 
         if (shakeTime > 0)
             --shakeTime;
@@ -67,15 +65,15 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
         prevFuseTime = fuseTime;
 
         if (isActivated()) {
-            fuseTime--;
-            if (fuseTime <= 0) {
-                InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), EXPLOSION_SIZE, DAMAGE, DAMAGE, DIRECT_DAMAGE, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
+            fuseTime++;
+            if (fuseTime >= settings.fuseTime) {
+                InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), settings.explosionSize, settings.propDamage, settings.indirectDamage, settings.directDamage, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
                 level.broadcastEntityEvent(this, (byte) 1);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundSource.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 if(!level.isClientSide())
                     discard();
                 return;
-            } else if (fuseTime <= 20 && !playedActivationSound) {
+            } else if (fuseTime >= settings.fuseTime - FLASH_DURATION && !playedActivationSound) {
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonating, SoundSource.PLAYERS, 0.8F, 1f);
                 playedActivationSound = true;
             }
@@ -103,7 +101,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
     {
         super.handleEntityEvent(id);
         if (id == 1)
-            level.addAlwaysVisibleParticle(new InkExplosionParticleData(getColor(), EXPLOSION_SIZE * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+            level.addAlwaysVisibleParticle(new InkExplosionParticleData(getColor(), getSettings().explosionSize * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
     }
 
     public void setStickFacing()
@@ -123,11 +121,10 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
 
     }
 
-
-
     public float getFlashIntensity(float partialTicks)
     {
-        return 1f-Math.min(FUSE_START, Mth.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float)FUSE_START;
+        SubWeaponSettings settings = getSettings();
+        return Math.max(0, Mth.lerp(partialTicks, prevFuseTime, fuseTime) - (settings.fuseTime - FLASH_DURATION)) * 0.85f / FLASH_DURATION;
     }
 
     @Override

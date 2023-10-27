@@ -73,203 +73,64 @@ public class SplatcraftItems {
     public static final ArmorMaterial ARMORED_INK_TANK = new SplatcraftArmorMaterial("armored_ink_tank", SoundEvents.ARMOR_EQUIP_IRON, 3, 0, 0.05f);
 
     //Shooters
-    public static final RegistryObject<ShooterItem> splattershot = ShooterItem.create(REGISTRY, new WeaponSettings("splattershot")
-            .setProjectileSize(1).setProjectileSpeed(0.75f)
-            .setFiringSpeed(3)
-            .setGroundInaccuracy(6).setAirInaccuracy(12)
-            .setInkConsumption(0.9f).setInkRecoveryCooldown(7)
-            .setBaseDamage(8).setMinDamage(4).setDamageDecayStartTick(3).setDamageDecayPerTick(0.34f));
-    public static final RegistryObject<ShooterItem> tentatekSplattershot = ShooterItem.create(REGISTRY, splattershot, "tentatek_splattershot");
-    public static final RegistryObject<ShooterItem> wasabiSplattershot = ShooterItem.create(REGISTRY, splattershot, "wasabi_splattershot");
+    public static final RegistryObject<ShooterItem> splattershot = ShooterItem.create(REGISTRY, "splattershot", "splattershot");
+    public static final RegistryObject<ShooterItem> tentatekSplattershot = ShooterItem.create(REGISTRY, "splattershot", "tentatek_splattershot");
+    public static final RegistryObject<ShooterItem> wasabiSplattershot = ShooterItem.create(REGISTRY, "splattershot", "wasabi_splattershot");
     public static final RegistryObject<ShooterItem> ancientSplattershot = ShooterItem.create(REGISTRY, splattershot, "ancient_splattershot", true);
-    public static final RegistryObject<ShooterItem> splattershotJr = ShooterItem.create(REGISTRY, new WeaponSettings("splattershot_jr")
-            .setProjectileSize(0.95f).setProjectileSpeed(0.55f)
-            .setFiringSpeed(3)
-            .setGroundInaccuracy(12).setAirInaccuracy(15)
-            .setInkConsumption(0.5f).setInkRecoveryCooldown(5)
-            .setBaseDamage(6.5f).setMinDamage(3.3f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.53f));
-    public static final RegistryObject<ShooterItem> kensaSplattershotJr = ShooterItem.create(REGISTRY, splattershotJr, "kensa_splattershot_jr");
-    public static final RegistryObject<ShooterItem> aerosprayMG = ShooterItem.create(REGISTRY, new WeaponSettings("aerospray_mg")
-            .setProjectileSize(1.2f).setProjectileSpeed(0.45f)
-            .setFiringSpeed(2)
-            .setGroundInaccuracy(13).setAirInaccuracy(16)
-            .setInkConsumption(0.5f).setInkRecoveryCooldown(5)
-            .setBaseDamage(5.3f).setMinDamage(2.7f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.4f));
-    public static final RegistryObject<ShooterItem> aerosprayRG = ShooterItem.create(REGISTRY, aerosprayMG, "aerospray_rg");
-    public static final RegistryObject<ShooterItem> gal52 = ShooterItem.create(REGISTRY, new WeaponSettings("52_gal")
-            .setProjectileSize(1.1f).setProjectileSpeed(0.78f)
-            .setFiringSpeed(6)
-            .setGroundInaccuracy(6).setAirInaccuracy(12)
-            .setInkConsumption(1.3f).setInkRecoveryCooldown(7)
-            .setBaseDamage(10.4f).setMinDamage(6).setDamageDecayStartTick(4).setDamageDecayPerTick(0.83f));
-    public static final RegistryObject<ShooterItem> gal52Deco = ShooterItem.create(REGISTRY, gal52, "52_gal_deco");
-    public static final RegistryObject<ShooterItem> kensaGal52 = ShooterItem.create(REGISTRY, gal52, "kensa_52_gal");
-    public static final RegistryObject<ShooterItem> gal96 = ShooterItem.create(REGISTRY, new WeaponSettings("96_gal")
-            .setProjectileSize(1.2f).setProjectileSpeed(0.88f)
-            .setFiringSpeed(8)
-            .setGroundInaccuracy(4).setAirInaccuracy(11)
-            .setInkConsumption(2.5f).setInkRecoveryCooldown(7)
-            .setBaseDamage(12.4f).setMinDamage(7).setDamageDecayStartTick(3).setDamageDecayPerTick(1));
-    public static final RegistryObject<ShooterItem> gal96Deco = ShooterItem.create(REGISTRY, gal96, "96_gal_deco");
-    public static final RegistryObject<ShooterItem> nzap85 = ShooterItem.create(REGISTRY, new WeaponSettings("n-zap85")
-            .setProjectileSize(1).setProjectileSpeed(0.75f)
-            .setFiringSpeed(3)
-            .setGroundInaccuracy(6).setAirInaccuracy(12)
-            .setInkConsumption(0.8f).setInkRecoveryCooldown(7)
-            .setBaseDamage(5.9f).setMinDamage(2.8f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.53f));
-    public static final RegistryObject<ShooterItem> nzap89 = ShooterItem.create(REGISTRY, nzap85, "n-zap89");
+    public static final RegistryObject<ShooterItem> splattershotJr = ShooterItem.create(REGISTRY, "splattershot_jr", "splattershot_jr");
+    public static final RegistryObject<ShooterItem> kensaSplattershotJr = ShooterItem.create(REGISTRY, "splattershot_jr", "kensa_splattershot_jr");
+    public static final RegistryObject<ShooterItem> aerosprayMG = ShooterItem.create(REGISTRY,"aerospray", "aerospray_mg");
+    public static final RegistryObject<ShooterItem> aerosprayRG = ShooterItem.create(REGISTRY, "aerospray", "aerospray_rg");
+    public static final RegistryObject<ShooterItem> gal52 = ShooterItem.create(REGISTRY, "52_gal", "52_gal");
+    public static final RegistryObject<ShooterItem> gal52Deco = ShooterItem.create(REGISTRY, "52_gal", "52_gal_deco");
+    public static final RegistryObject<ShooterItem> kensaGal52 = ShooterItem.create(REGISTRY, "52_gal", "kensa_52_gal");
+    public static final RegistryObject<ShooterItem> gal96 = ShooterItem.create(REGISTRY, "96_gal", "96_gal");
+    public static final RegistryObject<ShooterItem> gal96Deco = ShooterItem.create(REGISTRY, "96_gal", "96_gal_deco");
+    public static final RegistryObject<ShooterItem> nzap85 = ShooterItem.create(REGISTRY, "n-zap", "n-zap85");
+    public static final RegistryObject<ShooterItem> nzap89 = ShooterItem.create(REGISTRY, "n-zap", "n-zap89");
 
     //Blasters
-    public static final RegistryObject<BlasterItem> blaster = BlasterItem.createBlaster(REGISTRY, (new WeaponSettings("blaster")
-            .setProjectileSize(2.25f).setProjectileLifespan(5).setProjectileSpeed(1.05f)
-            .setFiringSpeed(20).setStartupTicks(4)
-            .setGroundInaccuracy(0).setAirInaccuracy(10)
-            .setInkConsumption(10).setInkRecoveryCooldown(20)
-            .setBaseDamage(25).setMinDamage(10)));
-    public static final RegistryObject<BlasterItem> grimBlaster = BlasterItem.createBlaster(REGISTRY, blaster, "grim_blaster");
-    public static final RegistryObject<BlasterItem> clashBlaster = BlasterItem.createBlaster(REGISTRY, new WeaponSettings("clash_blaster")
-            .setProjectileSize(1.7f).setProjectileLifespan(4).setProjectileSpeed(1.1f)
-            .setFiringSpeed(10).setStartupTicks(1)
-            .setGroundInaccuracy(0).setAirInaccuracy(8)
-            .setInkConsumption(4).setInkRecoveryCooldown(13).setBaseDamage(12).setMinDamage(6));
-    public static final RegistryObject<BlasterItem> clashBlasterNeo = BlasterItem.createBlaster(REGISTRY, clashBlaster, "clash_blaster_neo");
-    public static final RegistryObject<BlasterItem> lunaBlaster = BlasterItem.createBlaster(REGISTRY, (new WeaponSettings("luna_blaster")
-            .setProjectileSize(2.25f).setProjectileLifespan(4).setProjectileSpeed(1f)
-            .setFiringSpeed(13).setStartupTicks(5)
-            .setGroundInaccuracy(0).setAirInaccuracy(8)
-            .setInkConsumption(7.5f).setInkRecoveryCooldown(18)
-            .setBaseDamage(25).setMinDamage(12)));
+    public static final RegistryObject<BlasterItem> blaster = BlasterItem.createBlaster(REGISTRY, "blaster", "blaster");
+    public static final RegistryObject<BlasterItem> grimBlaster = BlasterItem.createBlaster(REGISTRY, "blaster", "grim_blaster");
+    public static final RegistryObject<BlasterItem> clashBlaster = BlasterItem.createBlaster(REGISTRY, "clash_blaster", "clash_blaster");
+    public static final RegistryObject<BlasterItem> clashBlasterNeo = BlasterItem.createBlaster(REGISTRY, "clash_blaster", "clash_blaster_neo");
+    public static final RegistryObject<BlasterItem> lunaBlaster = BlasterItem.createBlaster(REGISTRY, "luna_blaster", "luna_blaster");
 
     //Rollers
-    public static final RegistryObject<RollerItem> splatRoller = RollerItem.create(REGISTRY, new RollerWeaponSettings("splat_roller").setBrush(false)
-            .setRollSize(3).setRollConsumption(0.06f).setRollInkRecoveryCooldown(7).setRollDamage(25).setRollMobility(1.08f)
-            .setDashMobility(1.32f).setDashConsumption(0.3f).setDashTime(30)
-            .setSwingMobility(0.48f).setSwingConsumption(9).setSwingInkRecoveryCooldown(15).setSwingProjectileSpeed(0.55f).setSwingTime(6).setSwingProjectilePitchCompensation(-67.5f)
-            .setSwingBaseDamage(30).setSwingMinDamage(7).setSwingDamageDecayStartTick(8).setSwingDamageDecayPerTick(3.45f));
-    public static final RegistryObject<RollerItem> krakOnSplatRoller = RollerItem.create(REGISTRY, splatRoller, "krak_on_splat_roller");
-    public static final RegistryObject<RollerItem> coroCoroSplatRoller = RollerItem.create(REGISTRY, splatRoller, "corocoro_splat_roller");
-    public static final RegistryObject<RollerItem> carbonRoller = RollerItem.create(REGISTRY, new RollerWeaponSettings("carbon_roller").setBrush(false)
-            .setRollSize(2).setRollConsumption(0.06f).setRollInkRecoveryCooldown(7).setRollDamage(14).setRollMobility(1.28f)
-            .setDashMobility(1.52f).setDashConsumption(0.3f).setDashTime(10)
-            .setSwingMobility(0.6f).setSwingConsumption(4).setSwingInkRecoveryCooldown(13).setSwingProjectileSpeed(0.45f).setSwingTime(3).setSwingProjectilePitchCompensation(-67.5f)
-            .setSwingBaseDamage(20).setSwingMinDamage(5).setSwingDamageDecayStartTick(8).setSwingDamageDecayPerTick(2.25f)
-            .setFlingInkRecoveryCooldown(15).setFlingProjectileSpeed(0.58f).setFlingTime(4)
-            .setFlingBaseDamage(24).setFlingMinDamage(7).setFlingDamageDecayStartTick(10).setFlingDamageDecayPerTick(3.4f));
-    public static final RegistryObject<RollerItem> dynamoRoller = RollerItem.create(REGISTRY, new RollerWeaponSettings("dynamo_roller").setBrush(false)
-            .setRollSize(4).setRollHitboxSize(3).setRollConsumption(0.06f).setRollInkRecoveryCooldown(7).setRollDamage(32).setRollMobility(0.88f)
-            .setDashMobility(1.08f).setDashConsumption(0.3f).setDashTime(30)
-            .setSwingMobility(0.24f).setSwingConsumption(18).setSwingInkRecoveryCooldown(22).setSwingProjectileSpeed(0.85f).setSwingTime(15).setSwingProjectilePitchCompensation(-41.25f)
-            .setSwingBaseDamage(25).setSwingMinDamage(5).setSwingDamageDecayStartTick(18).setSwingDamageDecayPerTick(1.125f)
-            .setFlingInkRecoveryCooldown(26).setFlingProjectileSpeed(0.98f).setFlingTime(18)
-            .setFlingBaseDamage(36).setFlingMinDamage(7).setFlingDamageDecayStartTick(18).setFlingDamageDecayPerTick(1.6f));
-    public static final RegistryObject<RollerItem> inkbrush = RollerItem.create(REGISTRY, new RollerWeaponSettings("inkbrush").setBrush(true)
-            .setRollSize(1).setRollConsumption(0.4f).setRollInkRecoveryCooldown(7).setRollDamage(4).setRollMobility(1.92f)
-            .setSwingMobility(0.24f).setSwingConsumption(2).setSwingInkRecoveryCooldown(10).setSwingProjectileSpeed(0.6f).setSwingTime(2)
-            .setSwingBaseDamage(6).setSwingMinDamage(3).setSwingDamageDecayStartTick(7).setSwingDamageDecayPerTick(0.45f));
-    public static final RegistryObject<RollerItem> octobrush = RollerItem.create(REGISTRY, new RollerWeaponSettings("octobrush").setBrush(true)
-            .setRollSize(2).setRollConsumption(0.54f).setRollInkRecoveryCooldown(7).setRollDamage(5).setRollMobility(1.92f)
-            .setSwingMobility(0.24f).setSwingConsumption(3.2f).setSwingInkRecoveryCooldown(10).setSwingProjectileSpeed(0.65f).setSwingTime(3)
-            .setSwingBaseDamage(8).setSwingMinDamage(4).setSwingDamageDecayStartTick(8).setSwingDamageDecayPerTick(0.57f));
-    public static final RegistryObject<RollerItem> kensaOctobrush = RollerItem.create(REGISTRY, octobrush, "kensa_octobrush");
+    public static final RegistryObject<RollerItem> splatRoller = RollerItem.create(REGISTRY, "splat_roller", "splat_roller");
+    public static final RegistryObject<RollerItem> krakOnSplatRoller = RollerItem.create(REGISTRY, "splat_roller", "krak_on_splat_roller");
+    public static final RegistryObject<RollerItem> coroCoroSplatRoller = RollerItem.create(REGISTRY, "splat_roller", "corocoro_splat_roller");
+    public static final RegistryObject<RollerItem> carbonRoller = RollerItem.create(REGISTRY, "carbon_roller", "carbon_roller");
+    public static final RegistryObject<RollerItem> dynamoRoller = RollerItem.create(REGISTRY, "dynamo_roller", "dynamo_roller");
+    public static final RegistryObject<RollerItem> inkbrush = RollerItem.create(REGISTRY, "inkbrush", "inkbrush");
+    public static final RegistryObject<RollerItem> octobrush = RollerItem.create(REGISTRY, "octobrush", "octobrush");
+    public static final RegistryObject<RollerItem> kensaOctobrush = RollerItem.create(REGISTRY, "octobrush", "kensa_octobrush");
 
     //Chargers
-    public static final RegistryObject<ChargerItem> splatCharger = ChargerItem.create(REGISTRY, new WeaponSettings("splat_charger")
-            .setProjectileSize(0.7f).setProjectileLifespan(13).setProjectileSpeed(1.8f)
-            .setStartupTicks(20).setDischargeTicks(25)
-            .setMinInkConsumption(2.25f).setInkConsumption(18).setInkRecoveryCooldown(7)
-            .setMinDamage(8).setBaseDamage(16).setChargedDamage(32)
-            .setChargerMobility(0.4f)
-            .setFastMidAirCharge(false)
-            .setChargerPiercesAt(1.0f));
-    public static final RegistryObject<ChargerItem> bentoSplatCharger = ChargerItem.create(REGISTRY, splatCharger, "bento_splat_charger");
-    public static final RegistryObject<ChargerItem> kelpSplatCharger = ChargerItem.create(REGISTRY, splatCharger, "kelp_splat_charger");
-    public static final RegistryObject<ChargerItem> eLiter4K = ChargerItem.create(REGISTRY, new WeaponSettings("e_liter_4k")
-            .setProjectileSize(0.85f).setProjectileLifespan(16).setProjectileSpeed(2.4f)
-            .setStartupTicks(35).setDischargeTicks(25)
-            .setMinInkConsumption(2.25f).setInkConsumption(25).setInkRecoveryCooldown(7)
-            .setMinDamage(8).setBaseDamage(16).setChargedDamage(36)
-            .setChargerMobility(0.15f)
-            .setFastMidAirCharge(false)
-            .setChargerPiercesAt(1.0f));
-    public static final RegistryObject<ChargerItem> eliter3K = ChargerItem.create(REGISTRY, eLiter4K, "e_liter_3k");
-    public static final RegistryObject<ChargerItem> bamboozler14mk1 = ChargerItem.create(REGISTRY, new WeaponSettings("bamboozler_14_mk1")
-            .setProjectileSize(0.75f).setProjectileLifespan(8).setProjectileSpeed(1.9f)
-            .setStartupTicks(7).setDischargeTicks(0) // no charge storage
-            .setMinInkConsumption(3.36f).setInkConsumption(8.4f).setInkRecoveryCooldown(7) // Octol1ttle: I hate bamboo with all my soul and I will make sure it will never be in the meta
-            .setMinDamage(6).setBaseDamage(17)
-            .setChargerMobility(0.8f)
-            .setFastMidAirCharge(false)
-            .setChargerPiercesAt(1.1f));
-    public static final RegistryObject<ChargerItem> bamboozler14mk2 = ChargerItem.create(REGISTRY, bamboozler14mk1, "bamboozler_14_mk2");
-    public static final RegistryObject<ChargerItem> classicSquiffer = ChargerItem.create(REGISTRY, new WeaponSettings("classic_squiffer")
-            .setProjectileSize(0.7f).setProjectileLifespan(12).setProjectileSpeed(1.85f)
-            .setStartupTicks(15).setDischargeTicks(25)
-            .setMinInkConsumption(1.87f).setInkConsumption(10.5f).setInkRecoveryCooldown(7)
-            .setMinDamage(8).setBaseDamage(16).setChargedDamage(28)
-            .setChargerMobility(0.3f)
-            .setFastMidAirCharge(true)
-            .setChargerPiercesAt(1.0f));
+    public static final RegistryObject<ChargerItem> splatCharger = ChargerItem.create(REGISTRY, "splat_charger", "splat_charger");
+    public static final RegistryObject<ChargerItem> bentoSplatCharger = ChargerItem.create(REGISTRY, "splat_charger", "bento_splat_charger");
+    public static final RegistryObject<ChargerItem> kelpSplatCharger = ChargerItem.create(REGISTRY, "splat_charger", "kelp_splat_charger");
+    public static final RegistryObject<ChargerItem> eLiter4K = ChargerItem.create(REGISTRY, "e_liter", "e_liter_4k");
+    public static final RegistryObject<ChargerItem> eliter3K = ChargerItem.create(REGISTRY, "e_liter", "e_liter_3k");
+    public static final RegistryObject<ChargerItem> bamboozler14mk1 = ChargerItem.create(REGISTRY, "bamboozler_14", "bamboozler_14_mk1");
+    public static final RegistryObject<ChargerItem> bamboozler14mk2 = ChargerItem.create(REGISTRY, "bamboozler_14", "bamboozler_14_mk2");
+    public static final RegistryObject<ChargerItem> classicSquiffer = ChargerItem.create(REGISTRY, "squiffer", "classic_squiffer");
 
 
     //Dualies
-    public static final RegistryObject<DualieItem> splatDualie = DualieItem.create(REGISTRY, new WeaponSettings("splat_dualies")
-            .setProjectileSize(0.9f).setProjectileSpeed(0.65f)
-            .setFiringSpeed(7)
-            .setGroundInaccuracy(2).setAirInaccuracy(7.5f).setInkConsumption(0.75f).setInkRecoveryCooldown(7)
-            .setBaseDamage(6).setMinDamage(4).setDamageDecayStartTick(2).setDamageDecayPerTick(1.13f)
-            .setRollCount(1)
-            .setRollSpeed(0.9f)
-            .setRollInaccuracy(0).setRollInkConsumption(9).setRollInkRecoveryCooldown(23)
-            .setRollCooldown(8).setLastRollCooldown(30));
-    public static final RegistryObject<DualieItem> enperrySplatDualie = DualieItem.create(REGISTRY, splatDualie, "enperry_splat_dualies");
-    public static final RegistryObject<DualieItem> dualieSquelcher = DualieItem.create(REGISTRY, new WeaponSettings("dualie_squelchers")
-            .setProjectileSize(0.85f).setProjectileSpeed(0.74f)
-            .setFiringSpeed(8)
-            .setGroundInaccuracy(4).setAirInaccuracy(8)
-            .setInkConsumption(1.2f)
-            .setInkRecoveryCooldown(7)
-            .setBaseDamage(5.6f).setMinDamage(2.8f).setDamageDecayStartTick(3).setDamageDecayPerTick(0.53f)
-            .setRollCount(1)
-            .setRollSpeed(0.7f)
-            .setRollInaccuracy(2)
-            .setRollInkConsumption(5).setRollInkRecoveryCooldown(20)
-            .setRollCooldown(6).setLastRollCooldown(14));
-    public static final RegistryObject<DualieItem> gloogaDualie = DualieItem.create(REGISTRY, new WeaponSettings("glooga_dualies")
-            .setProjectileSize(0.8f).setProjectileSpeed(0.72f)
-            .setFiringSpeed(10)
-            .setGroundInaccuracy(4).setAirInaccuracy(8)
-            .setInkConsumption(1.4f).setInkRecoveryCooldown(7)
-            .setBaseDamage(7.3f).setMinDamage(3.6f).setDamageDecayStartTick(2).setDamageDecayPerTick(1.35f)
-            .setRollCount(1)
-            .setRollSpeed(0.7f)
-            .setRollBaseDamage(10.6f).setRollMinDamage(5.26f).setRollDamageDecayPerTick(2)
-            .setRollInaccuracy(3)
-            .setRollInkConsumption(8).setRollInkRecoveryCooldown(23)
-            .setRollCooldown(9).setLastRollCooldown(24));
-    public static final RegistryObject<DualieItem> gloogaDualieDeco = DualieItem.create(REGISTRY, gloogaDualie, "glooga_dualies_deco");
-    public static final RegistryObject<DualieItem> kensaGloogaDualie = DualieItem.create(REGISTRY, gloogaDualie, "kensa_glooga_dualies");
+    public static final RegistryObject<DualieItem> splatDualie = DualieItem.create(REGISTRY, "splat_dualies", "splat_dualies");
+    public static final RegistryObject<DualieItem> enperrySplatDualie = DualieItem.create(REGISTRY, "splat_dualies", "enperry_splat_dualies");
+    public static final RegistryObject<DualieItem> dualieSquelcher = DualieItem.create(REGISTRY, "dualie_squelchers", "dualie_squelchers");
+    public static final RegistryObject<DualieItem> gloogaDualie = DualieItem.create(REGISTRY, "glooga_dualies", "glooga_dualies");
+    public static final RegistryObject<DualieItem> gloogaDualieDeco = DualieItem.create(REGISTRY, "glooga_dualies", "glooga_dualies_deco");
+    public static final RegistryObject<DualieItem> kensaGloogaDualie = DualieItem.create(REGISTRY, "glooga_dualies", "kensa_glooga_dualies");
 
     //Sloshers
-    public static final RegistryObject<SlosherItem> slosher = SlosherItem.create(REGISTRY, new WeaponSettings("slosher")
-            .setProjectileSize(1.6f).setProjectileSpeed(0.4f).setProjectileCount(2)
-            .setStartupTicks(7)
-            .setGroundInaccuracy(8)
-            .setInkConsumption(7f).setInkRecoveryCooldown(13)
-            .setBaseDamage(14), SlosherItem.Type.DEFAULT);
+    public static final RegistryObject<SlosherItem> slosher = SlosherItem.create(REGISTRY, "slosher", "slosher", SlosherItem.Type.DEFAULT);
     public static final RegistryObject<SlosherItem> classicSlosher = SlosherItem.create(REGISTRY, slosher, "classic_slosher");
     public static final RegistryObject<SlosherItem> sodaSlosher = SlosherItem.create(REGISTRY, slosher, "soda_slosher");
-    public static final RegistryObject<SlosherItem> triSlosher = SlosherItem.create(REGISTRY, new WeaponSettings("tri_slosher")
-            .setProjectileSize(1.55f).setProjectileSpeed(0.444f).setProjectileCount(3)
-            .setStartupTicks(4)
-            .setGroundInaccuracy(20)
-            .setInkConsumption(6f).setInkRecoveryCooldown(12)
-            .setBaseDamage(12.4f), SlosherItem.Type.DEFAULT);
-    public static final RegistryObject<SlosherItem> explosher = SlosherItem.create(REGISTRY, new WeaponSettings("explosher")
-            .setProjectileSize(2f).setProjectileSpeed(0.75f).setProjectileCount(1)
-            .setFiringSpeed(20).setStartupTicks(5)
-            .setGroundInaccuracy(0)
-            .setInkConsumption(11.7f).setInkRecoveryCooldown(23)
-            .setBaseDamage(11f).setMinDamage(7), SlosherItem.Type.EXPLODING);
+    public static final RegistryObject<SlosherItem> triSlosher = SlosherItem.create(REGISTRY, "tri_slosher", "tri_slosher", SlosherItem.Type.DEFAULT);
+    public static final RegistryObject<SlosherItem> explosher = SlosherItem.create(REGISTRY, "explosher", "explosher", SlosherItem.Type.EXPLODING);
 
     //Ink Tanks
     public static final RegistryObject<InkTankItem> inkTank = REGISTRY.register("ink_tank", () -> new InkTankItem("ink_tank", 100));
@@ -278,29 +139,12 @@ public class SplatcraftItems {
     public static final RegistryObject<InkTankItem> armoredInkTank = REGISTRY.register("armored_ink_tank", () -> new InkTankItem("armored_ink_tank", 85, ARMORED_INK_TANK));
 
     //Sub Weapons
-    public static final RegistryObject<SubWeaponItem> splatBomb = REGISTRY.register("splat_bomb", () -> new SubWeaponItem(SplatcraftEntities.SPLAT_BOMB, new WeaponSettings("splat_bomb")
-            .setBaseDamage(SplatBombEntity.DIRECT_DAMAGE)
-            .setProjectileSize(SplatBombEntity.EXPLOSION_SIZE)
-            .setInkConsumption(70)
-            .setInkRecoveryCooldown(20)));
-    public static final RegistryObject<SubWeaponItem> splatBomb2 = REGISTRY.register("splat_bomb_2", () -> new SubWeaponItem(SplatcraftEntities.SPLAT_BOMB, splatBomb.get().settings).setSecret(true));
+    public static final RegistryObject<SubWeaponItem> splatBomb = REGISTRY.register("splat_bomb", () -> new SubWeaponItem(SplatcraftEntities.SPLAT_BOMB, "splat_bomb"));
+    public static final RegistryObject<SubWeaponItem> splatBomb2 = REGISTRY.register("splat_bomb_2", () -> new SubWeaponItem(SplatcraftEntities.SPLAT_BOMB, "splat_bomb").setSecret(true));
 
-    public static final RegistryObject<SubWeaponItem> burstBomb = REGISTRY.register("burst_bomb", () -> new SubWeaponItem(SplatcraftEntities.BURST_BOMB, new WeaponSettings("burst_bomb")
-            .setBaseDamage(BurstBombEntity.DIRECT_DAMAGE)
-            .setProjectileSize(BurstBombEntity.EXPLOSION_SIZE)
-            .setInkConsumption(40)
-            .setInkRecoveryCooldown(20)));
-    public static final RegistryObject<SubWeaponItem> suctionBomb = REGISTRY.register("suction_bomb", () -> new SubWeaponItem(SplatcraftEntities.SUCTION_BOMB, new WeaponSettings("suction_bomb")
-            .setBaseDamage(SuctionBombEntity.DIRECT_DAMAGE)
-            .setProjectileSize(SuctionBombEntity.EXPLOSION_SIZE)
-            .setInkConsumption(70)
-            .setInkRecoveryCooldown(20)));
-    public static final RegistryObject<SubWeaponItem> curlingBomb = REGISTRY.register("curling_bomb", () -> new CurlingSubWeaponItem(SplatcraftEntities.CURLING_BOMB, new WeaponSettings("curling_bomb")
-            .setBaseDamage(CurlingBombEntity.DIRECT_DAMAGE)
-            .setProjectileSize(CurlingBombEntity.EXPLOSION_SIZE)
-            .setInkConsumption(70)
-            .setInkRecoveryCooldown(0), // see items/weapons/CurlingSubWeaponItem
-            CurlingBombEntity.MAX_COOK_TIME, CurlingBombEntity::onItemUseTick));
+    public static final RegistryObject<SubWeaponItem> burstBomb = REGISTRY.register("burst_bomb", () -> new SubWeaponItem(SplatcraftEntities.BURST_BOMB, "burst_bomb"));
+    public static final RegistryObject<SubWeaponItem> suctionBomb = REGISTRY.register("suction_bomb", () -> new SubWeaponItem(SplatcraftEntities.SUCTION_BOMB, "suction_bomb"));
+    public static final RegistryObject<SubWeaponItem> curlingBomb = REGISTRY.register("curling_bomb", () -> new CurlingSubWeaponItem(SplatcraftEntities.CURLING_BOMB, "curling_bomb", CurlingBombEntity::onItemUseTick));
 
     //Vanity
     public static final RegistryObject<Item> inkClothHelmet = REGISTRY.register("ink_cloth_helmet", () -> new ColoredArmorItem(INK_CLOTH, EquipmentSlot.HEAD));

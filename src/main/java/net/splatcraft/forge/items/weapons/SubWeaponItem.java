@@ -1,6 +1,5 @@
 package net.splatcraft.forge.items.weapons;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
@@ -21,10 +20,9 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.client.SplatcraftItemRenderer;
-import net.splatcraft.forge.client.renderer.SubWeaponItemRenderer;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
-import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SubWeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -36,41 +34,40 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class SubWeaponItem extends WeaponBaseItem
+public class SubWeaponItem extends WeaponBaseItem<SubWeaponSettings>
 {
     public final RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType;
     public final SubWeaponAction useTick;
-    public final int maxUseTime;
-    public final WeaponSettings settings;
 
     public static final ArrayList<SubWeaponItem> subs = new ArrayList<>();
-    public static final float throwVelocity = 0.75f;
-    public static final float throwAngle = -30f;
 
-    public SubWeaponItem(RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, WeaponSettings settings, int maxUseTime, SubWeaponAction useTick) {
+    public SubWeaponItem(RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, String settings, SubWeaponAction useTick) {
         super(settings);
-        this.settings = settings;
         this.entityType = entityType;
         this.useTick = useTick;
-        this.maxUseTime = maxUseTime;
 
         subs.add(this);
 
-        addStat(new WeaponTooltip("damage", (stack, level) -> (int) settings.baseDamage / 20 * 100));
-        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (settings.projectileSize / 4 * 100)));
-        addStat(new WeaponTooltip("ink_consumption", (stack, level) -> (int) (settings.inkConsumption)));
+        addStat(new WeaponTooltip("damage", (stack, level) -> (int) getSettings(stack).directDamage / 20 * 100));
+        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (getSettings(stack).explosionSize / 4 * 100)));
+        addStat(new WeaponTooltip("ink_consumption", (stack, level) -> (int) (getSettings(stack).inkConsumption)));
 
 
         DispenserBlock.registerBehavior(this, new SubWeaponItem.DispenseBehavior());
     }
 
-    public SubWeaponItem(RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, WeaponSettings settings) {
-        this(entityType, settings, USE_DURATION, (level, entity, stack, useTime) -> {
+    public SubWeaponItem(RegistryObject<? extends EntityType<? extends AbstractSubWeaponEntity>> entityType, String settings) {
+        this(entityType, settings, (level, entity, stack, useTime) -> {
         });
     }
 
     public static boolean singleUse(ItemStack stack) {
         return stack.getOrCreateTag().getBoolean("SingleUse");
+    }
+
+    @Override
+    public Class<SubWeaponSettings> getSettingsClass() {
+        return SubWeaponSettings.class;
     }
 
     @Override
@@ -83,7 +80,7 @@ public class SubWeaponItem extends WeaponBaseItem
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand)
     {
-        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, this, settings.inkConsumption, 0, true, true)))
+        if (!(player.isSwimming() && !player.isInWater()) && (singleUse(player.getItemInHand(hand)) || enoughInk(player, this, getSettings(player.getItemInHand(hand)).inkConsumption, 0, true, true)))
             player.startUsingItem(hand);
         return useSuper(level, player, hand);
     }
@@ -101,10 +98,12 @@ public class SubWeaponItem extends WeaponBaseItem
     @Override
     public void weaponUseTick(@NotNull Level level, @NotNull LivingEntity entity, @NotNull ItemStack itemStack, int timeLeft)
     {
+        SubWeaponSettings settings = getSettings(itemStack);
+
         int useTime = getUseDuration(itemStack)-timeLeft;
-        if(useTime == maxUseTime)
+        if(useTime == settings.holdTime)
             throwSub(itemStack, level, entity);
-        else if(useTime < maxUseTime)
+        else if(useTime < settings.holdTime)
             useTick.onUseTick(level, entity, itemStack, timeLeft);
     }
 
@@ -112,7 +111,7 @@ public class SubWeaponItem extends WeaponBaseItem
     public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, LivingEntity entity, int timeLeft)
     {
         super.releaseUsing(stack, level, entity, timeLeft);
-        if(getUseDuration(stack)-timeLeft < maxUseTime)
+        if(getUseDuration(stack)-timeLeft < getSettings(stack).holdTime)
             throwSub(stack, level, entity);
     }
 
@@ -123,11 +122,12 @@ public class SubWeaponItem extends WeaponBaseItem
         if(!level.isClientSide())
         {
             AbstractSubWeaponEntity proj = AbstractSubWeaponEntity.create(entityType.get(), level, entity, stack.copy());
+            SubWeaponSettings settings = getSettings(stack);
 
             stack.getOrCreateTag().remove("EntityData");
 
             proj.setItem(stack);
-            proj.shoot(entity, entity.getXRot(), entity.getYRot(), throwAngle, throwVelocity, 0);
+            proj.shoot(entity, entity.getXRot(), entity.getYRot(), settings.throwAngle, settings.throwVelocity, 0);
             proj.setDeltaMovement(proj.getDeltaMovement().add(entity.getDeltaMovement().multiply(1, 0, 1)));
             level.addFreshEntity(proj);
         }
@@ -135,7 +135,7 @@ public class SubWeaponItem extends WeaponBaseItem
         if (SubWeaponItem.singleUse(stack)) {
             if (entity instanceof Player && !((Player) entity).isCreative())
                 stack.shrink(1);
-        } else reduceInk(entity, this, settings.inkConsumption, settings.inkRecoveryCooldown, false);
+        } else reduceInk(entity, this, getSettings(stack).inkConsumption, getSettings(stack).inkRecoveryCooldown, false);
 
     }
 
@@ -202,7 +202,7 @@ public class SubWeaponItem extends WeaponBaseItem
     }
 
     @Override
-    public PlayerPosingHandler.WeaponPose getPose() {
+    public PlayerPosingHandler.WeaponPose getPose(ItemStack stack) {
         return PlayerPosingHandler.WeaponPose.SUB_HOLD;
     }
 

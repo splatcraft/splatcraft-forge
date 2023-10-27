@@ -17,28 +17,31 @@ import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponTooltip;
 
-public class SlosherItem extends WeaponBaseItem
+public class SlosherItem extends WeaponBaseItem<WeaponSettings>
 {
-    public WeaponSettings settings;
     public Type slosherType = Type.DEFAULT;
 
-    public static RegistryObject<SlosherItem> create(DeferredRegister<Item> register, WeaponSettings settings, Type slosherType)
+    public static RegistryObject<SlosherItem> create(DeferredRegister<Item> register,String settings, String name, Type slosherType)
     {
-        return register.register(settings.name, () -> new SlosherItem(settings).setSlosherType(slosherType));
+        return register.register(name, () -> new SlosherItem(settings).setSlosherType(slosherType));
     }
 
     public static RegistryObject<SlosherItem> create(DeferredRegister<Item> register, RegistryObject<SlosherItem> parent, String name)
     {
-        return register.register(name, () -> new SlosherItem(parent.get().settings).setSlosherType(parent.get().slosherType));
+        return register.register(name, () -> new SlosherItem(parent.get().settingsId.toString()).setSlosherType(parent.get().slosherType));
     }
 
-    protected SlosherItem(WeaponSettings settings) {
+    protected SlosherItem(String settings) {
         super(settings);
-        this.settings = settings;
 
-        addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / 1.2f * 100)));
-        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (settings.baseDamage / 20 * 100)));
-        addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((15 - settings.startupTicks) / 15f * 100)));
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) (getSettings(stack).projectileSpeed / 1.2f * 100)));
+        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (getSettings(stack).baseDamage / 20 * 100)));
+        addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((15 - getSettings(stack).startupTicks) / 15f * 100)));
+    }
+
+    @Override
+    public Class<WeaponSettings> getSettingsClass() {
+        return WeaponSettings.class;
     }
 
     public SlosherItem setSlosherType(Type type)
@@ -48,7 +51,9 @@ public class SlosherItem extends WeaponBaseItem
     }
 
     @Override
-    public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft) {
+    public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft)
+    {
+        WeaponSettings settings = getSettings(stack);
         if (entity instanceof Player && getUseDuration(stack) - timeLeft < settings.startupTicks) {
             ItemCooldowns cooldownTracker = ((Player) entity).getCooldowns();
             if (!cooldownTracker.isOnCooldown(this)) {
@@ -61,7 +66,10 @@ public class SlosherItem extends WeaponBaseItem
     }
 
     @Override
-    public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown) {
+    public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown)
+    {
+        WeaponSettings settings = getSettings(stack);
+
         if (!level.isClientSide && reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
             for (int i = 0; i < settings.projectileCount; i++) {
                 boolean hasTrail = i == Math.floor((settings.projectileCount - 1) / 2f) || i == Math.ceil((settings.projectileCount - 1) / 2f);
@@ -86,7 +94,7 @@ public class SlosherItem extends WeaponBaseItem
     }
 
     @Override
-    public PlayerPosingHandler.WeaponPose getPose()
+    public PlayerPosingHandler.WeaponPose getPose(ItemStack stack)
     {
         return PlayerPosingHandler.WeaponPose.BUCKET_SWING;
     }

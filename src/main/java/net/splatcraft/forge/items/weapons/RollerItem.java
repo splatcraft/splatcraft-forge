@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
@@ -26,9 +27,11 @@ import net.splatcraft.forge.client.audio.RollerRollTickableSound;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.entities.SquidBumperEntity;
+import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.BlockInkedResult;
@@ -38,28 +41,31 @@ import net.splatcraft.forge.util.InkDamageUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponTooltip;
 
-public class RollerItem extends WeaponBaseItem {
+public class RollerItem extends WeaponBaseItem<RollerWeaponSettings> {
     public static final ArrayList<RollerItem> rollers = Lists.newArrayList();
 
-    public RollerWeaponSettings settings;
     public boolean isMoving;
 
-    public static RegistryObject<RollerItem> create(DeferredRegister<Item> registry, RollerWeaponSettings settings) {
-        return registry.register(settings.name, () -> new RollerItem(settings));
+    public static RegistryObject<RollerItem> create(DeferredRegister<Item> registry, String settings, String name) {
+        return registry.register(name, () -> new RollerItem(settings));
     }
 
     public static RegistryObject<RollerItem> create(DeferredRegister<Item> registry, RegistryObject<RollerItem> parent, String name) {
-        return registry.register(name, () -> new RollerItem(parent.get().settings));
+        return registry.register(name, () -> new RollerItem(parent.get().settingsId.toString()));
     }
 
-    protected RollerItem(RollerWeaponSettings settings) {
+    protected RollerItem(String settings) {
         super(settings);
-        this.settings = settings;
         rollers.add(this);
 
-        addStat(new WeaponTooltip("range", (stack, level) -> (int) ((settings.flingProjectileSpeed + settings.swingProjectileSpeed) * 50)));
-        addStat(new WeaponTooltip("ink_speed", (stack, level) -> (int) (settings.dashMobility / 2f * 100)));
-        addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((20 - (settings.flingTime + settings.swingTime) / 2f) * 5)));
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) ((getSettings(stack).flingProjectileSpeed + getSettings(stack).swingProjectileSpeed) * 50)));
+        addStat(new WeaponTooltip("ink_speed", (stack, level) -> (int) (getSettings(stack).dashMobility / 2f * 100)));
+        addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((20 - (getSettings(stack).flingTime + getSettings(stack).swingTime) / 2f) * 5)));
+    }
+
+    @Override
+    public Class<RollerWeaponSettings> getSettingsClass() {
+        return RollerWeaponSettings.class;
     }
 
     public static void applyRecoilKnockback(LivingEntity entity, double pow) {
@@ -81,7 +87,7 @@ public class RollerItem extends WeaponBaseItem {
                 if (cooldown.getTime() > (cooldown.isGrounded() ? -10 : 0)) {
                     ItemStack cooldownStack = cooldown.getHand() == (InteractionHand.MAIN_HAND) ? ((Player) entity).getInventory().items.get(cooldown.getSlotIndex())
                             : entity.getOffhandItem();
-                    return stack.equals(cooldownStack) && (settings.isBrush || cooldown.isGrounded()) ? 1 : 0;
+                    return stack.equals(cooldownStack) && (getSettings(stack).isBrush || cooldown.isGrounded()) ? 1 : 0;
                 }
             }
             return entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0;
@@ -92,9 +98,10 @@ public class RollerItem extends WeaponBaseItem {
     public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft) {
         if (!(entity instanceof Player))
             return;
-
+        RollerWeaponSettings settings = getSettings(stack);
         int startupTicks = entity.isOnGround() ? settings.swingTime : settings.flingTime;
-        if (getUseDuration(stack) - timeLeft < startupTicks) {
+        if (getUseDuration(stack) - timeLeft < startupTicks)
+        {
             //if (getInkAmount(entity, stack) > inkConsumption){
             PlayerCooldown cooldown = new PlayerCooldown(stack, startupTicks, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround());
             PlayerCooldown.setPlayerCooldown((Player) entity, cooldown);
@@ -210,6 +217,7 @@ public class RollerItem extends WeaponBaseItem {
     @Override
     public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown) {
         boolean airborne = !cooldown.isGrounded();
+        RollerWeaponSettings settings = getSettings(stack);
 
         if (level.isClientSide)
             playRollSound(settings.isBrush);
@@ -248,7 +256,9 @@ public class RollerItem extends WeaponBaseItem {
     }
 
     @Override
-    public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack) {
+    public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack)
+    {
+        RollerWeaponSettings settings = getSettings(stack);
         double appliedMobility;
         int useTime = entity.getUseItemRemainingTicks() - entity.getUseItemRemainingTicks();
 
@@ -265,7 +275,7 @@ public class RollerItem extends WeaponBaseItem {
     }
 
     @Override
-    public PlayerPosingHandler.WeaponPose getPose() {
-        return settings.isBrush ? PlayerPosingHandler.WeaponPose.BRUSH : PlayerPosingHandler.WeaponPose.ROLL;
+    public PlayerPosingHandler.WeaponPose getPose(ItemStack stack) {
+        return getSettings(stack).isBrush ? PlayerPosingHandler.WeaponPose.BRUSH : PlayerPosingHandler.WeaponPose.ROLL;
     }
 }

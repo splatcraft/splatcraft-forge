@@ -1,0 +1,32 @@
+{
+  "type": "splatcraft:roller",
+  "roll": {
+	"ink_size": 4,
+	"hitbox_size": 3,
+	"ink_consumption": 0.06,
+	"ink_recovery_cooldown": 7,
+	"damage": 32,
+	"mobility": 0.88
+  },
+  "swing": {
+	"mobility": 0.24,
+	"ink_consumption": 18,
+	"ink_recovery_cooldown": 22,
+	"projectile_speed": 0.85,
+ 	"projectile_pitch_compensation": -41.25,
+	"startup_time": 15,
+	"base_damage": 25,
+	"min_damage": 5,
+	"damage_decay_start_tick": 18,
+	"damage_decay_per_tick": 1.125
+  },
+  "fling": {
+	"ink_recovery_cooldown": 26,
+	"projectile_speed": 0.98,
+	"startup_time": 18,
+	"base_damage": 36,
+	"min_damage": 7,
+	"damage_decay_start_tick": 18,
+	"damage_decay_per_tick": 1.6
+  }
+}

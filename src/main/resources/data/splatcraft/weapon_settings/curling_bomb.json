@@ -1,0 +1,17 @@
+{
+	"type": "splatcraft:sub_weapon",
+	"direct_damage": 36.0,
+	"indirect_damage": 6.0,
+	"prop_damage": 36.0,
+	"explosion_size": 2.5,
+	"fuse_time": 80,
+	"ink_consumption": 70.0,
+	"ink_recovery_cooldown": 24,
+	"hold_time": 30,
+
+	"curling":
+	{
+		"cook_time": 30,
+		"contact_damage": 4.0
+	}
+}

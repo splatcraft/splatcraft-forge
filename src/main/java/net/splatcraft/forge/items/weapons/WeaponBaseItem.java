@@ -1,7 +1,5 @@
 package net.splatcraft.forge.items.weapons;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -9,6 +7,7 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -27,15 +26,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.blocks.InkwellBlock;
 import net.splatcraft.forge.client.handlers.SplatcraftKeyHandler;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SubWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
@@ -50,19 +54,23 @@ import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class WeaponBaseItem extends Item implements IColoredItem
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<?>> extends Item implements IColoredItem
 {
     public static final int USE_DURATION = 72000;
     protected final List<WeaponTooltip> stats = new ArrayList<>();
 
-    public AbstractWeaponSettings settings;
+    public ResourceLocation settingsId;
     public boolean isSecret;
 
-    public WeaponBaseItem(AbstractWeaponSettings settings) {
+    public WeaponBaseItem(String settingsId) {
         super(new Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_WEAPONS));
         SplatcraftItems.inkColoredItems.add(this);
         SplatcraftItems.weapons.add(this);
-        this.settings = settings;
+        this.settingsId = settingsId.contains(":") ? new ResourceLocation(settingsId) : new ResourceLocation(Splatcraft.MODID, settingsId);
 
         CauldronInteraction.WATER.put(this, (state, level, pos, player, hand, stack) ->
         {
@@ -79,6 +87,27 @@ public class WeaponBaseItem extends Item implements IColoredItem
 
 	        } return InteractionResult.PASS;
         });
+    }
+
+    public abstract Class<S> getSettingsClass();
+
+    private static final HashMap<Class<? extends AbstractWeaponSettings<?>>, AbstractWeaponSettings<?>> DEFAULTS = new HashMap<>() // a
+    {{
+        put(WeaponSettings.class, WeaponSettings.DEFAULT);
+        put(SubWeaponSettings.class, SubWeaponSettings.DEFAULT);
+        put(RollerWeaponSettings.class, RollerWeaponSettings.DEFAULT);
+    }};
+    public S getSettings(ItemStack stack)
+    {
+        ResourceLocation id = stack.hasTag() && stack.getTag().contains("Settings") ? new ResourceLocation(stack.getTag().getString("Settings")) : settingsId;
+
+        if(!(DataHandler.WeaponStatsListener.SETTINGS.containsKey(id) && getSettingsClass().isInstance(DataHandler.WeaponStatsListener.SETTINGS.get(id))))
+            id = settingsId;
+
+        if(!(DataHandler.WeaponStatsListener.SETTINGS.containsKey(id) && getSettingsClass().isInstance(DataHandler.WeaponStatsListener.SETTINGS.get(id))))
+            return (S) DEFAULTS.get(getSettingsClass());
+
+        return getSettingsClass().cast(DataHandler.WeaponStatsListener.SETTINGS.get(id));
     }
 
     public <T extends WeaponBaseItem> T setSecret(boolean secret)
@@ -182,7 +211,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
                     if (!level.isClientSide)
                         SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(player.getUUID(), false), player);
                 }
-                if (level.isClientSide)
+                if(level.isClientSide())
                     SplatcraftKeyHandler.canUseHotkeys = false;
                 player.setSprinting(false);
                 player.getInventory().selected = itemSlot;
@@ -293,7 +322,7 @@ public class WeaponBaseItem extends Item implements IColoredItem
         return null;
     }
 
-    public PlayerPosingHandler.WeaponPose getPose()
+    public PlayerPosingHandler.WeaponPose getPose(ItemStack stack)
     {
         return PlayerPosingHandler.WeaponPose.NONE;
     }

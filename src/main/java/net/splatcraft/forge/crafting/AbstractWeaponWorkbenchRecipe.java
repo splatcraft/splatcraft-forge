@@ -21,9 +21,9 @@ public abstract class AbstractWeaponWorkbenchRecipe implements Recipe<Container>
     protected final ResourceLocation id;
     protected final ItemStack recipeOutput;
     protected final NonNullList<StackedIngredient> recipeItems;
-    protected final String name;
+    protected final Component name;
 
-    public AbstractWeaponWorkbenchRecipe(ResourceLocation id, String name, ItemStack recipeOutput, NonNullList<StackedIngredient> recipeItems)
+    public AbstractWeaponWorkbenchRecipe(ResourceLocation id, Component name, ItemStack recipeOutput, NonNullList<StackedIngredient> recipeItems)
     {
         this.id = id;
         this.recipeOutput = recipeOutput;
@@ -53,7 +53,7 @@ public abstract class AbstractWeaponWorkbenchRecipe implements Recipe<Container>
 
     public Component getName()
     {
-        return new TranslatableComponent(name);
+        return name;
     }
 
     @Override

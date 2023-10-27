@@ -30,6 +30,7 @@ import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.blocks.StageBarrierBlock;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
+import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
@@ -323,8 +324,11 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
         sourceWeapon = ItemStack.of(nbt.getCompound("SourceWeapon"));
 
-        if (sourceWeapon.getItem() instanceof WeaponBaseItem)
-            damage = ((WeaponBaseItem) sourceWeapon.getItem()).settings;
+        AbstractWeaponSettings<?> settings = DataHandler.WeaponStatsListener.SETTINGS.get(new ResourceLocation(nbt.getString(nbt.getString("Settings"))));
+        if(settings != null)
+            damage = settings;
+        else if (sourceWeapon.getItem() instanceof WeaponBaseItem weapon)
+            damage = weapon.getSettings(sourceWeapon);
     }
 
     @Override

@@ -1,0 +1,10 @@
+{
+	"type": "splatcraft:sub_weapon",
+	"direct_damage": 36.0,
+	"indirect_damage": 6.0,
+	"prop_damage": 100.0,
+	"explosion_size": 3.75,
+	"fuse_time": 40,
+	"ink_consumption": 70.0,
+	"ink_recovery_cooldown": 20
+}

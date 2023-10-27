@@ -1,0 +1,174 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"5": "splatcraft:weapon/splattershotjr_purplebits",
+		"6": "splatcraft:weapon/splattershotjr_decal_custom",
+		"7": "splatcraft:weapon/splattershotjr_inkcolor_s3",
+		"particle": "splatcraft:splattershotjr_purplebits_kensa"
+	},
+	"elements": [
+		{
+			"name": "nozzle",
+			"from": [7, 4.5, 0.75],
+			"to": [9, 6.5, 0.75],
+			"faces": {
+				"north": {"uv": [7, 0, 8, 1], "texture": "#5"},
+				"east": {"uv": [0, 0, 0, 1], "texture": "#5"},
+				"south": {"uv": [7, 1, 8, 2], "texture": "#5"},
+				"west": {"uv": [0, 0, 0, 1], "texture": "#5"},
+				"up": {"uv": [1, 0, 0, 0], "texture": "#5"},
+				"down": {"uv": [1, 0, 0, 0], "texture": "#5"}
+			}
+		},
+		{
+			"name": "button",
+			"from": [6.5, 8.25, 6.5],
+			"to": [9.5, 9.25, 7.5],
+			"faces": {
+				"north": {"uv": [7, 2, 8.5, 2.5], "texture": "#5"},
+				"east": {"uv": [7, 4, 7.5, 4.5], "texture": "#5"},
+				"south": {"uv": [7, 2.5, 8.5, 3], "texture": "#5"},
+				"west": {"uv": [7, 4.5, 7.5, 5], "texture": "#5"},
+				"up": {"uv": [8.5, 3.5, 7, 3], "texture": "#5"},
+				"down": {"uv": [8.5, 3.5, 7, 4], "texture": "#5"}
+			}
+		},
+		{
+			"name": "texture_plane",
+			"from": [8, 0, 1],
+			"to": [8, 10, 15],
+			"faces": {
+				"north": {"uv": [0, 0, 0, 5], "texture": "#5"},
+				"east": {"uv": [0, 0, 7, 5], "texture": "#5"},
+				"south": {"uv": [0, 0, 0, 5], "texture": "#5"},
+				"west": {"uv": [0, 5, 7, 10], "texture": "#5"},
+				"up": {"uv": [0, 7, 0, 0], "texture": "#5"},
+				"down": {"uv": [0, 0, 0, 7], "texture": "#5"}
+			}
+		},
+		{
+			"name": "hinge",
+			"from": [7, 7.5, 6],
+			"to": [9, 9.5, 8],
+			"faces": {
+				"north": {"uv": [7.5, 3, 8.5, 4], "texture": "#7", "tintindex": 0},
+				"east": {"uv": [8.5, 3, 9.5, 4], "texture": "#7", "tintindex": 0},
+				"south": {"uv": [3, 9, 4, 10], "texture": "#7", "tintindex": 0},
+				"west": {"uv": [3, 10, 4, 11], "texture": "#7", "tintindex": 0},
+				"up": {"uv": [10, 11, 9, 10], "texture": "#7", "tintindex": 0},
+				"down": {"uv": [11, 10, 10, 11], "texture": "#7", "tintindex": 0}
+			}
+		},
+		{
+			"name": "barrel",
+			"from": [5, 2.5, 1],
+			"to": [11, 8.5, 5],
+			"faces": {
+				"north": {"uv": [6.5, 4, 9.5, 7], "texture": "#7", "tintindex": 0},
+				"east": {"uv": [7.5, 0, 9.5, 3], "texture": "#7", "tintindex": 0},
+				"south": {"uv": [6.5, 7, 9.5, 10], "texture": "#7", "tintindex": 0},
+				"west": {"uv": [4, 8, 6, 11], "texture": "#7", "tintindex": 0},
+				"up": {"uv": [3, 11, 0, 9], "texture": "#7", "tintindex": 0},
+				"down": {"uv": [12.5, 0, 9.5, 2], "texture": "#7", "tintindex": 0}
+			}
+		},
+		{
+			"name": "body",
+			"from": [6, 4, 5],
+			"to": [10, 8, 15],
+			"faces": {
+				"north": {"uv": [9.5, 2, 11.5, 4], "texture": "#7", "tintindex": 0},
+				"east": {"uv": [0, 0, 5, 2], "texture": "#7", "tintindex": 0},
+				"south": {"uv": [9.5, 4, 11.5, 6], "texture": "#7", "tintindex": 0},
+				"west": {"uv": [0, 2, 5, 4], "texture": "#7", "tintindex": 0},
+				"up": {"uv": [2, 9, 0, 4], "texture": "#7", "tintindex": 0},
+				"down": {"uv": [4, 4, 2, 9], "texture": "#7", "tintindex": 0}
+			}
+		},
+		{
+			"name": "grip",
+			"from": [5.5, 3, 5],
+			"to": [10.5, 5, 13],
+			"faces": {
+				"north": {"uv": [9.5, 8, 12, 9], "texture": "#7", "tintindex": 0},
+				"east": {"uv": [9.5, 6, 13.5, 7], "texture": "#7", "tintindex": 0},
+				"south": {"uv": [9.5, 9, 12, 10], "texture": "#7", "tintindex": 0},
+				"west": {"uv": [9.5, 7, 13.5, 8], "texture": "#7", "tintindex": 0},
+				"up": {"uv": [6.5, 8, 4, 4], "texture": "#7", "tintindex": 0},
+				"down": {"uv": [7.5, 0, 5, 4], "texture": "#7", "tintindex": 0}
+			}
+		},
+		{
+			"name": "handle",
+			"from": [7.5, 0, 10],
+			"to": [8.5, 3, 13],
+			"faces": {
+				"north": {"uv": [6, 8, 6.5, 9.5], "texture": "#7", "tintindex": 0},
+				"east": {"uv": [6, 10, 7.5, 11.5], "texture": "#7", "tintindex": 0},
+				"south": {"uv": [0, 11, 0.5, 12.5], "texture": "#7", "tintindex": 0},
+				"west": {"uv": [7.5, 10, 9, 11.5], "texture": "#7", "tintindex": 0},
+				"up": {"uv": [1, 12.5, 0.5, 11], "texture": "#7", "tintindex": 0},
+				"down": {"uv": [1.5, 11, 1, 12.5], "texture": "#7", "tintindex": 0}
+			}
+		},
+		{
+			"name": "decal",
+			"from": [5, 2.5, 5.75],
+			"to": [11, 8.5, 11.75],
+			"faces": {
+				"north": {"uv": [0, 0, 3, 3], "texture": "#6"},
+				"east": {"uv": [0, 3, 3, 6], "texture": "#6"},
+				"south": {"uv": [3, 0, 6, 3], "texture": "#6"},
+				"west": {"uv": [3, 3, 6, 6], "texture": "#6"},
+				"up": {"uv": [3, 9, 0, 6], "texture": "#6"},
+				"down": {"uv": [9, 0, 6, 3], "texture": "#6"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 6, -1.25]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 5.75, -1]
+		},
+		"firstperson_righthand": {
+			"translation": [0, 6, 0]
+		},
+		"firstperson_lefthand": {
+			"translation": [0, 6, 0]
+		},
+		"ground": {
+			"rotation": [-22.5, 0, 0],
+			"translation": [0, 6, 0]
+		},
+		"gui": {
+			"rotation": [0, -145, 0],
+			"translation": [0, 2.75, 0]
+		},
+		"head": {
+			"rotation": [4.5, 0, -90],
+			"translation": [3.5, 10, 0]
+		},
+		"fixed": {
+			"rotation": [0, 90, 0],
+			"translation": [0, 3.25, 0]
+		}
+	},
+	"groups": [
+		{
+			"name": "bespoke",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"children": [0, 1, 2]
+		},
+		{
+			"name": "inkcolor",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [3, 4, 5, 6, 7]
+		},
+		8
+	]
+}

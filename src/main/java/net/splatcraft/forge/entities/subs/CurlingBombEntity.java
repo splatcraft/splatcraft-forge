@@ -21,6 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
+import net.splatcraft.forge.items.weapons.settings.SubWeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -31,18 +32,13 @@ import java.util.List;
 
 public class CurlingBombEntity extends AbstractSubWeaponEntity
 {
-	public static final float DIRECT_DAMAGE = 36;
-	public static final float CONTACT_DAMAGE = 4;
-	public static final float EXPLOSION_SIZE = 2.5f;
-	public static final int FUSE_START = 10;
-	public static final int MAX_FUSE_TIME = 80;
-	public static final int MAX_COOK_TIME = 30;
+	public static final int FLASH_DURATION = 20;
 
 	private static final EntityDataAccessor<Integer> INIT_FUSE_TIME = SynchedEntityData.defineId(CurlingBombEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Float> COOK_SCALE = SynchedEntityData.defineId(CurlingBombEntity.class, EntityDataSerializers.FLOAT);
 
-	public int fuseTime = MAX_FUSE_TIME;
-	public int prevFuseTime = MAX_FUSE_TIME;
+	public int fuseTime = 0;
+	public int prevFuseTime = 0;
 
 	public float bladeRot = 0;
 	public float prevBladeRot = 0;
@@ -59,7 +55,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	protected void defineSynchedData()
 	{
 		super.defineSynchedData();
-		entityData.define(INIT_FUSE_TIME, MAX_FUSE_TIME);
+		entityData.define(INIT_FUSE_TIME, 0);
 		entityData.define(COOK_SCALE, 0f);
 	}
 
@@ -81,8 +77,9 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	{
 		if(nbt.contains("CookTime"))
 		{
-			setCookScale((nbt.getInt("CookTime") / (float)MAX_COOK_TIME));
-			setInitialFuseTime(getInitialFuseTime() - nbt.getInt("CookTime"));
+			if(getSettings().cookTime > 0)
+				setCookScale(Math.min(4, (nbt.getInt("CookTime") / (float)getSettings().cookTime)));
+			setInitialFuseTime(nbt.getInt("CookTime"));
 			prevFuseTime = getInitialFuseTime();
 		}
 	}
@@ -92,17 +89,19 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	{
 		super.tick();
 
+		SubWeaponSettings settings = getSettings();
+
 		double spd = getDeltaMovement().multiply(1, 0, 1).length();
 		prevBladeRot = bladeRot;
 		bladeRot += spd;
 
 		prevFuseTime = fuseTime;
-		fuseTime--;
+		fuseTime++;
 
-		if(fuseTime == MAX_FUSE_TIME - 30)
+		if(fuseTime == 30)
 			playAlertAnim = true;
 
-		if (fuseTime <= 20 && !playedActivationSound)
+		if (fuseTime >= settings.fuseTime - FLASH_DURATION && !playedActivationSound)
 		{
 			level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonating, SoundSource.PLAYERS, 0.8F, 1f);
 			playedActivationSound = true;
@@ -112,7 +111,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 			for(int i = 0; i <= 2; i++)
 				if(!InkBlockUtils.isUninkable(level, blockPosition().below(i)))
 				{
-					InkBlockUtils.inkBlock(level, blockPosition().below(i), getColor(), CONTACT_DAMAGE, inkType);
+					InkBlockUtils.inkBlock(level, blockPosition().below(i), getColor(), settings.contactDamage, inkType);
 					break;
 				}
 
@@ -123,15 +122,15 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 			if (this.onGround)
 				f1 = this.level.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getFriction(level, new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ()), this);
 
-			f1 = (float) Math.min(0.98, f1*3f) * Math.min(1, 2* fuseTime/(float)MAX_FUSE_TIME);
+			f1 = (float) Math.min(0.98, f1*3f) * Math.min(1, 2 * (1 - fuseTime/(float)settings.fuseTime));
 
 			this.setDeltaMovement(this.getDeltaMovement().multiply(f1, 0.98D, f1));
 
 		}
 
-		if(fuseTime <= 0)
+		if(fuseTime >= settings.fuseTime)
 		{
-			InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), EXPLOSION_SIZE + getCookScale(), DIRECT_DAMAGE, DIRECT_DAMAGE, DIRECT_DAMAGE, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
+			InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), settings.explosionSize + getCookScale(), settings.propDamage, settings.indirectDamage, settings.directDamage, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
 			level.broadcastEntityEvent(this, (byte) 1);
 			level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonate, SoundSource.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
 			if(!level.isClientSide())
@@ -153,10 +152,10 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	public void handleEntityEvent(byte id) {
 		super.handleEntityEvent(id);
 		if (id == 1) {
-			level.addAlwaysVisibleParticle(new InkExplosionParticleData(getColor(), (EXPLOSION_SIZE+getCookScale()) * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+			level.addAlwaysVisibleParticle(new InkExplosionParticleData(getColor(), (getSettings().explosionSize+getCookScale()) * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
 		}
 		if (id == 2) {
-			level.addParticle(new InkSplashParticleData(getColor(), EXPLOSION_SIZE*1.15f), this.getX(), this.getY()+0.4, this.getZ(), 0, 0, 0);
+			level.addParticle(new InkSplashParticleData(getColor(), getSettings().explosionSize*1.15f), this.getX(), this.getY()+0.4, this.getZ(), 0, 0, 0);
 		}
 
 	}
@@ -166,7 +165,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	protected void onHitEntity(EntityHitResult result)
 	{
 		if(result.getEntity() instanceof LivingEntity)
-			InkDamageUtils.doRollDamage(level, (LivingEntity) result.getEntity(), CONTACT_DAMAGE, getColor(), getOwner(), this, sourceWeapon, false);
+			InkDamageUtils.doRollDamage(level, (LivingEntity) result.getEntity(), getSettings().contactDamage, getColor(), getOwner(), this, sourceWeapon, false);
 
 		double velocityX = this.getDeltaMovement().x;
 		double velocityY = this.getDeltaMovement().y;
@@ -213,7 +212,8 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 
 	public float getFlashIntensity(float partialTicks)
 	{
-		return 1f-Math.min(FUSE_START, Mth.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float)FUSE_START;
+		SubWeaponSettings settings = getSettings();
+		return Math.max(0, Mth.lerp(partialTicks, prevFuseTime, fuseTime) - (settings.fuseTime - FLASH_DURATION)) * 0.85f / FLASH_DURATION;
 	}
 
 	private boolean canStepUp(Vec3 p_20273_) {

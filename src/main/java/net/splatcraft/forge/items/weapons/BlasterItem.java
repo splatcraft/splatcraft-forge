@@ -16,38 +16,32 @@ import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponTooltip;
 
-public class BlasterItem extends WeaponBaseItem
+public class BlasterItem extends ShooterItem
 {
-    public WeaponSettings settings;
-
-    public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, WeaponSettings settings)
+    public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, String settings, String name)
     {
-        return registry.register(settings.name, () -> new BlasterItem(settings));
+        return registry.register(name, () -> new BlasterItem(settings));
     }
 
     public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, RegistryObject<BlasterItem> parent, String name)
     {
-        return createBlaster(registry, parent, name, false);
+        return registry.register(name, () -> new BlasterItem(parent.get().settingsId.toString()));
     }
 
-    public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, RegistryObject<BlasterItem> parent, String name, boolean secret)
-    {
-        return registry.register(name, () -> new BlasterItem(parent.get().settings).setSecret(secret));
-    }
-
-    protected BlasterItem(WeaponSettings settings) {
+    protected BlasterItem(String settings) {
         super(settings);
-        this.settings = settings;
 
-        addStat(new WeaponTooltip("range", (stack, level) -> (int) (settings.projectileSpeed / settings.projectileLifespan * 100)));
-        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (settings.projectileSize / 2.0f * 100)));
-        addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - settings.firingSpeed * 0.5f) / 15f * 100)));
+        addStat(new WeaponTooltip("range", (stack, level) -> (int) (getSettings(stack).projectileSpeed / getSettings(stack).projectileLifespan * 100)));
+        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (getSettings(stack).projectileSize / 2.0f * 100)));
+        addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - getSettings(stack).firingSpeed * 0.5f) / 15f * 100)));
     }
 
     @Override
     public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft) {
         ItemCooldowns cooldownTracker = ((Player) entity).getCooldowns();
-        if (!cooldownTracker.isOnCooldown(this)) {
+        if (!cooldownTracker.isOnCooldown(this))
+        {
+            WeaponSettings settings = getSettings(stack);
             PlayerCooldown.setPlayerCooldown((Player) entity, new PlayerCooldown(stack, settings.startupTicks, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
             if (!level.isClientSide) {
                 cooldownTracker.addCooldown(this, settings.firingSpeed);
@@ -57,7 +51,9 @@ public class BlasterItem extends WeaponBaseItem
 
     @Override
     public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide)
+        {
+            WeaponSettings settings = getSettings(stack);
             if (reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
                 InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize, settings).setShooterTrail();
                 proj.setBlasterStats(settings.projectileLifespan);

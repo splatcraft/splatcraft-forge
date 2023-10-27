@@ -68,6 +68,8 @@ public class SplatcraftCommonHandler
         }
     }
 
+
+
     @SubscribeEvent
     public static void onLivingDestroyBlock(LivingDestroyBlockEvent event)
     {
@@ -218,9 +220,10 @@ public class SplatcraftCommonHandler
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
     {
-        Player player = event.getPlayer();
-        SplatcraftPacketHandler.sendToPlayer(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.booleanRules), (ServerPlayer) player);
-        SplatcraftPacketHandler.sendToPlayer(new UpdateIntGamerulesPacket(SplatcraftGameRules.intRules), (ServerPlayer) player);
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
+        SplatcraftPacketHandler.sendToPlayer(new UpdateBooleanGamerulesPacket(SplatcraftGameRules.booleanRules), player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateIntGamerulesPacket(SplatcraftGameRules.intRules), player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateWeaponSettingsPacket(), player);
 
         int[] colors = new int[ScoreboardHandler.getCriteriaKeySet().size()];
         int i = 0;
@@ -236,9 +239,9 @@ public class SplatcraftCommonHandler
         }
 
         SplatcraftPacketHandler.sendToAll(new UpdateClientColorsPacket(event.getPlayer().getDisplayName().getString(), PlayerInfoCapability.get(event.getPlayer()).getColor()));
-        SplatcraftPacketHandler.sendToPlayer(new UpdateClientColorsPacket(playerColors), (ServerPlayer) player);
-        SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, colors), (ServerPlayer) player);
-        SplatcraftPacketHandler.sendToPlayer(new UpdateStageListPacket(SaveInfoCapability.get(event.getPlayer().level.getServer()).getStages()), (ServerPlayer) player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateClientColorsPacket(playerColors), player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, colors), player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateStageListPacket(SaveInfoCapability.get(event.getPlayer().level.getServer()).getStages()), player);
     }
 
     @Deprecated

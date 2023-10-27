@@ -96,7 +96,7 @@ public class CurlingBombModel extends AbstractSubWeaponModel<CurlingBombEntity> 
 
 		blades.yRot = Mth.lerp(partialTick, entityIn.prevBladeRot, entityIn.bladeRot);
 
-		top.y = 20 - Mth.clamp(30-Mth.lerp(partialTick, entityIn.prevFuseTime, entityIn.fuseTime), 0, .95f) * 3f;
+		top.y = 20 - Mth.clamp(Mth.lerp(partialTick, entityIn.prevFuseTime, entityIn.fuseTime) - 50, 0, .95f) * 3f;
 	}
 
 	@Override
