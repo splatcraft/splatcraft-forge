@@ -214,8 +214,6 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<?>> extend
                     }
                 }
 
-                if(level.isClientSide())
-                    SplatcraftKeyHandler.canUseHotkeys = false;
                 player.setSprinting(false);
                 if (Inventory.isHotbarSlot(itemSlot)) {
                     player.getInventory().selected = itemSlot;
