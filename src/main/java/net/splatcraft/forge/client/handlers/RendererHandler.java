@@ -398,11 +398,13 @@ public class RendererHandler
         if (info.isSquid() || showLowInkWarning || !canUse) {
             //if (event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER))
             {
-                squidTime += 1/20f;
+                squidTime += event.getPartialTicks();
 
-                if (showCrosshairInkIndicator) {
-                    int heightAnim = Math.min(14, (int)squidTime);
-                    int glowAnim = Math.max(0, Math.min(18, (int)squidTime - 16));
+                if (showCrosshairInkIndicator)
+                {
+                    float speed = 0.15f;
+                    int heightAnim = Math.min(14, (int)(squidTime * speed));
+                    int glowAnim = Math.max(0, Math.min(18, (int)(squidTime * speed) - 16));
                     float[] rgb = ColorUtils.hexToRGB(info.getColor());
 
                     PoseStack matrixStack = event.getMatrixStack();
