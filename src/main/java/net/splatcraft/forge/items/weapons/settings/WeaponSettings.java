@@ -110,7 +110,7 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
             setRollCount(dualieRoll.count);
             setRollSpeed(dualieRoll.speed);
             setRollInkConsumption(dualieRoll.inkConsumption);
-            setRollCooldown(dualieRoll.finalRollDuration);
+            setRollCooldown(dualieRoll.duration);
             setLastRollCooldown(dualieRoll.finalRollDuration);
         });
 
