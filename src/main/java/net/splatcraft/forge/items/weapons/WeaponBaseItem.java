@@ -117,7 +117,11 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<?>> extend
     }
 
     public static boolean reduceInk(LivingEntity player, Item item, float amount, int recoveryCooldown, boolean sendMessage) {
-        if (!enoughInk(player, item, amount, recoveryCooldown, sendMessage, false)) return false;
+        return reduceInk(player, item, amount, recoveryCooldown, sendMessage, false);
+    }
+
+    public static boolean reduceInk(LivingEntity player, Item item, float amount, int recoveryCooldown, boolean sendMessage, boolean force) {
+        if (!force && !enoughInk(player, item, amount, recoveryCooldown, sendMessage, false)) return false;
         ItemStack tank = player.getItemBySlot(EquipmentSlot.CHEST);
         if (tank.getItem() instanceof InkTankItem)
             InkTankItem.setInkAmount(tank, InkTankItem.getInkAmount(tank) - amount);

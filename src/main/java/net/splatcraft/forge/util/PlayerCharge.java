@@ -95,7 +95,7 @@ public class PlayerCharge {
 
         if (!(dischargeItem instanceof IChargeableWeapon chargeable)
                 || charge.charge < 1.0f
-                || charge.dischargedTicks >= chargeable.getDischargeTicks()) {
+                || charge.dischargedTicks >= chargeable.getDischargeTicks(charge.chargedWeapon)) {
             charge.charge = 0f;
             charge.dischargedTicks = 0;
             SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));

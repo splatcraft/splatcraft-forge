@@ -5,7 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public interface IChargeableWeapon {
-    int getDischargeTicks();
+    int getDischargeTicks(ItemStack stack);
 
     void onRelease(Level level, Player player, ItemStack stack, float charge);
 }
