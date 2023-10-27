@@ -28,20 +28,20 @@ public class PlayerInfoCapability implements ICapabilityProvider, INBTSerializab
         return cap == CAPABILITY ? opt.cast() : LazyOptional.empty();
     }
 
+    public static PlayerInfo get(LivingEntity entity)
+    {
+        return entity.getCapability(CAPABILITY).orElseThrow(IllegalStateException::new);
+    }
+
     @Override
     public CompoundTag serializeNBT() {
-        return opt.orElse(null).writeNBT(new CompoundTag());
+        return opt.orElseThrow(IllegalStateException::new).writeNBT(new CompoundTag());
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt)
     {
-        opt.orElse(null).readNBT(nbt);
-    }
-
-    public static PlayerInfo get(LivingEntity entity) throws NullPointerException
-    {
-        return entity.getCapability(CAPABILITY).orElse(null);
+        opt.orElseThrow(IllegalStateException::new).readNBT(nbt);
     }
 
     public static boolean hasCapability(LivingEntity entity)

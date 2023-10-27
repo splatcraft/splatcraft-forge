@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
 import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
 import net.splatcraft.forge.util.PlayerCooldown;
 
@@ -56,10 +56,8 @@ public class SuperJumpCommand
 		@SubscribeEvent
 		public static void playerTick(LivingEvent.LivingUpdateEvent event)
 		{
-			if(!(event.getEntityLiving() instanceof Player))
+			if(!(event.getEntityLiving() instanceof Player player))
 				return;
-
-			Player player = (Player) event.getEntityLiving();
 
 			if(!PlayerCooldown.hasPlayerCooldown(player))
 				return;
@@ -86,8 +84,9 @@ public class SuperJumpCommand
 
 				if (distancePctg > .2f != info.isSquid()) {
 					info.setIsSquid(!info.isSquid());
-					if (!player.level.isClientSide())
-						SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidClientPacket(player.getUUID(), info.isSquid()), player);
+					if (!player.level.isClientSide()) {
+						SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidS2CPacket(player.getUUID(), info.isSquid()), player);
+					}
 				}
 
 				player.noPhysics = true;

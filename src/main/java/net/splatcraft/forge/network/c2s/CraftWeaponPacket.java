@@ -1,5 +1,6 @@
 package net.splatcraft.forge.network.c2s;
 
+import java.util.Optional;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,9 +15,7 @@ import net.splatcraft.forge.crafting.WeaponWorkbenchRecipe;
 import net.splatcraft.forge.crafting.WeaponWorkbenchSubtypeRecipe;
 import net.splatcraft.forge.registries.SplatcraftStats;
 
-import java.util.Optional;
-
-public class CraftWeaponPacket extends PlayToServerPacket
+public class CraftWeaponPacket extends PlayC2SPacket
 {
     ResourceLocation recipeID;
     int subtype;

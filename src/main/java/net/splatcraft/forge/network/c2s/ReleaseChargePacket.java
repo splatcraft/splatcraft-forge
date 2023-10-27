@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.splatcraft.forge.items.weapons.IChargeableWeapon;
 import net.splatcraft.forge.util.PlayerCharge;
 
-public class ReleaseChargePacket extends PlayToServerPacket
+public class ReleaseChargePacket extends PlayC2SPacket
 {
     private final float charge;
     private final ItemStack stack;
@@ -26,7 +26,9 @@ public class ReleaseChargePacket extends PlayToServerPacket
     public void execute(Player player)
     {
         if (!PlayerCharge.hasCharge(player)) {
-            throw new IllegalStateException("Released a non-existent charge");
+            throw new IllegalStateException(
+                    String.format("%s attempted to release a charge (%.2f; %s), but the server does not recall them having a charge",
+                            player.getGameProfile(), charge, stack.getItem()));
         }
 
         if (stack.getItem() instanceof IChargeableWeapon weapon) {

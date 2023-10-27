@@ -1,7 +1,6 @@
 package net.splatcraft.forge.mixin;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
@@ -19,25 +18,27 @@ public class EntityMixin
 	@Inject(method = "isInvisible", at = @At("TAIL"), cancellable = true)
 	public void isInvisible(CallbackInfoReturnable<Boolean> cir)
 	{
-		if(!(((Object)this) instanceof LivingEntity))
+		Entity entity = (Entity) (Object) this;
+		if (!(entity instanceof Player player) || !PlayerInfoCapability.hasCapability(player)) {
 			return;
+		}
 
-		LivingEntity entity = ((LivingEntity)(Object)this);
+		PlayerInfo info = PlayerInfoCapability.get(player);
 
-		PlayerInfo info = PlayerInfoCapability.get(entity);
-
-		if(info != null && InkBlockUtils.canSquidHide(entity) && info.isSquid())
+		if (InkBlockUtils.canSquidHide(player) && info.isSquid())
 			cir.setReturnValue(true);
 	}
 
 	@Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
 	public void setSprinting(boolean p_70031_1_, CallbackInfo ci)
 	{
-		if(!(((Object)this) instanceof Player))
+		Entity entity = (Entity) (Object) this;
+		if (!(entity instanceof Player player) || !PlayerInfoCapability.hasCapability(player)) {
 			return;
-		if(p_70031_1_ && PlayerCooldown.hasPlayerCooldown(((Player)(Object)this)))
+		}
+		if (p_70031_1_ && PlayerCooldown.hasPlayerCooldown(player))
 		{
-			((Player) (Object) this).setSprinting(false);
+			player.setSprinting(false);
 			ci.cancel();
 		}
 	}

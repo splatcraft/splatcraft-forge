@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.splatcraft.forge.tileentities.InkVatTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 
-public class UpdateBlockColorPacket extends PlayToServerPacket
+public class UpdateBlockColorPacket extends PlayC2SPacket
 {
     BlockPos pos;
     int color;

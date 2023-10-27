@@ -19,7 +19,7 @@ public class WeaponHotkeyMixin
 		@Inject(method = "releaseUsingItem", at = @At("HEAD"), cancellable = true)
 		private void releaseUsingItem(Player player, CallbackInfo callbackInfo)
 		{
-			if(SplatcraftKeyHandler.subWeaponHotkey.isDown() && player.getUsedItemHand() == InteractionHand.OFF_HAND)
+			if (SplatcraftKeyHandler.isSubWeaponHotkeyDown() && player.getUsedItemHand() == InteractionHand.OFF_HAND)
 				callbackInfo.cancel();
 		}
 	}
@@ -30,7 +30,7 @@ public class WeaponHotkeyMixin
 		@Inject(method = "startUseItem", at = @At("HEAD"), cancellable = true)
 		private void startUseItem(CallbackInfo ci)
 		{
-			if(SplatcraftKeyHandler.subWeaponHotkey.isDown())
+			if (SplatcraftKeyHandler.isSubWeaponHotkeyDown())
 			{
 				SplatcraftKeyHandler.startUsingItemInHand(InteractionHand.OFF_HAND);
 				ci.cancel();

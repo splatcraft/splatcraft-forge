@@ -1,14 +1,13 @@
 package net.splatcraft.forge.network.c2s;
 
+import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
 
-import java.util.UUID;
-
-public class RequestPlayerInfoPacket extends PlayToServerPacket
+public class RequestPlayerInfoPacket extends PlayC2SPacket
 {
     UUID target;
 

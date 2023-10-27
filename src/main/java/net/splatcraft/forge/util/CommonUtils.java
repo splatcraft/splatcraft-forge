@@ -1,5 +1,6 @@
 package net.splatcraft.forge.util;
 
+import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -8,8 +9,7 @@ import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.splatcraft.forge.Splatcraft;
-
-import java.util.function.Predicate;
+import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 
 public class CommonUtils
 {
@@ -101,5 +101,11 @@ public class CommonUtils
 
             return ItemStack.EMPTY;
         }
+    }
+
+    public static boolean anyWeaponOnCooldown(Player player) {
+        boolean isMainOnCooldown = player.getMainHandItem().getItem() instanceof WeaponBaseItem weapon && player.getCooldowns().isOnCooldown(weapon);
+        boolean isOffOnCooldown = player.getOffhandItem().getItem() instanceof WeaponBaseItem weapon && player.getCooldowns().isOnCooldown(weapon);
+        return isMainOnCooldown || isOffOnCooldown;
     }
 }

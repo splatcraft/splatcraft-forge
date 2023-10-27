@@ -4,7 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.splatcraft.forge.crafting.InkVatColorRecipe;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
 
-public class UpdateColorScoresPacket extends PlayToClientPacket
+public class UpdateColorScoresPacket extends PlayS2CPacket
 {
     int[] colors;
     boolean add;

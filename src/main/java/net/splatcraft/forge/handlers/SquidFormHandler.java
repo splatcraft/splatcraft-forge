@@ -35,7 +35,7 @@ import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.s2c.PlayerSetSquidClientPacket;
+import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.registries.SplatcraftStats;
@@ -189,9 +189,9 @@ public class SquidFormHandler {
     @SubscribeEvent
     public static void onGameModeSwitch(PlayerEvent.PlayerChangeGameModeEvent event) {
         if (event.getNewGameMode() != GameType.SPECTATOR) return;
-        PlayerInfoCapability.get(event.getEntityLiving()).setIsSquid(false);
         event.getPlayer().stopUsingItem();
-        SplatcraftPacketHandler.sendToTrackersAndSelf(new PlayerSetSquidClientPacket(event.getPlayer().getUUID(), false), event.getPlayer());
+        PlayerInfoCapability.get(event.getEntityLiving()).setIsSquid(false);
+        SplatcraftPacketHandler.sendToTrackersAndSelf(new PlayerSetSquidS2CPacket(event.getPlayer().getUUID(), false), event.getPlayer());
     }
 
     @SubscribeEvent

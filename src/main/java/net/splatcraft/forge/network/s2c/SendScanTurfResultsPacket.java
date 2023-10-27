@@ -1,14 +1,13 @@
 package net.splatcraft.forge.network.s2c;
 
+import java.util.ArrayList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 
-import java.util.ArrayList;
-
-public class SendScanTurfResultsPacket extends PlayToClientPacket
+public class SendScanTurfResultsPacket extends PlayS2CPacket
 {
     Integer[] colors;
     Float[] scores;

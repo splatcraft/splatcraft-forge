@@ -1,6 +1,8 @@
 package net.splatcraft.forge.util;
 
 import com.mojang.math.Vector3f;
+import java.util.HashMap;
+import java.util.TreeMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
@@ -18,11 +20,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.data.Stage;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.items.InkTankItem;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.c2s.PlayerSetSquidC2SPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
-
-import java.util.HashMap;
-import java.util.TreeMap;
 
 public class ClientUtils
 {
@@ -63,10 +65,10 @@ public class ClientUtils
     public static boolean showDurabilityBar(ItemStack stack)
     {
         return (SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.BOTH) || SplatcraftConfig.Client.inkIndicator.get().equals(SplatcraftConfig.InkIndicator.DURABILITY)) &&
-                getClientPlayer().getItemInHand(InteractionHand.MAIN_HAND).equals(stack) && getDurabilityForDisplay(stack) > 0;
+                getClientPlayer().getItemInHand(InteractionHand.MAIN_HAND).equals(stack) && getDurabilityForDisplay() > 0;
     }
 
-    public static double getDurabilityForDisplay(ItemStack stack)
+    public static double getDurabilityForDisplay()
     {
         Player player = getClientPlayer();
 
@@ -113,5 +115,13 @@ public class ClientUtils
         }
 
         return false;
+    }
+
+    public static void setSquid(PlayerInfo cap, boolean newSquid) {
+        if (cap.isSquid() == newSquid) {
+            return;
+        }
+        cap.setIsSquid(newSquid);
+        SplatcraftPacketHandler.sendToServer(new PlayerSetSquidC2SPacket(newSquid));
     }
 }
