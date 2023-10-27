@@ -3,7 +3,7 @@
   "roll": {
 	"ink_size": 4,
 	"hitbox_size": 3,
-	"inkConsumption": 0.06,
+	"ink_consumption": 0.06,
 	"ink_recovery_cooldown": 7,
 	"damage": 32,
 	"mobility": 0.88
@@ -11,8 +11,9 @@
   "swing": {
 	"mobility": 0.24,
 	"ink_consumption": 18,
-	"inkConsumption": 22,
+	"ink_recovery_cooldown": 22,
 	"projectile_speed": 0.85,
+ 	"projectile_pitch_compensation": -41.25,
 	"startup_time": 15,
 	"base_damage": 25,
 	"min_damage": 5,

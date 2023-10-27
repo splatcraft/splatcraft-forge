@@ -162,7 +162,7 @@ public class DataHandler
 				{
 					AbstractWeaponSettings<?> settings = SETTING_TYPES.get(GsonHelper.getAsString(json, "type")).getConstructor(String.class).newInstance(key.toString());
 
-					settings.getCodec().parse(JsonOps.INSTANCE, json).result().ifPresent(
+					settings.getCodec().parse(JsonOps.INSTANCE, json).resultOrPartial(msg -> System.out.println("Failed to load weapon settings for " + key + ": " + msg)).ifPresent(
 							settings::castAndDeserialize
 					);
 

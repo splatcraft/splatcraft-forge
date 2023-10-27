@@ -90,19 +90,20 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
         setProjectileSize(projectile.size);
         setProjectileSpeed(projectile.speed);
         projectile.lifespan.ifPresent(this::setProjectileLifespan);
-        projectile.count.ifPresent(this::setProjectileCount);
+        setProjectileCount(projectile.count.orElse(1));
+        projectile.startupTicks.ifPresent(this::setStartupTicks);
 
-        setFiringSpeed(projectile.firingSpeed);
-        setGroundInaccuracy(projectile.groundInaccuracy);
-        setAirInaccuracy(projectile.airInaccuracy);
+        setFiringSpeed(projectile.firingSpeed.orElse(-1));
+        setGroundInaccuracy(projectile.groundInaccuracy.orElse(0f));
+        setAirInaccuracy(projectile.airInaccuracy.orElse(0f));
 
         setInkConsumption(projectile.inkConsumption);
         setInkRecoveryCooldown(projectile.inkRecoveryCooldown);
 
         setBaseDamage(projectile.baseDamage);
-        setMinDamage(projectile.minDamage);
-        setDamageDecayStartTick(projectile.damageDecayStartTick);
-        setDamageDecayPerTick(projectile.damageDecayPerTick);
+        projectile.minDamage.ifPresent(this::setMinDamage);
+        setDamageDecayStartTick(projectile.damageDecayStartTick.orElse(0));
+        setDamageDecayPerTick(projectile.damageDecayPerTick.orElse(0f));
 
         data.dualieRoll.ifPresent(dualieRoll ->
         {
@@ -124,20 +125,21 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
 
         data.charger.ifPresent(charger ->
         {
-            setChargedDamage(charger.chargedDamage);
+            charger.dischargeTicks.ifPresent(this::setDischargeTicks);
+            charger.chargedDamage.ifPresent(this::setChargedDamage);
             setChargerMobility(charger.mobility);
-            setFastMidAirCharge(charger.fastMidairCharge);
+            setFastMidAirCharge(charger.fastMidairCharge.orElse(false));
             setChargerPiercesAt(charger.piercesAtCharge);
         });
     }
 
     @Override
     public DataRecord serialize() {
-        return new DataRecord(new ProjectileDataRecord(projectileSize, projectileSpeed, Optional.of(projectileLifespan), Optional.of(projectileCount), firingSpeed,
-                groundInaccuracy, airInaccuracy, inkConsumption, inkRecoveryCooldown, baseDamage, minDamage, damageDecayStartTick, damageDecayPerTick),
+        return new DataRecord(new ProjectileDataRecord(projectileSize, projectileSpeed, Optional.of(projectileLifespan), Optional.of(startupTicks), Optional.of(projectileCount), Optional.of(firingSpeed),
+		        Optional.of(groundInaccuracy), Optional.of(airInaccuracy), inkConsumption, inkRecoveryCooldown, baseDamage, Optional.of(minDamage), Optional.of(damageDecayStartTick), Optional.of(damageDecayPerTick)),
                 Optional.of(new DualieRollDataRecord(rollCount, rollSpeed, rollInkConsumption, rollCooldown, lastRollCooldown)),
                 Optional.of(new DualieTurretDataRecord(rollInaccuracy, Optional.of(rollBaseDamage), Optional.of(rollMinDamage), Optional.of(rollDamageDecayStartTick), Optional.of(rollDamageDecayPerTick))),
-                Optional.of(new ChargerDataRecord(chargedDamage, chargerMobility, fastMidAirCharge, chargerPiercesAt)));
+                Optional.of(new ChargerDataRecord(Optional.of(dischargeTicks), Optional.of(chargedDamage), chargerMobility, Optional.of(fastMidAirCharge), chargerPiercesAt)));
     }
 
     public WeaponSettings setProjectileSize(float projectileSize) {
@@ -206,7 +208,9 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
 
     public WeaponSettings setBaseDamage(float baseDamage) {
         this.baseDamage = baseDamage;
+        this.minDamage = baseDamage;
         this.rollBaseDamage = baseDamage;
+        this.rollMinDamage = baseDamage;
         this.chargedDamage = baseDamage;
         return this;
     }
@@ -330,34 +334,36 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
     record ProjectileDataRecord(
             float size,
             float speed,
+            Optional<Integer> startupTicks,
             Optional<Integer> lifespan,
             Optional<Integer> count,
-            int firingSpeed,
-            float groundInaccuracy,
-            float airInaccuracy,
+            Optional<Integer> firingSpeed,
+            Optional<Float> groundInaccuracy,
+            Optional<Float> airInaccuracy,
             float inkConsumption,
             int inkRecoveryCooldown,
             float baseDamage,
-            float minDamage,
-            int damageDecayStartTick,
-            float damageDecayPerTick
+            Optional<Float> minDamage,
+            Optional<Integer> damageDecayStartTick,
+            Optional<Float> damageDecayPerTick
     )
     {
         public static final Codec<ProjectileDataRecord> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
                         Codec.FLOAT.fieldOf("size").forGetter(ProjectileDataRecord::size),
                         Codec.FLOAT.fieldOf("speed").forGetter(ProjectileDataRecord::speed),
+                        Codec.INT.optionalFieldOf("startup_ticks").forGetter(ProjectileDataRecord::startupTicks),
                         Codec.INT.optionalFieldOf("lifespan").forGetter(ProjectileDataRecord::lifespan),
                         Codec.INT.optionalFieldOf("count").forGetter(ProjectileDataRecord::count),
-                        Codec.INT.fieldOf("firing_speed").forGetter(ProjectileDataRecord::firingSpeed),
-                        Codec.FLOAT.fieldOf("ground_inaccuracy").forGetter(ProjectileDataRecord::groundInaccuracy),
-                        Codec.FLOAT.fieldOf("air_inaccuracy").forGetter(ProjectileDataRecord::airInaccuracy),
+                        Codec.INT.optionalFieldOf("firing_speed").forGetter(ProjectileDataRecord::firingSpeed),
+                        Codec.FLOAT.optionalFieldOf("ground_inaccuracy").forGetter(ProjectileDataRecord::groundInaccuracy),
+                        Codec.FLOAT.optionalFieldOf("air_inaccuracy").forGetter(ProjectileDataRecord::airInaccuracy),
                         Codec.FLOAT.fieldOf("ink_consumption").forGetter(ProjectileDataRecord::inkConsumption),
                         Codec.INT.fieldOf("ink_recovery_cooldown").forGetter(ProjectileDataRecord::inkRecoveryCooldown),
                         Codec.FLOAT.fieldOf("base_damage").forGetter(ProjectileDataRecord::baseDamage),
-                        Codec.FLOAT.fieldOf("min_damage").forGetter(ProjectileDataRecord::minDamage),
-                        Codec.INT.fieldOf("damage_decay_start_tick").forGetter(ProjectileDataRecord::damageDecayStartTick),
-                        Codec.FLOAT.fieldOf("damage_decay_per_tick").forGetter(ProjectileDataRecord::damageDecayPerTick)
+                        Codec.FLOAT.optionalFieldOf("min_damage").forGetter(ProjectileDataRecord::minDamage),
+                        Codec.INT.optionalFieldOf("damage_decay_start_tick").forGetter(ProjectileDataRecord::damageDecayStartTick),
+                        Codec.FLOAT.optionalFieldOf("damage_decay_per_tick").forGetter(ProjectileDataRecord::damageDecayPerTick)
                 ).apply(instance, ProjectileDataRecord::new)
         );
     }
@@ -401,17 +407,19 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
     }
 
     public record ChargerDataRecord(
-        float chargedDamage,
+        Optional<Integer> dischargeTicks,
+        Optional<Float> chargedDamage,
         float mobility,
-        boolean fastMidairCharge,
+        Optional<Boolean> fastMidairCharge,
         float piercesAtCharge
     )
     {
         public static final Codec<ChargerDataRecord> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
-                        Codec.FLOAT.fieldOf("charged_damage").forGetter(ChargerDataRecord::chargedDamage),
+                        Codec.INT.optionalFieldOf("stored_charge_ticks").forGetter(ChargerDataRecord::dischargeTicks),
+                        Codec.FLOAT.optionalFieldOf("charged_damage").forGetter(ChargerDataRecord::chargedDamage),
                         Codec.FLOAT.fieldOf("mobility").forGetter(ChargerDataRecord::mobility),
-                        Codec.BOOL.fieldOf("fast_midair_charge").forGetter(ChargerDataRecord::fastMidairCharge),
+                        Codec.BOOL.optionalFieldOf("fast_midair_charge").forGetter(ChargerDataRecord::fastMidairCharge),
                         Codec.FLOAT.fieldOf("pierces_at_charge").forGetter(ChargerDataRecord::piercesAtCharge)
                 ).apply(instance, ChargerDataRecord::new)
         );

@@ -1,8 +1,9 @@
 {
   "type": "splatcraft:roller",
+  "is_brush": true,
   "roll": {
 	"ink_size": 1,
-	"inkConsumption": 0.4,
+	"ink_consumption": 0.4,
 	"ink_recovery_cooldown": 7,
 	"damage": 4,
 	"mobility": 1.92
@@ -10,8 +11,9 @@
   "swing": {
 	"mobility": 0.24,
 	"ink_consumption": 2,
-	"inkConsumption": 10,
+	"ink_recovery_cooldown": 10,
 	"projectile_speed": 0.6,
+  	"projectile_pitch_compensation": 0,
 	"startup_time": 2,
 	"base_damage": 6,
 	"min_damage": 3,

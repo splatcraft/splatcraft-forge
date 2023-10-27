@@ -4,6 +4,7 @@
 	"size": 0.7,
 	"lifespan": 12,
 	"speed": 1.85,
+	"startup_ticks": 15,
 	"ink_consumption": 10.5,
 	"ink_recovery_cooldown": 7,
 	"min_damage": 8,
@@ -11,6 +12,7 @@
   },
   "charger": {
 	"charged_damage": 28,
+	"stored_charge_ticks": 25,
 	"mobility": 0.3,
 	"pierces_at_charge": 1
   }
