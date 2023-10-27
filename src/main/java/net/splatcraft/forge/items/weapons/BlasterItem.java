@@ -16,7 +16,7 @@ import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponTooltip;
 
-public class BlasterItem extends ShooterItem
+public class BlasterItem extends WeaponBaseItem<WeaponSettings>
 {
     public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, String settings, String name)
     {
@@ -34,6 +34,11 @@ public class BlasterItem extends ShooterItem
         addStat(new WeaponTooltip("range", (stack, level) -> (int) (getSettings(stack).projectileSpeed / getSettings(stack).projectileLifespan * 100)));
         addStat(new WeaponTooltip("impact", (stack, level) -> (int) (getSettings(stack).projectileSize / 2.0f * 100)));
         addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - getSettings(stack).firingSpeed * 0.5f) / 15f * 100)));
+    }
+
+    @Override
+    public Class<WeaponSettings> getSettingsClass() {
+        return WeaponSettings.class;
     }
 
     @Override
