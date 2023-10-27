@@ -135,7 +135,7 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
 
     @Override
     public DataRecord serialize() {
-        return new DataRecord(new ProjectileDataRecord(projectileSize, projectileSpeed, Optional.of(projectileLifespan), Optional.of(startupTicks), Optional.of(projectileCount), Optional.of(firingSpeed),
+        return new DataRecord(new ProjectileDataRecord(projectileSize, projectileSpeed, Optional.of(startupTicks), Optional.of(projectileLifespan), Optional.of(projectileCount), Optional.of(firingSpeed),
 		        Optional.of(groundInaccuracy), Optional.of(airInaccuracy), inkConsumption, inkRecoveryCooldown, baseDamage, Optional.of(minDamage), Optional.of(damageDecayStartTick), Optional.of(damageDecayPerTick)),
                 Optional.of(new DualieRollDataRecord(rollCount, rollSpeed, rollInkConsumption, rollCooldown, lastRollCooldown)),
                 Optional.of(new DualieTurretDataRecord(rollInaccuracy, Optional.of(rollBaseDamage), Optional.of(rollMinDamage), Optional.of(rollDamageDecayStartTick), Optional.of(rollDamageDecayPerTick))),
