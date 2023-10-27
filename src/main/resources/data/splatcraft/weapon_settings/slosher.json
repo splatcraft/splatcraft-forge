@@ -4,6 +4,7 @@
 	"size": 1.6,
 	"speed": 0.4,
 	"count": 2,
+	"pitch_compensation": -15,
 	"startup_ticks": 7,
 	"ground_inaccuracy": 8,
 	"air_inaccuracy": 8,

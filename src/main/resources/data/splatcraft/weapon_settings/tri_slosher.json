@@ -3,6 +3,7 @@
   "projectile": {
 	"size": 1.55,
 	"speed": 0.444,
+	"pitch_compensation": -15,
 	"count": 3,
 	"startup_ticks": 4,
 	"ground_inaccuracy": 20,

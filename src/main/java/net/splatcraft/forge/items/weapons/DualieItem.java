@@ -286,11 +286,16 @@ public class DualieItem extends WeaponBaseItem<WeaponSettings>
         if (!level.isClientSide && (getUseDuration(stack) - timeLeft - 1) % (onRollCooldown ? 2 : settings.firingSpeed) == 0)
         {
 
-            if (reduceInk(entity, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
-                InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.projectileSize, settings).setShooterTrail();
-                proj.isOnRollCooldown = onRollCooldown;
-                proj.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0f, settings.projectileSpeed, entity instanceof Player && PlayerCooldown.hasPlayerCooldown((Player) entity) ? settings.rollInaccuracy : (entity.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy));
-                level.addFreshEntity(proj);
+            if (reduceInk(entity, this, settings.inkConsumption, settings.inkRecoveryCooldown, true))
+            {
+                for(int i = 0; i < settings.projectileCount; i++)
+                {
+                    InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.projectileSize, settings).setShooterTrail();
+                    proj.isOnRollCooldown = onRollCooldown;
+                    proj.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0f, settings.projectileSpeed, entity instanceof Player && PlayerCooldown.hasPlayerCooldown((Player) entity) ? settings.rollInaccuracy : (entity.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy));
+                    level.addFreshEntity(proj);
+                }
+
                 level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SplatcraftSounds.dualieShot, SoundSource.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }
         }

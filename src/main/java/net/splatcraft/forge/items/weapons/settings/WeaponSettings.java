@@ -14,6 +14,8 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
     public float projectileSpeed;
     public int projectileCount = 1;
 
+    public float pitchCompensation;
+
     public int firingSpeed;
     public int startupTicks;
 
@@ -90,7 +92,8 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
         setProjectileSize(projectile.size);
         setProjectileSpeed(projectile.speed);
         projectile.lifespan.ifPresent(this::setProjectileLifespan);
-        setProjectileCount(projectile.count.orElse(1));
+        projectile.count.ifPresent(this::setProjectileCount);
+        setPitchCompensation(projectile.pitchCompensation.orElse(0f));
         projectile.startupTicks.ifPresent(this::setStartupTicks);
 
         setFiringSpeed(projectile.firingSpeed.orElse(-1));
@@ -135,7 +138,7 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
 
     @Override
     public DataRecord serialize() {
-        return new DataRecord(new ProjectileDataRecord(projectileSize, projectileSpeed, Optional.of(startupTicks), Optional.of(projectileLifespan), Optional.of(projectileCount), Optional.of(firingSpeed),
+        return new DataRecord(new ProjectileDataRecord(projectileSize, projectileSpeed, Optional.of(startupTicks), Optional.of(projectileLifespan), Optional.of(projectileCount), Optional.of(pitchCompensation), Optional.of(firingSpeed),
 		        Optional.of(groundInaccuracy), Optional.of(airInaccuracy), inkConsumption, inkRecoveryCooldown, baseDamage, Optional.of(minDamage), Optional.of(damageDecayStartTick), Optional.of(damageDecayPerTick)),
                 Optional.of(new DualieRollDataRecord(rollCount, rollSpeed, rollInkConsumption, rollCooldown, lastRollCooldown)),
                 Optional.of(new DualieTurretDataRecord(rollInaccuracy, Optional.of(rollBaseDamage), Optional.of(rollMinDamage), Optional.of(rollDamageDecayStartTick), Optional.of(rollDamageDecayPerTick))),
@@ -159,6 +162,11 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
 
     public WeaponSettings setProjectileCount(int projectileCount) {
         this.projectileCount = projectileCount;
+        return this;
+    }
+
+    public WeaponSettings setPitchCompensation(float pitchCompensation) {
+        this.pitchCompensation = pitchCompensation;
         return this;
     }
 
@@ -337,6 +345,7 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
             Optional<Integer> startupTicks,
             Optional<Integer> lifespan,
             Optional<Integer> count,
+            Optional<Float> pitchCompensation,
             Optional<Integer> firingSpeed,
             Optional<Float> groundInaccuracy,
             Optional<Float> airInaccuracy,
@@ -355,6 +364,7 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
                         Codec.INT.optionalFieldOf("startup_ticks").forGetter(ProjectileDataRecord::startupTicks),
                         Codec.INT.optionalFieldOf("lifespan").forGetter(ProjectileDataRecord::lifespan),
                         Codec.INT.optionalFieldOf("count").forGetter(ProjectileDataRecord::count),
+                        Codec.FLOAT.optionalFieldOf("pitch_compensation").forGetter(ProjectileDataRecord::pitchCompensation),
                         Codec.INT.optionalFieldOf("firing_speed").forGetter(ProjectileDataRecord::firingSpeed),
                         Codec.FLOAT.optionalFieldOf("ground_inaccuracy").forGetter(ProjectileDataRecord::groundInaccuracy),
                         Codec.FLOAT.optionalFieldOf("air_inaccuracy").forGetter(ProjectileDataRecord::airInaccuracy),
