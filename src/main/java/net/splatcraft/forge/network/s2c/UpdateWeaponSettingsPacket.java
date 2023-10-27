@@ -40,7 +40,7 @@ public class UpdateWeaponSettingsPacket extends PlayToClientPacket
 				AbstractWeaponSettings<?> setting = DataHandler.WeaponStatsListener.SETTING_TYPES.get(buffer.readUtf()).getConstructor(String.class).newInstance(key.toString());
 				setting.castAndDeserialize(buffer.readWithCodec(setting.getCodec()));
 
-				settings.put(buffer.readResourceLocation(), setting);
+				settings.put(key, setting);
 
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException |
 			         NoSuchMethodException e)
