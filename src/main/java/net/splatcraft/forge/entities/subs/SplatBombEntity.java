@@ -17,9 +17,6 @@ import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkExplosion;
 
 public class SplatBombEntity extends AbstractSubWeaponEntity {
-    public static final float DAMAGE = 6;
-    public static final float DIRECT_DAMAGE = 36;
-    public static final float EXPLOSION_SIZE = 3.25f;
     public static final int FLASH_DURATION = 10;
 
     protected int fuseTime = 0;
@@ -135,6 +132,6 @@ public class SplatBombEntity extends AbstractSubWeaponEntity {
     public float getFlashIntensity(float partialTicks)
     {
         SubWeaponSettings settings = getSettings();
-        return 1f-Math.min(settings.fuseTime-FLASH_DURATION, Mth.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float) (settings.fuseTime-FLASH_DURATION);
+        return Math.max(0, Mth.lerp(partialTicks, prevFuseTime, fuseTime) - (settings.fuseTime - FLASH_DURATION)) * 0.85f / FLASH_DURATION;
     }
 }

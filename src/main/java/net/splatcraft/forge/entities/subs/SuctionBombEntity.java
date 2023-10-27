@@ -23,13 +23,10 @@ import net.splatcraft.forge.util.InkExplosion;
 import org.jetbrains.annotations.Nullable;
 
 public class SuctionBombEntity extends AbstractSubWeaponEntity {
-    public static final float DAMAGE = 6;
-    public static final float DIRECT_DAMAGE = 36;
-    public static final float EXPLOSION_SIZE = 3.75f;
 
     private static final EntityDataAccessor<Boolean> ACTIVATED = SynchedEntityData.defineId(SuctionBombEntity.class, EntityDataSerializers.BOOLEAN);
 
-    public static final int FLASH_DURATION = 10;
+    public static final int FLASH_DURATION = 20;
 
     protected int fuseTime = 0;
     protected int prevFuseTime = 0;
@@ -76,7 +73,7 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
                 if(!level.isClientSide())
                     discard();
                 return;
-            } else if (fuseTime <= 20 && !playedActivationSound) {
+            } else if (fuseTime >= settings.fuseTime - FLASH_DURATION && !playedActivationSound) {
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonating, SoundSource.PLAYERS, 0.8F, 1f);
                 playedActivationSound = true;
             }
@@ -124,12 +121,10 @@ public class SuctionBombEntity extends AbstractSubWeaponEntity {
 
     }
 
-
-
     public float getFlashIntensity(float partialTicks)
     {
         SubWeaponSettings settings = getSettings();
-        return 1f-Math.min(settings.fuseTime-FLASH_DURATION, Mth.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float) (settings.fuseTime-FLASH_DURATION);
+        return Math.max(0, Mth.lerp(partialTicks, prevFuseTime, fuseTime) - (settings.fuseTime - FLASH_DURATION)) * 0.85f / FLASH_DURATION;
     }
 
     @Override

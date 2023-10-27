@@ -210,8 +210,10 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
 
     public SubWeaponSettings getSettings()
     {
-        if(sourceWeapon.getItem() instanceof SubWeaponItem sub)
-            return sub.getSettings(sourceWeapon);
+        if(getItemRaw().getItem() instanceof SubWeaponItem sub)
+        {
+            return sub.getSettings(getItemRaw());
+        }
         return SubWeaponSettings.DEFAULT;
     }
 
@@ -219,7 +221,7 @@ public abstract class AbstractSubWeaponEntity extends Entity implements IColored
     public void addAdditionalSaveData(CompoundTag nbt)
     {
         nbt.putInt("Color", getColor());
-        nbt.putBoolean("DypassMobDamageMultiplier", bypassMobDamageMultiplier);
+        nbt.putBoolean("BypassMobDamageMultiplier", bypassMobDamageMultiplier);
         nbt.putString("InkType", inkType.getSerializedName());
         nbt.put("SourceWeapon", sourceWeapon.save(new CompoundTag()));
 

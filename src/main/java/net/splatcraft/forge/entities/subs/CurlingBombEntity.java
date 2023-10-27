@@ -32,12 +32,7 @@ import java.util.List;
 
 public class CurlingBombEntity extends AbstractSubWeaponEntity
 {
-	public static final float DIRECT_DAMAGE = 36;
-	public static final float CONTACT_DAMAGE = 4;
-	public static final float EXPLOSION_SIZE = 2.5f;
-	public static final int FLASH_DURATION = 70;
-	public static final int MAX_FUSE_TIME = 80;
-	public static final int MAX_COOK_TIME = 30;
+	public static final int FLASH_DURATION = 20;
 
 	private static final EntityDataAccessor<Integer> INIT_FUSE_TIME = SynchedEntityData.defineId(CurlingBombEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Float> COOK_SCALE = SynchedEntityData.defineId(CurlingBombEntity.class, EntityDataSerializers.FLOAT);
@@ -106,7 +101,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 		if(fuseTime == 30)
 			playAlertAnim = true;
 
-		if (fuseTime <= settings.fuseTime-20 && !playedActivationSound)
+		if (fuseTime >= settings.fuseTime - FLASH_DURATION && !playedActivationSound)
 		{
 			level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.subDetonating, SoundSource.PLAYERS, 0.8F, 1f);
 			playedActivationSound = true;
@@ -127,7 +122,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 			if (this.onGround)
 				f1 = this.level.getBlockState(new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ())).getFriction(level, new BlockPos(this.getX(), this.getY() - 1.0D, this.getZ()), this);
 
-			f1 = (float) Math.min(0.98, f1*3f) * Math.min(1, 2* fuseTime/(float)settings.fuseTime);
+			f1 = (float) Math.min(0.98, f1*3f) * Math.min(1, 2 * (1 - fuseTime/(float)settings.fuseTime));
 
 			this.setDeltaMovement(this.getDeltaMovement().multiply(f1, 0.98D, f1));
 
@@ -218,7 +213,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 	public float getFlashIntensity(float partialTicks)
 	{
 		SubWeaponSettings settings = getSettings();
-		return 1f-Math.min(settings.fuseTime- FLASH_DURATION, Mth.lerp(partialTicks, prevFuseTime, fuseTime)*0.5f)/(float)(settings.fuseTime- FLASH_DURATION);
+		return Math.max(0, Mth.lerp(partialTicks, prevFuseTime, fuseTime) - (settings.fuseTime - FLASH_DURATION)) * 0.85f / FLASH_DURATION;
 	}
 
 	private boolean canStepUp(Vec3 p_20273_) {

@@ -16,11 +16,6 @@ import net.splatcraft.forge.util.InkExplosion;
 
 public class BurstBombEntity extends AbstractSubWeaponEntity
 {
-
-    public static final float DAMAGE = 6;
-    public static final float DIRECT_DAMAGE = 12;
-    public static final float EXPLOSION_SIZE = 2;
-
     public BurstBombEntity(EntityType<? extends AbstractSubWeaponEntity> type, Level level)
     {
         super(type, level);

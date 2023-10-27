@@ -6,9 +6,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.client.models.subs.BurstBombModel;
 import net.splatcraft.forge.client.models.subs.CurlingBombModel;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
+import net.splatcraft.forge.items.weapons.settings.SubWeaponSettings;
 import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.util.Mth.*;
@@ -85,7 +85,8 @@ public class CurlingBombRenderer extends SubWeaponRenderer<CurlingBombEntity, Cu
 	@Override
 	public float[] getOverlayColor(CurlingBombEntity entity, float partialTicks)
 	{
-		float v = clamp((entity.getSettings().fuseTime - lerp(partialTicks, entity.prevFuseTime, entity.fuseTime)) / entity.getSettings().cookTime, 0, 1);
+		SubWeaponSettings settings = entity.getSettings();
+		float v = clamp((lerp(partialTicks, entity.prevFuseTime, entity.fuseTime)) / (settings.fuseTime - settings.cookTime), 0, 1);
 		return new float[] {v, 1-v, 0};
 	}
 }
