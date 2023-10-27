@@ -3,6 +3,7 @@ package net.splatcraft.forge.util;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +18,9 @@ public class PlayerCharge {
 
     public ItemStack chargedWeapon;
     public float charge;
+    public float prevCharge;
     public int dischargedTicks;
+    public int prevDischargedTicks;
 
     public PlayerCharge(ItemStack stack, float charge) {
         this.chargedWeapon = stack;
@@ -75,8 +78,10 @@ public class PlayerCharge {
         }
 
         if (chargeMatches(player, stack)) {
+            charge.prevCharge = charge.charge;
             charge.charge = Math.max(0.0f, Math.min(1.0f, charge.charge + value));
             charge.dischargedTicks = 0;
+            charge.prevDischargedTicks = 0;
         } else {
             setCharge(player, new PlayerCharge(stack, value));
         }
@@ -86,6 +91,17 @@ public class PlayerCharge {
         return chargeMatches(player, stack) ? getCharge(player).charge : 0;
     }
 
+    public float getDischargeValue(float partialTicks)
+    {
+        if(chargedWeapon.getItem() instanceof IChargeableWeapon chargeable)
+        {
+            float maxDischargeTicks = chargeable.getDischargeTicks(chargedWeapon);
+            return maxDischargeTicks <= 0 ? 1 : 1 - Mth.lerp(partialTicks, prevDischargedTicks / maxDischargeTicks, dischargedTicks / maxDischargeTicks);
+        }
+
+        return 1;
+    }
+
     public static void dischargeWeapon(Player player) {
         if (!player.level.isClientSide || !hasCharge(player)) {
             return;
@@ -93,10 +109,13 @@ public class PlayerCharge {
         PlayerCharge charge = getCharge(player);
         Item dischargeItem = charge.chargedWeapon.getItem();
 
+        charge.prevDischargedTicks = charge.dischargedTicks;
+
         if (!(dischargeItem instanceof IChargeableWeapon chargeable)
                 || charge.charge < 1.0f
                 || charge.dischargedTicks >= chargeable.getDischargeTicks(charge.chargedWeapon)) {
             charge.charge = 0f;
+            charge.prevCharge = 0;
             charge.dischargedTicks = 0;
             SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
         } else {
@@ -119,7 +138,9 @@ public class PlayerCharge {
     public void reset() {
         chargedWeapon = ItemStack.EMPTY;
         charge = 0;
+        prevCharge = 0;
         dischargedTicks = 0;
+        prevDischargedTicks = 0;
     }
 
     @Override

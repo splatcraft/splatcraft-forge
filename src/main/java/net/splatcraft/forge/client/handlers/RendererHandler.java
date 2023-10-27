@@ -51,10 +51,7 @@ import net.splatcraft.forge.items.weapons.ChargerItem;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.util.ClientUtils;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.PlayerCooldown;
+import net.splatcraft.forge.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -344,6 +341,7 @@ public class RendererHandler
     private static float inkFlash = 0;
 
 
+
     @SuppressWarnings("deprecation")
     @SubscribeEvent
     public static void renderGui(RenderGameOverlayEvent.Pre event)
@@ -371,12 +369,20 @@ public class RendererHandler
                 matrixStack.pushPose();
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderTexture(0, WIDGETS);
+                RenderSystem.setShaderColor(1,1,1,1);
 
                 Screen.blit(matrixStack, width / 2 - 15, height / 2 + 14, 30, 9, 88, 0, 30, 9, 256, 256);
-                if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).getPlayerCharge() != null) {
-                    float charge = PlayerInfoCapability.get(player).getPlayerCharge().charge;
+                if (PlayerInfoCapability.hasCapability(player) && PlayerInfoCapability.get(player).getPlayerCharge() != null)
+                {
+                    PlayerCharge playerCharge = PlayerInfoCapability.get(player).getPlayerCharge();
+                    float charge = lerp(playerCharge.prevCharge, playerCharge.charge, event.getPartialTicks());
+
+                    RenderSystem.setShaderColor(1,1,1, playerCharge.getDischargeValue(event.getPartialTicks()));
+
+
                     Screen.blit(matrixStack, width / 2 - 15, height / 2 + 14, (int) (30 * charge), 9, 88, 9, (int) (30 * charge), 9, 256, 256);
                 }
+                RenderSystem.setShaderColor(1,1,1,1);
 
                 matrixStack.popPose();
             }
