@@ -19,7 +19,7 @@ import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.c2s.ChargeableReleasePacket;
+import net.splatcraft.forge.network.c2s.ReleaseChargePacket;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 public class ChargerItem extends WeaponBaseItem<WeaponSettings>
 {
     private AttributeModifier SPEED_MODIFIER;
+    public ChargerChargingTickableSound chargingSound;
 
     public static RegistryObject<ChargerItem> create(DeferredRegister<Item> register, String settings, String name)
     {
@@ -97,18 +98,15 @@ public class ChargerItem extends WeaponBaseItem<WeaponSettings>
     }
 
     @Override
-    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, LivingEntity entity, int timeLeft)
-    {
+    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, LivingEntity entity, int timeLeft) {
         super.releaseUsing(stack, level, entity, timeLeft);
 
-        if (level.isClientSide && !PlayerInfoCapability.isSquid(entity) && entity instanceof Player)
-        {
-            float charge = PlayerCharge.getChargeValue((Player) entity, stack);
-            if (charge > 0.05f)
-            {
-                PlayerCharge.reset((Player) entity);
+        if (level.isClientSide && !PlayerInfoCapability.isSquid(entity) && entity instanceof Player player) {
+            PlayerCharge charge = PlayerCharge.getCharge(player);
+            if (charge != null && charge.charge > 0.05f) {
                 PlayerCooldown.setPlayerCooldown((Player) entity, new PlayerCooldown(stack, 10, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, false, entity.isOnGround()));
-                SplatcraftPacketHandler.sendToServer(new ChargeableReleasePacket(charge, stack));
+                SplatcraftPacketHandler.sendToServer(new ReleaseChargePacket(charge.charge, stack));
+                charge.reset();
             }
         }
     }
