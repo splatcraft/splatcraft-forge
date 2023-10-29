@@ -85,9 +85,5 @@
       "minecraft:deep_cold_ocean",
       "minecraft:deep_frozen_ocean"
     ]
-  ],
-  "rewards":
-  {
-    "function": "splatcraft:advancements/unlock_categories"
-  }
+  ]
 }
