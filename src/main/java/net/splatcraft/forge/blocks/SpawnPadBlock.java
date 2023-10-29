@@ -158,7 +158,7 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 		{
 			ColorUtils.setInkColor(level.getBlockEntity(pos), ColorUtils.getInkColor(stack));
 
-			SpawnShieldEntity shield = new SpawnShieldEntity(level, pos, ColorUtils.getInkColor(stack));
+			SpawnShieldEntity shield = new SpawnShieldEntity(level, pos, ColorUtils.getInkColorOrInverted(stack));
 			((SpawnPadTileEntity) level.getBlockEntity(pos)).setSpawnShield(shield);
 
 			level.addFreshEntity(shield);
@@ -231,7 +231,7 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 			spawnPad.setColor(newColor);
 			SpawnShieldEntity shield = spawnPad.getSpawnShield();
 			if(shield != null)
-				shield.setColor(newColor);
+				shield.setColor(ColorUtils.getInkColorOrInverted(level, pos));
 			level.sendBlockUpdated(pos, state, state, 3);
 			state.updateNeighbourShapes(level, pos, 3);
 			return true;

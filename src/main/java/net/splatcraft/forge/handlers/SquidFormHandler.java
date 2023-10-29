@@ -133,11 +133,10 @@ public class SquidFormHandler {
                 }
             }
 
-            if (blockBelow instanceof InkwellBlock) {
-                InkColorTileEntity inkwell = (InkColorTileEntity) player.level.getBlockEntity(posBelow);
+            if (blockBelow instanceof InkwellBlock || (SplatcraftGameRules.getLocalizedRule(player.level, posBelow, SplatcraftGameRules.UNIVERSAL_INK) && blockBelow instanceof SpawnPadBlock))
+                ColorUtils.setPlayerColor(player, ColorUtils.getInkColorOrInverted(player.level, posBelow));
 
-                ColorUtils.setPlayerColor(player, inkwell.getColor());
-            } else if (blockBelow instanceof SpawnPadBlock) {
+            if (blockBelow instanceof SpawnPadBlock) {
                 InkColorTileEntity spawnPad = (InkColorTileEntity) player.level.getBlockEntity(posBelow);
 
                 if (player instanceof ServerPlayer && ColorUtils.colorEquals(player, spawnPad))

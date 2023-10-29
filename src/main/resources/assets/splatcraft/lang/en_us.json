@@ -21,9 +21,9 @@
   "advancements.splatcraft.story.fall_into_ink.name": "Thinking with Ink",
   "advancements.splatcraft.story.fall_into_ink.description": "Use ink to survive a fall of 30 blocks or more",
   "advancements.splatcraft.story.turf_war_won.name": "Turf War Fan",
-  "advancements.splatcraft.story.turf_war_won.description": "Use a Turf Scanner or Stage Pad to determine Turf War results and have your color win!",
+  "advancements.splatcraft.story.turf_war_won.description": "Use a Turf Scanner to determine Turf War results and have your color win!",
   "advancements.splatcraft.story.turf_war_ruler.name": "Turf War Ruler",
-  "advancements.splatcraft.story.turf_war_ruler.description": "Use a Turf Scanner or Stage pad to scan 500 blocks of your own ink and win the match",
+  "advancements.splatcraft.story.turf_war_ruler.description": "Use a Turf Scanner to scan 500 blocks of your own ink and win the match",
 
   "advancements.splatcraft.unlocks.root.name": "Splatcraft Blueprints",
   "advancements.splatcraft.unlocks.root.description": "Think you can get them all?",
@@ -125,6 +125,7 @@
   "item.splatcraft.splatfest_band": "Splatfest Band",
   "item.splatcraft.clear_ink_band": "Clear Ink Band",
   "item.splatcraft.tooltip.matches_color": "matches your ink color!",
+  "item.splatcraft.tooltip.matches_color.inverted": "matches your inverted ink color!",
 
   "item.splatcraft.wax_applicator": "Wax Applicator",
 

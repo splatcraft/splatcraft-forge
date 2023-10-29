@@ -1,8 +1,11 @@
 package net.splatcraft.forge.items;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -12,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -30,6 +34,7 @@ import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -47,9 +52,20 @@ public class SquidBumperItem extends Item implements IColoredItem
     {
         super.appendHoverText(stack, level, tooltip, flag);
 
+
+        boolean inverted = ColorUtils.isInverted(stack);
         if (ColorUtils.isColorLocked(stack))
+            tooltip.add(ColorUtils.getFormatedColorName(inverted ? 0xFFFFFF - ColorUtils.getInkColor(stack) : ColorUtils.getInkColor(stack), true));
+        else tooltip.add(new TranslatableComponent( "item.splatcraft.tooltip.matches_color" + (inverted ? ".inverted" : "")).withStyle(ChatFormatting.GRAY));
+    }
+
+    @Override
+    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items)
+    {
+        if (allowdedIn(group))
         {
-            tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
+            items.add(ColorUtils.setColorLocked(new ItemStack(this), false));
+            items.add(ColorUtils.setInverted(ColorUtils.setColorLocked(new ItemStack(this), false), true));
         }
     }
 
@@ -58,10 +74,10 @@ public class SquidBumperItem extends Item implements IColoredItem
     {
         super.inventoryTick(stack, level, entity, itemSlot, isSelected);
 
-        if (entity instanceof Player && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != 0xFFFFFF - ColorUtils.getPlayerColor((Player) entity)
+        if (entity instanceof Player && !ColorUtils.isColorLocked(stack) && ColorUtils.getInkColor(stack) != ColorUtils.getPlayerColor((Player) entity)
                 && PlayerInfoCapability.hasCapability((LivingEntity) entity))
         {
-            ColorUtils.setInkColor(stack, 0xFFFFFF - ColorUtils.getPlayerColor((Player) entity));
+            ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor((Player) entity));
         }
     }
 
@@ -74,9 +90,9 @@ public class SquidBumperItem extends Item implements IColoredItem
         {
             InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos);
 
-            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te))
+            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level, pos))
             {
-                ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColor(te));
+                ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level, pos));
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
         }
@@ -108,7 +124,7 @@ public class SquidBumperItem extends Item implements IColoredItem
                 SquidBumperEntity bumper = SplatcraftEntities.SQUID_BUMPER.get().create((ServerLevel) level, stack.getTag(), null, context.getPlayer(), pos, MobSpawnType.SPAWN_EGG, true, true);
                 if(bumper != null)
                 {
-                    bumper.setColor(ColorUtils.getInkColor(stack));
+                    bumper.setColor(ColorUtils.getInkColorOrInverted(stack));
                     float f = (float) Mth.floor((Mth.wrapDegrees(context.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
                     bumper.moveTo(bumper.getX(), bumper.getY(), bumper.getZ(), f, 0);
                     bumper.setYHeadRot(f);

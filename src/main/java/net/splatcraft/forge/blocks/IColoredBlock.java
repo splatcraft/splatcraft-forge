@@ -15,14 +15,20 @@ public interface IColoredBlock
 
     boolean canDamage();
 
+    default boolean isInverted(Level level, BlockPos pos)
+    {
+        return (level.getBlockEntity(pos) instanceof InkColorTileEntity colorTileEntity) && colorTileEntity.isInverted();
+    }
+
+    default void setInverted(Level level, BlockPos pos, boolean inverted)
+    {
+        if(level.getBlockEntity(pos) instanceof InkColorTileEntity colorTileEntity)
+            colorTileEntity.setInverted(inverted);
+    }
+
     default int getColor(Level level, BlockPos pos)
     {
-        BlockEntity tileEntity = level.getBlockEntity(pos);
-        if (tileEntity instanceof InkColorTileEntity)
-        {
-            return ((InkColorTileEntity) tileEntity).getColor();
-        }
-        return -1;
+        return (level.getBlockEntity(pos) instanceof InkColorTileEntity colorTileEntity) ? colorTileEntity.getColor() : -1;
     }
 
     default boolean canRemoteColorChange(Level level, BlockPos pos, int color, int newColor)

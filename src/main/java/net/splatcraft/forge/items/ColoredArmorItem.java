@@ -78,11 +78,9 @@ public class ColoredArmorItem extends DyeableArmorItem implements IColoredItem
 
         if (entity.level.getBlockState(pos).getBlock() instanceof InkwellBlock)
         {
-            InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos);
-
-            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te))
+            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level, pos))
             {
-                ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColor(te));
+                ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level, pos));
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
         }

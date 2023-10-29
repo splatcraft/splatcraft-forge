@@ -43,6 +43,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
     private final Item clearItem;
     private boolean addStartersToTab = false;
+    private boolean addInvertedToTab = false;
     private boolean matchColor = true;
 
     public ColoredBlockItem(Block block, Properties properties, Item clearItem)
@@ -92,6 +93,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
     public ColoredBlockItem setMatchColor(boolean matchColor) {
         this.matchColor = matchColor;
+        this.addInvertedToTab = false;
         return this;
     }
 
@@ -112,10 +114,11 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
         if (I18n.exists(getDescriptionId() + ".tooltip"))
             tooltip.add(new TranslatableComponent(getDescriptionId() + ".tooltip").withStyle(ChatFormatting.GRAY));
 
+        boolean inverted = ColorUtils.isInverted(stack);
         if (ColorUtils.isColorLocked(stack))
-            tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
+            tooltip.add(ColorUtils.getFormatedColorName(inverted ? 0xFFFFFF - ColorUtils.getInkColor(stack) : ColorUtils.getInkColor(stack), true));
         else if(matchColor)
-            tooltip.add(new TranslatableComponent( "item.splatcraft.tooltip.matches_color").withStyle(ChatFormatting.GRAY));
+            tooltip.add(new TranslatableComponent( "item.splatcraft.tooltip.matches_color" + (inverted ? ".inverted" : "")).withStyle(ChatFormatting.GRAY));
     }
 
     public ColoredBlockItem addStarterColors()
@@ -124,25 +127,25 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
         return this;
     }
 
+    public ColoredBlockItem addInverted(boolean inverted)
+    {
+        addInvertedToTab = inverted;
+        return this;
+    }
+
     @Override
     protected boolean updateCustomBlockEntityTag(@NotNull BlockPos pos, Level levelIn, @Nullable Player player, @NotNull ItemStack stack, @NotNull BlockState state)
     {
         MinecraftServer server = levelIn.getServer();
         if (server == null)
-        {
             return false;
-        }
 
         int color = ColorUtils.getInkColor(stack);
 
-        BlockEntity tileEntity = levelIn.getBlockEntity(pos);
-        if(color != -1)
-        {
-            if(getBlock() instanceof IColoredBlock)
-                ((IColoredBlock) getBlock()).setColor(levelIn, pos, color);
-            else if (tileEntity instanceof InkColorTileEntity)
-                ((InkColorTileEntity) tileEntity).setColor(color);
-        }
+        if (color != -1)
+            ColorUtils.setInkColor(levelIn.getBlockEntity(pos), color);
+        ColorUtils.setInverted(levelIn, pos, ColorUtils.isInverted(stack));
+
         return super.updateCustomBlockEntityTag(pos, levelIn, player, stack, state);
     }
 
@@ -152,6 +155,9 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
         if (allowdedIn(group))
         {
             items.add(ColorUtils.setColorLocked(new ItemStack(this), false));
+
+            if(addInvertedToTab)
+                items.add(ColorUtils.setInverted(ColorUtils.setColorLocked(new ItemStack(this), false), true));
             if (addStartersToTab)
             {
                 for (int color : ColorUtils.STARTER_COLORS)
@@ -180,11 +186,9 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
         if (entity.level.getBlockState(pos.below()).getBlock() instanceof InkwellBlock)
         {
-            InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos.below());
-
-            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColor(te))
+            if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level, pos.below()))
             {
-                ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColor(te));
+                ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level, pos.below()));
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
         }

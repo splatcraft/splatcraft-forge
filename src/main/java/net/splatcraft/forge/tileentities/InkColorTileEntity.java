@@ -17,6 +17,7 @@ public class InkColorTileEntity extends BlockEntity implements IHasTeam
 {
 
 	private int color = ColorUtils.DEFAULT;
+	private boolean inverted = false;
 	private String team = "";
 
 	public InkColorTileEntity(BlockPos pos, BlockState state)
@@ -33,6 +34,7 @@ public class InkColorTileEntity extends BlockEntity implements IHasTeam
 	@Override
 	public void saveAdditional(CompoundTag nbt)
 	{
+		nbt.putBoolean("Inverted", inverted);
 		nbt.putInt("Color", color);
 		if(!team.isEmpty())
 			nbt.putString("Team", team);
@@ -46,6 +48,7 @@ public class InkColorTileEntity extends BlockEntity implements IHasTeam
 		super.load(nbt);
 		color = ColorUtils.getColorFromNbt(nbt);
 		team = nbt.getString("Team");
+		inverted = nbt.getBoolean("Inverted");
 	}
 
 	@Override
@@ -89,6 +92,14 @@ public class InkColorTileEntity extends BlockEntity implements IHasTeam
 	public void setColor(int color)
 	{
 		this.color = color;
+	}
+
+	public boolean isInverted() {
+		return inverted;
+	}
+
+	public void setInverted(boolean inverted) {
+		this.inverted = inverted;
 	}
 
 	public String getTeam() {

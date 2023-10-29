@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -89,16 +90,18 @@ public class ClientSetupHandler
         @Override
         public int getColor(@NotNull ItemStack stack, int i)
         {
-            boolean isDefault = ColorUtils.getInkColor(stack) == -1 && !ColorUtils.isColorLocked(stack);
-            int color = i == 0 ? (((stack.is(SplatcraftTags.Items.INK_BANDS) || !stack.is(SplatcraftTags.Items.MATCH_ITEMS))
-                    && isDefault && PlayerInfoCapability.hasCapability(Minecraft.getInstance().player))
-                    ? ColorUtils.getEntityColor(Minecraft.getInstance().player) : ColorUtils.getInkColor(stack)) : -1;
+            if(i != 0)
+                return -1;
 
-            if(i == 0 && stack.getItem() instanceof SquidBumperItem && isDefault)
-                color = 0xFFFFFF - color;
+            boolean isDefault = ColorUtils.getInkColor(stack) == -1 && !ColorUtils.isColorLocked(stack);
+            int color = (stack.is(SplatcraftTags.Items.INK_BANDS) || !stack.is(SplatcraftTags.Items.MATCH_ITEMS)) && isDefault && PlayerInfoCapability.hasCapability(Minecraft.getInstance().player)
+                    ? ColorUtils.getEntityColor(Minecraft.getInstance().player) : ColorUtils.getInkColor(stack);
 
             if (SplatcraftConfig.Client.getColorLock())
                 color = ColorUtils.getLockedColor(color);
+            else if(ColorUtils.isInverted(stack))
+                color = 0xFFFFFF - color;
+
             return color;
         }
     }
@@ -109,13 +112,20 @@ public class ClientSetupHandler
         @Override
         public int getColor(@NotNull BlockState blockState, @Nullable BlockAndTintGetter iBlockDisplayReader, @Nullable BlockPos blockPos, int i)
         {
-            if (iBlockDisplayReader == null || blockPos == null)
+            if (i != 0 || iBlockDisplayReader == null || blockPos == null)
                 return -1;
 
-            int color = ColorUtils.getInkColor(iBlockDisplayReader.getBlockEntity(blockPos));
 
+            BlockEntity te = iBlockDisplayReader.getBlockEntity(blockPos);
+
+            if(te == null)
+                return -1;
+
+            int color = ColorUtils.getInkColor(te);
             if (SplatcraftConfig.Client.getColorLock())
                 color = ColorUtils.getLockedColor(color);
+            else if(ColorUtils.isInverted(te.getLevel(), blockPos))
+                color = 0xFFFFFF - color;
 
             if (color == -1)
                 return 0xFFFFFF;

@@ -109,9 +109,27 @@ public class ColorUtils
         setPlayerColor(player, color, true);
     }
 
+    public static boolean isInverted(ItemStack stack)
+    {
+        return stack.getOrCreateTag().getBoolean("Inverted");
+    }
+
+    public static ItemStack setInverted(ItemStack stack, boolean inverted)
+    {
+        if(stack.hasTag() || inverted)
+            stack.getOrCreateTag().putBoolean("Inverted", inverted);
+        return stack;
+    }
+
     public static int getInkColor(ItemStack stack)
     {
         return getColorFromNbt(stack.getOrCreateTag());
+    }
+
+    public static int getInkColorOrInverted(ItemStack stack)
+    {
+        int color = getInkColor(stack);
+        return isInverted(stack) ? 0xFFFFFF - color : color;
     }
 
     public static ItemStack setInkColor(ItemStack stack, int color)
@@ -124,22 +142,32 @@ public class ColorUtils
 
     public static int getInkColor(BlockEntity te)
     {
-        if (te == null)
-        {
-            return -1;
-        }
+        return getInkColor(te.getLevel(), te.getBlockPos());
+    }
 
-        if (te instanceof InkColorTileEntity)
-        {
-            return ((InkColorTileEntity) te).getColor();
-        }
+    public static int getInkColor(Level level, BlockPos pos)
+    {
+        if (level.getBlockState(pos).getBlock() instanceof IColoredBlock coloredBlock)
+            return coloredBlock.getColor(level, pos);
 
-        te.getBlockState();
-        if (te.getBlockState().getBlock() instanceof IColoredBlock)
-        {
-            return ((IColoredBlock) te.getBlockState().getBlock()).getColor(Objects.requireNonNull(te.getLevel()), te.getBlockPos());
-        }
         return -1;
+    }
+
+    public static int getInkColorOrInverted(Level level, BlockPos pos)
+    {
+        int color = getInkColor(level, pos);
+       return isInverted(level, pos) ? 0xFFFFFF - color : color;
+    }
+
+    public static boolean isInverted(Level level, BlockPos pos)
+    {
+        return level.getBlockState(pos).getBlock() instanceof IColoredBlock coloredBlock && coloredBlock.isInverted(level, pos);
+    }
+
+    public static void setInverted(Level level, BlockPos pos, boolean inverted)
+    {
+        if(level.getBlockState(pos).getBlock() instanceof IColoredBlock coloredBlock)
+            coloredBlock.setInverted(level, pos, inverted);
     }
 
     public static boolean setInkColor(BlockEntity te, int color)
@@ -241,8 +269,11 @@ public class ColorUtils
 
     public static boolean colorEquals(Entity entity, BlockEntity te)
     {
+        if(entity == null || te == null)
+            return false;
+
         int entityColor = getEntityColor(entity);
-        int inkColor = getInkColor(te);
+        int inkColor = getInkColorOrInverted(te.getLevel(), te.getBlockPos());
 
         if (entityColor == -1 || inkColor == -1)
             return false;

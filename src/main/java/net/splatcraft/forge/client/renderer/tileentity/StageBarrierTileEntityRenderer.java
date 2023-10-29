@@ -89,7 +89,7 @@ public class StageBarrierTileEntityRenderer implements BlockEntityRenderer<Stage
         float alpha = activeTime / tileEntity.getMaxActiveTime();
         float[] rgb = new float[] {1,1,1};
         if(tileEntity.getBlockState().getBlock() instanceof IColoredBlock)
-            rgb = ColorUtils.hexToRGB(((IColoredBlock) tileEntity.getBlockState().getBlock()).getColor(tileEntity.getLevel(), tileEntity.getBlockPos()));
+            rgb = ColorUtils.hexToRGB(ColorUtils.getInkColorOrInverted(tileEntity.getLevel(), tileEntity.getBlockPos()));
 
         if (shouldRenderSide(tileEntity, Direction.NORTH)) {
             addVertex(builder, matrixStack, 0, 1, 0, sprite.getU0(), sprite.getV1(), rgb[0], rgb[1], rgb[2], alpha);

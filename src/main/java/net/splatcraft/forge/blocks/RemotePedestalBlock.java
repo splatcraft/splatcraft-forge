@@ -133,7 +133,7 @@ public class RemotePedestalBlock extends Block implements IColoredBlock, EntityB
     public void updateColor(Level levelIn, BlockPos currentPos, BlockPos facingPos)
     {
         if(levelIn.getBlockState(facingPos).getBlock() instanceof InkwellBlock)
-            setColor(levelIn, currentPos, ((InkwellBlock) levelIn.getBlockState(facingPos).getBlock()).getColor(levelIn, facingPos));
+            setColor(levelIn, currentPos, ColorUtils.getInkColorOrInverted(levelIn, facingPos));
     }
 
     @Override

@@ -17,6 +17,7 @@ import net.splatcraft.forge.entities.IColoredEntity;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.ColoredBarrierTileEntity;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,11 +53,23 @@ public class ColoredBarrierBlock extends StageBarrierBlock implements IColoredBl
     @Override
     public int getColor(Level level, BlockPos pos)
     {
-        if(level.getBlockEntity(pos) instanceof ColoredBarrierTileEntity)
-            return ((ColoredBarrierTileEntity) level.getBlockEntity(pos)).getColor();
+        if(level.getBlockEntity(pos) instanceof ColoredBarrierTileEntity colorTileEntity)
+            return colorTileEntity.getColor();
         return -1;
     }
 
+    @Override
+    public boolean isInverted(Level level, BlockPos pos)
+    {
+        return (level.getBlockEntity(pos) instanceof ColoredBarrierTileEntity colorTileEntity) && colorTileEntity.isInverted();
+    }
+
+    @Override
+    public void setInverted(Level level, BlockPos pos, boolean inverted)
+    {
+        if(level.getBlockEntity(pos) instanceof ColoredBarrierTileEntity colorTileEntity)
+            colorTileEntity.setInverted(inverted);
+    }
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player)

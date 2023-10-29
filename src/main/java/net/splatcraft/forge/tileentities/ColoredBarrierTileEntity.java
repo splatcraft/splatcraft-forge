@@ -16,6 +16,7 @@ import net.splatcraft.forge.util.ColorUtils;
 public class ColoredBarrierTileEntity extends StageBarrierTileEntity implements IHasTeam
 {
     protected int color = ColorUtils.DEFAULT;
+    private boolean inverted = false;
     private String team = "";
 
     public ColoredBarrierTileEntity(BlockPos pos, BlockState state)
@@ -74,6 +75,7 @@ public class ColoredBarrierTileEntity extends StageBarrierTileEntity implements 
         super.load(nbt);
         setColor(ColorUtils.getColorFromNbt(nbt));
         setTeam(nbt.getString("Team"));
+        setInverted(nbt.getBoolean("Inverted"));
     }
 
     @Override
@@ -81,9 +83,17 @@ public class ColoredBarrierTileEntity extends StageBarrierTileEntity implements 
     {
         compound.putInt("Color", getColor());
         compound.putString("Team", getTeam());
+        compound.putBoolean("Inverted", inverted);
         super.saveAdditional(compound);
     }
 
+    public boolean isInverted() {
+        return inverted;
+    }
+
+    public void setInverted(boolean inverted) {
+        this.inverted = inverted;
+    }
     @Override
     public String getTeam() {
         return team;
