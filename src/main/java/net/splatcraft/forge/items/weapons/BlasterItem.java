@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.entities.InkProjectileEntity;
+import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -67,5 +68,10 @@ public class BlasterItem extends WeaponBaseItem<WeaponSettings>
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.blasterShot, SoundSource.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }
         }
+    }
+
+    @Override
+    public PlayerPosingHandler.WeaponPose getPose(ItemStack stack) {
+        return PlayerPosingHandler.WeaponPose.FIRE;
     }
 }
