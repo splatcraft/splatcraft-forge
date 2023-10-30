@@ -63,7 +63,7 @@ public class SplatcraftKeyHandler {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
 
-        if (player == null || player.isSpectator() || !PlayerInfoCapability.hasCapability(player) || PlayerCooldown.hasPlayerCooldown(player)) {
+        if (player == null || player.isSpectator() || !PlayerInfoCapability.hasCapability(player)) {
             return;
         }
 
@@ -79,7 +79,7 @@ public class SplatcraftKeyHandler {
         subWeaponHotkey.tick(KeyMode.HOLD, canHold);
         updatePressState(subWeaponHotkey);
 
-        if (CommonUtils.anyWeaponOnCooldown(player)) {
+        if (PlayerCooldown.hasPlayerCooldown(player) || CommonUtils.anyWeaponOnCooldown(player)) {
             return;
         }
 
