@@ -1,5 +1,6 @@
 package net.splatcraft.forge.handlers;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,6 +18,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -25,6 +29,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.blocks.IColoredBlock;
+import net.splatcraft.forge.client.layer.PlayerInkColoredSkinLayer;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
@@ -35,6 +40,7 @@ import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.InkWaxerItem;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.RequestPlayerInfoPacket;
+import net.splatcraft.forge.network.c2s.SendPlayerOverlayPacket;
 import net.splatcraft.forge.network.s2c.*;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -44,13 +50,16 @@ import net.splatcraft.forge.util.CommonUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber
 public class SplatcraftCommonHandler
 {
+
 
     @SubscribeEvent
     public static void onPlayerJump(LivingEvent.LivingJumpEvent event)
@@ -217,6 +226,8 @@ public class SplatcraftCommonHandler
         }
     }
 
+    public static final HashMap<UUID, byte[]> COLOR_SKIN_OVERLAY_SERVER_CACHE = new HashMap<>();
+
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
     {
@@ -225,10 +236,10 @@ public class SplatcraftCommonHandler
         SplatcraftPacketHandler.sendToPlayer(new UpdateIntGamerulesPacket(SplatcraftGameRules.intRules), player);
         SplatcraftPacketHandler.sendToPlayer(new UpdateWeaponSettingsPacket(), player);
 
-        int[] colors = new int[ScoreboardHandler.getCriteriaKeySet().size()];
-        int i = 0;
-        for (int c : ScoreboardHandler.getCriteriaKeySet())
-            colors[i++] = c;
+        int[] criteriaColors = new int[ScoreboardHandler.getCriteriaKeySet().size()];
+        int criteriaColorIndex = 0;
+        for (int criteriaColor : ScoreboardHandler.getCriteriaKeySet())
+            criteriaColors[criteriaColorIndex++] = criteriaColor;
 
         TreeMap<String, Integer> playerColors = new TreeMap<>();
 
@@ -240,8 +251,33 @@ public class SplatcraftCommonHandler
 
         SplatcraftPacketHandler.sendToAll(new UpdateClientColorsPacket(event.getPlayer().getDisplayName().getString(), PlayerInfoCapability.get(event.getPlayer()).getColor()));
         SplatcraftPacketHandler.sendToPlayer(new UpdateClientColorsPacket(playerColors), player);
-        SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, colors), player);
+        SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, criteriaColors), player);
         SplatcraftPacketHandler.sendToPlayer(new UpdateStageListPacket(SaveInfoCapability.get(event.getPlayer().level.getServer()).getStages()), player);
+        if(!COLOR_SKIN_OVERLAY_SERVER_CACHE.isEmpty())
+             COLOR_SKIN_OVERLAY_SERVER_CACHE.forEach(((uuid, bytes) -> SplatcraftPacketHandler.sendToPlayer(new ReceivePlayerOverlayPacket(uuid, bytes), player)));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onClientLogIn(ClientPlayerNetworkEvent.LoggedInEvent event)
+    {
+        if(event.getPlayer() != null)
+            try {
+                SplatcraftPacketHandler.sendToServer(new SendPlayerOverlayPacket());
+            } catch (IOException e) {
+                e.printStackTrace(System.out);
+            }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onClientLogOut(ClientPlayerNetworkEvent.LoggedOutEvent event)
+    {
+        PlayerInkColoredSkinLayer.TEXTURES.values().forEach(Minecraft.getInstance().getTextureManager()::release);
+        PlayerInkColoredSkinLayer.TEXTURES.clear();
+
+        if(event.getPlayer() != null)
+            SplatcraftPacketHandler.sendToServer(new SendPlayerOverlayPacket(event.getPlayer().getUUID(), new byte[0]));
     }
 
     @Deprecated

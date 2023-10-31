@@ -25,6 +25,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.client.layer.InkAccessoryLayer;
 import net.splatcraft.forge.client.layer.InkOverlayLayer;
+import net.splatcraft.forge.client.layer.PlayerInkColoredSkinLayer;
 import net.splatcraft.forge.client.models.InkSquidModel;
 import net.splatcraft.forge.client.models.SquidBumperModel;
 import net.splatcraft.forge.client.models.inktanks.ArmoredInkTankModel;
@@ -137,19 +138,15 @@ public class SplatcraftEntities {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public static void addRenderLayers(EntityRenderersEvent.AddLayers event) {
-        for (String skinKey : event.getSkins()) {
-            LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> skin = event.getSkin(skinKey);
-            if (skin != null) {
-                skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel<AbstractClientPlayer>(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
-            }
-        }
-
+    public static void addRenderLayers(EntityRenderersEvent.AddLayers event)
+    {
         event.getSkins().forEach(renderer -> {
             LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> skin = event.getSkin(renderer);
-            attachInkOverlay(Objects.requireNonNull(skin));
 
             skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel<AbstractClientPlayer>(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
+            skin.addLayer(new PlayerInkColoredSkinLayer(skin, new HumanoidModel<AbstractClientPlayer>(event.getEntityModels().bakeLayer(renderer.equals("slim") ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER))));
+            attachInkOverlay(Objects.requireNonNull(skin));
+
         });
         ((AddLayersAccessor) event).getRenderers()
                 .values().stream()

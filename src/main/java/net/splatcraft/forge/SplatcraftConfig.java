@@ -41,7 +41,8 @@ public class SplatcraftConfig
         OFF
     }
 
-    public static class Client {
+    public static class Client
+    {
         public static ForgeConfigSpec.EnumValue<SplatcraftKeyHandler.KeyMode> squidKeyMode;
         public static ForgeConfigSpec.EnumValue<InkIndicator> inkIndicator;
         public static ForgeConfigSpec.BooleanValue vanillaInkDurability;
@@ -50,6 +51,10 @@ public class SplatcraftConfig
         //public static ForgeConfigSpec.BooleanValue colorLock; TODO
         public static ForgeConfigSpec.EnumValue<PreventBobView> preventBobView;
         public static ForgeConfigSpec.BooleanValue lowInkWarning;
+
+        public static String inkColoredSkinLayerPath = "config\\splatcraft\\player_ink_color.png";
+
+        public static File playerSkinInkColoredLayer;
 
         public static void init(ForgeConfigSpec.Builder client)
         {
@@ -66,6 +71,7 @@ public class SplatcraftConfig
             preventBobView = client.comment("Prevents changing FOV when in Squid Mode").defineEnum("splatcraft.preventBobView", PreventBobView.OFF);
             lowInkWarning = client.comment("Determines whether the ink indicator near your crosshair warns you if your ink is low.")
                     .define("splatcraft.lowInkWarning", true);
+
         }
 
         public static boolean getColorLock()
