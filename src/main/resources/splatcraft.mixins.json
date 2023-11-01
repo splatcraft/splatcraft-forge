@@ -18,9 +18,11 @@
     "defaultRequire": 1
   },
   "client": [
+    "AbstractContainerAccessor",
     "AddLayersAccessor",
     "BlockRenderMixin$AOFace",
     "BlockRenderMixin$ModelRenderer",
+    "CreativeTabMixin",
     "GameRendererMixin",
     "ItemRendererMixin",
     "MinecraftClientAccessor",

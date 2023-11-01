@@ -1,11 +1,8 @@
 package net.splatcraft.forge;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
-import net.minecraft.server.packs.metadata.pack.PackMetadataSectionSerializer;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraftforge.common.MinecraftForge;
@@ -81,7 +78,7 @@ public class Splatcraft {
         SplatcraftCommands.registerArguments();
 
         SplatcraftOreGen.registerOres();
-        SplatcraftItems.registerDispenserBehavior();
+        SplatcraftItems.postRegister();
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {

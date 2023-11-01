@@ -32,10 +32,7 @@ import net.splatcraft.forge.client.models.inktanks.ClassicInkTankModel;
 import net.splatcraft.forge.client.models.inktanks.InkTankJrModel;
 import net.splatcraft.forge.client.models.inktanks.InkTankModel;
 import net.splatcraft.forge.dispenser.PlaceBlockDispenseBehavior;
-import net.splatcraft.forge.entities.subs.BurstBombEntity;
 import net.splatcraft.forge.entities.subs.CurlingBombEntity;
-import net.splatcraft.forge.entities.subs.SplatBombEntity;
-import net.splatcraft.forge.entities.subs.SuctionBombEntity;
 import net.splatcraft.forge.items.*;
 import net.splatcraft.forge.items.remotes.ColorChangerItem;
 import net.splatcraft.forge.items.remotes.InkDisruptorItem;
@@ -49,8 +46,6 @@ import net.splatcraft.forge.items.weapons.RollerItem;
 import net.splatcraft.forge.items.weapons.ShooterItem;
 import net.splatcraft.forge.items.weapons.SlosherItem;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
-import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.SplatcraftArmorMaterial;
 
@@ -190,8 +185,8 @@ public class SplatcraftItems {
     public static final RegistryObject<Item> weaponWorkbench = REGISTRY.register("ammo_knights_workbench", () -> new BlockItem(SplatcraftBlocks.weaponWorkbench.get()));
 
     //Map Items
-    public static final RegistryObject<Item> inkwell = REGISTRY.register("inkwell", () -> new ColoredBlockItem(SplatcraftBlocks.inkwell.get(), 16, emptyInkwell.get()).addInverted(true).addStarterColors());
-    public static final RegistryObject<Item> spawnPad = REGISTRY.register("spawn_pad", () -> new ColoredBlockItem(SplatcraftBlocks.spawnPad.get(), 1).addInverted(true));
+    public static final RegistryObject<Item> inkwell = REGISTRY.register("inkwell", () -> new ColoredBlockItem(SplatcraftBlocks.inkwell.get(), 16, emptyInkwell.get()).addStarterColors());
+    public static final RegistryObject<Item> spawnPad = REGISTRY.register("spawn_pad", () -> new ColoredBlockItem(SplatcraftBlocks.spawnPad.get(), 1));
     public static final RegistryObject<Item> grate = REGISTRY.register("grate", () -> new BlockItem(SplatcraftBlocks.grate.get()));
     public static final RegistryObject<Item> grateRamp = REGISTRY.register("grate_ramp", () -> new BlockItem(SplatcraftBlocks.grateRamp.get()));
     public static final RegistryObject<Item> barrierBar = REGISTRY.register("barrier_bar", () -> new BlockItem(SplatcraftBlocks.barrierBar.get()));
@@ -209,16 +204,16 @@ public class SplatcraftItems {
     public static final RegistryObject<Item> splatSwitch = REGISTRY.register("splat_switch", () -> new BlockItem(SplatcraftBlocks.splatSwitch.get()));
 
     //Ink Stained Blocks
-    public static final RegistryObject<Item> inkedWool = REGISTRY.register("ink_stained_wool", () -> new ColoredBlockItem(SplatcraftBlocks.inkedWool.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.WHITE_WOOL).addInverted(true));
-    public static final RegistryObject<Item> inkedCarpet = REGISTRY.register("ink_stained_carpet", () -> new ColoredBlockItem(SplatcraftBlocks.inkedCarpet.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.WHITE_CARPET).addInverted(true));
-    public static final RegistryObject<Item> inkedGlass = REGISTRY.register("ink_stained_glass", () -> new ColoredBlockItem(SplatcraftBlocks.inkedGlass.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.GLASS).addInverted(true));
-    public static final RegistryObject<Item> inkedGlassPane = REGISTRY.register("ink_stained_glass_pane", () -> new ColoredBlockItem(SplatcraftBlocks.inkedGlassPane.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.GLASS_PANE).addInverted(true));
+    public static final RegistryObject<Item> inkedWool = REGISTRY.register("ink_stained_wool", () -> new ColoredBlockItem(SplatcraftBlocks.inkedWool.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.WHITE_WOOL));
+    public static final RegistryObject<Item> inkedCarpet = REGISTRY.register("ink_stained_carpet", () -> new ColoredBlockItem(SplatcraftBlocks.inkedCarpet.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.WHITE_CARPET));
+    public static final RegistryObject<Item> inkedGlass = REGISTRY.register("ink_stained_glass", () -> new ColoredBlockItem(SplatcraftBlocks.inkedGlass.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.GLASS));
+    public static final RegistryObject<Item> inkedGlassPane = REGISTRY.register("ink_stained_glass_pane", () -> new ColoredBlockItem(SplatcraftBlocks.inkedGlassPane.get(), new Item.Properties().tab(SplatcraftItemGroups.GROUP_GENERAL), Items.GLASS_PANE));
 
     //Barriers
     public static final RegistryObject<Item> stageBarrier = REGISTRY.register("stage_barrier", () -> new BlockItem(SplatcraftBlocks.stageBarrier.get()));
     public static final RegistryObject<Item> stageVoid = REGISTRY.register("stage_void", () -> new BlockItem(SplatcraftBlocks.stageVoid.get()));
-    public static final RegistryObject<Item> allowedColorBarrier = REGISTRY.register("allowed_color_barrier", () -> new ColoredBlockItem(SplatcraftBlocks.allowedColorBarrier.get()).addInverted(true));
-    public static final RegistryObject<Item> deniedColorBarrier = REGISTRY.register("denied_color_barrier", () -> new ColoredBlockItem(SplatcraftBlocks.deniedColorBarrier.get()).addInverted(true));
+    public static final RegistryObject<Item> allowedColorBarrier = REGISTRY.register("allowed_color_barrier", () -> new ColoredBlockItem(SplatcraftBlocks.allowedColorBarrier.get()));
+    public static final RegistryObject<Item> deniedColorBarrier = REGISTRY.register("denied_color_barrier", () -> new ColoredBlockItem(SplatcraftBlocks.deniedColorBarrier.get()));
 
     //Octarian Gear
     public static final RegistryObject<Item> splatfestBand = REGISTRY.register("splatfest_band", () -> new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)));
@@ -292,8 +287,24 @@ public class SplatcraftItems {
     }
     */
 
-    public static void registerDispenserBehavior()
+    public static void postRegister()
     {
+        SplatcraftItemGroups.colorTabItems.addAll(new ArrayList<>(){{
+            add(inkwell.get());
+            add(spawnPad.get());
+            add(squidBumper.get());
+            add(canvas.get());
+            add(coralite.get());
+            add(coraliteSlab.get());
+            add(coraliteStairs.get());
+            add(inkedWool.get());
+            add(inkedCarpet.get());
+            add(inkedGlass.get());
+            add(inkedGlassPane.get());
+            add(inkedGlassPane.get());
+            add(allowedColorBarrier.get());
+            add(deniedColorBarrier.get());
+        }});
 
         DispenserBlock.registerBehavior(SplatcraftItems.emptyInkwell.get(), new PlaceBlockDispenseBehavior());
         DispenserBlock.registerBehavior(SplatcraftItems.inkwell.get(), new PlaceBlockDispenseBehavior());

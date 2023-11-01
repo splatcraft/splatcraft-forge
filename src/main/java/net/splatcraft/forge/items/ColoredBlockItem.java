@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,15 +24,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.blocks.InkwellBlock;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +41,6 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
     private final Item clearItem;
     private boolean addStartersToTab = false;
-    private boolean addInvertedToTab = false;
     private boolean matchColor = true;
 
     public ColoredBlockItem(Block block, Properties properties, Item clearItem)
@@ -93,7 +90,6 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
     public ColoredBlockItem setMatchColor(boolean matchColor) {
         this.matchColor = matchColor;
-        this.addInvertedToTab = false;
         return this;
     }
 
@@ -116,7 +112,11 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
 
         boolean inverted = ColorUtils.isInverted(stack);
         if (ColorUtils.isColorLocked(stack))
-            tooltip.add(ColorUtils.getFormatedColorName(inverted ? 0xFFFFFF - ColorUtils.getInkColor(stack) : ColorUtils.getInkColor(stack), true));
+        {
+            tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
+            if(inverted)
+                tooltip.add(new TranslatableComponent("item.splatcraft.tooltip.inverted").withStyle(Style.EMPTY.withItalic(true).withColor(ChatFormatting.DARK_PURPLE)));
+        }
         else if(matchColor)
             tooltip.add(new TranslatableComponent( "item.splatcraft.tooltip.matches_color" + (inverted ? ".inverted" : "")).withStyle(ChatFormatting.GRAY));
     }
@@ -124,12 +124,6 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     public ColoredBlockItem addStarterColors()
     {
         addStartersToTab = true;
-        return this;
-    }
-
-    public ColoredBlockItem addInverted(boolean inverted)
-    {
-        addInvertedToTab = inverted;
         return this;
     }
 
@@ -156,10 +150,9 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
         {
             items.add(ColorUtils.setColorLocked(new ItemStack(this), false));
 
-            if(addInvertedToTab)
-                items.add(ColorUtils.setInverted(ColorUtils.setColorLocked(new ItemStack(this), false), true));
             if (addStartersToTab)
             {
+                items.add(ColorUtils.setInverted(ColorUtils.setColorLocked(new ItemStack(this), false), true));
                 for (int color : ColorUtils.STARTER_COLORS)
                     items.add(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(this), color), true));
             }

@@ -1,6 +1,8 @@
 {
   "itemGroup.splatcraft_general": "Splatcraft",
   "itemGroup.splatcraft_weapons": "Splatcraft Weapons",
+  "itemGroup.splatcraft_colors": "Splatcraft Colors",
+  "itemGroup.splatcraft_colors.label": "Find Colors",
 
   "advancements.splatcraft.story.root.name": "Splatcraft",
   "advancements.splatcraft.story.root.description": "A tale of kid and squid",
@@ -124,6 +126,7 @@
   "item.splatcraft.ink_cloth_boots": "Ink Cloth Shoes",
   "item.splatcraft.splatfest_band": "Splatfest Band",
   "item.splatcraft.clear_ink_band": "Clear Ink Band",
+  "item.splatcraft.tooltip.inverted": "Inverted",
   "item.splatcraft.tooltip.matches_color": "matches your ink color!",
   "item.splatcraft.tooltip.matches_color.inverted": "matches your inverted ink color!",
 
