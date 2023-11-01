@@ -144,7 +144,7 @@ public class SplatcraftEntities {
             LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> skin = event.getSkin(renderer);
 
             skin.addLayer(new InkAccessoryLayer(skin, new HumanoidModel<AbstractClientPlayer>(event.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR))));
-            skin.addLayer(new PlayerInkColoredSkinLayer(skin, new HumanoidModel<AbstractClientPlayer>(event.getEntityModels().bakeLayer(renderer.equals("slim") ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER))));
+            skin.addLayer(new PlayerInkColoredSkinLayer(skin, new PlayerModel<>(event.getEntityModels().bakeLayer(renderer.equals("slim") ? ModelLayers.PLAYER_SLIM : ModelLayers.PLAYER), renderer.equals("slim"))));
             attachInkOverlay(Objects.requireNonNull(skin));
 
         });
