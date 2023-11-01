@@ -3,6 +3,7 @@ package net.splatcraft.forge.items.weapons;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.network.chat.Component;
@@ -13,6 +14,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -68,6 +70,19 @@ public class SubWeaponItem extends WeaponBaseItem<SubWeaponSettings>
     @Override
     public Class<SubWeaponSettings> getSettingsClass() {
         return SubWeaponSettings.class;
+    }
+
+    @Override
+    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> list)
+    {
+        super.fillItemCategory(group, list);
+        if(!isSecret && group == CreativeModeTab.TAB_SEARCH)
+        {
+            ItemStack stack = new ItemStack(this);
+            stack.getOrCreateTag().putBoolean("SingleUse", true);
+            list.add(stack);
+        }
+
     }
 
     @Override
