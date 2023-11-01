@@ -142,6 +142,15 @@
         ]
       }}
     },
+    "jet_squelcher": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:jet_squelcher"
+        ]
+      }}
+    },
     "blaster": {
       "trigger": "splatcraft:craft_weapon",
       "conditions": {"item":
@@ -518,6 +527,7 @@
     ["96_gal_deco"],
     ["n-zap85"],
     ["n-zap89"],
+    ["jet_squelcher"],
     ["blaster"],
     ["grim_blaster"],
     ["clash_blaster"],

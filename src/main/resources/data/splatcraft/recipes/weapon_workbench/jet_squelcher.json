@@ -1,0 +1,29 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/shooters",
+  "pos": 6,
+  "recipes": [
+    {
+      "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/jet_squelcher",
+      "result": {
+        "item": "splatcraft:jet_squelcher",
+        "count": 1
+      },
+      "ingredients": [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 8
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 16
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 4
+        }
+      ]
+    }
+  ]
+}

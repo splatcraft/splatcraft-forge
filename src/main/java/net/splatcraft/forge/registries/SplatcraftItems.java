@@ -88,6 +88,7 @@ public class SplatcraftItems {
     public static final RegistryObject<ShooterItem> gal96Deco = ShooterItem.create(REGISTRY, "96_gal", "96_gal_deco");
     public static final RegistryObject<ShooterItem> nzap85 = ShooterItem.create(REGISTRY, "n-zap", "n-zap85");
     public static final RegistryObject<ShooterItem> nzap89 = ShooterItem.create(REGISTRY, "n-zap", "n-zap89");
+    public static final RegistryObject<ShooterItem> jet_squelcher = ShooterItem.create(REGISTRY, "jet_squelcher", "jet_squelcher");
 
     //Blasters
     public static final RegistryObject<BlasterItem> blaster = BlasterItem.createBlaster(REGISTRY, "blaster", "blaster");
