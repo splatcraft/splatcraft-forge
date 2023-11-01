@@ -64,7 +64,7 @@ public class ChargerItem extends WeaponBaseItem<WeaponSettings> implements IChar
 		level.addFreshEntity(proj);
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerShot, SoundSource.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
 		reduceInk(player, this, getInkConsumption(stack, charge), settings.inkRecoveryCooldown, false, true);
-		PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, 10, player.getInventory().selected, player.getUsedItemHand(), true, false, false, player.isOnGround()));
+		PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, settings.firingSpeed, player.getInventory().selected, player.getUsedItemHand(), true, false, false, player.isOnGround()));
 		player.getCooldowns().addCooldown(this, 7);
 	}
 

@@ -5,6 +5,7 @@
 	"lifespan": 16,
 	"speed": 2.4,
 	"startup_ticks": 35,
+	"firing_rate": 10,
 	"ink_consumption": 25,
 	"ink_recovery_cooldown": 7,
 	"min_damage": 8,
