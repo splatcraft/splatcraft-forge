@@ -42,6 +42,7 @@ public class InkAccessoryLayer extends RenderLayer<AbstractClientPlayer, PlayerM
         if(!inkBand.isEmpty() && ((entity.getMainHandItem().equals(inkBand, false) || entity.getOffhandItem().equals(inkBand, false))))
             return;
 
+        boolean isFoil = inkBand.hasFoil();
         ResourceLocation stackLoc = inkBand.getItem().getRegistryName();
 
         String customModelData = "";
@@ -70,14 +71,14 @@ public class InkAccessoryLayer extends RenderLayer<AbstractClientPlayer, PlayerM
         if(Minecraft.getInstance().getResourceManager().hasResource(texture))
         {
             this.getParentModel().copyPropertiesTo(MODEL);
-            this.render(matrixStack, iRenderTypeBuffer, i, false, MODEL, 1.0F, 1.0F, 1.0F, texture);
+            this.render(matrixStack, iRenderTypeBuffer, i, isFoil, MODEL, 1.0F, 1.0F, 1.0F, texture);
             if(Minecraft.getInstance().getResourceManager().hasResource(coloredTexture))
-                this.render(matrixStack, iRenderTypeBuffer, i, false, MODEL, r, g, b, coloredTexture);
+                this.render(matrixStack, iRenderTypeBuffer, i, isFoil, MODEL, r, g, b, coloredTexture);
         }
     }
 
-    private void render(PoseStack p_241738_1_, MultiBufferSource p_241738_2_, int p_241738_3_, boolean p_241738_5_, HumanoidModel p_241738_6_, float p_241738_8_, float p_241738_9_, float p_241738_10_, ResourceLocation armorResource) {
-        VertexConsumer ivertexbuilder = ItemRenderer.getArmorFoilBuffer(p_241738_2_, RenderType.armorCutoutNoCull(armorResource), false, p_241738_5_);
+    private void render(PoseStack p_241738_1_, MultiBufferSource p_241738_2_, int p_241738_3_, boolean isFoil, HumanoidModel p_241738_6_, float p_241738_8_, float p_241738_9_, float p_241738_10_, ResourceLocation armorResource) {
+        VertexConsumer ivertexbuilder = ItemRenderer.getArmorFoilBuffer(p_241738_2_, RenderType.armorCutoutNoCull(armorResource), false, isFoil);
         p_241738_6_.renderToBuffer(p_241738_1_, ivertexbuilder, p_241738_3_, OverlayTexture.NO_OVERLAY, p_241738_8_, p_241738_9_, p_241738_10_, 1.0F);
     }
 }
