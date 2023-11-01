@@ -17,8 +17,10 @@
     "minecraft:redstone_lamp",
     "minecraft:piston",
     "minecraft:sticky_piston",
+    "minecraft:piston_head",
     "splatcraft:sardinium_block",
     "splatcraft:raw_sardinium_block",
-    "splatcraft:empty_inkwell"
+    "splatcraft:empty_inkwell",
+    "splatcraft:ammo_knights_debris"
   ]
 }
