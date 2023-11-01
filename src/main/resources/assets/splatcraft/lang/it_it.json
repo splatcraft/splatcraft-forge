@@ -538,7 +538,7 @@
   "key.subWeaponHotkey": "Uso rapido dell'arma secondaria",
   "key.specialWeaponHotkey": "Uso rapido dell'arma speciale",
 
-  "attribute.splatcraft.ink_swim_speed": "Velocita di nuoto nell'inchiostro"
+  "attribute.splatcraft.ink_swim_speed": "Velocita di nuoto nell'inchiostro",
 
   "disconnect.lost": "Si è verificato un errore di comunicazione."
 }
