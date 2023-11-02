@@ -72,6 +72,9 @@ public class InkDamageUtils {
         if (damage <= 0 || (target.isInvulnerableTo(damageSource) && !(target instanceof SquidBumperEntity)))
             return false;
 
+        if(InkOverlayCapability.hasCapability(target) && InkOverlayCapability.get(target).isInkproof())
+            return false;
+
         float mobDmgPctg = SplatcraftGameRules.getIntRuleValue(level, SplatcraftGameRules.INK_MOB_DAMAGE_PERCENTAGE) * 0.01f;
 
         int targetColor = ColorUtils.getEntityColor(target);
@@ -107,14 +110,15 @@ public class InkDamageUtils {
         }
 
         if ((targetColor <= -1 || canInk) && !target.isInWater() && !(target instanceof IColoredEntity && !((IColoredEntity) target).handleInkOverlay())) {
-            if (InkOverlayCapability.hasCapability(target)) {
+            if (InkOverlayCapability.hasCapability(target))
+            {
                 InkOverlayInfo info = InkOverlayCapability.get(target);
-
                 if (info.getAmount() < target.getMaxHealth() * 1.5)
                     info.addAmount(damage * (target instanceof IColoredEntity || damageMobs ? 1 : Math.max(0.5f, mobDmgPctg)));
                 info.setColor(color);
                 if (!level.isClientSide)
                     SplatcraftPacketHandler.sendToAll(new UpdateInkOverlayPacket(target, info));
+
             }
         }
 

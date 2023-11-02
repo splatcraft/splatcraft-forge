@@ -10,6 +10,7 @@ public class InkOverlayInfo
     private float amount = 0;
 
     private int woolColor = -1;
+    private boolean inkproof = false;
 
     private double squidRot;
     private double squidRotO;
@@ -80,6 +81,7 @@ public class InkOverlayInfo
     {
         nbt.putInt("Color", getColor());
         nbt.putFloat("Amount", getAmount());
+        nbt.putBoolean("Inkproof", isInkproof());
 
         if(getWoolColor() != -1)
             nbt.putInt("WoolColor", getWoolColor());
@@ -91,6 +93,7 @@ public class InkOverlayInfo
     {
         setColor(ColorUtils.getColorFromNbt(nbt));
         setAmount(nbt.getFloat("Amount"));
+        setInkproof(nbt.getBoolean("Inkproof"));
 
         if(nbt.contains("WoolColor"))
             setWoolColor(nbt.getInt("WoolColor"));
@@ -99,5 +102,14 @@ public class InkOverlayInfo
     public String toString()
     {
         return "Color: " + color + " Amount: " + amount;
+    }
+
+    public boolean isInkproof()
+    {
+        return inkproof;
+    }
+
+    public void setInkproof(boolean inkproof) {
+        this.inkproof = inkproof;
     }
 }
