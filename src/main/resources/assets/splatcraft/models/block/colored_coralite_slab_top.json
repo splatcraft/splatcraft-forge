@@ -5,8 +5,8 @@
     "particle": "splatcraft:blocks/colored_coralite"
   },
   "elements": [
-        {   "from": [ 0, 0, 0 ],
-            "to": [ 16, 8, 16 ],
+        {   "from": [ 0, 8, 0 ],
+            "to": [ 16, 16, 16 ],
             "faces": {
                 "down":  { "uv": [ 0, 0, 16, 16 ], "texture": "#all", "tintindex": 0, "cullface": "down" },
                 "up":    { "uv": [ 0, 0, 16, 16 ], "texture": "#all", "tintindex": 0 },
