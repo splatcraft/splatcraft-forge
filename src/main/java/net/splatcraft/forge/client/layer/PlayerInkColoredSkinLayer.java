@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -44,7 +45,7 @@ public class PlayerInkColoredSkinLayer extends RenderLayer<AbstractClientPlayer,
 
         if(TEXTURES.containsKey(entity.getUUID()))
         {
-            copyPropertiesFrom(getParentModel());
+            copyPropertiesFrom(getParentModel(), MODEL);
             this.render(matrixStack, iRenderTypeBuffer, i, MODEL, r, g, b, TEXTURES.get(entity.getUUID()));
         }
     }
@@ -55,20 +56,44 @@ public class PlayerInkColoredSkinLayer extends RenderLayer<AbstractClientPlayer,
         p_241738_6_.renderToBuffer(p_241738_1_, ivertexbuilder, p_241738_3_, OverlayTexture.NO_OVERLAY, p_241738_8_, p_241738_9_, p_241738_10_, 1.0F);
     }
 
-    private void copyPropertiesFrom(PlayerModel<AbstractClientPlayer> from) 
+    public static void renderHand(PlayerModel<AbstractClientPlayer> playermodel, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, AbstractClientPlayer player, ModelPart arm, ModelPart sleeve)
     {
-        from.copyPropertiesTo(MODEL);
 
-        MODEL.jacket.copyFrom(from.jacket);
-        MODEL.rightSleeve.copyFrom(from.rightSleeve);
-        MODEL.leftSleeve.copyFrom(from.leftSleeve);
-        MODEL.rightPants.copyFrom(from.rightPants);
-        MODEL.leftPants.copyFrom(from.leftPants);
+        if(player.isSpectator() || player.isInvisible() || !PlayerInfoCapability.hasCapability(player))
+            return;
 
-        MODEL.jacket.visible = from.jacket.visible;
-        MODEL.rightSleeve.visible = from.rightSleeve.visible;
-        MODEL.leftSleeve.visible = from.leftSleeve.visible;
-        MODEL.rightPants.visible = from.rightPants.visible;
-        MODEL.leftPants.visible = from.leftPants.visible;
+        int color = ColorUtils.getPlayerColor(player);
+        float r = ((color & 16711680) >> 16) / 255.0f;
+        float g = ((color & '\uff00') >> 8) / 255.0f;
+        float b = (color & 255) / 255.0f;
+
+        VertexConsumer ivertexbuilder = buffer.getBuffer(RenderType.entitySmoothCutout(TEXTURES.get(player.getUUID())));
+
+        //copyPropertiesFrom(getParentModel(), playermodel);
+        playermodel.attackTime = 0.0F;
+        playermodel.crouching = false;
+        playermodel.swimAmount = 0.0F;
+        playermodel.setupAnim(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+        arm.xRot = 0.0F;
+        arm.render(matrixStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, r, g, b, 1);
+        sleeve.xRot = 0.0F;
+        sleeve.render(matrixStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, r, g, b, 1);
+    }
+
+    private void copyPropertiesFrom(PlayerModel<AbstractClientPlayer> from, PlayerModel<AbstractClientPlayer> to)
+    {
+        from.copyPropertiesTo(to);
+
+        to.jacket.copyFrom(from.jacket);
+        to.rightSleeve.copyFrom(from.rightSleeve);
+        to.leftSleeve.copyFrom(from.leftSleeve);
+        to.rightPants.copyFrom(from.rightPants);
+        to.leftPants.copyFrom(from.leftPants);
+
+        to.jacket.visible = from.jacket.visible;
+        to.rightSleeve.visible = from.rightSleeve.visible;
+        to.leftSleeve.visible = from.leftSleeve.visible;
+        to.rightPants.visible = from.rightPants.visible;
+        to.leftPants.visible = from.leftPants.visible;
     }
 }
