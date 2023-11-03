@@ -11,7 +11,8 @@
     "PlayerMixin",
     "SheepMixin",
     "SquidPassthroughMixin",
-    "WallConnectionMixin"
+    "WallConnectionMixin",
+    "compat.RubidiumMixin"
   ],
   "minVersion": "0.8",
   "injectors": {
@@ -21,7 +22,10 @@
     "AbstractContainerAccessor",
     "AddLayersAccessor",
     "BlockRenderMixin$AOFace",
+    "BlockRenderMixin$ChunkRegionAccessor",
+    "BlockRenderMixin$ChunkRenderDispatcherMixin",
     "BlockRenderMixin$ModelRenderer",
+    "BlockRenderMixin$Renderer",
     "CreativeTabMixin",
     "GameRendererMixin",
     "ItemRendererMixin",

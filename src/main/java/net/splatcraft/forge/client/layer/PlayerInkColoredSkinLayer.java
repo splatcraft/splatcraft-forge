@@ -59,7 +59,8 @@ public class PlayerInkColoredSkinLayer extends RenderLayer<AbstractClientPlayer,
     public static void renderHand(PlayerModel<AbstractClientPlayer> playermodel, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, AbstractClientPlayer player, ModelPart arm, ModelPart sleeve)
     {
 
-        if(player.isSpectator() || player.isInvisible() || !PlayerInfoCapability.hasCapability(player))
+        if(player == null || !TEXTURES.containsKey(player.getUUID()) ||
+                player.isSpectator() || player.isInvisible() || !PlayerInfoCapability.hasCapability(player))
             return;
 
         int color = ColorUtils.getPlayerColor(player);

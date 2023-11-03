@@ -22,6 +22,7 @@ import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
@@ -41,7 +42,8 @@ public class InkBlockUtils {
         return inked;
     }
 
-    public static BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkType inkType) {
+    public static BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkType inkType)
+    {
         BlockState state = level.getBlockState(pos);
 
         if (InkedBlock.isTouchingLiquid(level, pos))
@@ -60,6 +62,10 @@ public class InkBlockUtils {
             if (!ColorUtils.colorEquals(level, pos, ColorUtils.getEntityColor(shieldEntity), color))
                 return BlockInkedResult.FAIL;
 
+
+        WorldInkCapability.get(level, pos).ink(pos, color, inkType);
+
+        /*
         BlockState inkState = getInkState(inkType);
 
         InkedBlockTileEntity inkte = (InkedBlockTileEntity) SplatcraftBlocks.inkedBlock.get().newBlockEntity(pos, inkState);
@@ -78,6 +84,7 @@ public class InkBlockUtils {
                 otherTe.setSavedState(otherTe.getSavedState().getBlock().updateShape(otherTe.getSavedState(), facing.getOpposite(), inkState, level, pos.relative(facing), pos));
             }
         }
+        */
 
         return BlockInkedResult.SUCCESS;
     }

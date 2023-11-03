@@ -39,6 +39,12 @@ repositories {
         url 'https://maven.kosmx.dev/'
     }
     maven { url = 'https://maven.minecraftforge.net' }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
     mavenCentral()
 }
 
@@ -121,7 +127,9 @@ dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
 
     //implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${project.geckolib_version}")
-    implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${project.player_anim_version}")
+    //implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${project.player_anim_version}")
+    compileOnly fg.deobf("curse.maven:rubidium-574856:4494903")
+    //implementation fg.deobf("curse.maven:rubidium-574856:4494903")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
