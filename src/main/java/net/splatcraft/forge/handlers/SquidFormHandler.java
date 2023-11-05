@@ -68,6 +68,8 @@ public class SquidFormHandler {
         if (SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.WATER_DAMAGE) && player.isInWater() && player.tickCount % 10 == 0)
             player.hurt(InkDamageUtils.WATER, 8f);
 
+        if(!PlayerInfoCapability.hasCapability(player))
+            return;
 
         PlayerInfo info = PlayerInfoCapability.get(player);
         if (event.phase == TickEvent.Phase.START) {
