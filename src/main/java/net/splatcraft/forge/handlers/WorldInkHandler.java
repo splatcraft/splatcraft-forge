@@ -192,19 +192,14 @@ public class WorldInkHandler
 			if(ink.type() != InkBlockUtils.InkType.CLEAR)
 				sprite = INKED_BLOCK_SPRITE;
 
-			splatcraft$putBulkData(sprite, consumer, pose, quad, f0, rgb[0], rgb[1], rgb[2], f1, f2, f3);
+			splatcraft$putBulkData(sprite, consumer, pose, quad, f0, rgb[0], rgb[1], rgb[2], f1, f2, f3, ink.type() == InkBlockUtils.InkType.GLOWING);
 			if(ink.type() == InkBlockUtils.InkType.GLOWING)
-			{
-				splatcraft$putBulkData(GLITTER_SPRITE, consumer, pose, quad, f0, 1, 1, 1, f1, f2, f3);
-			}
-
-			if(Minecraft.getInstance().options.renderDebug && worldInk.hasPermanentInk(pos) && ink.color() == worldInk.getPermanentInk(pos).color())
-				splatcraft$putBulkData(PERMANENT_INK_SPRITE, consumer, pose, quad, f0, 1, 1, 1, f1, f2, f3);
+				splatcraft$putBulkData(GLITTER_SPRITE, consumer, pose, quad, f0, 1, 1, 1, f1, f2, f3, true);
 
 			return true;
 		}
 
-		static void splatcraft$putBulkData(TextureAtlasSprite sprite, VertexConsumer consumer, PoseStack.Pose pose, BakedQuad bakedQuad, float[] p_85998_, float r, float g, float b, int[] p_86002_, int p_86003_, boolean p_86004_)
+		static void splatcraft$putBulkData(TextureAtlasSprite sprite, VertexConsumer consumer, PoseStack.Pose pose, BakedQuad bakedQuad, float[] p_85998_, float r, float g, float b, int[] p_86002_, int packedOverlay, boolean p_86004_, boolean emissive)
 		{
 			float[] afloat = new float[]{p_85998_[0], p_85998_[1], p_85998_[2], p_85998_[3]};
 			int[] aint = new int[]{p_86002_[0], p_86002_[1], p_86002_[2], p_86002_[3]};
@@ -230,10 +225,15 @@ public class WorldInkHandler
 					float f3;
 					float f4;
 					float f5;
+
+					if(emissive)
+						afloat[k] = Math.min(1, afloat[k] + 0.5f);
+
 					if (p_86004_) {
 						float f6 = (float)(bytebuffer.get(12) & 255) / 255.0F;
 						float f7 = (float)(bytebuffer.get(13) & 255) / 255.0F;
 						float f8 = (float)(bytebuffer.get(14) & 255) / 255.0F;
+
 						f3 = f6 * afloat[k] * r;
 						f4 = f7 * afloat[k] * g;
 						f5 = f8 * afloat[k] * b;
@@ -243,7 +243,7 @@ public class WorldInkHandler
 						f5 = afloat[k] * b;
 					}
 
-					int l = consumer.applyBakedLighting(p_86002_[k], bytebuffer);
+					int l = consumer.applyBakedLighting(emissive ? LightTexture.pack(15, 15) : p_86002_[k], bytebuffer);
 					float f9 = bytebuffer.getFloat(16);
 					float f10 = bytebuffer.getFloat(20);
 					Vector4f vector4f = new Vector4f(f, f1, f2, 1.0F);
@@ -283,7 +283,7 @@ public class WorldInkHandler
 
 					vector4f.transform(matrix4f);
 					consumer.applyBakedNormals(vector3f, bytebuffer, pose.normal());
-					consumer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), f3, f4, f5, 1.0F, texU, texV, p_86003_, l, vector3f.x(), vector3f.y(), vector3f.z());
+					consumer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), f3, f4, f5, 1.0F, texU, texV, packedOverlay, l, vector3f.x(), vector3f.y(), vector3f.z());
 				}
 			} catch (Throwable throwable1) {
 				if (memorystack != null) {
