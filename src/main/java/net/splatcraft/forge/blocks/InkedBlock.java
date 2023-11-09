@@ -47,7 +47,6 @@ import org.jetbrains.annotations.Nullable;
 public class InkedBlock extends Block implements EntityBlock, IColoredBlock
 {
     public static final int GLOWING_LIGHT_LEVEL = 6;
-    public static final SoundType SOUND_TYPE = SoundType.SLIME_BLOCK;
     public InkedBlock()
     {
         this(defaultProperties());
@@ -62,7 +61,7 @@ public class InkedBlock extends Block implements EntityBlock, IColoredBlock
 
     private static Properties defaultProperties()
     {
-        return Properties.of(Material.CLAY, MaterialColor.TERRACOTTA_BLACK).randomTicks().requiresCorrectToolForDrops().sound(SOUND_TYPE).noOcclusion().dynamicShape();
+        return Properties.of(Material.CLAY, MaterialColor.TERRACOTTA_BLACK).randomTicks().requiresCorrectToolForDrops().sound(SplatcraftSounds.SOUND_TYPE_INK).noOcclusion().dynamicShape();
     }
 
     public static boolean isTouchingLiquid(BlockGetter reader, BlockPos pos)

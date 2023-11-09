@@ -1,4 +1,58 @@
 {
+  "block.inked_block.break": {
+    "subtitle": "subtitles.block.generic.break",
+    "sounds": [
+      "minecraft:mob/slime/big1",
+      "minecraft:mob/slime/big2",
+      "minecraft:mob/slime/big3",
+      "minecraft:mob/slime/big4"
+    ]
+  },
+  "block.inked_block.fall": {
+    "subtitle": "subtitles.block.generic.fall",
+    "sounds": [
+      "minecraft:mob/slime/small1",
+      "minecraft:mob/slime/small2",
+      "minecraft:mob/slime/small3",
+      "minecraft:mob/slime/small4"
+    ]
+  },
+  "block.inked_block.hit": {
+    "subtitle": "subtitles.block.generic.hit",
+    "sounds": [
+      "minecraft:mob/slime/small1",
+      "minecraft:mob/slime/small2",
+      "minecraft:mob/slime/small3",
+      "minecraft:mob/slime/small4"
+    ]
+  },
+  "block.inked_block.place": {
+    "subtitle": "subtitles.block.generic.place",
+    "sounds": [
+      "minecraft:mob/slime/big1",
+      "minecraft:mob/slime/big2",
+      "minecraft:mob/slime/big3",
+      "minecraft:mob/slime/big4"
+    ]
+  },
+  "block.inked_block.step": {
+    "subtitle": "subtitles.block.generic.footsteps",
+    "sounds": [
+      "minecraft:mob/slime/small1",
+      "minecraft:mob/slime/small2",
+      "minecraft:mob/slime/small3",
+      "minecraft:mob/slime/small4"
+    ]
+  },
+  "block.inked_block.swim": {
+    "subtitle": "subtitle.ink_swim",
+    "sounds": [
+      "minecraft:block/honeyblock/slide1",
+      "minecraft:block/honeyblock/slide2",
+      "minecraft:block/honeyblock/slide3",
+      "minecraft:block/honeyblock/slide4"
+    ]
+  },
   "shooter_firing": {
     "subtitle": "subtitle.shooter_firing",
     "sounds": [

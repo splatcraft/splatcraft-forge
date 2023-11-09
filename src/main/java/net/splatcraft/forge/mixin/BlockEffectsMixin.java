@@ -9,9 +9,13 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.blocks.InkedBlock;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.handlers.SquidFormHandler;
+import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -36,7 +40,7 @@ public class BlockEffectsMixin
 		{
 			if(levelReader instanceof Level level && InkBlockUtils.isInked(level, pos))
 			{
-				return InkedBlock.SOUND_TYPE;
+				return SplatcraftSounds.SOUND_TYPE_INK;
 			}
 			return instance.getSoundType(levelReader, pos, entity);
 		}
@@ -45,6 +49,8 @@ public class BlockEffectsMixin
 	@Mixin(Entity.class)
 	public static class EntityMixin
 	{
+		@Shadow public Level level;
+
 		@Redirect(method = "spawnSprintParticle", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;addRunningEffects(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;)Z"))
 		public boolean addRunningEffects(BlockState instance, Level level, BlockPos pos, Entity entity)
 		{
@@ -63,7 +69,8 @@ public class BlockEffectsMixin
 		{
 			if(levelReader instanceof Level level && InkBlockUtils.isInked(level, pos))
 			{
-				return InkedBlock.SOUND_TYPE;
+				return entity instanceof LivingEntity player && PlayerInfoCapability.isSquid(player) && InkBlockUtils.canSquidSwim(player) ?
+						SplatcraftSounds.SOUND_TYPE_SWIMMING : SplatcraftSounds.SOUND_TYPE_INK;
 			}
 			return instance.getSoundType(levelReader, pos, entity);
 		}
