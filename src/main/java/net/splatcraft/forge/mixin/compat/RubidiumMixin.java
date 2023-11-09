@@ -17,9 +17,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.splatcraft.forge.handlers.WorldInkHandler;
 import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.MixinDataHolder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -76,7 +76,7 @@ public class RubidiumMixin
 			target = "Lme/jellysquid/mods/sodium/client/render/chunk/format/ModelVertexSink;writeVertex(Lnet/minecraft/core/Vec3i;FFFIFFII)V"))
 	public float modifyVertexU(float posX)
 	{
-		TextureAtlasSprite sprite = MixinDataHolder.BlockRenderer.INKED_BLOCK_SPRITE;
+		TextureAtlasSprite sprite = WorldInkHandler.Render.INKED_BLOCK_SPRITE;
 		return sprite.getU0() + (splatcraft$axis.equals(Direction.Axis.X) ? splatcraft$z : splatcraft$x)*(sprite.getU1()-sprite.getU0());
 	}
 
@@ -84,7 +84,7 @@ public class RubidiumMixin
 			target = "Lme/jellysquid/mods/sodium/client/render/chunk/format/ModelVertexSink;writeVertex(Lnet/minecraft/core/Vec3i;FFFIFFII)V"))
 	public float modifyVertexV(float posY)
 	{
-		TextureAtlasSprite sprite = MixinDataHolder.BlockRenderer.INKED_BLOCK_SPRITE;
+		TextureAtlasSprite sprite = WorldInkHandler.Render.INKED_BLOCK_SPRITE;
 		return sprite.getV0() + (splatcraft$axis.equals(Direction.Axis.Y) ? splatcraft$z : splatcraft$y)*(sprite.getV1()-sprite.getV0());
 	}
 
@@ -102,7 +102,7 @@ public class RubidiumMixin
 		float y = args.get(1);
 		float z = args.get(2);
 
-		TextureAtlasSprite sprite = MixinDataHolder.BlockRenderer.SPRITE;
+		TextureAtlasSprite sprite = WorldInkHandler.Render.SPRITE;
 
 		float texU = sprite.getU0() + (splatcraft$axis.equals(Direction.Axis.X) ? z : x)*(sprite.getU1()-sprite.getU0());
 		float texV = sprite.getV0() + (splatcraft$axis.equals(Direction.Axis.Y) ? z : y)*(sprite.getV1()-sprite.getV0());

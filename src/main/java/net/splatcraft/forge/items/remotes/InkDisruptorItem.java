@@ -6,8 +6,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.blocks.IColoredBlock;
+import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
+import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
+import net.splatcraft.forge.util.InkBlockUtils;
 
 import java.util.Collection;
 
@@ -53,14 +57,13 @@ public class InkDisruptorItem extends RemoteItem
                 for (int z = blockpos2.getZ(); z <= blockpos3.getZ(); z++)
                 {
                     BlockPos pos = new BlockPos(x, y, z);
-                    Block block = level.getBlockState(pos).getBlock();
-                    if (block instanceof IColoredBlock)
-                    {
-                        if (((IColoredBlock) block).remoteInkClear(level, pos))
-                        {
-                            count++;
-                        }
-                    }
+                    BlockState state = level.getBlockState(pos);
+
+                    if(InkBlockUtils.isInked(level, pos) && InkBlockUtils.clearInk(level, pos, false))
+                        count++;
+                    else if (state instanceof IColoredBlock block && block.remoteInkClear(level, pos))
+                        count++;
+
                     blockTotal++;
                 }
             }

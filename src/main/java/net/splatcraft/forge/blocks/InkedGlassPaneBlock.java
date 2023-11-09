@@ -124,6 +124,8 @@ public class InkedGlassPaneBlock extends IronBarsBlock implements IColoredBlock,
         return false;
     }
 
+    /*
+
     @Override
     public BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
@@ -153,6 +155,8 @@ public class InkedGlassPaneBlock extends IronBarsBlock implements IColoredBlock,
 
         return BlockInkedResult.SUCCESS;
     }
+
+     */
 
     @Override
     public boolean remoteInkClear(Level level, BlockPos pos)

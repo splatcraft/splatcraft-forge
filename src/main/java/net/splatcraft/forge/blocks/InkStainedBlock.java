@@ -115,6 +115,7 @@ public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
         return false;
     }
 
+    /*
     @Override
     public BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
@@ -145,6 +146,7 @@ public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
 
         return BlockInkedResult.SUCCESS;
     }
+    */
 
     @Override
     public boolean remoteInkClear(Level level, BlockPos pos)

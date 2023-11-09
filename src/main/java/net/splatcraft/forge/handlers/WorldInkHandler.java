@@ -1,4 +1,4 @@
-package net.splatcraft.forge.util;
+package net.splatcraft.forge.handlers;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -7,8 +7,6 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -17,30 +15,89 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.world.ChunkWatchEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.mixin.BlockRenderMixin;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.s2c.WatchInkPacket;
+import net.splatcraft.forge.util.ColorUtils;
+import net.splatcraft.forge.util.InkBlockUtils;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
+import java.util.HashMap;
 
-
-//Here to prevent IllegalClassLoadError
-public class MixinDataHolder
+@Mod.EventBusSubscriber
+public class WorldInkHandler
 {
+	@SubscribeEvent
+	public static void onWatchChunk(ChunkWatchEvent.Watch event)
+	{
+		if(!event.getWorld().isClientSide)
+		{
+			WorldInk worldInk = WorldInkCapability.get(event.getWorld().getChunk(event.getPos().x, event.getPos().z));
+			SplatcraftPacketHandler.sendToPlayer(new WatchInkPacket(event.getPos(), worldInk.getInkInChunk()), event.getPlayer());
+		}
+	}
+
+	private static final HashMap<ChunkPos, HashMap<BlockPos, WorldInk.Entry>> INK_CACHE = new HashMap<>();
+
+	//Chunk caps seem to get reset after ChunkWatchEvent, so they need to be cached and updated on ChunkLoadEvent
+	@SubscribeEvent
+	public static void onChunkLoad(ChunkEvent.Load event)
+	{
+		if(event.getWorld() instanceof Level level && level.isClientSide)
+		{
+			ChunkPos chunkPos = event.getChunk().getPos();
+			WorldInk worldInk = WorldInkCapability.get(level.getChunk(chunkPos.x, chunkPos.z));
+
+			if(INK_CACHE.containsKey(chunkPos))
+			{
+				INK_CACHE.get(chunkPos).forEach((pos, entry) ->
+				{
+					if (entry == null || entry.type() == null) {
+						worldInk.clearInk(pos);
+					} else {
+						worldInk.ink(pos, entry.color(), entry.type());
+					}
+
+
+					pos = new BlockPos(pos.getX() + chunkPos.x * 16, pos.getY(), pos.getZ() + chunkPos.z * 16);
+					BlockState state = level.getBlockState(pos);
+					level.sendBlockUpdated(pos, state, state, 0);
+				});
+				INK_CACHE.remove(chunkPos);
+			}
+		}
+	}
+
+	public static void updateInk(ChunkPos pos, HashMap<BlockPos, WorldInk.Entry> map)
+	{
+		INK_CACHE.put(pos, map);
+	}
+	
 	@OnlyIn(Dist.CLIENT)
-	public static class BlockRenderer
+	public static class Render
 	{
 		public static final TextureAtlasSprite INKED_BLOCK_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(Splatcraft.MODID, "blocks/inked_block"));
 		public static final TextureAtlasSprite GLITTER_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(Splatcraft.MODID, "blocks/glitter"));
 		public static final TextureAtlasSprite PERMANENT_INK_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(Splatcraft.MODID, "blocks/permanent_ink_overlay"));
 
 
-		public static boolean splatcraft$renderInkedBlock(RenderChunkRegion region, BlockPos pos, VertexConsumer consumer, PoseStack.Pose pose, BakedQuad quad, float[] f0, int[] f1, int f2, boolean f3)
+		public static boolean splatcraft$renderInkedBlock(RenderChunkRegion region, BlockPos pos, VertexConsumer
+		consumer, PoseStack.Pose pose, BakedQuad quad, float[] f0, int[] f1, int f2, boolean f3)
 		{
 			WorldInk worldInk = WorldInkCapability.get(((BlockRenderMixin.ChunkRegionAccessor)region).getLevel(), pos);
 
@@ -53,16 +110,16 @@ public class MixinDataHolder
 			TextureAtlasSprite sprite = null;
 
 			if(ink.type() != InkBlockUtils.InkType.CLEAR)
-				sprite = MixinDataHolder.BlockRenderer.INKED_BLOCK_SPRITE;
+				sprite = INKED_BLOCK_SPRITE;
 
 			splatcraft$putBulkData(sprite, consumer, pose, quad, f0, rgb[0], rgb[1], rgb[2], f1, f2, f3);
 			if(ink.type() == InkBlockUtils.InkType.GLOWING)
 			{
-				splatcraft$putBulkData(MixinDataHolder.BlockRenderer.GLITTER_SPRITE, consumer, pose, quad, f0, 1, 1, 1, f1, f2, f3);
+				splatcraft$putBulkData(GLITTER_SPRITE, consumer, pose, quad, f0, 1, 1, 1, f1, f2, f3);
 			}
 
 			if(Minecraft.getInstance().options.renderDebug && worldInk.hasPermanentInk(pos) && ink.color() == worldInk.getPermanentInk(pos).color())
-				splatcraft$putBulkData(MixinDataHolder.BlockRenderer.PERMANENT_INK_SPRITE, consumer, pose, quad, f0, 1, 1, 1, f1, f2, f3);
+				splatcraft$putBulkData(PERMANENT_INK_SPRITE, consumer, pose, quad, f0, 1, 1, 1, f1, f2, f3);
 
 			return true;
 		}
@@ -115,6 +172,34 @@ public class MixinDataHolder
 
 					float texU = sprite == null ? f9 : sprite.getU0() + (axis.equals(Direction.Axis.X) ? vector4f.z() : vector4f.x())*(sprite.getU1()-sprite.getU0());
 					float texV = sprite == null ? f10 : sprite.getV0() + (axis.equals(Direction.Axis.Y) ? vector4f.z() : vector4f.y())*(sprite.getV1()-sprite.getV0());
+
+					/* TODO fix ink rendering bleeding over into other textures (ink a spawn pad, lectern, campfire, or grate ramp for example).
+					    either get this to work or find a way to make a custom texture atlas for ink
+						if(sprite != null)
+					{
+						float width = sprite.getU1() - sprite.getU0();
+						float height = sprite.getV1() - sprite.getV0();
+						float uLength = ((axis.equals(Direction.Axis.X) ? vector4f.z() : vector4f.x())*(width));
+						float vLength = ((axis.equals(Direction.Axis.Y) ? vector4f.z() : vector4f.y())*(height));
+
+						if(uLength > width)
+						{
+							if((uLength / width) % 2 == 1)
+								uLength = width - uLength % width;
+							else uLength = uLength % width;
+						}
+
+						if(vLength > height)
+						{
+							if((vLength / height) % 2 == 1)
+								vLength = height - vLength % height;
+							else vLength = vLength % height;
+						}
+
+						texU = sprite.getU0() + uLength;
+						texV = sprite.getV0() + vLength;
+					}
+					 */
 
 					vector4f.transform(matrix4f);
 					consumer.applyBakedNormals(vector3f, bytebuffer, pose.normal());

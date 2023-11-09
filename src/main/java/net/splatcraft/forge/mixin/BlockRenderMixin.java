@@ -23,8 +23,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
+import net.splatcraft.forge.handlers.WorldInkHandler;
 import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.MixinDataHolder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -53,20 +53,12 @@ public class BlockRenderMixin
 		@Unique
 		BlockAndTintGetter splatcraft$level;
 
-		@Inject(method = "putQuadData", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
+		@Inject(method = "putQuadData", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
 				target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
-		public void getBlockPosFromQuad(BlockAndTintGetter level, BlockState p_111025_, BlockPos pos, VertexConsumer p_111027_, PoseStack.Pose p_111028_, BakedQuad p_111029_, float p_111030_, float p_111031_, float p_111032_, float p_111033_, int p_111034_, int p_111035_, int p_111036_, int p_111037_, int p_111038_, CallbackInfo ci)
+		public void getBlockPosFromQuad(BlockAndTintGetter level, BlockState blockState, BlockPos blockPos, VertexConsumer consumer, PoseStack.Pose pose, BakedQuad quad, float p_111030_, float p_111031_, float p_111032_, float p_111033_, int p_111034_, int p_111035_, int p_111036_, int p_111037_, int p_111038_, CallbackInfo ci)
 		{
-			this.splatcraft$pos = pos;
-			this.splatcraft$level = level;
-		}
-
-
-		@Redirect(method = "putQuadData", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
-		public void redirectBulkData(VertexConsumer consumer, PoseStack.Pose pose, BakedQuad quad, float[] f0, float r, float g, float b, int[] f1, int f2, boolean f3)
-		{
-			if(splatcraft$level instanceof RenderChunkRegion region && !MixinDataHolder.BlockRenderer.splatcraft$renderInkedBlock(region, splatcraft$pos, consumer, pose, quad, f0, f1, f2, f3))
-				consumer.putBulkData(pose, quad, f0, r, g, b, f1, f2, f3);
+			if(level instanceof RenderChunkRegion region && WorldInkHandler.Render.splatcraft$renderInkedBlock(region, blockPos, consumer, pose, quad, new float[]{p_111030_, p_111031_, p_111032_, p_111033_}, new int[]{p_111034_, p_111035_, p_111036_, p_111037_}, p_111038_, true))
+				ci.cancel();
 		}
 	}
 

@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -24,7 +25,12 @@ public class WorldInkCapability implements ICapabilityProvider, INBTSerializable
 
     public static WorldInk get(Level level, BlockPos pos) throws NullPointerException
     {
-        return level.getChunkAt(pos).getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find WorldInk capability!"));
+        return get(level.getChunkAt(pos));
+    }
+
+    public static WorldInk get(LevelChunk chunk) throws NullPointerException
+    {
+        return chunk.getCapability(CAPABILITY).orElseThrow(() -> new NullPointerException("Couldn't find WorldInk capability!"));
     }
 
     @NotNull

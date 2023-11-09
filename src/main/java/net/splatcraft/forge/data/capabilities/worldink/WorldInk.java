@@ -9,14 +9,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.splatcraft.forge.registries.SplatcraftInkColors;
 import net.splatcraft.forge.util.InkBlockUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 /*  TODO
 	S2C syncing
 	migrate old ink system to new one
+	ink decay
 	make old inked blocks decay instantly
-	fix rendering bugs
+	piston push interactions
+	fix rendering bugs (See WorldInkHandler.Render comment)
 	finish Rubidium support
 	add Embeddium support
 	add Oculus support
@@ -29,44 +33,58 @@ public class WorldInk
 
 	public boolean isInked(BlockPos pos)
 	{
-		return INK_MAP.containsKey(pos);
+		return INK_MAP.containsKey(localizeBlockPos(pos));
 	}
 
 	public void ink(BlockPos pos, int color, InkBlockUtils.InkType type)
 	{
-		INK_MAP.put(pos, new Entry(color, type));
+		INK_MAP.put(localizeBlockPos(pos), new Entry(color, type));
 	}
 
-	public void clearInk(BlockPos pos)
+	public boolean clearInk(BlockPos pos)
 	{
+		if(!isInked(pos) || getInk(pos).equals(getPermanentInk(pos)))
+			return false;
+		
 		if(hasPermanentInk(pos))
-			INK_MAP.put(pos, getPermanentInk(pos));
-		else INK_MAP.remove(pos);
+			INK_MAP.put(localizeBlockPos(pos), getPermanentInk(pos));
+		else INK_MAP.remove(localizeBlockPos(pos));
+		return true;
+	}
+
+	public HashMap<BlockPos, Entry> getInkInChunk()
+	{
+		return INK_MAP;
 	}
 
 	public Entry getInk(BlockPos pos)
 	{
-		return INK_MAP.get(pos);
+		return INK_MAP.get(localizeBlockPos(pos));
 	}
 
 	public boolean hasPermanentInk(BlockPos pos)
 	{
-		return PERMANENT_INK_MAP.containsKey(pos);
+		return PERMANENT_INK_MAP.containsKey(localizeBlockPos(pos));
 	}
 
 	public Entry getPermanentInk(BlockPos pos)
 	{
-		return PERMANENT_INK_MAP.get(pos);
+		return PERMANENT_INK_MAP.get(localizeBlockPos(pos));
 	}
 
-	public void removePermanentInk(BlockPos pos)
+	public boolean removePermanentInk(BlockPos pos)
 	{
-		PERMANENT_INK_MAP.remove(pos);
+		if(hasPermanentInk(pos))
+		{
+			PERMANENT_INK_MAP.remove(localizeBlockPos(pos));
+			return true;
+		}
+		return false;
 	}
 
 	public void setPermanentInk(BlockPos pos, int color, InkBlockUtils.InkType type)
 	{
-		PERMANENT_INK_MAP.put(pos, new Entry(color, type));
+		PERMANENT_INK_MAP.put(localizeBlockPos(pos), new Entry(color, type));
 	}
 
 	public CompoundTag writeNBT(CompoundTag nbt)
@@ -102,6 +120,11 @@ public class WorldInk
 		return nbt;
 	}
 
+	protected BlockPos localizeBlockPos(BlockPos pos)
+	{
+		return new BlockPos(pos.getX() % 16, pos.getY(), pos.getZ() % 16);
+	}
+	
 	public void readNBT(CompoundTag nbt)
 	{
 		PERMANENT_INK_MAP.clear();
@@ -119,5 +142,19 @@ public class WorldInk
 		});
 	}
 
-	public record Entry(int color, InkBlockUtils.InkType type) {}
+	public record Entry(int color, InkBlockUtils.InkType type)
+	{
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			Entry entry = (Entry) o;
+			return color == entry.color && Objects.equals(type, entry.type);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(color, type);
+		}
+	}
 }

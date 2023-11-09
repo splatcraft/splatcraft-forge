@@ -12,6 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.splatcraft.forge.blocks.IColoredBlock;
+import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
+import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -25,21 +27,23 @@ public class InkWaxerItem extends Item
 
     public void onBlockStartBreak(ItemStack itemstack, BlockPos pos, Level level)
     {
-        if(level.getBlockEntity(pos) instanceof InkedBlockTileEntity)
-        {
-            InkedBlockTileEntity te = (InkedBlockTileEntity) level.getBlockEntity(pos);
-            te.setPermanentColor(-1);
+        WorldInk worldInk = WorldInkCapability.get(level, pos);
 
-            level.globalLevelEvent(2001, pos, Block.getId(level.getBlockState(pos)));
-
-            if(level.getBlockState(pos).getBlock() instanceof IColoredBlock)
-                ((IColoredBlock) level.getBlockState(pos).getBlock()).remoteInkClear(level, pos);
-        }
+        InkBlockUtils.clearInk(level, pos, true);
     }
 
     @Override
     public InteractionResult useOn(UseOnContext context)
     {
+        WorldInk worldInk = WorldInkCapability.get(context.getLevel(), context.getClickedPos());
+
+        if(worldInk.isInked(context.getClickedPos()))
+        {
+            WorldInk.Entry ink = worldInk.getInk(context.getClickedPos());
+            worldInk.setPermanentInk(context.getClickedPos(), ink.color(), ink.type());
+        }
+
+        /*
         if(context.getLevel().getBlockEntity(context.getClickedPos()) instanceof InkedBlockTileEntity)
         {
             InkedBlockTileEntity te = (InkedBlockTileEntity) context.getLevel().getBlockEntity(context.getClickedPos());
@@ -55,6 +59,8 @@ public class InkWaxerItem extends Item
                 return InteractionResult.SUCCESS;
             }
         }
+        */
+
         return super.useOn(context);
     }
 
