@@ -57,7 +57,8 @@ public class BlockEffectsMixin
 
 			if(InkBlockUtils.isInked(level, pos))
 			{
-				ColorUtils.addInkSplashParticle(level, InkBlockUtils.getInk(level, pos).color(), entity.getX(), entity.getY(level.getRandom().nextFloat() * 0.3f), entity.getZ(), 0.6f);
+				ColorUtils.addInkSplashParticle(level, InkBlockUtils.getInk(level, pos).color(), entity.getX() + level.getRandom().nextFloat() * entity.getBbWidth() - entity.getBbWidth() * 0.5,
+						entity.getY(level.getRandom().nextFloat() * 0.3f), entity.getZ() + level.getRandom().nextFloat() * entity.getBbWidth() - entity.getBbWidth() * 0.5, level.random.nextFloat(0.3f, 0.7f));
 				return true;
 			}
 
