@@ -5,8 +5,8 @@
   "refmap": "splatcraft.refmap.json",
   "mixins": [
     "EntityMixin",
-    "FenceConnectionMixin",
-    "PaneConnectionMixin",
+    "BlockEffectsMixin$EntityMixin",
+    "BlockEffectsMixin$LivingEntityMixin",
     "PlayerListMixin",
     "PlayerMixin",
     "SheepMixin",
