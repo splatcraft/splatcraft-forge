@@ -3,6 +3,8 @@ package net.splatcraft.forge.util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
@@ -359,7 +361,9 @@ public class ColorUtils
     public static void addInkSplashParticle(Level level, int color, double x, double y, double z, float size)
     {
         float[] rgb = hexToRGB(color);
-        level.addParticle(new InkSplashParticleData(rgb[0], rgb[1], rgb[2], size), x, y, z, 0.0D, 0.0D, 0.0D);
+        if(level instanceof ServerLevel serverLevel)
+            serverLevel.sendParticles(new InkSplashParticleData(rgb[0], rgb[1], rgb[2], size), x, y, z, 1, 0.0D, 0.0D, 0.0D, 0.0F);
+        else level.addParticle(new InkSplashParticleData(rgb[0], rgb[1], rgb[2], size), x, y, z, 0.0D, 0.0D, 0.0D);
     }
 
     public static void addInkSplashParticle(Level level, int color, double x, Vec3 y, double z, float size)
