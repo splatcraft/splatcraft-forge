@@ -19,6 +19,8 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
@@ -33,6 +35,7 @@ import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
+import net.splatcraft.forge.tileentities.InkVatTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import net.splatcraft.forge.util.BlockInkedResult;
 import net.splatcraft.forge.util.ColorUtils;
@@ -104,6 +107,12 @@ public class InkedBlock extends Block implements EntityBlock, IColoredBlock
 
     @Nullable
     @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return type == SplatcraftTileEntities.inkedTileEntity.get() ? InkedBlockTileEntity::tick : null;
+    }
+
+    @Nullable
+    @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 
         return SplatcraftTileEntities.inkedTileEntity.get().create(pos, state);
@@ -118,6 +127,7 @@ public class InkedBlock extends Block implements EntityBlock, IColoredBlock
 
     private static BlockState clearInk(LevelAccessor level, BlockPos pos)
     {
+        /*
         InkedBlockTileEntity te = (InkedBlockTileEntity) level.getBlockEntity(pos);
         int color = te.getPermanentColor();
         if(te.hasPermanentColor())
@@ -152,9 +162,11 @@ public class InkedBlock extends Block implements EntityBlock, IColoredBlock
 
             return te.getSavedState();
         }
+        */
 
         return level.getBlockState(pos);
     }
+
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player)
@@ -179,8 +191,6 @@ public class InkedBlock extends Block implements EntityBlock, IColoredBlock
         return super.canHarvestBlock(state, level, pos, player);
     }
 
-
-
     @Override
     public void playerDestroy(Level level, Player playerEntity, BlockPos pos, BlockState state, @Nullable BlockEntity tileEntity, ItemStack stack)
     {
@@ -192,11 +202,13 @@ public class InkedBlock extends Block implements EntityBlock, IColoredBlock
         super.playerDestroy(level, playerEntity, pos, state, tileEntity, stack);
     }
 
+    /*
     @Override
     public RenderShape getRenderShape(BlockState state)
     {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
+    */
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter levelIn, BlockPos pos, CollisionContext context)

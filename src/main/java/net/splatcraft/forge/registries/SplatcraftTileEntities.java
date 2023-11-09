@@ -77,7 +77,7 @@ public class SplatcraftTileEntities
     public static void bindTESR()
     {
 
-        BlockEntityRenderers.register(inkedTileEntity.get(), InkedBlockTileEntityRenderer::new);
+        //BlockEntityRenderers.register(inkedTileEntity.get(), InkedBlockTileEntityRenderer::new);
         BlockEntityRenderers.register(stageBarrierTileEntity.get(), StageBarrierTileEntityRenderer::new);
         BlockEntityRenderers.register(colorBarrierTileEntity.get(), StageBarrierTileEntityRenderer::new);
         BlockEntityRenderers.register(remotePedestalTileEntity.get(), RemotePedestalTileEntityRenderer::new);

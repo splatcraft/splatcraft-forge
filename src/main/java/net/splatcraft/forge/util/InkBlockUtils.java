@@ -222,14 +222,6 @@ public class InkBlockUtils {
         return false;
     }
 
-    public static InkType getInkType(BlockState state) {
-        for (InkType type : InkType.values.values()) {
-            if (type.block.equals(state.getBlock()))
-                return type;
-        }
-        return InkType.NORMAL;
-    }
-
     public static class InkType implements Comparable<InkType> {
         public static final HashMap<ResourceLocation, InkType> values = new HashMap<>();
 

@@ -41,6 +41,8 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.lwjgl.system.MemoryStack;
 
+//TODO delet this
+@Deprecated
 public class InkedBlockTileEntityRenderer implements BlockEntityRenderer<InkedBlockTileEntity> {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Splatcraft.MODID, "blocks/inked_block");
@@ -74,7 +76,7 @@ public class InkedBlockTileEntityRenderer implements BlockEntityRenderer<InkedBl
 
     private static void renderBlock(InkedBlockTileEntity te, BlockRenderDispatcher blockRendererDispatcher, PoseStack matrixStackIn, MultiBufferSource bufferTypeIn, int combinedLightIn, int combinedOverlayIn)
     {
-        type = InkBlockUtils.getInkType(te.getBlockState());
+        type = InkedBlockTileEntity.getInkType(te.getBlockState());
         BlockState blockStateIn = te.getBlockState();
         RenderShape blockrendertype = te.getSavedState().getRenderShape();
         if (blockrendertype.equals(RenderShape.MODEL))
