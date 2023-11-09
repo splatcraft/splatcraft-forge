@@ -2,6 +2,7 @@ package net.splatcraft.forge.util;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -13,17 +14,22 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
+import net.splatcraft.forge.client.particles.InkTerrainParticleData;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.IColoredEntity;
 import net.splatcraft.forge.handlers.DataHandler;
@@ -371,5 +377,48 @@ public class ColorUtils
         float[] rgb = hexToRGB(color);
         level.addParticle(new InkSplashParticleData(rgb[0], rgb[1], rgb[2], size), x, y.y, z, 0.0D, 0.0D, 0.0D);
     }
+    public static void addInkTerrainParticle(Level level, int color, double x, double y, double z, double dx, double dy, double dz, float maxSpeed)
+    {
+        if(level instanceof ServerLevel serverLevel)
+            serverLevel.sendParticles(new InkTerrainParticleData(color), x, y, z, 1, dx, dy, dz, maxSpeed);
+        level.addParticle(new InkTerrainParticleData(color), x, y, z, 0.0D, 0.0D, 0.0D);
+    }
 
+    public static void addInkDestroyParticle(Level level, BlockPos pos, int color)
+    {
+        BlockState state = level.getBlockState(pos);
+        VoxelShape voxelshape = state.getShape(level, pos);
+
+        if(voxelshape.isEmpty())
+            voxelshape = Shapes.block();
+
+        double d0 = 0.25D;
+        voxelshape.forAllBoxes((p_172273_, p_172274_, p_172275_, p_172276_, p_172277_, p_172278_) -> {
+            double d1 = Math.min(1.0D, p_172276_ - p_172273_);
+            double d2 = Math.min(1.0D, p_172277_ - p_172274_);
+            double d3 = Math.min(1.0D, p_172278_ - p_172275_);
+            int i = Math.max(2, Mth.ceil(d1 / 0.25D));
+            int j = Math.max(2, Mth.ceil(d2 / 0.25D));
+            int k = Math.max(2, Mth.ceil(d3 / 0.25D));
+
+            for(int l = 0; l < i; ++l) {
+                for(int i1 = 0; i1 < j; ++i1) {
+                    for(int j1 = 0; j1 < k; ++j1) {
+                        double d4 = ((double)l + 0.5D) / (double)i;
+                        double d5 = ((double)i1 + 0.5D) / (double)j;
+                        double d6 = ((double)j1 + 0.5D) / (double)k;
+                        double d7 = d4 * d1 + p_172273_;
+                        double d8 = d5 * d2 + p_172274_;
+                        double d9 = d6 * d3 + p_172275_;
+
+
+                        addInkTerrainParticle(level, color, (double)pos.getX() + d7, (double)pos.getY() + d8, (double)pos.getZ() + d9, d4 - 0.5D, d5 - 0.5D, d6 - 0.5D, 1);
+                        //this.add(new TerrainParticle(this.level, (double)p_107356_.getX() + d7, (double)p_107356_.getY() + d8, (double)p_107356_.getZ() + d9, d4 - 0.5D, d5 - 0.5D, d6 - 0.5D, p_107357_, p_107356_).updateSprite(p_107357_, p_107356_));
+                    }
+                }
+            }
+
+        });
+
+    }
 }

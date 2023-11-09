@@ -21,17 +21,18 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.IModelData;
+import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.handlers.WorldInkHandler;
+import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.util.InkBlockUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -64,14 +65,16 @@ public class BlockRenderMixin
 		private BlockPos splatcraft$blockPos;
 		@Unique
 		private Level splatcraft$level;
+		@Unique
+		private static boolean splatcraft$renderAsCube;
 
 		@Inject(method = "compile", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE",
-				target = "Lnet/minecraft/client/renderer/ItemBlockRenderTypes;canRenderInLayer(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/RenderType;)Z"))
-		public void getBlockData(float p_112866_, float p_112867_, float p_112868_, ChunkRenderDispatcher.CompiledChunk p_112869_, ChunkBufferBuilderPack p_112870_, CallbackInfoReturnable<Set<BlockEntity>> cir, int i, BlockPos blockpos, BlockPos blockpos1, VisGraph visgraph, Set set, RenderChunkRegion renderchunkregion, PoseStack posestack, Random random, BlockRenderDispatcher blockrenderdispatcher, Iterator var15, BlockPos blockpos2, BlockState blockstate, BlockState blockstate1, FluidState fluidstate, IModelData modelData, Iterator var21, RenderType rendertype)
+				target = "Lnet/minecraft/client/renderer/chunk/RenderChunkRegion;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
+		public void getBlockData(float p_112866_, float p_112867_, float p_112868_, ChunkRenderDispatcher.CompiledChunk p_112869_, ChunkBufferBuilderPack p_112870_, CallbackInfoReturnable<Set<BlockEntity>> cir, int i, BlockPos blockpos, BlockPos blockpos1, VisGraph visgraph, Set set, RenderChunkRegion renderchunkregion, PoseStack posestack, Random random, BlockRenderDispatcher blockrenderdispatcher, Iterator var15, BlockPos blockpos2)
 		{
 			splatcraft$level = ((ChunkRegionAccessor)renderchunkregion).getLevel();
-
 			splatcraft$blockPos = blockpos2;
+			splatcraft$renderAsCube = InkBlockUtils.isInked(splatcraft$level, splatcraft$blockPos) && splatcraft$level.getBlockState(splatcraft$blockPos).is(SplatcraftTags.Blocks.RENDER_AS_CUBE);
 		}
 
 		@Redirect(method = "compile", at = @At(value = "INVOKE",
@@ -88,6 +91,12 @@ public class BlockRenderMixin
 					return type == RenderType.solid();
 			}
 			return ItemBlockRenderTypes.canRenderInLayer(state, type);
+		}
+
+		@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/RenderChunkRegion;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
+		public BlockState getBlockState(RenderChunkRegion instance, BlockPos pos)
+		{
+			return splatcraft$renderAsCube ? SplatcraftBlocks.inkedBlock.get().defaultBlockState() : instance.getBlockState(pos);
 		}
 	}
 

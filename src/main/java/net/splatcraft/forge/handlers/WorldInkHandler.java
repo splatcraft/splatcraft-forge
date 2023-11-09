@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.ticks.LevelChunkTicks;
@@ -30,6 +31,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.ChunkWatchEvent;
+import net.minecraftforge.event.world.PistonEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.Splatcraft;
@@ -55,7 +57,7 @@ import java.util.stream.StreamSupport;
 @Mod.EventBusSubscriber
 public class WorldInkHandler
 {
-	@SubscribeEvent
+	@SubscribeEvent //Ink Removal
 	public static void onBlockUpdate(BlockEvent.NeighborNotifyEvent event)
 	{
 		if(event.getWorld() instanceof Level level)
@@ -65,9 +67,18 @@ public class WorldInkHandler
 		}
 	}
 
+	private static void checkForInkRemoval(Level level, BlockPos pos)
+	{
+		if(InkBlockUtils.isInked(level, pos) && InkBlockUtils.isUninkable(level, pos))
+		{
+			ColorUtils.addInkDestroyParticle(level, pos, InkBlockUtils.getInk(level, pos).color());
+			InkBlockUtils.clearInk(level, pos, true);
+		}
+	}
+
 	private static final int MAX_DECAYABLE_PER_CHUNK = 3;
 	private static final int MAX_DECAYABLE_CHUNKS = 10;
-	@SubscribeEvent
+	@SubscribeEvent //Ink Decay
 	public static void onWorldTick(TickEvent.WorldTickEvent event)
 	{
 		if(event.phase == TickEvent.Phase.START && !event.world.players().isEmpty() && event.world instanceof ServerLevel level)
@@ -116,13 +127,26 @@ public class WorldInkHandler
 		}
 	}
 
-	private static void checkForInkRemoval(Level level, BlockPos pos)
+	//@SubscribeEvent
+	public static void onPistonPush(PistonEvent.Pre event)
 	{
-		if(InkBlockUtils.isInked(level, pos) && InkBlockUtils.isUninkable(level, pos))
-			InkBlockUtils.clearInk(level, pos, true);
+		if(!(event.getWorld() instanceof Level level) || event.getStructureHelper() == null)
+			return;
+
+		HashMap<BlockPos, WorldInk.Entry> inkToPush = new HashMap<>();
+		event.getStructureHelper().getToPush().forEach( pos -> inkToPush.put(pos, InkBlockUtils.getInk(level, pos)));
+		event.getStructureHelper().getToPush().forEach( pos ->
+		{
+			pos = pos.relative(event.getDirection());
+			if(inkToPush.get(pos) == null)
+				InkBlockUtils.clearInk(level, pos, true);
+			else InkBlockUtils.inkBlock(level, pos, inkToPush.get(pos).color(), 0, inkToPush.get(pos).type());
+		});
+
+
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent //Send World Ink Data to client
 	public static void onWatchChunk(ChunkWatchEvent.Watch event)
 	{
 		if(!event.getWorld().isClientSide)

@@ -121,7 +121,7 @@ public class InkBlockUtils {
         if (state.is(SplatcraftTags.Blocks.UNINKABLE_BLOCKS))
             return true;
 
-        if(!state.is(Blocks.BARRIER) && state.getRenderShape() != RenderShape.MODEL)
+        if(!state.is(SplatcraftTags.Blocks.RENDER_AS_CUBE) && state.getRenderShape() != RenderShape.MODEL)
             return true;
 
         return canInkPassthrough(level, pos);

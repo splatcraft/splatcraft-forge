@@ -80,6 +80,7 @@ public class SplatcraftTags
         public static final TagKey<Block> INKED_BLOCKS = createTag("inked_blocks");
         public static final TagKey<Block> SCAN_TURF_IGNORED = createTag("scan_turf_ignored");
         public static final TagKey<Block> SCAN_TURF_SCORED = createTag("scan_turf_scored");
+        public static final TagKey<Block> RENDER_AS_CUBE = createTag("render_ink_as_cube");
 
         private static TagKey<Block> createTag(String name)
         {
