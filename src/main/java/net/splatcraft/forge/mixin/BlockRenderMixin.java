@@ -48,11 +48,6 @@ public class BlockRenderMixin
 	@Mixin(ModelBlockRenderer.class)
 	public static class Renderer
 	{
-		@Unique
-		BlockPos splatcraft$pos;
-		@Unique
-		BlockAndTintGetter splatcraft$level;
-
 		@Inject(method = "putQuadData", cancellable = true, at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
 				target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
 		public void getBlockPosFromQuad(BlockAndTintGetter level, BlockState blockState, BlockPos blockPos, VertexConsumer consumer, PoseStack.Pose pose, BakedQuad quad, float p_111030_, float p_111031_, float p_111032_, float p_111033_, int p_111034_, int p_111035_, int p_111036_, int p_111037_, int p_111038_, CallbackInfo ci)

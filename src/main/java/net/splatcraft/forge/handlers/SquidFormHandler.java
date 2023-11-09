@@ -155,8 +155,11 @@ public class SquidFormHandler {
         if(event.getEntityLiving() instanceof ServerPlayer player && PlayerInfoCapability.get(player).isSquid())
         {
             if(InkBlockUtils.canSquidHide(player))
+            {
                 SplatcraftStats.FALL_INTO_INK_TRIGGER.trigger(player, event.getDistance());
-            event.setCanceled(true);
+                event.setCanceled(true);
+            }
+
         }
     }
 

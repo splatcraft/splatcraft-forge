@@ -24,7 +24,7 @@ public class UpdateInkPacket extends PlayS2CPacket
 	{
 		chunkPos = new ChunkPos(Math.floorDiv(pos.getX(), 16), Math.floorDiv(pos.getZ(), 16));
 		this.dirty = new HashMap<>();
-		dirty.put(new BlockPos(pos.getX() % 16, pos.getY(), pos.getZ() % 16), new WorldInk.Entry(color, type));
+		dirty.put(new BlockPos(Math.floorMod(pos.getX(), 16), pos.getY(), Math.floorMod(pos.getZ(), 16)), new WorldInk.Entry(color, type));
 	}
 
 	public UpdateInkPacket(ChunkPos pos, HashMap<BlockPos, WorldInk.Entry> dirty)

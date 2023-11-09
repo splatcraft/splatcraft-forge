@@ -15,9 +15,6 @@ import java.util.Objects;
 
 
 /*  TODO
-	S2C syncing
-	migrate old ink system to new one
-	ink decay
 	make old inked blocks decay instantly
 	piston push interactions
 	fix rendering bugs (See WorldInkHandler.Render comment)
@@ -33,7 +30,7 @@ public class WorldInk
 
 	public boolean isInked(BlockPos pos)
 	{
-		return INK_MAP.containsKey(localizeBlockPos(pos));
+		return getInk(pos) != null;
 	}
 
 	public void ink(BlockPos pos, int color, InkBlockUtils.InkType type)
@@ -57,6 +54,11 @@ public class WorldInk
 		return INK_MAP;
 	}
 
+	public HashMap<BlockPos, Entry> getPermanentInkInChunk()
+	{
+		return PERMANENT_INK_MAP;
+	}
+
 	public Entry getInk(BlockPos pos)
 	{
 		return INK_MAP.get(localizeBlockPos(pos));
@@ -64,7 +66,7 @@ public class WorldInk
 
 	public boolean hasPermanentInk(BlockPos pos)
 	{
-		return PERMANENT_INK_MAP.containsKey(localizeBlockPos(pos));
+		return getPermanentInk(pos) != null;
 	}
 
 	public Entry getPermanentInk(BlockPos pos)
@@ -122,7 +124,8 @@ public class WorldInk
 
 	protected BlockPos localizeBlockPos(BlockPos pos)
 	{
-		return new BlockPos(pos.getX() % 16, pos.getY(), pos.getZ() % 16);
+
+		return new BlockPos(Math.floorMod(pos.getX(), 16), pos.getY(), Math.floorMod(pos.getZ(), 16));
 	}
 	
 	public void readNBT(CompoundTag nbt)

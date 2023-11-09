@@ -7,19 +7,27 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
+import net.minecraft.client.renderer.entity.GlowSquidRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.ticks.LevelChunkTicks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,18 +38,90 @@ import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.mixin.BlockRenderMixin;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.WatchInkPacket;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
+import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.StreamSupport;
 
 @Mod.EventBusSubscriber
 public class WorldInkHandler
 {
+	@SubscribeEvent
+	public static void onBlockUpdate(BlockEvent.NeighborNotifyEvent event)
+	{
+		if(event.getWorld() instanceof Level level)
+		{
+			checkForInkRemoval(level, event.getPos());
+			event.getNotifiedSides().forEach(direction -> checkForInkRemoval(level, event.getPos().relative(direction)));
+		}
+	}
+
+	private static final int MAX_DECAYABLE_PER_CHUNK = 3;
+	private static final int MAX_DECAYABLE_CHUNKS = 10;
+	@SubscribeEvent
+	public static void onWorldTick(TickEvent.WorldTickEvent event)
+	{
+		if(event.phase == TickEvent.Phase.START && !event.world.players().isEmpty() && event.world instanceof ServerLevel level)
+		{
+			List<LevelChunk> chunks = StreamSupport.stream(level.getChunkSource().chunkMap.getChunks().spliterator(), false).map(ChunkHolder::getTickingChunk)
+					.filter(Objects::nonNull).filter(chunk -> !WorldInkCapability.get(chunk).getInkInChunk().isEmpty()).toList();
+			int maxChunkCheck = Math.min(level.random.nextInt(MAX_DECAYABLE_CHUNKS), chunks.size());
+
+			for(int i = 0; i < maxChunkCheck; i++)
+			{
+				LevelChunk chunk = chunks.get(level.random.nextInt(chunks.size()));
+				WorldInk worldInk = WorldInkCapability.get(chunk);
+				HashMap<BlockPos, WorldInk.Entry> decayableInk = new HashMap<>(worldInk.getInkInChunk());
+
+				int blockCount = 0;
+				while (!decayableInk.isEmpty() && blockCount < MAX_DECAYABLE_PER_CHUNK)
+				{
+					BlockPos pos = decayableInk.keySet().toArray(new BlockPos[]{})[level.random.nextInt(decayableInk.size())];
+					BlockPos clearPos = pos.offset(chunk.getPos().x * 16, 0, chunk.getPos().z * 16);
+
+					if(!SplatcraftGameRules.getLocalizedRule(level, clearPos, SplatcraftGameRules.INK_DECAY) ||
+							level.random.nextFloat() >= SplatcraftGameRules.getIntRuleValue(level, SplatcraftGameRules.INK_DECAY_RATE) * 0.001f || //TODO make localized int rules
+							decayableInk.get(pos).equals(worldInk.getPermanentInk(pos)))
+					{
+						decayableInk.remove(pos);
+						continue;
+					}
+
+					int adjacentInk = 0;
+					for(Direction dir : Direction.values())
+						if(InkBlockUtils.isInked(level, clearPos.relative(dir)))
+							adjacentInk++;
+
+					if(!(adjacentInk <= 0 || level.random.nextInt(adjacentInk*2) == 0))
+					{
+						decayableInk.remove(pos);
+						continue;
+					}
+
+					InkBlockUtils.clearInk(level, clearPos, false);
+					decayableInk.remove(pos);
+
+					blockCount++;
+				}
+			}
+		}
+	}
+
+	private static void checkForInkRemoval(Level level, BlockPos pos)
+	{
+		if(InkBlockUtils.isInked(level, pos) && InkBlockUtils.isUninkable(level, pos))
+			InkBlockUtils.clearInk(level, pos, true);
+	}
+
 	@SubscribeEvent
 	public static void onWatchChunk(ChunkWatchEvent.Watch event)
 	{

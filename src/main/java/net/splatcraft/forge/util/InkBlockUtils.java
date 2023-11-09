@@ -52,8 +52,9 @@ public class InkBlockUtils {
         WorldInk worldInk = WorldInkCapability.get(level, pos);
         if(worldInk.isInked(pos) && (worldInk.clearInk(pos) || (removePermanent && worldInk.removePermanentInk(pos))))
         {
-            BlockState state = level.getBlockState(pos);
             level.getChunkAt(pos).setUnsaved(true);
+            if(!level.isClientSide)
+                SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, -1, null), level.dimension());
             return true;
         }
         return false;
@@ -84,27 +85,6 @@ public class InkBlockUtils {
 
         if(!level.isClientSide)
             SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, color, inkType), level.dimension());
-
-        /*
-        BlockState inkState = getInkState(inkType);
-
-        InkedBlockTileEntity inkte = (InkedBlockTileEntity) SplatcraftBlocks.inkedBlock.get().newBlockEntity(pos, inkState);
-        if (inkte == null) {
-            return BlockInkedResult.FAIL;
-        }
-        inkte.setColor(color);
-        inkte.setSavedState(state);
-
-        level.setBlock(pos, inkState, 0);
-        level.setBlockEntity(inkte);
-        level.markAndNotifyBlock(pos, level.getChunkAt(pos), inkState, inkState, 3, 512);
-
-        for (Direction facing : Direction.values()) {
-            if (level.getBlockEntity(pos.relative(facing)) instanceof InkedBlockTileEntity otherTe) {
-                otherTe.setSavedState(otherTe.getSavedState().getBlock().updateShape(otherTe.getSavedState(), facing.getOpposite(), inkState, level, pos.relative(facing), pos));
-            }
-        }
-        */
 
         return BlockInkedResult.SUCCESS;
     }
