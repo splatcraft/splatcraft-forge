@@ -50,12 +50,19 @@ public class InkBlockUtils {
     public static boolean clearInk(Level level, BlockPos pos, boolean removePermanent)
     {
         WorldInk worldInk = WorldInkCapability.get(level, pos);
-        if(worldInk.isInked(pos) && (worldInk.clearInk(pos) || (removePermanent && worldInk.removePermanentInk(pos))))
+        if(worldInk.isInked(pos))
         {
-            level.getChunkAt(pos).setUnsaved(true);
-            if(!level.isClientSide)
-                SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, -1, null), level.dimension());
-            return true;
+            boolean removed = worldInk.clearInk(pos);
+            if((removePermanent && worldInk.removePermanentInk(pos)))
+                removed = true;
+
+            if(removed)
+            {
+                level.getChunkAt(pos).setUnsaved(true);
+                if (!level.isClientSide)
+                    SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, -1, null), level.dimension());
+                return true;
+            }
         }
         return false;
     }
