@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(BlockRenderer.class)
-public class RubidiumMixin
+public class SodiumMixin
 {
 	@Unique
 	private BlockPos splatcraft$pos;

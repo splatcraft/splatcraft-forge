@@ -10,9 +10,7 @@
     "PlayerListMixin",
     "PlayerMixin",
     "SheepMixin",
-    "SquidPassthroughMixin",
-    "WallConnectionMixin",
-    "compat.RubidiumMixin"
+    "SquidPassthroughMixin"
   ],
   "minVersion": "0.8",
   "injectors": {
@@ -34,6 +32,7 @@
     "RecipeCategoryMixin",
     "SheepWoolLayerMixin",
     "WeaponHotkeyMixin$MinecraftInstance",
-    "WeaponHotkeyMixin$PlayerControllerMix"
+    "WeaponHotkeyMixin$PlayerControllerMix",
+    "compat.SodiumMixin"
   ]
 }

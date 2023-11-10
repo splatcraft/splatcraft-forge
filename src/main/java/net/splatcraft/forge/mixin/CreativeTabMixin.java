@@ -1,6 +1,8 @@
 package net.splatcraft.forge.mixin;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
@@ -22,20 +24,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 @Mixin(CreativeModeInventoryScreen.class)
-public abstract class CreativeTabMixin
-{
+public abstract class CreativeTabMixin implements AbstractContainerAccessor<CreativeModeInventoryScreen.ItemPickerMenu> {
 	@Shadow private static int selectedTab;
 
 	@Shadow private EditBox searchBox;
 
 	@Shadow private float scrollOffs;
-
-	@Shadow protected abstract void renderLabels(PoseStack p_98616_, int p_98617_, int p_98618_);
 
 	@Inject(cancellable = true, method = "refreshSearchResults", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTab;fillItemList(Lnet/minecraft/core/NonNullList;)V", shift = At.Shift.AFTER))
 	private void applySearchResults(CallbackInfo ci)
@@ -44,7 +39,7 @@ public abstract class CreativeTabMixin
 		String searchValue = searchBox.getValue().toLowerCase();
 		if(tab == SplatcraftItemGroups.GROUP_COLORS && !searchValue.isEmpty())
 		{
-			CreativeModeInventoryScreen.ItemPickerMenu menu = ((AbstractContainerAccessor<CreativeModeInventoryScreen.ItemPickerMenu>)this).getMenu();
+			CreativeModeInventoryScreen.ItemPickerMenu menu = this.getMenu();
 
 			String invertedStr = ChatFormatting.stripFormatting(new TranslatableComponent("ink_color.invert", "%s").getString()).toLowerCase(Locale.ROOT);
 			boolean inverted = false;

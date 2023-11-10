@@ -2,6 +2,11 @@ package net.splatcraft.forge.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.BitSet;
+import java.util.Iterator;
+import java.util.Random;
+import java.util.Set;
+import javax.annotation.Nullable;
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -17,31 +22,24 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.IModelData;
 import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
 import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.handlers.WorldInkHandler;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.util.InkBlockUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import javax.annotation.Nullable;
-import java.util.BitSet;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public class BlockRenderMixin
@@ -70,7 +68,7 @@ public class BlockRenderMixin
 
 		@Inject(method = "compile", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE",
 				target = "Lnet/minecraft/client/renderer/chunk/RenderChunkRegion;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
-		public void getBlockData(float p_112866_, float p_112867_, float p_112868_, ChunkRenderDispatcher.CompiledChunk p_112869_, ChunkBufferBuilderPack p_112870_, CallbackInfoReturnable<Set<BlockEntity>> cir, int i, BlockPos blockpos, BlockPos blockpos1, VisGraph visgraph, Set set, RenderChunkRegion renderchunkregion, PoseStack posestack, Random random, BlockRenderDispatcher blockrenderdispatcher, Iterator var15, BlockPos blockpos2)
+		public void getBlockData(float p_112866_, float p_112867_, float p_112868_, ChunkRenderDispatcher.CompiledChunk p_112869_, ChunkBufferBuilderPack p_112870_, CallbackInfoReturnable<Set<BlockEntity>> cir, int i, BlockPos blockpos, BlockPos blockpos1, VisGraph visgraph, Set<BlockEntity> set, RenderChunkRegion renderchunkregion, PoseStack posestack, Random random, BlockRenderDispatcher blockrenderdispatcher, Iterator<BlockPos> var15, BlockPos blockpos2)
 		{
 			splatcraft$level = ((ChunkRegionAccessor)renderchunkregion).getLevel();
 			splatcraft$blockPos = blockpos2;

@@ -1,25 +1,17 @@
 package net.splatcraft.forge.network.c2s;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.SplatcraftConfig;
-import net.splatcraft.forge.client.layer.PlayerInkColoredSkinLayer;
 import net.splatcraft.forge.handlers.SplatcraftCommonHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.ReceivePlayerOverlayPacket;
-
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 public class SendPlayerOverlayPacket extends PlayC2SPacket
 {
@@ -27,10 +19,10 @@ public class SendPlayerOverlayPacket extends PlayC2SPacket
 	final byte[] imageBytes;
 
 	@OnlyIn(Dist.CLIENT)
-	public SendPlayerOverlayPacket() throws IOException
+	public SendPlayerOverlayPacket(UUID player, File file) throws IOException
 	{
-		this.player = Minecraft.getInstance().player.getUUID();
-		imageBytes = NativeImage.read(new FileInputStream(Paths.get(SplatcraftConfig.Client.inkColoredSkinLayerPath).toFile())).asByteArray();
+		this.player = player;
+		imageBytes = NativeImage.read(new FileInputStream(file)).asByteArray();
 	}
 
 	public SendPlayerOverlayPacket(UUID player, byte[] imageBytes)

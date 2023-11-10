@@ -2,6 +2,7 @@ package net.splatcraft.forge.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
@@ -18,8 +19,6 @@ import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.tileentities.InkVatTileEntity;
 import net.splatcraft.forge.tileentities.container.InkVatContainer;
 import net.splatcraft.forge.util.ColorUtils;
-
-import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class InkVatScreen extends AbstractContainerScreen<InkVatContainer>
@@ -89,7 +88,7 @@ public class InkVatScreen extends AbstractContainerScreen<InkVatContainer>
         drawScrollBar(matrixStack, scrollBarX, scrollBarY, 132, mouseX, mouseY);
     }
 
-    @SuppressWarnings({"ConstantConditions"})
+    @SuppressWarnings("ConstantConditions")
     protected void drawAvailableColors(PoseStack matrixStack, List<Integer> colorSelection, int x, int y)
     {
         TextureManager textureManager = minecraft.getTextureManager();

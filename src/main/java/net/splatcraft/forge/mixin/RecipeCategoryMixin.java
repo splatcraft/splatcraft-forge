@@ -24,7 +24,6 @@ public class RecipeCategoryMixin
 			|| type == SplatcraftRecipeTypes.WEAPON_STATION_TYPE)
 		{
 			cir.setReturnValue(RecipeBookCategories.UNKNOWN);
-			cir.cancel();
 		}
 	}
 }

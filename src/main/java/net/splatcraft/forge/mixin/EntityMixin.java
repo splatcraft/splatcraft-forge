@@ -2,7 +2,6 @@ package net.splatcraft.forge.mixin;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
@@ -23,9 +22,7 @@ public class EntityMixin
 			return;
 		}
 
-		PlayerInfo info = PlayerInfoCapability.get(player);
-
-		if (InkBlockUtils.canSquidHide(player) && info.isSquid())
+		if (InkBlockUtils.canSquidHide(player) && PlayerInfoCapability.get(player).isSquid())
 			cir.setReturnValue(true);
 	}
 
