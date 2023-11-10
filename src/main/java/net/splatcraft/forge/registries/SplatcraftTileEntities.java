@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.splatcraft.forge.client.renderer.tileentity.InkedBlockTileEntityRenderer;
 import net.splatcraft.forge.client.renderer.tileentity.RemotePedestalTileEntityRenderer;
 import net.splatcraft.forge.client.renderer.tileentity.StageBarrierTileEntityRenderer;
 import net.splatcraft.forge.tileentities.*;

@@ -19,10 +19,8 @@
   "client": [
     "AbstractContainerAccessor",
     "AddLayersAccessor",
-    "BlockRenderMixin$AOFace",
     "BlockRenderMixin$ChunkRegionAccessor",
     "BlockRenderMixin$ChunkRenderDispatcherMixin",
-    "BlockRenderMixin$ModelRenderer",
     "BlockRenderMixin$Renderer",
     "CreativeTabMixin",
     "GameRendererMixin",
