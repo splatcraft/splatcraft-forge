@@ -357,10 +357,10 @@ public class ColorUtils
     {
         int color = DEFAULT;
         BlockPos pos = InkBlockUtils.getBlockStandingOnPos(entity);
-        if (entity.level.getBlockState(pos).getBlock() instanceof IColoredBlock)
-        {
+        if(InkBlockUtils.isInked(level, pos))
+            color = InkBlockUtils.getInk(level, pos).color();
+        else if (entity.level.getBlockState(pos).getBlock() instanceof IColoredBlock)
             color = ((IColoredBlock) entity.level.getBlockState(pos).getBlock()).getColor(level, pos);
-        }
         addInkSplashParticle(level, color, entity.getX() + (level.getRandom().nextFloat() * 0.8 - 0.4), entity.getY(level.getRandom().nextFloat() * 0.3f), entity.getZ() + (level.getRandom().nextFloat() * 0.8 - 0.4), size + (level.getRandom().nextFloat() * 0.2f - 0.1f));
     }
 
