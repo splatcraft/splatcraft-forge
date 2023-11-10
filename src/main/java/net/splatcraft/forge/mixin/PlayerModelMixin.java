@@ -6,17 +6,17 @@ import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.MinecraftForge;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Author: MrCrayfish, from Obfuscate 1.17 https://github.com/MrCrayfish/Obfuscate/blob/1.17.X/src/main/java/com/mrcrayfish/obfuscate/client/event/PlayerModelEvent.java
+ * Author: MrCrayfish, from Obfuscate 1.17 <a href="https://github.com/MrCrayfish/Obfuscate/blob/1.17.X/src/main/java/com/mrcrayfish/obfuscate/client/event/PlayerModelEvent.java">...</a>
  */
 @Mixin(PlayerModel.class)
 public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T>
@@ -50,32 +50,30 @@ public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T>
 		super(part);
 	}
 
-	@Inject(method = "setupAnim", at = @At(value = "HEAD"), cancellable = true)
+	@Inject(method = "setupAnim*", at = @At(value = "HEAD"))
 	private void setRotationAnglesHead(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci)
 	{
 		if(!(entityIn instanceof Player))
 			return;
 
-		PlayerModel model = (PlayerModel) (Object) this;
-		this.resetRotationAngles();
-		this.resetVisibilities();
+		this.splatcraft$resetRotationAngles();
+		this.splatcraft$resetVisibilities();
 	}
 
-	@Inject(method = "setupAnim", at = @At(value = "TAIL"))
+	@Inject(method = "setupAnim*", at = @At(value = "TAIL"))
 	private void setRotationAnglesTail(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci)
 	{
 		if(!(entityIn instanceof Player))
 			return;
 
-		PlayerModel model = (PlayerModel) (Object) this;
+		PlayerModel<T> model = (PlayerModel<T>) (Object) this;
 		PlayerPosingHandler.setupPlayerAngles((Player) entityIn, model, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, Minecraft.getInstance().getDeltaFrameTime());
 
-
-
-		this.setupRotationAngles();
+		this.splatcraft$setupRotationAngles();
 	}
 
-	private void setupRotationAngles()
+	@Unique
+	private void splatcraft$setupRotationAngles()
 	{
 		this.rightSleeve.copyFrom(this.rightArm);
 		this.leftSleeve.copyFrom(this.leftArm);
@@ -89,47 +87,48 @@ public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T>
 	 * Resets all the rotations and rotation points back to their initial values. This makes it
 	 * so ever developer doesn't have to do it themselves.
 	 */
-	private void resetRotationAngles()
+	@Unique
+	private void splatcraft$resetRotationAngles()
 	{
-		this.resetAll(this.head);
-		this.resetAll(this.hat);
-		this.resetAll(this.body);
-		this.resetAll(this.jacket);
+		this.splatcraft$resetAll(this.head);
+		this.splatcraft$resetAll(this.hat);
+		this.splatcraft$resetAll(this.body);
+		this.splatcraft$resetAll(this.jacket);
 
-		this.resetAll(this.rightArm);
+		this.splatcraft$resetAll(this.rightArm);
 		this.rightArm.x = -5.0F;
 		this.rightArm.y = this.slim ? 2.5F : 2.0F;
 		this.rightArm.z = 0.0F;
 
-		this.resetAll(this.rightSleeve);
+		this.splatcraft$resetAll(this.rightSleeve);
 		this.rightSleeve.x = -5.0F;
 		this.rightSleeve.y = this.slim ? 2.5F : 2.0F;
 		this.rightSleeve.z = 10.0F;
 
-		this.resetAll(this.leftArm);
+		this.splatcraft$resetAll(this.leftArm);
 		this.leftArm.x = 5.0F;
 		this.leftArm.y = this.slim ? 2.5F : 2.0F;
 		this.leftArm.z = 0.0F;
 
-		this.resetAll(this.leftSleeve);
+		this.splatcraft$resetAll(this.leftSleeve);
 		this.leftSleeve.x = 5.0F;
 		this.leftSleeve.y = this.slim ? 2.5F : 2.0F;
 		this.leftSleeve.z = 0.0F;
 
-		this.resetAll(this.leftLeg);
+		this.splatcraft$resetAll(this.leftLeg);
 		this.leftLeg.x = 1.9F;
 		this.leftLeg.y = 12.0F;
 		this.leftLeg.z = 0.0F;
 
-		this.resetAll(this.leftPants);
+		this.splatcraft$resetAll(this.leftPants);
 		this.leftPants.copyFrom(this.leftLeg);
 
-		this.resetAll(this.rightLeg);
+		this.splatcraft$resetAll(this.rightLeg);
 		this.rightLeg.x = -1.9F;
 		this.rightLeg.y = 12.0F;
 		this.rightLeg.z = 0.0F;
 
-		this.resetAll(this.rightPants);
+		this.splatcraft$resetAll(this.rightPants);
 		this.rightPants.copyFrom(this.rightLeg);
 	}
 
@@ -138,7 +137,8 @@ public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T>
 	 *
 	 * @param part the model part to reset
 	 */
-	private void resetAll(ModelPart part)
+	@Unique
+	private void splatcraft$resetAll(ModelPart part)
 	{
 		part.xRot = 0.0F;
 		part.yRot = 0.0F;
@@ -148,7 +148,8 @@ public class PlayerModelMixin<T extends LivingEntity> extends HumanoidModel<T>
 		part.z = 0.0F;
 	}
 
-	private void resetVisibilities()
+	@Unique
+	private void splatcraft$resetVisibilities()
 	{
 		this.head.visible = true;
 		this.body.visible = true;

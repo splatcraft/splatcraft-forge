@@ -5,13 +5,10 @@
   "refmap": "splatcraft.refmap.json",
   "mixins": [
     "EntityMixin",
-    "FenceConnectionMixin",
-    "PaneConnectionMixin",
     "PlayerListMixin",
     "PlayerMixin",
     "SheepMixin",
-    "SquidPassthroughMixin",
-    "WallConnectionMixin"
+    "SquidPassthroughMixin"
   ],
   "minVersion": "0.8",
   "injectors": {
