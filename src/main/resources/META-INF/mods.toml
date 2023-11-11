@@ -39,7 +39,7 @@ issueTrackerURL = "https://github.com/splatcraft/splatcraft-forge/issues"
 [[dependencies.splatcraft]]
 modId           = "forge"
 mandatory = true
-versionRange = "[40.2.0,)"
+versionRange = "[40.2.4,41)"
 ordering = "NONE"
 side            = "BOTH"
 [[dependencies.splatcraft]]
