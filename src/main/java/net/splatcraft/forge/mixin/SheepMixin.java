@@ -18,17 +18,17 @@ import org.spongepowered.asm.mixin.injection.At;
 public class SheepMixin
 {
 	@WrapOperation(method = "onSheared", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"), remap = false)
-	public boolean getWool(List<ItemStack> ignored, Object stack, Operation<Boolean> original)
+	public boolean getWool(List<ItemStack> list, Object stack, Operation<Boolean> original)
 	{
 		Sheep that = (Sheep) (Object) this;
 		if (InkOverlayCapability.hasCapability(that))
 		{
 			int color = InkOverlayCapability.get(that).getWoolColor();
 			if (color > -1) {
-				return original.call(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool.get()), color), true));
+				return original.call(list, ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool.get()), color), true));
 			}
 		}
-		return original.call(stack);
+		return original.call(list, stack);
 	}
 
 
@@ -39,10 +39,10 @@ public class SheepMixin
 		{
 			InkOverlayInfo info = InkOverlayCapability.get(instance);
 			if (info.getWoolColor() > -1) {
-				return original.call(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool.get()), info.getWoolColor()), true), i);
+				return original.call(instance, ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool.get()), info.getWoolColor()), true), i);
 			}
 		}
 
-		return original.call(iItemProvider, i);
+		return original.call(instance, iItemProvider, i);
 	}
 }
