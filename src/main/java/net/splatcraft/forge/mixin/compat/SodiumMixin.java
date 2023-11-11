@@ -15,7 +15,6 @@ import me.jellysquid.mods.sodium.client.render.chunk.tasks.ChunkRenderRebuildTas
 import me.jellysquid.mods.sodium.client.render.pipeline.BlockRenderer;
 import me.jellysquid.mods.sodium.client.util.color.ColorABGR;
 import me.jellysquid.mods.sodium.client.world.WorldSlice;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -37,7 +36,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 public class SodiumMixin
 {
@@ -120,27 +118,24 @@ public class SodiumMixin
 	@Mixin(ChunkRenderRebuildTask.class)
 	public static class ChunkRebuildMixin
 	{
-		//performBuild
-
-
 		@Unique
 		private BlockPos splatcraft$blockPos;
 		@Unique
 		private Level splatcraft$level;
 
-		@Redirect(method = "performBuild", remap = false, at = @At(value = "INVOKE",
+		@WrapOperation(method = "performBuild", remap = false, at = @At(value = "INVOKE",
 				target = "Lme/jellysquid/mods/sodium/client/world/WorldSlice;getBlockState(III)Lnet/minecraft/world/level/block/state/BlockState;"))
-		public BlockState getBlockState(WorldSlice instance, int x, int y, int z)
+		public BlockState getBlockState(WorldSlice instance, int x, int y, int z, Operation<BlockState> original)
 		{
 			splatcraft$level = ((WorldSliceAccessor)instance).getWorld();
 			splatcraft$blockPos = new BlockPos(x, y, z);
 			return InkBlockUtils.isInked(splatcraft$level, splatcraft$blockPos) && splatcraft$level.getBlockState(splatcraft$blockPos).is(SplatcraftTags.Blocks.RENDER_AS_CUBE) ?
-					SplatcraftBlocks.inkedBlock.get().defaultBlockState() : instance.getBlockState(x, y, z);
+					SplatcraftBlocks.inkedBlock.get().defaultBlockState() : original.call(instance, x, y, z);
 		}
 
-		@Redirect(method = "performBuild", remap = false, at = @At(value = "INVOKE",
+		@WrapOperation(method = "performBuild", remap = false, at = @At(value = "INVOKE",
 				target = "Lnet/minecraft/client/renderer/ItemBlockRenderTypes;canRenderInLayer(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/RenderType;)Z"))
-		public boolean canRenderInLayer(BlockState state, RenderType type)
+		public boolean canRenderInLayer(BlockState state, RenderType type, Operation<Boolean> original)
 		{
 			if(InkBlockUtils.isInked(splatcraft$level, splatcraft$blockPos))
 			{
@@ -151,7 +146,7 @@ public class SodiumMixin
 				else if(ink.type() == InkBlockUtils.InkType.NORMAL)
 					return type == RenderType.solid();
 			}
-			return ItemBlockRenderTypes.canRenderInLayer(state, type);
+			return original.call(state, type);
 		}
 	}
 

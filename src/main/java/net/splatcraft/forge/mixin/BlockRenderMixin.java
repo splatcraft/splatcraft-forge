@@ -1,14 +1,13 @@
 package net.splatcraft.forge.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import java.util.BitSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
-import javax.annotation.Nullable;
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
@@ -17,7 +16,6 @@ import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,10 +31,8 @@ import net.splatcraft.forge.util.InkBlockUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -75,9 +71,9 @@ public class BlockRenderMixin
 			splatcraft$renderAsCube = InkBlockUtils.isInked(splatcraft$level, splatcraft$blockPos) && splatcraft$level.getBlockState(splatcraft$blockPos).is(SplatcraftTags.Blocks.RENDER_AS_CUBE);
 		}
 
-		@Redirect(method = "compile", at = @At(value = "INVOKE",
+		@WrapOperation(method = "compile", at = @At(value = "INVOKE",
 				target = "Lnet/minecraft/client/renderer/ItemBlockRenderTypes;canRenderInLayer(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/RenderType;)Z"))
-		public boolean canRenderInLayer(BlockState state, RenderType type)
+		public boolean canRenderInLayer(BlockState state, RenderType type, Operation<Boolean> original)
 		{
 			if(WorldInkCapability.get(splatcraft$level, splatcraft$blockPos).isInked(splatcraft$blockPos))
 			{
@@ -88,13 +84,13 @@ public class BlockRenderMixin
 				else if(ink.type() == InkBlockUtils.InkType.NORMAL)
 					return type == RenderType.solid();
 			}
-			return ItemBlockRenderTypes.canRenderInLayer(state, type);
+			return original.call(state, type);
 		}
 
-		@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/RenderChunkRegion;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
-		public BlockState getBlockState(RenderChunkRegion instance, BlockPos pos)
+		@WrapOperation(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/RenderChunkRegion;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
+		public BlockState getBlockState(RenderChunkRegion region, BlockPos pos, Operation<BlockState> original)
 		{
-			return splatcraft$renderAsCube ? SplatcraftBlocks.inkedBlock.get().defaultBlockState() : instance.getBlockState(pos);
+			return splatcraft$renderAsCube ? SplatcraftBlocks.inkedBlock.get().defaultBlockState() : original.call(region, pos);
 		}
 	}
 
