@@ -121,6 +121,8 @@ mixin {
     add sourceSets.main, "splatcraft.refmap.json"
 }
 
+jarJar.enable()
+
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
@@ -137,6 +139,8 @@ dependencies {
     compileOnly fg.deobf("curse.maven:rubidium-574856:4494903")
     //implementation fg.deobf("curse.maven:rubidium-574856:4494903")
 }
+
+tasks.named('build').configure { dependsOn('jarJar') }
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
