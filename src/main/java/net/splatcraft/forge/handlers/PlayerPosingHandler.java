@@ -27,7 +27,7 @@ public class PlayerPosingHandler
     public static void setupPlayerAngles(Player player, PlayerModel model, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float deltaTicks)
     {
 
-        if (model == null || player == null || PlayerInfoCapability.isSquid(player))
+        if (model == null || player == null || !PlayerInfoCapability.hasCapability(player) || PlayerInfoCapability.isSquid(player))
             return;
 
         PlayerInfo playerInfo = PlayerInfoCapability.get(player);
