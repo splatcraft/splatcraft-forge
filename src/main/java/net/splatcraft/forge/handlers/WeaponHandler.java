@@ -82,12 +82,14 @@ public class WeaponHandler {
 			}
 
 			canUseWeapon = !cooldown.preventWeaponUse();
+	        ItemStack stack = cooldown.storedStack;
 
-			if (cooldown.getTime() == 1) {
-				ItemStack stack = cooldown.storedStack;
-				if (stack.getItem() instanceof WeaponBaseItem) {
-					((WeaponBaseItem) stack.getItem()).onPlayerCooldownEnd(player.level, player, stack, cooldown);
-				}
+	        if (stack.getItem() instanceof WeaponBaseItem weapon)
+			{
+				if (cooldown.getTime() == 1)
+					weapon.onPlayerCooldownEnd(player.level, player, stack, cooldown);
+				else if (cooldown.getTime() > 1)
+					weapon.onPlayerCooldownTick(player.level, player, stack, cooldown);
 			}
 		}
 		if (canUseWeapon && player.getUseItemRemainingTicks() > 0) {

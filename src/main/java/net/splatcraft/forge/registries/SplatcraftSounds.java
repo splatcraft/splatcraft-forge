@@ -33,6 +33,9 @@ public class SplatcraftSounds
     public static SoundEvent chargerCharge;
     public static SoundEvent chargerReady;
     public static SoundEvent chargerShot;
+    public static SoundEvent splatlingCharge;
+    public static SoundEvent splatlingReady;
+    public static SoundEvent splatlingShot;
     public static SoundEvent dualieShot;
     public static SoundEvent dualieDodge;
     public static SoundEvent slosherShot;
@@ -68,6 +71,9 @@ public class SplatcraftSounds
         chargerCharge = createSoundEvent("charger_charge");
         chargerReady = createSoundEvent("charger_ready");
         chargerShot = createSoundEvent("charger_shot");
+        splatlingCharge = createSoundEvent("splatling_charge");
+        splatlingReady = createSoundEvent("splatling_ready");
+        splatlingShot = createSoundEvent("splatling_shot");
         dualieShot = createSoundEvent("dualie_firing");
         dualieDodge = createSoundEvent("dualie_dodge");
         slosherShot = createSoundEvent("slosher_shot");

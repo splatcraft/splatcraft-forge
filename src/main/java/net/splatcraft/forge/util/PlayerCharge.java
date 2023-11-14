@@ -21,10 +21,20 @@ public class PlayerCharge {
     public float prevCharge;
     public int dischargedTicks;
     public int prevDischargedTicks;
+    public int maxCharges;
+    public boolean chargeDecay;
 
-    public PlayerCharge(ItemStack stack, float charge) {
+    public PlayerCharge(ItemStack stack, float charge, boolean chargeDecay)
+    {
+        this(stack, charge, chargeDecay, 1);
+    }
+
+    public PlayerCharge(ItemStack stack, float charge, boolean chargeDecay, int maxCharges)
+    {
         this.chargedWeapon = stack;
         this.charge = charge;
+        this.chargeDecay = chargeDecay;
+        this.maxCharges = maxCharges;
     }
 
     public static PlayerCharge getCharge(Player player) {
@@ -52,6 +62,11 @@ public class PlayerCharge {
         return capability.getPlayerCharge() != null && capability.getPlayerCharge().charge > 0;
     }
 
+    public static boolean hasChargeInstance(Player player)
+    {
+        return PlayerInfoCapability.get(player).getPlayerCharge() != null;
+    }
+
     public static boolean shouldCreateCharge(Player player) {
         if (player == null) {
             return false;
@@ -64,26 +79,31 @@ public class PlayerCharge {
         return hasCharge(player) && getCharge(player).chargedWeapon.sameItem(stack);
     }
 
-    public static void addChargeValue(Player player, ItemStack stack, float value) {
+    public static void addChargeValue(Player player, ItemStack stack, float value, boolean chargeDecay)
+    {
+        addChargeValue(player, stack, value, chargeDecay, 1);
+    }
+    public static void addChargeValue(Player player, ItemStack stack, float value, boolean chargeDecay, int maxCharges)
+    {
         if (value < 0.0f) {
             throw new IllegalArgumentException("Attempted to add negative charge: " + value);
         }
         if (shouldCreateCharge(player)) {
-            setCharge(player, new PlayerCharge(stack, 0));
+            setCharge(player, new PlayerCharge(stack, 0, chargeDecay, maxCharges));
         }
 
         PlayerCharge charge = getCharge(player);
-        if (charge.charge <= 0.0f && value > 0.0f) {
+        if ((charge.prevCharge > charge.charge || charge.charge <= 0.0f) && value > 0.0f) {
             SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(true));
         }
 
         if (chargeMatches(player, stack)) {
             charge.prevCharge = charge.charge;
-            charge.charge = Math.max(0.0f, Math.min(1.0f, charge.charge + value));
+            charge.charge = Math.max(0.0f, Math.min(charge.maxCharges, charge.charge + value));
             charge.dischargedTicks = 0;
             charge.prevDischargedTicks = 0;
         } else {
-            setCharge(player, new PlayerCharge(stack, value));
+            setCharge(player, new PlayerCharge(stack, value, chargeDecay, maxCharges));
         }
     }
 
@@ -102,24 +122,34 @@ public class PlayerCharge {
         return 1;
     }
 
-    public static void dischargeWeapon(Player player) {
-        if (!player.level.isClientSide || !hasCharge(player)) {
+    public static void dischargeWeapon(Player player)
+    {
+        if (!player.level.isClientSide || !hasCharge(player))
             return;
-        }
+
         PlayerCharge charge = getCharge(player);
         Item dischargeItem = charge.chargedWeapon.getItem();
 
         charge.prevDischargedTicks = charge.dischargedTicks;
+        charge.prevCharge = charge.charge;
 
         if (!(dischargeItem instanceof IChargeableWeapon chargeable)
-                || charge.charge < 1.0f
-                || charge.dischargedTicks >= chargeable.getDischargeTicks(charge.chargedWeapon)) {
+                || (!charge.chargeDecay && charge.charge < 1.0f)
+                || charge.dischargedTicks >= chargeable.getDischargeTicks(charge.chargedWeapon))
+        {
             charge.charge = 0f;
             charge.prevCharge = 0;
             charge.dischargedTicks = 0;
+
             SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
-        } else {
-            charge.dischargedTicks++;
+        } else
+        {
+            if(charge.chargeDecay)
+            {
+                charge.charge = Math.max(0, charge.charge - 1f/chargeable.getDischargeTicks(charge.chargedWeapon));
+
+            }
+            else charge.dischargedTicks++;
         }
     }
 

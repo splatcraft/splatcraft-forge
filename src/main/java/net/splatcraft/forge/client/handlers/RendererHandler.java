@@ -51,7 +51,7 @@ import net.splatcraft.forge.data.SplatcraftTags;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.items.InkTankItem;
-import net.splatcraft.forge.items.weapons.ChargerItem;
+import net.splatcraft.forge.items.weapons.IChargeableWeapon;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
@@ -376,7 +376,7 @@ public class RendererHandler
 
         //if (event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER))
         {
-            if (player.getMainHandItem().getItem() instanceof ChargerItem || player.getOffhandItem().getItem() instanceof ChargerItem)
+            if (player.getMainHandItem().getItem() instanceof IChargeableWeapon || player.getOffhandItem().getItem() instanceof IChargeableWeapon)
             {
 
                 PoseStack matrixStack = event.getMatrixStack();
@@ -391,9 +391,16 @@ public class RendererHandler
                     PlayerCharge playerCharge = PlayerInfoCapability.get(player).getPlayerCharge();
                     float charge = lerp(playerCharge.prevCharge, playerCharge.charge, event.getPartialTicks());
 
+                    if(charge > 1)
+                    {
+                        RenderSystem.setShaderColor(1,1,1, playerCharge.getDischargeValue(event.getPartialTicks()) * 0.05f);
+                        Screen.blit(matrixStack, width / 2 - 15, height / 2 + 14, 30, 9, 88, 9, 30, 9, 256, 256);
+
+                        if(Math.floor(charge) != charge)
+                            charge = charge % 1f;
+                    }
+
                     RenderSystem.setShaderColor(1,1,1, playerCharge.getDischargeValue(event.getPartialTicks()));
-
-
                     Screen.blit(matrixStack, width / 2 - 15, height / 2 + 14, (int) (30 * charge), 9, 88, 9, (int) (30 * charge), 9, 256, 256);
                 }
                 RenderSystem.setShaderColor(1,1,1,1);

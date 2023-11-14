@@ -310,6 +310,11 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<?>> extend
 
     }
 
+    public void onPlayerCooldownTick(Level level, Player player, ItemStack stack, PlayerCooldown cooldown)
+    {
+
+    }
+
     public boolean hasSpeedModifier(LivingEntity entity, ItemStack stack)
     {
         return getSpeedModifier(entity, stack) != null;

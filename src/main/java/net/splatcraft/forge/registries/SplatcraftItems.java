@@ -38,14 +38,7 @@ import net.splatcraft.forge.items.remotes.ColorChangerItem;
 import net.splatcraft.forge.items.remotes.InkDisruptorItem;
 import net.splatcraft.forge.items.remotes.RemoteItem;
 import net.splatcraft.forge.items.remotes.TurfScannerItem;
-import net.splatcraft.forge.items.weapons.BlasterItem;
-import net.splatcraft.forge.items.weapons.ChargerItem;
-import net.splatcraft.forge.items.weapons.CurlingSubWeaponItem;
-import net.splatcraft.forge.items.weapons.DualieItem;
-import net.splatcraft.forge.items.weapons.RollerItem;
-import net.splatcraft.forge.items.weapons.ShooterItem;
-import net.splatcraft.forge.items.weapons.SlosherItem;
-import net.splatcraft.forge.items.weapons.SubWeaponItem;
+import net.splatcraft.forge.items.weapons.*;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.SplatcraftArmorMaterial;
 
@@ -127,6 +120,9 @@ public class SplatcraftItems {
     public static final RegistryObject<SlosherItem> sodaSlosher = SlosherItem.create(REGISTRY, slosher, "soda_slosher");
     public static final RegistryObject<SlosherItem> triSlosher = SlosherItem.create(REGISTRY, "tri_slosher", "tri_slosher", SlosherItem.Type.DEFAULT);
     public static final RegistryObject<SlosherItem> explosher = SlosherItem.create(REGISTRY, "explosher", "explosher", SlosherItem.Type.EXPLODING);
+
+    //Splatlings
+    public static final RegistryObject<SplatlingItem> miniSplatling = SplatlingItem.create(REGISTRY, "mini_splatling", "mini_splatling");
 
     //Ink Tanks
     public static final RegistryObject<InkTankItem> inkTank = REGISTRY.register("ink_tank", () -> new InkTankItem("ink_tank", 100));

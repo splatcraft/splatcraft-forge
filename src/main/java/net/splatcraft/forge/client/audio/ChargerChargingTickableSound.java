@@ -2,6 +2,7 @@ package net.splatcraft.forge.client.audio;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -15,9 +16,9 @@ public class ChargerChargingTickableSound extends AbstractTickableSoundInstance
 {
     private final Player player;
 
-    public ChargerChargingTickableSound(Player player)
+    public ChargerChargingTickableSound(Player player, SoundEvent sound)
     {
-        super(SplatcraftSounds.chargerCharge, SoundSource.PLAYERS);
+        super(sound, SoundSource.PLAYERS);
         this.attenuation = Attenuation.NONE;
         this.looping = true;
         this.delay = 0;
@@ -46,12 +47,13 @@ public class ChargerChargingTickableSound extends AbstractTickableSoundInstance
                 float charge = PlayerCharge.getChargeValue(player, player.getUseItem());
                 float prevCharge = info.getPlayerCharge().prevCharge;
 
-                if (charge >= 1 && !isStopped())
+                if (charge >= info.getPlayerCharge().maxCharges && !isStopped())
                 {
                     stop();
                     return;
                 }
-                pitch = Mth.lerp(Minecraft.getInstance().getDeltaFrameTime(), prevCharge, charge) * 0.5f + 0.5f;
+
+                pitch = (Mth.lerp(Minecraft.getInstance().getDeltaFrameTime(), prevCharge, charge) / info.getPlayerCharge().maxCharges) * 0.5f + 0.5f;
                 return;
             }
         }
