@@ -112,8 +112,10 @@ public class ChargerItem extends WeaponBaseItem<WeaponSettings> implements IChar
 
 		if (level.isClientSide && !PlayerInfoCapability.isSquid(entity) && entity instanceof Player player) {
 			PlayerCharge charge = PlayerCharge.getCharge(player);
-			if (charge != null && charge.charge > 0.05f) {
-				PlayerCooldown.setPlayerCooldown((Player) entity, new PlayerCooldown(stack, 10, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, false, entity.isOnGround()));
+			if (charge != null && charge.charge > 0.05f)
+			{
+				WeaponSettings settings = getSettings(stack);
+				PlayerCooldown.setPlayerCooldown((Player) entity, new PlayerCooldown(stack, settings.firingSpeed, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, false, entity.isOnGround()));
 				SplatcraftPacketHandler.sendToServer(new ReleaseChargePacket(charge.charge, stack));
 				charge.reset();
 			}
