@@ -14,7 +14,6 @@ import net.splatcraft.forge.util.PlayerCharge;
 public class ChargerChargingTickableSound extends AbstractTickableSoundInstance
 {
     private final Player player;
-    private float prevPitch = 0;
 
     public ChargerChargingTickableSound(Player player)
     {
@@ -42,17 +41,17 @@ public class ChargerChargingTickableSound extends AbstractTickableSoundInstance
         if (player.isAlive() && player.getUseItem().getItem() instanceof IChargeableWeapon && PlayerInfoCapability.hasCapability(player))
         {
             PlayerInfo info = PlayerInfoCapability.get(player);
-            if (!info.isSquid())
+            if (!info.isSquid() && PlayerCharge.chargeMatches(player, player.getUseItem()))
             {
                 float charge = PlayerCharge.getChargeValue(player, player.getUseItem());
+                float prevCharge = info.getPlayerCharge().prevCharge;
+
                 if (charge >= 1 && !isStopped())
                 {
                     stop();
                     return;
                 }
-                pitch = charge + 0.5f;
-                pitch = Mth.lerp(Minecraft.getInstance().getDeltaFrameTime(), prevPitch, pitch);
-                prevPitch = pitch;
+                pitch = Mth.lerp(Minecraft.getInstance().getDeltaFrameTime(), prevCharge, charge) * 0.5f + 0.5f;
                 return;
             }
         }
