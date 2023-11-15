@@ -37,11 +37,6 @@ public class ShooterItem extends WeaponBaseItem<WeaponSettings>
     protected ShooterItem(String settings)
     {
         super(settings);
-
-        addStat(new WeaponTooltip("range", (stack, level) -> (int) (getSettings(stack).projectileSpeed / 1.2f * 100)));
-        addStat(new WeaponTooltip("damage", (stack, level) -> (int) (getSettings(stack).baseDamage / 20 * 100)));
-        addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - getSettings(stack).firingSpeed) / 15f * 100)));
-
     }
 
     @Override

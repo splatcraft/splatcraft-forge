@@ -49,12 +49,6 @@ public class SubWeaponItem extends WeaponBaseItem<SubWeaponSettings>
         this.useTick = useTick;
 
         subs.add(this);
-
-        addStat(new WeaponTooltip("damage", (stack, level) -> (int) getSettings(stack).directDamage / 20 * 100));
-        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (getSettings(stack).explosionSize / 4 * 100)));
-        addStat(new WeaponTooltip("ink_consumption", (stack, level) -> (int) (getSettings(stack).inkConsumption)));
-
-
         DispenserBlock.registerBehavior(this, new SubWeaponItem.DispenseBehavior());
     }
 

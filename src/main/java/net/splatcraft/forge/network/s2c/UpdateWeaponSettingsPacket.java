@@ -11,15 +11,15 @@ import java.util.Map;
 
 public class UpdateWeaponSettingsPacket extends PlayS2CPacket
 {
-	public final HashMap<ResourceLocation, AbstractWeaponSettings<?>> settings;
+	public final HashMap<ResourceLocation, AbstractWeaponSettings<?, ?>> settings;
 
-	private static final HashMap<Class<? extends AbstractWeaponSettings<?>>, String> CLASS_TO_TYPE = new HashMap<>()
+	private static final HashMap<Class<? extends AbstractWeaponSettings<?, ?>>, String> CLASS_TO_TYPE = new HashMap<>()
 	{{
-		for(Entry<String, Class<? extends AbstractWeaponSettings<?>>> entry : DataHandler.WeaponStatsListener.SETTING_TYPES.entrySet())
+		for(Entry<String, Class<? extends AbstractWeaponSettings<?, ?>>> entry : DataHandler.WeaponStatsListener.SETTING_TYPES.entrySet())
 			put(entry.getValue(), entry.getKey());
 	}};
 
-	public UpdateWeaponSettingsPacket(HashMap<ResourceLocation, AbstractWeaponSettings<?>> settings)
+	public UpdateWeaponSettingsPacket(HashMap<ResourceLocation, AbstractWeaponSettings<?, ?>> settings)
 	{
 		this.settings = settings;
 	}
@@ -31,14 +31,15 @@ public class UpdateWeaponSettingsPacket extends PlayS2CPacket
 
 	public static UpdateWeaponSettingsPacket decode(FriendlyByteBuf buffer)
 	{
-		HashMap<ResourceLocation, AbstractWeaponSettings<?>> settings = new HashMap<>();
+		HashMap<ResourceLocation, AbstractWeaponSettings<?, ?>> settings = new HashMap<>();
 		for(int i = buffer.readInt(); i > 0; i--)
 		{
 			ResourceLocation key = buffer.readResourceLocation();
 			try {
-				AbstractWeaponSettings<?> setting = DataHandler.WeaponStatsListener.SETTING_TYPES.get(buffer.readUtf()).getConstructor(String.class).newInstance(key.toString());
+				AbstractWeaponSettings<?, ?> setting = DataHandler.WeaponStatsListener.SETTING_TYPES.get(buffer.readUtf()).getConstructor(String.class).newInstance(key.toString());
 				setting.castAndDeserialize(buffer.readWithCodec(setting.getCodec()));
 
+				setting.registerStatTooltips();
 				settings.put(key, setting);
 
 			} catch (InstantiationException | IllegalAccessException | InvocationTargetException |
@@ -58,7 +59,7 @@ public class UpdateWeaponSettingsPacket extends PlayS2CPacket
 	{
 		buffer.writeInt(settings.size());
 
-		for(Map.Entry<ResourceLocation, AbstractWeaponSettings<?>> entry : settings.entrySet())
+		for(Map.Entry<ResourceLocation, AbstractWeaponSettings<?, ?>> entry : settings.entrySet())
 		{
 			buffer.writeResourceLocation(entry.getKey());
 			buffer.writeUtf(CLASS_TO_TYPE.get(entry.getValue().getClass()));

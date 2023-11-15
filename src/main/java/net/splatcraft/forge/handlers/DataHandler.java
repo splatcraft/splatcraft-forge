@@ -15,10 +15,7 @@ import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.Splatcraft;
-import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.SubWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.*;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.UpdateWeaponSettingsPacket;
 import net.splatcraft.forge.registries.SplatcraftInkColors;
@@ -135,13 +132,14 @@ public class DataHandler
 
 	public static class WeaponStatsListener extends SimpleJsonResourceReloadListener
 	{
-		public static final HashMap<String, Class<? extends AbstractWeaponSettings<?>>> SETTING_TYPES = new HashMap<>()
+		public static final HashMap<String, Class<? extends AbstractWeaponSettings<?, ?>>> SETTING_TYPES = new HashMap<>()
 		{{
 			put(Splatcraft.MODID+":main", WeaponSettings.class);
 			put(Splatcraft.MODID+":roller", RollerWeaponSettings.class);
+			put(Splatcraft.MODID+":charger", ChargerWeaponSettings.class);
 			put(Splatcraft.MODID+":sub_weapon", SubWeaponSettings.class);
 		}}; //TODO make better registry probably
-		public static final  HashMap<ResourceLocation, AbstractWeaponSettings<?>> SETTINGS = new HashMap<>();
+		public static final  HashMap<ResourceLocation, AbstractWeaponSettings<?, ?>> SETTINGS = new HashMap<>();
 
 		private static final Gson GSON_INSTANCE = Deserializers.createFunctionSerializer().create();
 		private static final String folder = "weapon_settings";
@@ -160,12 +158,13 @@ public class DataHandler
 				JsonObject json = element.getAsJsonObject();
 				try
 				{
-					AbstractWeaponSettings<?> settings = SETTING_TYPES.get(GsonHelper.getAsString(json, "type")).getConstructor(String.class).newInstance(key.toString());
+					AbstractWeaponSettings<?, ?> settings = SETTING_TYPES.get(GsonHelper.getAsString(json, "type")).getConstructor(String.class).newInstance(key.toString());
 
 					settings.getCodec().parse(JsonOps.INSTANCE, json).resultOrPartial(msg -> System.out.println("Failed to load weapon settings for " + key + ": " + msg)).ifPresent(
 							settings::castAndDeserialize
 					);
 
+					settings.registerStatTooltips();
 					SETTINGS.put(key, settings);
 				} catch (InstantiationException | IllegalAccessException | InvocationTargetException |
 				         NoSuchMethodException e) {

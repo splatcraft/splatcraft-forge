@@ -3,11 +3,20 @@ package net.splatcraft.forge.items.weapons.settings;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.TooltipFlag;
+import net.splatcraft.forge.util.WeaponTooltip;
 
-public abstract class AbstractWeaponSettings<CODEC>{
+import java.util.*;
+
+public abstract class AbstractWeaponSettings<SELF extends AbstractWeaponSettings<SELF, CODEC>, CODEC>
+{
     public String name;
+
+    private final ArrayList<WeaponTooltip<SELF>> statTooltips = new ArrayList<>();
 
     public AbstractWeaponSettings(String name)
     {
@@ -17,23 +26,20 @@ public abstract class AbstractWeaponSettings<CODEC>{
     public abstract float calculateDamage(int tickCount, boolean airborne, float charge, boolean isOnRollCooldown);
     public abstract float getMinDamage();
 
-    //public abstract SELF deserializeJson(JsonObject json);
+    public void addStatsToTooltip(List<Component> tooltip, TooltipFlag flag)
+    {
+        for(WeaponTooltip<SELF> stat : statTooltips)
+            tooltip.add(stat.getTextComponent((SELF) this, flag.isAdvanced()).withStyle(ChatFormatting.DARK_GREEN));
+    }
+
+    public void registerStatTooltips()
+    {
+	    Collections.addAll(statTooltips, tooltipsToRegister());
+    }
+
+    public abstract WeaponTooltip<SELF>[] tooltipsToRegister();
 
     public abstract Codec<CODEC> getCodec();
-
-    public static float getJsonFloat(JsonObject json, String id)
-    {
-        return json.has(id) ? GsonHelper.getAsFloat(json, id) : 0;
-    }
-
-    public static int getJsonInt(JsonObject json, String id)
-    {
-        return json.has(id) ? GsonHelper.getAsInt(json, id) : 0;
-    }
-    public static boolean getJsonBoolean(JsonObject json, String id)
-    {
-        return json.has(id) && GsonHelper.getAsBoolean(json, id);
-    }
 
     public void castAndDeserialize(Object o)
     {

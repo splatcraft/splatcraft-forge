@@ -4,10 +4,11 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.GsonHelper;
+import net.splatcraft.forge.util.WeaponTooltip;
 
 import java.util.Optional;
 
-public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRecord>
+public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings, WeaponSettings.DataRecord>
 {
     public float projectileSize;
     public int projectileLifespan = 600;
@@ -30,16 +31,8 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
 
     public float baseDamage;
     public float minDamage;
-    public float chargedDamage;
     public int damageDecayStartTick;
     public float damageDecayPerTick;
-
-    public float chargerMobility;
-    public boolean fastMidAirCharge;
-    public float chargerPiercesAt;
-    public float chargeSpeed;
-    public float dischargeSpeed;
-
     public int rollCount;
     public float rollSpeed;
     public float rollInaccuracy;
@@ -67,9 +60,6 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
             return Math.max(e > 0 ? rollBaseDamage - (e * rollDamageDecayPerTick) : rollBaseDamage, rollMinDamage);
         }
 
-        if (charge > 0.0f)
-            return charge >= 1.0f ? chargedDamage : minDamage + (baseDamage - minDamage) * charge;
-
         int e = tickCount - damageDecayStartTick;
         return Math.max(e > 0 ? baseDamage - (e * damageDecayPerTick) : baseDamage, minDamage);
     }
@@ -77,6 +67,17 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
     @Override
     public float getMinDamage() {
         return minDamage;
+    }
+
+    @Override
+    public WeaponTooltip<WeaponSettings>[] tooltipsToRegister()
+    {
+        return new WeaponTooltip[]
+                {
+                        new WeaponTooltip<WeaponSettings>("speed", WeaponTooltip.Metrics.BPT,settings -> settings.projectileSpeed, WeaponTooltip.RANKER_ASCENDING),
+                        new WeaponTooltip<WeaponSettings>("damage", WeaponTooltip.Metrics.HEALTH, settings -> settings.baseDamage, WeaponTooltip.RANKER_ASCENDING),
+                        new WeaponTooltip<WeaponSettings>("fire_rate", WeaponTooltip.Metrics.TICKS, settings -> settings.firingSpeed, WeaponTooltip.RANKER_DESCENDING)
+                };
     }
 
     @Override
@@ -126,14 +127,6 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
             dualieTurret.damageDecayStartTick.ifPresent(this::setRollDamageDecayStartTick);
         });
 
-        data.charger.ifPresent(charger ->
-        {
-            charger.dischargeTicks.ifPresent(this::setDischargeTicks);
-            charger.chargedDamage.ifPresent(this::setChargedDamage);
-            setChargerMobility(charger.mobility);
-            setFastMidAirCharge(charger.fastMidairCharge.orElse(false));
-            setChargerPiercesAt(charger.piercesAtCharge);
-        });
     }
 
     @Override
@@ -141,8 +134,7 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
         return new DataRecord(new ProjectileDataRecord(projectileSize, projectileSpeed, Optional.of(startupTicks), Optional.of(projectileLifespan), Optional.of(projectileCount), Optional.of(pitchCompensation), Optional.of(firingSpeed),
 		        Optional.of(groundInaccuracy), Optional.of(airInaccuracy), inkConsumption, inkRecoveryCooldown, baseDamage, Optional.of(minDamage), Optional.of(damageDecayStartTick), Optional.of(damageDecayPerTick)),
                 Optional.of(new DualieRollDataRecord(rollCount, rollSpeed, rollInkConsumption, rollCooldown, lastRollCooldown)),
-                Optional.of(new DualieTurretDataRecord(rollInaccuracy, Optional.of(rollBaseDamage), Optional.of(rollMinDamage), Optional.of(rollDamageDecayStartTick), Optional.of(rollDamageDecayPerTick))),
-                Optional.of(new ChargerDataRecord(Optional.of(dischargeTicks), Optional.of(chargedDamage), chargerMobility, Optional.of(fastMidAirCharge), chargerPiercesAt)));
+                Optional.of(new DualieTurretDataRecord(rollInaccuracy, Optional.of(rollBaseDamage), Optional.of(rollMinDamage), Optional.of(rollDamageDecayStartTick), Optional.of(rollDamageDecayPerTick))));
     }
 
     public WeaponSettings setProjectileSize(float projectileSize) {
@@ -177,14 +169,6 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
 
     public WeaponSettings setStartupTicks(int startupTicks) {
         this.startupTicks = startupTicks;
-        this.chargeSpeed = 1f / (float)startupTicks;
-        return this;
-    }
-
-    public WeaponSettings setDischargeTicks(int dischargeTicks)
-    {
-        this.dischargeTicks = dischargeTicks;
-        this.dischargeSpeed = 1f / (float) dischargeTicks;
         return this;
     }
 
@@ -219,18 +203,12 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
         this.minDamage = baseDamage;
         this.rollBaseDamage = baseDamage;
         this.rollMinDamage = baseDamage;
-        this.chargedDamage = baseDamage;
         return this;
     }
 
     public WeaponSettings setMinDamage(float minDamage) {
         this.minDamage = minDamage;
         this.rollMinDamage = minDamage;
-        return this;
-    }
-
-    public WeaponSettings setChargedDamage(float chargedDamage) {
-        this.chargedDamage = chargedDamage;
         return this;
     }
 
@@ -243,21 +221,6 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
     public WeaponSettings setDamageDecayPerTick(float damageDecayPerTick) {
         this.damageDecayPerTick = damageDecayPerTick;
         this.rollDamageDecayPerTick = damageDecayPerTick;
-        return this;
-    }
-
-    public WeaponSettings setChargerMobility(float chargerMobility) {
-        this.chargerMobility = chargerMobility;
-        return this;
-    }
-
-    public WeaponSettings setFastMidAirCharge(boolean fastMidAirCharge) {
-        this.fastMidAirCharge = fastMidAirCharge;
-        return this;
-    }
-
-    public WeaponSettings setChargerPiercesAt(float chargerPiercesAt) {
-        this.chargerPiercesAt = chargerPiercesAt;
         return this;
     }
 
@@ -325,16 +288,14 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
     public record DataRecord(
         ProjectileDataRecord projectile,
         Optional<DualieRollDataRecord> dualieRoll,
-        Optional<DualieTurretDataRecord> dualieTurret,
-        Optional<ChargerDataRecord> charger
+        Optional<DualieTurretDataRecord> dualieTurret
     )
     {
         public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
                         ProjectileDataRecord.CODEC.fieldOf("projectile").forGetter(DataRecord::projectile),
                         DualieRollDataRecord.CODEC.optionalFieldOf("dualie_roll").forGetter(DataRecord::dualieRoll),
-                        DualieTurretDataRecord.CODEC.optionalFieldOf("dualie_turret").forGetter(DataRecord::dualieTurret),
-                        ChargerDataRecord.CODEC.optionalFieldOf("charger").forGetter(DataRecord::charger)
+                        DualieTurretDataRecord.CODEC.optionalFieldOf("dualie_turret").forGetter(DataRecord::dualieTurret)
                 ).apply(instance, DataRecord::new)
         );
     }
@@ -413,25 +374,6 @@ public class WeaponSettings extends AbstractWeaponSettings<WeaponSettings.DataRe
                         Codec.INT.optionalFieldOf("damage_decay_start_tick").forGetter(DualieTurretDataRecord::damageDecayStartTick),
                         Codec.FLOAT.optionalFieldOf("damage_decay_per_tick").forGetter(DualieTurretDataRecord::damageDecayPerTick)
                 ).apply(instance, DualieTurretDataRecord::new)
-        );
-    }
-
-    public record ChargerDataRecord(
-        Optional<Integer> dischargeTicks,
-        Optional<Float> chargedDamage,
-        float mobility,
-        Optional<Boolean> fastMidairCharge,
-        float piercesAtCharge
-    )
-    {
-        public static final Codec<ChargerDataRecord> CODEC = RecordCodecBuilder.create(
-                instance -> instance.group(
-                        Codec.INT.optionalFieldOf("stored_charge_ticks").forGetter(ChargerDataRecord::dischargeTicks),
-                        Codec.FLOAT.optionalFieldOf("charged_damage").forGetter(ChargerDataRecord::chargedDamage),
-                        Codec.FLOAT.fieldOf("mobility").forGetter(ChargerDataRecord::mobility),
-                        Codec.BOOL.optionalFieldOf("fast_midair_charge").forGetter(ChargerDataRecord::fastMidairCharge),
-                        Codec.FLOAT.fieldOf("pierces_at_charge").forGetter(ChargerDataRecord::piercesAtCharge)
-                ).apply(instance, ChargerDataRecord::new)
         );
     }
 }

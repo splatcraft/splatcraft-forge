@@ -37,10 +37,7 @@ import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.IColoredItem;
 import net.splatcraft.forge.items.InkTankItem;
-import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.SubWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.*;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
@@ -59,10 +56,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<?>> extends Item implements IColoredItem
+public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> extends Item implements IColoredItem
 {
     public static final int USE_DURATION = 72000;
-    protected final List<WeaponTooltip> stats = new ArrayList<>();
 
     public ResourceLocation settingsId;
     public boolean isSecret;
@@ -92,11 +88,12 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<?>> extend
 
     public abstract Class<S> getSettingsClass();
 
-    private static final HashMap<Class<? extends AbstractWeaponSettings<?>>, AbstractWeaponSettings<?>> DEFAULTS = new HashMap<>() // a
+    private static final HashMap<Class<? extends AbstractWeaponSettings<?, ?>>, AbstractWeaponSettings<?, ?>> DEFAULTS = new HashMap<>() // a
     {{
         put(WeaponSettings.class, WeaponSettings.DEFAULT);
         put(SubWeaponSettings.class, SubWeaponSettings.DEFAULT);
         put(RollerWeaponSettings.class, RollerWeaponSettings.DEFAULT);
+        put(ChargerWeaponSettings.class, ChargerWeaponSettings.DEFAULT);
     }};
     public S getSettings(ItemStack stack)
     {
@@ -180,13 +177,7 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<?>> extend
             tooltip.add(new TextComponent(""));
         }
 
-        for (WeaponTooltip stat : stats) {
-            tooltip.add(stat.getTextComponent(stack, level).withStyle(ChatFormatting.DARK_GREEN));
-        }
-    }
-
-    public void addStat(WeaponTooltip stat) {
-        stats.add(stat);
+        getSettings(stack).addStatsToTooltip(tooltip, flag);
     }
 
     @Override

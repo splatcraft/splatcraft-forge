@@ -31,12 +31,9 @@ public class SplatlingItem extends WeaponBaseItem<WeaponSettings> implements ICh
 	private AttributeModifier SPEED_MODIFIER;
 	public ChargerChargingTickableSound chargingSound;
 
-	protected SplatlingItem(String settingsId) {
+	protected SplatlingItem(String settingsId)
+	{
 		super(settingsId);
-
-		addStat(new WeaponTooltip("range", (stack, level) -> (int) (getSettings(stack).projectileSpeed / getSettings(stack).projectileLifespan * 100)));
-		addStat(new WeaponTooltip("charge_speed", (stack, level) -> (int) ((40 - getSettings(stack).startupTicks) / 40f * 100)));
-		addStat(new WeaponTooltip("mobility", (stack, level) -> (int) (getSettings(stack).chargerMobility * 100)));
 	}
 
 	@Override
@@ -84,10 +81,12 @@ public class SplatlingItem extends WeaponBaseItem<WeaponSettings> implements ICh
 		{
 			WeaponSettings settings = getSettings(stack);
 			float prevCharge = PlayerCharge.getChargeValue(player, stack);
-			float newCharge = prevCharge + settings.chargeSpeed;
+			float newCharge = prevCharge + settings.firingSpeed;
+			/*
 			if (!entity.isOnGround() && !settings.fastMidAirCharge || !enoughInk(entity, this, getInkConsumption(stack, newCharge), 0, timeLeft % 4 == 0)) {
 				newCharge = prevCharge + (settings.chargeSpeed * 0.33f);
 			}
+			*/
 
 			if (prevCharge < maxCharges && newCharge >= Math.ceil(prevCharge) && prevCharge > 0) {
 				playChargeReadySound(player, newCharge / maxCharges);
@@ -148,7 +147,7 @@ public class SplatlingItem extends WeaponBaseItem<WeaponSettings> implements ICh
 	public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack)
 	{
 		if(SPEED_MODIFIER == null)
-			SPEED_MODIFIER = new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, "Charger mobility", getSettings(stack).chargerMobility - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
+			SPEED_MODIFIER = new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, "Charger mobility", /*getSettings(stack).chargerMobility*/ - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
 		return SPEED_MODIFIER;
 	}

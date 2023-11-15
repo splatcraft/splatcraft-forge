@@ -4,10 +4,11 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.GsonHelper;
+import net.splatcraft.forge.util.WeaponTooltip;
 
 import java.util.Optional;
 
-public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSettings.DataRecord> {
+public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSettings, RollerWeaponSettings.DataRecord> {
     public static final RollerWeaponSettings DEFAULT = new RollerWeaponSettings("default");
     public String name;
     public boolean isBrush;
@@ -58,6 +59,17 @@ public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSet
 
     public float getMinDamage() {
         return 0;
+    }
+
+    @Override
+    public WeaponTooltip<RollerWeaponSettings>[] tooltipsToRegister()
+    {
+        return new WeaponTooltip[]
+        {
+            new WeaponTooltip<RollerWeaponSettings>("speed", WeaponTooltip.Metrics.BPT, settings -> settings.swingProjectileSpeed, WeaponTooltip.RANKER_ASCENDING),
+            new WeaponTooltip<RollerWeaponSettings>("mobility", WeaponTooltip.Metrics.MULTIPLIER, settings -> settings.dashMobility, WeaponTooltip.RANKER_ASCENDING),
+            new WeaponTooltip<RollerWeaponSettings>("direct_damage", WeaponTooltip.Metrics.HEALTH, settings -> settings.rollDamage, WeaponTooltip.RANKER_ASCENDING)
+        };
     }
 
     @Override

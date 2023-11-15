@@ -1,20 +1,35 @@
 {
-  "type": "splatcraft:main",
-  "projectile": {
-	"size": 0.85,
-	"lifespan": 16,
-	"speed": 2.4,
-	"startup_ticks": 35,
-	"firing_rate": 10,
-	"ink_consumption": 25,
-	"ink_recovery_cooldown": 7,
-	"min_damage": 8,
-	"base_damage": 16
-  },
-  "charger": {
-	"charged_damage": 36,
-	"stored_charge_ticks": 25,
-	"mobility": 0.15,
-	"pierces_at_charge": 1
-  }
+	"type": "splatcraft:charger",
+	"projectile":
+	{
+		"size": 0.85,
+		"ink_coverage_on_impact": 0.7225,
+		"speed": 2.4,
+		"min_charge_range": 9,
+		"max_charge_range": 30,
+
+		"ink_trail_coverage": 0.935,
+		"ink_trail_tick_interval": 0,
+
+		"min_partial_charge_damage": 8,
+		"max_partial_charge_damage": 16,
+		"fully_charged_damage": 36,
+		"pierces_at_charge": 1.0,
+		"full_damage_to_mobs": false
+	},
+	"shot":
+	{
+		"endlag_ticks": 10,
+		"min_charge_ink_consumption": 2.25,
+		"full_charge_ink_consumption": 25,
+		"ink_recovery_cooldown": 7
+	},
+	"charge":
+	{
+		"charge_time_ticks": 35,
+		"airborne_charge_time_ticks": 92,
+		"empty_tank_charge_time_ticks": 92,
+		"charge_storage_ticks": 25,
+		"charging_move_speed": 0.15
+	}
 }

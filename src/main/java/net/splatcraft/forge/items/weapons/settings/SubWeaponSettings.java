@@ -4,10 +4,11 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
+import net.splatcraft.forge.util.WeaponTooltip;
 
 import java.util.Optional;
 
-public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings.DataRecord>
+public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings, SubWeaponSettings.DataRecord>
 {
 	public float directDamage;
 	public float indirectDamage;
@@ -41,6 +42,17 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings.
 	public float getMinDamage()
 	{
 		return indirectDamage;
+	}
+
+	@Override
+	public WeaponTooltip<SubWeaponSettings>[] tooltipsToRegister()
+	{
+		return new WeaponTooltip[]
+				{
+					new WeaponTooltip<SubWeaponSettings>("direct_damage", WeaponTooltip.Metrics.HEALTH, settings -> settings.directDamage, WeaponTooltip.RANKER_ASCENDING),
+					new WeaponTooltip<SubWeaponSettings>("splash_damage", WeaponTooltip.Metrics.HEALTH, settings -> settings.indirectDamage, WeaponTooltip.RANKER_ASCENDING),
+					new WeaponTooltip<SubWeaponSettings>("ink_consumption", WeaponTooltip.Metrics.UNITS, settings -> settings.inkConsumption, WeaponTooltip.RANKER_DESCENDING)
+				};
 	}
 
 	@Override

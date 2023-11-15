@@ -11,6 +11,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -34,6 +35,7 @@ import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.ChargerWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.registries.SplatcraftItems;
@@ -56,6 +58,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
     public boolean canPierce = false;
     public boolean persistent = false;
     public ItemStack sourceWeapon = ItemStack.EMPTY;
+    public float impactCoverage;
     public float trailSize = 0;
     public int trailCooldown = 0;
     public String damageType = "splat";
@@ -75,6 +78,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         super(SplatcraftEntities.INK_PROJECTILE.get(), thrower, level);
         setColor(color);
         setProjectileSize(projectileSize);
+        this.impactCoverage = projectileSize * 0.85f;
         this.throwerAirborne = !thrower.isOnGround();
         this.damage = damage;
         this.inkType = inkType;
@@ -95,12 +99,16 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         return this;
     }
 
-    public InkProjectileEntity setChargerStats(float charge, int lifespan, boolean canPierce) {
+    public InkProjectileEntity setChargerStats(float charge, ChargerWeaponSettings settings)
+    {
         this.charge = charge;
-        trailSize = getProjectileSize() * 1.1f;
-        this.lifespan = lifespan;
+        trailSize = settings.projectileInkTrailCoverage;
+        trailCooldown = settings.projectileInkTrailCooldown;
+        lifespan = (int) (settings.minProjectileLifeTicks + (settings.maxProjectileLifeTicks - settings.minProjectileLifeTicks) * charge);
+        impactCoverage = settings.projectileInkCoverage;
+
         gravityVelocity = 0;
-        this.canPierce = canPierce;
+        this.canPierce = charge >= settings.piercesAtCharge;
         setProjectileType(Types.CHARGER);
         return this;
     }
@@ -155,7 +163,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
         if (!level.isClientSide && !persistent && lifespan-- <= 0) {
             float dmg = damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown);
-            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, explodes ? damage.getMinDamage() : dmg, dmg, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
+            InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), impactCoverage, explodes ? damage.getMinDamage() : dmg, dmg, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
             if (explodes) {
                 level.broadcastEntityEvent(this, (byte) 3);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundSource.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
@@ -228,7 +236,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
         if (!canPierce) {
             if (explodes) {
-                InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, damage.getMinDamage(), dmg, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
+                InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), impactCoverage, damage.getMinDamage(), dmg, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
                 level.broadcastEntityEvent(this, (byte) 3);
                 level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundSource.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             } else
@@ -251,7 +259,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         super.onHitBlock(result);
 
         float dmg = damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown);
-        InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), getProjectileSize() * 0.85f, explodes ? damage.getMinDamage() : dmg, dmg, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
+        InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), impactCoverage, explodes ? damage.getMinDamage() : dmg, dmg, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
         if (explodes) {
             level.broadcastEntityEvent(this, (byte) 3);
             level.playSound(null, getX(), getY(), getZ(), SplatcraftSounds.blasterExplosion, SoundSource.PLAYERS, 0.8F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
@@ -299,6 +307,9 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
     public void readAdditionalSaveData(CompoundTag nbt) {
         if (nbt.contains("Size"))
             setProjectileSize(nbt.getFloat("Size"));
+
+        impactCoverage = nbt.contains("ImpactCoverage") ? nbt.getFloat("ImpactCoverage") : getProjectileSize() * 0.85f;
+
         if (nbt.contains("Color"))
             setColor(ColorUtils.getColorFromNbt(nbt));
 
@@ -324,7 +335,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
         sourceWeapon = ItemStack.of(nbt.getCompound("SourceWeapon"));
 
-        AbstractWeaponSettings<?> settings = DataHandler.WeaponStatsListener.SETTINGS.get(new ResourceLocation(nbt.getString(nbt.getString("Settings"))));
+        AbstractWeaponSettings<?, ?> settings = DataHandler.WeaponStatsListener.SETTINGS.get(new ResourceLocation(nbt.getString(nbt.getString("Settings"))));
         if(settings != null)
             damage = settings;
         else if (sourceWeapon.getItem() instanceof WeaponBaseItem weapon)

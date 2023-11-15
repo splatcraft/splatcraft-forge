@@ -57,10 +57,6 @@ public class RollerItem extends WeaponBaseItem<RollerWeaponSettings> {
     protected RollerItem(String settings) {
         super(settings);
         rollers.add(this);
-
-        addStat(new WeaponTooltip("range", (stack, level) -> (int) ((getSettings(stack).flingProjectileSpeed + getSettings(stack).swingProjectileSpeed) * 50)));
-        addStat(new WeaponTooltip("ink_speed", (stack, level) -> (int) (getSettings(stack).dashMobility / 2f * 100)));
-        addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((20 - (getSettings(stack).flingTime + getSettings(stack).swingTime) / 2f) * 5)));
     }
 
     @Override

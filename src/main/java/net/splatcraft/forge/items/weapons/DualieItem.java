@@ -56,9 +56,11 @@ public class DualieItem extends WeaponBaseItem<WeaponSettings>
 
         this.settings = settings;
 
+        /*
         addStat(new WeaponTooltip("range", (stack, level) -> (int) (getSettings(stack).projectileSpeed / 1.2f * 100)));
         addStat(new WeaponTooltip("damage", (stack, level) -> (int) (getSettings(stack).baseDamage / 20 * 100)));
         addStat(new WeaponTooltip("mobility", (stack, level) -> (int) (getSettings(stack).rollSpeed * 100)));
+        */
 
         dualies.add(this);
     }

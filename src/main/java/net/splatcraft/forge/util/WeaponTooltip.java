@@ -2,30 +2,96 @@ package net.splatcraft.forge.util;
 
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+import net.splatcraft.forge.handlers.DataHandler;
+import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 
-public class WeaponTooltip {
+import java.text.DecimalFormat;
+import java.util.List;
+
+@SuppressWarnings("unchecked")
+public class WeaponTooltip<S extends AbstractWeaponSettings<S, ?>>
+{
     private final String name;
-    private final IStatValueGetter valueGetter;
+    private final IStatValueGetter<S> valueGetter;
+    private final IStatRanker ranker;
+    private final Metrics metric;
 
-    public WeaponTooltip(String name, IStatValueGetter valueGetter) {
+    public static final IStatRanker RANKER_ASCENDING = Float::compare;
+    public static final IStatRanker RANKER_DESCENDING = (a, b) -> Float.compare(b, a);
+
+    public WeaponTooltip(String name, Metrics metric, IStatValueGetter<S> valueGetter, IStatRanker ranker)
+    {
         this.name = name;
         this.valueGetter = valueGetter;
+        this.ranker = ranker;
+        this.metric = metric;
     }
 
-    public int getStatValue(ItemStack stack, @Nullable Level level) {
-        return valueGetter.get(stack, level);
+    public float getStatValue(S settings) {
+        return valueGetter.get(settings);
     }
-
-    public MutableComponent getTextComponent(ItemStack stack, Level level)
+    public int getStatRanking(S settings)
     {
-        return new TranslatableComponent("weaponStat." + name, getStatValue(stack, level));
+        //this can be pooled if we need to micro-optimize
+        List<Float> settingsList = DataHandler.WeaponStatsListener.SETTINGS.values().stream().filter(settings.getClass()::isInstance).map(settings.getClass()::cast)
+                .sorted((setting, other) -> ranker.apply(valueGetter, (S) setting, (S) other)).map((setting) -> valueGetter.get((S) setting)).distinct().toList();
+
+        float value = valueGetter.get(settings);
+        return settingsList.indexOf(value) == 0 ? 0 : (int) Math.ceil((float) (settingsList.indexOf(value) + 1) / settingsList.size()  * 5f);
     }
 
-    public interface IStatValueGetter
+    public MutableComponent getTextComponent(S settings, boolean advanced)
     {
-        int get(ItemStack stack, @Nullable Level level);
+
+        if(advanced)
+            return new TranslatableComponent("weaponStat.format", new TranslatableComponent("weaponStat." + name),
+                    new TranslatableComponent("weaponStat.metric." + metric.localizedName, new DecimalFormat("0.#").format(getStatValue(settings))));
+        else
+        {
+            int ranking = getStatRanking(settings);
+
+            Object[] args = new Object[5];
+            for(int i = 1; i <= 5; i++)
+                args[i-1] = new TranslatableComponent("weaponStat.gauge." + (ranking >= i ? "full" : "empty"));
+
+            return new TranslatableComponent("weaponStat.format", new TranslatableComponent("weaponStat." + name), new TranslatableComponent("weaponStat.metric.gauge", args));
+        }
+    }
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    public interface IStatValueGetter<S extends AbstractWeaponSettings<S, ?>>
+    {
+        float get(S settings);
+    }
+    public interface IStatRanker
+    {
+        int apply(float value, float other);
+
+        default <S extends AbstractWeaponSettings<S, ?>> int apply(IStatValueGetter<S> statValueGetter, S settings, S other)
+        {
+            return apply(statValueGetter.get(settings), statValueGetter.get(other));
+        }
+    }
+
+    public enum Metrics
+    {
+        SECONDS("seconds"),
+        TICKS("ticks"),
+        BLOCKS("blocks"),
+        BPS("blocks_per_second"),
+        BPT("blocks_per_tick"),
+        MULTIPLIER("multiplier"),
+        UNITS("units"),
+        HEALTH("health")
+        ;
+        public final String localizedName;
+        Metrics(String localizedName)
+        {
+              this.localizedName = localizedName;
+        }
     }
 }

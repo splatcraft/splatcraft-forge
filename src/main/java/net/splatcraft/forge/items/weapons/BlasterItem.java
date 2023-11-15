@@ -32,9 +32,11 @@ public class BlasterItem extends WeaponBaseItem<WeaponSettings>
     protected BlasterItem(String settings) {
         super(settings);
 
+        /*
         addStat(new WeaponTooltip("range", (stack, level) -> (int) (getSettings(stack).projectileSpeed / getSettings(stack).projectileLifespan * 100)));
         addStat(new WeaponTooltip("impact", (stack, level) -> (int) (getSettings(stack).projectileSize / 2.0f * 100)));
         addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - getSettings(stack).firingSpeed * 0.5f) / 15f * 100)));
+        */
     }
 
     @Override

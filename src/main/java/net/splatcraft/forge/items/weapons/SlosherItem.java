@@ -34,9 +34,11 @@ public class SlosherItem extends WeaponBaseItem<WeaponSettings>
     protected SlosherItem(String settings) {
         super(settings);
 
+        /*
         addStat(new WeaponTooltip("range", (stack, level) -> (int) (getSettings(stack).projectileSpeed / 1.2f * 100)));
         addStat(new WeaponTooltip("damage", (stack, level) -> (int) (getSettings(stack).baseDamage / 20 * 100)));
         addStat(new WeaponTooltip("handling", (stack, level) -> (int) ((15 - getSettings(stack).startupTicks) / 15f * 100)));
+        */
     }
 
     @Override
