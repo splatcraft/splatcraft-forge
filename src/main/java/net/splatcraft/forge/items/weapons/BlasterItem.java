@@ -11,13 +11,14 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.items.weapons.settings.BlasterWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponTooltip;
 
-public class BlasterItem extends WeaponBaseItem<WeaponSettings>
+public class BlasterItem extends WeaponBaseItem<BlasterWeaponSettings>
 {
     public static RegistryObject<BlasterItem> createBlaster(DeferredRegister<Item> registry, String settings, String name)
     {
@@ -32,16 +33,11 @@ public class BlasterItem extends WeaponBaseItem<WeaponSettings>
     protected BlasterItem(String settings) {
         super(settings);
 
-        /*
-        addStat(new WeaponTooltip("range", (stack, level) -> (int) (getSettings(stack).projectileSpeed / getSettings(stack).projectileLifespan * 100)));
-        addStat(new WeaponTooltip("impact", (stack, level) -> (int) (getSettings(stack).projectileSize / 2.0f * 100)));
-        addStat(new WeaponTooltip("fire_rate", (stack, level) -> (int) ((15 - getSettings(stack).firingSpeed * 0.5f) / 15f * 100)));
-        */
     }
 
     @Override
-    public Class<WeaponSettings> getSettingsClass() {
-        return WeaponSettings.class;
+    public Class<BlasterWeaponSettings> getSettingsClass() {
+        return BlasterWeaponSettings.class;
     }
 
     @Override
@@ -49,10 +45,10 @@ public class BlasterItem extends WeaponBaseItem<WeaponSettings>
         ItemCooldowns cooldownTracker = ((Player) entity).getCooldowns();
         if (!cooldownTracker.isOnCooldown(this))
         {
-            WeaponSettings settings = getSettings(stack);
+            BlasterWeaponSettings settings = getSettings(stack);
             PlayerCooldown.setPlayerCooldown((Player) entity, new PlayerCooldown(stack, settings.startupTicks, ((Player) entity).getInventory().selected, entity.getUsedItemHand(), true, false, true, entity.isOnGround()));
             if (!level.isClientSide) {
-                cooldownTracker.addCooldown(this, settings.firingSpeed);
+                cooldownTracker.addCooldown(this, settings.endlagTicks);
             }
         }
     }
@@ -61,11 +57,11 @@ public class BlasterItem extends WeaponBaseItem<WeaponSettings>
     public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown) {
         if (!level.isClientSide)
         {
-            WeaponSettings settings = getSettings(stack);
+            BlasterWeaponSettings settings = getSettings(stack);
             if (reduceInk(player, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
                 InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize, settings).setShooterTrail();
-                proj.setBlasterStats(settings.projectileLifespan);
-                proj.shootFromRotation(player, player.getXRot(), player.getYRot(), settings.pitchCompensation, settings.projectileSpeed, player.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy);
+                proj.setBlasterStats(settings);
+                proj.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, settings.projectileSpeed, player.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy);
                 level.addFreshEntity(proj);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.blasterShot, SoundSource.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
             }

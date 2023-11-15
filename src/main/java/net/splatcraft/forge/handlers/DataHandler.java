@@ -135,6 +135,7 @@ public class DataHandler
 		public static final HashMap<String, Class<? extends AbstractWeaponSettings<?, ?>>> SETTING_TYPES = new HashMap<>()
 		{{
 			put(Splatcraft.MODID+":main", WeaponSettings.class);
+			put(Splatcraft.MODID+":blaster", BlasterWeaponSettings.class);
 			put(Splatcraft.MODID+":roller", RollerWeaponSettings.class);
 			put(Splatcraft.MODID+":charger", ChargerWeaponSettings.class);
 			put(Splatcraft.MODID+":sub_weapon", SubWeaponSettings.class);

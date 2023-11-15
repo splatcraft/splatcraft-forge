@@ -35,6 +35,7 @@ import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.BlasterWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.ChargerWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftEntities;
@@ -113,10 +114,13 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         return this;
     }
 
-    public InkProjectileEntity setBlasterStats(int lifespan) {
-        this.lifespan = lifespan;
+    public InkProjectileEntity setBlasterStats(BlasterWeaponSettings settings) {
+        this.lifespan = settings.projectileLifeTicks;
         gravityVelocity = 0;
-        trailSize = getProjectileSize() * 0.5f;
+        trailSize = settings.projectileInkTrailCoverage;
+        trailCooldown = settings.projectileInkTrailCooldown;
+        impactCoverage = settings.projectileExplosionRadius;
+
         explodes = true;
         setProjectileType(Types.BLASTER);
         return this;
