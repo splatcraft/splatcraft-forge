@@ -138,6 +138,7 @@ public class DataHandler
 			put(Splatcraft.MODID+":blaster", BlasterWeaponSettings.class);
 			put(Splatcraft.MODID+":roller", RollerWeaponSettings.class);
 			put(Splatcraft.MODID+":charger", ChargerWeaponSettings.class);
+			put(Splatcraft.MODID+":slosher", SlosherWeaponSettings.class);
 			put(Splatcraft.MODID+":sub_weapon", SubWeaponSettings.class);
 		}}; //TODO make better registry probably
 		public static final  HashMap<ResourceLocation, AbstractWeaponSettings<?, ?>> SETTINGS = new HashMap<>();

@@ -1,15 +1,25 @@
 {
-  "type": "splatcraft:main",
-  "projectile": {
-	"size": 1.6,
-	"speed": 0.4,
-	"count": 2,
-	"pitch_compensation": -15,
-	"startup_ticks": 7,
-	"ground_inaccuracy": 8,
-	"air_inaccuracy": 8,
-	"ink_consumption": 7,
-	"ink_recovery_cooldown": 13,
-	"base_damage": 14
-  }
+	"type": "splatcraft:slosher",
+	"projectile":
+	{
+		"size": 1.6,
+		"speed": 0.8,
+
+		"ink_coverage_on_impact": 1.36,
+		"ink_trail_coverage": 1.2,
+		"ink_trail_tick_interval": 4,
+
+		"count": 2,
+		"angle_between_projectiles": 8,
+
+		"direct_damage": 7
+	},
+	"shot":
+	{
+		"pitch_compensation": -15,
+		"startup_ticks": 2,
+		"endlag_ticks": 10,
+		"ink_consumption": 7,
+		"ink_recovery_cooldown": 13
+	}
 }

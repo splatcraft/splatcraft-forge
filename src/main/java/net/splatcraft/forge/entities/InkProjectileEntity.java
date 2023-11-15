@@ -34,10 +34,7 @@ import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.BlasterWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.ChargerWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.*;
 import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
@@ -123,6 +120,16 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
         explodes = true;
         setProjectileType(Types.BLASTER);
+        return this;
+    }
+
+    public InkProjectileEntity setSlosherStats(SlosherWeaponSettings settings)
+    {
+        trailSize = settings.projectileInkTrailCoverage;
+        trailCooldown = settings.projectileInkTrailCooldown;
+        impactCoverage = settings.projectileInkCoverage;
+
+        setProjectileType(Types.SHOOTER);
         return this;
     }
 
