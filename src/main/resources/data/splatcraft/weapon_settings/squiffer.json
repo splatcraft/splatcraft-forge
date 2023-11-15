@@ -14,8 +14,7 @@
 		"min_partial_charge_damage": 8,
 		"max_partial_charge_damage": 16,
 		"fully_charged_damage": 28,
-		"pierces_at_charge": 1.0,
-		"full_damage_to_mobs": false
+		"pierces_at_charge": 1.0
 	},
 	"shot":
 	{
@@ -31,5 +30,6 @@
 		"empty_tank_charge_time_ticks": 60,
 		"charge_storage_ticks": 25,
 		"charging_move_speed": 0.3
-	}
+	},
+	"full_damage_to_mobs": false
 }

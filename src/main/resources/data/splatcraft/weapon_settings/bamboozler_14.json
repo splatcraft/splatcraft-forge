@@ -12,8 +12,7 @@
 		"ink_trail_tick_interval": 0,
 
 		"min_partial_charge_damage": 6,
-		"max_partial_charge_damage": 17,
-		"full_damage_to_mobs": false
+		"max_partial_charge_damage": 17
 	},
 	"shot":
 	{
@@ -29,5 +28,6 @@
 		"empty_tank_charge_time_ticks": 35,
 		"charge_storage_ticks": 0,
 		"charging_move_speed": 0.6
-	}
+	},
+	"full_damage_to_mobs": false
 }

@@ -78,6 +78,8 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
     {
         ProjectileDataRecord projectile = data.projectile;
 
+        data.fullDamageToMobs.ifPresent(this::setBypassesMobDamage);
+
         setProjectileSize(projectile.size);
         projectile.inkCoverageImpact.ifPresent(this::setProjectileInkCoverage);
         setProjectileSpeed(projectile.speed);
@@ -91,7 +93,6 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
         setBaseChargeDamage(projectile.baseChargeDamage);
         projectile.fullyChargedDamage.ifPresent(this::setChargedDamage);
         projectile.piercesAtCharge.ifPresent(this::setPiercesAtCharge);
-        projectile.fullDamageToMobs.ifPresent(this::setBypassesMobDamage);
 
         ShotDataRecord shot = data.shot;
 
@@ -111,9 +112,11 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
 
     @Override
     public DataRecord serialize() {
-        return new DataRecord(new ProjectileDataRecord(projectileSize, Optional.of(projectileInkCoverage), minProjectileRange, maxProjectileRange, projectileSpeed, Optional.of(projectileInkTrailCoverage), Optional.of(projectileInkTrailCooldown),
-                minChargeDamage, baseChargeDamage, Optional.of(chargedDamage), Optional.of(piercesAtCharge), Optional.of(bypassesMobDamage)),
-                new ShotDataRecord(endLagTicks, minInkConsumption, maxInkConsumption, inkRecoveryCooldown), new ChargeDataRecord(chargeTimeTicks, Optional.of(airborneChargeTimeTicks), Optional.of(emptyTankChargeTimeTicks), chargeStorageTicks, chargingWalkSpeed));
+        return new DataRecord(new ProjectileDataRecord(projectileSize, Optional.of(projectileInkCoverage), minProjectileRange, maxProjectileRange, projectileSpeed,
+                Optional.of(projectileInkTrailCoverage), Optional.of(projectileInkTrailCooldown), minChargeDamage, baseChargeDamage, Optional.of(chargedDamage), Optional.of(piercesAtCharge)),
+                new ShotDataRecord(endLagTicks, minInkConsumption, maxInkConsumption, inkRecoveryCooldown),
+                new ChargeDataRecord(chargeTimeTicks, Optional.of(airborneChargeTimeTicks), Optional.of(emptyTankChargeTimeTicks), chargeStorageTicks, chargingWalkSpeed),
+                Optional.of(bypassesMobDamage));
     }
 
     public ChargerWeaponSettings setProjectileSize(float projectileSize) {
@@ -242,14 +245,16 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
     public record DataRecord(
         ProjectileDataRecord projectile,
         ShotDataRecord shot,
-        ChargeDataRecord charge
+        ChargeDataRecord charge,
+        Optional<Boolean> fullDamageToMobs
     )
     {
         public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
                         ProjectileDataRecord.CODEC.fieldOf("projectile").forGetter(DataRecord::projectile),
                         ShotDataRecord.CODEC.fieldOf("shot").forGetter(DataRecord::shot),
-                        ChargeDataRecord.CODEC.fieldOf("charge").forGetter(DataRecord::charge)
+                        ChargeDataRecord.CODEC.fieldOf("charge").forGetter(DataRecord::charge),
+                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::fullDamageToMobs)
                 ).apply(instance, DataRecord::new)
         );
     }
@@ -265,8 +270,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
             float minChargeDamage,
             float baseChargeDamage,
             Optional<Float> fullyChargedDamage,
-            Optional<Float> piercesAtCharge,
-            Optional<Boolean> fullDamageToMobs
+            Optional<Float> piercesAtCharge
     )
     {
         public static final Codec<ProjectileDataRecord> CODEC = RecordCodecBuilder.create(
@@ -281,8 +285,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
                         Codec.FLOAT.fieldOf("min_partial_charge_damage").forGetter(ProjectileDataRecord::minChargeDamage),
                         Codec.FLOAT.fieldOf("max_partial_charge_damage").forGetter(ProjectileDataRecord::baseChargeDamage),
                         Codec.FLOAT.optionalFieldOf("fully_charged_damage").forGetter(ProjectileDataRecord::fullyChargedDamage),
-                        Codec.FLOAT.optionalFieldOf("pierces_at_charge").forGetter(ProjectileDataRecord::piercesAtCharge),
-                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(ProjectileDataRecord::fullDamageToMobs)
+                        Codec.FLOAT.optionalFieldOf("pierces_at_charge").forGetter(ProjectileDataRecord::piercesAtCharge)
                 ).apply(instance, ProjectileDataRecord::new)
         );
     }
