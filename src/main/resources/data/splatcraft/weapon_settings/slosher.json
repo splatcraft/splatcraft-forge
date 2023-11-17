@@ -3,11 +3,11 @@
 	"projectile":
 	{
 		"size": 1.6,
-		"speed": 0.8,
+		"speed": 1.1,
 
 		"ink_coverage_on_impact": 1.36,
 		"ink_trail_coverage": 1.2,
-		"ink_trail_tick_interval": 4,
+		"ink_trail_tick_interval": 3,
 
 		"count": 2,
 		"angle_between_projectiles": 8,
