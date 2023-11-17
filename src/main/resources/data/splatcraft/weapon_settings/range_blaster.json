@@ -1,0 +1,24 @@
+{"type": "splatcraft:blaster",
+	"projectile": 
+	{
+		"size": 2.25,
+		"range": 7.35,
+		"speed": 1.05,
+		"ink_explosion_radius": 1.9125,
+		"ink_trail_coverage": 1.125,
+		"ink_trail_tick_interval": 0,
+
+		"direct_damage": 25.0,
+		"splash_damage": 10.0
+	},
+	"shot":
+	{
+		"startup_ticks": 4,
+		"endlag_ticks": 22,
+		"ground_inaccuracy": 0.0,
+		"airborne_inaccuracy": 8.0,
+		"ink_consumption": 10.0,
+		"ink_recovery_cooldown": 23.0
+	},
+	"full_damage_to_mobs": false
+}

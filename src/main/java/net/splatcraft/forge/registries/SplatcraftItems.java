@@ -84,6 +84,8 @@ public class SplatcraftItems {
     public static final RegistryObject<BlasterItem> clashBlaster = BlasterItem.createBlaster(REGISTRY, "clash_blaster", "clash_blaster");
     public static final RegistryObject<BlasterItem> clashBlasterNeo = BlasterItem.createBlaster(REGISTRY, "clash_blaster", "clash_blaster_neo");
     public static final RegistryObject<BlasterItem> lunaBlaster = BlasterItem.createBlaster(REGISTRY, "luna_blaster", "luna_blaster");
+    public static final RegistryObject<BlasterItem> rapidBlaster = BlasterItem.createBlaster(REGISTRY, "rapid_blaster", "rapid_blaster");
+    public static final RegistryObject<BlasterItem> rapidBlasterPro = BlasterItem.createBlaster(REGISTRY, "rapid_blaster_pro", "rapid_blaster_pro");
 
     //Rollers
     public static final RegistryObject<RollerItem> splatRoller = RollerItem.create(REGISTRY, "splat_roller", "splat_roller");

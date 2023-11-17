@@ -46,6 +46,7 @@ public class BlueprintItem extends Item
 		put("rollers", instanceOf(RollerItem.class));
 		put("chargers", instanceOf(ChargerItem.class));
 		put("sloshers", instanceOf(SlosherItem.class));
+		put("splatlings", instanceOf(SplatlingItem.class));
 		put("dualies", instanceOf(DualieItem.class));
 		put("sub_weapons", instanceOf(SubWeaponItem.class));
 		put("ink_tanks", instanceOf(InkTankItem.class));
