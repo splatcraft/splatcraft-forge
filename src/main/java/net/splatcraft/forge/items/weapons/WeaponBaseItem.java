@@ -95,8 +95,9 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> ext
         put(RollerWeaponSettings.class, RollerWeaponSettings.DEFAULT);
         put(ChargerWeaponSettings.class, ChargerWeaponSettings.DEFAULT);
         put(SlosherWeaponSettings.class, SlosherWeaponSettings.DEFAULT);
-        put(WeaponSettings.class, WeaponSettings.DEFAULT);
+        put(DualieWeaponSettings.class, DualieWeaponSettings.DEFAULT);
         put(SubWeaponSettings.class, SubWeaponSettings.DEFAULT);
+        put(WeaponSettings.class, WeaponSettings.DEFAULT);
     }};
     public S getSettings(ItemStack stack)
     {

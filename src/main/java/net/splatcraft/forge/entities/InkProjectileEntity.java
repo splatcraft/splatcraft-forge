@@ -179,6 +179,22 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         return this;
     }
 
+    public InkProjectileEntity setDualieStats(DualieWeaponSettings.FiringData firingData)
+    {
+        trailSize = firingData.projectileInkTrailCoverage;
+        trailCooldown = firingData.projectileInkTrailCooldown;
+        impactCoverage = firingData.projectileInkCoverage;
+
+        setGravity(firingData.projectileGravity);
+        setStraightShotTime(firingData.straightShotTickTime);
+
+        lifespan = firingData.projectileLifeTicks;
+        entityData.set(MAX_VELOCITY, firingData.projectileSpeed);
+        entityData.set(MIN_VELOCITY, firingData.projectileDecayedSpeed);
+        setProjectileType(Types.SHOOTER);
+        return this;
+    }
+
     public InkProjectileEntity setRollerSwingStats() {
         setProjectileType(Types.ROLLER);
 

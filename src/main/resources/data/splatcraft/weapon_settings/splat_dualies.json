@@ -1,26 +1,53 @@
 {
-  "type": "splatcraft:main",
-  "projectile": {
-	"size": 0.9,
-	"speed": 0.65,
-	"firing_speed": 7,
-	"ground_inaccuracy": 2,
-	"air_inaccuracy": 7.5,
-	"ink_consumption": 0.75,
-	"ink_recovery_cooldown": 7,
-	"base_damage": 6,
-	"min_damage": 4,
-	"damage_decay_start_tick": 2,
-	"damage_decay_per_tick": 1.13
-  },
-  "dualie_roll": {
-	"count": 1,
-	"speed": 0.9,
-	"ink_consumption": 9,
-	"duration": 8,
-	"final_roll_duration": 30
-  },
-  "dualie_turret": {
-	"fire_inaccuracy": 0
-  }
+	"type": "splatcraft:dualie",
+	"full_damage_to_mobs": false,
+
+	"projectile":
+	{
+		"size": 0.9,
+		"speed": 2.1,
+		"decayed_speed": 1,
+		"count": 1,
+
+		"ink_coverage_on_impact": 0.865,
+		"ink_trail_coverage": 0.775,
+		"ink_trail_tick_interval": 1,
+
+		"straight_shot_distance": 7,
+		"gravity": 0.075,
+
+		"base_damage": 6,
+		"decayed_damage": 4,
+
+		"damage_decay_start_tick": 2,
+		"damage_decay_per_tick": 1.13
+	},
+
+	"shot":
+	{
+		"startup_ticks": 0,
+		"firing_speed": 7,
+
+		"ground_inaccuracy": 2,
+		"airborne_inaccuracy": 7.5,
+		"pitch_compensation": 0,
+
+		"ink_consumption": 0.75,
+		"ink_recovery_cooldown": 7
+	},
+	"dodge_roll":
+	{
+		"count": 1,
+		"movement_impulse": 0.9,
+		"ink_consumption": 9,
+		"ink_recovery_cooldown": 23,
+		"turret_duration": 8,
+		"final_roll_turret_duration": 30
+	},
+
+	"turret_shot":
+	{
+		"firing_speed": 2,
+		"ground_inaccuracy": 0
+	}
 }
