@@ -1,16 +1,36 @@
 {
-  "type": "splatcraft:main",
-  "projectile": {
-	"size": 1,
-	"speed": 0.75,
-	"firing_speed": 3,
-	"ground_inaccuracy": 6,
-	"air_inaccuracy": 12,
-	"ink_consumption": 0.8,
-	"ink_recovery_cooldown": 7,
-	"base_damage": 5.9,
-	"min_damage": 2.8,
-	"damage_decay_start_tick": 3,
-	"damage_decay_per_tick": 0.53
-  }
+	"type": "splatcraft:shooter",
+	"projectile":
+	{
+		"size": 1,
+		"speed": 2,
+		"decayed_speed": 0.5,
+		"count": 1,
+
+		"ink_coverage_on_impact": 0.85,
+		"ink_trail_coverage": 0.75,
+		"ink_trail_tick_interval": 3,
+
+		"straight_shot_distance": 8,
+		"gravity": 0.075,
+
+		"base_damage": 5.9,
+		"decayed_damage": 2.8,
+		"damage_decay_start_tick": 3,
+		"damage_decay_per_tick": 0.53
+	},
+
+	"shot":
+	{
+		"startup_ticks": 0,
+		"firing_speed": 2,
+
+		"ground_inaccuracy": 6,
+		"airborne_inaccuracy": 12,
+		"pitch_compensation": 0,
+
+		"ink_consumption": 0.8,
+		"ink_recovery_cooldown": 7
+	},
+	"full_damage_to_mobs": false
 }

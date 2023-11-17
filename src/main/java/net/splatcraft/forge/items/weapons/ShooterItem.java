@@ -2,6 +2,7 @@ package net.splatcraft.forge.items.weapons;
 
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -10,12 +11,14 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.items.weapons.settings.ShooterWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
+import net.splatcraft.forge.util.PlayerCooldown;
 import net.splatcraft.forge.util.WeaponTooltip;
 
-public class ShooterItem extends WeaponBaseItem<WeaponSettings>
+public class ShooterItem extends WeaponBaseItem<ShooterWeaponSettings>
 {
     public static RegistryObject<ShooterItem> create(DeferredRegister<Item> registry, String settings, String name)
     {
@@ -40,22 +43,32 @@ public class ShooterItem extends WeaponBaseItem<WeaponSettings>
     }
 
     @Override
-    public Class<WeaponSettings> getSettingsClass() {
-        return WeaponSettings.class;
+    public Class<ShooterWeaponSettings> getSettingsClass() {
+        return ShooterWeaponSettings.class;
     }
 
     @Override
     public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft)
     {
-        WeaponSettings settings = getSettings(stack);
-        if (!level.isClientSide && settings.firingSpeed > 0 && (getUseDuration(stack) - timeLeft - 1) % settings.firingSpeed == 0)
+        ShooterWeaponSettings settings = getSettings(stack);
+
+        int time = getUseDuration(stack) - timeLeft;
+
+        if(time <= 0)
+        {
+            if (settings.startupTicks > 0 && entity instanceof Player player)
+                PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, settings.startupTicks, player.getInventory().selected, player.getUsedItemHand(), true, false, true, player.isOnGround()));
+        } else time -= settings.startupTicks;
+
+        if (!level.isClientSide && settings.firingSpeed > 0 && (time - 1) % settings.firingSpeed == 0)
         {
             if (reduceInk(entity, this, settings.inkConsumption, settings.inkRecoveryCooldown, true)) {
 
                 for(int i = 0; i < settings.projectileCount; i++)
                 {
-                    InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.projectileSize, settings).setShooterTrail();
+                    InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), settings.projectileSize, settings);
                     proj.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), settings.pitchCompensation, settings.projectileSpeed, entity.isOnGround() ? settings.groundInaccuracy : settings.airInaccuracy);
+                    proj.setShooterStats(settings);
                     level.addFreshEntity(proj);
                 }
 

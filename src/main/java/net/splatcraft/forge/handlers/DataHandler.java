@@ -134,6 +134,7 @@ public class DataHandler
 	{
 		public static final HashMap<String, Class<? extends AbstractWeaponSettings<?, ?>>> SETTING_TYPES = new HashMap<>()
 		{{
+			put(Splatcraft.MODID+":shooter", ShooterWeaponSettings.class);
 			put(Splatcraft.MODID+":main", WeaponSettings.class);
 			put(Splatcraft.MODID+":blaster", BlasterWeaponSettings.class);
 			put(Splatcraft.MODID+":roller", RollerWeaponSettings.class);
@@ -160,8 +161,11 @@ public class DataHandler
 				JsonObject json = element.getAsJsonObject();
 				try
 				{
-					AbstractWeaponSettings<?, ?> settings = SETTING_TYPES.get(GsonHelper.getAsString(json, "type")).getConstructor(String.class).newInstance(key.toString());
+					String type = GsonHelper.getAsString(json, "type");
+					if(!SETTING_TYPES.containsKey(type))
+						return;
 
+					AbstractWeaponSettings<?, ?> settings = SETTING_TYPES.get(type).getConstructor(String.class).newInstance(key.toString());
 					settings.getCodec().parse(JsonOps.INSTANCE, json).resultOrPartial(msg -> System.out.println("Failed to load weapon settings for " + key + ": " + msg)).ifPresent(
 							settings::castAndDeserialize
 					);

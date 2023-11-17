@@ -90,12 +90,13 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> ext
 
     private static final HashMap<Class<? extends AbstractWeaponSettings<?, ?>>, AbstractWeaponSettings<?, ?>> DEFAULTS = new HashMap<>() // a
     {{
-        put(WeaponSettings.class, WeaponSettings.DEFAULT);
+        put(ShooterWeaponSettings.class, ShooterWeaponSettings.DEFAULT);
         put(BlasterWeaponSettings.class, BlasterWeaponSettings.DEFAULT);
-        put(SubWeaponSettings.class, SubWeaponSettings.DEFAULT);
         put(RollerWeaponSettings.class, RollerWeaponSettings.DEFAULT);
         put(ChargerWeaponSettings.class, ChargerWeaponSettings.DEFAULT);
         put(SlosherWeaponSettings.class, SlosherWeaponSettings.DEFAULT);
+        put(WeaponSettings.class, WeaponSettings.DEFAULT);
+        put(SubWeaponSettings.class, SubWeaponSettings.DEFAULT);
     }};
     public S getSettings(ItemStack stack)
     {

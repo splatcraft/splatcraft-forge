@@ -3,9 +3,13 @@ package net.splatcraft.forge.entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
@@ -22,10 +26,7 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import net.minecraftforge.network.NetworkHooks;
 import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.blocks.StageBarrierBlock;
@@ -48,8 +49,37 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
     private static final EntityDataAccessor<String> PROJ_TYPE = SynchedEntityData.defineId(InkProjectileEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(InkProjectileEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> PROJ_SIZE = SynchedEntityData.defineId(InkProjectileEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> GRAVITY = SynchedEntityData.defineId(InkProjectileEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> STRAIGHT_SHOT_TIME = SynchedEntityData.defineId(InkProjectileEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> MAX_VELOCITY = SynchedEntityData.defineId(InkProjectileEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> MIN_VELOCITY = SynchedEntityData.defineId(InkProjectileEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Vec3> SHOOT_DIRECTION = SynchedEntityData.defineId(InkProjectileEntity.class, new EntityDataSerializer<Vec3>()
+    {
+        {
+            EntityDataSerializers.registerSerializer(this);
+        }
+        @Override
+        public void write(FriendlyByteBuf buf, Vec3 shootVelocity)
+        {
+            buf.writeDouble(shootVelocity.x);
+            buf.writeDouble(shootVelocity.y);
+            buf.writeDouble(shootVelocity.z);
+        }
 
-    public float gravityVelocity = 0.075f;
+        @Override
+        public Vec3 read(FriendlyByteBuf buf)
+        {
+            return new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
+        }
+
+        @Override
+        public Vec3 copy(Vec3 shootVelocity)
+        {
+            return new Vec3(shootVelocity.x, shootVelocity.y, shootVelocity.z);
+        }
+    });
+
+    protected int straightShotTime = -1;
     public int lifespan = 600;
     public boolean explodes = false;
     public boolean bypassMobDamageMultiplier = false;
@@ -105,7 +135,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         lifespan = (int) (settings.minProjectileLifeTicks + (settings.maxProjectileLifeTicks - settings.minProjectileLifeTicks) * charge);
         impactCoverage = settings.projectileInkCoverage;
 
-        gravityVelocity = 0;
+        setGravity(0);
         this.canPierce = charge >= settings.piercesAtCharge;
         setProjectileType(Types.CHARGER);
         return this;
@@ -113,7 +143,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
     public InkProjectileEntity setBlasterStats(BlasterWeaponSettings settings) {
         this.lifespan = settings.projectileLifeTicks;
-        gravityVelocity = 0;
+        setGravity(0);
         trailSize = settings.projectileInkTrailCoverage;
         trailCooldown = settings.projectileInkTrailCooldown;
         impactCoverage = settings.projectileExplosionRadius;
@@ -133,6 +163,22 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         return this;
     }
 
+    public InkProjectileEntity setShooterStats(ShooterWeaponSettings settings)
+    {
+        trailSize = settings.projectileInkTrailCoverage;
+        trailCooldown = settings.projectileInkTrailCooldown;
+        impactCoverage = settings.projectileInkCoverage;
+
+        setGravity(settings.projectileGravity);
+        setStraightShotTime(settings.straightShotTickTime);
+
+        lifespan = settings.projectileLifeTicks;
+        entityData.set(MAX_VELOCITY, settings.projectileSpeed);
+        entityData.set(MIN_VELOCITY, settings.projectileDecayedSpeed);
+        setProjectileType(Types.SHOOTER);
+        return this;
+    }
+
     public InkProjectileEntity setRollerSwingStats() {
         setProjectileType(Types.ROLLER);
 
@@ -143,17 +189,24 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData()
+    {
         entityData.define(COLOR, ColorUtils.DEFAULT);
         entityData.define(PROJ_TYPE, Types.SHOOTER);
         entityData.define(PROJ_SIZE, 1.0f);
+        entityData.define(GRAVITY, 0.075f);
+        entityData.define(STRAIGHT_SHOT_TIME, 0);
+        entityData.define(MAX_VELOCITY, 0f);
+        entityData.define(MIN_VELOCITY, 0f);
+        entityData.define(SHOOT_DIRECTION, new Vec3(0,0,0));
     }
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> dataParameter) {
-        if (dataParameter.equals(PROJ_SIZE)) {
+        if (dataParameter.equals(PROJ_SIZE))
             refreshDimensions();
-        }
+        else if(dataParameter.equals(STRAIGHT_SHOT_TIME))
+            straightShotTime = entityData.get(STRAIGHT_SHOT_TIME);
 
         super.onSyncedDataUpdated(dataParameter);
     }
@@ -164,15 +217,24 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
     }
 
     @Override
-    public void tick() {
+    public void tick()
+    {
+
+        setDeltaMovement(getDeltaMovement().add(getShootVelocity()));
         super.tick();
+        setDeltaMovement(getDeltaMovement().subtract(getShootVelocity().scale(0.99)));
+
+        if(straightShotTime >= 0)
+            straightShotTime--;
+
 
         if (isInWater()) {
             discard();
             return;
         }
 
-        if (!level.isClientSide && !persistent && lifespan-- <= 0) {
+        if (!level.isClientSide && !persistent && lifespan-- <= 0)
+        {
             float dmg = damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown);
             InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), impactCoverage, explodes ? damage.getMinDamage() : dmg, dmg, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
             if (explodes) {
@@ -204,6 +266,27 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
     }
 
+    private Vec3 getShootVelocity()
+    {
+        double minVelocity = entityData.get(MIN_VELOCITY);
+        double maxVelocity = entityData.get(MAX_VELOCITY);
+        double lerpedVelocity = straightShotTime <= 0 ? minVelocity : minVelocity +  (maxVelocity - minVelocity) * ((double) straightShotTime / entityData.get(STRAIGHT_SHOT_TIME));
+        return entityData.get(SHOOT_DIRECTION).scale(lerpedVelocity);
+    }
+
+    @Override
+    protected void updateRotation()
+    {
+        Vec3 motion = getShootVelocity().add(getDeltaMovement());
+
+        if(!Vec3.ZERO.equals(motion))
+        {
+            this.setXRot(lerpRotation(this.xRotO, (float) (Mth.atan2(motion.y, motion.horizontalDistance()) * (double) (180F / (float) Math.PI))));
+            this.setYRot(lerpRotation(this.yRotO, (float) (Mth.atan2(motion.x, motion.z) * (double) (180F / (float) Math.PI))));
+        }
+
+    }
+
     @Override
     public void handleEntityEvent(byte id) {
         super.handleEntityEvent(id);
@@ -213,9 +296,9 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
                     level.addParticle(new InkExplosionParticleData(getColor(), .5f), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
             case 1 -> {
                 if (getProjectileType().equals(Types.CHARGER))
-                    level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getX() - this.getDeltaMovement().x() * 0.25D, this.getY() - this.getDeltaMovement().y() * 0.25D, this.getZ() - this.getDeltaMovement().z() * 0.25D, 0, -0.1, 0);
+                    level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getX() - this.getDeltaMovement().x() * 0.25D, this.getY() + getBbHeight() * 0.5f - this.getDeltaMovement().y() * 0.25D, this.getZ() - this.getDeltaMovement().z() * 0.25D, 0, -0.1, 0);
                 else
-                    level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getX() - this.getDeltaMovement().x() * 0.25D, this.getY() - this.getDeltaMovement().y() * 0.25D, this.getZ() - this.getDeltaMovement().z() * 0.25D, this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z());
+                    level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize()), this.getX() - this.getDeltaMovement().x() * 0.25D, this.getY() + getBbHeight() * 0.5f - this.getDeltaMovement().y() * 0.25D, this.getZ() - this.getDeltaMovement().z() * 0.25D, this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z());
             }
             case 2 ->
                     level.addParticle(new InkSplashParticleData(getColor(), getProjectileSize() * 2), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
@@ -282,7 +365,8 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
     }
 
     @Override
-    public void shootFromRotation(Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy) {
+    public void shootFromRotation(Entity thrower, float pitch, float yaw, float pitchOffset, float velocity, float inaccuracy)
+    {
         super.shootFromRotation(thrower, pitch, yaw, pitchOffset, velocity, inaccuracy);
         InkExplosion.createInkExplosion(level, getOwner(), thrower.blockPosition(), 0.75f, 0, 0, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
 
@@ -302,6 +386,24 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
                 .add(Math.min(2.5, throwerSpeed.x * 0.8), 0.0, Math.min(2.5, throwerSpeed.z * 0.8))
                 .add(posDiff.multiply(0.8, 0.8, 0.8));
         setDeltaMovement(speed);
+    }
+
+
+    @Override
+    public void shoot(double x, double y, double z, float velocity, float inaccuracy)
+    {
+        Vec3 vec3 = (new Vec3(x, y, z)).normalize().add(this.random.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.random.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.random.nextGaussian() * (double)0.0075F * (double)inaccuracy);
+
+        entityData.set(SHOOT_DIRECTION, vec3.normalize());
+
+        double d0 = vec3.horizontalDistance();
+        this.setYRot((float)(Mth.atan2(vec3.x, vec3.z) * (double)(180F / (float)Math.PI)));
+        this.setXRot((float)(Mth.atan2(vec3.y, d0) * (double)(180F / (float)Math.PI)));
+        this.yRotO = this.getYRot();
+        this.xRotO = this.getXRot();
+
+        entityData.set(MIN_VELOCITY, velocity);
+        entityData.set(MAX_VELOCITY, velocity);
     }
 
     @Override
@@ -324,10 +426,20 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         if (nbt.contains("Color"))
             setColor(ColorUtils.getColorFromNbt(nbt));
 
-        if (nbt.contains("GravityVelocity"))
-            gravityVelocity = nbt.getFloat("GravityVelocity");
+        entityData.set(MIN_VELOCITY, nbt.getFloat("MinVelocity"));
+        entityData.set(MAX_VELOCITY, nbt.getFloat("MaxVelocity"));
+
+        if (nbt.contains("Gravity"))
+            setGravity(nbt.getFloat("Gravity"));
         if (nbt.contains("Lifespan"))
             lifespan = nbt.getInt("Lifespan");
+        if (nbt.contains("StraightShotTime"))
+            setStraightShotTime(nbt.getInt("StraightShotTime"));
+        if (nbt.contains("MaxStraightShotTime"))
+            straightShotTime = (nbt.getInt("StraightShotTime"));
+
+        ListTag directionTag = nbt.getList("Direction", DoubleTag.TAG_DOUBLE);
+        entityData.set(SHOOT_DIRECTION, new Vec3(directionTag.getDouble(0),directionTag.getDouble(1), directionTag.getDouble(2)));
 
         trailCooldown = nbt.getInt("TrailCooldown");
         trailSize = nbt.getFloat("TrailSize");
@@ -349,7 +461,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         AbstractWeaponSettings<?, ?> settings = DataHandler.WeaponStatsListener.SETTINGS.get(new ResourceLocation(nbt.getString(nbt.getString("Settings"))));
         if(settings != null)
             damage = settings;
-        else if (sourceWeapon.getItem() instanceof WeaponBaseItem weapon)
+        else if (sourceWeapon.getItem() instanceof WeaponBaseItem<?> weapon)
             damage = weapon.getSettings(sourceWeapon);
     }
 
@@ -358,7 +470,19 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         nbt.putFloat("Size", getProjectileSize());
         nbt.putInt("Color", getColor());
 
-        nbt.putFloat("GravityVelocity", gravityVelocity);
+        nbt.putFloat("MinVelocity", entityData.get(MIN_VELOCITY));
+        nbt.putFloat("MaxVelocity", entityData.get(MAX_VELOCITY));
+        nbt.putInt("MaxStraightShotTime", getMaxStraightShotTime());
+        nbt.putInt("StraightShotTime", straightShotTime);
+
+        ListTag directionTag = new ListTag();
+        Vec3 direction = getShotDirection();
+        directionTag.add(DoubleTag.valueOf(direction.x));
+        directionTag.add(DoubleTag.valueOf(direction.y));
+        directionTag.add(DoubleTag.valueOf(direction.z));
+        nbt.put("Direction", directionTag);
+
+        nbt.putFloat("Gravity", getGravity());
         nbt.putInt("Lifespan", lifespan);
         nbt.putFloat("TrailSize", trailSize);
         nbt.putInt("TrailCooldown", trailCooldown);
@@ -388,7 +512,35 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
     @Override
     public float getGravity() {
-        return gravityVelocity;
+        return entityData.get(GRAVITY);
+    }
+
+    public void setGravity(float gravity) {
+        entityData.set(GRAVITY, gravity);
+    }
+
+    public int getStraightShotTime() {
+        return straightShotTime;
+    }
+
+    public int getMaxStraightShotTime()
+    {
+        return entityData.get(STRAIGHT_SHOT_TIME);
+    }
+
+    public void setStraightShotTime(int time)
+    {
+        entityData.set(STRAIGHT_SHOT_TIME, time);
+    }
+
+    public Vec3 getShotDirection()
+    {
+        return entityData.get(SHOOT_DIRECTION);
+    }
+
+    @Override
+    public boolean isNoGravity() {
+        return straightShotTime > 0 || getGravity() == 0 || super.isNoGravity();
     }
 
     public float getProjectileSize() {
