@@ -34,6 +34,7 @@ import net.splatcraft.forge.client.particles.InkExplosionParticleData;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
+import net.splatcraft.forge.items.weapons.SplatlingItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.items.weapons.settings.*;
 import net.splatcraft.forge.registries.SplatcraftEntities;
@@ -175,6 +176,24 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         lifespan = settings.projectileLifeTicks;
         entityData.set(MAX_VELOCITY, settings.projectileSpeed);
         entityData.set(MIN_VELOCITY, settings.projectileDecayedSpeed);
+        setProjectileType(Types.SHOOTER);
+        return this;
+    }
+
+    public InkProjectileEntity setSplatlingStats(SplatlingWeaponSettings settings, float charge)
+    {
+        SplatlingWeaponSettings.FiringData firingData =  charge > 1 ? settings.secondChargeLevelData : settings.firstChargeLevelData;
+
+        trailSize = firingData.projectileInkTrailCoverage;
+        trailCooldown = firingData.projectileInkTrailCooldown;
+        impactCoverage = firingData.projectileInkCoverage;
+
+        setGravity(SplatlingItem.getScaledSettingFloat(settings, charge, SplatlingWeaponSettings.FiringData::getProjectileGravity));
+        setStraightShotTime(SplatlingItem.getScaledSettingInt(settings, charge, SplatlingWeaponSettings.FiringData::getStraightShotTickTime));
+
+        lifespan = SplatlingItem.getScaledSettingInt(settings, charge, SplatlingWeaponSettings.FiringData::getProjectileLifeTicks);
+        entityData.set(MAX_VELOCITY, SplatlingItem.getScaledSettingFloat(settings, charge, SplatlingWeaponSettings.FiringData::getProjectileSpeed));
+        entityData.set(MIN_VELOCITY, SplatlingItem.getScaledSettingFloat(settings, charge, SplatlingWeaponSettings.FiringData::getProjectileDecayedSpeed));
         setProjectileType(Types.SHOOTER);
         return this;
     }

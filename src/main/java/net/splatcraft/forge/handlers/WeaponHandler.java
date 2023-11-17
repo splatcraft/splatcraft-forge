@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
@@ -71,7 +72,16 @@ public class WeaponHandler {
 		boolean canUseWeapon = true;
 		//Vec3 prevPos = PlayerInfoCapability.get(player).getPrevPos();
 
-        if (PlayerCooldown.shrinkCooldownTime(player, 1) != null) {
+		if(PlayerCooldown.hasPlayerCooldown(player) && PlayerCooldown.getPlayerCooldown(player).cancellable && PlayerInfoCapability.isSquid(player))
+		{
+			PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
+			ItemStack stack = cooldown.storedStack;
+
+			if (stack.getItem() instanceof WeaponBaseItem weapon)
+				weapon.onPlayerCooldownEnd(player.level, player, stack, cooldown);
+			PlayerCooldown.setPlayerCooldown(player, null);
+		}
+        else if (PlayerCooldown.shrinkCooldownTime(player, 1) != null) {
             player.setSprinting(false);
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
 			if (!(cooldown instanceof SuperJumpCommand.SuperJump) && PlayerInfoCapability.isSquid(player)) {

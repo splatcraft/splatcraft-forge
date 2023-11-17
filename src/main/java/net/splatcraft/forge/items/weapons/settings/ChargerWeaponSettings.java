@@ -62,8 +62,8 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
         return new WeaponTooltip[]
                 {
                         new WeaponTooltip<ChargerWeaponSettings>("range", WeaponTooltip.Metrics.BLOCKS, settings -> settings.maxProjectileRange, WeaponTooltip.RANKER_ASCENDING),
-                        new WeaponTooltip<ChargerWeaponSettings>("mobility", WeaponTooltip.Metrics.MULTIPLIER, settings -> settings.chargingWalkSpeed, WeaponTooltip.RANKER_ASCENDING),
-                        new WeaponTooltip<ChargerWeaponSettings>("charge_speed", WeaponTooltip.Metrics.SECONDS, settings -> settings.chargeTimeTicks / 20f, WeaponTooltip.RANKER_DESCENDING)
+                        new WeaponTooltip<ChargerWeaponSettings>("charge_speed", WeaponTooltip.Metrics.SECONDS, settings -> settings.chargeTimeTicks / 20f, WeaponTooltip.RANKER_DESCENDING),
+                        new WeaponTooltip<ChargerWeaponSettings>("mobility", WeaponTooltip.Metrics.MULTIPLIER, settings -> settings.chargingWalkSpeed, WeaponTooltip.RANKER_ASCENDING)
                 };
 
     }

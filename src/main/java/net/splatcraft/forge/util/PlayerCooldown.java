@@ -21,6 +21,8 @@ public class PlayerCooldown
     public ItemStack storedStack;
     int time;
 
+    public boolean cancellable = false;
+
     public static final int OVERLOAD_LIMIT = -28800;
 
     public PlayerCooldown(ItemStack stack, int time, int maxTime, int slotIndex, InteractionHand hand, boolean canMove, boolean forceCrouch, boolean preventWeaponUse, boolean isGrounded) {
@@ -56,7 +58,10 @@ public class PlayerCooldown
         //PlayerCooldown result = new PlayerCooldown(ItemStack.of(nbt.getCompound("StoredStack")), nbt.getInt("Time"), nbt.getInt("MaxTime"), nbt.getInt("SlotIndex"), nbt.getBoolean("MainHand") ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, nbt.getBoolean("CanMove"), nbt.getBoolean("ForceCrouch"), nbt.getBoolean("PreventWeaponUse"), nbt.getBoolean("IsGrounded"));
     }
 
-
+    public PlayerCooldown setCancellable() {
+        this.cancellable = true;
+        return this;
+    }
 
     public static PlayerCooldown getPlayerCooldown(Player player)
     {

@@ -62,9 +62,13 @@ public class PlayerMovementHandler
                 speedAttribute.addTransientModifier(ENEMY_INK_SPEED);
         }
 
-        if (player.getUseItem().getItem() instanceof WeaponBaseItem && ((WeaponBaseItem) player.getUseItem().getItem()).hasSpeedModifier(player, player.getUseItem()))
+        ItemStack useStack = player.getUseItem();
+        if(PlayerCooldown.hasPlayerCooldown(player))
+            useStack = PlayerCooldown.getPlayerCooldown(player).storedStack;
+
+        if (useStack.getItem() instanceof WeaponBaseItem<?> weapon && weapon.hasSpeedModifier(player, player.getUseItem()))
         {
-            AttributeModifier mod = ((WeaponBaseItem) player.getUseItem().getItem()).getSpeedModifier(player, player.getUseItem());
+            AttributeModifier mod = weapon.getSpeedModifier(player, player.getUseItem());
             if (!speedAttribute.hasModifier(mod))
                 speedAttribute.addTransientModifier(mod);
         }

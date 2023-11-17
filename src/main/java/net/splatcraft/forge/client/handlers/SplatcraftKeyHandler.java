@@ -79,7 +79,9 @@ public class SplatcraftKeyHandler {
         subWeaponHotkey.tick(KeyMode.HOLD, canHold);
         updatePressState(subWeaponHotkey);
 
-        if (PlayerCooldown.hasPlayerCooldown(player) || CommonUtils.anyWeaponOnCooldown(player)) {
+        if ((PlayerCooldown.hasPlayerCooldown(player) && !(PlayerCooldown.getPlayerCooldown(player).cancellable && squidKey.active))
+                || CommonUtils.anyWeaponOnCooldown(player))
+        {
             return;
         }
 

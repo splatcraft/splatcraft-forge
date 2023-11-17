@@ -18,10 +18,11 @@ public class PlayerCharge {
 
     public ItemStack chargedWeapon;
     public float charge;
+    public float maxCharge;
     public float prevCharge;
     public int dischargedTicks;
     public int prevDischargedTicks;
-    public int maxCharges;
+    public int totalCharges;
     public boolean chargeDecay;
 
     public PlayerCharge(ItemStack stack, float charge, boolean chargeDecay)
@@ -29,12 +30,13 @@ public class PlayerCharge {
         this(stack, charge, chargeDecay, 1);
     }
 
-    public PlayerCharge(ItemStack stack, float charge, boolean chargeDecay, int maxCharges)
+    public PlayerCharge(ItemStack stack, float charge, boolean chargeDecay, int totalCharges)
     {
         this.chargedWeapon = stack;
         this.charge = charge;
+        this.maxCharge = charge;
         this.chargeDecay = chargeDecay;
-        this.maxCharges = maxCharges;
+        this.totalCharges = totalCharges;
     }
 
     public static PlayerCharge getCharge(Player player) {
@@ -62,10 +64,6 @@ public class PlayerCharge {
         return capability.getPlayerCharge() != null && capability.getPlayerCharge().charge > 0;
     }
 
-    public static boolean hasChargeInstance(Player player)
-    {
-        return PlayerInfoCapability.get(player).getPlayerCharge() != null;
-    }
 
     public static boolean shouldCreateCharge(Player player) {
         if (player == null) {
@@ -83,13 +81,13 @@ public class PlayerCharge {
     {
         addChargeValue(player, stack, value, chargeDecay, 1);
     }
-    public static void addChargeValue(Player player, ItemStack stack, float value, boolean chargeDecay, int maxCharges)
+    public static void addChargeValue(Player player, ItemStack stack, float value, boolean chargeDecay, int totalCharges)
     {
         if (value < 0.0f) {
             throw new IllegalArgumentException("Attempted to add negative charge: " + value);
         }
         if (shouldCreateCharge(player)) {
-            setCharge(player, new PlayerCharge(stack, 0, chargeDecay, maxCharges));
+            setCharge(player, new PlayerCharge(stack, 0, chargeDecay, totalCharges));
         }
 
         PlayerCharge charge = getCharge(player);
@@ -99,11 +97,13 @@ public class PlayerCharge {
 
         if (chargeMatches(player, stack)) {
             charge.prevCharge = charge.charge;
-            charge.charge = Math.max(0.0f, Math.min(charge.maxCharges, charge.charge + value));
+            charge.charge = Math.max(0.0f, Math.min(charge.totalCharges, charge.charge + value));
+            charge.maxCharge = charge.charge;
+
             charge.dischargedTicks = 0;
             charge.prevDischargedTicks = 0;
         } else {
-            setCharge(player, new PlayerCharge(stack, value, chargeDecay, maxCharges));
+            setCharge(player, new PlayerCharge(stack, value, chargeDecay, totalCharges));
         }
     }
 

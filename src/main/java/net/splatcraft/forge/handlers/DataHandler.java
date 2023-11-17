@@ -140,8 +140,8 @@ public class DataHandler
 			put(Splatcraft.MODID+":charger", ChargerWeaponSettings.class);
 			put(Splatcraft.MODID+":slosher", SlosherWeaponSettings.class);
 			put(Splatcraft.MODID+":dualie", DualieWeaponSettings.class);
+			put(Splatcraft.MODID+":splatling", SplatlingWeaponSettings.class);
 			put(Splatcraft.MODID+":sub_weapon", SubWeaponSettings.class);
-			put(Splatcraft.MODID+":main", WeaponSettings.class);
 		}}; //TODO make better registry probably
 		public static final  HashMap<ResourceLocation, AbstractWeaponSettings<?, ?>> SETTINGS = new HashMap<>();
 
@@ -163,6 +163,7 @@ public class DataHandler
 				try
 				{
 					String type = GsonHelper.getAsString(json, "type");
+
 					if(!SETTING_TYPES.containsKey(type))
 						return;
 
