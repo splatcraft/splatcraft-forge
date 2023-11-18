@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/splatlings",
+  "display": {
+    "icon": {
+      "item": "splatcraft:heavy_splatling"
+    },
+    "title": {
+      "translate": "item.splatcraft.heavy_splatling"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.heavy_splatling"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

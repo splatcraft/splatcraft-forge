@@ -125,6 +125,7 @@ public class SplatcraftItems {
 
     //Splatlings
     public static final RegistryObject<SplatlingItem> miniSplatling = SplatlingItem.create(REGISTRY, "mini_splatling", "mini_splatling");
+    public static final RegistryObject<SplatlingItem> heavySplatling = SplatlingItem.create(REGISTRY, "heavy_splatling", "heavy_splatling");
 
     //Ink Tanks
     public static final RegistryObject<InkTankItem> inkTank = REGISTRY.register("ink_tank", () -> new InkTankItem("ink_tank", 100));

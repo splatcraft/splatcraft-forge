@@ -407,8 +407,10 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
         Vec3 posDiff = new Vec3(0, 0, 0);
 
-        if (thrower instanceof Player) {
-            posDiff = thrower.position().subtract(WeaponHandler.getPlayerPrevPos((Player) thrower));
+        if (thrower instanceof Player player)
+        {
+            if(WeaponHandler.playerHasPrevPos(player))
+                posDiff = thrower.position().subtract(WeaponHandler.getPlayerPrevPos(player));
             if (thrower.isOnGround())
                 posDiff.multiply(1, 0, 1);
         }

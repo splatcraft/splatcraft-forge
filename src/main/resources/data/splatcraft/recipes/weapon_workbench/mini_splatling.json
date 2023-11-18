@@ -1,0 +1,29 @@
+{
+  "type": "splatcraft:weapon_workbench",
+  "tab": "splatcraft:weapon_workbench_tabs/splatlings",
+  "pos": 0,
+  "recipes": [
+    {
+      "name": "weaponType.original",
+      "advancement": "splatcraft:unlocks/mini_splatling",
+      "result": {
+        "item": "splatcraft:mini_splatling",
+        "count": 1
+      },
+      "ingredients": [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 12
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 12
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 12
+        }
+      ]
+    }
+  ]
+}

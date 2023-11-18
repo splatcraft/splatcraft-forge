@@ -14,10 +14,10 @@
 		"straight_shot_distance": 8,
 		"gravity": 0.075,
 
-		"base_damage": 6.4,
-		"decayed_damage": 3.2,
-		"damage_decay_start_tick": 3,
-		"damage_decay_per_tick": 0.4
+		"base_damage": 6,
+		"decayed_damage": 3,
+		"damage_decay_start_tick": 4,
+		"damage_decay_per_tick": 0.375
 	},
 
 	"shot":
@@ -29,30 +29,30 @@
 		"pitch_compensation": 0,
 
 		"ink_consumption": 0,
-		"ink_recovery_cooldown": 10
+		"ink_recovery_cooldown": 13
 	},
 
 
 	"second_charge_projectile":
 	{
-		"speed": 1.5,
-		"straight_shot_distance": 12
+		"speed": 2,
+		"straight_shot_distance": 16
 	},
 	"second_charge_shot":
 	{
-		"ink_consumption": 17.25
+		"ink_consumption": 22.5
 	},
 	"charge":
 	{
-		"first_charge_time_ticks": 7,
-		"second_charge_time_ticks": 3,
-		"empty_tank_first_charge_time_ticks": 42,
-		"empty_tank_second_charge_time_ticks": 18,
+		"first_charge_time_ticks": 17,
+		"second_charge_time_ticks": 8,
+		"empty_tank_first_charge_time_ticks": 68,
+		"empty_tank_second_charge_time_ticks": 32,
 
-		"total_firing_duration": 24,
+		"total_firing_duration": 48,
 
 		"can_recharge_while_firing": false,
-		"use_move_speed": 0.86
+		"use_move_speed": 0.62
 	},
 
 	"full_damage_to_mobs": false

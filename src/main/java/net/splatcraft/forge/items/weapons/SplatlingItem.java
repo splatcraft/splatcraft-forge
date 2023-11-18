@@ -3,6 +3,7 @@ package net.splatcraft.forge.items.weapons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
@@ -60,7 +61,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 
 		int cooldownTime = (int) (getDischargeTicks(stack) * charge);
 		reduceInk(player, this, getScaledSettingFloat(settings, charge, FiringData::getInkConsumption), cooldownTime + getScaledSettingInt(settings, charge, FiringData::getInkRecoveryCooldown), true);
-		PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, cooldownTime, player.getInventory().selected, player.getUsedItemHand(), true, false, false, player.isOnGround()).setCancellable());
+		PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, cooldownTime, player.getInventory().selected, player.getUsedItemHand(), true, false, !settings.canRechargeWhileFiring, player.isOnGround()).setCancellable());
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -88,9 +89,6 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 		if (entity instanceof Player player && level.isClientSide)
 		{
 			SplatlingWeaponSettings settings = getSettings(stack);
-
-			if(!settings.canRechargeWhileFiring && player.getCooldowns().isOnCooldown(this))
-				return;
 
 			float prevCharge = PlayerCharge.getChargeValue(player, stack);
 			float newCharge = prevCharge + 1f / (prevCharge >= 1 ? settings.secondLevelChargeTime : settings.firstLevelChargeTime);
@@ -165,7 +163,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 				if (charge.charge > 0.05f)
 				{
 					SplatlingWeaponSettings settings = getSettings(stack);
-					PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, (int) (settings.firingDuration * charge.charge), player.getInventory().selected, player.getUsedItemHand(), true, false, false, player.isOnGround()).setCancellable());
+					PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, (int) (settings.firingDuration * charge.charge), player.getInventory().selected, player.getUsedItemHand(), true, false, !settings.canRechargeWhileFiring, player.isOnGround()).setCancellable());
 				}
 			}
 			SplatcraftPacketHandler.sendToServer(new ReleaseChargePacket(charge.charge, stack));
@@ -176,14 +174,14 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	{
 		float min = getter.apply(settings.firstChargeLevelData);
 		float max = getter.apply(settings.secondChargeLevelData);
-		return min + (max - min) * charge;
+		return min + (max - min) * Mth.clamp(charge, 0, 1);
 	}
 
 	public static int getScaledSettingInt(SplatlingWeaponSettings settings, float charge, Function<SplatlingWeaponSettings.FiringData, Integer> getter)
 	{
 		float min = getter.apply(settings.firstChargeLevelData);
 		float max = getter.apply(settings.secondChargeLevelData);
-		return Math.round(min + (max - min) * charge);
+		return Math.round(min + (max - min) * Mth.clamp(charge, 0, 1));
 	}
 
 	@Override

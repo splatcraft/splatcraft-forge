@@ -115,6 +115,11 @@ public class WeaponHandler {
 		prevPosMap.put(player, player.position());
 	}
 
+	public static boolean playerHasPrevPos(Player player)
+	{
+		return prevPosMap.containsKey(player);
+	}
+
 	public static Vec3 getPlayerPrevPos(Player player) {
 		return prevPosMap.get(player);
 	}
