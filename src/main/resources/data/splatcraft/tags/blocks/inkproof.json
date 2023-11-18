@@ -4,23 +4,15 @@
     "#splatcraft:clears_ink",
     "#splatcraft:deters_ink",
     "#splatcraft:barrier_bars",
-    "#minecraft:doors",
     "#forge:glass",
     "#forge:glass_panes",
     "minecraft:ice",
-    "minecraft:observer",
-    "minecraft:slime_block",
-    "minecraft:honey_block",
-    "minecraft:observer",
-    "minecraft:note_block",
-    "minecraft:target",
-    "minecraft:redstone_lamp",
-    "minecraft:piston",
-    "minecraft:sticky_piston",
-    "minecraft:piston_head",
     "splatcraft:sardinium_block",
     "splatcraft:raw_sardinium_block",
     "splatcraft:empty_inkwell",
-    "splatcraft:ammo_knights_debris"
+    "splatcraft:ammo_knights_debris",
+    "splatcraft:inkwell",
+    "splatcraft:spawn_pad",
+    "splatcraft:spawn_pad_edge"
   ]
 }

@@ -47,6 +47,6 @@ public interface IColoredBlock
 
     default BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
     {
-        return BlockInkedResult.FAIL;
+        return BlockInkedResult.PASS;
     }
 }

@@ -126,37 +126,6 @@ public class InkStainedSlabBlock extends SlabBlock implements IColoredBlock, Ent
     }
 
     @Override
-    public BlockInkedResult inkBlock(Level level, BlockPos pos, int color, float damage, InkBlockUtils.InkType inkType)
-    {
-        if (InkedBlock.isTouchingLiquid(level, pos) || !SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INKABLE_GROUND))
-        {
-            return BlockInkedResult.FAIL;
-        }
-
-        int woolColor = -1;
-
-        if (level.getBlockEntity(pos) instanceof InkColorTileEntity)
-        {
-            woolColor = ((InkColorTileEntity) level.getBlockEntity(pos)).getColor();
-        }
-
-        BlockState state = level.getBlockState(pos);
-        BlockState inkState = InkBlockUtils.getInkState(inkType);
-        level.setBlock(pos, inkState, 3);
-        level.setBlockEntity(Objects.requireNonNull(SplatcraftBlocks.inkedBlock.get().newBlockEntity(pos, inkState)));
-        InkedBlockTileEntity inkte = (InkedBlockTileEntity) level.getBlockEntity(pos);
-        if (inkte == null)
-        {
-            return BlockInkedResult.FAIL;
-        }
-        inkte.setColor(color);
-        inkte.setSavedState(state);
-        inkte.setSavedColor(woolColor);
-
-        return BlockInkedResult.SUCCESS;
-    }
-
-    @Override
     public boolean remoteInkClear(Level level, BlockPos pos)
     {
         return false;

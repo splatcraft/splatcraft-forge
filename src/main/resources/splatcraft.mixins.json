@@ -4,11 +4,16 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "splatcraft.refmap.json",
   "mixins": [
+    "BlockEffectsMixin$EntityMixin",
+    "BlockEffectsMixin$LivingEntityMixin",
     "EntityMixin",
     "PlayerListMixin",
     "PlayerMixin",
     "SheepMixin",
-    "SquidPassthroughMixin"
+    "SquidPassthroughMixin",
+    "compat.SodiumMixin$BlockRendererMixin",
+    "compat.SodiumMixin$ChunkRebuildMixin",
+    "compat.SodiumMixin$WorldSliceAccessor"
   ],
   "minVersion": "0.8",
   "injectors": {
@@ -17,8 +22,9 @@
   "client": [
     "AbstractContainerAccessor",
     "AddLayersAccessor",
-    "BlockRenderMixin$AOFace",
-    "BlockRenderMixin$ModelRenderer",
+    "BlockRenderMixin$ChunkRegionAccessor",
+    "BlockRenderMixin$ChunkRenderDispatcherMixin",
+    "BlockRenderMixin$Renderer",
     "CreativeTabMixin",
     "GameRendererMixin",
     "ItemRendererMixin",

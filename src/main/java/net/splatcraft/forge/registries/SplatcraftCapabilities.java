@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,6 +16,7 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfo;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
+import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 
 @Mod.EventBusSubscriber(modid = Splatcraft.MODID)
 public class SplatcraftCapabilities
@@ -43,5 +45,11 @@ public class SplatcraftCapabilities
         {
             event.addCapability(new ResourceLocation(Splatcraft.MODID, "save_info"), new SaveInfoCapability());
         }
+    }
+
+    @SubscribeEvent
+    public static void attachChunkCapabilities(final AttachCapabilitiesEvent<LevelChunk> event)
+    {
+        event.addCapability(new ResourceLocation(Splatcraft.MODID, "world_ink"), new WorldInkCapability());
     }
 }

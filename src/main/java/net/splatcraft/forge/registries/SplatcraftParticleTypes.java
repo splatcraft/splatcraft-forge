@@ -36,6 +36,14 @@ public class SplatcraftParticleTypes
             return SquidSoulParticleData.CODEC;
         }
     };
+    public static final ParticleType<InkTerrainParticleData> INK_TERRAIN = new ParticleType<InkTerrainParticleData>(false, InkTerrainParticleData.DESERIALIZER)
+    {
+        @Override
+        public Codec<InkTerrainParticleData> codec()
+        {
+            return InkTerrainParticleData.CODEC;
+        }
+    };
 
     @SubscribeEvent
     public static void registerFactories(ParticleFactoryRegisterEvent event)
@@ -44,6 +52,7 @@ public class SplatcraftParticleTypes
         mc.particleEngine.register(INK_SPLASH, InkSplashParticle.Factory::new);
         mc.particleEngine.register(INK_EXPLOSION, InkExplosionParticle.Factory::new);
         mc.particleEngine.register(SQUID_SOUL, SquidSoulParticle.Factory::new);
+        mc.particleEngine.register(INK_TERRAIN, InkTerrainParticle.Factory::new);
     }
 
     @SubscribeEvent
@@ -54,5 +63,6 @@ public class SplatcraftParticleTypes
         registry.register(INK_SPLASH.setRegistryName("ink_splash"));
         registry.register(INK_EXPLOSION.setRegistryName("ink_explosion"));
         registry.register(SQUID_SOUL.setRegistryName("squid_soul"));
+        registry.register(INK_TERRAIN.setRegistryName("ink_terrain"));
     }
 }

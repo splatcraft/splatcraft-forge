@@ -2,6 +2,8 @@ package net.splatcraft.forge.registries;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraftforge.common.util.ForgeSoundType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -53,8 +55,24 @@ public class SplatcraftSounds
     public static SoundEvent squidBumperBreak;
     public static SoundEvent splatSwitchPoweredOn;
     public static SoundEvent splatSwitchPoweredOff;
+    public static SoundEvent inkedBlockBreak;
+    public static SoundEvent inkedBlockStep;
+    public static SoundEvent inkedBlockSwim;
+    public static SoundEvent inkedBlockPlace;
+    public static SoundEvent inkedBlockHit;
+    public static SoundEvent inkedBlockFall;
 
-    public static void initSounds() {
+    public static final SoundType SOUND_TYPE_INK = new ForgeSoundType(1.0F, 1.0F, () -> SplatcraftSounds.inkedBlockBreak, () -> SplatcraftSounds.inkedBlockStep, () -> SplatcraftSounds.inkedBlockPlace, () -> SplatcraftSounds.inkedBlockHit, () -> SplatcraftSounds.inkedBlockFall);
+    public static final SoundType SOUND_TYPE_SWIMMING = new ForgeSoundType(1.0F, 1.0F, () -> SplatcraftSounds.inkedBlockBreak, () -> SplatcraftSounds.inkedBlockSwim, () -> SplatcraftSounds.inkedBlockPlace, () -> SplatcraftSounds.inkedBlockHit, () -> SplatcraftSounds.inkedBlockFall);
+    public static void initSounds()
+    {
+        inkedBlockBreak = createSoundEvent("block.inked_block.break");
+        inkedBlockStep = createSoundEvent("block.inked_block.step");
+        inkedBlockSwim = createSoundEvent("block.inked_block.swim");
+        inkedBlockPlace = createSoundEvent("block.inked_block.place");
+        inkedBlockHit = createSoundEvent("block.inked_block.hit");
+        inkedBlockFall = createSoundEvent("block.inked_block.fall");
+
         squidTransform = createSoundEvent("squid_transform");
         squidRevert = createSoundEvent("squid_revert");
         inkSubmerge = createSoundEvent("ink_submerge");

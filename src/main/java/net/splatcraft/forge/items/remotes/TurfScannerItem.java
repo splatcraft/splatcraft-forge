@@ -134,6 +134,18 @@ public class TurfScannerItem extends RemoteItem
 
                         blockTotal++;
 
+                        if(InkBlockUtils.isInked(level, checkPos))
+                        {
+                            int color = InkBlockUtils.getInk(level, checkPos).color();
+
+                            if (color >= 0 && level.getBlockState(checkPos).is(SplatcraftTags.Blocks.SCAN_TURF_SCORED))
+                            {
+                                if (scores.containsKey(color))
+                                    scores.replace(color, scores.get(color) + 1);
+                                else scores.put(color, 1);
+                            }
+                        }
+
                         if (level.getBlockEntity(checkPos) instanceof InkColorTileEntity && level.getBlockState(checkPos).getBlock() instanceof IColoredBlock)
                         {
                             InkColorTileEntity te = (InkColorTileEntity) level.getBlockEntity(checkPos);
