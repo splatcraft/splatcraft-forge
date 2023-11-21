@@ -26,7 +26,10 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.blocks.StageBarrierBlock;
@@ -36,7 +39,14 @@ import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.SplatlingItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
-import net.splatcraft.forge.items.weapons.settings.*;
+import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.BlasterWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.ChargerWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.DualieWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.ShooterWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SlosherWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.SplatlingWeaponSettings;
+import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
@@ -270,7 +280,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
         if (!level.isClientSide && !persistent && lifespan-- <= 0)
         {
-            float dmg = damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown);
+            float dmg = damage.calculateDamage(this.tickCount - Math.max(0, straightShotTime), throwerAirborne, charge, isOnRollCooldown);
             InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), impactCoverage, explodes ? damage.getMinDamage() : dmg, dmg, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
             if (explodes) {
                 level.broadcastEntityEvent(this, (byte) 3);
@@ -348,7 +358,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         super.onHitEntity(result);
 
         Entity target = result.getEntity();
-        float dmg = damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown);
+        float dmg = damage.calculateDamage(this.tickCount - Math.max(0, straightShotTime), throwerAirborne, charge, isOnRollCooldown);
 
         if (!level.isClientSide() && target instanceof SpawnShieldEntity && !InkDamageUtils.canDamage(target, this)) {
             discard();
@@ -387,7 +397,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
         super.onHitBlock(result);
 
-        float dmg = damage.calculateDamage(this.tickCount, throwerAirborne, charge, isOnRollCooldown);
+        float dmg = damage.calculateDamage(this.tickCount - Math.max(0, straightShotTime), throwerAirborne, charge, isOnRollCooldown);
         InkExplosion.createInkExplosion(level, getOwner(), blockPosition(), impactCoverage, explodes ? damage.getMinDamage() : dmg, dmg, bypassMobDamageMultiplier, getColor(), inkType, sourceWeapon);
         if (explodes) {
             level.broadcastEntityEvent(this, (byte) 3);
