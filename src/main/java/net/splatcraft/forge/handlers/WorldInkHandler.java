@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
-import net.minecraft.client.renderer.entity.GlowSquidRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,10 +20,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.ticks.LevelChunkTicks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
@@ -41,14 +38,12 @@ import net.splatcraft.forge.mixin.BlockRenderMixin;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.WatchInkPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -195,9 +190,18 @@ public class WorldInkHandler
 	@OnlyIn(Dist.CLIENT)
 	public static class Render
 	{
-		public static final TextureAtlasSprite INKED_BLOCK_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(Splatcraft.MODID, "blocks/inked_block"));
-		public static final TextureAtlasSprite GLITTER_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(Splatcraft.MODID, "blocks/glitter"));
-		public static final TextureAtlasSprite PERMANENT_INK_SPRITE = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(Splatcraft.MODID, "blocks/permanent_ink_overlay"));
+		public static TextureAtlasSprite getInkedBlockSprite()
+		{
+			return  Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(Splatcraft.MODID, "blocks/inked_block"));
+		}
+		public static TextureAtlasSprite getGlitterSprite()
+		{
+			return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(Splatcraft.MODID, "blocks/glitter"));
+		}
+		public static TextureAtlasSprite getPermanentInkSprite()
+		{
+			return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(Splatcraft.MODID, "blocks/permanent_ink_overlay"));
+		}
 
 
 		public static boolean splatcraft$renderInkedBlock(RenderChunkRegion region, BlockPos pos, VertexConsumer
@@ -214,11 +218,11 @@ public class WorldInkHandler
 			TextureAtlasSprite sprite = null;
 
 			if(ink.type() != InkBlockUtils.InkType.CLEAR)
-				sprite = INKED_BLOCK_SPRITE;
+				sprite = getInkedBlockSprite();
 
 			splatcraft$putBulkData(sprite, consumer, pose, quad, f0, rgb[0], rgb[1], rgb[2], f1, f2, f3, ink.type() == InkBlockUtils.InkType.GLOWING);
 			if(ink.type() == InkBlockUtils.InkType.GLOWING)
-				splatcraft$putBulkData(GLITTER_SPRITE, consumer, pose, quad, f0, 1, 1, 1, f1, f2, f3, true);
+				splatcraft$putBulkData(getGlitterSprite(), consumer, pose, quad, f0, 1, 1, 1, f1, f2, f3, true);
 
 			return true;
 		}

@@ -56,11 +56,11 @@ public class SodiumMixin
 					float[] rgb = ColorUtils.hexToRGB(ink.color());
 					int color = ColorABGR.pack(rgb[0], rgb[1], rgb[2]);
 
-					splatcraft$renderInkQuad(color, ink.type() == InkBlockUtils.InkType.CLEAR ? null : WorldInkHandler.Render.INKED_BLOCK_SPRITE, ink.type() == InkBlockUtils.InkType.GLOWING,
+					splatcraft$renderInkQuad(color, ink.type() == InkBlockUtils.InkType.CLEAR ? null : WorldInkHandler.Render.getInkedBlockSprite(), ink.type() == InkBlockUtils.InkType.GLOWING,
 							origin, vertices, indices, blockOffset, bakedQuad, light, model);
 
 					if (ink.type() == InkBlockUtils.InkType.GLOWING)
-						splatcraft$renderInkQuad(ColorABGR.pack(1f, 1f, 1f), WorldInkHandler.Render.GLITTER_SPRITE, true,
+						splatcraft$renderInkQuad(ColorABGR.pack(1f, 1f, 1f), WorldInkHandler.Render.getGlitterSprite(), true,
 								origin, vertices, indices, blockOffset, bakedQuad, light, model);
 					return;
 				}
