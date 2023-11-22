@@ -90,21 +90,17 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	{
 		if (entity instanceof Player player && level.isClientSide)
 		{
-
-			if(!hasInkInTank(player, this) || !InkTankItem.canRecharge(player.getItemBySlot(EquipmentSlot.CHEST), true))
-			{
-				if(timeLeft % 4 == 0)
-					sendNoInkMessage(player, SplatcraftSounds.noInkMain);
-				return;
-			}
-
 			SplatlingWeaponSettings settings = getSettings(stack);
 
 			float prevCharge = PlayerCharge.getChargeValue(player, stack);
 			float newCharge = prevCharge + 1f / (prevCharge >= 1 ? settings.secondLevelChargeTime : settings.firstLevelChargeTime);
 
 			if (!enoughInk(entity, this, getScaledSettingFloat(getSettings(stack), newCharge, FiringData::getInkConsumption), 0, timeLeft % 4 == 0))
+			{
+				if(!hasInkInTank(player, this) || !InkTankItem.canRecharge(player.getItemBySlot(EquipmentSlot.CHEST), true))
+					return;
 				newCharge = prevCharge + 1f / (prevCharge >= 1 ? settings.emptyTankSecondLevelChargeTime : settings.emptyTankFirstLevelChargeTime);
+			}
 
 
 			if (prevCharge < maxCharges && newCharge >= Math.ceil(prevCharge) && prevCharge > 0) {

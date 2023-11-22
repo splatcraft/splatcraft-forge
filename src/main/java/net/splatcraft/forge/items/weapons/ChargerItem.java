@@ -88,17 +88,13 @@ public class ChargerItem extends WeaponBaseItem<ChargerWeaponSettings> implement
 	{
 		if (entity instanceof Player player && level.isClientSide && !player.getCooldowns().isOnCooldown(this))
 		{
-			if(!hasInkInTank(player, this) || !InkTankItem.canRecharge(player.getItemBySlot(EquipmentSlot.CHEST), true))
-			{
-				if(timeLeft % 4 == 0)
-					sendNoInkMessage(player, SplatcraftSounds.noInkMain);
-				return;
-			}
-
 			ChargerWeaponSettings settings = getSettings(stack);
 			float prevCharge = PlayerCharge.getChargeValue(player, stack);
 			float newCharge = prevCharge + (entity.isOnGround() ? settings.chargeSpeed : settings.airborneChargeSpeed);
-			if (!enoughInk(entity, this, getInkConsumption(stack, newCharge), 0, timeLeft % 4 == 0)) {
+			if (!enoughInk(entity, this, getInkConsumption(stack, newCharge), 0, timeLeft % 4 == 0))
+			{
+				if(!hasInkInTank(player, this) || !InkTankItem.canRecharge(player.getItemBySlot(EquipmentSlot.CHEST), true))
+					return;
 				newCharge = prevCharge + (settings.emptyTankChargeSpeed);
 			}
 
