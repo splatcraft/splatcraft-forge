@@ -29,7 +29,6 @@ import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
@@ -69,7 +68,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	@OnlyIn(Dist.CLIENT)
 	protected static void playChargeReadySound(Player player, float pitch) {
 		if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getUUID().equals(player.getUUID()))
-			Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SplatcraftSounds.chargerReady, pitch, Minecraft.getInstance().options.getSoundSourceVolume(SoundSource.PLAYERS)));
+			Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SplatcraftSounds.splatlingReady, pitch, Minecraft.getInstance().options.getSoundSourceVolume(SoundSource.PLAYERS)));
 	}
 
 
@@ -143,7 +142,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 				level.addFreshEntity(proj);
 			}
 
-			level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.shooterShot, SoundSource.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
+			level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.splatlingShot, SoundSource.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
 
 		}
 	}
