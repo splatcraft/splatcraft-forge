@@ -321,7 +321,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
                 instance -> instance.group(
                         Codec.INT.fieldOf("endlag_ticks").forGetter(ShotDataRecord::endlagTicks),
                         Codec.FLOAT.fieldOf("min_charge_ink_consumption").forGetter(ShotDataRecord::minInkConsumption),
-                        Codec.FLOAT.fieldOf("full_charge_ink_consumption").forGetter(ShotDataRecord::minInkConsumption),
+                        Codec.FLOAT.fieldOf("full_charge_ink_consumption").forGetter(ShotDataRecord::maxInkConsumption),
                         Codec.INT.fieldOf("ink_recovery_cooldown").forGetter(ShotDataRecord::inkRecoveryCooldown)
                 ).apply(instance, ShotDataRecord::new)
         );
