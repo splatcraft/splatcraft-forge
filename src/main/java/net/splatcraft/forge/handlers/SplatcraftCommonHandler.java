@@ -163,11 +163,13 @@ public class SplatcraftCommonHandler {
         if (event.getEntityLiving() instanceof Sheep && InkOverlayCapability.hasCapability(event.getEntityLiving())) {
             InkOverlayInfo info = InkOverlayCapability.get(event.getEntityLiving());
 
-            if (info.getWoolColor() >= -1) {
-                for (ItemEntity itemEntity : event.getDrops()) {
+
+            if (info.getWoolColor() > -1) {
+                for (ItemEntity itemEntity : event.getDrops())
+                {
                     ItemStack stack = itemEntity.getItem();
                     if (stack.is(ItemTags.WOOL)) {
-                        itemEntity.setItem(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool.get(), stack.getCount()), info.getWoolColor()));
+                        itemEntity.setItem(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(SplatcraftItems.inkedWool.get(), stack.getCount()), info.getWoolColor()), true));
                     }
                 }
             }

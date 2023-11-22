@@ -35,12 +35,13 @@ import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftStats;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.tileentities.InkedBlockTileEntity;
+import org.jetbrains.annotations.Nullable;
 
 public class InkBlockUtils {
-    public static BlockInkedResult playerInkBlock(Player player, Level level, BlockPos pos, int color, float damage, InkType inkType) {
+    public static BlockInkedResult playerInkBlock(@Nullable Player player, Level level, BlockPos pos, int color, float damage, InkType inkType) {
         BlockInkedResult inked = inkBlock(level, pos, color, damage, inkType);
 
-        if (inked == BlockInkedResult.SUCCESS) {
+        if (player != null && inked == BlockInkedResult.SUCCESS) {
             player.awardStat(SplatcraftStats.BLOCKS_INKED);
         }
 
@@ -87,7 +88,12 @@ public class InkBlockUtils {
                 return result;
         }
 
-        WorldInkCapability.get(level, pos).ink(pos, color, inkType);
+        WorldInk worldInk = WorldInkCapability.get(level, pos);
+
+        if(worldInk.isInked(pos) && worldInk.getInk(pos).color() == color)
+            return BlockInkedResult.ALREADY_INKED;
+
+        worldInk.ink(pos, color, inkType);
         level.getChunkAt(pos).setUnsaved(true);
 
         if(!level.isClientSide)

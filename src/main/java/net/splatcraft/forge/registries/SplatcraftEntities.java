@@ -121,9 +121,12 @@ public class SplatcraftEntities {
     }
 
     @SubscribeEvent
-    public static void setEntityAttributes(EntityAttributeCreationEvent event) {
+    public static void setEntityAttributes(EntityAttributeCreationEvent event)
+    {
         event.put(SplatcraftEntities.INK_SQUID.get(), InkSquidEntity.setCustomAttributes().build());
         event.put(SplatcraftEntities.SQUID_BUMPER.get(), SquidBumperEntity.setCustomAttributes().build());
+
+        InkProjectileEntity.registerDataAccessors();
     }
 
     public static AttributeSupplier.Builder injectPlayerAttributes(AttributeSupplier.Builder builder) {

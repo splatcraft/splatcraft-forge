@@ -135,7 +135,7 @@ public class SubWeaponItem extends WeaponBaseItem<SubWeaponSettings>
 
             stack.getOrCreateTag().remove("EntityData");
 
-            proj.setItem(stack);
+            proj.setItem(stack.copy());
             proj.shoot(entity, entity.getXRot(), entity.getYRot(), settings.throwAngle, settings.throwVelocity, 0);
             proj.setDeltaMovement(proj.getDeltaMovement().add(entity.getDeltaMovement().multiply(1, 0, 1)));
             level.addFreshEntity(proj);
@@ -168,11 +168,15 @@ public class SubWeaponItem extends WeaponBaseItem<SubWeaponSettings>
         @Override
         public ItemStack execute(BlockSource source, ItemStack stack)
         {
-            if (SubWeaponItem.singleUse(stack)) {
+            if (SubWeaponItem.singleUse(stack))
+            {
+                ItemStack thrownStack = stack.copy();
+                thrownStack.getOrCreateTag().remove("EntityData");
+
                 Level world = source.getLevel();
                 Position iposition = DispenserBlock.getDispensePosition(source);
                 Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-                AbstractSubWeaponEntity projectileentity = this.getProjectile(world, iposition, stack);
+                AbstractSubWeaponEntity projectileentity = this.getProjectile(world, iposition, thrownStack);
                 projectileentity.shoot(direction.getStepX(), (float) direction.getStepY() + 0.1F, direction.getStepZ(), this.getPower(), this.getUncertainty());
                 world.addFreshEntity(projectileentity);
                 stack.shrink(1);

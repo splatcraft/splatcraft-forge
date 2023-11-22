@@ -6,22 +6,8 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "splatcraft:sardinium",
-          "weight": 30,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 1,
-                "max": 5
-              }
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:ink_sac",
-          "weight": 30,
+          "weight": 20,
           "functions": [
             {
               "function": "set_count",
@@ -35,7 +21,7 @@
         {
           "type": "minecraft:item",
           "name": "splatcraft:empty_inkwell",
-          "weight": 25,
+          "weight": 20,
           "functions": [
             {
               "function": "set_count",
@@ -54,6 +40,20 @@
         {
           "type": "minecraft:item",
           "name": "splatcraft:sardinium_block",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 5
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:loot_table",
+          "name": "splatcraft:storage/blueprint_crate",
           "weight": 20
         },
         {

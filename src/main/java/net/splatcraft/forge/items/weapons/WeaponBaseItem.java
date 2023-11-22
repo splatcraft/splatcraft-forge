@@ -155,6 +155,19 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> ext
         return false;
     }
 
+    public static boolean hasInkInTank(LivingEntity player, Item item)
+    {
+        ItemStack tank = player.getItemBySlot(EquipmentSlot.CHEST);
+        if (!SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.REQUIRE_INK_TANK)
+                || player instanceof Player && ((Player) player).isCreative()
+                && SplatcraftGameRules.getBooleanRuleValue(player.level, SplatcraftGameRules.INFINITE_INK_IN_CREATIVE)) {
+            return true;
+        }
+
+        return InkTankItem.getInkAmount(tank) > 0 && ((InkTankItem) tank.getItem()).canUse(item);
+    }
+
+
     public static void sendNoInkMessage(LivingEntity entity, SoundEvent sound)
     {
         if (entity instanceof Player)

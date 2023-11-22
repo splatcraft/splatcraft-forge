@@ -66,9 +66,6 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
     private static final EntityDataAccessor<Float> MIN_VELOCITY = SynchedEntityData.defineId(InkProjectileEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Vec3> SHOOT_DIRECTION = SynchedEntityData.defineId(InkProjectileEntity.class, new EntityDataSerializer<Vec3>()
     {
-        {
-            EntityDataSerializers.registerSerializer(this);
-        }
         @Override
         public void write(FriendlyByteBuf buf, Vec3 shootVelocity)
         {
@@ -130,6 +127,11 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
     public InkProjectileEntity(Level level, LivingEntity thrower, ItemStack sourceWeapon, InkBlockUtils.InkType inkType, float projectileSize, AbstractWeaponSettings damage) {
         this(level, thrower, ColorUtils.getInkColor(sourceWeapon), inkType, projectileSize, damage, sourceWeapon);
+    }
+
+    public static void registerDataAccessors()
+    {
+        EntityDataSerializers.registerSerializer(SHOOT_DIRECTION.getSerializer());
     }
 
     public InkProjectileEntity setShooterTrail() {
@@ -365,11 +367,11 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
             level.broadcastEntityEvent(this, (byte) -1);
         }
 
-        if (target instanceof LivingEntity) {
-            if (InkDamageUtils.isSplatted((LivingEntity) target)) return;
+        if (target instanceof LivingEntity livingTarget) {
+            if (InkDamageUtils.isSplatted(livingTarget)) return;
 
-            if (InkDamageUtils.doDamage(level, (LivingEntity) target, dmg, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, damageType, causesHurtCooldown) &&
-                    charge >= 1.0f && getOwner() instanceof ServerPlayer)
+            if (InkDamageUtils.doDamage(level, livingTarget, dmg, getColor(), getOwner(), this, sourceWeapon, bypassMobDamageMultiplier, damageType, causesHurtCooldown) &&
+                    InkDamageUtils.isSplatted(livingTarget) && charge >= 1.0f && getOwner() instanceof ServerPlayer)
                 ((ServerPlayer) getOwner()).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
         }
 

@@ -1,0 +1,109 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "splatcraft:blueprint",
+          "weight": 21,
+          "functions": [
+            {
+              "function": "splatcraft:blueprint_pool",
+              "weapon_pool": "shooters"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "splatcraft:blueprint",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "splatcraft:blueprint_pool",
+              "weapon_pool": "blasters"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "splatcraft:blueprint",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "splatcraft:blueprint_pool",
+              "weapon_pool": "rollers"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "splatcraft:blueprint",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "splatcraft:blueprint_pool",
+              "weapon_pool": "chargers"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "splatcraft:blueprint",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "splatcraft:blueprint_pool",
+              "weapon_pool": "sloshers"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "splatcraft:blueprint",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "splatcraft:blueprint_pool",
+              "weapon_pool": "splatlings"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "splatcraft:blueprint",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "splatcraft:blueprint_pool",
+              "weapon_pool": "dualies"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "splatcraft:blueprint",
+          "weight": 16,
+          "functions": [
+            {
+              "function": "splatcraft:blueprint_pool",
+              "weapon_pool": "sub_weapons"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "splatcraft:blueprint",
+          "weight": 12,
+          "functions": [
+            {
+              "function": "splatcraft:blueprint_pool",
+              "weapon_pool": "ink_tanks"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

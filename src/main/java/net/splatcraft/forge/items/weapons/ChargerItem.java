@@ -3,6 +3,7 @@ package net.splatcraft.forge.items.weapons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
@@ -17,6 +18,7 @@ import net.splatcraft.forge.client.audio.ChargerChargingTickableSound;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
+import net.splatcraft.forge.items.InkTankItem;
 import net.splatcraft.forge.items.weapons.settings.ChargerWeaponSettings;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.ReleaseChargePacket;
@@ -82,9 +84,17 @@ public class ChargerItem extends WeaponBaseItem<ChargerWeaponSettings> implement
 	}
 
 	@Override
-	public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft) {
+	public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft)
+	{
 		if (entity instanceof Player player && level.isClientSide && !player.getCooldowns().isOnCooldown(this))
 		{
+			if(!hasInkInTank(player, this) || !InkTankItem.canRecharge(player.getItemBySlot(EquipmentSlot.CHEST), true))
+			{
+				if(timeLeft % 4 == 0)
+					sendNoInkMessage(player, SplatcraftSounds.noInkMain);
+				return;
+			}
+
 			ChargerWeaponSettings settings = getSettings(stack);
 			float prevCharge = PlayerCharge.getChargeValue(player, stack);
 			float newCharge = prevCharge + (entity.isOnGround() ? settings.chargeSpeed : settings.airborneChargeSpeed);

@@ -11,6 +11,8 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import net.splatcraft.forge.blocks.IColoredBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.data.capabilities.worldink.WorldInk;
+import net.splatcraft.forge.data.capabilities.worldink.WorldInkCapability;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.SendScanTurfResultsPacket;
@@ -82,21 +84,21 @@ public class TurfScannerItem extends RemoteItem
 
                     blockTotal++;
 
-                    if (level.getBlockEntity(checkPos) instanceof InkColorTileEntity && level.getBlockState(checkPos).getBlock() instanceof IColoredBlock)
+                    int color = -1;
+                    WorldInk worldInk = WorldInkCapability.get(level, checkPos);
+
+                    if(worldInk.isInked(checkPos))
+                        color = worldInk.getInk(checkPos).color();
+                    else if (level.getBlockState(checkPos).is(SplatcraftTags.Blocks.SCAN_TURF_SCORED) &&
+                            level.getBlockState(checkPos).getBlock() instanceof IColoredBlock coloredBlock)
+                        color = coloredBlock.getColor(level, checkPos);
+
+                    if (color >= 0)
                     {
-                        InkColorTileEntity te = (InkColorTileEntity) level.getBlockEntity(checkPos);
-                        IColoredBlock block = (IColoredBlock) level.getBlockState(checkPos).getBlock();
-                        int color = te.getColor();
-
-                        if (color >= 0 && level.getBlockState(checkPos).is(SplatcraftTags.Blocks.SCAN_TURF_SCORED))
-                        {
-                            if (scores.containsKey(color))
-                                scores.replace(color, scores.get(color) + 1);
-                            else scores.put(color, 1);
-                            affectedBlockTotal++;
-                        }
-
-
+                        if (scores.containsKey(color))
+                            scores.replace(color, scores.get(color) + 1);
+                        else scores.put(color, 1);
+                        affectedBlockTotal++;
                     }
                 }
             }
@@ -134,31 +136,20 @@ public class TurfScannerItem extends RemoteItem
 
                         blockTotal++;
 
-                        if(InkBlockUtils.isInked(level, checkPos))
+                        int color = -1;
+                        WorldInk worldInk = WorldInkCapability.get(level, checkPos);
+
+                        if(worldInk.isInked(checkPos))
+                            color = worldInk.getInk(checkPos).color();
+                        else if (level.getBlockState(checkPos).is(SplatcraftTags.Blocks.SCAN_TURF_SCORED) &&
+                                level.getBlockState(checkPos).getBlock() instanceof IColoredBlock coloredBlock)
+                            color = coloredBlock.getColor(level, checkPos);
+
+                        if (color >= 0)
                         {
-                            int color = InkBlockUtils.getInk(level, checkPos).color();
-
-                            if (color >= 0 && level.getBlockState(checkPos).is(SplatcraftTags.Blocks.SCAN_TURF_SCORED))
-                            {
-                                if (scores.containsKey(color))
-                                    scores.replace(color, scores.get(color) + 1);
-                                else scores.put(color, 1);
-                            }
-                        }
-
-                        if (level.getBlockEntity(checkPos) instanceof InkColorTileEntity && level.getBlockState(checkPos).getBlock() instanceof IColoredBlock)
-                        {
-                            InkColorTileEntity te = (InkColorTileEntity) level.getBlockEntity(checkPos);
-                            int color = te.getColor();
-
-                            if (color >= 0 && level.getBlockState(checkPos).is(SplatcraftTags.Blocks.SCAN_TURF_SCORED))
-                            {
-                                if (scores.containsKey(color))
-                                    scores.replace(color, scores.get(color) + 1);
-                                else scores.put(color, 1);
-                            }
-
-
+                            if (scores.containsKey(color))
+                                scores.replace(color, scores.get(color) + 1);
+                            else scores.put(color, 1);
                         }
                     }
                 }

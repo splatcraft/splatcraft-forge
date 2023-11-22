@@ -70,8 +70,11 @@ public class InkTankItem extends ColoredArmorItem {
     }
 
 
-    public static float getInkAmount(ItemStack stack) {
-        float capacity = ((InkTankItem) stack.getItem()).capacity;
+    public static float getInkAmount(ItemStack stack)
+    {
+        if(!(stack.getItem() instanceof InkTankItem inkTankItem))
+            return 0;
+        float capacity = inkTankItem.capacity;
         if (stack.getOrCreateTag().getBoolean("InfiniteInk")) return capacity;
         return Math.max(0, Math.min(capacity, stack.getOrCreateTag().getFloat("Ink")));
     }

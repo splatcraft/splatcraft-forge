@@ -11,6 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -111,7 +112,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 			for(int i = 0; i <= 2; i++)
 				if(!InkBlockUtils.isUninkable(level, blockPosition().below(i)))
 				{
-					InkBlockUtils.inkBlock(level, blockPosition().below(i), getColor(), settings.contactDamage, inkType);
+					InkBlockUtils.playerInkBlock(getOwner() instanceof Player player ? player : null, level, blockPosition().below(i), getColor(), settings.contactDamage, inkType);
 					break;
 				}
 
