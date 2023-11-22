@@ -91,7 +91,7 @@ public class SplatcraftSounds
         chargerShot = createSoundEvent("charger_shot");
         splatlingCharge = createSoundEvent("splatling_charge");
         splatlingReady = createSoundEvent("splatling_ready");
-        splatlingShot = createSoundEvent("splatling_shot");
+        splatlingShot = createSoundEvent("splatling_firing");
         dualieShot = createSoundEvent("dualie_firing");
         dualieDodge = createSoundEvent("dualie_dodge");
         slosherShot = createSoundEvent("slosher_shot");

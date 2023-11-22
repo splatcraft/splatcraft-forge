@@ -131,6 +131,30 @@
       "splatcraft:slosher_shot"
     ]
   },
+  "splatling_charge": {
+    "replace": true,
+    "category": "player",
+    "subtitle": "subtitle.splatling_charge",
+    "sounds": [
+      "splatcraft:splatling_charge"
+    ]
+  },
+  "splatling_ready": {
+    "replace": true,
+    "category": "player",
+    "subtitle": "subtitle.splatling_ready",
+    "sounds": [
+      "splatcraft:splatling_ready"
+    ]
+  },
+  "splatling_firing": {
+    "replace": true,
+    "category": "player",
+    "subtitle": "subtitle.splatling_shot",
+    "sounds": [
+      "splatcraft:splatling_firing"
+    ]
+  },
   "sub_throw": {
     "subtitle": "subtitle.sub_throw",
     "sounds": [
