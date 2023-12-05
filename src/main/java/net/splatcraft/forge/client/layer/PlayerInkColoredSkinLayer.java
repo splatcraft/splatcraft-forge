@@ -29,7 +29,7 @@ public class PlayerInkColoredSkinLayer extends RenderLayer<AbstractClientPlayer,
     }
 
     public static void renderHand(PlayerModel<AbstractClientPlayer> playermodel, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, AbstractClientPlayer player, ModelPart arm, ModelPart sleeve) {
-        if (player.isSpectator() || player.isInvisible() || !PlayerInfoCapability.hasCapability(player) || !TEXTURES.containsKey(player.getUUID())) {
+        if (!TEXTURES.containsKey(player.getUUID()) || player.isSpectator() || player.isInvisible() || !PlayerInfoCapability.hasCapability(player)) {
             return;
         }
 
@@ -38,7 +38,7 @@ public class PlayerInkColoredSkinLayer extends RenderLayer<AbstractClientPlayer,
         float g = ((color & '\uff00') >> 8) / 255.0f;
         float b = (color & 255) / 255.0f;
 
-        VertexConsumer ivertexbuilder = buffer.getBuffer(RenderType.entitySmoothCutout(TEXTURES.get(player.getUUID())));
+        VertexConsumer ivertexbuilder = buffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURES.get(player.getUUID())));
 
         //copyPropertiesFrom(getParentModel(), playermodel);
         playermodel.attackTime = 0.0F;
@@ -67,7 +67,7 @@ public class PlayerInkColoredSkinLayer extends RenderLayer<AbstractClientPlayer,
     }
 
     private void render(PoseStack p_241738_1_, MultiBufferSource buffer, int p_241738_3_, PlayerModel<AbstractClientPlayer> p_241738_6_, float p_241738_8_, float p_241738_9_, float p_241738_10_, ResourceLocation armorResource) {
-        VertexConsumer ivertexbuilder = buffer.getBuffer(RenderType.entitySmoothCutout(armorResource));
+        VertexConsumer ivertexbuilder = buffer.getBuffer(RenderType.entityTranslucent(armorResource));
         p_241738_6_.renderToBuffer(p_241738_1_, ivertexbuilder, p_241738_3_, OverlayTexture.NO_OVERLAY, p_241738_8_, p_241738_9_, p_241738_10_, 1.0F);
     }
 
