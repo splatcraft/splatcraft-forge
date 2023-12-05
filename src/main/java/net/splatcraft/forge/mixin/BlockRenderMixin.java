@@ -37,6 +37,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+//TODO use RenderLevelStageEvent to render ink over blocks instead of overriding block rendering with mixins,
+// this may have been a bad idea for compatibility
 @OnlyIn(Dist.CLIENT)
 public class BlockRenderMixin
 {
