@@ -148,7 +148,7 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
     {
         if (allowdedIn(group))
         {
-            items.add(ColorUtils.setColorLocked(new ItemStack(this), false));
+            items.add(ColorUtils.setInkColor(new ItemStack(this), -1));
 
             if (addStartersToTab)
             {

@@ -40,7 +40,10 @@ public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state)
     {
-        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getCloneItemStack(level, pos, state), getColor((Level) level, pos)), true);
+        int color = getColor((Level) level, pos);
+        if(color < 0)
+            return ColorUtils.setInkColor(super.getCloneItemStack(level, pos, state), color);
+        return ColorUtils.setColorLocked(ColorUtils.setInkColor(super.getCloneItemStack(level, pos, state), color), true);
     }
 
     @Override
