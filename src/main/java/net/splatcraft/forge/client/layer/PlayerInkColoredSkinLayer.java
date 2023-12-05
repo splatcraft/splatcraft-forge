@@ -45,10 +45,16 @@ public class PlayerInkColoredSkinLayer extends RenderLayer<AbstractClientPlayer,
         playermodel.crouching = false;
         playermodel.swimAmount = 0.0F;
         playermodel.setupAnim(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+
+        matrixStack.scale(1.001f, 1.001f, 1.001f);
+
         arm.xRot = 0.0F;
         arm.render(matrixStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, r, g, b, 1);
         sleeve.xRot = 0.0F;
         sleeve.render(matrixStack, ivertexbuilder, packedLight, OverlayTexture.NO_OVERLAY, r, g, b, 1);
+
+        float f = 1 / 1.001f;
+        matrixStack.scale(f, f, f);
     }
 
     @Override
