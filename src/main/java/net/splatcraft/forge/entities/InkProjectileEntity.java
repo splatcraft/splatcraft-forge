@@ -275,11 +275,13 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         if(straightShotTime >= 0)
             straightShotTime--;
 
-
         if (isInWater()) {
             discard();
             return;
         }
+
+        if(isRemoved())
+            return;
 
         if (!level.isClientSide && !persistent && lifespan-- <= 0)
         {
@@ -291,8 +293,7 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
             }
             discard();
         }
-
-        if (trailSize > 0 && (trailCooldown == 0 || tickCount % trailCooldown == 0))
+        else if (trailSize > 0 && (trailCooldown == 0 || tickCount % trailCooldown == 0))
         {
             if (!isInvisible())
                 level.broadcastEntityEvent(this, (byte) 1);
@@ -555,6 +556,11 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
 
         super.addAdditionalSaveData(nbt);
         nbt.remove("Item");
+    }
+
+    @Override
+    protected ItemStack getItemRaw() {
+        return sourceWeapon;
     }
 
     @Override
