@@ -22,6 +22,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -466,7 +467,11 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
+    public void readAdditionalSaveData(CompoundTag nbt)
+    {
+
+        super.readAdditionalSaveData(nbt);
+
         if (nbt.contains("Size"))
             setProjectileSize(nbt.getFloat("Size"));
 
@@ -547,6 +552,9 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         nbt.putString("ProjectileType", getProjectileType());
         nbt.putString("InkType", inkType.getSerializedName());
         nbt.put("SourceWeapon", sourceWeapon.save(new CompoundTag()));
+
+        super.addAdditionalSaveData(nbt);
+        nbt.remove("Item");
     }
 
     @Override
