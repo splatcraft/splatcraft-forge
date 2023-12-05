@@ -17,6 +17,10 @@
                   "op": "replace"
                 }
               ]
+            },
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{ColorLocked:true}"
             }
           ],
           "name": "splatcraft:ink_stained_wool"
