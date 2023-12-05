@@ -30,13 +30,6 @@ public class WeaponHandler {
 	private static final Map<Player, Vec3> prevPosMap = new LinkedHashMap<>();
 
 	@SubscribeEvent
-	public static void onItemUse(LivingEntityUseItemEvent event) {
-		if (event.getItem().getItem() instanceof WeaponBaseItem && event.getEntityLiving() instanceof Player player && CommonUtils.anyWeaponOnCooldown(player)) {
-			event.setCanceled(true);
-		}
-	}
-
-	@SubscribeEvent
 	public static void onLivingDeath(LivingDeathEvent event) {
 		if (event.getEntityLiving() instanceof Player target && !event.getEntityLiving().isSpectator()) {
 
@@ -102,7 +95,7 @@ public class WeaponHandler {
 					weapon.onPlayerCooldownTick(player.level, player, stack, cooldown);
 			}
 		}
-		if (canUseWeapon && player.getUseItemRemainingTicks() > 0) {
+		if (canUseWeapon && player.getUseItemRemainingTicks() > 0 && !CommonUtils.anyWeaponOnCooldown(player)) {
 			ItemStack stack = player.getItemInHand(player.getUsedItemHand());
 			if (stack.getItem() instanceof WeaponBaseItem) {
 				((WeaponBaseItem) stack.getItem()).weaponUseTick(player.level, player, stack, player.getUseItemRemainingTicks());
