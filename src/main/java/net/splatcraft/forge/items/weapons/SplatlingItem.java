@@ -24,6 +24,7 @@ import net.splatcraft.forge.items.weapons.settings.SplatlingWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.SplatlingWeaponSettings.FiringData;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.ReleaseChargePacket;
+import net.splatcraft.forge.network.c2s.UpdateChargeStatePacket;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
 import net.splatcraft.forge.util.InkBlockUtils;
@@ -53,16 +54,6 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 
 	public static RegistryObject<SplatlingItem> create(DeferredRegister<Item> register, RegistryObject<SplatlingItem> parent, String name) {
 		return register.register(name, () -> new SplatlingItem(parent.get().settingsId.toString()));
-	}
-
-	@Override
-	public void onRelease(Level level, Player player, ItemStack stack, float charge)
-	{
-		SplatlingWeaponSettings settings = getSettings(stack);
-
-		int cooldownTime = (int) (getDischargeTicks(stack) * charge);
-		reduceInk(player, this, getScaledSettingFloat(settings, charge, FiringData::getInkConsumption), cooldownTime + getScaledSettingInt(settings, charge, FiringData::getInkRecoveryCooldown), true);
-		PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, cooldownTime, player.getInventory().selected, player.getUsedItemHand(), true, false, !settings.canRechargeWhileFiring, player.isOnGround()).setCancellable());
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -116,13 +107,17 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown)
 	{
 		if(cooldown.getTime() > 0 && level.isClientSide && PlayerCharge.hasCharge(player))
-			PlayerCharge.getCharge(player).reset();
+		{
+			PlayerCharge charge = PlayerCharge.getCharge(player);
+			charge.reset();
+			SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
+		}
 	}
 
 	@Override
 	public void onPlayerCooldownTick(Level level, Player player, ItemStack stack, PlayerCooldown cooldown)
 	{
-		if(level.isClientSide || PlayerCharge.hasCharge(player))
+		if(level.isClientSide)
 			return;
 
 		SplatlingWeaponSettings settings = getSettings(stack);
@@ -148,11 +143,21 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	}
 
 	@Override
+	public void onReleaseCharge(Level level, Player player, ItemStack stack, float charge)
+	{
+		SplatlingWeaponSettings settings = getSettings(stack);
+
+		int cooldownTime = (int) (getDischargeTicks(stack) * charge);
+		reduceInk(player, this, getScaledSettingFloat(settings, charge, FiringData::getInkConsumption), cooldownTime + getScaledSettingInt(settings, charge, FiringData::getInkRecoveryCooldown), true);
+		PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, cooldownTime, player.getInventory().selected, player.getUsedItemHand(), true, false, !settings.canRechargeWhileFiring, player.isOnGround()).setCancellable());
+	}
+
+	@Override
 	public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, LivingEntity entity, int timeLeft)
 	{
 		super.releaseUsing(stack, level, entity, timeLeft);
 
-		if (level.isClientSide && entity instanceof Player player)
+		if (entity instanceof Player player)
 		{
 			PlayerCharge charge = PlayerCharge.getCharge(player);
 
@@ -162,6 +167,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 			if(PlayerInfoCapability.isSquid(player))
 			{
 				charge.reset();
+				SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
 			}
 			else
 			{
@@ -169,9 +175,9 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 				{
 					SplatlingWeaponSettings settings = getSettings(stack);
 					PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, (int) (settings.firingDuration * charge.charge), player.getInventory().selected, player.getUsedItemHand(), true, false, !settings.canRechargeWhileFiring, player.isOnGround()).setCancellable());
+					SplatcraftPacketHandler.sendToServer(new ReleaseChargePacket(charge.charge, stack, false));
 				}
 			}
-			SplatcraftPacketHandler.sendToServer(new ReleaseChargePacket(charge.charge, stack));
 		}
 	}
 

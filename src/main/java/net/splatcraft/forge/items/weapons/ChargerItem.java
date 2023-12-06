@@ -52,7 +52,7 @@ public class ChargerItem extends WeaponBaseItem<ChargerWeaponSettings> implement
 	}
 
 	@Override
-	public void onRelease(Level level, Player player, ItemStack stack, float charge)
+	public void onReleaseCharge(Level level, Player player, ItemStack stack, float charge)
 	{
 		ChargerWeaponSettings settings = getSettings(stack);
 

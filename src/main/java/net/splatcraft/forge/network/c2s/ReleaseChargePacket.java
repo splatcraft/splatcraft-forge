@@ -10,16 +10,22 @@ public class ReleaseChargePacket extends PlayC2SPacket
 {
     private final float charge;
     private final ItemStack stack;
+    private final boolean resetCharge;
 
     public ReleaseChargePacket(float charge, ItemStack stack)
     {
+        this(charge, stack, true);
+    }
+    public ReleaseChargePacket(float charge, ItemStack stack, boolean resetCharge)
+    {
         this.charge = charge;
         this.stack = stack;
+        this.resetCharge = resetCharge;
     }
 
     public static ReleaseChargePacket decode(FriendlyByteBuf buffer)
     {
-        return new ReleaseChargePacket(buffer.readFloat(), buffer.readItem());
+        return new ReleaseChargePacket(buffer.readFloat(), buffer.readItem(), buffer.readBoolean());
     }
 
     @Override
@@ -32,10 +38,11 @@ public class ReleaseChargePacket extends PlayC2SPacket
         }
 
         if (stack.getItem() instanceof IChargeableWeapon weapon) {
-            weapon.onRelease(player.level, player, stack, charge);
+            weapon.onReleaseCharge(player.level, player, stack, charge);
         }
 
-        PlayerCharge.updateServerMap(player, false);
+        if(resetCharge)
+            PlayerCharge.updateServerMap(player, false);
     }
 
     @Override
@@ -43,5 +50,6 @@ public class ReleaseChargePacket extends PlayC2SPacket
     {
         buffer.writeFloat(charge);
         buffer.writeItem(stack);
+        buffer.writeBoolean(resetCharge);
     }
 }
