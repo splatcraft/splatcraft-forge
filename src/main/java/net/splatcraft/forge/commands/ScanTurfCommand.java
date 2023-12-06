@@ -43,7 +43,7 @@ public class ScanTurfCommand
     }
     private static int executeOnSelf(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
     {
-        return executeStage(context.getSource(), StringArgumentType.getString(context, "stage"), 0,
+        return execute(context.getSource(), StageCommand.getOrLoadBlockPos(context, "from"), StageCommand.getOrLoadBlockPos(context, "to"), 0,
                 context.getSource().getEntity() instanceof ServerPlayer ? Collections.singletonList((ServerPlayer) context.getSource().getEntity()) : RemoteItem.ALL_TARGETS);
     }
 
