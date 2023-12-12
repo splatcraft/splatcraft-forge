@@ -220,7 +220,7 @@ public class InkwellBlock extends Block implements IColoredBlock, SimpleWaterlog
             ItemStack stack = entity.getItem();
 
             if (inkCoatingRecipes.containsKey(stack.getItem()))
-                entity.setItem(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(inkCoatingRecipes.get(stack.getItem())), t.getColor()), true));
+                entity.setItem(ColorUtils.setColorLocked(ColorUtils.setInkColor(new ItemStack(inkCoatingRecipes.get(stack.getItem()), stack.getCount()), t.getColor()), true));
         }
     }
 
