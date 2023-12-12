@@ -140,6 +140,14 @@ public class InkStainedStairBlock extends StairBlock implements IColoredBlock, E
         }
 
         @Override
+        public int getColor(Level level, BlockPos pos)
+        {
+            if(level.getBlockState(pos).getValue(COLORED))
+                return super.getColor(level, pos);
+            else return -1;
+        }
+
+        @Override
         public boolean remoteColorChange(Level level, BlockPos pos, int newColor)
         {
             if(!level.getBlockState(pos).getValue(COLORED))

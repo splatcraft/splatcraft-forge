@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
@@ -22,6 +23,7 @@ import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 
 import static net.splatcraft.forge.blocks.InkStainedBlock.COLORED;
@@ -156,9 +158,22 @@ public class InkStainedBlock extends Block implements IColoredBlock, EntityBlock
         }
 
         @Override
+        public int getColor(Level level, BlockPos pos)
+        {
+            if(level.getBlockState(pos).getValue(COLORED))
+                return super.getColor(level, pos);
+            else return -1;
+        }
+
+        @Override
         public @Nullable BlockState getStateForPlacement(BlockPlaceContext context)
         {
             return super.getStateForPlacement(context).setValue(COLORED, ColorUtils.getInkColor(context.getItemInHand()) >= 0);
+        }
+
+        @Override
+        public List<ItemStack> getDrops(BlockState p_60537_, LootContext.Builder p_60538_) {
+            return super.getDrops(p_60537_, p_60538_);
         }
     }
 }

@@ -21,6 +21,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
@@ -39,7 +40,7 @@ import java.util.List;
 public class ColoredBlockItem extends BlockItem implements IColoredItem
 {
 
-    private final Item clearItem;
+    private Item clearItem;
     private boolean addStartersToTab = false;
     private boolean matchColor = true;
 
@@ -53,6 +54,9 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
         if(clearItem != null)
             CauldronInteraction.WATER.put(this, ((state, level, pos, player, hand, stack) ->
             {
+                if(equals(clearItem) && ColorUtils.getInkColor(stack) < 0)
+                    return InteractionResult.PASS;
+
                 ItemStack itemstack1 = new ItemStack(clearItem, 1);
 
                 player.awardStat(Stats.USE_CAULDRON);
@@ -127,6 +131,12 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
         return this;
     }
 
+    public ColoredBlockItem clearsToSelf()
+    {
+        clearItem = this;
+        return this;
+    }
+
     @Override
     protected boolean updateCustomBlockEntityTag(@NotNull BlockPos pos, Level levelIn, @Nullable Player player, @NotNull ItemStack stack, @NotNull BlockState state)
     {
@@ -185,15 +195,12 @@ public class ColoredBlockItem extends BlockItem implements IColoredItem
                 ColorUtils.setColorLocked(entity.getItem(), true);
             }
         }
-        else if (clearItem != null && InkedBlock.causesClear(entity.level, pos, entity.level.getBlockState(pos), Direction.UP))
+        else if (!(equals(clearItem) && ColorUtils.getInkColor(stack) < 0) &&
+                clearItem != null && InkedBlock.causesClear(entity.level, pos, entity.level.getBlockState(pos), Direction.UP))
+        {
             entity.setItem(new ItemStack(clearItem, stack.getCount()));
+        }
 
         return false;
-    }
-
-    public ColoredBlockItem addStarters(boolean b)
-    {
-        addStartersToTab = b;
-        return this;
     }
 }
