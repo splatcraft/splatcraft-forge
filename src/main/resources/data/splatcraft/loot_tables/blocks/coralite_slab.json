@@ -24,6 +24,15 @@
             },
             {
               "function": "minecraft:copy_nbt",
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "splatcraft:coralite_slab",
+                  "properties": {
+                    "colored": "true"
+                  }
+                }
+              ],
               "source": "block_entity",
               "ops": [
                 {

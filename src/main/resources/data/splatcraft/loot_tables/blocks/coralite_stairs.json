@@ -10,6 +10,15 @@
           "functions": [
             {
               "function": "minecraft:copy_nbt",
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "splatcraft:coralite_stairs",
+                  "properties": {
+                    "colored": "true"
+                  }
+                }
+              ],
               "source": "block_entity",
               "ops": [
                 {
