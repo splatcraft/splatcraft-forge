@@ -57,6 +57,9 @@ public class SplatcraftKeyHandler {
     public static boolean isSubWeaponHotkeyDown() {
         return subWeaponHotkey.active;
     }
+    public static boolean isSquidKeyDown() {
+        return squidKey.active;
+    }
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {

@@ -16,6 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.client.audio.ChargerChargingTickableSound;
+import net.splatcraft.forge.client.handlers.SplatcraftKeyHandler;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
@@ -99,7 +100,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 				playChargingSound(player);
 			}
 
-			PlayerCharge.addChargeValue(player, stack, newCharge - prevCharge, false, maxCharges);
+			PlayerCharge.addChargeValue(player, stack, newCharge - prevCharge, true, maxCharges);
 		}
 	}
 
@@ -121,7 +122,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 			return;
 
 		SplatlingWeaponSettings settings = getSettings(stack);
-		float charge = PlayerCharge.shouldCreateCharge(player) ? 0 : PlayerCharge.getCharge(player).maxCharge;
+		float charge = stack.getOrCreateTag().getFloat("Charge");
 
 		FiringData firingData =  charge > 1 ? settings.secondChargeLevelData : settings.firstChargeLevelData;
 		int firingSpeed = getScaledSettingInt(settings, charge, FiringData::getFiringSpeed);
@@ -147,6 +148,8 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	{
 		SplatlingWeaponSettings settings = getSettings(stack);
 
+		stack.getOrCreateTag().putFloat("Charge", charge);
+
 		int cooldownTime = (int) (getDecayTicks(stack) * charge);
 		reduceInk(player, this, getScaledSettingFloat(settings, charge, FiringData::getInkConsumption), cooldownTime + getScaledSettingInt(settings, charge, FiringData::getInkRecoveryCooldown), true);
 		PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, cooldownTime, player.getInventory().selected, player.getUsedItemHand(), true, false, !settings.canRechargeWhileFiring, player.isOnGround()).setCancellable());
@@ -157,27 +160,32 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	{
 		super.releaseUsing(stack, level, entity, timeLeft);
 
-		if (entity instanceof Player player)
+		if (level.isClientSide && entity instanceof Player player)
 		{
+			if(PlayerCooldown.hasPlayerCooldown(player) && PlayerCooldown.getPlayerCooldown(player).preventWeaponUse())
+				return;
+
 			PlayerCharge charge = PlayerCharge.getCharge(player);
 
 			if(charge == null)
 				return;
 
+			/*
 			if(PlayerInfoCapability.isSquid(player))
 			{
 				charge.reset();
 				SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
 			}
-			else
+			else */
+
+
+			if (!SplatcraftKeyHandler.isSquidKeyDown() && charge.charge > 0.05f) //checking for squid key press so it doesn't immediately release charge when squidding
 			{
-				if (charge.charge > 0.05f)
-				{
-					SplatlingWeaponSettings settings = getSettings(stack);
-					PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, (int) (settings.firingDuration * charge.charge), player.getInventory().selected, player.getUsedItemHand(), true, false, !settings.canRechargeWhileFiring, player.isOnGround()).setCancellable());
-					SplatcraftPacketHandler.sendToServer(new ReleaseChargePacket(charge.charge, stack, false));
-				}
+				SplatlingWeaponSettings settings = getSettings(stack);
+				PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, (int) (settings.firingDuration * charge.charge), player.getInventory().selected, player.getUsedItemHand(), true, false, !settings.canRechargeWhileFiring, player.isOnGround()).setCancellable());
+				SplatcraftPacketHandler.sendToServer(new ReleaseChargePacket(charge.charge, stack, false));
 			}
+
 		}
 	}
 

@@ -275,15 +275,19 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
                 Optional.of(firstChargeLevelData.projectileInkCoverage), Optional.of(firstChargeLevelData.projectileInkTrailCoverage), Optional.of(firstChargeLevelData.projectileInkTrailCooldown),
                 firstChargeLevelData.baseDamage, Optional.of(firstChargeLevelData.decayedDamage),
                 Optional.of(firstChargeLevelData.damageDecayStartTick), Optional.of(firstChargeLevelData.damageDecayPerTick)),
+
                 new ShotDataRecord(Optional.of(firstChargeLevelData.startupTicks), firstChargeLevelData.firingSpeed, firstChargeLevelData.groundInaccuracy, Optional.of(firstChargeLevelData.airInaccuracy),
                         Optional.of(firstChargeLevelData.pitchCompensation), firstChargeLevelData.inkConsumption, firstChargeLevelData.inkRecoveryCooldown),
-		        Optional.of(new OptionalProjectileDataRecord(Optional.of(secondChargeLevelData.projectileSize), Optional.of(secondChargeLevelData.projectileLifeTicks), Optional.of(secondChargeLevelData.projectileSpeed),
+
+                Optional.of(new OptionalProjectileDataRecord(Optional.of(secondChargeLevelData.projectileSize), Optional.of(secondChargeLevelData.projectileLifeTicks), Optional.of(secondChargeLevelData.projectileSpeed),
 				        Optional.of(secondChargeLevelData.projectileDecayedSpeed), Optional.of(secondChargeLevelData.straightShotDistance), Optional.of(secondChargeLevelData.projectileGravity), Optional.of(secondChargeLevelData.projectileCount),
 				        Optional.of(secondChargeLevelData.projectileInkCoverage), Optional.of(secondChargeLevelData.projectileInkTrailCoverage), Optional.of(secondChargeLevelData.projectileInkTrailCooldown),
 				        Optional.of(secondChargeLevelData.baseDamage), Optional.of(secondChargeLevelData.decayedDamage),
 				        Optional.of(secondChargeLevelData.damageDecayStartTick), Optional.of(secondChargeLevelData.damageDecayPerTick))),
-		        Optional.of(new OptionalShotDataRecord(Optional.of(secondChargeLevelData.startupTicks), Optional.of(secondChargeLevelData.firingSpeed), Optional.of(secondChargeLevelData.groundInaccuracy), Optional.of(secondChargeLevelData.airInaccuracy),
+
+                Optional.of(new OptionalShotDataRecord(Optional.of(secondChargeLevelData.startupTicks), Optional.of(secondChargeLevelData.firingSpeed), Optional.of(secondChargeLevelData.groundInaccuracy), Optional.of(secondChargeLevelData.airInaccuracy),
 				        Optional.of(secondChargeLevelData.pitchCompensation), Optional.of(secondChargeLevelData.inkConsumption), Optional.of(secondChargeLevelData.inkRecoveryCooldown))),
+
                 new ChargeDataRecord(firstLevelChargeTime, secondLevelChargeTime, Optional.of(emptyTankFirstLevelChargeTime), Optional.of(emptyTankSecondLevelChargeTime), firingDuration, Optional.of(chargeStorageTime),
                         moveSpeed, Optional.of(canRechargeWhileFiring)),
                 Optional.of(bypassesMobDamage));
