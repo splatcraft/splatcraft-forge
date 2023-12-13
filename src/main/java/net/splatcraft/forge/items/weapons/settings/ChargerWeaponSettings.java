@@ -36,7 +36,6 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
     public int emptyTankChargeTimeTicks;
     public float emptyTankChargeSpeed;
     public int chargeStorageTicks;
-    public float chargeStorageSpeed;
     public boolean bypassesMobDamage;
 
     public static final ChargerWeaponSettings DEFAULT = new ChargerWeaponSettings("default");
@@ -160,7 +159,6 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
 
     public ChargerWeaponSettings setChargeStorageTicks(int chargeStorageTicks) {
         this.chargeStorageTicks = chargeStorageTicks;
-        this.chargeStorageSpeed = 1f/chargeStorageTicks;
         return this;
     }
 

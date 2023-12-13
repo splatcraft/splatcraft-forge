@@ -50,6 +50,7 @@
 		"empty_tank_second_charge_time_ticks": 18,
 
 		"total_firing_duration": 24,
+		"charge_storage_ticks": 0,
 
 		"can_recharge_while_firing": false,
 		"use_move_speed": 0.86

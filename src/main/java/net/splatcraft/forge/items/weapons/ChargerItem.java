@@ -148,4 +148,9 @@ public class ChargerItem extends WeaponBaseItem<ChargerWeaponSettings> implement
 	public int getDischargeTicks(ItemStack stack) {
 		return getSettings(stack).chargeStorageTicks;
 	}
+
+	@Override
+	public int getDecayTicks(ItemStack stack) {
+		return 0;
+	}
 }

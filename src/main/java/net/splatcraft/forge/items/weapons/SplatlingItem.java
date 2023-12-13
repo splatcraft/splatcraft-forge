@@ -99,7 +99,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 				playChargingSound(player);
 			}
 
-			PlayerCharge.addChargeValue(player, stack, newCharge - prevCharge, true, maxCharges);
+			PlayerCharge.addChargeValue(player, stack, newCharge - prevCharge, false, maxCharges);
 		}
 	}
 
@@ -147,7 +147,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	{
 		SplatlingWeaponSettings settings = getSettings(stack);
 
-		int cooldownTime = (int) (getDischargeTicks(stack) * charge);
+		int cooldownTime = (int) (getDecayTicks(stack) * charge);
 		reduceInk(player, this, getScaledSettingFloat(settings, charge, FiringData::getInkConsumption), cooldownTime + getScaledSettingInt(settings, charge, FiringData::getInkRecoveryCooldown), true);
 		PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, cooldownTime, player.getInventory().selected, player.getUsedItemHand(), true, false, !settings.canRechargeWhileFiring, player.isOnGround()).setCancellable());
 	}
@@ -211,6 +211,11 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 
 	@Override
 	public int getDischargeTicks(ItemStack stack) {
+		return getSettings(stack).chargeStorageTime;
+	}
+
+	@Override
+	public int getDecayTicks(ItemStack stack) {
 		return getSettings(stack).firingDuration;
 	}
 }

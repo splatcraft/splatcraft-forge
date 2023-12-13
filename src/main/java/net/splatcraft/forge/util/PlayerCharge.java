@@ -23,7 +23,7 @@ public class PlayerCharge {
     public int dischargedTicks;
     public int prevDischargedTicks;
     public int totalCharges;
-    public boolean chargeDecay;
+    public boolean storePartial;
 
     public PlayerCharge(ItemStack stack, float charge, boolean chargeDecay)
     {
@@ -35,8 +35,8 @@ public class PlayerCharge {
         this.chargedWeapon = stack;
         this.charge = charge;
         this.maxCharge = charge;
-        this.chargeDecay = chargeDecay;
         this.totalCharges = totalCharges;
+        this.storePartial = chargeDecay;
     }
 
     public static PlayerCharge getCharge(Player player) {
@@ -77,17 +77,17 @@ public class PlayerCharge {
         return hasCharge(player) && getCharge(player).chargedWeapon.sameItem(stack);
     }
 
-    public static void addChargeValue(Player player, ItemStack stack, float value, boolean chargeDecay)
+    public static void addChargeValue(Player player, ItemStack stack, float value, boolean storePartial)
     {
-        addChargeValue(player, stack, value, chargeDecay, 1);
+        addChargeValue(player, stack, value, storePartial, 1);
     }
-    public static void addChargeValue(Player player, ItemStack stack, float value, boolean chargeDecay, int totalCharges)
+    public static void addChargeValue(Player player, ItemStack stack, float value, boolean storePartial, int totalCharges)
     {
         if (value < 0.0f) {
             throw new IllegalArgumentException("Attempted to add negative charge: " + value);
         }
         if (shouldCreateCharge(player)) {
-            setCharge(player, new PlayerCharge(stack, 0, chargeDecay, totalCharges));
+            setCharge(player, new PlayerCharge(stack, 0, storePartial, totalCharges));
         }
 
         PlayerCharge charge = getCharge(player);
@@ -103,7 +103,7 @@ public class PlayerCharge {
             charge.dischargedTicks = 0;
             charge.prevDischargedTicks = 0;
         } else {
-            setCharge(player, new PlayerCharge(stack, value, chargeDecay, totalCharges));
+            setCharge(player, new PlayerCharge(stack, value, storePartial, totalCharges));
         }
     }
 
@@ -133,24 +133,32 @@ public class PlayerCharge {
         charge.prevDischargedTicks = charge.dischargedTicks;
         charge.prevCharge = charge.charge;
 
-        if (!(dischargeItem instanceof IChargeableWeapon chargeable)
-                || (!charge.chargeDecay && charge.charge < 1.0f)
-                || charge.dischargedTicks >= chargeable.getDischargeTicks(charge.chargedWeapon))
-        {
-            charge.charge = 0f;
-            charge.prevCharge = 0;
-            charge.dischargedTicks = 0;
 
-            SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
-        } else
+        if (dischargeItem instanceof IChargeableWeapon chargeable)
         {
-            if(charge.chargeDecay)
+            if(!PlayerInfoCapability.isSquid(player))
             {
-                charge.charge = Math.max(0, charge.charge - 1f/chargeable.getDischargeTicks(charge.chargedWeapon));
-
+                int decayTicks = chargeable.getDecayTicks(charge.chargedWeapon);
+                if(decayTicks > 0)
+                {
+                    charge.charge = Math.max(0, charge.charge - 1f/decayTicks);
+                    return;
+                }
             }
-            else charge.dischargedTicks++;
+            else if((charge.storePartial || charge.charge >= 1.0f) &&
+                    charge.dischargedTicks < chargeable.getDischargeTicks(charge.chargedWeapon))
+            {
+                charge.dischargedTicks++;
+                return;
+            }
+
         }
+
+        charge.charge = 0f;
+        charge.prevCharge = 0;
+        charge.dischargedTicks = 0;
+
+        SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
     }
 
     public static void updateServerMap(Player player, boolean hasCharge) {
