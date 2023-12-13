@@ -77,17 +77,11 @@ public class WeaponHandler {
         else if (PlayerCooldown.shrinkCooldownTime(player, 1) != null) {
             player.setSprinting(false);
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
-			if (!(cooldown instanceof SuperJumpCommand.SuperJump) && PlayerInfoCapability.isSquid(player)) {
-				PlayerInfoCapability.get(player).setIsSquid(false);
-				if (event.side.isServer()) {
-					SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidS2CPacket(player.getUUID(), false), player);
-				}
-			}
 
 			canUseWeapon = !cooldown.preventWeaponUse();
 	        ItemStack stack = cooldown.storedStack;
 
-	        if (stack.getItem() instanceof WeaponBaseItem weapon)
+	        if (stack.getItem() instanceof WeaponBaseItem<?> weapon)
 			{
 				if (cooldown.getTime() == 1)
 					weapon.onPlayerCooldownEnd(player.level, player, stack, cooldown);
@@ -97,8 +91,8 @@ public class WeaponHandler {
 		}
 		if (canUseWeapon && player.getUseItemRemainingTicks() > 0 && !CommonUtils.anyWeaponOnCooldown(player)) {
 			ItemStack stack = player.getItemInHand(player.getUsedItemHand());
-			if (stack.getItem() instanceof WeaponBaseItem) {
-				((WeaponBaseItem) stack.getItem()).weaponUseTick(player.level, player, stack, player.getUseItemRemainingTicks());
+			if (stack.getItem() instanceof WeaponBaseItem<?> weapon) {
+				weapon.weaponUseTick(player.level, player, stack, player.getUseItemRemainingTicks());
 				player.setSprinting(false);
 			}
 		} else {
