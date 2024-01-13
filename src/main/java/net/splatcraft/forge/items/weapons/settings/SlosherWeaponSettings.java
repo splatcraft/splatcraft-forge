@@ -68,6 +68,7 @@ public class SlosherWeaponSettings extends AbstractWeaponSettings<SlosherWeaponS
     {
         ProjectileDataRecord projectile = data.projectile;
 
+        moveSpeed = data.mobility;
         data.fullDamageToMobs.ifPresent(this::setBypassesMobDamage);
 
         setProjectileSize(projectile.size);
@@ -97,7 +98,7 @@ public class SlosherWeaponSettings extends AbstractWeaponSettings<SlosherWeaponS
         return new DataRecord(new ProjectileDataRecord(projectileSize, projectileSpeed,
                 Optional.of(projectileInkCoverage), Optional.of(projectileInkTrailCoverage), Optional.of(projectileInkTrailCooldown),
                 projectileCount, angleOffset, directDamage, Optional.of(splashDamage)),
-                new ShotDataRecord(pitchCompensation, startupTicks, endlagTicks, inkConsumption, inkRecoveryCooldown), Optional.of(bypassesMobDamage));
+                new ShotDataRecord(pitchCompensation, startupTicks, endlagTicks, inkConsumption, inkRecoveryCooldown), moveSpeed, Optional.of(bypassesMobDamage));
     }
 
     public SlosherWeaponSettings setProjectileSize(float projectileSize) {
@@ -182,6 +183,7 @@ public class SlosherWeaponSettings extends AbstractWeaponSettings<SlosherWeaponS
     public record DataRecord(
         ProjectileDataRecord projectile,
         ShotDataRecord shot,
+        float mobility,
         Optional<Boolean> fullDamageToMobs
     )
     {
@@ -189,6 +191,7 @@ public class SlosherWeaponSettings extends AbstractWeaponSettings<SlosherWeaponS
                 instance -> instance.group(
                         ProjectileDataRecord.CODEC.fieldOf("projectile").forGetter(DataRecord::projectile),
                         ShotDataRecord.CODEC.fieldOf("shot").forGetter(DataRecord::shot),
+                        Codec.FLOAT.fieldOf("mobility").forGetter(DataRecord::mobility),
                         Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::fullDamageToMobs)
                 ).apply(instance, DataRecord::new)
         );

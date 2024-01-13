@@ -67,6 +67,7 @@ public class BlasterWeaponSettings extends AbstractWeaponSettings<BlasterWeaponS
     {
         ProjectileDataRecord projectile = data.projectile;
 
+        moveSpeed = data.mobility;
         data.fullDamageToMobs.ifPresent(this::setBypassesMobDamage);
 
         setProjectileSize(projectile.size);
@@ -95,7 +96,7 @@ public class BlasterWeaponSettings extends AbstractWeaponSettings<BlasterWeaponS
     @Override
     public DataRecord serialize() {
         return new DataRecord(new ProjectileDataRecord(projectileSize, Optional.of(projectileExplosionRadius), projectileRange, projectileSpeed, Optional.of(projectileInkTrailCoverage), Optional.of(projectileInkTrailCooldown),
-                directDamage, splashDamage), new ShotDataRecord(startupTicks, endlagTicks, Optional.of(groundInaccuracy), Optional.of(airInaccuracy), inkConsumption, inkRecoveryCooldown), Optional.of(bypassesMobDamage));
+                directDamage, splashDamage), new ShotDataRecord(startupTicks, endlagTicks, Optional.of(groundInaccuracy), Optional.of(airInaccuracy), inkConsumption, inkRecoveryCooldown), moveSpeed, Optional.of(bypassesMobDamage));
     }
 
     public BlasterWeaponSettings setBypassesMobDamage(boolean bypassesMobDamage) {
@@ -184,6 +185,7 @@ public class BlasterWeaponSettings extends AbstractWeaponSettings<BlasterWeaponS
     public record DataRecord(
         ProjectileDataRecord projectile,
         ShotDataRecord shot,
+        float mobility,
         Optional<Boolean> fullDamageToMobs
     )
     {
@@ -191,6 +193,7 @@ public class BlasterWeaponSettings extends AbstractWeaponSettings<BlasterWeaponS
                 instance -> instance.group(
                         ProjectileDataRecord.CODEC.fieldOf("projectile").forGetter(DataRecord::projectile),
                         ShotDataRecord.CODEC.fieldOf("shot").forGetter(DataRecord::shot),
+                        Codec.FLOAT.fieldOf("mobility").forGetter(DataRecord::mobility),
                         Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::fullDamageToMobs)
                 ).apply(instance, DataRecord::new)
         );

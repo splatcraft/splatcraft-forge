@@ -8,6 +8,7 @@
 	"ink_consumption": 70.0,
 	"ink_recovery_cooldown": 24,
 	"hold_time": 30,
+	"mobility": 1,
 
 	"curling":
 	{

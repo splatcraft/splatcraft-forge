@@ -32,5 +32,6 @@
 		"ink_consumption": 0.5,
 		"ink_recovery_cooldown": 5
 	},
-	"full_damage_to_mobs": false
+	"full_damage_to_mobs": false,
+	"mobility": 1
 }

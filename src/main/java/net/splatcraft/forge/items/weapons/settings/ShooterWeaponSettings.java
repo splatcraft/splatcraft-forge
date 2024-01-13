@@ -86,6 +86,7 @@ public class ShooterWeaponSettings extends AbstractWeaponSettings<ShooterWeaponS
     {
         ProjectileDataRecord projectile = data.projectile;
 
+        moveSpeed = data.mobility;
         data.bypassesMobDamage.ifPresent(this::setBypassesMobDamage);
 
         setProjectileSize(projectile.size);
@@ -126,7 +127,7 @@ public class ShooterWeaponSettings extends AbstractWeaponSettings<ShooterWeaponS
                 Optional.of(projectileInkCoverage), Optional.of(projectileInkTrailCoverage), Optional.of(projectileInkTrailCooldown), baseDamage, Optional.of(decayedDamage),
                 Optional.of(damageDecayStartTick), Optional.of(damageDecayPerTick)),
                 new ShotDataRecord(Optional.of(startupTicks), firingSpeed, groundInaccuracy, Optional.of(airInaccuracy), Optional.of(pitchCompensation), inkConsumption, inkRecoveryCooldown),
-                Optional.of(bypassesMobDamage));
+                moveSpeed, Optional.of(bypassesMobDamage));
     }
 
     public ShooterWeaponSettings setProjectileSize(float projectileSize)
@@ -256,6 +257,7 @@ public class ShooterWeaponSettings extends AbstractWeaponSettings<ShooterWeaponS
     public record DataRecord(
         ProjectileDataRecord projectile,
         ShotDataRecord shot,
+        float mobility,
         Optional<Boolean> bypassesMobDamage
     )
     {
@@ -263,6 +265,7 @@ public class ShooterWeaponSettings extends AbstractWeaponSettings<ShooterWeaponS
                 instance -> instance.group(
                         ProjectileDataRecord.CODEC.fieldOf("projectile").forGetter(DataRecord::projectile),
                         ShotDataRecord.CODEC.fieldOf("shot").forGetter(DataRecord::shot),
+                        Codec.FLOAT.fieldOf("mobility").forGetter(DataRecord::mobility),
                         Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::bypassesMobDamage)
                 ).apply(instance, DataRecord::new)
         );

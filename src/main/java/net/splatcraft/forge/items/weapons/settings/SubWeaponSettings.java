@@ -64,6 +64,8 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings,
 	@Override
 	public void deserialize(DataRecord data)
 	{
+		data.mobility.ifPresent((mobility) -> moveSpeed = mobility);
+
 		setDirectDamage(data.directDamage);
 		setIndirectDamage(data.indirectDamage);
 		setPropDamage(data.propDamage);
@@ -88,7 +90,7 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings,
 	@Override
 	public DataRecord serialize() {
 		return new DataRecord(directDamage, indirectDamage, propDamage, explosionSize, Optional.of(fuseTime), inkConsumption, inkRecoveryCooldown, Optional.of(throwVelocity), Optional.of(throwAngle), Optional.of(holdTime),
-				Optional.of(new CurlingDataRecord(cookTime, contactDamage)));
+				Optional.of(moveSpeed), Optional.of(new CurlingDataRecord(cookTime, contactDamage)));
 	}
 
 	public SubWeaponSettings setContactDamage(float contactDamage) {
@@ -162,6 +164,7 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings,
 			Optional<Float> throwVelocity,
 			Optional<Float> throwAngle,
 			Optional<Integer> holdTime,
+			Optional<Float> mobility,
 			Optional<CurlingDataRecord> curlingData
 	) {
 		public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
@@ -186,6 +189,7 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings,
 								.forGetter(DataRecord::throwAngle),
 						Codec.INT.optionalFieldOf("hold_time")
 								.forGetter(DataRecord::holdTime),
+						Codec.FLOAT.optionalFieldOf("mobility").forGetter(DataRecord::mobility),
 						CurlingDataRecord.CODEC.optionalFieldOf("curling")
 								.forGetter(DataRecord::curlingData)
 				).apply(instance, DataRecord::new)

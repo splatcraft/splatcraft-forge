@@ -18,7 +18,6 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
     public int emptyTankSecondLevelChargeTime;
     public int firingDuration;
     public int chargeStorageTime = 0;
-    public float moveSpeed;
     public boolean canRechargeWhileFiring = false;
 
     public static class FiringData
@@ -223,7 +222,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
 
         charge.chargeStorageTime.ifPresent(this::setChargeStorageTime);
         charge.canRechargeWhileFiring.ifPresent(this::setCanRechargeWhileFiring);
-        setMoveSpeed(charge.moveSpeed);
+        setMoveSpeed(data.moveSpeed);
 
         if(data.secondChargeLevelProjectile.isPresent())
         {
@@ -289,8 +288,8 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
 				        Optional.of(secondChargeLevelData.pitchCompensation), Optional.of(secondChargeLevelData.inkConsumption), Optional.of(secondChargeLevelData.inkRecoveryCooldown))),
 
                 new ChargeDataRecord(firstLevelChargeTime, secondLevelChargeTime, Optional.of(emptyTankFirstLevelChargeTime), Optional.of(emptyTankSecondLevelChargeTime), firingDuration, Optional.of(chargeStorageTime),
-                        moveSpeed, Optional.of(canRechargeWhileFiring)),
-                Optional.of(bypassesMobDamage));
+                        Optional.of(canRechargeWhileFiring)),
+                moveSpeed, Optional.of(bypassesMobDamage));
     }
 
     public SplatlingWeaponSettings setBypassesMobDamage(boolean bypassesMobDamage) {
@@ -607,6 +606,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         Optional<OptionalProjectileDataRecord> secondChargeLevelProjectile,
         Optional<OptionalShotDataRecord> secondChargeLevelShot,
         ChargeDataRecord charge,
+        float moveSpeed,
         Optional<Boolean> bypassesMobDamage
     )
     {
@@ -617,6 +617,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
                         OptionalProjectileDataRecord.CODEC.optionalFieldOf("second_charge_projectile").forGetter(DataRecord::secondChargeLevelProjectile),
                         OptionalShotDataRecord.CODEC.optionalFieldOf("second_charge_shot").forGetter(DataRecord::secondChargeLevelShot),
                         ChargeDataRecord.CODEC.fieldOf("charge").forGetter(DataRecord::charge),
+                        Codec.FLOAT.fieldOf("mobility").forGetter(DataRecord::moveSpeed),
                         Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::bypassesMobDamage)
                 ).apply(instance, DataRecord::new)
         );
@@ -630,7 +631,6 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
             Optional<Integer> emptyTankSecondChargeTime,
             int firingDuration,
             Optional<Integer> chargeStorageTime,
-            float moveSpeed,
             Optional<Boolean> canRechargeWhileFiring
 
     )
@@ -643,7 +643,6 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
                         Codec.INT.optionalFieldOf("empty_tank_second_charge_time_ticks").forGetter(ChargeDataRecord::emptyTankSecondChargeTime),
                         Codec.INT.fieldOf("total_firing_duration").forGetter(ChargeDataRecord::firingDuration),
                         Codec.INT.optionalFieldOf("charge_storage_ticks").forGetter(ChargeDataRecord::chargeStorageTime),
-                        Codec.FLOAT.fieldOf("use_move_speed").forGetter(ChargeDataRecord::moveSpeed),
                         Codec.BOOL.optionalFieldOf("can_recharge_while_firing").forGetter(ChargeDataRecord::canRechargeWhileFiring)
                 ).apply(instance, ChargeDataRecord::new)
         );

@@ -328,9 +328,13 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> ext
         return getSpeedModifier(entity, stack) != null;
     }
 
+    private AttributeModifier SPEED_MODIFIER;
     public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack)
     {
-        return null;
+        if(SPEED_MODIFIER == null)
+            SPEED_MODIFIER = new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, settingsId.toString() + " mobility", getSettings(stack).moveSpeed - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        return SPEED_MODIFIER;
     }
 
     public PlayerPosingHandler.WeaponPose getPose(ItemStack stack)

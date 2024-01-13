@@ -31,7 +31,6 @@ import net.splatcraft.forge.util.WeaponTooltip;
 import org.jetbrains.annotations.NotNull;
 
 public class ChargerItem extends WeaponBaseItem<ChargerWeaponSettings> implements IChargeableWeapon {
-	private AttributeModifier SPEED_MODIFIER;
 	public ChargerChargingTickableSound chargingSound;
 
 	protected ChargerItem(String settingsId) {
@@ -130,14 +129,7 @@ public class ChargerItem extends WeaponBaseItem<ChargerWeaponSettings> implement
 		return settings.minInkConsumption + (settings.maxInkConsumption - settings.minInkConsumption) * charge;
 	}
 
-	@Override
-	public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack)
-	{
-		if(SPEED_MODIFIER == null)
-			SPEED_MODIFIER = new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, "Charger mobility", getSettings(stack).chargingWalkSpeed - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-		return SPEED_MODIFIER;
-	}
 
 	@Override
 	public PlayerPosingHandler.WeaponPose getPose(ItemStack stack) {

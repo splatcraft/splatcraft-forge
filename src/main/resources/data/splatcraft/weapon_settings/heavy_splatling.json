@@ -52,9 +52,9 @@
 		"total_firing_duration": 48,
 		"charge_storage_ticks": 0,
 
-		"can_recharge_while_firing": false,
-		"use_move_speed": 0.62
+		"can_recharge_while_firing": false
 	},
 
-	"full_damage_to_mobs": false
+	"full_damage_to_mobs": false,
+	"mobility": 0.62
 }

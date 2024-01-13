@@ -204,15 +204,6 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	}
 
 	@Override
-	public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack)
-	{
-		if(SPEED_MODIFIER == null)
-			SPEED_MODIFIER = new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, "Splatling mobility", getSettings(stack).moveSpeed - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
-
-		return SPEED_MODIFIER;
-	}
-
-	@Override
 	public PlayerPosingHandler.WeaponPose getPose(ItemStack stack) {
 		return PlayerPosingHandler.WeaponPose.SPLATLING;
 	}

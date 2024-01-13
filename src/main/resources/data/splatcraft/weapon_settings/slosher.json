@@ -21,5 +21,7 @@
 		"endlag_ticks": 10,
 		"ink_consumption": 7,
 		"ink_recovery_cooldown": 13
-	}
+	},
+	"mobility": 1,
+	"full_damage_to_mobs": false
 }

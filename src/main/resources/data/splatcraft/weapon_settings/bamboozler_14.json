@@ -26,8 +26,8 @@
 		"charge_time_ticks": 7,
 		"airborne_charge_time_ticks": 17,
 		"empty_tank_charge_time_ticks": 35,
-		"charge_storage_ticks": 0,
-		"charging_move_speed": 0.6
+		"charge_storage_ticks": 0
 	},
-	"full_damage_to_mobs": false
+	"full_damage_to_mobs": false,
+	"mobility": 0.6
 }

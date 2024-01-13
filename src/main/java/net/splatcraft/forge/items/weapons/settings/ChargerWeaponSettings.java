@@ -27,7 +27,6 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
     public float minChargeDamage;
     public float chargedDamage;
 
-    public float chargingWalkSpeed;
     public float piercesAtCharge = 2;
     public int chargeTimeTicks;
     public float chargeSpeed;
@@ -62,7 +61,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
                 {
                         new WeaponTooltip<ChargerWeaponSettings>("range", WeaponTooltip.Metrics.BLOCKS, settings -> settings.maxProjectileRange, WeaponTooltip.RANKER_ASCENDING),
                         new WeaponTooltip<ChargerWeaponSettings>("charge_speed", WeaponTooltip.Metrics.SECONDS, settings -> settings.chargeTimeTicks / 20f, WeaponTooltip.RANKER_DESCENDING),
-                        new WeaponTooltip<ChargerWeaponSettings>("mobility", WeaponTooltip.Metrics.MULTIPLIER, settings -> settings.chargingWalkSpeed, WeaponTooltip.RANKER_ASCENDING)
+                        new WeaponTooltip<ChargerWeaponSettings>("mobility", WeaponTooltip.Metrics.MULTIPLIER, settings -> settings.moveSpeed, WeaponTooltip.RANKER_ASCENDING)
                 };
 
     }
@@ -106,7 +105,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
         charge.airborneChargeTime.ifPresent(this::setAirborneChargeTimeTicks);
         charge.emptyTankChargeTime.ifPresent(this::setEmptyTankChargeTimeTicks);
         setChargeStorageTicks(charge.chargeStorageTime);
-        setChargingWalkSpeed(charge.chargeMoveSpeed);
+        setChargingWalkSpeed(data.mobility);
     }
 
     @Override
@@ -114,7 +113,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
         return new DataRecord(new ProjectileDataRecord(projectileSize, Optional.of(projectileInkCoverage), minProjectileRange, maxProjectileRange, projectileSpeed,
                 Optional.of(projectileInkTrailCoverage), Optional.of(projectileInkTrailCooldown), minChargeDamage, baseChargeDamage, Optional.of(chargedDamage), Optional.of(piercesAtCharge)),
                 new ShotDataRecord(endLagTicks, minInkConsumption, maxInkConsumption, inkRecoveryCooldown),
-                new ChargeDataRecord(chargeTimeTicks, Optional.of(airborneChargeTimeTicks), Optional.of(emptyTankChargeTimeTicks), chargeStorageTicks, chargingWalkSpeed),
+                new ChargeDataRecord(chargeTimeTicks, Optional.of(airborneChargeTimeTicks), Optional.of(emptyTankChargeTimeTicks), chargeStorageTicks), moveSpeed,
                 Optional.of(bypassesMobDamage));
     }
 
@@ -187,7 +186,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
     }
 
     public ChargerWeaponSettings setChargingWalkSpeed(float chargingWalkSpeed) {
-        this.chargingWalkSpeed = chargingWalkSpeed;
+        this.moveSpeed = chargingWalkSpeed;
         return this;
     }
 
@@ -244,6 +243,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
         ProjectileDataRecord projectile,
         ShotDataRecord shot,
         ChargeDataRecord charge,
+        float mobility,
         Optional<Boolean> fullDamageToMobs
     )
     {
@@ -252,6 +252,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
                         ProjectileDataRecord.CODEC.fieldOf("projectile").forGetter(DataRecord::projectile),
                         ShotDataRecord.CODEC.fieldOf("shot").forGetter(DataRecord::shot),
                         ChargeDataRecord.CODEC.fieldOf("charge").forGetter(DataRecord::charge),
+                        Codec.FLOAT.fieldOf("mobility").forGetter(DataRecord::mobility),
                         Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::fullDamageToMobs)
                 ).apply(instance, DataRecord::new)
         );
@@ -292,8 +293,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
             int chargeTime,
             Optional<Integer> airborneChargeTime,
             Optional<Integer> emptyTankChargeTime,
-            int chargeStorageTime,
-            float chargeMoveSpeed
+            int chargeStorageTime
     )
     {
         public static final Codec<ChargeDataRecord> CODEC = RecordCodecBuilder.create(
@@ -301,8 +301,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
                         Codec.INT.fieldOf("charge_time_ticks").forGetter(ChargeDataRecord::chargeTime),
                         Codec.INT.optionalFieldOf("airborne_charge_time_ticks").forGetter(ChargeDataRecord::airborneChargeTime),
                         Codec.INT.optionalFieldOf("empty_tank_charge_time_ticks").forGetter(ChargeDataRecord::emptyTankChargeTime),
-                        Codec.INT.fieldOf("charge_storage_ticks").forGetter(ChargeDataRecord::chargeStorageTime),
-                        Codec.FLOAT.fieldOf("charging_move_speed").forGetter(ChargeDataRecord::chargeMoveSpeed)
+                        Codec.INT.fieldOf("charge_storage_ticks").forGetter(ChargeDataRecord::chargeStorageTime)
                 ).apply(instance, ChargeDataRecord::new)
         );
     }

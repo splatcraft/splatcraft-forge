@@ -1,12 +1,9 @@
 package net.splatcraft.forge.items.weapons.settings;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.TooltipFlag;
 import net.splatcraft.forge.util.WeaponTooltip;
 
@@ -15,6 +12,7 @@ import java.util.*;
 public abstract class AbstractWeaponSettings<SELF extends AbstractWeaponSettings<SELF, CODEC>, CODEC>
 {
     public String name;
+    public float moveSpeed = 1;
 
     private final ArrayList<WeaponTooltip<SELF>> statTooltips = new ArrayList<>();
 
