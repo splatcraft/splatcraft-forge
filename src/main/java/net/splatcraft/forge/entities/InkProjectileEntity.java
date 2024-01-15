@@ -470,7 +470,6 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
     @Override
     public void readAdditionalSaveData(CompoundTag nbt)
     {
-
         super.readAdditionalSaveData(nbt);
 
         if (nbt.contains("Size"))
@@ -557,6 +556,10 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         super.addAdditionalSaveData(nbt);
         nbt.remove("Item");
     }
+
+    @Deprecated //Modify sourceWeapon variable instead
+    @Override
+    public void setItem(ItemStack itemStack) {}
 
     @Override
     protected ItemStack getItemRaw() {
