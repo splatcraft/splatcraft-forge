@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -96,12 +97,20 @@ public class InkBlockUtils {
         worldInk.ink(pos, color, inkType);
         level.getChunkAt(pos).setUnsaved(true);
 
+        if(SplatcraftGameRules.getLocalizedRule(level, pos.above(), SplatcraftGameRules.INK_DESTROYS_FOLIAGE) &&
+                isBlockFoliage(level.getBlockState(pos.above())))
+                level.destroyBlock(pos.above(), true);
+
         if(!level.isClientSide)
             SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, color, inkType), level.dimension());
 
         return BlockInkedResult.SUCCESS;
     }
 
+    public static boolean isBlockFoliage(BlockState state)
+    {
+        return state.is(BlockTags.CROPS) || state.is(BlockTags.SAPLINGS) || state.is(BlockTags.REPLACEABLE_PLANTS);
+    }
 
     public static BlockState getInkState(InkType inkType) {
         return (inkType == null ? InkType.NORMAL : inkType).block.defaultBlockState();

@@ -18,6 +18,8 @@ public class SplatcraftGameRules {
 
     public static GameRules.Key<GameRules.BooleanValue> INK_DECAY;
     public static GameRules.Key<GameRules.IntegerValue> INK_DECAY_RATE;
+    public static GameRules.Key<GameRules.BooleanValue> INKABLE_GROUND;
+    public static GameRules.Key<GameRules.BooleanValue> INK_DESTROYS_FOLIAGE;
     public static GameRules.Key<GameRules.BooleanValue> COLORED_PLAYER_NAMES;
     public static GameRules.Key<GameRules.BooleanValue> KEEP_MATCH_ITEMS;
     public static GameRules.Key<GameRules.BooleanValue> UNIVERSAL_INK;
@@ -30,7 +32,6 @@ public class SplatcraftGameRules {
     public static GameRules.Key<GameRules.BooleanValue> INK_HEALING_CONSUMES_HUNGER;
     public static GameRules.Key<GameRules.BooleanValue> INK_DAMAGE_COOLDOWN;
     public static GameRules.Key<GameRules.BooleanValue> INFINITE_INK_IN_CREATIVE;
-    public static GameRules.Key<GameRules.BooleanValue> INKABLE_GROUND;
     public static GameRules.Key<GameRules.BooleanValue> RECHARGEABLE_INK_TANK;
 
     public static void registerGamerules() {
@@ -48,7 +49,8 @@ public class SplatcraftGameRules {
         INK_DAMAGE_COOLDOWN = createBooleanRule("inkDamageCooldown", GameRules.Category.PLAYER, false);
         INK_MOB_DAMAGE_PERCENTAGE = createIntRule("inkMobDamagePercentage", GameRules.Category.MOBS, 70);
         INFINITE_INK_IN_CREATIVE = createBooleanRule("infiniteInkInCreative", GameRules.Category.PLAYER, true);
-        INKABLE_GROUND = createBooleanRule("inkableGround", GameRules.Category.PLAYER, true);
+        INKABLE_GROUND = createBooleanRule("inkableGround", GameRules.Category.MISC, true);
+        INK_DESTROYS_FOLIAGE = createBooleanRule("inkDestroysFoliage", GameRules.Category.MISC, true);
         RECHARGEABLE_INK_TANK = createBooleanRule("rechargeableInkTank", GameRules.Category.PLAYER, true);
     }
 

@@ -484,6 +484,10 @@
   "entity.splatcraft.torpedo": "Torpedo",
 
   "gamerule.splatcraft.inkDecay": "Ink decay",
+  "gamerule.splatcraft.inkDecayRate": "Ink decay rate",
+  "gamerule.splatcraft.inkDecayRate.description": "Determines the likelyhood of ink decaying per tick",
+  "gamerule.splatcraft.inkDestroysFoliage": "Ink destroys foliage",
+  "gamerule.splatcraft.inkDestroysFoliage.description": "Determines whether crops, saplings, and replaceable plants are destroyed when the block below them is inked",
   "gamerule.splatcraft.coloredPlayerNames": "Ink-colored player names",
   "gamerule.splatcraft.keepMatchItems": "Keep Match items after death",
   "gamerule.splatcraft.keepMatchItems.description": "Lets you keep certain items important to Splatcraft matches, such as main weapons, ink tanks and some cosmetics, after dying. These items can be specified with the splatcraft:match_items tag",

@@ -36,6 +36,7 @@ public class Stage
 		registerGameruleSetting(SplatcraftGameRules.INK_HEALING);
 		registerGameruleSetting(SplatcraftGameRules.INK_HEALING_CONSUMES_HUNGER);
 		registerGameruleSetting(SplatcraftGameRules.INKABLE_GROUND);
+		registerGameruleSetting(SplatcraftGameRules.INK_DESTROYS_FOLIAGE);
 		registerGameruleSetting(SplatcraftGameRules.RECHARGEABLE_INK_TANK);
 	}
 

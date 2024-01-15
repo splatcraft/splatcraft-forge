@@ -18,6 +18,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.ChunkWatchEvent;
@@ -68,6 +71,23 @@ public class WorldInkHandler
 		{
 			ColorUtils.addInkDestroyParticle(level, pos, InkBlockUtils.getInk(level, pos).color());
 			InkBlockUtils.clearInk(level, pos, true);
+		}
+	}
+
+	@SubscribeEvent //prevent foliage placement on ink if inkDestroysFoliage is on
+	public static void onBlockPlace(PlayerInteractEvent.RightClickBlock event)
+	{
+		if(SplatcraftGameRules.getLocalizedRule(event.getWorld(), event.getPos(), SplatcraftGameRules.INK_DESTROYS_FOLIAGE) &&
+				InkBlockUtils.isInked(event.getWorld(), event.getPos().relative(event.getFace() == null ? Direction.UP : event.getFace()).below()) &&
+				event.getItemStack().getItem() instanceof BlockItem blockItem)
+		{
+			BlockPlaceContext context = blockItem.updatePlacementContext(new BlockPlaceContext(event.getWorld(), event.getPlayer(), event.getHand(), event.getItemStack(), event.getHitVec()));
+			if(context != null)
+			{
+				BlockState state = blockItem.getBlock().getStateForPlacement(context);
+				if(state != null && InkBlockUtils.isBlockFoliage(state))
+					event.setCanceled(true);
+			}
 		}
 	}
 
