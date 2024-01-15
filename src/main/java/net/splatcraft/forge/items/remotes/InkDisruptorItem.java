@@ -61,7 +61,7 @@ public class InkDisruptorItem extends RemoteItem
 
                     if(InkBlockUtils.isInked(level, pos) && InkBlockUtils.clearInk(level, pos, false))
                         count++;
-                    else if (state instanceof IColoredBlock block && block.remoteInkClear(level, pos))
+                    else if (state.getBlock() instanceof IColoredBlock block && block.remoteInkClear(level, pos))
                         count++;
 
                     blockTotal++;
