@@ -9,10 +9,7 @@ import net.minecraft.world.level.Level;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Stage
 {
@@ -109,9 +106,9 @@ public class Stage
 		teams.remove(teamId);
 	}
 
-	public Collection<String> getTeamIds()
+	public List<String> getTeamIds()
 	{
-		return teams.keySet();
+		return teams.keySet().stream().toList();
 	}
 
 	public Stage(CompoundTag nbt)

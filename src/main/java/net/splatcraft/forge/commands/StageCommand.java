@@ -1,6 +1,7 @@
 package net.splatcraft.forge.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -11,6 +12,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.TeamArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.core.BlockPos;
@@ -80,7 +82,12 @@ public class StageCommand
 								.then(stageTeam("teamName", "stage").executes(StageCommand::getTeam)))))
 				.then(Commands.literal("warp").then(stageId("stage").executes(StageCommand::warpSelf)
 						.then(Commands.argument("players", EntityArgument.players()).executes(context -> warp(context, false))
-								.then(Commands.literal("setSpawn").executes(context -> warp(context, true))))))
+								.then(Commands.argument("setSpawn", BoolArgumentType.bool())
+										.then(Commands.literal("self").executes(context -> warp(context, BoolArgumentType.getBool(context,"setSpawn"))))
+										.then(Commands.literal("any").executes(context -> warpAny(context, BoolArgumentType.getBool(context,"setSpawn"))))
+										.then(Commands.literal("color").then(Commands.argument("color", InkColorArgument.inkColor()).executes(context -> warp(context, BoolArgumentType.getBool(context,"setSpawn"), InkColorArgument.getInkColor(context, "color")))))
+										.then(Commands.literal("team").then(stageTeam("team", "stage").executes(context -> warpToTeam(context, BoolArgumentType.getBool(context,"setSpawn"), StringArgumentType.getString(context, "team")))))
+										.executes(context -> warp(context, BoolArgumentType.getBool(context,"setSpawn")))))))
 		);
 	}
 
@@ -155,6 +162,28 @@ public class StageCommand
 
 	private static int warp(CommandContext<CommandSourceStack> context, boolean setSpawn) throws CommandSyntaxException {
 		return warpPlayers(context.getSource(), StringArgumentType.getString(context, "stage"), EntityArgument.getPlayers(context, "players"), setSpawn);
+	}
+	private static int warp(CommandContext<CommandSourceStack> context, boolean setSpawn, int color) throws CommandSyntaxException {
+		return warpPlayers(context.getSource(), StringArgumentType.getString(context, "stage"), EntityArgument.getPlayers(context, "players"), setSpawn, color);
+	}
+	private static int warpAny(CommandContext<CommandSourceStack> context, boolean setSpawn) throws CommandSyntaxException {
+		return warpPlayersToAny(context.getSource(), StringArgumentType.getString(context, "stage"), EntityArgument.getPlayers(context, "players"), setSpawn);
+	}
+
+	private static int warpToTeam(CommandContext<CommandSourceStack> context, boolean setSpawn, String team) throws CommandSyntaxException
+	{
+
+		String stageId = StringArgumentType.getString(context, "stage");
+		HashMap<String, Stage> stages = SaveInfoCapability.get(context.getSource().getServer()).getStages();
+		if (!stages.containsKey(stageId))
+			throw STAGE_NOT_FOUND.create(stageId);
+
+		Stage stage = stages.get(stageId);
+
+		if(!stage.hasTeam(team))
+			throw TEAM_NOT_FOUND.create(new Object[] {team, stageId});
+
+		return warpPlayers(context.getSource(), stageId, EntityArgument.getPlayers(context, "players"), setSpawn, stage.getTeamColor(team));
 	}
 
 	private static int warpSelf(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -337,6 +366,11 @@ public class StageCommand
 
 	private static int warpPlayers(CommandSourceStack source, String stageId, Collection<ServerPlayer> targets, boolean setSpawn) throws CommandSyntaxException
 	{
+		return warpPlayers(source, stageId, targets, setSpawn, -1);
+	}
+
+	private static int warpPlayers(CommandSourceStack source, String stageId, Collection<ServerPlayer> targets, boolean setSpawn, int color) throws CommandSyntaxException
+	{
 		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
 
 		if (!stages.containsKey(stageId))
@@ -369,9 +403,10 @@ public class StageCommand
 
 		HashMap<Integer, Integer> playersTeleported = new HashMap<>();
 		for (ServerPlayer player : targets) {
-			int playerColor = ColorUtils.getPlayerColor(player);
+			int playerColor = color == -1 ? ColorUtils.getPlayerColor(player) : color;
 
-			if (spawnPads.containsKey(playerColor)) {
+			if (spawnPads.containsKey(playerColor))
+			{
 				if (!playersTeleported.containsKey(playerColor))
 					playersTeleported.put(playerColor, 0);
 
@@ -394,6 +429,63 @@ public class StageCommand
 		int result = 0;
 		for(int i : playersTeleported.values())
 			result += i;
+
+		if(result == 0)
+			throw NO_PLAYERS_FOUND.create(stageId);
+
+		source.sendSuccess(new TranslatableComponent("commands.stage.warp.success", result, stageId), true);
+		return result;
+	}
+
+	private static int warpPlayersToAny(CommandSourceStack source, String stageId, Collection<ServerPlayer> targets, boolean setSpawn) throws CommandSyntaxException
+	{
+		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
+
+		if (!stages.containsKey(stageId))
+			throw STAGE_NOT_FOUND.create(stageId);
+
+		Stage stage = stages.get(stageId);
+		Level stageLevel = source.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, stage.dimID));
+
+
+		BlockPos blockpos2 = new BlockPos(Math.min(stage.cornerA.getX(), stage.cornerB.getX()), Math.min(stage.cornerB.getY(), stage.cornerA.getY()), Math.min(stage.cornerA.getZ(), stage.cornerB.getZ()));
+		BlockPos blockpos3 = new BlockPos(Math.max(stage.cornerA.getX(), stage.cornerB.getX()), Math.max(stage.cornerB.getY(), stage.cornerA.getY()), Math.max(stage.cornerA.getZ(), stage.cornerB.getZ()));
+
+		ArrayList<SpawnPadTileEntity> spawnPads = new ArrayList<>();
+
+		for (int x = blockpos2.getX(); x <= blockpos3.getX(); x++)
+			for (int y = blockpos2.getY(); y <= blockpos3.getY(); y++)
+				for (int z = blockpos2.getZ(); z <= blockpos3.getZ(); z++) {
+					BlockPos pos = new BlockPos(x, y, z);
+					if (stageLevel.getBlockEntity(pos) instanceof SpawnPadTileEntity) {
+						SpawnPadTileEntity te = (SpawnPadTileEntity) stageLevel.getBlockEntity(pos);
+						spawnPads.add(te);
+					}
+				}
+
+		if(spawnPads.isEmpty())
+			throw NO_SPAWN_PADS_FOUND.create(stageId);
+
+		int playersTeleported = 0;
+		for (ServerPlayer player : targets) {
+
+				SpawnPadTileEntity te = spawnPads.get(playersTeleported % spawnPads.size());
+
+				float pitch = te.getLevel().getBlockState(te.getBlockPos()).getValue(SpawnPadBlock.DIRECTION).toYRot();
+
+				if (stageLevel == player.level)
+					player.connection.teleport(te.getBlockPos().getX() + .5, te.getBlockPos().getY() + .5, te.getBlockPos().getZ() + .5, pitch, 0);
+				else
+					player.teleportTo((ServerLevel) stageLevel, te.getBlockPos().getX() + .5, te.getBlockPos().getY() + .5, te.getBlockPos().getZ(), pitch, 0);
+
+				if(setSpawn)
+					player.setRespawnPosition(player.level.dimension(), te.getBlockPos(), player.level.getBlockState(te.getBlockPos()).getValue(SpawnPadBlock.DIRECTION).toYRot(), false, true);
+
+				playersTeleported++;
+
+		}
+
+		int result = playersTeleported;
 
 		if(result == 0)
 			throw NO_PLAYERS_FOUND.create(stageId);
