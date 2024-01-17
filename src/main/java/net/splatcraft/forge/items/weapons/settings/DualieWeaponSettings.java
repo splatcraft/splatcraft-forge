@@ -94,7 +94,7 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
     {
         ProjectileDataRecord projectile = data.projectile;
 
-        moveSpeed = data.mobility;
+        data.mobility.ifPresent(this::setMoveSpeed);
         data.bypassesMobDamage.ifPresent(this::setBypassesMobDamage);
 
         setProjectileSize(projectile.size);
@@ -197,7 +197,7 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
 		        Optional.of(new OptionalShotDataRecord(Optional.of(turretData.startupTicks), Optional.of(turretData.firingSpeed), Optional.of(turretData.groundInaccuracy), Optional.of(turretData.airInaccuracy),
 				        Optional.of(turretData.pitchCompensation), Optional.of(turretData.inkConsumption), Optional.of(turretData.inkRecoveryCooldown))),
                 new RollDataRecord(rollCount, rollSpeed, rollInkConsumption, rollInkRecoveryCooldown, rollCooldown, lastRollCooldown),
-                moveSpeed,
+                Optional.of(moveSpeed),
                 Optional.of(bypassesMobDamage));
     }
 
@@ -501,7 +501,7 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
         Optional<OptionalProjectileDataRecord> turretProjectile,
         Optional<OptionalShotDataRecord> turretShot,
         RollDataRecord roll,
-        float mobility,
+        Optional<Float> mobility,
         Optional<Boolean> bypassesMobDamage
     )
     {
@@ -512,7 +512,7 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
                         OptionalProjectileDataRecord.CODEC.optionalFieldOf("turret_projectile").forGetter(DataRecord::turretProjectile),
                         OptionalShotDataRecord.CODEC.optionalFieldOf("turret_shot").forGetter(DataRecord::turretShot),
                         RollDataRecord.CODEC.fieldOf("dodge_roll").forGetter(DataRecord::roll),
-                        Codec.FLOAT.fieldOf("mobility").forGetter(DataRecord::mobility),
+                        Codec.FLOAT.optionalFieldOf("mobility").forGetter(DataRecord::mobility),
                         Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::bypassesMobDamage)
                 ).apply(instance, DataRecord::new)
         );

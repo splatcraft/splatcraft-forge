@@ -222,7 +222,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
 
         charge.chargeStorageTime.ifPresent(this::setChargeStorageTime);
         charge.canRechargeWhileFiring.ifPresent(this::setCanRechargeWhileFiring);
-        setMoveSpeed(data.moveSpeed);
+        data.moveSpeed.ifPresent(this::setMoveSpeed);
 
         if(data.secondChargeLevelProjectile.isPresent())
         {
@@ -289,7 +289,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
 
                 new ChargeDataRecord(firstLevelChargeTime, secondLevelChargeTime, Optional.of(emptyTankFirstLevelChargeTime), Optional.of(emptyTankSecondLevelChargeTime), firingDuration, Optional.of(chargeStorageTime),
                         Optional.of(canRechargeWhileFiring)),
-                moveSpeed, Optional.of(bypassesMobDamage));
+                Optional.of(moveSpeed), Optional.of(bypassesMobDamage));
     }
 
     public SplatlingWeaponSettings setBypassesMobDamage(boolean bypassesMobDamage) {
@@ -606,7 +606,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         Optional<OptionalProjectileDataRecord> secondChargeLevelProjectile,
         Optional<OptionalShotDataRecord> secondChargeLevelShot,
         ChargeDataRecord charge,
-        float moveSpeed,
+        Optional<Float> moveSpeed,
         Optional<Boolean> bypassesMobDamage
     )
     {
@@ -617,7 +617,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
                         OptionalProjectileDataRecord.CODEC.optionalFieldOf("second_charge_projectile").forGetter(DataRecord::secondChargeLevelProjectile),
                         OptionalShotDataRecord.CODEC.optionalFieldOf("second_charge_shot").forGetter(DataRecord::secondChargeLevelShot),
                         ChargeDataRecord.CODEC.fieldOf("charge").forGetter(DataRecord::charge),
-                        Codec.FLOAT.fieldOf("mobility").forGetter(DataRecord::moveSpeed),
+                        Codec.FLOAT.optionalFieldOf("mobility").forGetter(DataRecord::moveSpeed),
                         Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::bypassesMobDamage)
                 ).apply(instance, DataRecord::new)
         );

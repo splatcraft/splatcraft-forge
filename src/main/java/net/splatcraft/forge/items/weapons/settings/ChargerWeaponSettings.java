@@ -105,7 +105,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
         charge.airborneChargeTime.ifPresent(this::setAirborneChargeTimeTicks);
         charge.emptyTankChargeTime.ifPresent(this::setEmptyTankChargeTimeTicks);
         setChargeStorageTicks(charge.chargeStorageTime);
-        setChargingWalkSpeed(data.mobility);
+        data.mobility.ifPresent(this::setChargingWalkSpeed);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
         return new DataRecord(new ProjectileDataRecord(projectileSize, Optional.of(projectileInkCoverage), minProjectileRange, maxProjectileRange, projectileSpeed,
                 Optional.of(projectileInkTrailCoverage), Optional.of(projectileInkTrailCooldown), minChargeDamage, baseChargeDamage, Optional.of(chargedDamage), Optional.of(piercesAtCharge)),
                 new ShotDataRecord(endLagTicks, minInkConsumption, maxInkConsumption, inkRecoveryCooldown),
-                new ChargeDataRecord(chargeTimeTicks, Optional.of(airborneChargeTimeTicks), Optional.of(emptyTankChargeTimeTicks), chargeStorageTicks), moveSpeed,
+                new ChargeDataRecord(chargeTimeTicks, Optional.of(airborneChargeTimeTicks), Optional.of(emptyTankChargeTimeTicks), chargeStorageTicks), Optional.of(moveSpeed),
                 Optional.of(bypassesMobDamage));
     }
 
@@ -243,7 +243,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
         ProjectileDataRecord projectile,
         ShotDataRecord shot,
         ChargeDataRecord charge,
-        float mobility,
+        Optional<Float> mobility,
         Optional<Boolean> fullDamageToMobs
     )
     {
@@ -252,7 +252,7 @@ public class ChargerWeaponSettings extends AbstractWeaponSettings<ChargerWeaponS
                         ProjectileDataRecord.CODEC.fieldOf("projectile").forGetter(DataRecord::projectile),
                         ShotDataRecord.CODEC.fieldOf("shot").forGetter(DataRecord::shot),
                         ChargeDataRecord.CODEC.fieldOf("charge").forGetter(DataRecord::charge),
-                        Codec.FLOAT.fieldOf("mobility").forGetter(DataRecord::mobility),
+                        Codec.FLOAT.optionalFieldOf("mobility").forGetter(DataRecord::mobility),
                         Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::fullDamageToMobs)
                 ).apply(instance, DataRecord::new)
         );

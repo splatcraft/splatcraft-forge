@@ -30,6 +30,12 @@ public abstract class AbstractWeaponSettings<SELF extends AbstractWeaponSettings
             tooltip.add(stat.getTextComponent((SELF) this, flag.isAdvanced()).withStyle(ChatFormatting.DARK_GREEN));
     }
 
+    public SELF setMoveSpeed(float value)
+    {
+        moveSpeed = value;
+        return (SELF) this;
+    }
+
     public void registerStatTooltips()
     {
 	    Collections.addAll(statTooltips, tooltipsToRegister());
