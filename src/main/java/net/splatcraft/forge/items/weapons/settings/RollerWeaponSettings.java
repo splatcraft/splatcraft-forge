@@ -44,6 +44,9 @@ public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSet
     public float flingProjectileSpeed;
     public int flingTime;
 
+
+    public boolean bypassesMobDamage = false;
+
     public RollerWeaponSettings(String name) {
         super(name);
     }
@@ -81,6 +84,9 @@ public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSet
     public void deserialize(DataRecord data)
     {
         setBrush(data.isBrush.orElse(false));
+
+        data.fullDamageToMobs.ifPresent(b -> bypassesMobDamage = b);
+        data.isSecret.ifPresent(this::setSecret);
 
         RollDataRecord roll = data.roll;
 
@@ -127,7 +133,8 @@ public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSet
     {
         return new DataRecord(Optional.of(isBrush), new RollDataRecord(rollSize, Optional.of(rollHitboxSize), rollConsumption, rollInkRecoveryCooldown, rollDamage, rollMobility, Optional.of(dashMobility), Optional.of(dashConsumption), Optional.of(dashTime)),
                 new SwingDataRecord(swingMobility, swingConsumption, swingInkRecoveryCooldown, swingProjectileSpeed, swingTime, swingProjectilePitchCompensation, swingBaseDamage, Optional.of(swingMinDamage), Optional.of(swingDamageDecayStartTick), Optional.of(swingDamageDecayPerTick)),
-                Optional.of(new FlingDataRecord(flingConsumption, flingInkRecoveryCooldown, flingProjectileSpeed, flingTime, flingBaseDamage, Optional.of(flingMinDamage), Optional.of(flingDamageDecayStartTick), Optional.of(flingDamageDecayPerTick))));
+                Optional.of(new FlingDataRecord(flingConsumption, flingInkRecoveryCooldown, flingProjectileSpeed, flingTime, flingBaseDamage, Optional.of(flingMinDamage), Optional.of(flingDamageDecayStartTick), Optional.of(flingDamageDecayPerTick))),
+                Optional.of(bypassesMobDamage), Optional.of(isSecret));
     }
 
     public RollerWeaponSettings setName(String name) {
@@ -292,7 +299,9 @@ public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSet
         Optional<Boolean> isBrush,
         RollDataRecord roll,
         SwingDataRecord swing,
-        Optional<FlingDataRecord> fling
+        Optional<FlingDataRecord> fling,
+        Optional<Boolean> fullDamageToMobs,
+        Optional<Boolean> isSecret
     )
     {
         public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
@@ -300,7 +309,9 @@ public class RollerWeaponSettings extends AbstractWeaponSettings<RollerWeaponSet
                         Codec.BOOL.optionalFieldOf("is_brush").forGetter(DataRecord::isBrush),
                         RollDataRecord.CODEC.fieldOf("roll").forGetter(DataRecord::roll),
                         SwingDataRecord.CODEC.fieldOf("swing").forGetter(DataRecord::swing),
-                        FlingDataRecord.CODEC.optionalFieldOf("fling").forGetter(DataRecord::fling)
+                        FlingDataRecord.CODEC.optionalFieldOf("fling").forGetter(DataRecord::fling),
+                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::fullDamageToMobs),
+                        Codec.BOOL.optionalFieldOf("is_secret").forGetter(DataRecord::isSecret)
                 ).apply(instance, DataRecord::new)
         );
     }

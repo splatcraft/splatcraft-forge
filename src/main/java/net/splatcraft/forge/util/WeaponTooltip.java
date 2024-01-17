@@ -1,5 +1,6 @@
 package net.splatcraft.forge.util;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.splatcraft.forge.handlers.DataHandler;
@@ -33,12 +34,22 @@ public class WeaponTooltip<S extends AbstractWeaponSettings<S, ?>>
     }
     public int getStatRanking(S settings)
     {
+
         //this can be pooled if we need to micro-optimize
-        List<Float> settingsList = DataHandler.WeaponStatsListener.SETTINGS.values().stream().filter(settings.getClass()::isInstance).map(settings.getClass()::cast)
+        List<Float> settingsList = DataHandler.WeaponStatsListener.SETTINGS.values().stream().filter(settings.getClass()::isInstance).filter(s -> !s.isSecret).map(settings.getClass()::cast)
                 .sorted((setting, other) -> ranker.apply(valueGetter, (S) setting, (S) other)).map((setting) -> valueGetter.get((S) setting)).distinct().toList();
 
         float value = valueGetter.get(settings);
-        return settingsList.indexOf(value) == 0 ? 0 : (int) Math.ceil((float) (settingsList.indexOf(value) + 1) / settingsList.size()  * 5f);
+        if(!settings.isSecret)
+            return settingsList.indexOf(value) == 0 ? 0 : (int) Math.ceil((float) (settingsList.indexOf(value) + 1) / settingsList.size()  * 5f);
+
+        for(float valueToCompare : settingsList)
+        {
+            if(ranker.apply(value, valueToCompare) <= 0)
+                return settingsList.indexOf(value) == 0 ? 0 : (int) Math.ceil((float) (settingsList.indexOf(valueToCompare) + 1) / settingsList.size()  * 5f);
+        }
+
+        return 6;
     }
 
     public MutableComponent getTextComponent(S settings, boolean advanced)
@@ -55,7 +66,7 @@ public class WeaponTooltip<S extends AbstractWeaponSettings<S, ?>>
             for(int i = 1; i <= 5; i++)
                 args[i-1] = new TranslatableComponent("weaponStat.gauge." + (ranking >= i ? "full" : "empty"));
 
-            return new TranslatableComponent("weaponStat.format", new TranslatableComponent("weaponStat." + name), new TranslatableComponent("weaponStat.metric.gauge", args));
+            return new TranslatableComponent("weaponStat.format", new TranslatableComponent("weaponStat." + name), new TranslatableComponent("weaponStat.metric.gauge", args)).withStyle(ranking > 5 ? ChatFormatting.GOLD : ChatFormatting.DARK_GREEN);
         }
     }
     @Override

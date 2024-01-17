@@ -96,6 +96,7 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
 
         data.mobility.ifPresent(this::setMoveSpeed);
         data.bypassesMobDamage.ifPresent(this::setBypassesMobDamage);
+        data.isSecret.ifPresent(this::setSecret);
 
         setProjectileSize(projectile.size);
         projectile.lifeTicks.ifPresent(this::setProjectileLifeTicks);
@@ -198,7 +199,7 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
 				        Optional.of(turretData.pitchCompensation), Optional.of(turretData.inkConsumption), Optional.of(turretData.inkRecoveryCooldown))),
                 new RollDataRecord(rollCount, rollSpeed, rollInkConsumption, rollInkRecoveryCooldown, rollCooldown, lastRollCooldown),
                 Optional.of(moveSpeed),
-                Optional.of(bypassesMobDamage));
+                Optional.of(bypassesMobDamage), Optional.of(isSecret));
     }
 
     public DualieWeaponSettings setBypassesMobDamage(boolean bypassesMobDamage) {
@@ -502,7 +503,8 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
         Optional<OptionalShotDataRecord> turretShot,
         RollDataRecord roll,
         Optional<Float> mobility,
-        Optional<Boolean> bypassesMobDamage
+        Optional<Boolean> bypassesMobDamage,
+        Optional<Boolean> isSecret
     )
     {
         public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
@@ -513,7 +515,8 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
                         OptionalShotDataRecord.CODEC.optionalFieldOf("turret_shot").forGetter(DataRecord::turretShot),
                         RollDataRecord.CODEC.fieldOf("dodge_roll").forGetter(DataRecord::roll),
                         Codec.FLOAT.optionalFieldOf("mobility").forGetter(DataRecord::mobility),
-                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::bypassesMobDamage)
+                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::bypassesMobDamage),
+                        Codec.BOOL.optionalFieldOf("is_secret").forGetter(DataRecord::isSecret)
                 ).apply(instance, DataRecord::new)
         );
     }

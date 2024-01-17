@@ -65,6 +65,7 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings,
 	public void deserialize(DataRecord data)
 	{
 		data.mobility.ifPresent((mobility) -> moveSpeed = mobility);
+		data.isSecret.ifPresent(this::setSecret);
 
 		setDirectDamage(data.directDamage);
 		setIndirectDamage(data.indirectDamage);
@@ -90,7 +91,8 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings,
 	@Override
 	public DataRecord serialize() {
 		return new DataRecord(directDamage, indirectDamage, propDamage, explosionSize, Optional.of(fuseTime), inkConsumption, inkRecoveryCooldown, Optional.of(throwVelocity), Optional.of(throwAngle), Optional.of(holdTime),
-				Optional.of(moveSpeed), Optional.of(new CurlingDataRecord(cookTime, contactDamage)));
+				Optional.of(moveSpeed), Optional.of(new CurlingDataRecord(cookTime, contactDamage)),
+				Optional.of(isSecret));
 	}
 
 	public SubWeaponSettings setContactDamage(float contactDamage) {
@@ -165,7 +167,8 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings,
 			Optional<Float> throwAngle,
 			Optional<Integer> holdTime,
 			Optional<Float> mobility,
-			Optional<CurlingDataRecord> curlingData
+			Optional<CurlingDataRecord> curlingData,
+			Optional<Boolean> isSecret
 	) {
 		public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
 				instance -> instance.group(
@@ -190,8 +193,8 @@ public class SubWeaponSettings extends AbstractWeaponSettings<SubWeaponSettings,
 						Codec.INT.optionalFieldOf("hold_time")
 								.forGetter(DataRecord::holdTime),
 						Codec.FLOAT.optionalFieldOf("mobility").forGetter(DataRecord::mobility),
-						CurlingDataRecord.CODEC.optionalFieldOf("curling")
-								.forGetter(DataRecord::curlingData)
+						CurlingDataRecord.CODEC.optionalFieldOf("curling").forGetter(DataRecord::curlingData),
+						Codec.BOOL.optionalFieldOf("isSecret").forGetter(DataRecord::isSecret)
 				).apply(instance, DataRecord::new)
 		);
 	}

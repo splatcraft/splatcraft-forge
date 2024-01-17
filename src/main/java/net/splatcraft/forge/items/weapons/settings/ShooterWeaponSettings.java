@@ -87,6 +87,7 @@ public class ShooterWeaponSettings extends AbstractWeaponSettings<ShooterWeaponS
         ProjectileDataRecord projectile = data.projectile;
 
         data.mobility.ifPresent(this::setMoveSpeed);
+        data.isSecret.ifPresent(this::setSecret);
         data.bypassesMobDamage.ifPresent(this::setBypassesMobDamage);
 
         setProjectileSize(projectile.size);
@@ -127,7 +128,7 @@ public class ShooterWeaponSettings extends AbstractWeaponSettings<ShooterWeaponS
                 Optional.of(projectileInkCoverage), Optional.of(projectileInkTrailCoverage), Optional.of(projectileInkTrailCooldown), baseDamage, Optional.of(decayedDamage),
                 Optional.of(damageDecayStartTick), Optional.of(damageDecayPerTick)),
                 new ShotDataRecord(Optional.of(startupTicks), firingSpeed, groundInaccuracy, Optional.of(airInaccuracy), Optional.of(pitchCompensation), inkConsumption, inkRecoveryCooldown),
-                Optional.of(moveSpeed), Optional.of(bypassesMobDamage));
+                Optional.of(moveSpeed), Optional.of(bypassesMobDamage), Optional.of(isSecret));
     }
 
     public ShooterWeaponSettings setProjectileSize(float projectileSize)
@@ -258,7 +259,8 @@ public class ShooterWeaponSettings extends AbstractWeaponSettings<ShooterWeaponS
         ProjectileDataRecord projectile,
         ShotDataRecord shot,
         Optional<Float> mobility,
-        Optional<Boolean> bypassesMobDamage
+        Optional<Boolean> bypassesMobDamage,
+        Optional<Boolean> isSecret
     )
     {
         public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
@@ -266,7 +268,8 @@ public class ShooterWeaponSettings extends AbstractWeaponSettings<ShooterWeaponS
                         ProjectileDataRecord.CODEC.fieldOf("projectile").forGetter(DataRecord::projectile),
                         ShotDataRecord.CODEC.fieldOf("shot").forGetter(DataRecord::shot),
                         Codec.FLOAT.optionalFieldOf("mobility").forGetter(DataRecord::mobility),
-                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::bypassesMobDamage)
+                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::bypassesMobDamage),
+                        Codec.BOOL.optionalFieldOf("is_secret").forGetter(DataRecord::isSecret)
                 ).apply(instance, DataRecord::new)
         );
     }

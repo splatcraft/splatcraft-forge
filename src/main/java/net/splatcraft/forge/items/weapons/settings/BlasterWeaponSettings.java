@@ -69,6 +69,7 @@ public class BlasterWeaponSettings extends AbstractWeaponSettings<BlasterWeaponS
 
         data.mobility.ifPresent(this::setMoveSpeed);
         data.fullDamageToMobs.ifPresent(this::setBypassesMobDamage);
+        data.isSecret.ifPresent(this::setSecret);
 
         setProjectileSize(projectile.size);
         setProjectileSpeed(projectile.speed);
@@ -96,7 +97,8 @@ public class BlasterWeaponSettings extends AbstractWeaponSettings<BlasterWeaponS
     @Override
     public DataRecord serialize() {
         return new DataRecord(new ProjectileDataRecord(projectileSize, Optional.of(projectileExplosionRadius), projectileRange, projectileSpeed, Optional.of(projectileInkTrailCoverage), Optional.of(projectileInkTrailCooldown),
-                directDamage, splashDamage), new ShotDataRecord(startupTicks, endlagTicks, Optional.of(groundInaccuracy), Optional.of(airInaccuracy), inkConsumption, inkRecoveryCooldown), Optional.of(moveSpeed), Optional.of(bypassesMobDamage));
+                directDamage, splashDamage), new ShotDataRecord(startupTicks, endlagTicks, Optional.of(groundInaccuracy), Optional.of(airInaccuracy), inkConsumption, inkRecoveryCooldown), Optional.of(moveSpeed),
+                Optional.of(bypassesMobDamage), Optional.of(isSecret));
     }
 
     public BlasterWeaponSettings setBypassesMobDamage(boolean bypassesMobDamage) {
@@ -186,7 +188,8 @@ public class BlasterWeaponSettings extends AbstractWeaponSettings<BlasterWeaponS
         ProjectileDataRecord projectile,
         ShotDataRecord shot,
         Optional<Float> mobility,
-        Optional<Boolean> fullDamageToMobs
+        Optional<Boolean> fullDamageToMobs,
+        Optional<Boolean> isSecret
     )
     {
         public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
@@ -194,7 +197,8 @@ public class BlasterWeaponSettings extends AbstractWeaponSettings<BlasterWeaponS
                         ProjectileDataRecord.CODEC.fieldOf("projectile").forGetter(DataRecord::projectile),
                         ShotDataRecord.CODEC.fieldOf("shot").forGetter(DataRecord::shot),
                         Codec.FLOAT.optionalFieldOf("mobility").forGetter(DataRecord::mobility),
-                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::fullDamageToMobs)
+                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::fullDamageToMobs),
+                        Codec.BOOL.optionalFieldOf("is_secret").forGetter(DataRecord::isSecret)
                 ).apply(instance, DataRecord::new)
         );
     }

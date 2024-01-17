@@ -180,6 +180,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         ProjectileDataRecord projectile = data.projectile;
 
         data.bypassesMobDamage.ifPresent(this::setBypassesMobDamage);
+        data.isSecret.ifPresent(this::setSecret);
 
         setProjectileSize(projectile.size);
         projectile.lifeTicks.ifPresent(this::setProjectileLifeTicks);
@@ -289,7 +290,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
 
                 new ChargeDataRecord(firstLevelChargeTime, secondLevelChargeTime, Optional.of(emptyTankFirstLevelChargeTime), Optional.of(emptyTankSecondLevelChargeTime), firingDuration, Optional.of(chargeStorageTime),
                         Optional.of(canRechargeWhileFiring)),
-                Optional.of(moveSpeed), Optional.of(bypassesMobDamage));
+                Optional.of(moveSpeed), Optional.of(bypassesMobDamage), Optional.of(isSecret));
     }
 
     public SplatlingWeaponSettings setBypassesMobDamage(boolean bypassesMobDamage) {
@@ -607,7 +608,8 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         Optional<OptionalShotDataRecord> secondChargeLevelShot,
         ChargeDataRecord charge,
         Optional<Float> moveSpeed,
-        Optional<Boolean> bypassesMobDamage
+        Optional<Boolean> bypassesMobDamage,
+        Optional<Boolean> isSecret
     )
     {
         public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
@@ -618,7 +620,8 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
                         OptionalShotDataRecord.CODEC.optionalFieldOf("second_charge_shot").forGetter(DataRecord::secondChargeLevelShot),
                         ChargeDataRecord.CODEC.fieldOf("charge").forGetter(DataRecord::charge),
                         Codec.FLOAT.optionalFieldOf("mobility").forGetter(DataRecord::moveSpeed),
-                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::bypassesMobDamage)
+                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::bypassesMobDamage),
+                        Codec.BOOL.optionalFieldOf("is_secret").forGetter(DataRecord::isSecret)
                 ).apply(instance, DataRecord::new)
         );
     }

@@ -70,6 +70,7 @@ public class SlosherWeaponSettings extends AbstractWeaponSettings<SlosherWeaponS
 
         data.mobility.ifPresent(this::setMoveSpeed);
         data.fullDamageToMobs.ifPresent(this::setBypassesMobDamage);
+        data.isSecret.ifPresent(this::setSecret);
 
         setProjectileSize(projectile.size);
         setProjectileSpeed(projectile.speed);
@@ -98,7 +99,8 @@ public class SlosherWeaponSettings extends AbstractWeaponSettings<SlosherWeaponS
         return new DataRecord(new ProjectileDataRecord(projectileSize, projectileSpeed,
                 Optional.of(projectileInkCoverage), Optional.of(projectileInkTrailCoverage), Optional.of(projectileInkTrailCooldown),
                 projectileCount, angleOffset, directDamage, Optional.of(splashDamage)),
-                new ShotDataRecord(pitchCompensation, startupTicks, endlagTicks, inkConsumption, inkRecoveryCooldown), Optional.of(moveSpeed), Optional.of(bypassesMobDamage));
+                new ShotDataRecord(pitchCompensation, startupTicks, endlagTicks, inkConsumption, inkRecoveryCooldown), Optional.of(moveSpeed),
+                Optional.of(bypassesMobDamage), Optional.of(isSecret));
     }
 
     public SlosherWeaponSettings setProjectileSize(float projectileSize) {
@@ -184,7 +186,8 @@ public class SlosherWeaponSettings extends AbstractWeaponSettings<SlosherWeaponS
         ProjectileDataRecord projectile,
         ShotDataRecord shot,
         Optional<Float> mobility,
-        Optional<Boolean> fullDamageToMobs
+        Optional<Boolean> fullDamageToMobs,
+        Optional<Boolean> isSecret
     )
     {
         public static final Codec<DataRecord> CODEC = RecordCodecBuilder.create(
@@ -192,7 +195,8 @@ public class SlosherWeaponSettings extends AbstractWeaponSettings<SlosherWeaponS
                         ProjectileDataRecord.CODEC.fieldOf("projectile").forGetter(DataRecord::projectile),
                         ShotDataRecord.CODEC.fieldOf("shot").forGetter(DataRecord::shot),
                         Codec.FLOAT.optionalFieldOf("mobility").forGetter(DataRecord::mobility),
-                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::fullDamageToMobs)
+                        Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::fullDamageToMobs),
+                        Codec.BOOL.optionalFieldOf("is_secret").forGetter(DataRecord::isSecret)
                 ).apply(instance, DataRecord::new)
         );
     }

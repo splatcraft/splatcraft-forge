@@ -13,6 +13,7 @@ public abstract class AbstractWeaponSettings<SELF extends AbstractWeaponSettings
 {
     public String name;
     public float moveSpeed = 1;
+    public boolean isSecret = false;
 
     private final ArrayList<WeaponTooltip<SELF>> statTooltips = new ArrayList<>();
 
@@ -27,12 +28,17 @@ public abstract class AbstractWeaponSettings<SELF extends AbstractWeaponSettings
     public void addStatsToTooltip(List<Component> tooltip, TooltipFlag flag)
     {
         for(WeaponTooltip<SELF> stat : statTooltips)
-            tooltip.add(stat.getTextComponent((SELF) this, flag.isAdvanced()).withStyle(ChatFormatting.DARK_GREEN));
+            tooltip.add(stat.getTextComponent((SELF) this, flag.isAdvanced()));
     }
 
     public SELF setMoveSpeed(float value)
     {
         moveSpeed = value;
+        return (SELF) this;
+    }
+    public SELF setSecret(boolean value)
+    {
+        isSecret = value;
         return (SELF) this;
     }
 
