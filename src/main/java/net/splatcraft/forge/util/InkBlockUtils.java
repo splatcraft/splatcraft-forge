@@ -74,9 +74,6 @@ public class InkBlockUtils {
         if (isUninkable(level, pos))
             return BlockInkedResult.FAIL;
 
-        if (!SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INKABLE_GROUND))
-            return BlockInkedResult.FAIL;
-
         for (SpawnShieldEntity shieldEntity : level.getEntitiesOfClass(SpawnShieldEntity.class, new AABB(pos)))
             if (!ColorUtils.colorEquals(level, pos, ColorUtils.getEntityColor(shieldEntity), color))
                 return BlockInkedResult.FAIL;
@@ -88,6 +85,9 @@ public class InkBlockUtils {
             if(result != BlockInkedResult.PASS)
                 return result;
         }
+
+        if (!SplatcraftGameRules.getLocalizedRule(level, pos, SplatcraftGameRules.INKABLE_GROUND))
+            return BlockInkedResult.FAIL;
 
         WorldInk worldInk = WorldInkCapability.get(level, pos);
 
