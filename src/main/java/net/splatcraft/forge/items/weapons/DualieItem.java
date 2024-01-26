@@ -102,15 +102,18 @@ public class DualieItem extends WeaponBaseItem<DualieWeaponSettings>
             activeDualie = maxRolls % 2 == 1 && offhandDualie.getItem() instanceof DualieItem ? offhandDualie : mainDualie;
         }
 
-        if (reduceInk(player, this, getInkForRoll(activeDualie), getSettings(activeDualie).rollInkRecoveryCooldown, !player.level.isClientSide)) {
-            PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(activeDualie, getRollCooldown(activeDualie, (int) maxRolls, rollCount), player.getInventory().selected, player.getUsedItemHand(), false, true, false, player.isOnGround()));
+        DualieWeaponSettings activeSettings = getSettings(activeDualie);
+
+        if (reduceInk(player, this, getInkForRoll(activeDualie), activeSettings.rollInkRecoveryCooldown, !player.level.isClientSide))
+        {
+            PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(activeDualie, getRollCooldown(activeDualie, (int) maxRolls, rollCount), player.getInventory().selected, player.getUsedItemHand(), activeSettings.canMoveAsTurret, true, false, player.isOnGround()));
             if (!player.level.isClientSide) {
                 player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.dualieDodge, SoundSource.PLAYERS, 0.7F, ((player.level.random.nextFloat() - player.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
                 InkExplosion.createInkExplosion(player.level, player, player.blockPosition(), 1.2f, 0, 0, false, ColorUtils.getInkColor(activeDualie), InkBlockUtils.getInkType(player), activeDualie);
             }
             setRollString(mainDualie, rollCount + 1);
             setRollCooldown(mainDualie, (int) (getRollCooldown(mainDualie, (int) maxRolls, (int) maxRolls) * 0.75f));
-            return activeDualie.getItem() instanceof DualieItem ? ((DualieItem) activeDualie.getItem()).getSettings(activeDualie).rollSpeed : 0;
+            return activeDualie.getItem() instanceof DualieItem ? activeSettings.rollSpeed : 0;
         }
 
         return 0;

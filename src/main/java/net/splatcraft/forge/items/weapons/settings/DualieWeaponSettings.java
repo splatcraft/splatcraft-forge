@@ -14,6 +14,7 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
     
     public float rollCount;
     public float rollSpeed;
+    public boolean canMoveAsTurret = false;
     public float rollInkConsumption;
     public int rollInkRecoveryCooldown;
     public int rollCooldown;
@@ -137,6 +138,7 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
         setRollInkRecoveryCooldown(roll.inkRecoveryCooldown);
         setRollCooldown(roll.duration);
         setLastRollCooldown(roll.finalRollDuration);
+        roll.canMove.ifPresent((v) -> canMoveAsTurret = v);
 
         if(data.turretProjectile.isPresent())
         {
@@ -197,7 +199,7 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
 				        Optional.of(turretData.damageDecayStartTick), Optional.of(turretData.damageDecayPerTick))),
 		        Optional.of(new OptionalShotDataRecord(Optional.of(turretData.startupTicks), Optional.of(turretData.firingSpeed), Optional.of(turretData.groundInaccuracy), Optional.of(turretData.airInaccuracy),
 				        Optional.of(turretData.pitchCompensation), Optional.of(turretData.inkConsumption), Optional.of(turretData.inkRecoveryCooldown))),
-                new RollDataRecord(rollCount, rollSpeed, rollInkConsumption, rollInkRecoveryCooldown, rollCooldown, lastRollCooldown),
+                new RollDataRecord(rollCount, rollSpeed, rollInkConsumption, rollInkRecoveryCooldown, rollCooldown, lastRollCooldown, Optional.of(canMoveAsTurret)),
                 Optional.of(moveSpeed),
                 Optional.of(bypassesMobDamage), Optional.of(isSecret));
     }
@@ -528,7 +530,8 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
             float inkConsumption,
             int inkRecoveryCooldown,
             int duration,
-            int finalRollDuration
+            int finalRollDuration,
+            Optional<Boolean> canMove
     )
     {
         public static final Codec<RollDataRecord> CODEC = RecordCodecBuilder.create(
@@ -538,7 +541,8 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
                         Codec.FLOAT.fieldOf("ink_consumption").forGetter(RollDataRecord::inkConsumption),
                         Codec.INT.fieldOf("ink_recovery_cooldown").forGetter(RollDataRecord::inkRecoveryCooldown),
                         Codec.INT.fieldOf("turret_duration").forGetter(RollDataRecord::duration),
-                        Codec.INT.fieldOf("final_roll_turret_duration").forGetter(RollDataRecord::finalRollDuration)
+                        Codec.INT.fieldOf("final_roll_turret_duration").forGetter(RollDataRecord::finalRollDuration),
+                        Codec.BOOL.optionalFieldOf("allows_movement").forGetter(RollDataRecord::canMove)
                 ).apply(instance, RollDataRecord::new)
         );
     }
