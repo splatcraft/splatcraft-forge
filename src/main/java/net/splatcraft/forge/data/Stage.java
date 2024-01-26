@@ -106,9 +106,9 @@ public class Stage
 		teams.remove(teamId);
 	}
 
-	public List<String> getTeamIds()
+	public Collection<String> getTeamIds()
 	{
-		return teams.keySet().stream().toList();
+		return teams.keySet();
 	}
 
 	public Stage(CompoundTag nbt)
