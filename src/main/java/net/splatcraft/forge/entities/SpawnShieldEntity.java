@@ -61,12 +61,15 @@ public class SpawnShieldEntity extends Entity implements IColoredEntity
 		if(level.isClientSide())
 			return;
 
-		if(!(getSpawnPadPos() != null && level.getBlockEntity(getSpawnPadPos()) instanceof SpawnPadTileEntity &&
-				((SpawnPadTileEntity) level.getBlockEntity(getSpawnPadPos())).isSpawnShield(this)))
+		if(!(getSpawnPadPos() != null && level.getBlockEntity(getSpawnPadPos()) instanceof SpawnPadTileEntity spawnPad &&
+				spawnPad.isSpawnShield(this)))
 		{
 			discard();
 			return;
 		}
+
+		if(spawnPad.getColor() != getColor())
+			setColor(spawnPad.getColor());
 
 		if (getActiveTime() > 0)
 			setActiveTime(getActiveTime()-1);
