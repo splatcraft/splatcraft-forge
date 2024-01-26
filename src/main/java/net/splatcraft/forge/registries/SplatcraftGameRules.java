@@ -58,14 +58,18 @@ public class SplatcraftGameRules {
         ArrayList<Stage> stages = new ArrayList<>(level.isClientSide ? ClientUtils.clientStages.values() : SaveInfoCapability.get(level.getServer()).getStages().values());
 
         Stage localStage = null;
+        AABB localStageBounds = null;
+
 
         for (Object obj : stages.stream().filter(stage -> stage.dimID.equals(level.dimension().location()) && new AABB(stage.cornerA, stage.cornerB).expandTowards(1, 1, 1).contains(pos.getX(), pos.getY(), pos.getZ())).toArray()) {
             Stage stage = (Stage) obj;
-            if (localStage == null ||
-                    Math.abs(stage.cornerA.getX() - stage.cornerB.getX()) < Math.abs(localStage.cornerA.getX() - localStage.cornerB.getX()) ||
-                    Math.abs(stage.cornerA.getY() - stage.cornerB.getY()) < Math.abs(localStage.cornerA.getY() - localStage.cornerB.getY()) ||
-                    Math.abs(stage.cornerA.getZ() - stage.cornerB.getZ()) < Math.abs(localStage.cornerA.getZ() - localStage.cornerB.getZ()))
+            AABB stageBounds = new AABB(stage.cornerA, stage.cornerB);
+
+            if (localStage == null || stageBounds.getSize() < localStageBounds.getSize())
+            {
                 localStage = stage;
+                localStageBounds = new AABB(stage.cornerA, stage.cornerB);
+            }
         }
 
         if (localStage != null && localStage.hasSetting(rule))
