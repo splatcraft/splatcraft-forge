@@ -1,6 +1,7 @@
 package net.splatcraft.forge.items.remotes;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +19,6 @@ import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.SendScanTurfResultsPacket;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftStats;
-import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.InkBlockUtils;
 
@@ -33,18 +33,18 @@ public class TurfScannerItem extends RemoteItem
         super(new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1), 2);
     }
 
-    public static RemoteResult scanTurf(Level level, Level outputWorld, BlockPos blockpos, BlockPos blockpos1, int mode, Collection<ServerPlayer> targets)
+    public static TurfScanResult scanTurf(Level level, Level outputWorld, BlockPos blockpos, BlockPos blockpos1, int mode, Collection<ServerPlayer> targets)
     {
         BlockPos minPos = new BlockPos(Math.min(blockpos.getX(), blockpos1.getX()), Math.min(blockpos1.getY(), blockpos.getY()), Math.min(blockpos.getZ(), blockpos1.getZ()));
         BlockPos maxPos = new BlockPos(Math.max(blockpos.getX(), blockpos1.getX()), Math.max(blockpos1.getY(), blockpos.getY()), Math.max(blockpos.getZ(), blockpos1.getZ()));
 
 
         if (!level.isInWorldBounds(minPos) || !level.isInWorldBounds(maxPos))
-            return createResult(false, new TranslatableComponent("status.scan_turf.out_of_world"));
+            return new TurfScanResult(false, new TranslatableComponent("status.scan_turf.out_of_world"));
 
         if (level.isClientSide)
         {
-            return createResult(true, null);
+            return new TurfScanResult(true, null);
         }
         TreeMap<Integer, Integer> scores = new TreeMap<>();
         int blockTotal = 0;
@@ -179,7 +179,7 @@ public class TurfScannerItem extends RemoteItem
 
         if (scores.isEmpty())
         {
-            return createResult(false, new TranslatableComponent("status.scan_turf.no_ink"));
+            return new TurfScanResult(false, new TranslatableComponent("status.scan_turf.no_ink"));
         } else
         {
             SendScanTurfResultsPacket packet = new SendScanTurfResultsPacket(colors, colorScores);
@@ -190,7 +190,7 @@ public class TurfScannerItem extends RemoteItem
 
         }
 
-        return createResult(true, new TranslatableComponent("commands.scanturf.success", blockTotal)).setIntResults(winner, (int) ((float) affectedBlockTotal / blockTotal * 15));
+        return (TurfScanResult) new TurfScanResult(true, new TranslatableComponent("commands.scanturf.success", blockTotal), scores, blockTotal).setIntResults(winner, (int) ((float) affectedBlockTotal / blockTotal * 15));
     }
 
     private static BlockPos getTopSolidOrLiquidBlock(BlockPos pos, Level level, int min, int max)
@@ -217,5 +217,28 @@ public class TurfScannerItem extends RemoteItem
     public RemoteResult onRemoteUse(Level usedOnWorld, BlockPos posA, BlockPos posB, ItemStack stack, int colorIn, int mode, Collection<ServerPlayer> targets)
     {
         return scanTurf(getLevel(usedOnWorld, stack), usedOnWorld, posA, posB, mode, targets);
+    }
+
+    public static class TurfScanResult extends RemoteResult
+    {
+        final TreeMap<Integer, Integer> scores;
+        final int totalBlocksScanned;
+        public TurfScanResult(boolean success, Component output) {
+            this(success, output, new TreeMap<>(), 0);
+        }
+        public TurfScanResult(boolean success, Component output, TreeMap<Integer, Integer> scores, int scanVolume) {
+            super(success, output);
+            this.scores = scores;
+            this.totalBlocksScanned = scanVolume;
+        }
+
+        public TreeMap<Integer, Integer> getScores()
+        {
+            return scores;
+        }
+
+        public int getScanVolume() {
+            return totalBlocksScanned;
+        }
     }
 }
