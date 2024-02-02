@@ -6,15 +6,15 @@
 	"projectile":
 	{
 		"size": 0.8,
-		"speed": 2.2,
-		"decayed_speed": 1.15,
+		"speed": 2.1,
+		"decayed_speed": 1,
 		"count": 1,
 
 		"ink_coverage_on_impact": 0.68,
-		"ink_trail_coverage": 0.7,
-		"ink_trail_tick_interval": 1,
+		"ink_trail_coverage": 0.8,
+		"ink_trail_tick_interval": 2,
 
-		"straight_shot_distance": 8,
+		"straight_shot_distance": 4,
 		"gravity": 0.075,
 
 		"base_damage": 7.3,
@@ -27,7 +27,7 @@
 	"shot":
 	{
 		"startup_ticks": 0,
-		"firing_speed": 10,
+		"firing_speed": 8,
 
 		"ground_inaccuracy": 4,
 		"airborne_inaccuracy": 8,
@@ -42,7 +42,7 @@
 		"movement_impulse": 0.7,
 		"ink_consumption": 8,
 		"ink_recovery_cooldown": 23,
-		"turret_duration": 9,
+		"turret_duration": 12,
 		"final_roll_turret_duration": 24
 	},
 

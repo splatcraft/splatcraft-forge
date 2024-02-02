@@ -7,14 +7,14 @@
 	{
 		"size": 0.9,
 		"speed": 2.1,
-		"decayed_speed": 1,
+		"decayed_speed": 0.75,
 		"count": 1,
 
 		"ink_coverage_on_impact": 0.865,
 		"ink_trail_coverage": 0.775,
 		"ink_trail_tick_interval": 1,
 
-		"straight_shot_distance": 7,
+		"straight_shot_distance": 3,
 		"gravity": 0.075,
 
 		"base_damage": 6,

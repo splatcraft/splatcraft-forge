@@ -11,7 +11,7 @@
 		"ink_trail_coverage": 0.9,
 		"ink_trail_tick_interval": 2,
 
-		"straight_shot_distance": 12,
+		"straight_shot_distance": 10,
 		"gravity": 0.075,
 
 		"base_damage": 12.4,
@@ -23,7 +23,7 @@
 	"shot":
 	{
 		"startup_ticks": 0,
-		"firing_speed": 7,
+		"firing_speed": 5,
 
 		"ground_inaccuracy": 4,
 		"airborne_inaccuracy": 11,

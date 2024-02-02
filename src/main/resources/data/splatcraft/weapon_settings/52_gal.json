@@ -3,12 +3,12 @@
 	"projectile":
 	{
 		"size": 1.1,
-		"speed": 2,
+		"speed": 2.2,
 		"decayed_speed": 0.6,
 		"count": 1,
 
 		"ink_coverage_on_impact": 0.935,
-		"ink_trail_coverage": 0.825,
+		"ink_trail_coverage": 0.736,
 		"ink_trail_tick_interval": 2,
 
 		"straight_shot_distance": 8,
@@ -23,9 +23,9 @@
 	"shot":
 	{
 		"startup_ticks": 0,
-		"firing_speed": 5,
+		"firing_speed": 4,
 
-		"ground_inaccuracy": 8,
+		"ground_inaccuracy": 6,
 		"airborne_inaccuracy": 12,
 		"pitch_compensation": 0,
 

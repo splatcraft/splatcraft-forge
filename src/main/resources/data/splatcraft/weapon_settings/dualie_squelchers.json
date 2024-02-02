@@ -7,14 +7,14 @@
 	{
 		"size": 0.85,
 		"speed": 2.08,
-		"decayed_speed": 1,
+		"decayed_speed": 0.7,
 		"count": 1,
 
 		"ink_coverage_on_impact": 0.8225,
-		"ink_trail_coverage": 0.7375,
-		"ink_trail_tick_interval": 1,
+		"ink_trail_coverage": 0.8,
+		"ink_trail_tick_interval": 4,
 
-		"straight_shot_distance": 11,
+		"straight_shot_distance": 3,
 		"gravity": 0.075,
 
 		"base_damage": 5.6,
@@ -42,13 +42,13 @@
 		"movement_impulse": 0.7,
 		"ink_consumption": 8,
 		"ink_recovery_cooldown": 20,
-		"turret_duration": 6,
-		"final_roll_turret_duration": 14
+		"turret_duration": 8,
+		"final_roll_turret_duration": 14,
+		"allows_movement": true
 	},
 
 	"turret_shot":
 	{
-		"firing_speed": 4,
 		"ground_inaccuracy": 2
 	}
 }
