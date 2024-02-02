@@ -13,8 +13,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.commands.SuperJumpCommand;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayCapability;
 import net.splatcraft.forge.data.capabilities.inkoverlay.InkOverlayInfo;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.IColoredEntity;
 import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.entities.SquidBumperEntity;
@@ -68,6 +71,14 @@ public class InkDamageUtils {
 
     public static boolean doDamage(Level level, LivingEntity target, float damage, int color, Entity source, Entity directSource, ItemStack sourceItem, boolean damageMobs, String name, boolean applyHurtCooldown)
     {
+        //Negate ink damage when super jumping
+        if(PlayerInfoCapability.hasCapability(target))
+        {
+            PlayerInfo info = PlayerInfoCapability.get(target);
+            if(info.hasPlayerCooldown() && info.getPlayerCooldown() instanceof SuperJumpCommand.SuperJump)
+                return false;
+        }
+
         InkDamageSource damageSource = new InkDamageSource(Splatcraft.MODID + ":" + name, directSource, source, sourceItem);
         if (damage <= 0 || (target.isInvulnerableTo(damageSource) && !(target instanceof SquidBumperEntity)))
             return false;

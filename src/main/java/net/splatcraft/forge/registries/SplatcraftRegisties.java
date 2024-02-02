@@ -9,6 +9,7 @@ public class SplatcraftRegisties
 	{
 		SplatcraftBlocks.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 		SplatcraftEntities.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
+		SplatcraftAttributes.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 		SplatcraftItems.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 		SplatcraftTileEntities.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 		SplatcraftTileEntities.CONTAINER_REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());

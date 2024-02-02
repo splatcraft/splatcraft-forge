@@ -53,9 +53,6 @@ public class SplatcraftItems {
     public static final ArrayList<Item> inkColoredItems = new ArrayList<>();
     public static final UUID SPEED_MOD_UUID = UUID.fromString("dc65cedb-19d2-4731-a492-ee930c8234df");
 
-    //Attributes
-    public static final Attribute INK_SWIM_SPEED = createAttribute("ink_swim_speed", new RangedAttribute("attribute.splatcraft.ink_swim_speed", 0.7F, 0.0D, 1024.0D).setSyncable(true));
-
     //Armor Materials
     public static final ArmorMaterial INK_CLOTH = new SplatcraftArmorMaterial("ink_cloth", SoundEvents.ARMOR_EQUIP_LEATHER, 0, 0, 0);
     public static final ArmorMaterial ARMORED_INK_TANK = new SplatcraftArmorMaterial("armored_ink_tank", SoundEvents.ARMOR_EQUIP_IRON, 3, 0, 0.05f);
@@ -348,18 +345,6 @@ public class SplatcraftItems {
         armoredInkTank.get().setArmorModel(new ArmoredInkTankModel(Minecraft.getInstance().getEntityModels().bakeLayer(ArmoredInkTankModel.LAYER_LOCATION)));
     }
 
-
-    @SubscribeEvent
-    public static void registerAttributes(final RegistryEvent.Register<Attribute> event) {
-        IForgeRegistry<Attribute> registry = event.getRegistry();
-        registry.register(INK_SWIM_SPEED);
-
-    }
-
-    private static Attribute createAttribute(String id, Attribute attribute) {
-        attribute.setRegistryName(id);
-        return attribute;
-    }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class Missmaps {

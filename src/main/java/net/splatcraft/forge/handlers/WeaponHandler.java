@@ -54,7 +54,7 @@ public class WeaponHandler {
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		Player player = event.player;
-		if (PlayerCooldown.hasPlayerCooldown(player)) {
+		if (PlayerCooldown.hasPlayerCooldown(player) && PlayerCooldown.getPlayerCooldown(player).getSlotIndex() >= 0) {
 			player.getInventory().selected = PlayerCooldown.getPlayerCooldown(player).getSlotIndex();
 		}
 

@@ -2,6 +2,7 @@ package net.splatcraft.forge.util;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -96,7 +97,7 @@ public class PlayerCooldown
         return hasPlayerCooldown(player) ? cooldown : null;
     }
 
-    public static boolean hasPlayerCooldown(Player player)
+    public static boolean hasPlayerCooldown(LivingEntity player)
     {
         if(player == null || !PlayerInfoCapability.hasCapability(player))
             return false;

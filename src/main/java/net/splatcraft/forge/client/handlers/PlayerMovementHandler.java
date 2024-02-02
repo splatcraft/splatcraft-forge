@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.RollerItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
+import net.splatcraft.forge.registries.SplatcraftAttributes;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.InkBlockUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
@@ -81,7 +82,7 @@ public class PlayerMovementHandler
                 swimAttribute.addTransientModifier(SQUID_SWIM_SPEED);
         }
 
-        if (PlayerCooldown.hasPlayerCooldown(player))
+        if (PlayerCooldown.hasPlayerCooldown(player) && PlayerCooldown.getPlayerCooldown(player).getSlotIndex() >= 0)
         {
             PlayerCooldown cooldown = PlayerCooldown.getPlayerCooldown(player);
             player.getInventory().selected = cooldown.getSlotIndex();
@@ -90,7 +91,7 @@ public class PlayerMovementHandler
         if (!player.getAbilities().flying)
         {
             if (speedAttribute.hasModifier(INK_SWIM_SPEED))
-                player.moveRelative((float) player.getAttributeValue(SplatcraftItems.INK_SWIM_SPEED) * (player.isOnGround() ? 1 : 0.75f), new Vec3(player.xxa, 0.0f, player.zza).normalize());
+                player.moveRelative((float) player.getAttributeValue(SplatcraftAttributes.inkSwimSpeed.get()) * (player.isOnGround() ? 1 : 0.75f), new Vec3(player.xxa, 0.0f, player.zza).normalize());
 
         }
     }

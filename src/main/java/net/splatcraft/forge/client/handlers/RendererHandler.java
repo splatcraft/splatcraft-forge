@@ -112,7 +112,7 @@ public class RendererHandler
     public static void onRenderTick(TickEvent.RenderTickEvent event)
     {
         Player player = Minecraft.getInstance().player;
-        if (PlayerCooldown.hasPlayerCooldown(player) && !player.isSpectator()) {
+        if (PlayerCooldown.hasPlayerCooldown(player) && !player.isSpectator() && PlayerCooldown.getPlayerCooldown(player).getSlotIndex() >= 0) {
             player.getInventory().selected = PlayerCooldown.getPlayerCooldown(player).getSlotIndex();
         }
     }

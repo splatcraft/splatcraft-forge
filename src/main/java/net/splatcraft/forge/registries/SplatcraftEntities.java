@@ -130,7 +130,10 @@ public class SplatcraftEntities {
     }
 
     public static AttributeSupplier.Builder injectPlayerAttributes(AttributeSupplier.Builder builder) {
-        builder.add(SplatcraftItems.INK_SWIM_SPEED, 0.075);
+        builder.add(SplatcraftAttributes.inkSwimSpeed.get(), SplatcraftAttributes.inkSwimSpeed.get().getDefaultValue());
+        builder.add(SplatcraftAttributes.superJumpTravelTime.get(), SplatcraftAttributes.superJumpTravelTime.get().getDefaultValue());
+        builder.add(SplatcraftAttributes.superJumpWindupTime.get(), SplatcraftAttributes.superJumpWindupTime.get().getDefaultValue());
+        builder.add(SplatcraftAttributes.superJumpHeight.get(), SplatcraftAttributes.superJumpHeight.get().getDefaultValue());
         return builder;
     }
 

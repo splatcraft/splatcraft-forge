@@ -107,6 +107,10 @@ public class InkSquidRenderer extends LivingEntityRenderer<LivingEntity, InkSqui
 		poseStack.popPose();
 	}
 
+	@Override
+	protected void setupRotations(LivingEntity p_115317_, PoseStack p_115318_, float p_115319_, float p_115320_, float p_115321_) {
+		super.setupRotations(p_115317_, p_115318_, p_115319_, p_115320_, p_115321_);
+	}
 
 	protected int getHolderBlockLightLevel(Entity p_114496_, BlockPos p_114497_) {
 		return p_114496_.isOnFire() ? 15 : p_114496_.level.getBrightness(LightLayer.BLOCK, p_114497_);

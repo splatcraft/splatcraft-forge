@@ -3,18 +3,22 @@ package net.splatcraft.forge.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,31 +27,85 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
 import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
+import net.splatcraft.forge.registries.SplatcraftAttributes;
+import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
+import net.splatcraft.forge.util.ClientUtils;
+import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
 
 public class SuperJumpCommand
 {
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
 	{
-		dispatcher.register(Commands.literal("superjump").requires(commandSource -> commandSource.hasPermission(2)).then(Commands.argument("to", BlockPosArgument.blockPos()).executes(context ->
+		dispatcher.register(Commands.literal("superjump").requires(commandSource -> commandSource.hasPermission(2)).then(Commands.argument("location", Vec3Argument.vec3()).executes(context ->
 		{
-			BlockPos target = BlockPosArgument.getLoadedBlockPos(context, "to");
-			return execute(context, new Vec3(target.getX() + .5d, target.getY(), target.getZ() + .5d));
+			BlockPos target = BlockPosArgument.getLoadedBlockPos(context, "location");
+			return executeLocation(context, new Vec3(target.getX() + .5d, target.getY(), target.getZ() + .5d));
 		})).then(Commands.argument("target", EntityArgument.entity()).executes(context ->
-				execute(context, EntityArgument.getEntity(context, "target").position()))));
+				executeLocation(context, EntityArgument.getEntity(context, "target").position())))
+				.executes(SuperJumpCommand::executeSpawn));
 	}
 
-	private static int execute(CommandContext<CommandSourceStack> context, Vec3 target) throws CommandSyntaxException
+	private static int executeLocation(CommandContext<CommandSourceStack> context, Vec3 target) throws CommandSyntaxException
 	{
 		ServerPlayer player = context.getSource().getPlayerOrException();
+		superJump(player, target);
 
+		return 0;
+	}
 
-		PlayerCooldown.setPlayerCooldown(player, new SuperJump(player.getInventory().selected, target, player.position(), player.noPhysics));
+	private static int executeSpawn(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		ServerPlayer player = context.getSource().getPlayerOrException();
+		superJumpToSpawn(player);
+
+		return 0;
+	}
+
+	public static boolean superJumpToSpawn(ServerPlayer player)
+	{
+		if(player.getRespawnDimension().equals(player.level.dimension()))
+		{
+			BlockPos targetPos = player.getRespawnPosition();
+			if(player.level.getBlockEntity(targetPos) instanceof SpawnPadTileEntity spawnpad && !ColorUtils.colorEquals(player, spawnpad))
+				targetPos = null;
+			if(targetPos == null)
+				targetPos = new BlockPos(player.level.getLevelData().getXSpawn(), player.level.getLevelData().getYSpawn(), player.level.getLevelData().getZSpawn());
+			superJump(player, new Vec3(targetPos.getX(), targetPos.getY() + blockHeight(targetPos, player.level), targetPos.getZ()));
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public static void superJump(ServerPlayer player, Vec3 target)
+	{
+		PlayerCooldown.setPlayerCooldown(player, new SuperJump(player.position(), target,
+				(int) player.getAttribute(SplatcraftAttributes.superJumpTravelTime.get()).getValue(),
+				(int) player.getAttribute(SplatcraftAttributes.superJumpWindupTime.get()).getValue(),
+				player.getAttribute(SplatcraftAttributes.superJumpHeight.get()).getValue(), player.noPhysics));
+
+		PlayerInfo info = PlayerInfoCapability.get(player);
+		if(!info.isSquid())
+		{
+			info.setIsSquid(true);
+			SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidS2CPacket(player.getUUID(), info.isSquid()), player);
+		}
+
 
 		player.displayClientMessage(new TextComponent("pchoooooo"), false);
 		SplatcraftPacketHandler.sendToPlayer(new UpdatePlayerInfoPacket(player), player);
+	}
 
-		return 0;
+	public static double blockHeight(BlockPos block, Level level){
+		VoxelShape shape = level.getBlockState(block).getShape(level, block);
+		if (shape.isEmpty()){
+			return 0;
+		}else {
+			return shape.bounds().getYsize();
+		}
 	}
 
 	@Mod.EventBusSubscriber
@@ -56,118 +114,121 @@ public class SuperJumpCommand
 		@SubscribeEvent
 		public static void playerTick(LivingEvent.LivingUpdateEvent event)
 		{
-			if(!(event.getEntityLiving() instanceof Player player))
+
+			if(PlayerInfoCapability.hasCapability(event.getEntityLiving()) && PlayerInfoCapability.get(event.getEntityLiving()).getPlayerCooldown() instanceof SuperJump superJump)
+			{
+				event.getEntityLiving().noPhysics = superJump.isSquid();
+				event.getEntityLiving().fallDistance = 0;
+			}
+
+			if(!PlayerCooldown.hasPlayerCooldown(event.getEntityLiving()))
 				return;
 
-			if(!PlayerCooldown.hasPlayerCooldown(player))
+			if(!(event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof LocalPlayer player))
 				return;
 
 			PlayerInfo info = PlayerInfoCapability.get(player);
-			PlayerCooldown cooldown = info.getPlayerCooldown();
 
-			if(cooldown instanceof SuperJump)
+			if(info.getPlayerCooldown() instanceof SuperJump cooldown && player.level.isClientSide)
 			{
-				Vec3 target = ((SuperJump) cooldown).target;
+				player.setDeltaMovement(0,0,0);
 
-				double distLeft = (player.position().multiply(1,0,1).distanceTo(target.multiply(1,0,1)));
+				float progress = cooldown.getSuperJumpProgress();
 
-				if(distLeft >= ((SuperJump) cooldown).distanceLeft)
-					cooldown.setTime(0);
+				if(!cooldown.isSquid() && info.isSquid())
+					ClientUtils.setSquid(info, false);
 
-				((SuperJump) cooldown).setDistanceLeft(distLeft);
-
-				player.stopFallFlying();
-				player.getAbilities().flying = false;
-				double distancePctg = ((SuperJump) cooldown).distanceLeft/((SuperJump) cooldown).distance;
-
-				player.fallDistance = 0;
-
-				if (distancePctg > .2f != info.isSquid()) {
-					info.setIsSquid(!info.isSquid());
-					if (!player.level.isClientSide()) {
-						SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidS2CPacket(player.getUUID(), info.isSquid()), player);
-					}
-				}
-
-				player.noPhysics = true;
-
-				if(((SuperJump) cooldown).distanceLeft < 0.01)
-					cooldown.setTime(0);
-				else
-				{
-					Vec3 dist = target.subtract(player.position());
-
-					dist = dist.multiply(1, 0, 1).scale(.1f).add(0, distancePctg > 0.9 ? Math.max(2, dist.y) * 1.25 : player.getDeltaMovement().y, 0);
-
-					dist = new Vec3(Math.min(3, dist.x), dist.y, Math.min(3, dist.z));
-
-					player.setDeltaMovement(dist);
-					player.hurtMarked = true;
-
-					//new Vec3((entitylivingbaseIn.getX() - entitylivingbaseIn.xo), (entitylivingbaseIn.getY() - entitylivingbaseIn.yo), (entitylivingbaseIn.getZ() - entitylivingbaseIn.zo)).normalize().y
-				}
+				player.setPos(Mth.lerp(progress, cooldown.source.x, cooldown.target.x), getSuperJumpYPos(progress, cooldown.source.y, cooldown.target.y, cooldown.getHeight()), Mth.lerp(progress, cooldown.source.z, cooldown.target.z));
 			}
 
 		}
 	}
 
+	public static double getSuperJumpYPos(double progress, double startY, double endY, double arcHeight)
+	{
+		float distance = 1;
+		return arcHeight * Math.sin(progress/ distance * Math.PI) + ((endY-startY)/(distance) * (progress) + startY);
+	}
+
 	public static class SuperJump extends PlayerCooldown
 	{
+		final int travelTime;
+		final int windupTime;
+		final double height;
 		final Vec3 target;
-		double distance;
-		double distanceLeft;
-		boolean noClip = false;
+		final Vec3 source;
+		boolean hadPhysics;
 
 
-		public SuperJump(int slotIndex, Vec3 target, Vec3 from, boolean canClip)
+
+		public SuperJump(Vec3 target, Vec3 source, int travelTime, int windupTime, double height, boolean hadPhysics)
 		{
-			this(slotIndex, target, target.multiply(1,0,1).distanceTo(from.multiply(1,0,1)));
-			this.noClip = canClip;
-		}
 
-		public SuperJump(int slotIndex, Vec3 target, double distance)
-		{
-			super(ItemStack.EMPTY, (int) distance, slotIndex, InteractionHand.MAIN_HAND, false, false, false, false);
+			super(ItemStack.EMPTY, travelTime + windupTime + 1, -1, InteractionHand.MAIN_HAND, false, false, false, false);
 			this.target = target;
-			this.distance = distance;
-			distanceLeft = distance;
+			this.source = source;
+			this.hadPhysics = hadPhysics;
+			this.travelTime = travelTime;
+			this.windupTime = windupTime;
+			this.height = height;
 		}
 
 		public SuperJump(CompoundTag nbt)
 		{
-			this(nbt.getInt("SlotIndex"), new Vec3(nbt.getDouble("TargetX"), nbt.getDouble("TargetY"), nbt.getDouble("TargetZ")), nbt.getDouble("Distance"));
-			distanceLeft = nbt.getDouble("DistanceLeft");
-			noClip = nbt.getBoolean("CanClip");
-		}
-
-		public void setDistanceLeft(double distanceLeft) {
-			this.distanceLeft = distanceLeft;
+			this(new Vec3(nbt.getDouble("TargetX"), nbt.getDouble("TargetY"), nbt.getDouble("TargetZ")),
+					new Vec3(nbt.getDouble("SourceX"), nbt.getDouble("SourceY"), nbt.getDouble("SourceZ")), nbt.getInt("TravelTime"), nbt.getInt("WindupTime"),
+					nbt.getDouble("Height"), nbt.getBoolean("CanClip"));
+			setTime(nbt.getInt("TimeLeft"));
 		}
 
 		@Override
-		public PlayerCooldown setTime(int v)
+		public boolean preventWeaponUse()
 		{
-			if(getTime() > 0)
-				super.setTime((int) distanceLeft);
-
-			return this;
+			return isSquid();
 		}
 
 		@Override
 		public CompoundTag writeNBT(CompoundTag nbt)
 		{
-			nbt.putInt("SlotIndex", getSlotIndex());
-			nbt.putDouble("Distance", distance);
-			nbt.putDouble("DistanceLeft", distanceLeft);
-
 			nbt.putDouble("TargetX", target.x);
 			nbt.putDouble("TargetY", target.y);
 			nbt.putDouble("TargetZ", target.z);
 
+			nbt.putDouble("SourceX", source.x);
+			nbt.putDouble("SourceY", source.y);
+			nbt.putDouble("SourceZ", source.z);
+
+			nbt.putDouble("Height", height);
 			nbt.putBoolean("SuperJump", true);
-			nbt.putBoolean("CanClip", noClip);
+			nbt.putBoolean("CanClip", hadPhysics);
+
+			nbt.putInt("TimeLeft", getTime());
+			nbt.putInt("WindupTime", getWindupTime());
+			nbt.putInt("TravelTime", getTravelTime());
 
 			return nbt;
+		}
+
+		public int getTravelTime() {
+			return travelTime;
+		}
+
+		public int getWindupTime() {
+			return windupTime;
+		}
+
+		public float getSuperJumpProgress()
+		{
+			return Mth.clamp((getTime()-1) / (float) getTravelTime(), 0, 1);
+		}
+
+		public boolean isSquid()
+		{
+			return getSuperJumpProgress() > 0.2f ;
+		}
+
+		public double getHeight() {
+			return height;
 		}
 	}
 }
