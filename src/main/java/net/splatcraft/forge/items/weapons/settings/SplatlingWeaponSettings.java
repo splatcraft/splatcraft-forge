@@ -162,7 +162,9 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
     {
         return new WeaponTooltip[]
                 {
-                        new WeaponTooltip<SplatlingWeaponSettings>("range", WeaponTooltip.Metrics.BLOCKS, settings -> Math.max(settings.firstChargeLevelData.straightShotDistance, settings.secondChargeLevelData.straightShotDistance), WeaponTooltip.RANKER_ASCENDING),
+                        new WeaponTooltip<SplatlingWeaponSettings>("range", WeaponTooltip.Metrics.BLOCKS, settings ->
+                                Math.max(settings.firstChargeLevelData.straightShotDistance + calculateDistanceTravelled(settings.firstChargeLevelData.projectileDecayedSpeed, settings.firstChargeLevelData.projectileGravity, 2),
+                                        settings.secondChargeLevelData.straightShotDistance + calculateDistanceTravelled(settings.secondChargeLevelData.projectileDecayedSpeed, settings.secondChargeLevelData.projectileGravity, 2)), WeaponTooltip.RANKER_ASCENDING),
                         new WeaponTooltip<SplatlingWeaponSettings>("charge_speed", WeaponTooltip.Metrics.SECONDS, settings -> (settings.firstLevelChargeTime + settings.secondLevelChargeTime) / 20f, WeaponTooltip.RANKER_DESCENDING),
                         new WeaponTooltip<SplatlingWeaponSettings>("mobility", WeaponTooltip.Metrics.MULTIPLIER, settings -> settings.moveSpeed, WeaponTooltip.RANKER_ASCENDING)
                 };

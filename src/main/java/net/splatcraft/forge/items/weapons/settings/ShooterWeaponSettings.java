@@ -70,7 +70,7 @@ public class ShooterWeaponSettings extends AbstractWeaponSettings<ShooterWeaponS
     {
         return new WeaponTooltip[]
                 {
-                        new WeaponTooltip<ShooterWeaponSettings>("range", WeaponTooltip.Metrics.BLOCKS, settings -> settings.straightShotDistance, WeaponTooltip.RANKER_ASCENDING),
+                        new WeaponTooltip<ShooterWeaponSettings>("range", WeaponTooltip.Metrics.BLOCKS, settings -> settings.straightShotDistance + calculateDistanceTravelled(settings.projectileDecayedSpeed, settings.projectileGravity, 2), WeaponTooltip.RANKER_ASCENDING),
                         new WeaponTooltip<ShooterWeaponSettings>("damage", WeaponTooltip.Metrics.HEALTH, settings -> settings.baseDamage, WeaponTooltip.RANKER_ASCENDING),
                         new WeaponTooltip<ShooterWeaponSettings>("fire_rate", WeaponTooltip.Metrics.TICKS, settings -> settings.firingSpeed, WeaponTooltip.RANKER_DESCENDING)
                 };

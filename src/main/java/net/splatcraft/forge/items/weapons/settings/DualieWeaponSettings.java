@@ -78,7 +78,7 @@ public class DualieWeaponSettings extends AbstractWeaponSettings<DualieWeaponSet
     {
         return new WeaponTooltip[]
                 {
-                        new WeaponTooltip<DualieWeaponSettings>("range", WeaponTooltip.Metrics.BLOCKS, settings -> settings.standardData.straightShotDistance, WeaponTooltip.RANKER_ASCENDING),
+                        new WeaponTooltip<DualieWeaponSettings>("range", WeaponTooltip.Metrics.BLOCKS, settings -> settings.standardData.straightShotDistance + calculateDistanceTravelled(settings.standardData.projectileDecayedSpeed, settings.standardData.projectileGravity, 2), WeaponTooltip.RANKER_ASCENDING),
                         new WeaponTooltip<DualieWeaponSettings>("damage", WeaponTooltip.Metrics.HEALTH, settings -> settings.standardData.baseDamage, WeaponTooltip.RANKER_ASCENDING),
                         new WeaponTooltip<DualieWeaponSettings>("roll_distance", WeaponTooltip.Metrics.BLOCKS, settings -> settings.rollSpeed * 6, WeaponTooltip.RANKER_ASCENDING) //i used desmos to get that 6 B)
                 };

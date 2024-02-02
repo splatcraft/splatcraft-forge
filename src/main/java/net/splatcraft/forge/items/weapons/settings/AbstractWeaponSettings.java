@@ -66,4 +66,9 @@ public abstract class AbstractWeaponSettings<SELF extends AbstractWeaponSettings
     {
         buffer.writeWithCodec(getCodec(), serialize());
     }
+
+    public static float calculateDistanceTravelled(float hAccel, float gravity, float vHeight)
+    {
+        return (float) (hAccel * Math.sqrt(2 * vHeight / gravity));
+    }
 }
