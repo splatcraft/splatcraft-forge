@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/heavy_splatling_deco",
+  "display": {
+    "icon": {
+      "item": "splatcraft:heavy_splatling_remix"
+    },
+    "title": {
+      "translate": "item.splatcraft.heavy_splatling_remix"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.heavy_splatling_remix"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}
