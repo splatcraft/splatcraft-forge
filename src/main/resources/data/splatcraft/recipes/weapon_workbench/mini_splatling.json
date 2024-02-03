@@ -24,6 +24,32 @@
           "count": 12
         }
       ]
+    },
+    {
+      "name": "weaponType.refurbished",
+      "advancement": "splatcraft:unlocks/refurbished_mini_splatling",
+      "result": {
+        "item": "splatcraft:refurbished_mini_splatling",
+        "count": 1
+      },
+      "ingredients": [
+        {
+          "item": "splatcraft:sardinium",
+          "count": 12
+        },
+        {
+          "item": "splatcraft:power_egg",
+          "count": 12
+        },
+        {
+          "item": "minecraft:ink_sac",
+          "count": 12
+        },
+        {
+          "item": "minecraft:white_dye",
+          "count": 6
+        }
+      ]
     }
   ]
 }
