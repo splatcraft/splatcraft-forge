@@ -78,6 +78,8 @@ public class SplatcraftItems {
     //Blasters
     public static final RegistryObject<BlasterItem> blaster = BlasterItem.createBlaster(REGISTRY, "blaster", "blaster");
     public static final RegistryObject<BlasterItem> grimBlaster = BlasterItem.createBlaster(REGISTRY, "blaster", "grim_blaster");
+    public static final RegistryObject<BlasterItem> rangeBlaster = BlasterItem.createBlaster(REGISTRY, "range_blaster", "range_blaster");
+    public static final RegistryObject<BlasterItem> grimRangeBlaster = BlasterItem.createBlaster(REGISTRY, "range_blaster", "grim_range_blaster");
     public static final RegistryObject<BlasterItem> clashBlaster = BlasterItem.createBlaster(REGISTRY, "clash_blaster", "clash_blaster");
     public static final RegistryObject<BlasterItem> clashBlasterNeo = BlasterItem.createBlaster(REGISTRY, "clash_blaster", "clash_blaster_neo");
     public static final RegistryObject<BlasterItem> lunaBlaster = BlasterItem.createBlaster(REGISTRY, "luna_blaster", "luna_blaster");
@@ -123,6 +125,9 @@ public class SplatcraftItems {
     //Splatlings
     public static final RegistryObject<SplatlingItem> miniSplatling = SplatlingItem.create(REGISTRY, "mini_splatling", "mini_splatling");
     public static final RegistryObject<SplatlingItem> heavySplatling = SplatlingItem.create(REGISTRY, "heavy_splatling", "heavy_splatling");
+    public static final RegistryObject<SplatlingItem> heavySplatlingDeco = SplatlingItem.create(REGISTRY, "heavy_splatling", "heavy_splatling_deco");
+    public static final RegistryObject<SplatlingItem> heavySplatlingRemix = SplatlingItem.create(REGISTRY, "heavy_splatling", "heavy_splatling_remix");
+    public static final RegistryObject<SplatlingItem> classicHeavySplatling = SplatlingItem.create(REGISTRY, "heavy_splatling", "classic_heavy_splatling");
 
     //Ink Tanks
     public static final RegistryObject<InkTankItem> inkTank = REGISTRY.register("ink_tank", () -> new InkTankItem("ink_tank", 100));
