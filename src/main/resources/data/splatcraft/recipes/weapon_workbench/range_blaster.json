@@ -1,43 +1,39 @@
 {
   "type": "splatcraft:weapon_workbench",
   "tab": "splatcraft:weapon_workbench_tabs/blasters",
-  "pos": 2,
+  "pos": 1,
   "recipes": [
     {
       "name": "weaponType.original",
-      "advancement": "splatcraft:unlocks/clash_blaster",
+      "advancement": "splatcraft:unlocks/blaster",
       "result": {
-        "item": "splatcraft:clash_blaster",
+        "item": "splatcraft:range_blaster",
         "count": 1
       },
       "ingredients": [
         {
           "item": "splatcraft:sardinium",
-          "count": 12
-        },
-        {
-          "item": "splatcraft:power_egg",
           "count": 20
         },
         {
+          "item": "splatcraft:power_egg",
+          "count": 18
+        },
+        {
           "item": "minecraft:ink_sac",
-          "count": 6
+          "count": 12
         },
         {
           "item": "minecraft:gunpowder",
-          "count": 4
-        },
-        {
-          "item": "minecraft:blue_dye",
-          "count": 2
+          "count": 12
         }
       ]
     },
     {
-      "name": "weaponType.neo",
-      "advancement": "splatcraft:unlocks/clash_blaster_neo",
+      "name": "weaponType.grim",
+      "advancement": "splatcraft:unlocks/grim_range_blaster",
       "result": {
-        "item": "splatcraft:clash_blaster_neo",
+        "item": "splatcraft:grim_range_blaster",
         "count": 1
       },
       "ingredients": [
@@ -47,19 +43,19 @@
         },
         {
           "item": "splatcraft:power_egg",
-          "count": 16
+          "count": 17
         },
         {
           "item": "minecraft:ink_sac",
-          "count": 6
+          "count": 12
         },
         {
           "item": "minecraft:gunpowder",
-          "count": 5
+          "count": 14
         },
         {
-          "item": "minecraft:blue_dye",
-          "count": 2
+          "item": "minecraft:lime_dye",
+          "count": 4
         }
       ]
     }
