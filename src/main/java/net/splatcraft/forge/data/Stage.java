@@ -6,6 +6,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +36,7 @@ public class Stage
 		registerGameruleSetting(SplatcraftGameRules.INKABLE_GROUND);
 		registerGameruleSetting(SplatcraftGameRules.INK_DESTROYS_FOLIAGE);
 		registerGameruleSetting(SplatcraftGameRules.RECHARGEABLE_INK_TANK);
+		registerGameruleSetting(SplatcraftGameRules.GLOBAL_SUPERJUMPING);
 	}
 
 	public CompoundTag writeData()
@@ -109,6 +111,11 @@ public class Stage
 	public Collection<String> getTeamIds()
 	{
 		return teams.keySet();
+	}
+
+	public AABB getBounds()
+	{
+		return new AABB(cornerA, cornerB);
 	}
 
 	public Stage(CompoundTag nbt)

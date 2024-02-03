@@ -24,15 +24,19 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
 import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
 import net.splatcraft.forge.registries.SplatcraftAttributes;
+import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
+
+import java.util.ArrayList;
 
 public class SuperJumpCommand
 {
@@ -80,12 +84,20 @@ public class SuperJumpCommand
 		return false;
 	}
 
-	public static void superJump(ServerPlayer player, Vec3 target)
+	public static boolean superJump(ServerPlayer player, Vec3 target)
 	{
-		PlayerCooldown.setPlayerCooldown(player, new SuperJump(player.position(), target,
+		return superJump(player, target,
 				(int) player.getAttribute(SplatcraftAttributes.superJumpTravelTime.get()).getValue(),
 				(int) player.getAttribute(SplatcraftAttributes.superJumpWindupTime.get()).getValue(),
-				player.getAttribute(SplatcraftAttributes.superJumpHeight.get()).getValue(), player.noPhysics));
+				player.getAttribute(SplatcraftAttributes.superJumpHeight.get()).getValue(),
+				SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING));
+	}
+	public static boolean superJump(ServerPlayer player, Vec3 target, int windupTime, int travelTime, double jumpHeight, boolean global)
+	{
+		if(!global && SaveInfoCapability.get(player.server).getStages().values().stream().filter(stage -> stage.getBounds().contains(player.position()) && stage.getBounds().contains(target)).toList().isEmpty())
+			return false;
+
+		PlayerCooldown.setPlayerCooldown(player, new SuperJump(player.position(), target, windupTime, travelTime, jumpHeight, player.noPhysics));
 
 		PlayerInfo info = PlayerInfoCapability.get(player);
 		if(!info.isSquid())
@@ -97,6 +109,8 @@ public class SuperJumpCommand
 
 		player.displayClientMessage(new TextComponent("pchoooooo"), false);
 		SplatcraftPacketHandler.sendToPlayer(new UpdatePlayerInfoPacket(player), player);
+
+		return true;
 	}
 
 	public static double blockHeight(BlockPos block, Level level){

@@ -33,6 +33,7 @@ public class SplatcraftGameRules {
     public static GameRules.Key<GameRules.BooleanValue> INK_DAMAGE_COOLDOWN;
     public static GameRules.Key<GameRules.BooleanValue> INFINITE_INK_IN_CREATIVE;
     public static GameRules.Key<GameRules.BooleanValue> RECHARGEABLE_INK_TANK;
+    public static GameRules.Key<GameRules.BooleanValue> GLOBAL_SUPERJUMPING;
 
     public static void registerGamerules() {
         INK_DECAY = createBooleanRule("inkDecay", GameRules.Category.UPDATES, true);
@@ -47,6 +48,7 @@ public class SplatcraftGameRules {
         INK_HEALING = createBooleanRule("inkHealing", GameRules.Category.PLAYER, true);
         INK_HEALING_CONSUMES_HUNGER = createBooleanRule("inkHealingConsumesHunger", GameRules.Category.PLAYER, true);
         INK_DAMAGE_COOLDOWN = createBooleanRule("inkDamageCooldown", GameRules.Category.PLAYER, false);
+        GLOBAL_SUPERJUMPING = createBooleanRule("globalSuperJumping", GameRules.Category.PLAYER, true);
         INK_MOB_DAMAGE_PERCENTAGE = createIntRule("inkMobDamagePercentage", GameRules.Category.MOBS, 70);
         INFINITE_INK_IN_CREATIVE = createBooleanRule("infiniteInkInCreative", GameRules.Category.PLAYER, true);
         INKABLE_GROUND = createBooleanRule("inkableGround", GameRules.Category.MISC, true);
@@ -61,14 +63,14 @@ public class SplatcraftGameRules {
         AABB localStageBounds = null;
 
 
-        for (Object obj : stages.stream().filter(stage -> stage.dimID.equals(level.dimension().location()) && new AABB(stage.cornerA, stage.cornerB).expandTowards(1, 1, 1).contains(pos.getX(), pos.getY(), pos.getZ())).toArray()) {
+        for (Object obj : stages.stream().filter(stage -> stage.dimID.equals(level.dimension().location()) && stage.getBounds().expandTowards(1, 1, 1).contains(pos.getX(), pos.getY(), pos.getZ())).toArray()) {
             Stage stage = (Stage) obj;
-            AABB stageBounds = new AABB(stage.cornerA, stage.cornerB);
+            AABB stageBounds = stage.getBounds();
 
             if (localStage == null || stageBounds.getSize() < localStageBounds.getSize())
             {
                 localStage = stage;
-                localStageBounds = new AABB(stage.cornerA, stage.cornerB);
+                localStageBounds = stage.getBounds();
             }
         }
 
