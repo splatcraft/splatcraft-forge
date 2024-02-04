@@ -124,6 +124,7 @@ public class SplatcraftItems {
 
     //Splatlings
     public static final RegistryObject<SplatlingItem> miniSplatling = SplatlingItem.create(REGISTRY, "mini_splatling", "mini_splatling");
+    public static final RegistryObject<SplatlingItem> refurbishedMiniSplatling = SplatlingItem.create(REGISTRY, "mini_splatling", "refurbished_mini_splatling");
     public static final RegistryObject<SplatlingItem> heavySplatling = SplatlingItem.create(REGISTRY, "heavy_splatling", "heavy_splatling");
     public static final RegistryObject<SplatlingItem> heavySplatlingDeco = SplatlingItem.create(REGISTRY, "heavy_splatling", "heavy_splatling_deco");
     public static final RegistryObject<SplatlingItem> heavySplatlingRemix = SplatlingItem.create(REGISTRY, "heavy_splatling", "heavy_splatling_remix");

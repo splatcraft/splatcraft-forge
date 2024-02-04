@@ -1,0 +1,26 @@
+{
+  "parent": "splatcraft:unlocks/mini_splatling",
+  "display": {
+    "icon": {
+      "item": "splatcraft:refurbished_mini_splatling"
+    },
+    "title": {
+      "translate": "item.splatcraft.refurbished_mini_splatling"
+    },
+    "description": {
+      "translate": "advancements.splatcraft.weapon_unlock",
+      "with": [
+        {"translate": "item.splatcraft.refurbished_mini_splatling"}
+      ]
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "default": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}
