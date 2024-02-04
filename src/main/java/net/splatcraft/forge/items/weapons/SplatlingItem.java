@@ -107,7 +107,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	@Override
 	public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown)
 	{
-		if(cooldown.getTime() > 0 && level.isClientSide && PlayerCharge.hasCharge(player))
+		if(cooldown.getTime() > 0 && level.isClientSide && PlayerCharge.hasCharge(player) && player.equals(Minecraft.getInstance().player))
 		{
 			PlayerCharge charge = PlayerCharge.getCharge(player);
 			charge.reset();
@@ -160,7 +160,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	{
 		super.releaseUsing(stack, level, entity, timeLeft);
 
-		if (level.isClientSide && entity instanceof Player player)
+		if (level.isClientSide && entity instanceof Player player && player.equals(Minecraft.getInstance().player))
 		{
 			if(PlayerCooldown.hasPlayerCooldown(player) && PlayerCooldown.getPlayerCooldown(player).preventWeaponUse())
 				return;

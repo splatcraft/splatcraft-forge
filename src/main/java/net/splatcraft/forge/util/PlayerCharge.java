@@ -2,6 +2,9 @@ package net.splatcraft.forge.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -14,7 +17,7 @@ import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.UpdateChargeStatePacket;
 
 public class PlayerCharge {
-    private static final Map<ServerPlayer, Boolean> hasChargeServerPlayerMap = new HashMap<>();
+    private static final Map<UUID, Boolean> hasChargeServerPlayerMap = new HashMap<>();
 
     public ItemStack chargedWeapon;
     public float charge;
@@ -53,7 +56,7 @@ public class PlayerCharge {
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            return hasChargeServerPlayerMap.getOrDefault(serverPlayer, false);
+            return hasChargeServerPlayerMap.getOrDefault(serverPlayer.getUUID(), false);
         }
 
         if (!PlayerInfoCapability.hasCapability(player)) {
@@ -91,7 +94,7 @@ public class PlayerCharge {
         }
 
         PlayerCharge charge = getCharge(player);
-        if ((charge.prevCharge > charge.charge || charge.charge <= 0.0f) && value > 0.0f) {
+        if ((charge.prevCharge > charge.charge || charge.charge <= 0.0f) && value > 0.0f && player.equals(Minecraft.getInstance().player)) {
             SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(true));
         }
 
@@ -158,7 +161,8 @@ public class PlayerCharge {
         charge.prevCharge = 0;
         charge.dischargedTicks = 0;
 
-        SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
+        if(player.equals(Minecraft.getInstance().player))
+            SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
     }
 
     public static void updateServerMap(Player player, boolean hasCharge) {
@@ -166,11 +170,11 @@ public class PlayerCharge {
             throw new IllegalStateException("Client attempted to modify server charge map");
         }
 
-        if (hasChargeServerPlayerMap.containsKey(serverPlayer) && hasChargeServerPlayerMap.get(serverPlayer) == hasCharge) {
+        if (hasChargeServerPlayerMap.containsKey(serverPlayer.getUUID()) && hasChargeServerPlayerMap.get(serverPlayer.getUUID()) == hasCharge) {
             throw new IllegalStateException("Charge state did not change: " + hasCharge);
         }
 
-        hasChargeServerPlayerMap.put(serverPlayer, hasCharge);
+        hasChargeServerPlayerMap.put(serverPlayer.getUUID(), hasCharge);
     }
 
     public void reset() {
