@@ -65,6 +65,9 @@ public class PlayerMovementHandler
         ItemStack useStack = player.getUseItem();
         if(PlayerCooldown.hasPlayerCooldown(player))
             useStack = PlayerCooldown.getPlayerCooldown(player).storedStack;
+        else if(useStack.isEmpty())
+            useStack = player.getCooldowns().isOnCooldown(player.getMainHandItem().getItem()) ? player.getMainHandItem() :
+                    player.getCooldowns().isOnCooldown(player.getOffhandItem().getItem()) ? player.getOffhandItem() : ItemStack.EMPTY;
 
         if (useStack.getItem() instanceof WeaponBaseItem<?> weapon && weapon.hasSpeedModifier(player, player.getUseItem()))
         {
