@@ -11,7 +11,7 @@
 		"ink_trail_coverage": 0.75,
 		"ink_trail_tick_interval": 3,
 
-		"straight_shot_distance": 8,
+		"straight_shot_distance": 2,
 		"gravity": 0.075,
 
 		"base_damage": 6.4,
@@ -36,7 +36,7 @@
 	"second_charge_projectile":
 	{
 		"speed": 1.5,
-		"straight_shot_distance": 12
+		"straight_shot_distance": 4
 	},
 	"second_charge_shot":
 	{
