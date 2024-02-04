@@ -110,7 +110,7 @@ public class CurlingBombEntity extends AbstractSubWeaponEntity
 
 		if(!level.isClientSide)
 			for(int i = 0; i <= 2; i++)
-				if(!InkBlockUtils.isUninkable(level, blockPosition().below(i)))
+				if(InkBlockUtils.canInkFromFace(level, blockPosition().below(i), Direction.UP))
 				{
 					InkBlockUtils.playerInkBlock(getOwner() instanceof Player player ? player : null, level, blockPosition().below(i), getColor(), settings.contactDamage, inkType);
 					break;
