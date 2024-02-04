@@ -4,7 +4,11 @@ import com.mojang.serialization.Codec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.WeaponTooltip;
 
 import java.util.*;
@@ -29,6 +33,15 @@ public abstract class AbstractWeaponSettings<SELF extends AbstractWeaponSettings
     {
         for(WeaponTooltip<SELF> stat : statTooltips)
             tooltip.add(stat.getTextComponent((SELF) this, flag.isAdvanced()));
+    }
+
+    private AttributeModifier SPEED_MODIFIER;
+    public AttributeModifier getSpeedModifier()
+    {
+        if(SPEED_MODIFIER == null)
+            SPEED_MODIFIER = new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID,  name + " mobility", moveSpeed - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        return SPEED_MODIFIER;
     }
 
     public SELF setMoveSpeed(float value)
