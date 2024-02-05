@@ -1,11 +1,9 @@
 package net.splatcraft.forge.items.weapons;
 
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySelector;
@@ -27,19 +25,14 @@ import net.splatcraft.forge.client.audio.RollerRollTickableSound;
 import net.splatcraft.forge.client.particles.InkSplashParticleData;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.entities.SquidBumperEntity;
-import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.handlers.WeaponHandler;
 import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.registries.SplatcraftSounds;
-import net.splatcraft.forge.util.BlockInkedResult;
-import net.splatcraft.forge.util.ColorUtils;
-import net.splatcraft.forge.util.InkBlockUtils;
-import net.splatcraft.forge.util.InkDamageUtils;
-import net.splatcraft.forge.util.PlayerCooldown;
-import net.splatcraft.forge.util.WeaponTooltip;
+import net.splatcraft.forge.util.*;
+
+import java.util.ArrayList;
 
 public class RollerItem extends WeaponBaseItem<RollerWeaponSettings> {
     public static final ArrayList<RollerItem> rollers = Lists.newArrayList();

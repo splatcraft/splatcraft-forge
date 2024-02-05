@@ -5,7 +5,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 
 import java.text.DecimalFormat;
 import java.util.List;
