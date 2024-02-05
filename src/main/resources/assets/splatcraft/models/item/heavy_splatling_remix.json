@@ -1913,26 +1913,28 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"translation": [0, -1, -2.5],
+			"rotation": [70, 0, 0],
+			"translation": [0, 3.5, 2.5],
 			"scale": [1.4, 1.4, 1.4]
 		},
 		"thirdperson_lefthand": {
-			"translation": [0, -0.75, -2.25],
-			"scale": [1.4, 1.4, 1.4]
+			"rotation": [70, 0, 0],
+			"translation": [0, 3.5, 2.5]
 		},
 		"firstperson_righthand": {
-			"translation": [-1.75, 6.75, 2.75]
+			"translation": [-0.5, 6.75, 2.75]
 		},
 		"firstperson_lefthand": {
 			"translation": [-0.5, 6.75, 2.75]
 		},
 		"ground": {
-			"translation": [0, 5, 0]
+			"translation": [0, 5, 0],
+			"scale": [0.6, 0.6, 0.6]
 		},
 		"gui": {
-			"rotation": [-168.64, -36.48, 176.5],
-			"translation": [0, 4, 0],
-			"scale": [0.7, 0.7, 0.7]
+			"rotation": [5, -140, 0],
+			"translation": [0, 3.5, 0],
+			"scale": [0.8, 0.8, 0.8]
 		},
 		"fixed": {
 			"rotation": [90, 69, -90],
