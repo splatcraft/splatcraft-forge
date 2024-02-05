@@ -53,7 +53,7 @@
 		"can_recharge_while_firing": false
 	},
 
-	"ink_consumption": 17.25,
+	"max_ink_consumption": 17.25,
 	"ink_recovery_cooldown": 10,
 
 	"full_damage_to_mobs": false,
