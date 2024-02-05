@@ -48,6 +48,7 @@
 
 		"total_firing_duration": 48,
 		"charge_storage_ticks": 0,
+		"mobility_while_charging": 0.62,
 
 		"can_recharge_while_firing": false
 	},
@@ -56,5 +57,5 @@
 	"ink_recovery_cooldown": 13,
 
 	"full_damage_to_mobs": false,
-	"mobility": 0.62
+	"mobility": 0.7
 }

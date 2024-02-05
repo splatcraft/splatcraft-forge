@@ -49,6 +49,7 @@
 
 		"total_firing_duration": 24,
 		"charge_storage_ticks": 0,
+		"mobility_while_charging": 0.7,
 
 		"can_recharge_while_firing": false
 	},

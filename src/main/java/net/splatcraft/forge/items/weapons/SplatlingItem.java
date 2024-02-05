@@ -21,6 +21,7 @@ import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.InkTankItem;
+import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.SplatlingWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.SplatlingWeaponSettings.FiringData;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
@@ -36,7 +37,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 
 public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> implements IChargeableWeapon {
-	private AttributeModifier SPEED_MODIFIER;
 	public ChargerChargingTickableSound chargingSound;
 
 	protected SplatlingItem(String settingsId)
@@ -236,5 +236,15 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	@Override
 	public int getDecayTicks(ItemStack stack) {
 		return getSettings(stack).firingDuration;
+	}
+
+	@Override
+	public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack)
+	{
+		SplatlingWeaponSettings settings = getSettings(stack);
+
+		double appliedMobility = entity.getUseItem().equals(stack) ? settings.chargeMoveSpeed : settings.moveSpeed;
+
+		return new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, "Splatling Mobility", appliedMobility - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
 	}
 }

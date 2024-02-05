@@ -17,6 +17,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
 
     public float inkConsumption;
     public int inkRecoveryCooldown;
+    public float chargeMoveSpeed = 1;
 
     public int emptyTankFirstLevelChargeTime;
     public int emptyTankSecondLevelChargeTime;
@@ -218,6 +219,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         charge.chargeStorageTime.ifPresent(this::setChargeStorageTime);
         charge.canRechargeWhileFiring.ifPresent(this::setCanRechargeWhileFiring);
         data.moveSpeed.ifPresent(this::setMoveSpeed);
+        charge.moveSpeed.ifPresent(this::setChargeMoveSpeed);
         setInkConsumption(data.inkConsumption);
         setInkRecoveryCooldown(data.inkRecoveryCooldown);
 
@@ -281,7 +283,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
                 Optional.of(new OptionalShotDataRecord(Optional.of(secondChargeLevelData.startupTicks), Optional.of(secondChargeLevelData.firingSpeed), Optional.of(secondChargeLevelData.groundInaccuracy), Optional.of(secondChargeLevelData.airInaccuracy),
 				        Optional.of(secondChargeLevelData.pitchCompensation))),
 
-                new ChargeDataRecord(firstLevelChargeTime, secondLevelChargeTime, Optional.of(emptyTankFirstLevelChargeTime), Optional.of(emptyTankSecondLevelChargeTime), firingDuration, Optional.of(chargeStorageTime),
+                new ChargeDataRecord(firstLevelChargeTime, secondLevelChargeTime, Optional.of(emptyTankFirstLevelChargeTime), Optional.of(emptyTankSecondLevelChargeTime), firingDuration, Optional.of(chargeMoveSpeed), Optional.of(chargeStorageTime),
                         Optional.of(canRechargeWhileFiring)),
                 inkConsumption, inkRecoveryCooldown, Optional.of(moveSpeed), Optional.of(bypassesMobDamage), Optional.of(isSecret));
     }
@@ -331,6 +333,11 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
 
     public SplatlingWeaponSettings setMoveSpeed(float moveSpeed) {
         this.moveSpeed = moveSpeed;
+        this.chargeMoveSpeed = moveSpeed;
+        return this;
+    }
+    public SplatlingWeaponSettings setChargeMoveSpeed(float moveSpeed) {
+        this.chargeMoveSpeed = moveSpeed;
         return this;
     }
 
@@ -626,6 +633,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
             Optional<Integer> emptyTankFirstChargeTime,
             Optional<Integer> emptyTankSecondChargeTime,
             int firingDuration,
+            Optional<Float> moveSpeed,
             Optional<Integer> chargeStorageTime,
             Optional<Boolean> canRechargeWhileFiring
 
@@ -638,6 +646,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
                         Codec.INT.optionalFieldOf("empty_tank_first_charge_time_ticks").forGetter(ChargeDataRecord::emptyTankFirstChargeTime),
                         Codec.INT.optionalFieldOf("empty_tank_second_charge_time_ticks").forGetter(ChargeDataRecord::emptyTankSecondChargeTime),
                         Codec.INT.fieldOf("total_firing_duration").forGetter(ChargeDataRecord::firingDuration),
+                        Codec.FLOAT.optionalFieldOf("mobility_while_charging").forGetter(ChargeDataRecord::moveSpeed),
                         Codec.INT.optionalFieldOf("charge_storage_ticks").forGetter(ChargeDataRecord::chargeStorageTime),
                         Codec.BOOL.optionalFieldOf("can_recharge_while_firing").forGetter(ChargeDataRecord::canRechargeWhileFiring)
                 ).apply(instance, ChargeDataRecord::new)
