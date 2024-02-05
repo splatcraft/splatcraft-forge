@@ -57,7 +57,8 @@ public class WeaponTooltip<S extends AbstractWeaponSettings<S, ?>>
 
         if(advanced)
             return new TranslatableComponent("weaponStat.format", new TranslatableComponent("weaponStat." + name),
-                    new TranslatableComponent("weaponStat.metric." + metric.localizedName, new DecimalFormat("0.#").format(getStatValue(settings))));
+                    new TranslatableComponent("weaponStat.metric." + metric.localizedName, new DecimalFormat("0.#").format(getStatValue(settings))))
+                    .withStyle(ChatFormatting.DARK_GREEN);
         else
         {
             int ranking = getStatRanking(settings);
