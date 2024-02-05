@@ -79,7 +79,13 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	@Override
 	public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
-		if (entity instanceof Player player && level.isClientSide)
+		if(!(entity instanceof Player player))
+			return;
+
+		if(PlayerCooldown.hasPlayerCooldown(player))
+			PlayerCooldown.setPlayerCooldown(player, null);
+
+		if (level.isClientSide)
 		{
 			SplatlingWeaponSettings settings = getSettings(stack);
 
