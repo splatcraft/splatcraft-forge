@@ -107,11 +107,25 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 	@Override
 	public void onPlayerCooldownEnd(Level level, Player player, ItemStack stack, PlayerCooldown cooldown)
 	{
-		if(cooldown.getTime() > 0 && level.isClientSide && PlayerCharge.hasCharge(player) && player.equals(Minecraft.getInstance().player))
+		if(cooldown.getTime() > 0)
 		{
-			PlayerCharge charge = PlayerCharge.getCharge(player);
-			charge.reset();
-			SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
+			if(!level.isClientSide)
+			{
+				SplatlingWeaponSettings settings = getSettings(stack);
+
+				float chargeLevel = cooldown.getMaxTime() / (float) settings.firingDuration; //yeah idk about this
+				float cooldownLeft = cooldown.getTime() / (float) cooldown.getMaxTime();
+				float inkConsumed = Mth.lerp(chargeLevel * 0.5f, 0, settings.inkConsumption);
+				float inkRefunded = inkConsumed * cooldownLeft;
+
+				refundInk(player, inkRefunded);
+			}
+			else if(PlayerCharge.hasCharge(player) && player.equals(Minecraft.getInstance().player))
+			{
+				PlayerCharge charge = PlayerCharge.getCharge(player);
+				charge.reset();
+				SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
+			}
 		}
 	}
 
