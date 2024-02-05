@@ -28,10 +28,8 @@
 		"airborne_inaccuracy": 12,
 		"pitch_compensation": 0,
 
-		"ink_consumption": 0,
-		"ink_recovery_cooldown": 13
+		"ink_consumption": 0
 	},
-
 
 	"second_charge_projectile":
 	{
@@ -40,7 +38,6 @@
 	},
 	"second_charge_shot":
 	{
-		"ink_consumption": 22.5
 	},
 	"charge":
 	{
@@ -54,6 +51,9 @@
 
 		"can_recharge_while_firing": false
 	},
+
+	"max_ink_consumption": 22.5,
+	"ink_recovery_cooldown": 13,
 
 	"full_damage_to_mobs": false,
 	"mobility": 0.62

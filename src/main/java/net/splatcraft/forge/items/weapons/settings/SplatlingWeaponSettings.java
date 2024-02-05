@@ -14,11 +14,16 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
     
     public int firstLevelChargeTime;
     public int secondLevelChargeTime;
+
+    public float inkConsumption;
+    public int inkRecoveryCooldown;
+
     public int emptyTankFirstLevelChargeTime;
     public int emptyTankSecondLevelChargeTime;
     public int firingDuration;
     public int chargeStorageTime = 0;
     public boolean canRechargeWhileFiring = false;
+
 
     public static class FiringData
     {
@@ -44,9 +49,6 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         public float airInaccuracy;
         public float pitchCompensation;
 
-        public float inkConsumption;
-        public int inkRecoveryCooldown;
-
         public Float getAirInaccuracy() {
             return airInaccuracy;
         }
@@ -65,10 +67,6 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
 
         public Float getGroundInaccuracy() {
             return groundInaccuracy;
-        }
-
-        public Float getInkConsumption() {
-            return inkConsumption;
         }
 
         public Float getPitchCompensation() {
@@ -115,9 +113,6 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
             return firingSpeed;
         }
 
-        public Integer getInkRecoveryCooldown() {
-            return inkRecoveryCooldown;
-        }
 
         public Integer getProjectileCount() {
             return projectileCount;
@@ -212,9 +207,6 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         shot.airborneInaccuracy.ifPresent(this::setAirInaccuracy);
         shot.pitchCompensation.ifPresent(this::setPitchCompensation);
 
-        setInkConsumption(shot.inkConsumption);
-        setInkRecoveryCooldown(shot.inkRecoveryCooldown);
-
         ChargeDataRecord charge = data.charge;
 
         setFirstLevelChargeTime(charge.firstChargeTime);
@@ -226,6 +218,8 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         charge.chargeStorageTime.ifPresent(this::setChargeStorageTime);
         charge.canRechargeWhileFiring.ifPresent(this::setCanRechargeWhileFiring);
         data.moveSpeed.ifPresent(this::setMoveSpeed);
+        setInkConsumption(data.inkConsumption);
+        setInkRecoveryCooldown(data.inkRecoveryCooldown);
 
         if(data.secondChargeLevelProjectile.isPresent())
         {
@@ -264,9 +258,6 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
             secondChargeLevelShot.groundInaccuracy.ifPresent(this::setSecondChargeLevelGroundInaccuracy);
             secondChargeLevelShot.airborneInaccuracy.ifPresent(this::setSecondChargeLevelAirInaccuracy);
             secondChargeLevelShot.pitchCompensation.ifPresent(this::setSecondChargeLevelPitchCompensation);
-
-            secondChargeLevelShot.inkConsumption.ifPresent(this::setSecondChargeLevelInkConsumption);
-            secondChargeLevelShot.inkRecoveryCooldown.ifPresent(this::setSecondChargeLevelInkRecoveryCooldown);
         }
     }
 
@@ -279,7 +270,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
                 Optional.of(firstChargeLevelData.damageDecayStartTick), Optional.of(firstChargeLevelData.damageDecayPerTick)),
 
                 new ShotDataRecord(Optional.of(firstChargeLevelData.startupTicks), firstChargeLevelData.firingSpeed, firstChargeLevelData.groundInaccuracy, Optional.of(firstChargeLevelData.airInaccuracy),
-                        Optional.of(firstChargeLevelData.pitchCompensation), firstChargeLevelData.inkConsumption, firstChargeLevelData.inkRecoveryCooldown),
+                        Optional.of(firstChargeLevelData.pitchCompensation)),
 
                 Optional.of(new OptionalProjectileDataRecord(Optional.of(secondChargeLevelData.projectileSize), Optional.of(secondChargeLevelData.projectileLifeTicks), Optional.of(secondChargeLevelData.projectileSpeed),
 				        Optional.of(secondChargeLevelData.projectileDecayedSpeed), Optional.of(secondChargeLevelData.straightShotDistance), Optional.of(secondChargeLevelData.projectileGravity), Optional.of(secondChargeLevelData.projectileCount),
@@ -288,11 +279,11 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
 				        Optional.of(secondChargeLevelData.damageDecayStartTick), Optional.of(secondChargeLevelData.damageDecayPerTick))),
 
                 Optional.of(new OptionalShotDataRecord(Optional.of(secondChargeLevelData.startupTicks), Optional.of(secondChargeLevelData.firingSpeed), Optional.of(secondChargeLevelData.groundInaccuracy), Optional.of(secondChargeLevelData.airInaccuracy),
-				        Optional.of(secondChargeLevelData.pitchCompensation), Optional.of(secondChargeLevelData.inkConsumption), Optional.of(secondChargeLevelData.inkRecoveryCooldown))),
+				        Optional.of(secondChargeLevelData.pitchCompensation))),
 
                 new ChargeDataRecord(firstLevelChargeTime, secondLevelChargeTime, Optional.of(emptyTankFirstLevelChargeTime), Optional.of(emptyTankSecondLevelChargeTime), firingDuration, Optional.of(chargeStorageTime),
                         Optional.of(canRechargeWhileFiring)),
-                Optional.of(moveSpeed), Optional.of(bypassesMobDamage), Optional.of(isSecret));
+                inkConsumption, inkRecoveryCooldown, Optional.of(moveSpeed), Optional.of(bypassesMobDamage), Optional.of(isSecret));
     }
 
     public SplatlingWeaponSettings setBypassesMobDamage(boolean bypassesMobDamage) {
@@ -343,6 +334,12 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         return this;
     }
 
+    public Float getInkConsumption() {
+        return inkConsumption;
+    }
+    public Integer getInkRecoveryCooldown() {
+        return inkRecoveryCooldown;
+    }
 
     public SplatlingWeaponSettings setProjectileSize(float projectileSize)
     {
@@ -414,15 +411,15 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         return this;
     }
 
-    public SplatlingWeaponSettings setInkConsumption(float inkConsumption) {
-        firstChargeLevelData.inkConsumption = inkConsumption;
-        secondChargeLevelData.inkConsumption = inkConsumption;
+    public SplatlingWeaponSettings setInkConsumption(float inkConsumption)
+    {
+        this.inkConsumption = inkConsumption;
         return this;
     }
 
-    public SplatlingWeaponSettings setInkRecoveryCooldown(int inkRecoveryCooldown) {
-        firstChargeLevelData.inkRecoveryCooldown = inkRecoveryCooldown;
-        secondChargeLevelData.inkRecoveryCooldown = inkRecoveryCooldown;
+    public SplatlingWeaponSettings setInkRecoveryCooldown(int inkRecoveryCooldown)
+    {
+        this.inkRecoveryCooldown = inkRecoveryCooldown;
         return this;
     }
 
@@ -539,16 +536,6 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         return this;
     }
 
-    public SplatlingWeaponSettings setSecondChargeLevelInkConsumption(float inkConsumption) {
-        secondChargeLevelData.inkConsumption = inkConsumption;
-        return this;
-    }
-
-    public SplatlingWeaponSettings setSecondChargeLevelInkRecoveryCooldown(int inkRecoveryCooldown) {
-        secondChargeLevelData.inkRecoveryCooldown = inkRecoveryCooldown;
-        return this;
-    }
-
     public SplatlingWeaponSettings setSecondChargeLevelBaseDamage(float baseDamage) {
         secondChargeLevelData.baseDamage = baseDamage;
         secondChargeLevelData.decayedDamage = baseDamage;
@@ -609,6 +596,8 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
         Optional<OptionalProjectileDataRecord> secondChargeLevelProjectile,
         Optional<OptionalShotDataRecord> secondChargeLevelShot,
         ChargeDataRecord charge,
+        float inkConsumption,
+        int inkRecoveryCooldown,
         Optional<Float> moveSpeed,
         Optional<Boolean> bypassesMobDamage,
         Optional<Boolean> isSecret
@@ -621,6 +610,8 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
                         OptionalProjectileDataRecord.CODEC.optionalFieldOf("second_charge_projectile").forGetter(DataRecord::secondChargeLevelProjectile),
                         OptionalShotDataRecord.CODEC.optionalFieldOf("second_charge_shot").forGetter(DataRecord::secondChargeLevelShot),
                         ChargeDataRecord.CODEC.fieldOf("charge").forGetter(DataRecord::charge),
+                        Codec.FLOAT.fieldOf("max_ink_consumption").forGetter(DataRecord::inkConsumption),
+                        Codec.INT.fieldOf("ink_recovery_cooldown").forGetter(DataRecord::inkRecoveryCooldown),
                         Codec.FLOAT.optionalFieldOf("mobility").forGetter(DataRecord::moveSpeed),
                         Codec.BOOL.optionalFieldOf("full_damage_to_mobs").forGetter(DataRecord::bypassesMobDamage),
                         Codec.BOOL.optionalFieldOf("is_secret").forGetter(DataRecord::isSecret)
@@ -695,9 +686,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
             int firingSpeed,
             float groundInaccuracy,
             Optional<Float> airborneInaccuracy,
-            Optional<Float> pitchCompensation,
-            float inkConsumption,
-            int inkRecoveryCooldown
+            Optional<Float> pitchCompensation
     )
     {
         public static final Codec<ShotDataRecord> CODEC = RecordCodecBuilder.create(
@@ -706,9 +695,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
                         Codec.INT.fieldOf("firing_speed").forGetter(ShotDataRecord::firingSpeed),
                         Codec.FLOAT.fieldOf("ground_inaccuracy").forGetter(ShotDataRecord::groundInaccuracy),
                         Codec.FLOAT.optionalFieldOf("airborne_inaccuracy").forGetter(ShotDataRecord::airborneInaccuracy),
-                        Codec.FLOAT.optionalFieldOf("pitch_compensation").forGetter(ShotDataRecord::pitchCompensation),
-                        Codec.FLOAT.fieldOf("ink_consumption").forGetter(ShotDataRecord::inkConsumption),
-                        Codec.INT.fieldOf("ink_recovery_cooldown").forGetter(ShotDataRecord::inkRecoveryCooldown)
+                        Codec.FLOAT.optionalFieldOf("pitch_compensation").forGetter(ShotDataRecord::pitchCompensation)
                 ).apply(instance, ShotDataRecord::new)
         );
     }
@@ -755,9 +742,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
             Optional<Integer> firingSpeed,
             Optional<Float> groundInaccuracy,
             Optional<Float> airborneInaccuracy,
-            Optional<Float> pitchCompensation,
-            Optional<Float> inkConsumption,
-            Optional<Integer> inkRecoveryCooldown
+            Optional<Float> pitchCompensation
     )
     {
         public static final Codec<OptionalShotDataRecord> CODEC = RecordCodecBuilder.create(
@@ -766,9 +751,7 @@ public class SplatlingWeaponSettings extends AbstractWeaponSettings<SplatlingWea
                         Codec.INT.optionalFieldOf("firing_speed").forGetter(OptionalShotDataRecord::firingSpeed),
                         Codec.FLOAT.optionalFieldOf("ground_inaccuracy").forGetter(OptionalShotDataRecord::groundInaccuracy),
                         Codec.FLOAT.optionalFieldOf("airborne_inaccuracy").forGetter(OptionalShotDataRecord::airborneInaccuracy),
-                        Codec.FLOAT.optionalFieldOf("pitch_compensation").forGetter(OptionalShotDataRecord::pitchCompensation),
-                        Codec.FLOAT.optionalFieldOf("ink_consumption").forGetter(OptionalShotDataRecord::inkConsumption),
-                        Codec.INT.optionalFieldOf("ink_recovery_cooldown").forGetter(OptionalShotDataRecord::inkRecoveryCooldown)
+                        Codec.FLOAT.optionalFieldOf("pitch_compensation").forGetter(OptionalShotDataRecord::pitchCompensation)
                 ).apply(instance, OptionalShotDataRecord::new)
         );
     }

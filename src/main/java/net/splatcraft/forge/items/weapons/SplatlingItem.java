@@ -86,7 +86,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 			float prevCharge = PlayerCharge.getChargeValue(player, stack);
 			float newCharge = prevCharge + 1f / (prevCharge >= 1 ? settings.secondLevelChargeTime : settings.firstLevelChargeTime);
 
-			if (!enoughInk(entity, this, getScaledSettingFloat(getSettings(stack), newCharge, FiringData::getInkConsumption), 0, timeLeft % 4 == 0))
+			if (!enoughInk(entity, this, Mth.lerp(newCharge * 0.5f, 0, settings.inkConsumption), 0, timeLeft % 4 == 0))
 			{
 				if(!hasInkInTank(player, this) || !InkTankItem.canRecharge(player.getItemBySlot(EquipmentSlot.CHEST), true))
 					return;
@@ -151,7 +151,7 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 		stack.getOrCreateTag().putFloat("Charge", charge);
 
 		int cooldownTime = (int) (getDecayTicks(stack) * charge);
-		reduceInk(player, this, getScaledSettingFloat(settings, charge, FiringData::getInkConsumption), cooldownTime + getScaledSettingInt(settings, charge, FiringData::getInkRecoveryCooldown), true);
+		reduceInk(player, this, Mth.lerp(charge * 0.5f, 0, settings.inkConsumption), cooldownTime + settings.inkRecoveryCooldown, true);
 		PlayerCooldown.setPlayerCooldown(player, new PlayerCooldown(stack, cooldownTime, player.getInventory().selected, player.getUsedItemHand(), true, false, !settings.canRechargeWhileFiring, player.isOnGround()).setCancellable());
 	}
 
