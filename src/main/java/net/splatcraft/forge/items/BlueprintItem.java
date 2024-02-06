@@ -30,10 +30,7 @@ import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -81,6 +78,16 @@ public class BlueprintItem extends Item
 				components.add(new TranslatableComponent("item.splatcraft.blueprint.tooltip"));
 				return;
 			}
+
+			if(nbt.contains("Pools"))
+			{
+				components.add(new TranslatableComponent("item.splatcraft.blueprint.tooltip"));
+				nbt.getList("Pools", Tag.TAG_STRING).forEach((weaponType) ->
+						components.add(new TranslatableComponent("item.splatcraft.blueprint.tooltip." + weaponType.getAsString())
+								.withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withItalic(false)))
+				);
+				return;
+			}
 		}
 
 		components.add(new TranslatableComponent("item.splatcraft.blueprint.tooltip.empty"));
@@ -105,6 +112,16 @@ public class BlueprintItem extends Item
 		if(!weaponPools.containsKey(weaponType))
 			return blueprint;
 
+
+		CompoundTag nbt = blueprint.getOrCreateTag();
+		ListTag pool = nbt.contains("Pools", Tag.TAG_LIST) ? nbt.getList("Pools", Tag.TAG_STRING) : new ListTag();
+		pool.add(StringTag.valueOf(weaponType));
+
+		nbt.put("Pools", pool);
+
+		return blueprint;
+
+		/*
 		Predicate<Item> predicate = weaponPools.get(weaponType);
 
 		ListTag lore = new ListTag();
@@ -116,6 +133,7 @@ public class BlueprintItem extends Item
 		return addToAdvancementPool(blueprint, SplatcraftItems.weapons.stream().filter(predicate.and(item ->
 				!item.builtInRegistryHolder().is(SplatcraftTags.Items.BLUEPRINT_EXCLUDED))).map(ForgeRegistryEntry::getRegistryName).map(registryName ->
 				new ResourceLocation(registryName.getNamespace(), "unlocks/" + registryName.getPath())).map(ResourceLocation::toString));
+		*/
 	}
 	public static ItemStack addToAdvancementPool(ItemStack blueprint, Stream<String> advancementIds)
 	{
@@ -133,16 +151,27 @@ public class BlueprintItem extends Item
 		List<Advancement> output = new ArrayList<>();
 
 		if(blueprint.hasTag())
+		{
 			blueprint.getTag().getList("Advancements", Tag.TAG_STRING).forEach(
 					tag ->
 					{
 						Advancement advancement;
 						advancement = level.getServer().getAdvancements().getAdvancement(new ResourceLocation(tag.getAsString()));
 
-						if(advancement != null)
+						if (advancement != null)
 							output.add(advancement);
 					}
 			);
+			blueprint.getTag().getList("Pools", Tag.TAG_STRING).forEach(
+					tag ->
+					{
+						SplatcraftItems.weapons.stream().filter(weaponPools.get(tag.getAsString()).and(item ->
+								!item.builtInRegistryHolder().is(SplatcraftTags.Items.BLUEPRINT_EXCLUDED))).map(ForgeRegistryEntry::getRegistryName).map(registryName ->
+								new ResourceLocation(registryName.getNamespace(), "unlocks/" + registryName.getPath())).map(level.getServer().getAdvancements()::getAdvancement)
+								.filter(Objects::nonNull).forEach(output::add);
+					}
+			);
+		}
 
 		return output;
 	}
