@@ -27,7 +27,7 @@
     },
     {
       "name": "weaponType.89",
-      "advancement": "splatcraft:unlocks/zap89",
+      "advancement": "splatcraft:unlocks/n-zap89",
       "result": {
         "item": "splatcraft:n-zap89",
         "count": 1

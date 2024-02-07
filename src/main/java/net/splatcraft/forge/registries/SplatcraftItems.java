@@ -223,8 +223,8 @@ public class SplatcraftItems {
     public static final RegistryObject<Item> stageVoid = REGISTRY.register("stage_void", () -> new BlockItem(SplatcraftBlocks.stageVoid.get()));
 
     //Octarian Gear
-    public static final RegistryObject<Item> splatfestBand = REGISTRY.register("splatfest_band", () -> new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)));
-    public static final RegistryObject<Item> clearBand = REGISTRY.register("clear_ink_band", () -> new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)));
+    public static final RegistryObject<Item> splatfestBand = REGISTRY.register("splatfest_band", InkBandItem::new);
+    public static final RegistryObject<Item> clearBand = REGISTRY.register("clear_ink_band", InkBandItem::new);
     public static final RegistryObject<Item> waxApplicator = REGISTRY.register("wax_applicator", InkWaxerItem::new);
 
     //Misc

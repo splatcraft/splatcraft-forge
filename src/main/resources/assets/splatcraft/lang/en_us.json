@@ -125,7 +125,9 @@
   "item.splatcraft.ink_cloth_leggings": "Ink Cloth Pants",
   "item.splatcraft.ink_cloth_boots": "Ink Cloth Shoes",
   "item.splatcraft.splatfest_band": "Splatfest Band",
+  "item.splatcraft.splatfest_band.tooltip": "Makes your ink glittery!",
   "item.splatcraft.clear_ink_band": "Clear Ink Band",
+  "item.splatcraft.clear_ink_band.tooltip": "Makes your ink seethrough!",
   "item.splatcraft.tooltip.inverted": "Inverted",
   "item.splatcraft.tooltip.matches_color": "matches your ink color!",
   "item.splatcraft.tooltip.matches_color.inverted": "matches your inverted ink color!",
@@ -312,6 +314,7 @@
   "weaponRecipe.splatcraft:weapon_workbench/n-zap": "N-ZAP",
   "weaponRecipe.splatcraft:weapon_workbench/e_liter": "E-Liter",
   "weaponRecipe.splatcraft:weapon_workbench/bamboozler_14": "Bamboozler 14",
+  "weaponRecipe.splatcraft:weapon_workbench/nautilus": "Nautilus",
 
   "weaponType.original": "Original",
   "weaponType.classic": "Classic",
