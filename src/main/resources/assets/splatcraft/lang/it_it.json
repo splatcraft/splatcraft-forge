@@ -125,7 +125,9 @@
   "item.splatcraft.ink_cloth_leggings": "Pantaloni inchiostrati",
   "item.splatcraft.ink_cloth_boots": "Scarpe inchiostrate",
   "item.splatcraft.splatfest_band": "Bracciale festival",
-  "item.splatcraft.clear_ink_band": "Bracciale trasparente",
+  "item.splatcraft.splatfest_band.tooltip": "Rende il tuo inchiostro luccicante!",
+  "item.splatcraft.clear_ink_band": "Bracciale trasparenza",
+  "item.splatcraft.clear_ink_band.tooltip": "Rende il tuo inchiostro trasparente!",
   "item.splatcraft.tooltip.inverted": "Invertito",
   "item.splatcraft.tooltip.matches_color": "Si abbina al tuo colore attuale!",
   "item.splatcraft.tooltip.matches_color.inverted": "Si abbina all'opposto del tuo colore attuale!",
@@ -312,6 +314,7 @@
   "weaponRecipe.splatcraft:weapon_workbench/n-zap": "N-ZAP",
   "weaponRecipe.splatcraft:weapon_workbench/e_liter": "Tinter a carica",
   "weaponRecipe.splatcraft:weapon_workbench/bamboozler_14": "Bimbamboom 14",
+  "weaponRecipe.splatcraft:weapon_workbench/nautilus": "Nautilus",
 
   "weaponType.original": "originale",
   "weaponType.classic": "classico",
