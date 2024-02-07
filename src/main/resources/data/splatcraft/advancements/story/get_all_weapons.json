@@ -529,6 +529,24 @@
         ]
       }}
     },
+    "nautilus_47": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:nautilus_47"
+        ]
+      }}
+    },
+    "nautilus_79": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:nautilus_79"
+        ]
+      }}
+    },
     "ink_tank": {
       "trigger": "splatcraft:craft_weapon",
       "conditions": {"item":
@@ -660,6 +678,8 @@
     ["heavy_splatling_deco"],
     ["heavy_splatling_remix"],
     ["classic_heavy_splatling"],
+    ["nautilus_47"],
+    ["nautilus_79"],
     ["ink_tank"],
     ["classic_ink_tank"],
     ["ink_tank_jr"],
