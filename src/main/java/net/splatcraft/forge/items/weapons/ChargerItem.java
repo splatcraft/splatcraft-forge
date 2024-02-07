@@ -85,7 +85,12 @@ public class ChargerItem extends WeaponBaseItem<ChargerWeaponSettings> implement
 	@Override
 	public void weaponUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft)
 	{
-		if (entity instanceof Player player && level.isClientSide && !player.getCooldowns().isOnCooldown(this))
+		if(!level.isClientSide)
+		{
+			if(timeLeft % 4 == 0 && !enoughInk(entity, this, 0.1f, 0, false))
+				playNoInkSound(entity, SplatcraftSounds.noInkMain);
+		}
+		else if (entity instanceof Player player && !player.getCooldowns().isOnCooldown(this))
 		{
 			ChargerWeaponSettings settings = getSettings(stack);
 			float prevCharge = PlayerCharge.getChargeValue(player, stack);

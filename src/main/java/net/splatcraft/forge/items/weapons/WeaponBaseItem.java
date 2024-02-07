@@ -182,11 +182,14 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> ext
         {
             ((Player) entity).displayClientMessage(new TranslatableComponent("status.no_ink").withStyle(ChatFormatting.RED), true);
             if (sound != null)
-            {
-                entity.level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 0.8F,
-                        ((entity.level.getRandom().nextFloat() - entity.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-            }
+                playNoInkSound(entity, sound);
         }
+    }
+
+    public static void playNoInkSound(LivingEntity entity, SoundEvent sound)
+    {
+        entity.level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 0.8F,
+                ((entity.level.getRandom().nextFloat() - entity.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
     }
 
     @Override
