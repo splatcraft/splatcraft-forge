@@ -2,6 +2,7 @@ package net.splatcraft.forge.items.weapons;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -15,13 +16,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-import net.splatcraft.forge.client.audio.ChargerChargingTickableSound;
+import net.splatcraft.forge.client.audio.SplatlingChargingTickableSound;
 import net.splatcraft.forge.client.handlers.SplatcraftKeyHandler;
-import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.InkTankItem;
-import net.splatcraft.forge.items.weapons.settings.RollerWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.SplatlingWeaponSettings;
 import net.splatcraft.forge.items.weapons.settings.SplatlingWeaponSettings.FiringData;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
@@ -37,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 
 public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> implements IChargeableWeapon {
-	public ChargerChargingTickableSound chargingSound;
+	public SplatlingChargingTickableSound chargingSound;
 
 	protected SplatlingItem(String settingsId)
 	{
@@ -65,13 +64,25 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 
 
 	@OnlyIn(Dist.CLIENT)
-	protected void playChargingSound(Player player) {
-		if (Minecraft.getInstance().player == null || !Minecraft.getInstance().player.getUUID().equals(player.getUUID()) || (chargingSound != null && !chargingSound.isStopped())) {
+	protected void playChargingSound(Player player, ItemStack stack)
+	{
+		if (Minecraft.getInstance().player == null || !Minecraft.getInstance().player.getUUID().equals(player.getUUID()))
+		{
 			return;
 		}
 
-		chargingSound = new ChargerChargingTickableSound(Minecraft.getInstance().player, SplatcraftSounds.splatlingCharge);
-		Minecraft.getInstance().getSoundManager().play(chargingSound);
+		SoundEvent soundEvent = PlayerCharge.getChargeValue(player, stack) > 1 ? SplatcraftSounds.splatlingChargeSecondLevel : SplatcraftSounds.splatlingCharge;
+
+		if(chargingSound == null || chargingSound.isStopped() || !chargingSound.getSoundEvent().equals(soundEvent))
+		{
+			boolean exsistingSound = chargingSound != null;
+			if(exsistingSound)
+				chargingSound.fadeOut();
+			chargingSound = new SplatlingChargingTickableSound(Minecraft.getInstance().player, soundEvent);
+			if(exsistingSound)
+				chargingSound.fadeIn();
+			Minecraft.getInstance().getSoundManager().play(chargingSound);
+		}
 	}
 
 	private static final int maxCharges = 2;
@@ -85,9 +96,10 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 		if(PlayerCooldown.hasPlayerCooldown(player))
 			PlayerCooldown.setPlayerCooldown(player, null);
 
+		SplatlingWeaponSettings settings = getSettings(stack);
+
 		if (level.isClientSide)
 		{
-			SplatlingWeaponSettings settings = getSettings(stack);
 
 			float prevCharge = PlayerCharge.getChargeValue(player, stack);
 			float newCharge = prevCharge + 1f / (prevCharge >= 1 ? settings.secondLevelChargeTime : settings.firstLevelChargeTime);
@@ -99,15 +111,15 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 				newCharge = prevCharge + 1f / (prevCharge >= 1 ? settings.emptyTankSecondLevelChargeTime : settings.emptyTankFirstLevelChargeTime);
 			}
 
+			playChargingSound(player, stack);
 
-			if (prevCharge < maxCharges && newCharge >= Math.ceil(prevCharge) && prevCharge > 0) {
+			if (prevCharge < maxCharges && newCharge >= Math.ceil(prevCharge) && prevCharge > 0)
 				playChargeReadySound(player, newCharge / maxCharges);
-			} else if (newCharge < maxCharges) {
-				playChargingSound(player);
-			}
 
 			PlayerCharge.addChargeValue(player, stack, newCharge - prevCharge, true, maxCharges);
 		}
+		else if(timeLeft % 4 == 0 && !enoughInk(entity, this, 0.1f, 0, false))
+			playNoInkSound(player, SplatcraftSounds.noInkMain);
 	}
 
 	@Override
