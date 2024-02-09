@@ -33,6 +33,7 @@ import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
 import net.splatcraft.forge.network.s2c.SendJumpLureDataPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
+import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +47,8 @@ public class JumpLureItem extends Item implements IColoredItem
 	public JumpLureItem()
 	{
 		super(new Properties().tab(SplatcraftItemGroups.GROUP_GENERAL).stacksTo(1));
+
+		SplatcraftItems.inkColoredItems.add(this);
 	}
 
 	@Override
@@ -77,6 +80,7 @@ public class JumpLureItem extends Item implements IColoredItem
 	{
 		if(level.isClientSide)
 			return super.use(level, player, hand);
+
 
 		int color = ColorUtils.getInkColorOrInverted(player.getItemInHand(hand));
 		ArrayList<UUID> players = new ArrayList<>(getAvailableCandidates(player, color).stream().map(player1 -> player1.getGameProfile().getId()).toList());

@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "splatcraft:items/super_jump_lure_overlay",
+    "layer1": "splatcraft:items/super_jump_lure"
+  }
+}
