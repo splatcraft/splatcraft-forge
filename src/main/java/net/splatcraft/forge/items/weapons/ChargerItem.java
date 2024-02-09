@@ -56,8 +56,8 @@ public class ChargerItem extends WeaponBaseItem<ChargerWeaponSettings> implement
 		ChargerWeaponSettings settings = getSettings(stack);
 
 		InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize, settings);
-		proj.setChargerStats(charge, settings);
 		proj.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0f, settings.projectileSpeed, 0.1f);
+		proj.setChargerStats(charge, settings);
 		level.addFreshEntity(proj);
 		level.playSound(null, player.getX(), player.getY(), player.getZ(), SplatcraftSounds.chargerShot, SoundSource.PLAYERS, 0.7F, ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
 		reduceInk(player, this, getInkConsumption(stack, charge), settings.inkRecoveryCooldown, false, true);
