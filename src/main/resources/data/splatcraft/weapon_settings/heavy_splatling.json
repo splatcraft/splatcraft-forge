@@ -11,7 +11,7 @@
 		"ink_trail_coverage": 0.75,
 		"ink_trail_tick_interval": 3,
 
-		"straight_shot_distance": 8,
+		"straight_shot_distance": 2,
 		"gravity": 0.075,
 
 		"base_damage": 6,
@@ -28,19 +28,16 @@
 		"airborne_inaccuracy": 12,
 		"pitch_compensation": 0,
 
-		"ink_consumption": 0,
-		"ink_recovery_cooldown": 13
+		"ink_consumption": 0
 	},
-
 
 	"second_charge_projectile":
 	{
 		"speed": 2,
-		"straight_shot_distance": 16
+		"straight_shot_distance": 6
 	},
 	"second_charge_shot":
 	{
-		"ink_consumption": 22.5
 	},
 	"charge":
 	{
@@ -51,10 +48,14 @@
 
 		"total_firing_duration": 48,
 		"charge_storage_ticks": 0,
+		"mobility_while_charging": 0.62,
 
 		"can_recharge_while_firing": false
 	},
 
+	"max_ink_consumption": 22.5,
+	"ink_recovery_cooldown": 13,
+
 	"full_damage_to_mobs": false,
-	"mobility": 0.62
+	"mobility": 0.7
 }

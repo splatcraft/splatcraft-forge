@@ -5,7 +5,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.splatcraft.forge.handlers.DataHandler;
 import net.splatcraft.forge.items.weapons.settings.AbstractWeaponSettings;
-import net.splatcraft.forge.items.weapons.settings.WeaponSettings;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -57,7 +56,8 @@ public class WeaponTooltip<S extends AbstractWeaponSettings<S, ?>>
 
         if(advanced)
             return new TranslatableComponent("weaponStat.format", new TranslatableComponent("weaponStat." + name),
-                    new TranslatableComponent("weaponStat.metric." + metric.localizedName, new DecimalFormat("0.#").format(getStatValue(settings))));
+                    new TranslatableComponent("weaponStat.metric." + metric.localizedName, new DecimalFormat("0.#").format(getStatValue(settings))))
+                    .withStyle(ChatFormatting.DARK_GREEN);
         else
         {
             int ranking = getStatRanking(settings);

@@ -130,6 +130,14 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> ext
         return true;
     }
 
+    public static boolean refundInk(LivingEntity player, float amount)
+    {
+        ItemStack tank = player.getItemBySlot(EquipmentSlot.CHEST);
+        if (tank.getItem() instanceof InkTankItem inkTank)
+            InkTankItem.setInkAmount(tank, Math.min(inkTank.capacity, InkTankItem.getInkAmount(tank) + amount));
+        return true;
+    }
+
     public static boolean enoughInk(LivingEntity player, Item item, float consumption, int recoveryCooldown, boolean sendMessage) {
         return enoughInk(player, item, consumption, recoveryCooldown, sendMessage, false);
     }
@@ -174,11 +182,14 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> ext
         {
             ((Player) entity).displayClientMessage(new TranslatableComponent("status.no_ink").withStyle(ChatFormatting.RED), true);
             if (sound != null)
-            {
-                entity.level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 0.8F,
-                        ((entity.level.getRandom().nextFloat() - entity.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
-            }
+                playNoInkSound(entity, sound);
         }
+    }
+
+    public static void playNoInkSound(LivingEntity entity, SoundEvent sound)
+    {
+        entity.level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 0.8F,
+                ((entity.level.getRandom().nextFloat() - entity.level.getRandom().nextFloat()) * 0.1F + 1.0F) * 0.95F);
     }
 
     @Override
@@ -328,13 +339,9 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> ext
         return getSpeedModifier(entity, stack) != null;
     }
 
-    private AttributeModifier SPEED_MODIFIER;
     public AttributeModifier getSpeedModifier(LivingEntity entity, ItemStack stack)
     {
-        if(SPEED_MODIFIER == null)
-            SPEED_MODIFIER = new AttributeModifier(SplatcraftItems.SPEED_MOD_UUID, settingsId.toString() + " mobility", getSettings(stack).moveSpeed - 1, AttributeModifier.Operation.MULTIPLY_TOTAL);
-
-        return SPEED_MODIFIER;
+        return getSettings(stack).getSpeedModifier();
     }
 
     public PlayerPosingHandler.WeaponPose getPose(ItemStack stack)

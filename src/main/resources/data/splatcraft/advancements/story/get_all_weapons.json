@@ -169,6 +169,24 @@
         ]
       }}
     },
+    "range_blaster": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:range_blaster"
+        ]
+      }}
+    },
+    "grim_range_blaster": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:grim_range_blaster"
+        ]
+      }}
+    },
     "clash_blaster": {
       "trigger": "splatcraft:craft_weapon",
       "conditions": {"item":
@@ -193,6 +211,24 @@
       {
         "items": [
           "splatcraft:luna_blaster"
+        ]
+      }}
+    },
+    "rapid_blaster": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:rapid_blaster"
+        ]
+      }}
+    },
+    "rapid_blaster_pro": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:rapid_blaster_pro"
         ]
       }}
     },
@@ -439,6 +475,78 @@
         ]
       }}
     },
+    "mini_splatling": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:mini_splatling"
+        ]
+      }}
+    },
+    "refurbished_mini_splatling": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:refurbished_mini_splatling"
+        ]
+      }}
+    },
+    "heavy_splatling": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:heavy_splatling"
+        ]
+      }}
+    },
+    "heavy_splatling_deco": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:heavy_splatling_deco"
+        ]
+      }}
+    },
+    "heavy_splatling_remix": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:heavy_splatling_remix"
+        ]
+      }}
+    },
+    "classic_heavy_splatling": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:classic_heavy_splatling"
+        ]
+      }}
+    },
+    "nautilus_47": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:nautilus_47"
+        ]
+      }}
+    },
+    "nautilus_79": {
+      "trigger": "splatcraft:craft_weapon",
+      "conditions": {"item":
+      {
+        "items": [
+          "splatcraft:nautilus_79"
+        ]
+      }}
+    },
     "ink_tank": {
       "trigger": "splatcraft:craft_weapon",
       "conditions": {"item":
@@ -530,9 +638,13 @@
     ["jet_squelcher"],
     ["blaster"],
     ["grim_blaster"],
+    ["range_blaster"],
+    ["grim_range_blaster"],
     ["clash_blaster"],
     ["clash_blaster_neo"],
     ["luna_blaster"],
+    ["rapid_blaster"],
+    ["rapid_blaster_pro"],
     ["splat_roller"],
     ["krak_on_splat_roller"],
     ["corocoro_splat_roller"],
@@ -560,6 +672,14 @@
     ["soda_slosher"],
     ["tri_slosher"],
     ["explosher"],
+    ["mini_splatling"],
+    ["refurbished_mini_splatling"],
+    ["heavy_splatling"],
+    ["heavy_splatling_deco"],
+    ["heavy_splatling_remix"],
+    ["classic_heavy_splatling"],
+    ["nautilus_47"],
+    ["nautilus_79"],
     ["ink_tank"],
     ["classic_ink_tank"],
     ["ink_tank_jr"],

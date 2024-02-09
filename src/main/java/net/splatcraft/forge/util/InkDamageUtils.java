@@ -45,7 +45,7 @@ public class InkDamageUtils {
     }
 
     public static boolean doRollDamage(Level level, LivingEntity target, float damage, int color, Entity source, Entity directSource, ItemStack sourceItem, boolean damageMobs) {
-        return doDamage(level, target, damage, color, directSource, source, sourceItem, damageMobs, "charge", true);
+        return doDamage(level, target, damage, color, directSource, source, sourceItem, damageMobs, "roll", true);
     }
 
     public static boolean canDamage(Entity target, Entity source)

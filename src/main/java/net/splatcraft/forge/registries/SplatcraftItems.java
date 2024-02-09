@@ -129,6 +129,8 @@ public class SplatcraftItems {
     public static final RegistryObject<SplatlingItem> heavySplatlingDeco = SplatlingItem.create(REGISTRY, "heavy_splatling", "heavy_splatling_deco");
     public static final RegistryObject<SplatlingItem> heavySplatlingRemix = SplatlingItem.create(REGISTRY, "heavy_splatling", "heavy_splatling_remix");
     public static final RegistryObject<SplatlingItem> classicHeavySplatling = SplatlingItem.create(REGISTRY, "heavy_splatling", "classic_heavy_splatling");
+    public static final RegistryObject<SplatlingItem> nautilus_47 = SplatlingItem.create(REGISTRY, "nautilus", "nautilus_47");
+    public static final RegistryObject<SplatlingItem> nautilus_79 = SplatlingItem.create(REGISTRY, "nautilus", "nautilus_79");
 
     //Ink Tanks
     public static final RegistryObject<InkTankItem> inkTank = REGISTRY.register("ink_tank", () -> new InkTankItem("ink_tank", 100));
@@ -220,6 +222,7 @@ public class SplatcraftItems {
     //Gear
     public static final RegistryObject<Item> splatfestBand = REGISTRY.register("splatfest_band", () -> new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)));
     public static final RegistryObject<Item> clearBand = REGISTRY.register("clear_ink_band", () -> new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)));
+
     public static final RegistryObject<Item> waxApplicator = REGISTRY.register("wax_applicator", InkWaxerItem::new);
     public static final RegistryObject<Item> superJumpLure = REGISTRY.register("super_jump_lure", JumpLureItem::new);
 

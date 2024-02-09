@@ -1,0 +1,60 @@
+{
+  "type": "splatcraft:splatling",
+	"projectile":
+	{
+		"size": 0.85,
+		"speed": 2.2,
+		"decayed_speed": 2,
+		"count": 1,
+
+		"ink_coverage_on_impact": 0.85,
+		"ink_trail_coverage": 0.75,
+		"ink_trail_tick_interval": 2,
+
+		"straight_shot_distance": 2,
+		"gravity": 0.075,
+
+		"base_damage": 6.4,
+		"decayed_damage": 3.2,
+		"damage_decay_start_tick": 3,
+		"damage_decay_per_tick": 0.4
+	},
+
+	"shot":
+	{
+		"firing_speed": 3,
+
+		"ground_inaccuracy": 2,
+		"airborne_inaccuracy": 3,
+		"pitch_compensation": 0,
+
+		"ink_consumption": 0
+	},
+
+
+	"second_charge_projectile":
+	{
+	},
+	"second_charge_shot":
+	{
+	},
+	"charge":
+	{
+		"first_charge_time_ticks": 12,
+		"second_charge_time_ticks": 12,
+		"empty_tank_first_charge_time_ticks": 60,
+		"empty_tank_second_charge_time_ticks": 60,
+
+		"total_firing_duration": 40,
+		"charge_storage_ticks": 66,
+		"mobility_while_charging": 0.4,
+
+		"can_recharge_while_firing": true
+	},
+
+	"max_ink_consumption": 15,
+	"ink_recovery_cooldown": 13,
+
+	"full_damage_to_mobs": false,
+	"mobility": 0.86
+}

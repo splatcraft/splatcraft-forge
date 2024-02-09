@@ -186,7 +186,7 @@ public class InkTankItem extends ColoredArmorItem {
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return (int) (1 - getInkAmount(stack) / capacity * 13);
+        return (int) (getInkAmount(stack) / capacity * 13);
     }
 
 

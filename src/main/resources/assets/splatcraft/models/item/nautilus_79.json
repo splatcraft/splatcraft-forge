@@ -1,0 +1,6 @@
+{
+  "parent": "splatcraft:item/nautilus_47",
+  "textures": {
+    "1": "splatcraft:weapons/nautilus_79"
+  }
+}

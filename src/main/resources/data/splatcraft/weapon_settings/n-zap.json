@@ -33,5 +33,5 @@
 		"ink_recovery_cooldown": 7
 	},
 	"full_damage_to_mobs": false,
-	"mobility": 1
+	"mobility": 0.84
 }
