@@ -49,11 +49,12 @@ public class SuperJumpCommand
 	{
 		dispatcher.register(Commands.literal("superjump").requires(commandSource -> commandSource.hasPermission(2)).then(Commands.argument("location", Vec3Argument.vec3()).executes(context ->
 		{
-			BlockPos target = BlockPosArgument.getLoadedBlockPos(context, "location");
-			return executeLocation(context, new Vec3(target.getX() + .5d, target.getY(), target.getZ() + .5d));
+			Vec3 target = Vec3Argument.getVec3(context, "location");
+			return executeLocation(context, new Vec3(target.x(), target.y(), target.z()));
 		})).then(Commands.argument("target", EntityArgument.entity()).executes(context ->
 				executeLocation(context, EntityArgument.getEntity(context, "target").position())))
 				.executes(SuperJumpCommand::executeSpawn));
+
 	}
 
 	private static int executeLocation(CommandContext<CommandSourceStack> context, Vec3 target) throws CommandSyntaxException
@@ -134,6 +135,9 @@ public class SuperJumpCommand
 		}
 	}
 
+
+	public static final float MAX_DISTANCE_BEFORE_WARP = 1510f;
+
 	@Mod.EventBusSubscriber
 	public static class Subscriber
 	{
@@ -164,7 +168,9 @@ public class SuperJumpCommand
 				if(!cooldown.isSquid() && info.isSquid())
 					ClientUtils.setSquid(info, false);
 
-				player.setPos(Mth.lerp(progress, cooldown.source.x, cooldown.target.x), getSuperJumpYPos(progress, cooldown.source.y, cooldown.target.y, cooldown.getHeight()), Mth.lerp(progress, cooldown.source.z, cooldown.target.z));
+				if(cooldown.source.distanceTo(cooldown.target) > MAX_DISTANCE_BEFORE_WARP)
+					player.setPos(progress < 0.5f ? cooldown.source.x : cooldown.target.x, getSuperJumpYPos(progress, cooldown.source.y, cooldown.target.y, player.level.getMaxBuildHeight() + 100), progress < 0.5f ? cooldown.source.z : cooldown.target.z);
+				else player.setPos(Mth.lerp(progress, cooldown.source.x, cooldown.target.x), getSuperJumpYPos(progress, cooldown.source.y, cooldown.target.y, cooldown.getHeight()), Mth.lerp(progress, cooldown.source.z, cooldown.target.z));
 			}
 
 		}

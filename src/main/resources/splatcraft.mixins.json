@@ -9,6 +9,7 @@
     "EntityMixin",
     "PlayerListMixin",
     "PlayerMixin",
+    "ServerGamePacketMixin",
     "SheepMixin",
     "SquidPassthroughMixin"
   ],
