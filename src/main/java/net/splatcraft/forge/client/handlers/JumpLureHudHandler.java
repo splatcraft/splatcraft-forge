@@ -1,13 +1,16 @@
 package net.splatcraft.forge.client.handlers;
 
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.splatcraft.forge.client.gui.SuperJumpSelectorScreen;
 import net.splatcraft.forge.items.JumpLureItem;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.UseJumpLurePacket;
@@ -23,40 +26,21 @@ public class JumpLureHudHandler
 
 	private static SuperJumpTargets targets;
 	private static double scrollDelta = 0;
+
+	private static final SuperJumpSelectorScreen selectorGui = new SuperJumpSelectorScreen();
+
 	@SubscribeEvent
 	public static void renderGui(RenderGameOverlayEvent.Pre event)
 	{
 		LocalPlayer player = Minecraft.getInstance().player;
-		if(player == null)
+
+		if(!event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER) || player == null ||
+		!(player.getUseItem().getItem() instanceof JumpLureItem) || targets == null)
 			return;
 
-		if(!event.getType().equals(RenderGameOverlayEvent.ElementType.LAYER) || targets == null)
-			return;
-
-		ArrayList<UUID> playerUuids = new ArrayList<>(targets.playerTargetUuids);
-		playerUuids.removeIf(uuid -> !player.connection.getOnlinePlayerIds().contains(uuid));
-
-		int entryCount = playerUuids.size() + (targets.canTargetSpawn ? 2 : 1);
-		int index = Math.floorMod((int)scrollDelta, entryCount);
-
-
-		int j = 0;
-		for(int i = index; i < entryCount; i++)
-		{
-			if(i == 0)
-				Minecraft.getInstance().font.drawShadow(event.getMatrixStack(), "cancel", 10, 10 * j, 0xFFFFFF);
-			else if(targets.canTargetSpawn && i == 1)
-				Minecraft.getInstance().font.drawShadow(event.getMatrixStack(), "go to spawn", 10, 10 * j, 0xFFFFFF);
-			else
-			{
-				Minecraft.getInstance().font.drawShadow(event.getMatrixStack(), player.connection.getPlayerInfo(playerUuids.get(i - (targets.canTargetSpawn ? 2 : 1))).getProfile().getName(),
-						10, 10 * j, 0xFFFFFF);
-			}
-
-
-			j++;
-		}
+		selectorGui.render(event.getMatrixStack(), event.getPartialTicks(), targets, scrollDelta);
 	}
+
 
 	@SubscribeEvent
 	public static void onMouseScroll(InputEvent.MouseScrollEvent event)
@@ -67,9 +51,38 @@ public class JumpLureHudHandler
 
 		if(player.getUseItem().getItem() instanceof JumpLureItem)
 		{
-			scrollDelta += event.getScrollDelta();
+			scrollDelta -= event.getScrollDelta();
 			event.setCanceled(true);
 		}
+	}
+
+	@SubscribeEvent
+	public static void onKeypadInput(TickEvent.ClientTickEvent event)
+	{
+		LocalPlayer player = Minecraft.getInstance().player;
+		if(event.phase != TickEvent.Phase.START || player == null)
+			return;
+
+		if(player.getUseItem().getItem() instanceof JumpLureItem)
+		{
+			if(Minecraft.getInstance().options.keyAttack.consumeClick())
+				scrollDelta = 0;
+
+			int totalOptions = targets.playerTargetUuids.size() + (targets.canTargetSpawn ? 2 : 1);
+
+			for(int i = 0; i < 9; i++)
+			{
+				KeyMapping key = Minecraft.getInstance().options.keyHotbarSlots[i];
+
+				if(key.consumeClick())
+				{
+					scrollDelta += Math.signum(i - 4) * Math.min(totalOptions, Math.abs(i - 4));
+					return;
+				}
+			}
+		}
+
+
 	}
 
 	public static void updateTargetData(@Nullable SuperJumpTargets targets)
@@ -101,9 +114,9 @@ public class JumpLureHudHandler
 
 	public static class SuperJumpTargets
 	{
-		final ArrayList<UUID> playerTargetUuids;
-		final boolean canTargetSpawn;
-		final int color;
+		public final ArrayList<UUID> playerTargetUuids;
+		public final boolean canTargetSpawn;
+		public final int color;
 
 
 		public SuperJumpTargets(ArrayList<UUID> playerTargetUuids, boolean canTargetSpawn, int color) {

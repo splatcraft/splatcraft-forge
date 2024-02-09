@@ -136,7 +136,7 @@ public class SuperJumpCommand
 	}
 
 
-	public static final float MAX_DISTANCE_BEFORE_WARP = 1510f;
+	public static final float MAX_DISTANCE_BEFORE_WARP = 800f;
 
 	@Mod.EventBusSubscriber
 	public static class Subscriber
