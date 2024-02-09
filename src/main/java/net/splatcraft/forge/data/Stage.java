@@ -4,10 +4,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
+import net.splatcraft.forge.util.ClientUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -147,4 +151,23 @@ public class Stage
 	{
 		VALID_SETTINGS.add(rule.toString().replace("splatcraft.", ""));
 	}
+
+	public static boolean targetsOnSameStage(Level level, Vec3 targetA, Vec3 targetB)
+	{
+		return !getStagesForPosition(level, targetA).stream().filter(stage -> stage.getBounds().contains(targetB)).toList().isEmpty();
+	}
+
+	public static ArrayList<Stage> getAllStages(Level level)
+	{
+		return new ArrayList<>(level.isClientSide ? ClientUtils.clientStages.values() : SaveInfoCapability.get(level.getServer()).getStages().values());
+	}
+
+	public static ArrayList<Stage> getStagesForPosition(Level level, Vec3 pos)
+	{
+		ArrayList<Stage> stages = getAllStages(level);
+		stages.removeIf(stage -> !stage.dimID.equals(level.dimension().location()) || !stage.getBounds().contains(pos));
+		return stages;
+	}
+
+
 }

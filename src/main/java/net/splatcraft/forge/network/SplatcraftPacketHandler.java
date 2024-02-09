@@ -52,6 +52,9 @@ public class SplatcraftPacketHandler
         registerMessage(ReceivePlayerOverlayPacket.class, ReceivePlayerOverlayPacket::decode);
         registerMessage(UpdateInkPacket.class, UpdateInkPacket::decode);
         registerMessage(WatchInkPacket.class, WatchInkPacket::decode);
+        registerMessage(SendJumpLureDataPacket.class, SendJumpLureDataPacket::decode);
+        registerMessage(UseJumpLurePacket.class, UseJumpLurePacket::decode);
+
     }
 
     private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, Function<FriendlyByteBuf, MSG> decoder)

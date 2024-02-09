@@ -12,9 +12,11 @@ import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -22,6 +24,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.splatcraft.forge.commands.arguments.JumpTargetArgument;
+import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfo;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
@@ -30,13 +34,14 @@ import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
 import net.splatcraft.forge.network.s2c.UpdatePlayerInfoPacket;
 import net.splatcraft.forge.registries.SplatcraftAttributes;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
-import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
 import net.splatcraft.forge.util.PlayerCooldown;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SuperJumpCommand
 {
@@ -71,17 +76,24 @@ public class SuperJumpCommand
 	{
 		if(player.getRespawnDimension().equals(player.level.dimension()))
 		{
-			BlockPos targetPos = player.getRespawnPosition();
-			if(player.level.getBlockEntity(targetPos) instanceof SpawnPadTileEntity spawnpad && !ColorUtils.colorEquals(player, spawnpad))
-				targetPos = null;
+			BlockPos targetPos = getSpawnPadPos(player);
 			if(targetPos == null)
 				targetPos = new BlockPos(player.level.getLevelData().getXSpawn(), player.level.getLevelData().getYSpawn(), player.level.getLevelData().getZSpawn());
-			superJump(player, new Vec3(targetPos.getX(), targetPos.getY() + blockHeight(targetPos, player.level), targetPos.getZ()));
 
+			superJump(player, new Vec3(targetPos.getX(), targetPos.getY() + blockHeight(targetPos, player.level), targetPos.getZ()));
 			return true;
 		}
 
 		return false;
+	}
+
+	@Nullable
+	public static BlockPos getSpawnPadPos(ServerPlayer player)
+	{
+		BlockPos targetPos = player.getRespawnPosition();
+		if(targetPos == null || player.level.getBlockEntity(targetPos) instanceof SpawnPadTileEntity spawnpad && !ColorUtils.colorEquals(player, spawnpad))
+			return null;
+		return targetPos;
 	}
 
 	public static boolean superJump(ServerPlayer player, Vec3 target)
@@ -94,7 +106,7 @@ public class SuperJumpCommand
 	}
 	public static boolean superJump(ServerPlayer player, Vec3 target, int windupTime, int travelTime, double jumpHeight, boolean global)
 	{
-		if(!global && SaveInfoCapability.get(player.server).getStages().values().stream().filter(stage -> stage.getBounds().contains(player.position()) && stage.getBounds().contains(target)).toList().isEmpty())
+		if(!global && !Stage.targetsOnSameStage(player.level, player.position(), target))
 			return false;
 
 		PlayerCooldown.setPlayerCooldown(player, new SuperJump(player.position(), target, windupTime, travelTime, jumpHeight, player.noPhysics));

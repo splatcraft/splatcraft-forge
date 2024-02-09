@@ -6,10 +6,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.util.ClientUtils;
+import org.lwjgl.system.CallbackI;
 
 public class SplatcraftGameRules {
     public static final TreeMap<Integer, Boolean> booleanRules = new TreeMap<>();
@@ -57,14 +59,14 @@ public class SplatcraftGameRules {
     }
 
     public static boolean getLocalizedRule(Level level, BlockPos pos, GameRules.Key<GameRules.BooleanValue> rule) {
-        ArrayList<Stage> stages = new ArrayList<>(level.isClientSide ? ClientUtils.clientStages.values() : SaveInfoCapability.get(level.getServer()).getStages().values());
+        ArrayList<Stage> stages = Stage.getStagesForPosition(level, new Vec3(pos.getX(), pos.getY(), pos.getZ()));
 
         Stage localStage = null;
         AABB localStageBounds = null;
 
 
-        for (Object obj : stages.stream().filter(stage -> stage.dimID.equals(level.dimension().location()) && stage.getBounds().expandTowards(1, 1, 1).contains(pos.getX(), pos.getY(), pos.getZ())).toArray()) {
-            Stage stage = (Stage) obj;
+        for (Stage stage : stages)
+        {
             AABB stageBounds = stage.getBounds();
 
             if (localStage == null || stageBounds.getSize() < localStageBounds.getSize())

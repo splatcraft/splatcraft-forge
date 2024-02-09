@@ -119,6 +119,9 @@
   "item.remote.coords.b": "(%s,%s,%s) to (%s,%s,%s)",
   "item.remote.coords.invalid": "Invalid coord set!",
 
+  "item.splatcraft.super_jump_lure": "Super Jump Lure",
+  "item.splatcraft.super_jump_lure.tooltip": "Allows you to super jump back to your spawn pad or other players with matching lures.",
+
   "item.splatcraft.squid_bumper": "Squid Bumper",
   "item.splatcraft.ink_cloth_helmet": "Ink Cloth Hat",
   "item.splatcraft.ink_cloth_chestplate": "Ink Cloth Shirt",

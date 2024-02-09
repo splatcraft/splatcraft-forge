@@ -217,10 +217,11 @@ public class SplatcraftItems {
     public static final RegistryObject<Item> stageBarrier = REGISTRY.register("stage_barrier", () -> new BlockItem(SplatcraftBlocks.stageBarrier.get()));
     public static final RegistryObject<Item> stageVoid = REGISTRY.register("stage_void", () -> new BlockItem(SplatcraftBlocks.stageVoid.get()));
 
-    //Octarian Gear
+    //Gear
     public static final RegistryObject<Item> splatfestBand = REGISTRY.register("splatfest_band", () -> new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)));
     public static final RegistryObject<Item> clearBand = REGISTRY.register("clear_ink_band", () -> new Item(new Item.Properties().stacksTo(1).tab(SplatcraftItemGroups.GROUP_GENERAL)));
     public static final RegistryObject<Item> waxApplicator = REGISTRY.register("wax_applicator", InkWaxerItem::new);
+    public static final RegistryObject<Item> superJumpLure = REGISTRY.register("super_jump_lure", JumpLureItem::new);
 
     //Misc
 
