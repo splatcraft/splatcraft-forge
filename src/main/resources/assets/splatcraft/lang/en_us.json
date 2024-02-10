@@ -518,6 +518,10 @@
   "gamerule.splatcraft.inkableGround.description": "Allows weapons to replace blocks with Inked Blocks",
   "gamerule.splatcraft.rechargeableInkTank": "Rechargeable Ink Tank",
   "gamerule.splatcraft.rechargeableInkTank.description": "Allows Ink Tanks to passively recover ink, recharge rate increases when swimming on ink",
+  "gamerule.splatcraft.globalSuperJumping": "Global Super Jumping",
+  "gamerule.splatcraft.globalSuperJumping.description": "Allows players to Super Jump outside of Stages.",
+  "gamerule.splatcraft.superJumpDistanceLimit": "Super Jump Distance Limit",
+  "gamerule.splatcraft.superJumpDistanceLimit.description": "Determines the maximum distance players can Super Jump to outside of Stages. Negative values disable the limit completely.",
 
   "status.coord_set.a": "Set first position to X: %s Y: %s Z: %s",
   "status.coord_set.b": "Set second position to X: %s Y: %s Z: %s",

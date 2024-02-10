@@ -87,7 +87,7 @@ public class JumpLureItem extends Item implements IColoredItem
 
 		BlockPos spawnPadPos = SuperJumpCommand.getSpawnPadPos((ServerPlayer) player);
 
-		if(!SplatcraftGameRules.getLocalizedRule(level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING) && !Stage.targetsOnSameStage(level, player.position(), new Vec3(spawnPadPos.getX(), spawnPadPos.getY(), spawnPadPos.getZ())))
+		if(!SplatcraftGameRules.getLocalizedRule(level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING) && !SuperJumpCommand.canSuperJumpTo(player, new Vec3(spawnPadPos.getX(), spawnPadPos.getY(), spawnPadPos.getZ())))
 			spawnPadPos = null;
 
 		SplatcraftPacketHandler.sendToPlayer(new SendJumpLureDataPacket(color, spawnPadPos != null,
@@ -120,7 +120,7 @@ public class JumpLureItem extends Item implements IColoredItem
 			if(spawnPos != null)
 			{
 				target = new Vec3(spawnPos.getX(), spawnPos.getY() + SuperJumpCommand.blockHeight(spawnPos, player.level), spawnPos.getZ());
-				if(!SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING) && !Stage.targetsOnSameStage(player.level, player.position(), target))
+				if(!SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING) && !SuperJumpCommand.canSuperJumpTo(player, target))
 				{
 					player.sendMessage(new TextComponent("Spawn Pad outside of stage bounds!"), player.getUUID()); //TODO better feedback
 					return;
@@ -137,7 +137,7 @@ public class JumpLureItem extends Item implements IColoredItem
 			Player targetPlayer = player.level.getPlayerByUUID(targetUUID);
 
 			if(targetPlayer == null || !hasMatchingLure(targetPlayer, color) || (!SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING)
-					&& !Stage.targetsOnSameStage(player.level, player.position(), targetPlayer.position())))
+					&& !SuperJumpCommand.canSuperJumpTo(player, targetPlayer.position())))
 			{
 				player.sendMessage(new TextComponent("A communication error has occurred."), player.getUUID()); //TODO better feedback
 				return;
@@ -175,7 +175,7 @@ public class JumpLureItem extends Item implements IColoredItem
 
 		players.removeIf(target ->
 				player.equals(target) || !hasMatchingLure(target, color)
-						&& !Stage.targetsOnSameStage(player.level, player.position(), target.position()));
+						&& !SuperJumpCommand.canSuperJumpTo(player, target.position()));
 
 		return players;
 	}

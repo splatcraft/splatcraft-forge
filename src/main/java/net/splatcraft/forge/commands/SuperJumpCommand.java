@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -60,7 +61,7 @@ public class SuperJumpCommand
 	private static int executeLocation(CommandContext<CommandSourceStack> context, Vec3 target) throws CommandSyntaxException
 	{
 		ServerPlayer player = context.getSource().getPlayerOrException();
-		superJump(player, target);
+		superJump(player, target, true);
 
 		return 0;
 	}
@@ -68,12 +69,12 @@ public class SuperJumpCommand
 	private static int executeSpawn(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		ServerPlayer player = context.getSource().getPlayerOrException();
-		superJumpToSpawn(player);
+		superJumpToSpawn(player, true);
 
 		return 0;
 	}
 
-	public static boolean superJumpToSpawn(ServerPlayer player)
+	public static boolean superJumpToSpawn(ServerPlayer player, boolean global)
 	{
 		if(player.getRespawnDimension().equals(player.level.dimension()))
 		{
@@ -81,7 +82,7 @@ public class SuperJumpCommand
 			if(targetPos == null)
 				targetPos = new BlockPos(player.level.getLevelData().getXSpawn(), player.level.getLevelData().getYSpawn(), player.level.getLevelData().getZSpawn());
 
-			superJump(player, new Vec3(targetPos.getX(), targetPos.getY() + blockHeight(targetPos, player.level), targetPos.getZ()));
+			superJump(player, new Vec3(targetPos.getX(), targetPos.getY() + blockHeight(targetPos, player.level), targetPos.getZ()), global);
 			return true;
 		}
 
@@ -99,15 +100,19 @@ public class SuperJumpCommand
 
 	public static boolean superJump(ServerPlayer player, Vec3 target)
 	{
+		return superJump(player, target, SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING));
+	}
+	public static boolean superJump(ServerPlayer player, Vec3 target, boolean global)
+	{
 		return superJump(player, target,
 				(int) player.getAttribute(SplatcraftAttributes.superJumpTravelTime.get()).getValue(),
 				(int) player.getAttribute(SplatcraftAttributes.superJumpWindupTime.get()).getValue(),
 				player.getAttribute(SplatcraftAttributes.superJumpHeight.get()).getValue(),
-				SplatcraftGameRules.getLocalizedRule(player.level, player.blockPosition(), SplatcraftGameRules.GLOBAL_SUPERJUMPING));
+				global);
 	}
 	public static boolean superJump(ServerPlayer player, Vec3 target, int windupTime, int travelTime, double jumpHeight, boolean global)
 	{
-		if(!global && !Stage.targetsOnSameStage(player.level, player.position(), target))
+		if(!global && !canSuperJumpTo(player, target))
 			return false;
 
 		PlayerCooldown.setPlayerCooldown(player, new SuperJump(player.position(), target, windupTime, travelTime, jumpHeight, player.noPhysics));
@@ -119,11 +124,15 @@ public class SuperJumpCommand
 			SplatcraftPacketHandler.sendToTrackers(new PlayerSetSquidS2CPacket(player.getUUID(), info.isSquid()), player);
 		}
 
-
-		player.displayClientMessage(new TextComponent("pchoooooo"), false);
 		SplatcraftPacketHandler.sendToPlayer(new UpdatePlayerInfoPacket(player), player);
 
 		return true;
+	}
+
+	public static boolean canSuperJumpTo(Player player, Vec3 target)
+	{
+		int jumpLimit = SplatcraftGameRules.getIntRuleValue(player.level, SplatcraftGameRules.SUPERJUMP_DISTANCE_LIMIT);
+		return Stage.targetsOnSameStage(player.level, player.position(), target) || jumpLimit < 0 || player.position().distanceTo(target) <= jumpLimit;
 	}
 
 	public static double blockHeight(BlockPos block, Level level){

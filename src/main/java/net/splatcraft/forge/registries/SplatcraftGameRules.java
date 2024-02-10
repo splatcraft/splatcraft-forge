@@ -36,6 +36,7 @@ public class SplatcraftGameRules {
     public static GameRules.Key<GameRules.BooleanValue> INFINITE_INK_IN_CREATIVE;
     public static GameRules.Key<GameRules.BooleanValue> RECHARGEABLE_INK_TANK;
     public static GameRules.Key<GameRules.BooleanValue> GLOBAL_SUPERJUMPING;
+    public static GameRules.Key<GameRules.IntegerValue> SUPERJUMP_DISTANCE_LIMIT;
 
     public static void registerGamerules() {
         INK_DECAY = createBooleanRule("inkDecay", GameRules.Category.UPDATES, true);
@@ -51,6 +52,7 @@ public class SplatcraftGameRules {
         INK_HEALING_CONSUMES_HUNGER = createBooleanRule("inkHealingConsumesHunger", GameRules.Category.PLAYER, true);
         INK_DAMAGE_COOLDOWN = createBooleanRule("inkDamageCooldown", GameRules.Category.PLAYER, false);
         GLOBAL_SUPERJUMPING = createBooleanRule("globalSuperJumping", GameRules.Category.PLAYER, true);
+        SUPERJUMP_DISTANCE_LIMIT = createIntRule("superJumpDistanceLimit", GameRules.Category.PLAYER, 1000);
         INK_MOB_DAMAGE_PERCENTAGE = createIntRule("inkMobDamagePercentage", GameRules.Category.MOBS, 70);
         INFINITE_INK_IN_CREATIVE = createBooleanRule("infiniteInkInCreative", GameRules.Category.PLAYER, true);
         INKABLE_GROUND = createBooleanRule("inkableGround", GameRules.Category.MISC, true);
