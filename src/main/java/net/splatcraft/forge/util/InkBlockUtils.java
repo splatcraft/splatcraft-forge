@@ -91,7 +91,9 @@ public class InkBlockUtils {
 
         WorldInk worldInk = WorldInkCapability.get(level, pos);
 
-        if(worldInk.isInked(pos) && worldInk.getInk(pos).color() == color)
+        boolean sameColor = worldInk.isInked(pos) && worldInk.getInk(pos).color() == color;
+
+        if(sameColor && worldInk.getInk(pos).type() == inkType)
             return BlockInkedResult.ALREADY_INKED;
 
         worldInk.ink(pos, color, inkType);
@@ -104,7 +106,7 @@ public class InkBlockUtils {
         if(!level.isClientSide)
             SplatcraftPacketHandler.sendToDim(new UpdateInkPacket(pos, color, inkType), level.dimension());
 
-        return BlockInkedResult.SUCCESS;
+        return sameColor ? BlockInkedResult.ALREADY_INKED : BlockInkedResult.SUCCESS;
     }
 
     public static boolean isBlockFoliage(BlockState state)
