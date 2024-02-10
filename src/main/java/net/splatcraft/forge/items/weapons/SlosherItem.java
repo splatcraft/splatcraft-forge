@@ -71,8 +71,8 @@ public class SlosherItem extends WeaponBaseItem<SlosherWeaponSettings>
                 float angle = settings.angleOffset * i - settings.angleOffset * (settings.projectileCount - 1) / 2;
 
                 InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), settings.projectileSize * (hasTrail ? 1 : 0.8f), settings);
-                proj.setSlosherStats(settings);
                 proj.shootFromRotation(player, player.getXRot(), player.getYRot() + angle, settings.pitchCompensation, settings.projectileSpeed, 2);
+                proj.setSlosherStats(settings);
                 level.addFreshEntity(proj);
 
                 switch (slosherType) {

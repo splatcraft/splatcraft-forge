@@ -9,6 +9,7 @@ import net.minecraft.world.phys.AABB;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.ColoredBarrierBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.ColorUtils;
@@ -34,10 +35,12 @@ public class ColoredBarrierTileEntity extends StageBarrierTileEntity implements 
 
         for (Entity entity : level.getEntitiesOfClass(Entity.class, new AABB(getBlockPos()).inflate(0.05)))
         {
+            if(entity instanceof SpawnShieldEntity)
+                continue;
 
             if(ColorUtils.getEntityColor(entity) > -1 && (getBlockState().getBlock() instanceof ColoredBarrierBlock &&
                     !((ColoredBarrierBlock) getBlockState().getBlock()).canAllowThrough(getBlockPos(), entity)))
-            resetActiveTime();
+                    resetActiveTime();
         }
 
         if (level.isClientSide && ClientUtils.getClientPlayer().isCreative())

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 import net.splatcraft.forge.data.SplatcraftTags;
@@ -18,6 +19,8 @@ import net.splatcraft.forge.entities.subs.AbstractSubWeaponEntity;
 import net.splatcraft.forge.registries.SplatcraftEntities;
 import net.splatcraft.forge.tileentities.SpawnPadTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
+
+import java.util.ArrayList;
 
 public class SpawnShieldEntity extends Entity implements IColoredEntity
 {
@@ -87,6 +90,11 @@ public class SpawnShieldEntity extends Entity implements IColoredEntity
 				}
 				else
 				{
+					if(entity instanceof Player player && player.isPassenger())
+						player.stopRiding();
+
+					new ArrayList<Integer>().toArray(new Integer[0]);
+
 					entity.setDeltaMovement(entity.position().subtract(position().x, position().y, position().z).normalize().scale(.5));
 					entity.hurtMarked = true;
 				}

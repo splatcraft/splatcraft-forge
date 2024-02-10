@@ -441,8 +441,8 @@ public class InkProjectileEntity extends ThrowableItemProjectile implements ICol
         this.yRotO = this.getYRot();
         this.xRotO = this.getXRot();
 
-        entityData.set(MIN_VELOCITY, velocity);
-        entityData.set(MAX_VELOCITY, velocity);
+	    entityData.set(MIN_VELOCITY, velocity);
+	    entityData.set(MAX_VELOCITY, velocity);
     }
 
     @Override

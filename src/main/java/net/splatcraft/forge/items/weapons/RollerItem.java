@@ -217,8 +217,8 @@ public class RollerItem extends WeaponBaseItem<RollerWeaponSettings> {
 
                 InkProjectileEntity proj = new InkProjectileEntity(level, player, stack, InkBlockUtils.getInkType(player), 1.6f, settings);
                 proj.throwerAirborne = airborne;
-                proj.setRollerSwingStats();
                 proj.shootFromRotation(player, player.getXRot(), player.getYRot(), airborne ? 0.0f : settings.swingProjectilePitchCompensation, airborne ? settings.flingProjectileSpeed : settings.swingProjectileSpeed, 0.05f);
+                proj.setRollerSwingStats();
                 if (airborne) {
                     double off = (double) i - (settings.rollSize - 1) / 2d;
                     double yOff = Math.sin(Math.toRadians(player.getXRot() + 90));

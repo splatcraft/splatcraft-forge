@@ -295,9 +295,9 @@ public class DualieItem extends WeaponBaseItem<DualieWeaponSettings>
                 for(int i = 0; i < firingData.projectileCount; i++)
                 {
                     InkProjectileEntity proj = new InkProjectileEntity(level, entity, stack, InkBlockUtils.getInkType(entity), firingData.projectileSize, settings);
-                    proj.setDualieStats(firingData);
                     proj.isOnRollCooldown = onRollCooldown;
-                    proj.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.0f, firingData.projectileSpeed, (onRollCooldown || entity.isOnGround() ? firingData.groundInaccuracy : firingData.airInaccuracy));
+                    proj.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), firingData.pitchCompensation, firingData.projectileSpeed, entity.isOnGround() ? firingData.groundInaccuracy : firingData.airInaccuracy);
+                    proj.setDualieStats(firingData);
                     level.addFreshEntity(proj);
                 }
 

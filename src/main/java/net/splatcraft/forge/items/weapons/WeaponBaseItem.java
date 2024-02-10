@@ -205,7 +205,8 @@ public abstract class WeaponBaseItem<S extends AbstractWeaponSettings<S, ?>> ext
             tooltip.add(new TextComponent(""));
         }
 
-        getSettings(stack).addStatsToTooltip(tooltip, flag);
+        if(!stack.getOrCreateTag().getBoolean("HideTooltip"))
+            getSettings(stack).addStatsToTooltip(tooltip, flag);
     }
 
     @Override

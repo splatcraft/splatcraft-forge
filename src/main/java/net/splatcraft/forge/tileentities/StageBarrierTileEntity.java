@@ -15,6 +15,7 @@ import net.minecraft.world.phys.AABB;
 import net.splatcraft.forge.SplatcraftConfig;
 import net.splatcraft.forge.blocks.StageBarrierBlock;
 import net.splatcraft.forge.data.SplatcraftTags;
+import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import net.splatcraft.forge.util.ClientUtils;
 
@@ -46,6 +47,9 @@ public class StageBarrierTileEntity extends BlockEntity
 
         for (Entity entity : level.getEntitiesOfClass(Entity.class, new AABB(getBlockPos()).inflate(0.05)))
         {
+            if(entity instanceof SpawnShieldEntity)
+                continue;
+
             resetActiveTime();
             if (getBlockState().getBlock() instanceof StageBarrierBlock && ((StageBarrierBlock) getBlockState().getBlock()).damagesPlayer &&
                     entity instanceof Player)
