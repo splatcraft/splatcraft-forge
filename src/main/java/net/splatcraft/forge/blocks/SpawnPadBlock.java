@@ -154,7 +154,7 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 	@Override
 	public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
 	{
-		if (!level.isClientSide && stack.getTag() != null && level.getBlockEntity(pos) instanceof SpawnPadTileEntity)
+		if (stack.getTag() != null && level.getBlockEntity(pos) instanceof SpawnPadTileEntity)
 		{
 			ColorUtils.setInkColor(level.getBlockEntity(pos), ColorUtils.getInkColor(stack));
 
