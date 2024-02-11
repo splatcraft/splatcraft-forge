@@ -1,6 +1,8 @@
 package net.splatcraft.forge.network.s2c;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.splatcraft.forge.client.gui.stagepad.StageSelectionScreen;
@@ -45,21 +47,21 @@ public class SendStageWarpDataToPadPacket extends PlayS2CPacket
 	public static SendStageWarpDataToPadPacket compile(Player player)
 	{
 		ArrayList<Stage> stages = Stage.getAllStages(player.level);
+
+		ArrayList<Stage> needsUpdate = new ArrayList<>();
+		for (Stage stage : stages)
+			if(stage.needSpawnPadUpdate())
+				needsUpdate.add(stage);
+
 		stages.removeIf(stage -> !stage.hasSpawnPads());
 
 		ArrayList<Stage> outOfRange = new ArrayList<>();
-		ArrayList<Stage> needsUpdate = new ArrayList<>();
-
 		for (Stage stage : stages)
 		{
-			if(stage.needSpawnPadUpdate())
-			{
-				needsUpdate.add(stage);
-				continue;
-			}
+			ArrayList<BlockPos> validPads = new ArrayList<>(stage.getSpawnPadPositions());
 
-			ArrayList<SpawnPadTileEntity> validPads = new ArrayList<>(stage.getAllSpawnPads(player.level));
-			validPads.removeIf(pad -> !SuperJumpCommand.canSuperJumpTo(player, pad.getSuperJumpPos()));
+			validPads.removeIf(pos ->
+					!((player.level.getBlockEntity(pos) instanceof SpawnPadTileEntity pad) && SuperJumpCommand.canSuperJumpTo(player, pad.getSuperJumpPos())));
 
 			if(validPads.isEmpty())
 				outOfRange.add(stage);

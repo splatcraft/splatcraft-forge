@@ -70,6 +70,15 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 	}
 
 	@Override
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean p_60519_)
+	{
+		if(level.getBlockEntity(pos) instanceof SpawnPadTileEntity spawnPad)
+			for (Stage stage : Stage.getStagesForPosition(level, new Vec3(pos.getX(), pos.getY(), pos.getZ())))
+				stage.removeSpawnPad(spawnPad);
+		super.onRemove(state, level, pos, newState, p_60519_);
+	}
+
+	@Override
 	public Optional<Vec3> getRespawnPosition(BlockState state, EntityType<?> type, LevelReader levelReader, BlockPos pos, float orientation, @Nullable LivingEntity entity)
 	{
 		if(entity != null && !ColorUtils.colorEquals(entity, levelReader.getBlockEntity(pos)))

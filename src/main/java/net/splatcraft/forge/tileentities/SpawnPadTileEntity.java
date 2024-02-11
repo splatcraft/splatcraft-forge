@@ -59,14 +59,6 @@ public class SpawnPadTileEntity extends InkColorTileEntity
 	}
 
 	@Override
-	public void setRemoved()
-	{
-		for (Stage stage : Stage.getStagesForPosition(level, new Vec3(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ())))
-			stage.removeSpawnPad(this);
-		super.setRemoved();
-	}
-
-	@Override
 	public @NotNull void saveAdditional(CompoundTag nbt)
 	{
 		if(spawnShieldUuid != null)
@@ -88,8 +80,8 @@ public class SpawnPadTileEntity extends InkColorTileEntity
 	@Override
 	public void onLoad()
 	{
-		if(updateStages)
-			addToStages();
+		//if(updateStages)
+		//	addToStages();
 
 		super.onLoad();
 	}

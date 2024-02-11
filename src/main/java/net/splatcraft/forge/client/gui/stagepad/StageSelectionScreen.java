@@ -65,7 +65,7 @@ public class StageSelectionScreen extends Screen
 		MenuButton stageButton = new MenuButton(10, 0, 168, stage.getStageName(), (b) -> {}, Button.NO_TOOLTIP, (ps, b) -> {}, ButtonColor.GREEN);
 		SuperJumpMenuButton jumpButton = new SuperJumpMenuButton(178, 0, 12,
 				(button, poseStack, mx, my) -> renderTooltip(poseStack, List.of(((SuperJumpMenuButton)button).state.tooltipText), Optional.empty(), mx, my),
-				drawIcon(WIDGETS, 0, 0, 244, 0, 12, 12), stage);
+				(poseStack, button) -> drawIcon(WIDGETS, 0, 0, 244, ((SuperJumpMenuButton)button).state == SuperJumpMenuButton.ButtonState.REQUIRES_UPDATE ? 12 : 0, 12, 12).apply(poseStack, button), stage);
 
 		jumpButton.active = false;
 
@@ -77,7 +77,9 @@ public class StageSelectionScreen extends Screen
 
 	public static void updateValidSuperJumpsList(List<String> validStages, List<String> outOfReachStages, List<String> needsUpdateStages)
 	{
-		for (SuperJumpMenuButton jumpButton : instance.jumpButtons) {
+		for (SuperJumpMenuButton jumpButton : instance.jumpButtons)
+		{
+			SuperJumpMenuButton.loading = false;
 			jumpButton.state = validStages.contains(jumpButton.stage.id) ? SuperJumpMenuButton.ButtonState.VALID :
 					needsUpdateStages.contains(jumpButton.stage.id) ? SuperJumpMenuButton.ButtonState.REQUIRES_UPDATE :
 					outOfReachStages.contains(jumpButton.stage.id) ? SuperJumpMenuButton.ButtonState.OUT_OF_RANGE :
@@ -193,7 +195,7 @@ public class StageSelectionScreen extends Screen
 				SuperJumpMenuButton jumpButton = jumpButtons.get(index - 1);
 				jumpButton.x = x + 178;
 				jumpButton.y = y + (i + 2) * 12;
-				jumpButton.active = jumpButton.state.valid;
+				jumpButton.active = jumpButton.getState().valid;
 
 				jumpButton.renderButton(poseStack);
 			}
@@ -285,7 +287,9 @@ public class StageSelectionScreen extends Screen
 	public static class SuperJumpMenuButton extends MenuButton
 	{
 		final Stage stage;
-		public ButtonState state = ButtonState.REQUESTING;
+		private ButtonState state = ButtonState.REQUESTING;
+
+		public static boolean loading = false;
 
 		public SuperJumpMenuButton(int x, int y, int width, OnTooltip onTooltip, PostDraw draw, Stage stage)
 		{
@@ -293,11 +297,12 @@ public class StageSelectionScreen extends Screen
 			{
 				SuperJumpMenuButton jumpButton = ((SuperJumpMenuButton)b);
 
-				switch (jumpButton.state)
+				switch (jumpButton.getState())
 				{
 					case REQUIRES_UPDATE ->
 					{
 						jumpButton.state = ButtonState.REQUESTING;
+						loading = true;
 						SplatcraftPacketHandler.sendToServer(new RequestUpdateStageSpawnPadsPacket(jumpButton.stage));
 					}
 					default ->
@@ -310,6 +315,11 @@ public class StageSelectionScreen extends Screen
 			}, onTooltip, draw, ButtonColor.CYAN);
 
 			this.stage = stage;
+		}
+
+		public ButtonState getState()
+		{
+			return loading ? ButtonState.REQUESTING : state;
 		}
 
 		@Override
