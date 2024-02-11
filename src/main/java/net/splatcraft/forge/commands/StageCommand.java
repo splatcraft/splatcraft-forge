@@ -377,26 +377,8 @@ public class StageCommand
 			throw STAGE_NOT_FOUND.create(stageId);
 
 		Stage stage = stages.get(stageId);
+		HashMap<Integer, ArrayList<SpawnPadTileEntity>> spawnPads = stage.getSpawnPads(source.getLevel());
 		Level stageLevel = source.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, stage.dimID));
-
-
-		BlockPos blockpos2 = new BlockPos(Math.min(stage.cornerA.getX(), stage.cornerB.getX()), Math.min(stage.cornerB.getY(), stage.cornerA.getY()), Math.min(stage.cornerA.getZ(), stage.cornerB.getZ()));
-		BlockPos blockpos3 = new BlockPos(Math.max(stage.cornerA.getX(), stage.cornerB.getX()), Math.max(stage.cornerB.getY(), stage.cornerA.getY()), Math.max(stage.cornerA.getZ(), stage.cornerB.getZ()));
-
-		HashMap<Integer, ArrayList<SpawnPadTileEntity>> spawnPads = new HashMap<>();
-
-		for (int x = blockpos2.getX(); x <= blockpos3.getX(); x++)
-			for (int y = blockpos2.getY(); y <= blockpos3.getY(); y++)
-				for (int z = blockpos2.getZ(); z <= blockpos3.getZ(); z++) {
-					BlockPos pos = new BlockPos(x, y, z);
-					if (stageLevel.getBlockEntity(pos) instanceof SpawnPadTileEntity) {
-						SpawnPadTileEntity te = (SpawnPadTileEntity) stageLevel.getBlockEntity(pos);
-
-						if(!spawnPads.containsKey(te.getColor()))
-							spawnPads.put(te.getColor(), new ArrayList<>());
-						spawnPads.get(te.getColor()).add(te);
-					}
-				}
 
 		if(spawnPads.isEmpty())
 			throw NO_SPAWN_PADS_FOUND.create(stageId);
@@ -446,22 +428,7 @@ public class StageCommand
 
 		Stage stage = stages.get(stageId);
 		Level stageLevel = source.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, stage.dimID));
-
-
-		BlockPos blockpos2 = new BlockPos(Math.min(stage.cornerA.getX(), stage.cornerB.getX()), Math.min(stage.cornerB.getY(), stage.cornerA.getY()), Math.min(stage.cornerA.getZ(), stage.cornerB.getZ()));
-		BlockPos blockpos3 = new BlockPos(Math.max(stage.cornerA.getX(), stage.cornerB.getX()), Math.max(stage.cornerB.getY(), stage.cornerA.getY()), Math.max(stage.cornerA.getZ(), stage.cornerB.getZ()));
-
-		ArrayList<SpawnPadTileEntity> spawnPads = new ArrayList<>();
-
-		for (int x = blockpos2.getX(); x <= blockpos3.getX(); x++)
-			for (int y = blockpos2.getY(); y <= blockpos3.getY(); y++)
-				for (int z = blockpos2.getZ(); z <= blockpos3.getZ(); z++) {
-					BlockPos pos = new BlockPos(x, y, z);
-					if (stageLevel.getBlockEntity(pos) instanceof SpawnPadTileEntity) {
-						SpawnPadTileEntity te = (SpawnPadTileEntity) stageLevel.getBlockEntity(pos);
-						spawnPads.add(te);
-					}
-				}
+		ArrayList<SpawnPadTileEntity> spawnPads = new ArrayList<>(stage.getAllSpawnPads(source.getLevel()));
 
 		if(spawnPads.isEmpty())
 			throw NO_SPAWN_PADS_FOUND.create(stageId);

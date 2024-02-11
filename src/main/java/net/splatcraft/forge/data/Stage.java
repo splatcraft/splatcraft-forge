@@ -278,9 +278,10 @@ public class Stage
 	public HashMap<Integer, ArrayList<SpawnPadTileEntity>> getSpawnPads(Level level)
 	{
 		HashMap<Integer, ArrayList<SpawnPadTileEntity>> result = new HashMap<>();
+		Level stageLevel = level.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, dimID));
 
 		for (BlockPos pos : spawnPadPositions)
-			if(level.getBlockEntity(pos) instanceof SpawnPadTileEntity pad)
+			if(stageLevel.getBlockEntity(pos) instanceof SpawnPadTileEntity pad)
 			{
 				if(!result.containsKey(pad.getColor()))
 					result.put(pad.getColor(), new ArrayList<>());
@@ -292,7 +293,8 @@ public class Stage
 
 	public List<SpawnPadTileEntity> getAllSpawnPads(Level level)
 	{
-		return spawnPadPositions.stream().map(pos -> level.getBlockEntity(pos)).filter(te -> te instanceof SpawnPadTileEntity).map(te -> (SpawnPadTileEntity)te).toList();
+		Level stageLevel = level.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, dimID));
+		return spawnPadPositions.stream().map(pos -> stageLevel.getBlockEntity(pos)).filter(te -> te instanceof SpawnPadTileEntity).map(te -> (SpawnPadTileEntity)te).toList();
 	}
 
 	public boolean superJumpToStage(ServerPlayer player)

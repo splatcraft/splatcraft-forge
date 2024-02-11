@@ -61,7 +61,7 @@ public class SendStageWarpDataToPadPacket extends PlayS2CPacket
 			ArrayList<BlockPos> validPads = new ArrayList<>(stage.getSpawnPadPositions());
 
 			validPads.removeIf(pos ->
-					!((player.level.getBlockEntity(pos) instanceof SpawnPadTileEntity pad) && SuperJumpCommand.canSuperJumpTo(player, pad.getSuperJumpPos())));
+					!(SuperJumpCommand.canSuperJumpTo(player, new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ()))));
 
 			if(validPads.isEmpty())
 				outOfRange.add(stage);
