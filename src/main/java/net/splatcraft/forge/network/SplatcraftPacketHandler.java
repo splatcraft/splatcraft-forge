@@ -54,6 +54,8 @@ public class SplatcraftPacketHandler
         registerMessage(WatchInkPacket.class, WatchInkPacket::decode);
         registerMessage(SendJumpLureDataPacket.class, SendJumpLureDataPacket::decode);
         registerMessage(UseJumpLurePacket.class, UseJumpLurePacket::decode);
+        registerMessage(SuperJumpToStagePacket.class, SuperJumpToStagePacket::decode);
+        registerMessage(SendStageWarpDataToPadPacket.class, SendStageWarpDataToPadPacket::decode);
 
     }
 

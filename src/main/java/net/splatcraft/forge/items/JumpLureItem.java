@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
@@ -14,6 +15,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -23,10 +25,13 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.splatcraft.forge.blocks.InkedBlock;
+import net.splatcraft.forge.blocks.InkwellBlock;
 import net.splatcraft.forge.client.handlers.JumpLureHudHandler;
 import net.splatcraft.forge.commands.SuperJumpCommand;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
+import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.items.weapons.WeaponBaseItem;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.s2c.PlayerSetSquidS2CPacket;
@@ -34,6 +39,7 @@ import net.splatcraft.forge.network.s2c.SendJumpLureDataPacket;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.registries.SplatcraftItemGroups;
 import net.splatcraft.forge.registries.SplatcraftItems;
+import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -189,6 +195,27 @@ public class JumpLureItem extends Item implements IColoredItem
 					&& PlayerInfoCapability.hasCapability(player))
 				ColorUtils.setInkColor(stack, ColorUtils.getPlayerColor(player));
 		}
+	}
+
+	@Override
+	public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity)
+	{
+		BlockPos pos = entity.blockPosition().below();
+
+		if (entity.level.getBlockState(pos).getBlock() instanceof InkwellBlock) {
+			InkColorTileEntity te = (InkColorTileEntity) entity.level.getBlockEntity(pos);
+
+			if (ColorUtils.getInkColor(stack) != ColorUtils.getInkColorOrInverted(entity.level, pos)) {
+				ColorUtils.setInkColor(entity.getItem(), ColorUtils.getInkColorOrInverted(entity.level, pos));
+				ColorUtils.setColorLocked(entity.getItem(), true);
+			}
+		} else if ((stack.getItem() instanceof SubWeaponItem && !SubWeaponItem.singleUse(stack) || !(stack.getItem() instanceof SubWeaponItem))
+				&& InkedBlock.causesClear(entity.level, pos, entity.level.getBlockState(pos)) && ColorUtils.getInkColor(stack) != 0xFFFFFF) {
+			ColorUtils.setInkColor(stack, 0xFFFFFF);
+			ColorUtils.setColorLocked(stack, false);
+		}
+
+		return false;
 	}
 
 }

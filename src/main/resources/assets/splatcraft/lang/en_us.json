@@ -121,6 +121,7 @@
 
   "item.splatcraft.super_jump_lure": "Super Jump Lure",
   "item.splatcraft.super_jump_lure.tooltip": "Allows you to super jump back to your spawn pad or other players with matching lures.",
+  "item.splatcraft.stage_pad": "Stage Pad",
 
   "item.splatcraft.squid_bumper": "Squid Bumper",
   "item.splatcraft.ink_cloth_helmet": "Ink Cloth Hat",
@@ -391,6 +392,18 @@
 
   "gui.ammo_knights_workbench.craft": "Craft",
   "gui.ammo_knights_workbench.empty": "Find Blueprints to unlock more weapons!",
+
+  "gui.stage_pad.label.stage_select": "Select a Stage...",
+  "gui.stage_pad.label.settings": "Settings",
+  "gui.stage_pad.label.rules": "Rules",
+  "gui.stage_pad.label.actions": "Actions",
+  "gui.stage_pad.label.teams": "Teams",
+
+  "gui.stage_pad.button.create": "+ Create a new Stage",
+  "gui.stage_pad.button.superjump_to": "Super Jump to Stage",
+  "gui.stage_pad.button.superjump_to.out_of_range": "Stage is out of Super Jumping range!",
+  "gui.stage_pad.button.superjump_to.no_pads_found": "Stage has no Spawn Pads!",
+  "gui.stage_pad.button.superjump_to.requesting": "Loading...",
 
   "ink_color.invert": "Inverted %s",
   "ink_color.splatcraft.orange": "Orange",

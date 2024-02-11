@@ -197,7 +197,7 @@ public class StageCommand
 		if(stages.containsKey(stageId))
 			throw STAGE_ALREADY_EXISTS.create(stageId);
 
-		stages.put(stageId, new Stage(source.getLevel(), from, to));
+		stages.put(stageId, new Stage(source.getLevel(), from, to, stageId));
 
 		source.sendSuccess(new TranslatableComponent("commands.stage.add.success", stageId), true);
 
@@ -503,8 +503,8 @@ public class StageCommand
 		Stage stage = stages.get(stageId);
 
 		if(isCornerA)
-			stage.cornerA = pos;
-		else stage.cornerB = pos;
+			stage.updateBounds(source.getLevel(), pos, stage.cornerB);
+		else stage.updateBounds(source.getLevel(), stage.cornerA, pos);
 
 		SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
 		source.sendSuccess(new TranslatableComponent("commands.stage.setting.area.success", isCornerA ? "A" : "B", stageId, pos.getX(), pos.getY(), pos.getZ()), true);

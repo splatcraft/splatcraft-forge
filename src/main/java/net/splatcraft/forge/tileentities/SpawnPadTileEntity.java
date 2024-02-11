@@ -5,6 +5,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.world.ChunkEvent;
+import net.splatcraft.forge.commands.SuperJumpCommand;
+import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +26,8 @@ public class SpawnPadTileEntity extends InkColorTileEntity
 
 	public boolean isSpawnShield(SpawnShieldEntity otherShield)
 	{
-		return otherShield != null && spawnShieldUuid.equals(otherShield.getUUID());
+
+		return spawnShieldUuid != null && otherShield != null && spawnShieldUuid.equals(otherShield.getUUID());
 	}
 
 	public SpawnShieldEntity getSpawnShield()
@@ -41,6 +46,25 @@ public class SpawnPadTileEntity extends InkColorTileEntity
 		else spawnShieldUuid = shield.getUUID();
 
 	}
+	public void addToStages()
+	{
+		if(!level.isClientSide)
+			for (Stage stage : Stage.getStagesForPosition(level, new Vec3(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ())))
+				stage.addSpawnPad(this);
+	}
+
+	public Vec3 getSuperJumpPos()
+	{
+		return new Vec3(getBlockPos().getX(), getBlockPos().getY() + SuperJumpCommand.blockHeight(getBlockPos(), level), getBlockPos().getZ() + 0.5);
+	}
+
+	@Override
+	public void setRemoved()
+	{
+		for (Stage stage : Stage.getStagesForPosition(level, new Vec3(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ())))
+			stage.removeSpawnPad(this);
+		super.setRemoved();
+	}
 
 	@Override
 	public @NotNull void saveAdditional(CompoundTag nbt)
@@ -57,5 +81,16 @@ public class SpawnPadTileEntity extends InkColorTileEntity
 
 		if(nbt.hasUUID("SpawnShield"))
 			spawnShieldUuid = nbt.getUUID("SpawnShield");
+		updateStages = true;
+	}
+
+	private boolean updateStages = false;
+	@Override
+	public void onLoad()
+	{
+		if(updateStages)
+			addToStages();
+
+		super.onLoad();
 	}
 }

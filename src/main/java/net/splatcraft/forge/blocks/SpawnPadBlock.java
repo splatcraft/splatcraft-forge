@@ -29,6 +29,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.entities.SpawnShieldEntity;
 import net.splatcraft.forge.registries.SplatcraftBlocks;
 import net.splatcraft.forge.registries.SplatcraftTileEntities;
@@ -57,7 +58,8 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 	}
 	@Nullable
 	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+	{
 		return SplatcraftTileEntities.spawnPadTileEntity.get().create(pos, state);
 	}
 
@@ -154,13 +156,13 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 	@Override
 	public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack)
 	{
-		if (!level.isClientSide && stack.getTag() != null && level.getBlockEntity(pos) instanceof SpawnPadTileEntity)
+		if (stack.getTag() != null && level.getBlockEntity(pos) instanceof SpawnPadTileEntity spawnPad)
 		{
-			ColorUtils.setInkColor(level.getBlockEntity(pos), ColorUtils.getInkColor(stack));
+			ColorUtils.setInkColor(spawnPad, ColorUtils.getInkColor(stack));
+			spawnPad.addToStages();
 
 			SpawnShieldEntity shield = new SpawnShieldEntity(level, pos, ColorUtils.getInkColorOrInverted(stack));
-			((SpawnPadTileEntity) level.getBlockEntity(pos)).setSpawnShield(shield);
-
+			spawnPad.setSpawnShield(shield);
 			level.addFreshEntity(shield);
 		}
 
@@ -182,12 +184,6 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 		state.updateNeighbourShapes(level, pos, 3);
 
 		super.setPlacedBy(level, pos, state, entity, stack);
-	}
-
-	@Override
-	public void playerWillDestroy(Level p_176208_1_, BlockPos p_176208_2_, BlockState p_176208_3_, Player p_176208_4_)
-	{
-		super.playerWillDestroy(p_176208_1_, p_176208_2_, p_176208_3_, p_176208_4_);
 	}
 
 	@Override
@@ -321,13 +317,14 @@ public class SpawnPadBlock extends Block implements IColoredBlock, SimpleWaterlo
 			return super.updateShape(stateIn, facing, facingState, levelIn, currentPos, facingPos);
 		}
 
+
 		@Override
-		public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid)
+		public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean bool)
 		{
 			BlockPos parentPos = getParentPos(state, pos);
 			if(level.getBlockState(parentPos).getBlock() == parent)
-				level.destroyBlock(parentPos, willHarvest);
-			return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+				level.destroyBlock(parentPos, false);
+			super.onRemove(state, level, pos, newState, bool);
 		}
 
 		@Override

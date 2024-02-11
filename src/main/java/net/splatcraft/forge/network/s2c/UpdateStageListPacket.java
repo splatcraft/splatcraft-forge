@@ -44,6 +44,6 @@ public class UpdateStageListPacket extends PlayS2CPacket
 	{
 		ClientUtils.clientStages.clear();
 		for(String key : nbt.getAllKeys())
-			ClientUtils.clientStages.put(key,new Stage(nbt.getCompound(key)));
+			ClientUtils.clientStages.put(key,new Stage(nbt.getCompound(key), key));
 	}
 }

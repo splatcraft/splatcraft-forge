@@ -225,6 +225,7 @@ public class SplatcraftItems {
 
     public static final RegistryObject<Item> waxApplicator = REGISTRY.register("wax_applicator", InkWaxerItem::new);
     public static final RegistryObject<Item> superJumpLure = REGISTRY.register("super_jump_lure", JumpLureItem::new);
+    public static final RegistryObject<Item> stagePad = REGISTRY.register("stage_pad", StagePadItem::new);
 
     //Misc
 
