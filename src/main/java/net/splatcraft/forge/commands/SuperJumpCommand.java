@@ -22,6 +22,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -163,7 +165,14 @@ public class SuperJumpCommand
 			if(!PlayerCooldown.hasPlayerCooldown(event.getEntityLiving()))
 				return;
 
-			if(!(event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof LocalPlayer player))
+			if(event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof Player player)
+				handleClient(player);
+		}
+
+		@OnlyIn(Dist.CLIENT)
+		private static void handleClient(Player commonPlayer)
+		{
+			if(!(commonPlayer instanceof LocalPlayer player))
 				return;
 
 			PlayerInfo info = PlayerInfoCapability.get(player);
@@ -181,7 +190,6 @@ public class SuperJumpCommand
 					player.setPos(progress < 0.5f ? cooldown.source.x : cooldown.target.x, getSuperJumpYPos(progress, cooldown.source.y, cooldown.target.y, player.level.getMaxBuildHeight() + 100), progress < 0.5f ? cooldown.source.z : cooldown.target.z);
 				else player.setPos(Mth.lerp(progress, cooldown.source.x, cooldown.target.x), getSuperJumpYPos(progress, cooldown.source.y, cooldown.target.y, cooldown.getHeight()), Mth.lerp(progress, cooldown.source.z, cooldown.target.z));
 			}
-
 		}
 	}
 

@@ -1,8 +1,6 @@
 package net.splatcraft.forge.items;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.BookEditScreen;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -14,6 +12,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.blocks.InkwellBlock;
 import net.splatcraft.forge.client.gui.stagepad.StageSelectionScreen;
@@ -42,10 +42,16 @@ public class StagePadItem extends Item implements IColoredItem
 		player.awardStat(Stats.ITEM_USED.get(this));
 
 		if(level.isClientSide)
-			Minecraft.getInstance().setScreen(new StageSelectionScreen(itemstack.getDisplayName()));
+			openMenu(itemstack);
 		else SplatcraftPacketHandler.sendToPlayer(SendStageWarpDataToPadPacket.compile(player), (ServerPlayer) player);
 
 		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void openMenu(ItemStack itemStack)
+	{
+		Minecraft.getInstance().setScreen(new StageSelectionScreen(itemStack.getDisplayName()));
 	}
 
 	@Override

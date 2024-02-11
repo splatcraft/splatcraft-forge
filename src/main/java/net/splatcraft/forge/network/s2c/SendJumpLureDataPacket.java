@@ -1,6 +1,8 @@
 package net.splatcraft.forge.network.s2c;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.client.handlers.JumpLureHudHandler;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class SendJumpLureDataPacket extends PlayS2CPacket
 		return new SendJumpLureDataPacket(color, canJump, uuids);
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void execute()
 	{

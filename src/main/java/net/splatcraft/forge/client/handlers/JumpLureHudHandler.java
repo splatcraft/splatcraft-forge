@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(Dist.CLIENT)
 public class JumpLureHudHandler
 {
 
