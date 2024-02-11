@@ -17,6 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.splatcraft.forge.blocks.InkedBlock;
 import net.splatcraft.forge.blocks.InkwellBlock;
 import net.splatcraft.forge.client.gui.stagepad.StageSelectionScreen;
+import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;

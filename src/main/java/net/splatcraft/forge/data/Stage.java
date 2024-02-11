@@ -3,19 +3,18 @@ package net.splatcraft.forge.data;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.splatcraft.forge.commands.StageCommand;
 import net.splatcraft.forge.commands.SuperJumpCommand;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
@@ -39,7 +38,9 @@ public class Stage
 	private final HashMap<String, Boolean> settings = new HashMap<>();
 	private final HashMap<String, Integer> teams = new HashMap<>();
 
-	private final HashMap<Integer, ArrayList<SpawnPadTileEntity>> spawnPads = new HashMap<>();
+	private final ArrayList<BlockPos> spawnPadPositions = new ArrayList<>();
+
+	private boolean needsSpawnPadUpdate = false;
 
 	static
 	{
@@ -75,6 +76,15 @@ public class Stage
 		for(Map.Entry<String, Integer> team : teams.entrySet())
 			teamsNbt.putInt(team.getKey(), team.getValue());
 		nbt.put("Teams", teamsNbt);
+
+		if(!needsSpawnPadUpdate)
+		{
+			ListTag list = new ListTag();
+			for (BlockPos spawnPadPos : spawnPadPositions)
+				list.add(NbtUtils.writeBlockPos(spawnPadPos));
+
+			nbt.put("SpawnPads", list);
+		}
 
 		return nbt;
 	}
@@ -175,6 +185,14 @@ public class Stage
 		CompoundTag teamsNbt = nbt.getCompound("Teams");
 		for(String key : teamsNbt.getAllKeys())
 			teams.put(key, teamsNbt.getInt(key));
+
+		spawnPadPositions.clear();
+
+		needsSpawnPadUpdate = !nbt.contains("SpawnPads", Tag.TAG_LIST);
+
+		ListTag list = nbt.getList("SpawnPads", Tag.TAG_COMPOUND);
+		for (Tag tag : list)
+			spawnPadPositions.add(NbtUtils.readBlockPos((CompoundTag) tag));
 	}
 
 	public Stage(Level level, BlockPos posA, BlockPos posB, String id)
@@ -183,6 +201,11 @@ public class Stage
 		this.id = id;
 
 		updateBounds(level, posA, posB);
+	}
+
+	public boolean needSpawnPadUpdate()
+	{
+		return needsSpawnPadUpdate;
 	}
 
 	public static void registerGameruleSetting(GameRules.Key<GameRules.BooleanValue> rule)
@@ -213,7 +236,7 @@ public class Stage
 
 	public void updateSpawnPads(Level level)
 	{
-		spawnPads.clear();
+		spawnPadPositions.clear();
 		Level stageLevel = level.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, dimID));
 
 		BlockPos blockpos2 = new BlockPos(Math.min(cornerA.getX(), cornerB.getX()), Math.min(cornerB.getY(), cornerA.getY()), Math.min(cornerA.getZ(), cornerB.getZ()));
@@ -228,62 +251,69 @@ public class Stage
 					}
 				}
 
+		needsSpawnPadUpdate = false;
 	}
 
 	public void addSpawnPad(SpawnPadTileEntity spawnPad)
 	{
-		if(!spawnPads.containsKey(spawnPad.getColor()))
-			spawnPads.put(spawnPad.getColor(), new ArrayList<>());
-		else if(spawnPads.get(spawnPad.getColor()).contains(spawnPad))
-			return;
-
-		spawnPads.get(spawnPad.getColor()).add(spawnPad);
+		if(!spawnPadPositions.contains(spawnPad.getBlockPos()))
+			spawnPadPositions.add(spawnPad.getBlockPos());
 	}
 
 	public void removeSpawnPad(SpawnPadTileEntity spawnPad)
 	{
-		if(spawnPads.containsKey(spawnPad.getColor()))
-		{
-			spawnPads.get(spawnPad.getColor()).remove(spawnPad);
-			if(spawnPads.get(spawnPad.getColor()).isEmpty())
-				spawnPads.remove(spawnPad.getColor());
-		}
+		spawnPadPositions.remove(spawnPad.getBlockPos());
 	}
 
 	public boolean hasSpawnPads()
 	{
-		return !spawnPads.isEmpty();
+		return !spawnPadPositions.isEmpty();
 	}
 
-	public HashMap<Integer, ArrayList<SpawnPadTileEntity>> getSpawnPads()
+	public ArrayList<BlockPos> getSpawnPadPositions()
 	{
-		return spawnPads;
+		return spawnPadPositions;
 	}
 
-	public ArrayList<SpawnPadTileEntity> getAllSpawnPads()
+	public HashMap<Integer, ArrayList<SpawnPadTileEntity>> getSpawnPads(Level level)
 	{
-		ArrayList<SpawnPadTileEntity> result = new ArrayList<>();
-		for(ArrayList<SpawnPadTileEntity> spawnPads : spawnPads.values())
-			result.addAll(spawnPads);
+		HashMap<Integer, ArrayList<SpawnPadTileEntity>> result = new HashMap<>();
+
+		for (BlockPos pos : spawnPadPositions)
+			if(level.getBlockEntity(pos) instanceof SpawnPadTileEntity pad)
+			{
+				if(!result.containsKey(pad.getColor()))
+					result.put(pad.getColor(), new ArrayList<>());
+				result.get(pad.getColor()).add(pad);
+			}
 
 		return result;
 	}
 
+	public List<SpawnPadTileEntity> getAllSpawnPads(Level level)
+	{
+		return spawnPadPositions.stream().map(pos -> level.getBlockEntity(pos)).filter(te -> te instanceof SpawnPadTileEntity).map(te -> (SpawnPadTileEntity)te).toList();
+	}
+
 	public boolean superJumpToStage(ServerPlayer player)
 	{
-		if(!player.level.dimension().location().equals(dimID) || getSpawnPads().isEmpty())
+		if(!player.level.dimension().location().equals(dimID) || getSpawnPadPositions().isEmpty())
 			return false;
 
 		int playerColor = ColorUtils.getPlayerColor(player);
-		if(!getSpawnPads().containsKey(playerColor))
+		HashMap<Integer, ArrayList<SpawnPadTileEntity>> spawnPads = getSpawnPads(player.level);
+
+		if(!spawnPads.containsKey(playerColor))
 		{
-			playerColor = getSpawnPads().keySet().toArray(new Integer[0])[player.getRandom().nextInt(spawnPads.size())];
+			playerColor = spawnPads.keySet().toArray(new Integer[0])[player.getRandom().nextInt(spawnPadPositions.size())];
 			ColorUtils.setPlayerColor(player, playerColor);
 		}
 
-		BlockPos targetPos = getSpawnPads().get(playerColor).get(player.getRandom().nextInt(getSpawnPads().get(playerColor).size())).getBlockPos();
+		BlockPos targetPos = spawnPads.get(playerColor).get(player.getRandom().nextInt(spawnPads.get(playerColor).size())).getBlockPos();
 
 
 		return SuperJumpCommand.superJump(player, new Vec3(targetPos.getX() + 0.5, targetPos.getY() + SuperJumpCommand.blockHeight(targetPos, player.level), targetPos.getZ() + 0.5));
 	}
+
+	static boolean stagesLoaded = false;
 }

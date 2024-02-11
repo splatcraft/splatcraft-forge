@@ -14,6 +14,7 @@ public class SaveInfo
     private ArrayList<Integer> colorScores = new ArrayList<>();
     private HashMap<String, Stage> stages = new HashMap<>();
 
+    boolean stagesLoaded = false;
     
     public Collection<Integer> getInitializedColorScores()
     {
@@ -76,4 +77,6 @@ public class SaveInfo
         for(String key : nbt.getCompound("Stages").getAllKeys())
             stages.put(key,new Stage(nbt.getCompound("Stages").getCompound(key), key));
     }
+
+
 }

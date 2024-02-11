@@ -16,6 +16,7 @@ import net.minecraft.util.Mth;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.c2s.RequestUpdateStageSpawnPadsPacket;
 import net.splatcraft.forge.network.c2s.SuperJumpToStagePacket;
 
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class StageSelectionScreen extends Screen
 		MenuButton stageButton = new MenuButton(10, 0, 168, stage.getStageName(), (b) -> {}, Button.NO_TOOLTIP, (ps, b) -> {}, ButtonColor.GREEN);
 		SuperJumpMenuButton jumpButton = new SuperJumpMenuButton(178, 0, 12,
 				(button, poseStack, mx, my) -> renderTooltip(poseStack, List.of(((SuperJumpMenuButton)button).state.tooltipText), Optional.empty(), mx, my),
-				drawIcon(WIDGETS, 0, 0, 244, 0, 12, 12), ButtonColor.CYAN, stage);
+				drawIcon(WIDGETS, 0, 0, 244, 0, 12, 12), stage);
 
 		jumpButton.active = false;
 
@@ -74,10 +75,11 @@ public class StageSelectionScreen extends Screen
 		buttons.add(jumpButton);
 	}
 
-	public static void updateValidSuperJumpsList(List<String> validStages, List<String> outOfReachStages)
+	public static void updateValidSuperJumpsList(List<String> validStages, List<String> outOfReachStages, List<String> needsUpdateStages)
 	{
 		for (SuperJumpMenuButton jumpButton : instance.jumpButtons) {
 			jumpButton.state = validStages.contains(jumpButton.stage.id) ? SuperJumpMenuButton.ButtonState.VALID :
+					needsUpdateStages.contains(jumpButton.stage.id) ? SuperJumpMenuButton.ButtonState.REQUIRES_UPDATE :
 					outOfReachStages.contains(jumpButton.stage.id) ? SuperJumpMenuButton.ButtonState.OUT_OF_RANGE :
 							SuperJumpMenuButton.ButtonState.NO_SPAWN_PADS;
 		}
@@ -207,7 +209,7 @@ public class StageSelectionScreen extends Screen
 
 	public static class MenuButton extends Button
 	{
-		final ButtonColor color;
+		ButtonColor color;
 		final PostDraw draw;
 
 		public MenuButton(int x, int y, int width, Component text, OnPress onPress, OnTooltip onTooltip, PostDraw draw, ButtonColor color)
@@ -231,8 +233,8 @@ public class StageSelectionScreen extends Screen
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
 			RenderSystem.enableDepthTest();
-			this.blit(poseStack, this.x, this.y, 0, color.ordinal() * 36 + i * 12, this.width / 2, this.height);
-			this.blit(poseStack, this.x + this.width / 2, this.y, 180 - this.width / 2, color.ordinal() * 36 + i * 12, this.width / 2, this.height);
+			this.blit(poseStack, this.x, this.y, 0, getColor().ordinal() * 36 + i * 12, this.width / 2, this.height);
+			this.blit(poseStack, this.x + this.width / 2, this.y, 180 - this.width / 2, getColor().ordinal() * 36 + i * 12, this.width / 2, this.height);
 			int j = getFGColor();
 			drawString(poseStack, font, this.getMessage(), this.x + 3, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
 
@@ -266,6 +268,14 @@ public class StageSelectionScreen extends Screen
 			isHovered = hovered;
 		}
 
+		public ButtonColor getColor() {
+			return color;
+		}
+
+		public void setColor(ButtonColor color) {
+			this.color = color;
+		}
+
 		public interface PostDraw
 		{
 			void apply(PoseStack poseStack, MenuButton button);
@@ -277,15 +287,34 @@ public class StageSelectionScreen extends Screen
 		final Stage stage;
 		public ButtonState state = ButtonState.REQUESTING;
 
-		public SuperJumpMenuButton(int x, int y, int width, OnTooltip onTooltip, PostDraw draw, ButtonColor color, Stage stage)
+		public SuperJumpMenuButton(int x, int y, int width, OnTooltip onTooltip, PostDraw draw, Stage stage)
 		{
 			super(x, y, width, TextComponent.EMPTY, (b) ->
 			{
-				SplatcraftPacketHandler.sendToServer(new SuperJumpToStagePacket(stage.id));
-				Minecraft.getInstance().setScreen(null);
-			}, onTooltip, draw, color);
+				SuperJumpMenuButton jumpButton = ((SuperJumpMenuButton)b);
+
+				switch (jumpButton.state)
+				{
+					case REQUIRES_UPDATE ->
+					{
+						jumpButton.state = ButtonState.REQUESTING;
+						SplatcraftPacketHandler.sendToServer(new RequestUpdateStageSpawnPadsPacket(jumpButton.stage));
+					}
+					default ->
+					{
+						SplatcraftPacketHandler.sendToServer(new SuperJumpToStagePacket(stage.id));
+						Minecraft.getInstance().setScreen(null);
+					}
+				}
+
+			}, onTooltip, draw, ButtonColor.CYAN);
 
 			this.stage = stage;
+		}
+
+		@Override
+		public ButtonColor getColor() {
+			return state.color;
 		}
 
 		@Override
@@ -296,19 +325,22 @@ public class StageSelectionScreen extends Screen
 
 		public enum ButtonState
 		{
-			REQUESTING(false, new TranslatableComponent("gui.stage_pad.button.superjump_to.requesting")),
-			OUT_OF_RANGE(false, new TranslatableComponent("gui.stage_pad.button.superjump_to.out_of_range").withStyle(ChatFormatting.RED)),
-			NO_SPAWN_PADS(false, new TranslatableComponent("gui.stage_pad.button.superjump_to.no_pads_found").withStyle(ChatFormatting.RED)),
-			VALID(true, new TranslatableComponent("gui.stage_pad.button.superjump_to"))
+			REQUESTING(false, ButtonColor.YELLOW, new TranslatableComponent("gui.stage_pad.button.superjump_to.requesting")),
+			OUT_OF_RANGE(false, ButtonColor.RED, new TranslatableComponent("gui.stage_pad.button.superjump_to.out_of_range").withStyle(ChatFormatting.RED)),
+			NO_SPAWN_PADS(false, ButtonColor.RED,  new TranslatableComponent("gui.stage_pad.button.superjump_to.no_pads_found").withStyle(ChatFormatting.RED)),
+			VALID(true, ButtonColor.CYAN,  new TranslatableComponent("gui.stage_pad.button.superjump_to")),
+			REQUIRES_UPDATE(true, ButtonColor.YELLOW, new TranslatableComponent("gui.stage_pad.button.superjump_to.requires_update").withStyle(ChatFormatting.YELLOW))
 			;
 
 
 			final boolean valid;
 			final Component tooltipText;
+			final ButtonColor color;
 
-			ButtonState(boolean valid, Component tooltipText) {
+			ButtonState(boolean valid, ButtonColor color, Component tooltipText) {
 				this.valid = valid;
 				this.tooltipText = tooltipText;
+				this.color = color;
 			}
 		}
 	}
@@ -340,6 +372,7 @@ public class StageSelectionScreen extends Screen
 		PURPLE,
 		LIME,
 		CYAN,
-		RED
+		RED,
+		YELLOW
 	}
 }

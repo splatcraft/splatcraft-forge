@@ -15,11 +15,13 @@ public class SendStageWarpDataToPadPacket extends PlayS2CPacket
 {
 	final List<String> validStages;
 	final List<String> outOfReachStages;
+	final List<String> needsUpdate;
 
-	public SendStageWarpDataToPadPacket(List<String> validStages, List<String> outOfReachStages)
+	public SendStageWarpDataToPadPacket(List<String> validStages, List<String> outOfReachStages, List<String> needsUpdate)
 	{
 		this.validStages = validStages;
 		this.outOfReachStages = outOfReachStages;
+		this.needsUpdate = needsUpdate;
 	}
 
 
@@ -34,6 +36,10 @@ public class SendStageWarpDataToPadPacket extends PlayS2CPacket
 		for (String stageId : outOfReachStages) {
 			buffer.writeUtf(stageId);
 		}
+		buffer.writeInt(needsUpdate.size());
+		for (String stageId : needsUpdate) {
+			buffer.writeUtf(stageId);
+		}
 	}
 
 	public static SendStageWarpDataToPadPacket compile(Player player)
@@ -42,10 +48,17 @@ public class SendStageWarpDataToPadPacket extends PlayS2CPacket
 		stages.removeIf(stage -> !stage.hasSpawnPads());
 
 		ArrayList<Stage> outOfRange = new ArrayList<>();
+		ArrayList<Stage> needsUpdate = new ArrayList<>();
 
 		for (Stage stage : stages)
 		{
-			ArrayList<SpawnPadTileEntity> validPads = stage.getAllSpawnPads();
+			if(stage.needSpawnPadUpdate())
+			{
+				needsUpdate.add(stage);
+				continue;
+			}
+
+			ArrayList<SpawnPadTileEntity> validPads = new ArrayList<>(stage.getAllSpawnPads(player.level));
 			validPads.removeIf(pad -> !SuperJumpCommand.canSuperJumpTo(player, pad.getSuperJumpPos()));
 
 			if(validPads.isEmpty())
@@ -53,30 +66,37 @@ public class SendStageWarpDataToPadPacket extends PlayS2CPacket
 		}
 
 		stages.removeIf(outOfRange::contains);
+		stages.removeIf(needsUpdate::contains);
 
-		return new SendStageWarpDataToPadPacket(stages.stream().map(stage -> stage.id).toList(), outOfRange.stream().map(stage -> stage.id).toList());
+		return new SendStageWarpDataToPadPacket(stages.stream().map(
+				stage -> stage.id).toList(),
+				outOfRange.stream().map(stage -> stage.id).toList(),
+				needsUpdate.stream().map(stage -> stage.id).toList());
 	}
 
 	public static SendStageWarpDataToPadPacket decode(FriendlyByteBuf buffer)
 	{
 		int validStageCount = buffer.readInt();
 		ArrayList<String> validStages = new ArrayList<>();
-
 		for(int i = 0; i < validStageCount; i++)
 			validStages.add(buffer.readUtf());
 
 		int outOfReachStageCount = buffer.readInt();
 		ArrayList<String> outOfReachStages = new ArrayList<>();
-
 		for(int i = 0; i < outOfReachStageCount; i++)
 			outOfReachStages.add(buffer.readUtf());
 
-		return new SendStageWarpDataToPadPacket(validStages, outOfReachStages);
+		int needsUpdateCount = buffer.readInt();
+		ArrayList<String> needsUpdateStages = new ArrayList<>();
+		for(int i = 0; i < needsUpdateCount; i++)
+			needsUpdateStages.add(buffer.readUtf());
+
+		return new SendStageWarpDataToPadPacket(validStages, outOfReachStages, needsUpdateStages);
 	}
 
 	@Override
 	public void execute()
 	{
-		StageSelectionScreen.updateValidSuperJumpsList(validStages, outOfReachStages);
+		StageSelectionScreen.updateValidSuperJumpsList(validStages, outOfReachStages, needsUpdate);
 	}
 }

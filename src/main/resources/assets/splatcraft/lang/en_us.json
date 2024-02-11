@@ -404,6 +404,7 @@
   "gui.stage_pad.button.superjump_to.out_of_range": "Stage is out of Super Jumping range!",
   "gui.stage_pad.button.superjump_to.no_pads_found": "Stage has no Spawn Pads!",
   "gui.stage_pad.button.superjump_to.requesting": "Loading...",
+  "gui.stage_pad.button.superjump_to.requires_update": "Click to detect Spawn Pads",
 
   "ink_color.invert": "Inverted %s",
   "ink_color.splatcraft.orange": "Orange",

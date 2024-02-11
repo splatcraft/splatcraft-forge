@@ -56,6 +56,7 @@ public class SplatcraftPacketHandler
         registerMessage(UseJumpLurePacket.class, UseJumpLurePacket::decode);
         registerMessage(SuperJumpToStagePacket.class, SuperJumpToStagePacket::decode);
         registerMessage(SendStageWarpDataToPadPacket.class, SendStageWarpDataToPadPacket::decode);
+        registerMessage(RequestUpdateStageSpawnPadsPacket.class, RequestUpdateStageSpawnPadsPacket::decode);
 
     }
 
