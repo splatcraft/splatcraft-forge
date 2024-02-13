@@ -121,6 +121,7 @@
   
   "item.splatcraft.super_jump_lure": "Esca per super salti",
   "item.splatcraft.super_jump_lure.tooltip": "Ti permette di eseguire un super salto verso la tua base o un giocatore con un'esca dello stesso colore.",
+  "item.splatcraft.stage_pad": "Selettore scenari NS",
 
   "item.splatcraft.squid_bumper": "Calamabarriera",
   "item.splatcraft.ink_cloth_helmet": "Cappello inchiostrato",
@@ -391,6 +392,19 @@
 
   "gui.ammo_knights_workbench.craft": "Ottieni",
   "gui.ammo_knights_workbench.empty": "Trova dei progetti per avere più armi!",
+
+  "gui.stage_pad.label.stage_select": "Scegli uno scenario",
+  "gui.stage_pad.label.settings": "Impostazioni",
+  "gui.stage_pad.label.rules": "Regole",
+  "gui.stage_pad.label.actions": "Azioni",
+  "gui.stage_pad.label.teams": "Squadre",
+
+  "gui.stage_pad.button.create": "+ Crea un nuovo scenario",
+  "gui.stage_pad.button.superjump_to": "Fai un super salto allo scenario",
+  "gui.stage_pad.button.superjump_to.out_of_range": "Questo scenario è fuori dal limite consentito!",
+  "gui.stage_pad.button.superjump_to.no_pads_found": "Questo scenario non ha basi di rigenerazione!",
+  "gui.stage_pad.button.superjump_to.requesting": "Caricamento..."
+  "gui.stage_pad.button.superjump_to.requires_update": "Clicca per controllare se lo scenario ha delle basi di rigenerazione",
 
   "ink_color.invert": "%s invertito",
   "ink_color.splatcraft.orange": "Arancione",
