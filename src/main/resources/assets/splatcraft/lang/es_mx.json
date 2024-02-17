@@ -39,9 +39,9 @@
   "block.splatcraft.canvas": "Lienzo para tinta",
 
   "block.splatcraft.ink_stained_wool": "Lana entintada",
-  "block.splatcraft.ink_stained_carpet": "Alfombra entitada",
-  "block.splatcraft.ink_stained_glass": "Cristal entitado",
-  "block.splatcraft.ink_stained_glass_pane": "Panel de cristal entitado",
+  "block.splatcraft.ink_stained_carpet": "Alfombra entintada",
+  "block.splatcraft.ink_stained_glass": "Cristal entintado",
+  "block.splatcraft.ink_stained_glass_pane": "Panel de cristal entintado",
 
   "block.splatcraft.empty_inkwell": "Tintero vacío",
   "block.splatcraft.grate": "Rejilla",
@@ -241,7 +241,7 @@
   
   "item.splatcraft.splat_bomb": "Plasbomba",
   "item.splatcraft.splat_bomb_2": "Plasbomba 2",
-  "item.splatcraft.burst_bomb": "Globo entintadoa",
+  "item.splatcraft.burst_bomb": "Globo entintado",
   "item.splatcraft.suction_bomb": "Bomba pegajosa",
   "item.splatcraft.curling_bomb": "Bomba deslizante",
   "item.splatcraft.splash_wall": "Telón de Tinta",
