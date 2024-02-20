@@ -2,122 +2,191 @@ package net.splatcraft.forge.client.gui.stagepad;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.RequestUpdateStageSpawnPadsPacket;
 import net.splatcraft.forge.network.c2s.SuperJumpToStagePacket;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-public class StageSelectionScreen extends Screen
+public class StageSelectionScreen extends AbstractStagePadScreen
 {
-	protected int imageWidth = 210;
-	protected int imageHeight = 130;
+	static final HashMap<Stage, Pair<MenuButton, SuperJumpMenuButton>> stages = new HashMap<>();
 
-	final ArrayList<MenuButton> buttons = new ArrayList<>();
-	final ArrayList<MenuButton> stageButtons = new ArrayList<>();
-	final ArrayList<SuperJumpMenuButton> jumpButtons = new ArrayList<>();
-
+	EditBox searchBar;
+	MenuButton createStageButton;
+	MenuButton toggleSearchBarButton;
 
 	private double scroll = 0;
 
 	static StageSelectionScreen instance;
 
 	private static final ResourceLocation TEXTURES = new ResourceLocation(Splatcraft.MODID, "textures/gui/stage_pad/stage_select.png");
-	private static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/stage_pad/widgets.png");
+
 	public StageSelectionScreen(Component title)
 	{
 		super(title);
 
-		minecraft = Minecraft.getInstance();
 		instance = this;
 
-		MenuButton createStageButton = new MenuButton(10, 0, 180, new TranslatableComponent("gui.stage_pad.button.create"), (b) -> {}, Button.NO_TOOLTIP, (ps, b) -> {},ButtonColor.LIME);
-		stageButtons.add(createStageButton);
-		buttons.add(createStageButton);
+		createStageButton = new MenuButton(10, 0, 178, 12, new TranslatableComponent("gui.stage_pad.button.create_stage"), false,
+				(b) -> getMinecraft().setScreen(new StageCreationScreen(title, this,"", null, null)), Button.NO_TOOLTIP, (ps, b) -> {}, MenuButton.ButtonColor.LIME);
+		addButton(createStageButton);
+		stages.clear();
+
+		toggleSearchBarButton = new ToggleMenuButton(176, 12, 24, 12, (b) ->
+		{
+			searchBar.visible = !searchBar.visible;
+			searchBar.setFocus(searchBar.visible);
+			if(!searchBar.visible)
+				searchBar.setValue("");
+		}, showText(new TranslatableComponent("gui.stage_pad.button.search_stage")), drawIcon(WIDGETS, 0, 0, 232, 12, 12, 12), MenuButton.ButtonColor.PURPLE, false);
+
+		addButton(toggleSearchBarButton);
 
 		if (minecraft.level != null)
-		{
-			ArrayList<Stage> stages = Stage.getAllStages(minecraft.level);
-			for(Stage stage : stages)
-				addStageButton(stage);
-		}
+			Stage.getAllStages(minecraft.level).forEach(this::addStageButton);
+	}
 
+	@Override
+	public boolean isPauseScreen() {
+		return false;
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+
+		if(searchBar == null)
+		{
+			searchBar = new EditBox(font, 11, 13, 175, 10, new TranslatableComponent("gui.stage_pad.textbox.search_stage"));
+			searchBar.setFocus(false);
+			searchBar.visible = false;
+		}
 	}
 
 	public void addStageButton(Stage stage)
 	{
-		MenuButton stageButton = new MenuButton(10, 0, 168, stage.getStageName(), (b) -> {}, Button.NO_TOOLTIP, (ps, b) -> {}, ButtonColor.GREEN);
-		SuperJumpMenuButton jumpButton = new SuperJumpMenuButton(178, 0, 12,
+		MenuButton stageButton = new MenuButton(10, 0, 166, stage.getStageName(), (b) -> {}, Button.NO_TOOLTIP, (ps, b) -> {}, MenuButton.ButtonColor.GREEN);
+		SuperJumpMenuButton jumpButton = new SuperJumpMenuButton(176, 0, 12,
 				(button, poseStack, mx, my) -> renderTooltip(poseStack, List.of(((SuperJumpMenuButton)button).state.tooltipText), Optional.empty(), mx, my),
 				(poseStack, button) -> drawIcon(WIDGETS, 0, 0, 244, ((SuperJumpMenuButton)button).state == SuperJumpMenuButton.ButtonState.REQUIRES_UPDATE ? 12 : 0, 12, 12).apply(poseStack, button), stage);
 
 		jumpButton.active = false;
 
-		stageButtons.add(stageButton);
-		jumpButtons.add(jumpButton);
-		buttons.add(stageButton);
-		buttons.add(jumpButton);
+		stages.put(stage, new Pair<>(stageButton, jumpButton));
+		addButton(stageButton);
+		addButton(jumpButton);
 	}
 
 	public static void updateValidSuperJumpsList(List<String> validStages, List<String> outOfReachStages, List<String> needsUpdateStages)
 	{
-		for (SuperJumpMenuButton jumpButton : instance.jumpButtons)
+		stages.values().stream().map(Pair::getSecond).forEach(jumpButton ->
 		{
 			SuperJumpMenuButton.loading = false;
 			jumpButton.state = validStages.contains(jumpButton.stage.id) ? SuperJumpMenuButton.ButtonState.VALID :
 					needsUpdateStages.contains(jumpButton.stage.id) ? SuperJumpMenuButton.ButtonState.REQUIRES_UPDATE :
 					outOfReachStages.contains(jumpButton.stage.id) ? SuperJumpMenuButton.ButtonState.OUT_OF_RANGE :
 							SuperJumpMenuButton.ButtonState.NO_SPAWN_PADS;
-		}
+		});
 	}
 
 	@Override
-	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks)
+	public boolean keyPressed(int mouseX, int mouseY, int key)
 	{
+		if(searchBar.isFocused())
+			searchBar.keyPressed(mouseX, mouseY, key);
+		return super.keyPressed(mouseX, mouseY, key);
+	}
 
-		MenuButton hoveredButton = null;
+	@Override
+	public boolean charTyped(char c, int p_94684_)
+	{
+		if(searchBar.isFocused())
+			searchBar.charTyped(c, p_94684_);
+		return super.charTyped(c, p_94684_);
+	}
 
-		for(MenuButton button : buttons)
+	@Override
+	public void tick() {
+		super.tick();
+		searchBar.tick();
+	}
+
+	@Override
+	public void handleWidgets(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks)
+	{
+		List<Pair<MenuButton, SuperJumpMenuButton>> stageButtons = stages.keySet().stream().sorted(Comparator.comparing(s -> s.getStageName().getString()))
+				.filter(s -> s.getStageName().getString().toLowerCase().contains(searchBar.getValue().toLowerCase()))
+				.map(stages::get).toList();
+
+		buttonListSize = stageButtons.size() + 1;
+
+		int x = (width - imageWidth) / 2;
+		int y = (height - imageHeight) / 2;
+		searchBar.render(matrixStack, mouseX, mouseY, partialTicks);
+		searchBar.setBordered(false);
+
+		buttons.forEach(b -> b.visible = false);
+
+		for(int i = 0; i < Math.min(8, stageButtons.size() + 1); i++)
 		{
-			button.setHovered(false);
-			if(isMouseOver(mouseX, mouseY, button))
-				hoveredButton = button;
+			MenuButton stageButton;
+			SuperJumpMenuButton jumpButton = null;
+
+			int index = (int) (scroll * Math.max(0, stageButtons.size() - 7) + i);
+
+			if(index == 0)
+				stageButton = createStageButton;
+			else
+			{
+				index--;
+				if(index >= stageButtons.size()) break;
+				stageButton = stageButtons.get(index).getFirst();
+				jumpButton = stageButtons.get(index).getSecond();
+			}
+
+			stageButton.relativeY = (i + 2) * 12;
+			stageButton.visible = true;
+
+			if(jumpButton != null)
+			{
+				jumpButton.relativeY = (i + 2) * 12;
+				jumpButton.active = jumpButton.getState().valid;
+				jumpButton.visible = true;
+			}
 		}
 
-		if(hoveredButton != null)
-			hoveredButton.setHovered(true);
+		toggleSearchBarButton.visible = true;
+	}
 
-		renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		renderTooltips(matrixStack, mouseX, mouseY);
+	@Override
+	public boolean canClickButtons() {
+		return !scrollBarHeld;
+	}
 
-	}
-	public boolean isMouseOver(double mouseX, double mouseY, MenuButton button)
-	{
-		return isMouseOver(mouseX, mouseY, button.x, button.y, button.x + button.getWidth(), button.y + button.getHeight());
-	}
-	public boolean isMouseOver(double mouseX, double mouseY, double x1, double y1, double x2, double y2)
-	{
-		return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
-	}
 
 	private boolean scrollBarHeld = false;
+	int buttonListSize = 0;
+	String prevSearchBarText = "";
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int clickButton)
@@ -125,11 +194,9 @@ public class StageSelectionScreen extends Screen
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
 
-		if(stageButtons.size() > 8 && isMouseOver(mouseX, mouseY, x + 190, y + 24, x + 200, y + 120))
+		if(buttonListSize > 7 && isMouseOver(mouseX, mouseY, x + 190, y + 24, x + 200, y + 120))
 			scrollBarHeld = true;
-		if(!scrollBarHeld)
-			for (MenuButton button : buttons)
-				button.mouseClicked(mouseX, mouseY, clickButton);
+
 		return super.mouseClicked(mouseX, mouseY, clickButton);
 	}
 
@@ -152,11 +219,12 @@ public class StageSelectionScreen extends Screen
 		return super.mouseDragged(mouseX, mouseY, mouseButton, p_94702_, p_94703_);
 	}
 
+
 	@Override
 	public boolean mouseScrolled(double mouseX, double mouseY, double amount)
 	{
-		if (stageButtons.size() > 8)
-			scroll = Mth.clamp(scroll - Math.signum(amount) / (stageButtons.size() - 8), 0.0f, 1.0f);
+		if (stages.size() > 7)
+			scroll = Mth.clamp(scroll - Math.signum(amount) / (buttonListSize - 7), 0.0f, 1.0f);
 
 		return true;
 	}
@@ -164,6 +232,12 @@ public class StageSelectionScreen extends Screen
 	@Override
 	public void renderBackground(PoseStack poseStack)
 	{
+		if(!searchBar.getValue().equals(prevSearchBarText))
+		{
+			scroll = 0;
+			prevSearchBarText = searchBar.getValue();
+		}
+
 		super.renderBackground(poseStack);
 
 		RenderSystem.setShaderColor(1, 1, 1, 1);
@@ -174,113 +248,68 @@ public class StageSelectionScreen extends Screen
 
 		blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
 
+		if(searchBar.visible)
+			blit(poseStack, x + 10, y + 12, 0, 244, 178, 12);
+		else
+		{
+			Component label = new TranslatableComponent("gui.stage_pad.label.stage_select");
+			font.draw(poseStack, label, x + 105 - (float) font.width(label) / 2, y + 14, 0xFFFFFF);
+		}
+
 		RenderSystem.setShaderTexture(0, WIDGETS);
-		blit(poseStack, x + 190, y + 24 + (int) (scroll * 81), 202 + (stageButtons.size() > 8 ? (scrollBarHeld ? 2 : 1) * 10 : 0), 0, 10, 15);
-
-		Component label = new TranslatableComponent("gui.stage_pad.label.stage_select");
-		font.draw(poseStack, label, x + 105 - (float) font.width(label) / 2, y + 14, 0xFFFFFF);
-
-		for(int i = 0; i < Math.min(8, stageButtons.size()); i++)
-		{
-			int index = (int) (scroll * (stageButtons.size() - 8) + i);
-			if(index >= stageButtons.size()) break;
-
-			MenuButton stageButton = stageButtons.get(index);
-			stageButton.x = x + 10;
-			stageButton.y = y + (i + 2) * 12;
-			stageButton.renderButton(poseStack);
-
-			if(index > 0 && index - 1 < jumpButtons.size())
-			{
-				SuperJumpMenuButton jumpButton = jumpButtons.get(index - 1);
-				jumpButton.x = x + 178;
-				jumpButton.y = y + (i + 2) * 12;
-				jumpButton.active = jumpButton.getState().valid;
-
-				jumpButton.renderButton(poseStack);
-			}
-		}
+		blit(poseStack, x + 188, y + 24 + (int) (scroll * 81), 196 + (buttonListSize > 7 ? (scrollBarHeld ? 2 : 1) * 12 : 0), 0, 12, 15);
 	}
 
-	private void renderTooltips(PoseStack poseStack, int mouseX, int mouseY)
-	{
-		for(MenuButton button : buttons)
-			if(button.isHovered())
-				button.renderToolTip(poseStack, mouseX, mouseY);
-	}
 
-	public static class MenuButton extends Button
+	public static class ToggleMenuButton extends MenuButton
 	{
-		ButtonColor color;
-		final PostDraw draw;
-
-		public MenuButton(int x, int y, int width, Component text, OnPress onPress, OnTooltip onTooltip, PostDraw draw, ButtonColor color)
+		boolean toggle;
+		public ToggleMenuButton(int x, int y, int width, Component text, OnPress onPress, OnTooltip onTooltip, PostDraw draw, ButtonColor color, boolean defaultState)
 		{
-			this(x, y, width, 12, text, onPress, onTooltip, draw, color);
+			super(x, y, width, text, onPress, onTooltip, draw, color);
+			toggle = defaultState;
 		}
-		public MenuButton(int x, int y, int width, int height, Component text, OnPress onPress, OnTooltip onTooltip, PostDraw draw,  ButtonColor color)
+
+		public ToggleMenuButton(int x, int y, int width, int height, OnPress onPress, OnTooltip onTooltip, PostDraw draw, ButtonColor color, boolean defaultState)
 		{
-			super(x, y, width, height, text, onPress, onTooltip);
-			this.color = color;
-			this.draw = draw;
+			super(x, y, width, height, TextComponent.EMPTY, false, onPress, onTooltip, draw, color);
+			toggle = defaultState;
+		}
+
+		@Override
+		public void onPress()
+		{
+			toggle = !toggle;
+			super.onPress();
 		}
 
 		public void renderButton(PoseStack poseStack) {
+			if(!visible)
+				return;
+
 			Minecraft minecraft = Minecraft.getInstance();
 			Font font = minecraft.font;
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, WIDGETS);
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-			int i = this.getYImage(this.isHoveredOrFocused());
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
 			RenderSystem.enableDepthTest();
-			this.blit(poseStack, this.x, this.y, 0, getColor().ordinal() * 36 + i * 12, this.width / 2, this.height);
-			this.blit(poseStack, this.x + this.width / 2, this.y, 180 - this.width / 2, getColor().ordinal() * 36 + i * 12, this.width / 2, this.height);
+			this.blit(poseStack, this.x, this.y, 0, getColor().ordinal() * 36, this.width / 2, this.height);
+			this.blit(poseStack, this.x + this.width / 2, this.y, 180 - this.width / 2, getColor().ordinal() * 36, this.width / 2, this.height);
+
+			if(active)
+			{
+				int i = this.getYImage(this.isHoveredOrFocused());
+				this.blit(poseStack, this.x + (toggle ? width / 2 : 0), this.y, 0, getColor().ordinal() * 36 + i * 12, this.width / 4, this.height);
+				this.blit(poseStack, this.x + (toggle ? width / 2 : 0) + this.width / 4, this.y, 180 - this.width / 4, getColor().ordinal() * 36 + i * 12, this.width / 2, this.height);
+			}
+
 			int j = getFGColor();
 			drawString(poseStack, font, this.getMessage(), this.x + 3, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
 
 			draw.apply(poseStack, this);
 
-		}
-
-		@Override
-		protected int getYImage(boolean hovered)
-		{
-			return active ? (hovered ? 2 : 1) : 0;
-		}
-
-		public float getAlpha()
-		{
-			return alpha;
-		}
-
-		@Override
-		public int getFGColor() {
-			return 0xFFFFFF;
-		}
-
-		public boolean isHovered()
-		{
-			return isHovered;
-		}
-
-		public void setHovered(boolean hovered)
-		{
-			isHovered = hovered;
-		}
-
-		public ButtonColor getColor() {
-			return color;
-		}
-
-		public void setColor(ButtonColor color) {
-			this.color = color;
-		}
-
-		public interface PostDraw
-		{
-			void apply(PoseStack poseStack, MenuButton button);
 		}
 	}
 
@@ -353,36 +382,5 @@ public class StageSelectionScreen extends Screen
 				this.color = color;
 			}
 		}
-	}
-
-
-	public Button.OnTooltip showText(Component... lines)
-	{
-		return (button, poseStack, x, y) ->
-		{
-			renderTooltip(poseStack, Arrays.asList(lines), Optional.empty(), x, y);
-		};
-	}
-
-	public MenuButton.PostDraw drawIcon(ResourceLocation location, int xOff, int yOff, int texX, int texY, int texWidth, int texHeight)
-	{
-		return (poseStack, button) ->
-		{
-			float color = button.active ? 1 : 0.5f;
-			RenderSystem.setShaderColor(color, color, color, button.getAlpha());
-			RenderSystem.setShaderTexture(0, location);
-			this.blit(poseStack, button.x + xOff, button.y + yOff, texX, texY, texWidth, texHeight);
-		};
-	}
-
-
-	public enum ButtonColor
-	{
-		GREEN,
-		PURPLE,
-		LIME,
-		CYAN,
-		RED,
-		YELLOW
 	}
 }
