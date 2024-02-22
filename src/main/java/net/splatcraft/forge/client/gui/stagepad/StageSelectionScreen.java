@@ -1,5 +1,6 @@
 package net.splatcraft.forge.client.gui.stagepad;
 
+import com.mojang.blaze3d.platform.ClipboardManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
@@ -7,17 +8,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.core.Registry;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.items.StagePadItem;
@@ -25,13 +21,12 @@ import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.RequestUpdateStageSpawnPadsPacket;
 import net.splatcraft.forge.network.c2s.RequestWarpDataPacket;
 import net.splatcraft.forge.network.c2s.SuperJumpToStagePacket;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class StageSelectionScreen extends AbstractStagePadScreen
 {
-	static final HashMap<Stage, Pair<MenuButton, SuperJumpMenuButton>> stages = new HashMap<>();
+	static final TreeMap<Stage, Pair<MenuButton, SuperJumpMenuButton>> stages = new TreeMap<>();
 
 	MenuTextBox searchBar;
 	MenuButton createStageButton;
@@ -39,33 +34,28 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 
 	private double scroll = 0;
 
-	static StageSelectionScreen instance;
+	public static StageSelectionScreen instance;
 
 	private static final ResourceLocation TEXTURES = new ResourceLocation(Splatcraft.MODID, "textures/gui/stage_pad/stage_select.png");
 
 	public StageSelectionScreen(Component title)
 	{
-		super(title);
+		super(title, StagePadItem.OPEN_MAIN_MENU);
 
 		instance = this;
 
-		createStageButton = new MenuButton(10, 0, 178, 12, new TranslatableComponent("gui.stage_pad.button.create_stage"), false,
-				(b) -> getMinecraft().setScreen(new StageCreationScreen(title, this,"", null, null)), Button.NO_TOOLTIP, (ps, b) -> {}, MenuButton.ButtonColor.LIME);
-		addButton(createStageButton);
+		createStageButton = addButton(new MenuButton(10, 0, 178, 12,
+				goToScreen(() -> new StageCreationScreen(title, this, "", null, null)), Button.NO_TOOLTIP,
+				drawText(new TranslatableComponent("gui.stage_pad.button.create_stage"), false), MenuButton.ButtonColor.LIME));
 		stages.clear();
 
-		toggleSearchBarButton = new ToggleMenuButton(176, 12, 24, 12, (b) ->
+		toggleSearchBarButton = addButton(new ToggleMenuButton(176, 12, 24, 12, (b) ->
 		{
 			searchBar.visible = !searchBar.visible;
 			searchBar.setFocus(searchBar.visible);
 			if(!searchBar.visible)
 				searchBar.setValue("");
-		}, showText(new TranslatableComponent("gui.stage_pad.button.search_stage")), drawIcon(WIDGETS, 0, 0, 232, 12, 12, 12), MenuButton.ButtonColor.PURPLE, false);
-
-		addButton(toggleSearchBarButton);
-
-		if (minecraft.level != null)
-			Stage.getAllStages(minecraft.level).forEach(this::addStageButton);
+		}, showText(new TranslatableComponent("gui.stage_pad.button.search_stage")), drawToggleIcon(WIDGETS, 0, 0, 232, 12, 12, 12, false), MenuButton.ButtonColor.PURPLE, false));
 
 		addTextBox(font ->
 		{
@@ -77,19 +67,45 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 	}
 
 	@Override
-	protected void init() {
+	protected void init()
+	{
 		super.init();
-		SplatcraftPacketHandler.sendToServer(new RequestWarpDataPacket());
+
+		if (getMinecraft().level == null)
+			return;
+
+		ArrayList<Stage> stages = Stage.getAllStages(getMinecraft().level);
+
+		if(!stages.equals(new ArrayList<>(StageSelectionScreen.stages.keySet())))
+		{
+			SplatcraftPacketHandler.sendToServer(new RequestWarpDataPacket());
+			stages.forEach(this::addStageButton);
+		}
 	}
 
 	public void addStageButton(Stage stage)
 	{
-		MenuButton stageButton = new MenuButton(10, 0, 166, stage.getStageName(), (b) -> minecraft.setScreen(new StageEditorScreen(getTitle(), stage.id)), Button.NO_TOOLTIP, (ps, b) -> {}, MenuButton.ButtonColor.GREEN);
+		MenuButton stageButton = new MenuButton(10, 0, 166, goToScreen(() -> new StageSettingsScreen(getTitle(), stage.id, this)), Button.NO_TOOLTIP, drawText(false), MenuButton.ButtonColor.GREEN)
+		{
+			@Override
+			public Component getMessage() {
+				return Stage.getStage(Minecraft.getInstance().level, stage.id).getStageName();
+			}
+		};
 		SuperJumpMenuButton jumpButton = new SuperJumpMenuButton(176, 0, 12,
 				(button, poseStack, mx, my) -> renderTooltip(poseStack, List.of(((SuperJumpMenuButton)button).state.tooltipText), Optional.empty(), mx, my),
 				(poseStack, button) -> drawIcon(WIDGETS, 0, 0, 244, ((SuperJumpMenuButton)button).state == SuperJumpMenuButton.ButtonState.REQUIRES_UPDATE ? 12 : 0, 12, 12).apply(poseStack, button), stage);
 
 		jumpButton.active = false;
+
+		if(stages.containsKey(stage))
+		{
+			Pair<MenuButton, SuperJumpMenuButton> pair = stages.get(stage);
+			buttons.remove(pair.getFirst());
+			removeWidget(pair.getFirst());
+			buttons.remove(pair.getSecond());
+			removeWidget(pair.getSecond());
+		}
 
 		stages.put(stage, new Pair<>(stageButton, jumpButton));
 		addButton(stageButton);
@@ -107,6 +123,7 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 							SuperJumpMenuButton.ButtonState.NO_SPAWN_PADS;
 		});
 	}
+
 
 	@Override
 	public void handleWidgets(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks)
@@ -239,15 +256,16 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 	public static class ToggleMenuButton extends MenuButton
 	{
 		boolean toggle;
-		public ToggleMenuButton(int x, int y, int width, Component text, OnPress onPress, OnTooltip onTooltip, PostDraw draw, ButtonColor color, boolean defaultState)
+		boolean renderBackground = true;
+		public ToggleMenuButton(int x, int y, int width, OnPress onPress, OnTooltip onTooltip, PostDraw draw, ButtonColor color, boolean defaultState)
 		{
-			super(x, y, width, text, onPress, onTooltip, draw, color);
+			super(x, y, width, onPress, onTooltip, draw, color);
 			toggle = defaultState;
 		}
 
 		public ToggleMenuButton(int x, int y, int width, int height, OnPress onPress, OnTooltip onTooltip, PostDraw draw, ButtonColor color, boolean defaultState)
 		{
-			super(x, y, width, height, TextComponent.EMPTY, false, onPress, onTooltip, draw, color);
+			super(x, y, width, height, onPress, onTooltip, draw, color);
 			toggle = defaultState;
 		}
 
@@ -258,20 +276,28 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 			super.onPress();
 		}
 
+		public ToggleMenuButton setRenderBackground(boolean v)
+		{
+			renderBackground = v;
+			return this;
+		}
+
 		public void renderButton(PoseStack poseStack) {
 			if(!visible)
 				return;
 
-			Minecraft minecraft = Minecraft.getInstance();
-			Font font = minecraft.font;
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, WIDGETS);
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
 			RenderSystem.enableDepthTest();
-			this.blit(poseStack, this.x, this.y, 0, getColor().ordinal() * 36, this.width / 2, this.height);
-			this.blit(poseStack, this.x + this.width / 2, this.y, 180 - this.width / 2, getColor().ordinal() * 36, this.width / 2, this.height);
+
+			if(renderBackground)
+			{
+				this.blit(poseStack, this.x, this.y, 0, getColor().ordinal() * 36, this.width / 2, this.height);
+				this.blit(poseStack, this.x + this.width / 2, this.y, 180 - this.width / 2, getColor().ordinal() * 36, this.width / 2, this.height);
+			}
 
 			if(active)
 			{
@@ -280,11 +306,30 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 				this.blit(poseStack, this.x + (toggle ? width / 2 : 0) + this.width / 4, this.y, 180 - this.width / 4, getColor().ordinal() * 36 + i * 12, this.width / 2, this.height);
 			}
 
-			int j = getFGColor();
-			drawString(poseStack, font, this.getMessage(), this.x + 3, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
-
 			draw.apply(poseStack, this);
 
+		}
+	}
+
+	public static class HiddenButton extends MenuButton
+	{
+
+		public HiddenButton(int x, int y, int width, int height, OnPress onPress, OnTooltip onTooltip, PostDraw draw) {
+			super(x, y, width, height, onPress, onTooltip, draw, ButtonColor.GREEN);
+		}
+
+		@Override
+		public void renderButton(PoseStack poseStack)
+		{
+
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, WIDGETS);
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+			RenderSystem.enableBlend();
+			RenderSystem.defaultBlendFunc();
+			RenderSystem.enableDepthTest();
+
+			draw.apply(poseStack, this);
 		}
 	}
 
@@ -297,7 +342,7 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 
 		public SuperJumpMenuButton(int x, int y, int width, OnTooltip onTooltip, PostDraw draw, Stage stage)
 		{
-			super(x, y, width, TextComponent.EMPTY, (b) ->
+			super(x, y, width, (b) ->
 			{
 				SuperJumpMenuButton jumpButton = ((SuperJumpMenuButton)b);
 

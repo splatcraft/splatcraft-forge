@@ -25,8 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class Stage
-{
+public class Stage implements Comparable<Stage> {
 	public static final ArrayList<String> VALID_SETTINGS = new ArrayList<>();
 	private Component name;
 
@@ -152,6 +151,10 @@ public class Stage
 	public Component getStageName()
 	{
 		return name;
+	}
+
+	public void seStagetName(Component name) {
+		this.name = name;
 	}
 
 	public BlockPos getCornerA() {
@@ -326,5 +329,15 @@ public class Stage
 		return SuperJumpCommand.superJump(player, new Vec3(targetPos.getX() + 0.5, targetPos.getY() + SuperJumpCommand.blockHeight(targetPos, player.level), targetPos.getZ() + 0.5));
 	}
 
-	static boolean stagesLoaded = false;
+
+	@Override
+	public int compareTo(Stage o) {
+		return id.compareTo(o.id);
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		return obj instanceof Stage oStage && id.equals(oStage.id);
+	}
 }

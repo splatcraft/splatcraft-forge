@@ -2,6 +2,7 @@ package net.splatcraft.forge.client.gui.stagepad;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -13,9 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
-import net.splatcraft.forge.items.StagePadItem;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
-import net.splatcraft.forge.network.c2s.RequestStageCreatePacket;
+import net.splatcraft.forge.network.c2s.CreateOrEditStagePacket;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -28,6 +28,7 @@ public class StageCreationScreen extends AbstractStagePadScreen
 
 	public static BlockPos corner1;
 	public static BlockPos corner2;
+	public static ResourceLocation dimension;
 	static String savedName = "";
 	@Nullable //null when stage creation screen was closed via escape key, opens creation menu back up without setting a corner pos
 	static Boolean setCorner1 = null;
@@ -39,25 +40,54 @@ public class StageCreationScreen extends AbstractStagePadScreen
 
 	public StageCreationScreen(Component label, @Nullable Screen parent, String savedStageName, @Nullable BlockPos cornerA, @Nullable BlockPos cornerB)
 	{
-		super(label, SET_STAGE_BOUNDS);
+		super(label, ((level, player, hand, stack, pos) ->
+		{
+			if(setCorner1 != null && pos != null)
+			{
+				if(setCorner1)
+				{
+					corner1 = pos;
+					if(!level.dimension().location().equals(dimension))
+					{
+						dimension = level.dimension().location();
+						corner2 = null;
+					}
+				}
+				else
+				{
+					corner2 = pos;
+					if(!level.dimension().location().equals(dimension))
+					{
+						dimension = level.dimension().location();
+						corner1 = null;
+					}
+				}
+			}
 
-		addButton(new MenuButton(51, 107, 50, 12, new TranslatableComponent("gui.stage_pad.button.cancel"), true, (b) -> getMinecraft().setScreen(parent),
-				Button.NO_TOOLTIP, (ps, b) -> {}, MenuButton.ButtonColor.RED));
-		addButton(new MenuButton(167, 70, 30, 12, new TranslatableComponent("gui.stage_pad.button.set_corner"), true, (b) -> clickSetCornerButton(b, true),
-				Button.NO_TOOLTIP, (ps, b) -> {}, MenuButton.ButtonColor.GREEN));
-		addButton(new MenuButton(167, 88, 30, 12, new TranslatableComponent("gui.stage_pad.button.set_corner"), true, (b) -> clickSetCornerButton(b, false),
-				Button.NO_TOOLTIP, (ps, b) -> {}, MenuButton.ButtonColor.GREEN));
-		createButton = addButton(new MenuButton(107, 107, 50, 12, new TranslatableComponent("gui.stage_pad.button.create"), true, (b) ->
+			Minecraft.getInstance().setScreen(new StageCreationScreen(stack.getDisplayName(), parent));
+			setCorner1 = null;
+		}));
+
+		addButton(new MenuButton(51, 107, 50, 12, goToScreen(() -> parent),
+				Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.button.cancel"), true), MenuButton.ButtonColor.RED));
+		addButton(new MenuButton(167, 70, 30, 12, (b) -> clickSetCornerButton(b, true),
+				showText(new TranslatableComponent("gui.stage_pad.button.set_from_world"), new TranslatableComponent("gui.stage_pad.button.set_from_clipboard").withStyle(ChatFormatting.YELLOW)), drawText(new TranslatableComponent("gui.stage_pad.button.set_corner"), true), MenuButton.ButtonColor.GREEN));
+		addButton(new MenuButton(167, 88, 30, 12, (b) -> clickSetCornerButton(b, false),
+				showText(new TranslatableComponent("gui.stage_pad.button.set_from_world"), new TranslatableComponent("gui.stage_pad.button.set_from_clipboard").withStyle(ChatFormatting.YELLOW)), drawText(new TranslatableComponent("gui.stage_pad.button.set_corner"), true), MenuButton.ButtonColor.GREEN));
+		createButton = addButton(new MenuButton(107, 107, 50, 12, (b) ->
 		{
 			if(canCreate())
 			{
-				SplatcraftPacketHandler.sendToServer(new RequestStageCreatePacket(stageId, new TextComponent(this.stageName.getValue()), corner1, corner2));
+				SplatcraftPacketHandler.sendToServer(new CreateOrEditStagePacket(stageId, new TextComponent(this.stageName.getValue()), corner1, corner2, dimension));
 
 				buttons.forEach(button -> button.active = false);
 				this.stageName.setFocus(false);
 				pendingCreation = true;
 			}
-		}, Button.NO_TOOLTIP, (ps, b) -> {}, MenuButton.ButtonColor.LIME));
+		}, Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.button.create"), true), MenuButton.ButtonColor.LIME));
+
+		addButton(new StageSelectionScreen.HiddenButton(62, 69, 102, 14, copyPos(() -> corner1), showCopyPos(() -> corner1), (ps, b) -> {}));
+		addButton(new StageSelectionScreen.HiddenButton(62, 87, 102, 14, copyPos(() -> corner2), showCopyPos(() -> corner2), (ps, b) -> {}));
 
 		addTextBox(font -> {
 			this.stageName = new MenuTextBox(font, 17, 40, 178, 12, new TranslatableComponent("gui.stage_pad.label.set_stage_name.textbox"), false);
@@ -69,7 +99,6 @@ public class StageCreationScreen extends AbstractStagePadScreen
 
 		corner1 = cornerA;
 		corner2 = cornerB;
-		savedName = savedStageName;
 	}
 
 	public StageCreationScreen(Component label, @Nullable Screen parent)
@@ -77,29 +106,35 @@ public class StageCreationScreen extends AbstractStagePadScreen
 		this(label, parent, savedName, corner1, corner2);
 	}
 
-	@Override
-	protected void init() {
-		super.init();
-	}
-
 	protected void clickSetCornerButton(Button button, boolean isCorner1)
 	{
-		setCorner1 = isCorner1;
-		minecraft.setScreen(null);
-	}
-
-	public static final StagePadItem.UseAction SET_STAGE_BOUNDS = ((level, player, hand, stack, pos) ->
-	{
-		if(setCorner1 != null && pos != null)
+		if(hasShiftDown())
 		{
-			if(setCorner1)
+			String[] coords = getMinecraft().keyboardHandler.getClipboard().replaceAll(",+\\s+|\\s+|,", " ").replaceAll("[^\\.\\d\\s-]", "").split(" ");
+			BlockPos pos = null;
+
+			if(coords.length >= 3)
+				pos = new BlockPos(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]));
+
+			if(isCorner1)
 				corner1 = pos;
 			else corner2 = pos;
 		}
+		else
+		{
+			setCorner1 = isCorner1;
+			minecraft.setScreen(null);
+			getMinecraft().player.displayClientMessage(new TranslatableComponent("status.stage_pad.set_corner." + (isCorner1 ? 'a' : 'b')), true);
+		}
+	}
 
-		Minecraft.getInstance().setScreen(new StageCreationScreen(stack.getDisplayName(), new StageSelectionScreen(stack.getDisplayName())));
-		setCorner1 = null;
-	});
+
+	@Override
+	protected void init()
+	{
+		super.init();
+		updateId();
+	}
 
 	@Override
 	public void handleWidgets(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
@@ -110,18 +145,25 @@ public class StageCreationScreen extends AbstractStagePadScreen
 		if(!savedName.equals(stageName.getValue()))
 		{
 			savedName = stageName.getValue();
-			String newId = stageName.getValue().replace(' ', '_');
-			if(getMinecraft().getSingleplayerServer() != null && !newId.isEmpty())
-			{
-				HashMap<String, Stage> stages = SaveInfoCapability.get(getMinecraft().getSingleplayerServer()).getStages();
-				for (int i = 1; stages.containsKey(newId); i++)
-					newId = stageId + "_" + i;
-			} else newId = "";
-
-			stageId = newId;
+			updateId();
 		}
 
 		createButton.active = canCreate();
+	}
+
+	private void updateId()
+	{
+		String savedId = stageName.getValue().replace(' ', '_');
+		String newId = savedId;
+
+		if(getMinecraft().getSingleplayerServer() != null && !newId.isEmpty())
+		{
+			HashMap<String, Stage> stages = SaveInfoCapability.get(getMinecraft().getSingleplayerServer()).getStages();
+			for (int i = 1; stages.containsKey(newId); i++)
+				newId = savedId + "_" + i;
+		} else newId = "";
+
+		stageId = newId;
 	}
 
 	private boolean canCreate() {
@@ -132,7 +174,6 @@ public class StageCreationScreen extends AbstractStagePadScreen
 	public void renderBackground(PoseStack poseStack)
 	{
 		super.renderBackground(poseStack);
-
 
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.setShaderTexture(0, TEXTURES);
@@ -173,7 +214,7 @@ public class StageCreationScreen extends AbstractStagePadScreen
 		return stageId;
 	}
 
-	protected String getShortenedInt(int v)
+	protected static String getShortenedInt(int v)
 	{
 		if(Integer.toString(v).length() > 5)
 			for (NumberLetters nl : NumberLetters.values())

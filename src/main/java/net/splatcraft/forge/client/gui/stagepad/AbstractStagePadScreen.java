@@ -2,14 +2,19 @@ package net.splatcraft.forge.client.gui.stagepad;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.items.StagePadItem;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,20 +30,24 @@ public abstract class AbstractStagePadScreen extends Screen
 	protected final ArrayList<MenuTextBox> textFields = new ArrayList<>();
 	protected final ArrayList<MenuTextBox.Factory> textFieldFactories = new ArrayList<>();
 
-	protected AbstractStagePadScreen(Component label, StagePadItem.UseAction useAction)
+	public final StagePadItem.UseAction OPEN_SELF = (level, player, hand, stack, pos) -> getMinecraft().setScreen(this);
+
+	protected StagePadItem.UseAction useAction;
+
+	protected AbstractStagePadScreen(Component label, @Nullable StagePadItem.UseAction useAction)
 	{
 		super(label);
 
-		StagePadItem.clientUseAction = useAction;
+		this.useAction = useAction == null ? OPEN_SELF : useAction;
 		minecraft = Minecraft.getInstance();
 	}
 
 	protected AbstractStagePadScreen(Component label)
 	{
-		this(label, StagePadItem.OPEN_MAIN_MENU);
+		this(label, null);
 	}
 
-	public MenuButton addButton(MenuButton button)
+	public <B extends MenuButton> B addButton(B button)
 	{
 		buttons.add(button);
 		addWidget(button);
@@ -54,6 +63,8 @@ public abstract class AbstractStagePadScreen extends Screen
 	protected void init()
 	{
 		super.init();
+
+		StagePadItem.clientUseAction = useAction;
 
 		if(textFields.isEmpty())
 			textFieldFactories.forEach(factory -> textFields.add(factory.newInstance(font)));
@@ -180,6 +191,30 @@ public abstract class AbstractStagePadScreen extends Screen
 		};
 	}
 
+	public Button.OnTooltip showCopyPos(BlockPosGetter pos)
+	{
+		return (button, poseStack, x, y) ->
+		{
+			if(pos.get() != null)
+				renderTooltip(poseStack, Arrays.asList(new TranslatableComponent("gui.stage_pad.button.position", pos.get().getX(), pos.get().getY(), pos.get().getZ()), new TranslatableComponent("gui.stage_pad.button.copy_position").withStyle(ChatFormatting.YELLOW)),
+						Optional.empty(), x, y);
+		};
+	}
+
+	public Button.OnPress copyPos(BlockPosGetter pos)
+	{
+		return (button) ->
+		{
+			if(pos.get() != null)
+				getMinecraft().keyboardHandler.setClipboard(pos.get().getX() + " " + pos.get().getY() + " " + pos.get().getZ());
+		};
+	}
+
+	public interface BlockPosGetter
+	{
+		BlockPos get();
+	}
+
 	public MenuButton.PostDraw drawIcon(ResourceLocation location, int xOff, int yOff, int texX, int texY, int texWidth, int texHeight)
 	{
 		return (poseStack, button) ->
@@ -187,9 +222,49 @@ public abstract class AbstractStagePadScreen extends Screen
 			float color = button.active ? 1 : 0.5f;
 			RenderSystem.setShaderColor(color, color, color, button.getAlpha());
 			RenderSystem.setShaderTexture(0, location);
-			this.blit(poseStack, button.x + xOff + (button instanceof StageSelectionScreen.ToggleMenuButton t && t.toggle ? button.getWidth() / 2 : 0), button.y + yOff, texX, texY, texWidth, texHeight);
+			this.blit(poseStack, button.x + xOff, button.y + yOff, texX, texY, texWidth, texHeight);
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 		};
+	}
+	public MenuButton.PostDraw drawToggleIcon(ResourceLocation location, int xOff, int yOff, int texX, int texY, int texWidth, int texHeight, boolean offsetTx)
+	{
+		return (poseStack, button) ->
+		{
+			if(!(button instanceof StageSelectionScreen.ToggleMenuButton t))
+			{
+				drawIcon(location, xOff, yOff, texX, texY, texWidth, texHeight).apply(poseStack, button);
+				return;
+			}
+
+			float color = button.active ? 1 : 0.5f;
+			RenderSystem.setShaderColor(color, color, color, button.getAlpha());
+			RenderSystem.setShaderTexture(0, location);
+			this.blit(poseStack, button.x + xOff + (t.toggle ? button.getWidth() / 2 : 0), button.y + yOff, texX + (offsetTx & t.toggle ? texWidth : 0), texY, texWidth, texHeight);
+			RenderSystem.setShaderColor(1, 1, 1, 1);
+		};
+	}
+	public MenuButton.PostDraw drawText(boolean centeredText)
+	{
+		return (poseStack, button) -> drawText(button.getMessage(), centeredText).apply(poseStack, button);
+	}
+	public MenuButton.PostDraw drawText(Component label, boolean centeredText)
+	{
+		return (poseStack, button) ->
+		{
+
+			int j = button.getFGColor();
+			drawString(poseStack, font, label, button.x + (centeredText ? (button.getWidth() - font.width(label)) / 2 : 3), button.y + (button.getHeight() - 8) / 2, j | Mth.ceil(button.getAlpha() * 255.0F) << 24);
+		};
+	}
+
+	public Button.OnPress goToScreen(ScreenFactory screen)
+	{
+		return (b) -> getMinecraft().setScreen(screen.create());
+	}
+
+	public interface ScreenFactory
+	{
+		Screen create();
 	}
 
 	public boolean canClickButtons()
@@ -197,4 +272,13 @@ public abstract class AbstractStagePadScreen extends Screen
 		return true;
 	}
 	public abstract void handleWidgets(PoseStack poseStack, int mouseX, int mouseY, float partialTicks);
+
+	protected void addOptionsTabs(Component label, String stageId, Screen mainMenu)
+	{
+		addButton(new MenuButton(10, 12, 14, 12, goToScreen(() -> mainMenu), Button.NO_TOOLTIP, drawIcon(WIDGETS, 1, 0, 244, 24, 12, 12), MenuButton.ButtonColor.GREEN));
+		addButton(new MenuButton(24, 12, 44, 12, goToScreen(() -> new StageSettingsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.settings"), true), MenuButton.ButtonColor.PURPLE));
+		addButton(new MenuButton(68, 12, 44, 12, goToScreen(() -> new StageRulesScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.rules"), true), MenuButton.ButtonColor.PURPLE));
+		addButton(new MenuButton(112, 12, 44, 12, goToScreen(() -> new StageSettingsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.teams"), true), MenuButton.ButtonColor.PURPLE));
+		addButton(new MenuButton(156, 12, 44, 12, goToScreen(() -> new StageActionsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.actions"), true), MenuButton.ButtonColor.PURPLE));
+	}
 }

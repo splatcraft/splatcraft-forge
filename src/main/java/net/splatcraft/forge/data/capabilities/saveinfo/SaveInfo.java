@@ -48,6 +48,23 @@ public class SaveInfo
         return stages;
     }
 
+    public boolean createOrEditStage(Level stageLevel, String stageId, BlockPos corner1, BlockPos corner2, Component stageName)
+    {
+        if(stageLevel.isClientSide)
+            return false;
+
+        if(stages.containsKey(stageId))
+        {
+            Stage stage = stages.get(stageId);
+
+            stage.seStagetName(stageName);
+            stage.updateBounds(stageLevel, corner1, corner2);
+            stage.dimID = stageLevel.dimension().location();
+        }
+        else stages.put(stageId, new Stage(stageLevel, corner1, corner2, stageId, stageName));
+        SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
+        return true;
+    }
     public boolean createStage(Level level, String stageId, BlockPos corner1, BlockPos corner2, Component stageName)
     {
         if(level.isClientSide)

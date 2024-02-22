@@ -58,8 +58,10 @@ public class SplatcraftPacketHandler
         registerMessage(SendStageWarpDataToPadPacket.class, SendStageWarpDataToPadPacket::decode);
         registerMessage(RequestUpdateStageSpawnPadsPacket.class, RequestUpdateStageSpawnPadsPacket::decode);
         registerMessage(RequestWarpDataPacket.class, RequestWarpDataPacket::decode);
-        registerMessage(RequestStageCreatePacket.class, RequestStageCreatePacket::decode);
+        registerMessage(CreateOrEditStagePacket.class, CreateOrEditStagePacket::decode);
         registerMessage(NotifyStageCreatePacket.class, NotifyStageCreatePacket::decode);
+        registerMessage(RequestTurfScanPacket.class, RequestTurfScanPacket::decode);
+        registerMessage(RequestClearInkPacket.class, RequestClearInkPacket::decode);
 
     }
 

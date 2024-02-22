@@ -393,6 +393,11 @@
   "gui.ammo_knights_workbench.craft": "Craft",
   "gui.ammo_knights_workbench.empty": "Find Blueprints to unlock more weapons!",
 
+  "gui.stage_pad.tab.settings": "Settings",
+  "gui.stage_pad.tab.rules": "Rules",
+  "gui.stage_pad.tab.teams": "Teams",
+  "gui.stage_pad.tab.actions": "Actions",
+
   "gui.stage_pad.label.stage_select": "Select a Stage...",
   "gui.stage_pad.label.settings": "Settings",
   "gui.stage_pad.label.rules": "Rules",
@@ -416,6 +421,14 @@
   "gui.stage_pad.button.set_corner": "Set",
   "gui.stage_pad.button.cancel": "Cancel",
   "gui.stage_pad.button.create": "Create",
+  "gui.stage_pad.button.scan_turf": "Scan Turf",
+  "gui.stage_pad.button.clear_ink": "Clear Ink",
+  "gui.stage_pad.button.pair_remote": "Pair Remote",
+  "gui.stage_pad.button.scan_mode": "Scan Mode: %s",
+  "gui.stage_pad.button.position": "(%s, %s, %s)",
+  "gui.stage_pad.button.copy_position": "Click to copy to clipboard",
+  "gui.stage_pad.button.set_from_world": "Click to set corner in world",
+  "gui.stage_pad.button.set_from_clipboard": "Shift-click to paste from clipboard",
 
   "ink_color.invert": "Inverted %s",
   "ink_color.splatcraft.orange": "Orange",
@@ -563,6 +576,8 @@
   "status.clear_ink.success": "Successfully cleared %s blocks",
   "status.change_color.out_of_world": "§cCannot clear ink outside of the world",
   "status.change_color.success": "Successfully recolored %s blocks to %s",
+  "status.stage_pad.set_corner.a": "Click on a block with the Stage Pad to set Corner 1",
+  "status.stage_pad.set_corner.b": "Click on a block with the Stage Pad to set Corner 2",
 
   "status.blueprint.invalid": "This Blueprint is empty.",
   "status.blueprint.already_unlocked.single": "You already have this Blueprint.",

@@ -3,7 +3,8 @@ package net.splatcraft.forge.network.s2c;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.splatcraft.forge.client.gui.stagepad.StageCreationScreen;
-import net.splatcraft.forge.client.gui.stagepad.StageEditorScreen;
+import net.splatcraft.forge.client.gui.stagepad.StageSelectionScreen;
+import net.splatcraft.forge.client.gui.stagepad.StageSettingsScreen;
 
 public class NotifyStageCreatePacket extends PlayS2CPacket
 {
@@ -29,6 +30,6 @@ public class NotifyStageCreatePacket extends PlayS2CPacket
 	public void execute()
 	{
 		if(Minecraft.getInstance().screen instanceof StageCreationScreen screen && stageId.equals(screen.getStageId()))
-			Minecraft.getInstance().setScreen(new StageEditorScreen(screen.getTitle(), stageId));
+			Minecraft.getInstance().setScreen(new StageSettingsScreen(screen.getTitle(), stageId, StageSelectionScreen.instance));
 	}
 }
