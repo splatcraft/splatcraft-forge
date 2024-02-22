@@ -400,6 +400,7 @@
   "gui.stage_pad.label.teams": "Teams",
   "gui.stage_pad.label.create_stage": "Create Stage",
   "gui.stage_pad.label.set_stage_name": "Name:",
+  "gui.stage_pad.label.set_stage_name.textbox": "Enter Stage Name...",
   "gui.stage_pad.label.stage_id": "id: %s",
   "gui.stage_pad.label.corner_1": "Corner 1:",
   "gui.stage_pad.label.corner_2": "Corner 2:",

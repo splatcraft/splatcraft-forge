@@ -1,8 +1,14 @@
 package net.splatcraft.forge.data.capabilities.saveinfo;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 import net.splatcraft.forge.data.Stage;
 import net.splatcraft.forge.handlers.ScoreboardHandler;
+import net.splatcraft.forge.network.SplatcraftPacketHandler;
+import net.splatcraft.forge.network.s2c.UpdateStageListPacket;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +47,24 @@ public class SaveInfo
     {
         return stages;
     }
-    
+
+    public boolean createStage(Level level, String stageId, BlockPos corner1, BlockPos corner2, Component stageName)
+    {
+        if(level.isClientSide)
+            return false;
+
+        if(stages.containsKey(stageId))
+            return false;
+
+        stages.put(stageId, new Stage(level, corner1, corner2, stageId, stageName));
+        SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
+        return true;
+    }
+
+    public boolean createStage(Level level, String stageId, BlockPos corner1, BlockPos corner2) {
+        return createStage(level, stageId, corner1, corner2, new TextComponent(stageId));
+    }
+
     public CompoundTag writeNBT(CompoundTag nbt)
     {
         int[] arr = new int[colorScores.size()];

@@ -28,6 +28,7 @@ import java.util.*;
 public class Stage
 {
 	public static final ArrayList<String> VALID_SETTINGS = new ArrayList<>();
+	private Component name;
 
 	public BlockPos cornerA;
 	public BlockPos cornerB;
@@ -85,6 +86,8 @@ public class Stage
 
 			nbt.put("SpawnPads", list);
 		}
+
+		nbt.putString("Name", Component.Serializer.toJson(name));
 
 		return nbt;
 	}
@@ -148,7 +151,7 @@ public class Stage
 
 	public Component getStageName()
 	{
-		return new TextComponent(id); //TODO use actual name settibng
+		return name;
 	}
 
 	public BlockPos getCornerA() {
@@ -193,12 +196,18 @@ public class Stage
 		ListTag list = nbt.getList("SpawnPads", Tag.TAG_COMPOUND);
 		for (Tag tag : list)
 			spawnPadPositions.add(NbtUtils.readBlockPos((CompoundTag) tag));
+
+
+
+		name = nbt.contains("Name") ? Component.Serializer.fromJson(nbt.getString("Name")) : new TextComponent(id);
+
 	}
 
-	public Stage(Level level, BlockPos posA, BlockPos posB, String id)
+	public Stage(Level level, BlockPos posA, BlockPos posB, String id, Component name)
 	{
 		dimID = level.dimension().location();
 		this.id = id;
+		this.name = name;
 
 		updateBounds(level, posA, posB);
 	}

@@ -57,6 +57,9 @@ public class SplatcraftPacketHandler
         registerMessage(SuperJumpToStagePacket.class, SuperJumpToStagePacket::decode);
         registerMessage(SendStageWarpDataToPadPacket.class, SendStageWarpDataToPadPacket::decode);
         registerMessage(RequestUpdateStageSpawnPadsPacket.class, RequestUpdateStageSpawnPadsPacket::decode);
+        registerMessage(RequestWarpDataPacket.class, RequestWarpDataPacket::decode);
+        registerMessage(RequestStageCreatePacket.class, RequestStageCreatePacket::decode);
+        registerMessage(NotifyStageCreatePacket.class, NotifyStageCreatePacket::decode);
 
     }
 
@@ -64,7 +67,6 @@ public class SplatcraftPacketHandler
     {
         registerMessage(messageType, SplatcraftPacket::encode, decoder, SplatcraftPacket::consume);
     }
-
     private static <MSG extends SplatcraftPacket> void registerMessage(Class<MSG> messageType, BiConsumer<MSG, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> messageConsumer)
     {
         INSTANCE.registerMessage(ID++, messageType, encoder, decoder, messageConsumer);

@@ -4,10 +4,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.splatcraft.forge.Splatcraft;
+import net.splatcraft.forge.items.StagePadItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,17 +22,72 @@ public abstract class AbstractStagePadScreen extends Screen
 	protected static final ResourceLocation COMMON_TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/gui/stage_pad/common.png");
 	protected static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/stage_pad/widgets.png");
 	protected final ArrayList<MenuButton> buttons = new ArrayList<>();
-	
-	protected AbstractStagePadScreen(Component label) 
+	protected final ArrayList<MenuTextBox> textFields = new ArrayList<>();
+	protected final ArrayList<MenuTextBox.Factory> textFieldFactories = new ArrayList<>();
+
+	protected AbstractStagePadScreen(Component label, StagePadItem.UseAction useAction)
 	{
 		super(label);
+
+		StagePadItem.clientUseAction = useAction;
 		minecraft = Minecraft.getInstance();
 	}
 
-	public void addButton(MenuButton button)
+	protected AbstractStagePadScreen(Component label)
+	{
+		this(label, StagePadItem.OPEN_MAIN_MENU);
+	}
+
+	public MenuButton addButton(MenuButton button)
 	{
 		buttons.add(button);
 		addWidget(button);
+		return button;
+	}
+
+	public void addTextBox(MenuTextBox.Factory factory)
+	{
+		textFieldFactories.add(factory);
+	}
+
+	@Override
+	protected void init()
+	{
+		super.init();
+
+		if(textFields.isEmpty())
+			textFieldFactories.forEach(factory -> textFields.add(factory.newInstance(font)));
+	}
+
+	@Override
+	public boolean isPauseScreen() {
+		return false;
+	}
+
+	@Override
+	public boolean keyPressed(int mouseX, int mouseY, int key)
+	{
+		for (EditBox textField : textFields) {
+			if(textField.isFocused())
+				textField.keyPressed(mouseX, mouseY, key);
+		}
+		return super.keyPressed(mouseX, mouseY, key);
+	}
+
+	@Override
+	public boolean charTyped(char c, int p_94684_)
+	{
+		for (EditBox textField : textFields)
+			if(textField.isFocused())
+				textField.charTyped(c, p_94684_);
+		return super.charTyped(c, p_94684_);
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		for (EditBox textField : textFields)
+			textField.tick();
 	}
 
 	@Override
@@ -77,6 +134,10 @@ public abstract class AbstractStagePadScreen extends Screen
 			button.x = button.relativeX + x;
 			button.y = button.relativeY + y;
 		}
+		for (MenuTextBox button : textFields) {
+			button.x = button.relativeX + x;
+			button.y = button.relativeY + y;
+		}
 
 		handleWidgets(poseStack, mouseX, mouseY, partialTicks);
 		super.render(poseStack, mouseX, mouseY, partialTicks);
@@ -84,6 +145,7 @@ public abstract class AbstractStagePadScreen extends Screen
 
 
 		buttons.forEach(b -> b.renderButton(poseStack));
+		textFields.forEach(t -> t.render(poseStack, mouseX, mouseY, partialTicks));
 	}
 
 	@Override

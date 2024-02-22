@@ -192,16 +192,12 @@ public class StageCommand
 
 
 	private static int add(CommandSourceStack source, String stageId, BlockPos from, BlockPos to) throws CommandSyntaxException {
-		HashMap<String, Stage> stages = SaveInfoCapability.get(source.getServer()).getStages();
-		
-		if(stages.containsKey(stageId))
-			throw STAGE_ALREADY_EXISTS.create(stageId);
 
-		stages.put(stageId, new Stage(source.getLevel(), from, to, stageId));
+		if(!SaveInfoCapability.get(source.getServer()).createStage(source.getLevel(), stageId, from, to))
+			throw STAGE_ALREADY_EXISTS.create(stageId);
 
 		source.sendSuccess(new TranslatableComponent("commands.stage.add.success", stageId), true);
 
-		SplatcraftPacketHandler.sendToAll(new UpdateStageListPacket(stages));
 
 		return 1;
 	}

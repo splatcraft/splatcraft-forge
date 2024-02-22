@@ -5,12 +5,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,6 +29,7 @@ import net.splatcraft.forge.registries.SplatcraftItems;
 import net.splatcraft.forge.tileentities.InkColorTileEntity;
 import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class StagePadItem extends Item implements IColoredItem
 {
@@ -36,6 +39,15 @@ public class StagePadItem extends Item implements IColoredItem
 		SplatcraftItems.inkColoredItems.add(this);
 	}
 
+	public static final UseAction OPEN_MAIN_MENU = ((level, player, hand, stack, pos) ->
+			((StagePadItem)stack.getItem()).openMenu(stack));
+	public static UseAction clientUseAction = OPEN_MAIN_MENU;
+
+	public static void resetUseAction()
+	{
+		clientUseAction = OPEN_MAIN_MENU;
+	}
+
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
 	{
@@ -43,14 +55,21 @@ public class StagePadItem extends Item implements IColoredItem
 		player.awardStat(Stats.ITEM_USED.get(this));
 
 		if(level.isClientSide)
-			openMenu(itemstack);
-		else SplatcraftPacketHandler.sendToPlayer(SendStageWarpDataToPadPacket.compile(player), (ServerPlayer) player);
-
+			clientUseAction.apply(level, player, hand, itemstack, null);
 		return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
 	}
 
+	@Override
+	public InteractionResult useOn(UseOnContext context)
+	{
+		if(context.getLevel().isClientSide)
+			clientUseAction.apply(context.getLevel(), context.getPlayer(), context.getHand(), context.getItemInHand(), context.getClickedPos());
+
+		return InteractionResultHolder.sidedSuccess(context.getItemInHand(), context.getLevel().isClientSide()).getResult();
+	}
+
 	@OnlyIn(Dist.CLIENT)
-	private void openMenu(ItemStack itemStack)
+	public void openMenu(ItemStack itemStack)
 	{
 		Minecraft.getInstance().setScreen(new StageSelectionScreen(itemStack.getDisplayName()));
 	}
@@ -85,5 +104,10 @@ public class StagePadItem extends Item implements IColoredItem
 		}
 
 		return false;
+	}
+
+	public interface UseAction
+	{
+		void apply(Level level, Player player, InteractionHand hand, ItemStack stack, @Nullable BlockPos pos);
 	}
 }

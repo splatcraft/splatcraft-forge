@@ -20,8 +20,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.data.Stage;
+import net.splatcraft.forge.items.StagePadItem;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.RequestUpdateStageSpawnPadsPacket;
+import net.splatcraft.forge.network.c2s.RequestWarpDataPacket;
 import net.splatcraft.forge.network.c2s.SuperJumpToStagePacket;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +33,7 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 {
 	static final HashMap<Stage, Pair<MenuButton, SuperJumpMenuButton>> stages = new HashMap<>();
 
-	EditBox searchBar;
+	MenuTextBox searchBar;
 	MenuButton createStageButton;
 	MenuButton toggleSearchBarButton;
 
@@ -64,28 +66,25 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 
 		if (minecraft.level != null)
 			Stage.getAllStages(minecraft.level).forEach(this::addStageButton);
-	}
 
-	@Override
-	public boolean isPauseScreen() {
-		return false;
+		addTextBox(font ->
+		{
+			searchBar = new MenuTextBox(font, 11, 13, 175, 10, new TranslatableComponent("gui.stage_pad.textbox.search_stage"), false);
+			searchBar.setFocus(true);
+			searchBar.visible = false;
+			return searchBar;
+		});
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-
-		if(searchBar == null)
-		{
-			searchBar = new EditBox(font, 11, 13, 175, 10, new TranslatableComponent("gui.stage_pad.textbox.search_stage"));
-			searchBar.setFocus(false);
-			searchBar.visible = false;
-		}
+		SplatcraftPacketHandler.sendToServer(new RequestWarpDataPacket());
 	}
 
 	public void addStageButton(Stage stage)
 	{
-		MenuButton stageButton = new MenuButton(10, 0, 166, stage.getStageName(), (b) -> {}, Button.NO_TOOLTIP, (ps, b) -> {}, MenuButton.ButtonColor.GREEN);
+		MenuButton stageButton = new MenuButton(10, 0, 166, stage.getStageName(), (b) -> minecraft.setScreen(new StageEditorScreen(getTitle(), stage.id)), Button.NO_TOOLTIP, (ps, b) -> {}, MenuButton.ButtonColor.GREEN);
 		SuperJumpMenuButton jumpButton = new SuperJumpMenuButton(176, 0, 12,
 				(button, poseStack, mx, my) -> renderTooltip(poseStack, List.of(((SuperJumpMenuButton)button).state.tooltipText), Optional.empty(), mx, my),
 				(poseStack, button) -> drawIcon(WIDGETS, 0, 0, 244, ((SuperJumpMenuButton)button).state == SuperJumpMenuButton.ButtonState.REQUIRES_UPDATE ? 12 : 0, 12, 12).apply(poseStack, button), stage);
@@ -110,28 +109,6 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 	}
 
 	@Override
-	public boolean keyPressed(int mouseX, int mouseY, int key)
-	{
-		if(searchBar.isFocused())
-			searchBar.keyPressed(mouseX, mouseY, key);
-		return super.keyPressed(mouseX, mouseY, key);
-	}
-
-	@Override
-	public boolean charTyped(char c, int p_94684_)
-	{
-		if(searchBar.isFocused())
-			searchBar.charTyped(c, p_94684_);
-		return super.charTyped(c, p_94684_);
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		searchBar.tick();
-	}
-
-	@Override
 	public void handleWidgets(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks)
 	{
 		List<Pair<MenuButton, SuperJumpMenuButton>> stageButtons = stages.keySet().stream().sorted(Comparator.comparing(s -> s.getStageName().getString()))
@@ -142,8 +119,6 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
-		searchBar.render(matrixStack, mouseX, mouseY, partialTicks);
-		searchBar.setBordered(false);
 
 		buttons.forEach(b -> b.visible = false);
 
