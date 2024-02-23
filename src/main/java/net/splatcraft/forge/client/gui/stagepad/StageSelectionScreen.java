@@ -1,15 +1,12 @@
 package net.splatcraft.forge.client.gui.stagepad;
 
-import com.mojang.blaze3d.platform.ClipboardManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -64,15 +61,13 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 			searchBar.visible = false;
 			return searchBar;
 		});
+
+		onStagesUpdate();
 	}
 
 	@Override
-	protected void init()
+	public void onStagesUpdate()
 	{
-		super.init();
-
-		if (getMinecraft().level == null)
-			return;
 
 		ArrayList<Stage> stages = Stage.getAllStages(getMinecraft().level);
 
@@ -282,7 +277,8 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 			return this;
 		}
 
-		public void renderButton(PoseStack poseStack) {
+		@Override
+		public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 			if(!visible)
 				return;
 
@@ -318,8 +314,8 @@ public class StageSelectionScreen extends AbstractStagePadScreen
 			super(x, y, width, height, onPress, onTooltip, draw, ButtonColor.GREEN);
 		}
 
-		@Override
-		public void renderButton(PoseStack poseStack)
+	 	@Override
+		public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
 		{
 
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);

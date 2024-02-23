@@ -22,7 +22,7 @@ import static net.splatcraft.forge.client.gui.stagepad.StageCreationScreen.getSh
 public class StageSettingsScreen extends AbstractStagePadScreen
 {
 	private static final ResourceLocation TEXTURES = new ResourceLocation(Splatcraft.MODID, "textures/gui/stage_pad/stage_settings.png");
-	private final Stage stage;
+	private Stage stage;
 
 	private static Boolean setCorner1 = null;
 
@@ -80,6 +80,13 @@ public class StageSettingsScreen extends AbstractStagePadScreen
 			this.stageName.setFocus(true);
 			return this.stageName;
 		});
+	}
+
+	@Override
+	public void onStagesUpdate()
+	{
+		stage = Stage.getStage(Minecraft.getInstance().level, stage.id);
+
 	}
 
 	protected void clickSetCornerButton(Button button, boolean isCorner1)

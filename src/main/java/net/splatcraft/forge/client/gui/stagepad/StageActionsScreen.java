@@ -20,7 +20,7 @@ import static net.splatcraft.forge.client.gui.stagepad.StageCreationScreen.getSh
 public class StageActionsScreen extends AbstractStagePadScreen
 {
 	private static final ResourceLocation TEXTURES = new ResourceLocation(Splatcraft.MODID, "textures/gui/stage_pad/stage_actions.png");
-	private final Stage stage;
+	private Stage stage;
 	private final StageSelectionScreen.ToggleMenuButton scanMode;
 	public StageActionsScreen(Component label, String stageId, Screen mainMenu)
 	{
@@ -44,6 +44,14 @@ public class StageActionsScreen extends AbstractStagePadScreen
 			getMinecraft().setScreen(null);
 		}, Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.button.clear_ink"), true), MenuButton.ButtonColor.GREEN));
 		addButton(new MenuButton(50, 78, 110, 12, goToScreen(() -> mainMenu), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.button.pair_remote"), true), MenuButton.ButtonColor.GREEN));
+	}
+
+	@Override
+	public void onStagesUpdate()
+	{
+
+		stage = Stage.getStage(getMinecraft().level, stage.id);
+
 	}
 
 	@Override

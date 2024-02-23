@@ -12,7 +12,7 @@ import net.splatcraft.forge.data.Stage;
 public class StageTeamsScreen extends AbstractStagePadScreen
 {
 	private static final ResourceLocation TEXTURES = new ResourceLocation(Splatcraft.MODID, "textures/gui/stage_pad/stage_teams.png");
-	private final Stage stage;
+	private Stage stage;
 	public StageTeamsScreen(Component label, String stageId, Screen mainMenu)
 	{
 		super(label);
@@ -37,7 +37,13 @@ public class StageTeamsScreen extends AbstractStagePadScreen
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
 
-		blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
+		//blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
 
+	}
+
+	@Override
+	public void onStagesUpdate()
+	{
+		stage = Stage.getStage(Minecraft.getInstance().level, stage.id);
 	}
 }

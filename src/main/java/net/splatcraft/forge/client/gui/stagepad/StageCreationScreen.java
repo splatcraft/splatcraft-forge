@@ -156,9 +156,9 @@ public class StageCreationScreen extends AbstractStagePadScreen
 		String savedId = stageName.getValue().replace(' ', '_');
 		String newId = savedId;
 
-		if(getMinecraft().getSingleplayerServer() != null && !newId.isEmpty())
+		if(getMinecraft().level != null && !newId.isEmpty())
 		{
-			HashMap<String, Stage> stages = SaveInfoCapability.get(getMinecraft().getSingleplayerServer()).getStages();
+			HashMap<String, Stage> stages = SaveInfoCapability.get(getMinecraft().level.getServer()).getStages();
 			for (int i = 1; stages.containsKey(newId); i++)
 				newId = savedId + "_" + i;
 		} else newId = "";
@@ -208,6 +208,12 @@ public class StageCreationScreen extends AbstractStagePadScreen
 
 		}
 
+	}
+
+	@Override
+	public void onStagesUpdate()
+	{
+		updateId();
 	}
 
 	public String getStageId() {

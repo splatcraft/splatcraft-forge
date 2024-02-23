@@ -106,9 +106,29 @@ public abstract class AbstractStagePadScreen extends Screen
 	{
 		if(canClickButtons())
 			for (MenuButton button : buttons)
-				if(button.isActive())
+				if(button.isActive() && button.isHovered())
 					button.mouseClicked(mouseX, mouseY, clickButton);
 		return super.mouseClicked(mouseX, mouseY, clickButton);
+	}
+
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int clickButton)
+	{
+		if(canClickButtons())
+			for (MenuButton button : buttons)
+					button.mouseReleased(mouseX, mouseY, clickButton);
+		return super.mouseClicked(mouseX, mouseY, clickButton);
+	}
+
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double p_94702_, double p_94703_)
+	{
+		if(canClickButtons())
+			for (MenuButton button : buttons)
+				if(button.isActive())
+					button.mouseDragged(mouseX, mouseY, mouseButton, p_94702_, p_94703_);
+		return super.mouseDragged(mouseX, mouseY, mouseButton, p_94702_, p_94703_);
 	}
 
 	private void renderTooltips(PoseStack poseStack, int mouseX, int mouseY)
@@ -126,7 +146,7 @@ public abstract class AbstractStagePadScreen extends Screen
 
 		for (MenuButton button : buttons) {
 			button.setHovered(false);
-			if (isMouseOver(mouseX, mouseY, button))
+			if (button.isActive() && isMouseOver(mouseX, mouseY, button))
 				hoveredButton = button;
 		}
 
@@ -138,6 +158,7 @@ public abstract class AbstractStagePadScreen extends Screen
 
 
 		renderBackground(poseStack);
+		handleWidgets(poseStack, mouseX, mouseY, partialTicks);
 
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
@@ -150,12 +171,11 @@ public abstract class AbstractStagePadScreen extends Screen
 			button.y = button.relativeY + y;
 		}
 
-		handleWidgets(poseStack, mouseX, mouseY, partialTicks);
 		super.render(poseStack, mouseX, mouseY, partialTicks);
 		renderTooltips(poseStack, mouseX, mouseY);
 
 
-		buttons.forEach(b -> b.renderButton(poseStack));
+		buttons.forEach(b -> b.render(poseStack, mouseX, mouseY, partialTicks));
 		textFields.forEach(t -> t.render(poseStack, mouseX, mouseY, partialTicks));
 	}
 
@@ -271,6 +291,9 @@ public abstract class AbstractStagePadScreen extends Screen
 	{
 		return true;
 	}
+
+	public abstract void onStagesUpdate();
+
 	public abstract void handleWidgets(PoseStack poseStack, int mouseX, int mouseY, float partialTicks);
 
 	protected void addOptionsTabs(Component label, String stageId, Screen mainMenu)
@@ -278,7 +301,7 @@ public abstract class AbstractStagePadScreen extends Screen
 		addButton(new MenuButton(10, 12, 14, 12, goToScreen(() -> mainMenu), Button.NO_TOOLTIP, drawIcon(WIDGETS, 1, 0, 244, 24, 12, 12), MenuButton.ButtonColor.GREEN));
 		addButton(new MenuButton(24, 12, 44, 12, goToScreen(() -> new StageSettingsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.settings"), true), MenuButton.ButtonColor.PURPLE));
 		addButton(new MenuButton(68, 12, 44, 12, goToScreen(() -> new StageRulesScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.rules"), true), MenuButton.ButtonColor.PURPLE));
-		addButton(new MenuButton(112, 12, 44, 12, goToScreen(() -> new StageSettingsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.teams"), true), MenuButton.ButtonColor.PURPLE));
+		addButton(new MenuButton(112, 12, 44, 12, goToScreen(() -> new StageTeamsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.teams"), true), MenuButton.ButtonColor.PURPLE));
 		addButton(new MenuButton(156, 12, 44, 12, goToScreen(() -> new StageActionsScreen(label, stageId, mainMenu)), Button.NO_TOOLTIP, drawText(new TranslatableComponent("gui.stage_pad.tab.actions"), true), MenuButton.ButtonColor.PURPLE));
 	}
 }

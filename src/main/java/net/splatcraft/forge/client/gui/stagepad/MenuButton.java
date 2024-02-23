@@ -33,7 +33,21 @@ public class MenuButton extends Button
 		relativeY = y;
 	}
 
-	public void renderButton(PoseStack poseStack) {
+	@Override
+	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
+	{
+		if (this.visible)
+		{
+			//this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+			this.renderButton(poseStack, mouseX, mouseY, partialTicks);
+
+			//if(isHoveredOrFocused())
+			//	this.renderToolTip(poseStack, mouseX, mouseY);
+		}
+	}
+
+	@Override
+	public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 		if(!visible)
 			return;
 

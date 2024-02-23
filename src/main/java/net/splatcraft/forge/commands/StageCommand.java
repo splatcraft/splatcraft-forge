@@ -116,7 +116,7 @@ public class StageCommand
 	public static RequiredArgumentBuilder<CommandSourceStack, String> stageSetting(String argumentName)
 	{
 		return Commands.argument(argumentName, StringArgumentType.word()).suggests((context, builder) ->
-				SharedSuggestionProvider.suggest(Stage.VALID_SETTINGS, builder));
+				SharedSuggestionProvider.suggest(Stage.VALID_SETTINGS.keySet(), builder));
 	}
 
 	private static int add(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -224,7 +224,7 @@ public class StageCommand
 		if(!stages.containsKey(stageId))
 			throw STAGE_NOT_FOUND.create(stageId);
 
-		if(!Stage.VALID_SETTINGS.contains(setting))
+		if(!Stage.VALID_SETTINGS.containsKey(setting))
 			throw SETTING_NOT_FOUND.create(setting);
 
 		Stage stage = stages.get(stageId);
@@ -247,7 +247,7 @@ public class StageCommand
 		if(!stages.containsKey(stageId))
 			throw STAGE_NOT_FOUND.create(stageId);
 
-		if(!Stage.VALID_SETTINGS.contains(setting))
+		if(!Stage.VALID_SETTINGS.containsKey(setting))
 			throw SETTING_NOT_FOUND.create(setting);
 
 		Stage stage = stages.get(stageId);

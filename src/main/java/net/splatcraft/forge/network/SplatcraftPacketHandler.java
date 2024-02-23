@@ -54,6 +54,8 @@ public class SplatcraftPacketHandler
         registerMessage(WatchInkPacket.class, WatchInkPacket::decode);
         registerMessage(SendJumpLureDataPacket.class, SendJumpLureDataPacket::decode);
         registerMessage(UseJumpLurePacket.class, UseJumpLurePacket::decode);
+
+        //Stage Pad packets
         registerMessage(SuperJumpToStagePacket.class, SuperJumpToStagePacket::decode);
         registerMessage(SendStageWarpDataToPadPacket.class, SendStageWarpDataToPadPacket::decode);
         registerMessage(RequestUpdateStageSpawnPadsPacket.class, RequestUpdateStageSpawnPadsPacket::decode);
@@ -62,6 +64,7 @@ public class SplatcraftPacketHandler
         registerMessage(NotifyStageCreatePacket.class, NotifyStageCreatePacket::decode);
         registerMessage(RequestTurfScanPacket.class, RequestTurfScanPacket::decode);
         registerMessage(RequestClearInkPacket.class, RequestClearInkPacket::decode);
+        registerMessage(RequestSetStageRulePacket.class, RequestSetStageRulePacket::decode);
 
     }
 

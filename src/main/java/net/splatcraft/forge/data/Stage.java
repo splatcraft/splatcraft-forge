@@ -15,6 +15,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.commands.SuperJumpCommand;
 import net.splatcraft.forge.data.capabilities.saveinfo.SaveInfoCapability;
 import net.splatcraft.forge.registries.SplatcraftGameRules;
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class Stage implements Comparable<Stage> {
-	public static final ArrayList<String> VALID_SETTINGS = new ArrayList<>();
+	public static final TreeMap<String, GameRules.Key<GameRules.BooleanValue>> VALID_SETTINGS = new TreeMap<>();
 	private Component name;
 
 	public BlockPos cornerA;
@@ -101,12 +102,13 @@ public class Stage implements Comparable<Stage> {
 		return hasSetting(rule.toString().replace("splatcraft.", ""));
 	}
 
-	public boolean getSetting(String key)
+	@Nullable
+	public Boolean getSetting(String key)
 	{
-		return settings.get(key);
+		return settings.getOrDefault(key, null);
 	}
 
-	public boolean getSetting(GameRules.Key<GameRules.BooleanValue> rule)
+	public Boolean getSetting(GameRules.Key<GameRules.BooleanValue> rule)
 	{
 		return getSetting(rule.toString().replace("splatcraft.", ""));
 	}
@@ -222,7 +224,7 @@ public class Stage implements Comparable<Stage> {
 
 	public static void registerGameruleSetting(GameRules.Key<GameRules.BooleanValue> rule)
 	{
-		VALID_SETTINGS.add(rule.toString().replace("splatcraft.", ""));
+		VALID_SETTINGS.put(rule.toString().replace(Splatcraft.MODID + ".", ""), rule);
 	}
 
 	public static boolean targetsOnSameStage(Level level, Vec3 targetA, Vec3 targetB)
