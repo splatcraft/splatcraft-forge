@@ -288,10 +288,6 @@ public class StageRulesScreen extends AbstractStagePadScreen
 			Boolean bool = rules.get(rule).value;
 			int j = bool == null ? 1 : bool ? 2 : 0;
 
-
-			if(rule.getId().contains("inkDecay") && StageRulesScreen.this.isMouseOver(mouseX, mouseY, this))
-				drawString(poseStack, font, String.format("%s", isHovered) , 10 , 10, 0xFFFFFF);
-
 			int notchWidth = 12;
 			RenderSystem.setShaderTexture(0, WIDGETS);
 			this.blit(poseStack, this.x + (j * (notchWidth - 1)), this.y, 0, getColor().ordinal() * 36 + i * 12, notchWidth / 2, this.height);

@@ -12,8 +12,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import net.splatcraft.forge.Splatcraft;
 import net.splatcraft.forge.items.StagePadItem;
+import net.splatcraft.forge.util.ColorUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ public abstract class AbstractStagePadScreen extends Screen
 	protected int imageWidth = 210;
 	protected int imageHeight = 130;
 	protected static final ResourceLocation COMMON_TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/gui/stage_pad/common.png");
+	protected static final ResourceLocation CONTROLLERS_TEXTURE = new ResourceLocation(Splatcraft.MODID, "textures/gui/stage_pad/controllers.png");
 	protected static final ResourceLocation WIDGETS = new ResourceLocation(Splatcraft.MODID, "textures/gui/stage_pad/widgets.png");
 	protected final ArrayList<MenuButton> buttons = new ArrayList<>();
 	protected final ArrayList<MenuTextBox> textFields = new ArrayList<>();
@@ -184,12 +188,22 @@ public abstract class AbstractStagePadScreen extends Screen
 	{
 		super.renderBackground(poseStack);
 
-		RenderSystem.setShaderColor(1, 1, 1, 1);
-		RenderSystem.setShaderTexture(0, COMMON_TEXTURE);
-
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
 
+		RenderSystem.setShaderColor(1, 1, 1, 1);
+
+		ItemStack stagePad = getMinecraft().player.getItemInHand(getMinecraft().player.getMainHandItem().getItem() instanceof StagePadItem ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
+
+		float[] rgb = ColorUtils.hexToRGB(ColorUtils.getInkColor(stagePad));
+		RenderSystem.setShaderColor(rgb[0], rgb[1], rgb[2], 1);
+		RenderSystem.setShaderTexture(0, CONTROLLERS_TEXTURE);
+		blit(poseStack, x - 52, y, 0, 0, 54, 130);
+		blit(poseStack, x + imageWidth - 2, y, 62, 0, 54, 130);
+		RenderSystem.setShaderColor(1,1,1,1);
+		blit(poseStack, x - 52, y, 116, 0, 54, 130);
+		blit(poseStack, x + imageWidth - 2, y, 178, 0, 54, 130);
+		RenderSystem.setShaderTexture(0, COMMON_TEXTURE);
 		blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
 	}
 

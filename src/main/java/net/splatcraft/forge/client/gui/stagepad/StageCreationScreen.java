@@ -158,7 +158,7 @@ public class StageCreationScreen extends AbstractStagePadScreen
 
 		if(getMinecraft().level != null && !newId.isEmpty())
 		{
-			HashMap<String, Stage> stages = SaveInfoCapability.get(getMinecraft().level.getServer()).getStages();
+			HashMap<String, Stage> stages = SaveInfoCapability.get(getMinecraft().level.getServer()).getStages(); //this is null in servers somehow??
 			for (int i = 1; stages.containsKey(newId); i++)
 				newId = savedId + "_" + i;
 		} else newId = "";
