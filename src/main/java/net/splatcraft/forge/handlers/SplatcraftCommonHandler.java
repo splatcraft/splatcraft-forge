@@ -233,15 +233,15 @@ public class SplatcraftCommonHandler {
             criteriaColors[criteriaColorIndex++] = criteriaColor;
         }
 
-        TreeMap<String, Integer> playerColors = new TreeMap<>();
+        TreeMap<UUID, Integer> playerColors = new TreeMap<>();
 
         for (Player p : event.getPlayer().level.players()) {
             if (PlayerInfoCapability.hasCapability(p)) {
-                playerColors.put(p.getDisplayName().getString(), PlayerInfoCapability.get(p).getColor());
+                playerColors.put(p.getGameProfile().getId(), PlayerInfoCapability.get(p).getColor());
             }
         }
 
-        SplatcraftPacketHandler.sendToAll(new UpdateClientColorsPacket(event.getPlayer().getDisplayName().getString(), PlayerInfoCapability.get(event.getPlayer()).getColor()));
+        SplatcraftPacketHandler.sendToAll(new UpdateClientColorsPacket(event.getPlayer().getGameProfile().getId(), PlayerInfoCapability.get(event.getPlayer()).getColor()));
         SplatcraftPacketHandler.sendToPlayer(new UpdateClientColorsPacket(playerColors), player);
         SplatcraftPacketHandler.sendToPlayer(new UpdateColorScoresPacket(true, true, criteriaColors), player);
         SplatcraftPacketHandler.sendToPlayer(new UpdateStageListPacket(SaveInfoCapability.get(event.getPlayer().level.getServer()).getStages()), player);

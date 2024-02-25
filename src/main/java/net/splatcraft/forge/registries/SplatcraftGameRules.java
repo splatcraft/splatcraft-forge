@@ -22,7 +22,6 @@ public class SplatcraftGameRules {
     public static GameRules.Key<GameRules.IntegerValue> INK_DECAY_RATE;
     public static GameRules.Key<GameRules.BooleanValue> INKABLE_GROUND;
     public static GameRules.Key<GameRules.BooleanValue> INK_DESTROYS_FOLIAGE;
-    public static GameRules.Key<GameRules.BooleanValue> COLORED_PLAYER_NAMES;
     public static GameRules.Key<GameRules.BooleanValue> KEEP_MATCH_ITEMS;
     public static GameRules.Key<GameRules.BooleanValue> UNIVERSAL_INK;
     public static GameRules.Key<GameRules.BooleanValue> DROP_CRATE_LOOT;
@@ -41,7 +40,6 @@ public class SplatcraftGameRules {
     public static void registerGamerules() {
         INK_DECAY = createBooleanRule("inkDecay", GameRules.Category.UPDATES, true);
         INK_DECAY_RATE = createIntRule("inkDecayRate", GameRules.Category.UPDATES, 3);
-        COLORED_PLAYER_NAMES = createBooleanRule("coloredPlayerNames", GameRules.Category.PLAYER, false);
         KEEP_MATCH_ITEMS = createBooleanRule("keepMatchItems", GameRules.Category.PLAYER, false);
         UNIVERSAL_INK = createBooleanRule("universalInk", GameRules.Category.PLAYER, false);
         DROP_CRATE_LOOT = createBooleanRule("dropCrateLoot", GameRules.Category.DROPS, false);

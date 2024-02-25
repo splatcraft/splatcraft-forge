@@ -58,7 +58,9 @@ import net.splatcraft.forge.registries.SplatcraftGameRules;
 import net.splatcraft.forge.util.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static net.splatcraft.forge.items.weapons.WeaponBaseItem.enoughInk;
 
@@ -297,20 +299,21 @@ public class RendererHandler
     }
     */
 
+
     @SubscribeEvent
     public static void onChatMessage(ClientChatReceivedEvent event)
     {
         ClientLevel level = Minecraft.getInstance().level;
-        if (level != null && SplatcraftGameRules.getBooleanRuleValue(level, SplatcraftGameRules.COLORED_PLAYER_NAMES) && event.getMessage() instanceof TranslatableComponent component)
+        if (level != null && SplatcraftConfig.Client.coloredPlayerNames.get() && event.getMessage() instanceof TranslatableComponent component)
         {
             //TreeMap<String, AbstractClientPlayer> players = Maps.newTreeMap();
             //Minecraft.getInstance().level.getPlayers().forEach(player -> players.put(player.getDisplayName().getString(), player));
 
 
-            List<String> players = new ArrayList<>();
+            HashMap<String, UUID> players = new HashMap<>();
             ClientPacketListener connection = Minecraft.getInstance().getConnection();
             if (connection != null)
-                connection.getOnlinePlayers().forEach(info -> players.add(getDisplayName(info).getString()));
+                connection.getOnlinePlayers().forEach(info -> players.put(getDisplayName(info).getString(), info.getProfile().getId()));
 
             for (Object obj : component.getArgs())
             {
@@ -319,8 +322,8 @@ public class RendererHandler
 
                 String key = msgChildren.getString();
 
-                if (!msgChildren.getSiblings().isEmpty() && players.contains(key))
-                    msgChildren.setStyle(msgChildren.getStyle().withColor(TextColor.fromRgb(ClientUtils.getClientPlayerColor(key))));
+                if (!msgChildren.getSiblings().isEmpty() && players.containsKey(key))
+                    msgChildren.setStyle(msgChildren.getStyle().withColor(TextColor.fromRgb(ClientUtils.getClientPlayerColor(players.get(key)))));
             }
         }
     }
@@ -328,7 +331,7 @@ public class RendererHandler
     @SubscribeEvent
     public static void renderNameplate(RenderNameplateEvent event)
     {
-        if (SplatcraftGameRules.getBooleanRuleValue(event.getEntity().level, SplatcraftGameRules.COLORED_PLAYER_NAMES) && event.getEntity() instanceof LivingEntity)
+        if (SplatcraftConfig.Client.coloredPlayerNames.get() && event.getEntity() instanceof LivingEntity)
         {
             int color = ColorUtils.getEntityColor(event.getEntity());
             if (SplatcraftConfig.Client.getColorLock())
@@ -341,6 +344,7 @@ public class RendererHandler
             }
         }
     }
+
 
     public static Component getDisplayName(PlayerInfo info)
     {

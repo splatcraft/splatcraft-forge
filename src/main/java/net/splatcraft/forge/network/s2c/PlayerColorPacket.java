@@ -46,10 +46,8 @@ public class PlayerColorPacket extends PlayS2CPacket
     {
         Player player = Minecraft.getInstance().level.getPlayerByUUID(target);
         if (player != null)
-        {
             ColorUtils.setPlayerColor(player, color, false);
-        }
-        ClientUtils.setClientPlayerColor(playerName, color);
+        ClientUtils.setClientPlayerColor(target, color);
     }
 
 }

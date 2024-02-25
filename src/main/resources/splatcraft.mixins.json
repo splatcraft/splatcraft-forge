@@ -28,6 +28,7 @@
     "ItemRendererMixin",
     "MinecraftClientAccessor",
     "PlayerModelMixin",
+    "PlayerTabOverlayMixin",
     "RecipeCategoryMixin",
     "SheepWoolLayerMixin",
     "WeaponHotkeyMixin$MinecraftInstance",
