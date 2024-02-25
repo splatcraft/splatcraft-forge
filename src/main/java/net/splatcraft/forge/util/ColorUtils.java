@@ -88,6 +88,8 @@ public class ColorUtils
 
     public static int getPlayerColor(LivingEntity player)
     {
+        if(player.level.isClientSide && player instanceof Player p)
+            return ClientUtils.getClientPlayerColor(p.getGameProfile().getId());
         if(PlayerInfoCapability.hasCapability(player))
             return PlayerInfoCapability.get(player).getColor();
         return 0;
