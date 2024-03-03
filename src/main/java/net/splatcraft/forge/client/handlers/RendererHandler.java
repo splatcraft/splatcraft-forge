@@ -365,7 +365,7 @@ public class RendererHandler
             return;
 
         Player player = Minecraft.getInstance().player;
-        if (player == null || !PlayerInfoCapability.hasCapability(player))
+        if (player == null || player.isSpectator() || !PlayerInfoCapability.hasCapability(player))
         {
             return;
         }

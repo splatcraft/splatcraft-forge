@@ -180,6 +180,9 @@ public class SubWeaponItem extends WeaponBaseItem<SubWeaponSettings>
                 projectileentity.shoot(direction.getStepX(), (float) direction.getStepY() + 0.1F, direction.getStepZ(), this.getPower(), this.getUncertainty());
                 world.addFreshEntity(projectileentity);
                 stack.shrink(1);
+
+                source.getLevel().playSound(null, source.x(), source.y(), source.z(), SplatcraftSounds.subThrow, SoundSource.PLAYERS, 0.7F, 1);
+
                 return stack;
             }
 
@@ -196,12 +199,6 @@ public class SubWeaponItem extends WeaponBaseItem<SubWeaponSettings>
                 return null;
 
             return AbstractSubWeaponEntity.create(((SubWeaponItem) stackIn.getItem()).entityType.get(),  levelIn, position.x(), position.y(), position.z(), ColorUtils.getInkColor(stackIn), InkBlockUtils.InkType.NORMAL, stackIn);
-        }
-
-
-        @Override
-        protected void playSound(BlockSource source) {
-            source.getLevel().playSound(null, source.x(), source.y(), source.z(), SplatcraftSounds.subThrow, SoundSource.PLAYERS, 0.7F, 1);
         }
 
         protected float getPower() {

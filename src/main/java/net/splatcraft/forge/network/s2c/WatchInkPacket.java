@@ -48,6 +48,6 @@ public class WatchInkPacket extends PlayS2CPacket
 	@Override
 	public void execute()
 	{
-		WorldInkHandler.updateInk(chunkPos, dirty);
+		WorldInkHandler.markInkInChunkForUpdate(chunkPos, dirty);
 	}
 }

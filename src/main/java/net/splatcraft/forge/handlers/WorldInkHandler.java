@@ -23,15 +23,13 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.event.world.ChunkWatchEvent;
-import net.minecraftforge.event.world.PistonEvent;
+import net.minecraftforge.event.world.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.splatcraft.forge.Splatcraft;
@@ -47,6 +45,7 @@ import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -96,48 +95,55 @@ public class WorldInkHandler
 	@SubscribeEvent //Ink Decay
 	public static void onWorldTick(TickEvent.WorldTickEvent event)
 	{
-		if(event.phase == TickEvent.Phase.START && !event.world.players().isEmpty() && event.world instanceof ServerLevel level)
+		if(event.phase == TickEvent.Phase.START && !event.world.players().isEmpty())
 		{
-			List<LevelChunk> chunks = StreamSupport.stream(level.getChunkSource().chunkMap.getChunks().spliterator(), false).map(ChunkHolder::getTickingChunk)
-					.filter(Objects::nonNull).filter(chunk -> !WorldInkCapability.get(chunk).getInkInChunk().isEmpty()).toList();
-			int maxChunkCheck = Math.min(level.random.nextInt(MAX_DECAYABLE_CHUNKS), chunks.size());
-
-			for(int i = 0; i < maxChunkCheck; i++)
+			if(event.world instanceof ServerLevel level)
 			{
-				LevelChunk chunk = chunks.get(level.random.nextInt(chunks.size()));
-				WorldInk worldInk = WorldInkCapability.get(chunk);
-				HashMap<BlockPos, WorldInk.Entry> decayableInk = new HashMap<>(worldInk.getInkInChunk());
+				List<LevelChunk> chunks = StreamSupport.stream(level.getChunkSource().chunkMap.getChunks().spliterator(), false).map(ChunkHolder::getTickingChunk)
+						.filter(Objects::nonNull).filter(chunk -> !WorldInkCapability.get(chunk).getInkInChunk().isEmpty()).toList();
+				int maxChunkCheck = Math.min(level.random.nextInt(MAX_DECAYABLE_CHUNKS), chunks.size());
 
-				int blockCount = 0;
-				while (!decayableInk.isEmpty() && blockCount < MAX_DECAYABLE_PER_CHUNK)
-				{
-					BlockPos pos = decayableInk.keySet().toArray(new BlockPos[]{})[level.random.nextInt(decayableInk.size())];
-					BlockPos clearPos = pos.offset(chunk.getPos().x * 16, 0, chunk.getPos().z * 16);
+				for (int i = 0; i < maxChunkCheck; i++) {
+					LevelChunk chunk = chunks.get(level.random.nextInt(chunks.size()));
+					WorldInk worldInk = WorldInkCapability.get(chunk);
+					HashMap<BlockPos, WorldInk.Entry> decayableInk = new HashMap<>(worldInk.getInkInChunk());
 
-					if(!SplatcraftGameRules.getLocalizedRule(level, clearPos, SplatcraftGameRules.INK_DECAY) ||
-							level.random.nextFloat() >= SplatcraftGameRules.getIntRuleValue(level, SplatcraftGameRules.INK_DECAY_RATE) * 0.001f || //TODO make localized int rules
-							decayableInk.get(pos).equals(worldInk.getPermanentInk(pos)))
-					{
+					int blockCount = 0;
+					while (!decayableInk.isEmpty() && blockCount < MAX_DECAYABLE_PER_CHUNK) {
+						BlockPos pos = decayableInk.keySet().toArray(new BlockPos[]{})[level.random.nextInt(decayableInk.size())];
+						BlockPos clearPos = pos.offset(chunk.getPos().x * 16, 0, chunk.getPos().z * 16);
+
+						if (!SplatcraftGameRules.getLocalizedRule(level, clearPos, SplatcraftGameRules.INK_DECAY) ||
+								level.random.nextFloat() >= SplatcraftGameRules.getIntRuleValue(level, SplatcraftGameRules.INK_DECAY_RATE) * 0.001f || //TODO make localized int rules
+								decayableInk.get(pos).equals(worldInk.getPermanentInk(pos))) {
+							decayableInk.remove(pos);
+							continue;
+						}
+
+						int adjacentInk = 0;
+						for (Direction dir : Direction.values())
+							if (InkBlockUtils.isInked(level, clearPos.relative(dir)))
+								adjacentInk++;
+
+						if (!(adjacentInk <= 0 || level.random.nextInt(adjacentInk * 2) == 0)) {
+							decayableInk.remove(pos);
+							continue;
+						}
+
+						InkBlockUtils.clearInk(level, clearPos, false);
 						decayableInk.remove(pos);
-						continue;
+
+						blockCount++;
 					}
-
-					int adjacentInk = 0;
-					for(Direction dir : Direction.values())
-						if(InkBlockUtils.isInked(level, clearPos.relative(dir)))
-							adjacentInk++;
-
-					if(!(adjacentInk <= 0 || level.random.nextInt(adjacentInk*2) == 0))
-					{
-						decayableInk.remove(pos);
-						continue;
-					}
-
-					InkBlockUtils.clearInk(level, clearPos, false);
-					decayableInk.remove(pos);
-
-					blockCount++;
 				}
+			}
+			else if(event.world.isClientSide)
+			{
+				new ArrayList<>(INK_CACHE.keySet()).forEach(chunkPos ->
+				{
+					if(event.world.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false) instanceof LevelChunk chunk)
+						updateClientInkForChunk(event.world, chunk);
+				});
 			}
 		}
 	}
@@ -157,52 +163,60 @@ public class WorldInkHandler
 				InkBlockUtils.clearInk(level, pos, true);
 			else InkBlockUtils.inkBlock(level, pos, inkToPush.get(pos).color(), 0, inkToPush.get(pos).type());
 		});
-
-
 	}
 
-	@SubscribeEvent //Send World Ink Data to client
-	public static void onWatchChunk(ChunkWatchEvent.Watch event)
+	@SubscribeEvent
+	public static void onChunkWatch(ChunkWatchEvent.Watch event)
 	{
-		if(!event.getWorld().isClientSide)
+		if(event.getWorld().getChunk(event.getPos().x, event.getPos().z, ChunkStatus.FULL, false) instanceof LevelChunk chunk)
 		{
-			WorldInk worldInk = WorldInkCapability.get(event.getWorld().getChunk(event.getPos().x, event.getPos().z));
-			SplatcraftPacketHandler.sendToPlayer(new WatchInkPacket(event.getPos(), worldInk.getInkInChunk()), event.getPlayer());
+			WorldInk worldInk = WorldInkCapability.get(chunk);
+			if(!worldInk.getInkInChunk().isEmpty())
+				SplatcraftPacketHandler.sendToPlayer(new WatchInkPacket(chunk.getPos(), worldInk.getInkInChunk()), event.getPlayer());
+		}
+	}
+
+	@SubscribeEvent
+	public static void onChunkDataLoad(ChunkDataEvent.Load event)
+	{
+		if(event.getChunk() instanceof LevelChunk chunk)
+		{
+			WorldInk worldInk = WorldInkCapability.get(chunk);
+			if(!worldInk.getInkInChunk().isEmpty())
+				SplatcraftPacketHandler.sendToDim(new WatchInkPacket(chunk.getPos(), worldInk.getInkInChunk()), chunk.getLevel().dimension());
 		}
 	}
 
 	private static final HashMap<ChunkPos, HashMap<BlockPos, WorldInk.Entry>> INK_CACHE = new HashMap<>();
 
-	//Chunk caps seem to get reset after ChunkWatchEvent, so they need to be cached and updated on ChunkLoadEvent
-	@SubscribeEvent
-	public static void onChunkLoad(ChunkEvent.Load event)
+
+	@OnlyIn(Dist.CLIENT)
+	public static void updateClientInkForChunk(Level level, LevelChunk chunk)
 	{
-		if(event.getWorld() instanceof Level level && level.isClientSide)
+		WorldInk worldInk = WorldInkCapability.get(chunk);
+		ChunkPos chunkPos = chunk.getPos();
+
+		if(INK_CACHE.containsKey(chunkPos))
 		{
-			ChunkPos chunkPos = event.getChunk().getPos();
-			WorldInk worldInk = WorldInkCapability.get(level.getChunk(chunkPos.x, chunkPos.z));
-
-			if(INK_CACHE.containsKey(chunkPos))
+			INK_CACHE.get(chunkPos).forEach((pos, entry) ->
 			{
-				INK_CACHE.get(chunkPos).forEach((pos, entry) ->
-				{
-					if (entry == null || entry.type() == null) {
-						worldInk.clearInk(pos);
-					} else {
-						worldInk.ink(pos, entry.color(), entry.type());
-					}
+				if (entry == null || entry.type() == null) {
+					worldInk.clearInk(pos);
+				} else {
+					worldInk.ink(pos, entry.color(), entry.type());
+				}
 
 
-					pos = new BlockPos(pos.getX() + chunkPos.x * 16, pos.getY(), pos.getZ() + chunkPos.z * 16);
-					BlockState state = level.getBlockState(pos);
-					level.sendBlockUpdated(pos, state, state, 0);
-				});
-				INK_CACHE.remove(chunkPos);
-			}
+				pos = new BlockPos(pos.getX() + chunkPos.x * 16, pos.getY(), pos.getZ() + chunkPos.z * 16);
+				BlockState state = level.getBlockState(pos);
+				level.sendBlockUpdated(pos, state, state, 0);
+			});
+			INK_CACHE.remove(chunkPos);
+
 		}
 	}
 
-	public static void updateInk(ChunkPos pos, HashMap<BlockPos, WorldInk.Entry> map)
+	public static void markInkInChunkForUpdate(ChunkPos pos, HashMap<BlockPos, WorldInk.Entry> map)
 	{
 		INK_CACHE.put(pos, map);
 	}
