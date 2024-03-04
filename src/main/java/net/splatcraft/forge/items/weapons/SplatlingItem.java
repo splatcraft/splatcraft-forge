@@ -18,6 +18,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.splatcraft.forge.client.audio.SplatlingChargingTickableSound;
 import net.splatcraft.forge.client.handlers.SplatcraftKeyHandler;
+import net.splatcraft.forge.data.capabilities.playerinfo.PlayerInfoCapability;
 import net.splatcraft.forge.entities.InkProjectileEntity;
 import net.splatcraft.forge.handlers.PlayerPosingHandler;
 import net.splatcraft.forge.items.InkTankItem;
@@ -201,16 +202,6 @@ public class SplatlingItem extends WeaponBaseItem<SplatlingWeaponSettings> imple
 
 			if(charge == null)
 				return;
-
-			/*
-			if(PlayerInfoCapability.isSquid(player))
-			{
-				charge.reset();
-				SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
-			}
-			else */
-
-
 			if (!SplatcraftKeyHandler.isSquidKeyDown() && charge.charge > 0.05f) //checking for squid key press so it doesn't immediately release charge when squidding
 			{
 				SplatlingWeaponSettings settings = getSettings(stack);

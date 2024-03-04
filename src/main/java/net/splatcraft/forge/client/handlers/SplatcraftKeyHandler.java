@@ -29,8 +29,10 @@ import net.splatcraft.forge.items.weapons.SubWeaponItem;
 import net.splatcraft.forge.mixin.MinecraftClientAccessor;
 import net.splatcraft.forge.network.SplatcraftPacketHandler;
 import net.splatcraft.forge.network.c2s.SwapSlotWithOffhandPacket;
+import net.splatcraft.forge.network.c2s.UpdateChargeStatePacket;
 import net.splatcraft.forge.util.ClientUtils;
 import net.splatcraft.forge.util.CommonUtils;
+import net.splatcraft.forge.util.PlayerCharge;
 import net.splatcraft.forge.util.PlayerCooldown;
 import org.lwjgl.glfw.GLFW;
 
@@ -65,12 +67,19 @@ public class SplatcraftKeyHandler {
     }
 
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event)
+    {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
 
         if (player == null || player.isSpectator() || !PlayerInfoCapability.hasCapability(player)) {
             return;
+        }
+
+        if(!mc.options.keyUse.isDown() && PlayerCharge.hasCharge(player) && PlayerInfoCapability.isSquid(player)) //Resets weapon charge when player is in swim form and not holding down right click. Used to void Charge Storage for Splatlings and Chargers.
+        {
+            PlayerCharge.getCharge(player).reset();
+            SplatcraftPacketHandler.sendToServer(new UpdateChargeStatePacket(false));
         }
 
         boolean canHold = canHoldKeys(Minecraft.getInstance());

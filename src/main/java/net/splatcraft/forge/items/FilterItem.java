@@ -42,8 +42,7 @@ public class FilterItem extends Item
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag isAdvanced)
     {
         super.appendHoverText(stack, level, tooltip, isAdvanced);
-        if(!stack.getOrCreateTag().getBoolean("HideTooltip"))
-            tooltip.add(new TranslatableComponent("item.splatcraft.filter.tooltip").withStyle(ChatFormatting.GRAY));
+        tooltip.add(new TranslatableComponent("item.splatcraft.filter.tooltip").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

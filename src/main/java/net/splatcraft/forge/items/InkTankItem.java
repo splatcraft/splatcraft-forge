@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -119,15 +120,24 @@ public class InkTankItem extends ColoredArmorItem {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag)
+    {
+        if (ColorUtils.isColorLocked(stack))
+            tooltip.add(ColorUtils.getFormatedColorName(ColorUtils.getInkColor(stack), true));
+
         super.appendHoverText(stack, level, tooltip, flag);
-        if (!canRecharge(stack, false)) {
-            tooltip.add(new TranslatableComponent("item.splatcraft.ink_tank.cant_recharge"));
+
+        if(!stack.getOrCreateTag().getBoolean("HideTooltip"))
+        {
+            if (!canRecharge(stack, false)) {
+                tooltip.add(new TranslatableComponent("item.splatcraft.ink_tank.cant_recharge"));
+            }
+
+            if (flag.isAdvanced()) {
+                tooltip.add(new TranslatableComponent("item.splatcraft.ink_tank.ink", String.format("%.1f", getInkAmount(stack)), capacity));
+            }
         }
 
-        if (flag.isAdvanced() && !stack.getOrCreateTag().getBoolean("HideTooltip")) {
-            tooltip.add(new TranslatableComponent("item.splatcraft.ink_tank.ink", String.format("%.1f", getInkAmount(stack)), capacity));
-        }
 
     }
 
