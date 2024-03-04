@@ -1,4 +1,4 @@
-![splatcraft_logo](https://raw.githubusercontent.com/splatcraft/splatcraft/forge/1.16.5/src/main/resources/pack.png)
+![splatcraft_logo](https://raw.githubusercontent.com/splatcraft/splatcraft/forge/1.18.2/stable/src/main/resources/pack.png)
 
 # Splatcraft (for forge)
 
